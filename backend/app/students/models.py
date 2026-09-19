@@ -11,6 +11,8 @@ from app.database.base import Base
 if TYPE_CHECKING:
     from app.parents.models import ParentStudentRelationship
 
+from app.students.goal_models import AcademicGoal, AcademicGoalStatus, SubjectGoal
+
 
 class SyntheticProfile(StrEnum):
     STRONG = "STRONG"
@@ -57,3 +59,15 @@ class StudentProfile(Base):
     parent_relationships: Mapped[list["ParentStudentRelationship"]] = relationship(
         back_populates="student", cascade="all, delete-orphan", passive_deletes=True
     )
+    academic_goals: Mapped[list["AcademicGoal"]] = relationship(
+        "AcademicGoal", back_populates="student", cascade="all, delete-orphan", passive_deletes=True
+    )
+
+
+__all__ = [
+    "AcademicGoal",
+    "AcademicGoalStatus",
+    "StudentProfile",
+    "SubjectGoal",
+    "SyntheticProfile",
+]

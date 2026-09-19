@@ -144,6 +144,7 @@ class LearningPriorityService:
             )
 
         candidates: dict[tuple[PriorityTargetType, UUID], _PriorityCandidate] = {}
+        relevant_problem_type_ids: set[UUID] = set()
         for problem_type in problem_types:
             snapshot = self.aggregation.snapshot(problem_mastery.get(problem_type.id))
             reason = self._problem_type_reason(
@@ -152,6 +153,16 @@ class LearningPriorityService:
                 active_ids,
                 diagnostic_problem_types,
             )
+            if (
+                reason in {
+                    PriorityReasonCode.CURRENT_LESSON,
+                    PriorityReasonCode.WEAK_PROBLEM_TYPE,
+                    PriorityReasonCode.DIAGNOSTIC_FOLLOWUP,
+                    PriorityReasonCode.REVIEW_DUE,
+                }
+                or problem_type.id in goal_ids
+            ):
+                relevant_problem_type_ids.add(problem_type.id)
             goal_boost = 15.0 if problem_type.id in goal_ids else 0.0
             relevance = exam_relevance_pt.get(problem_type.id, 0.0) * 10.0 * exam_multiplier
             severity = (1.0 - snapshot.mastery_score) * snapshot.confidence * 20.0
@@ -168,11 +179,27 @@ class LearningPriorityService:
                 ),
             )
 
-        prerequisite_ids = {source_id for source_id, _ in prerequisite_edges}
+        relevant_target_concept_ids = {
+            concept_id
+            for pt_id, concept_id in mappings
+            if pt_id in relevant_problem_type_ids
+        }
+        relevant_target_concept_ids.update(diagnostic_concepts)
+        for concept in concepts:
+            c_snapshot = self.aggregation.snapshot(concept_mastery.get(concept.id))
+            if c_snapshot.state == DerivedMasteryState.REVIEW_DUE:
+                relevant_target_concept_ids.add(concept.id)
+
+        gated_prerequisite_ids = {
+            source_id
+            for source_id, target_id in prerequisite_edges
+            if target_id in relevant_target_concept_ids
+        }
+
         for concept in concepts:
             snapshot = self.aggregation.snapshot(concept_mastery.get(concept.id))
             reason: PriorityReasonCode | None = None
-            if concept.id in prerequisite_ids and snapshot.state in {
+            if concept.id in gated_prerequisite_ids and snapshot.state in {
                 DerivedMasteryState.WEAK,
                 DerivedMasteryState.LEARNING,
                 DerivedMasteryState.NOT_STARTED,

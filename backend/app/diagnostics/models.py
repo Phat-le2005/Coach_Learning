@@ -140,3 +140,49 @@ class DiagnosticBlueprintItem(Base):
     assessment: Mapped[DiagnosticAssessment] = relationship(
         back_populates="blueprint_items"
     )
+
+
+class DiagnosticAttemptContext(Base):
+    __tablename__ = "diagnostic_attempt_contexts"
+    __table_args__ = (
+        CheckConstraint(
+            "(target_problem_type_id IS NOT NULL AND target_concept_id IS NULL) OR "
+            "(target_problem_type_id IS NULL AND target_concept_id IS NOT NULL)",
+            name="ck_diagnostic_attempt_target_exclusive",
+        ),
+        CheckConstraint(
+            "desired_difficulty BETWEEN 0.0 AND 1.0",
+            name="ck_diagnostic_attempt_difficulty_range",
+        ),
+        Index("ix_diagnostic_attempt_contexts_target_pt", "target_problem_type_id"),
+        Index("ix_diagnostic_attempt_contexts_target_concept", "target_concept_id"),
+    )
+
+    attempt_id: Mapped[UUID] = mapped_column(
+        Uuid,
+        ForeignKey("question_attempts.id", ondelete="CASCADE"),
+        primary_key=True,
+    )
+    target_problem_type_id: Mapped[UUID | None] = mapped_column(
+        Uuid,
+        ForeignKey("problem_types.id", ondelete="RESTRICT"),
+        nullable=True,
+    )
+    target_concept_id: Mapped[UUID | None] = mapped_column(
+        Uuid,
+        ForeignKey("concepts.id", ondelete="RESTRICT"),
+        nullable=True,
+    )
+    selection_reason: Mapped[DiagnosticSelectionReason] = mapped_column(
+        Enum(
+            DiagnosticSelectionReason,
+            native_enum=False,
+            create_constraint=True,
+            name="diagnostic_selection_reason",
+        ),
+        nullable=False,
+    )
+    desired_difficulty: Mapped[float] = mapped_column(Float, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )

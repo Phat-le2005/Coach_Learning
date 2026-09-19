@@ -58,8 +58,8 @@ CoachLearning/
 │   │   ├── attempts/             # attempt/session facts và analytics scope
 │   │   ├── learning/
 │   │   ├── mastery/
-│   │   ├── recommendation/
-│   │   ├── diagnostic/
+│   │   ├── recommendations/
+│   │   ├── diagnostics/
 │   │   ├── review/
 │   │   ├── planning/
 │   │   ├── digital_twin/
@@ -80,7 +80,13 @@ CoachLearning/
 │   │       ├── 0006_question_bank.py
 │   │       ├── 0007_question_import_pipeline.py
 │   │       ├── 0008_synthetic_students.py
-│   │       └── 0009_curriculum_foundation_refactor.py
+│   │       ├── 0009_curriculum_foundation_refactor.py
+│   │       ├── 0010_practice_engine.py
+│   │       ├── 0011_mastery_engine.py
+│   │       ├── 0012_question_content_hash.py
+│   │       ├── 0013_diagnostic_assessment.py
+│   │       ├── 0014_student_academic_goals.py
+│   │       └── 0015_diagnostic_attempt_context.py
 │   └── tests/
 │       ├── conftest.py
 │       ├── __init__.py
@@ -267,7 +273,7 @@ python -m alembic current
 python -m alembic history
 ```
 
-`0001_foundation` là baseline rỗng. `0002_auth_rbac` tạo account/auth sessions. `0003_profiles` tạo profile/parent relationship và backfill theo role. `0004_academic_domain` tạo subject/concept graph. `0005_classrooms` tạo classroom, teacher assignment và student enrollment. `0006_question_bank` tạo question, option và concept weights. `0007_question_import` tạo staging cho preview/confirm import. `0008_synthetic_students` thêm marker synthetic, study sessions và attempt facts. `0009_curriculum_refactor` thêm versioned curriculum hierarchy, ProblemType/LearningOutcome mappings, Question classifications và ProblemType trên synthetic attempt. Các migration không seed dữ liệu nghiệp vụ. Upgrade ghi nhận `alembic_version` và dùng cùng `Settings` với backend.
+`0001_foundation` là baseline rỗng. `0002_auth_rbac` tạo account/auth sessions. `0003_profiles` tạo profile/parent relationship và backfill theo role. `0004_academic_domain` tạo subject/concept graph. `0005_classrooms` tạo classroom, teacher assignment và student enrollment. `0006_question_bank` tạo question, option và concept weights. `0007_question_import` tạo staging cho preview/confirm import. `0008_synthetic_students` thêm marker synthetic, study sessions và attempt facts. `0009_curriculum_foundation_refactor` thêm versioned curriculum hierarchy, ProblemType/LearningOutcome mappings, Question classifications và ProblemType trên synthetic attempt. Các migration không seed dữ liệu nghiệp vụ. Upgrade ghi nhận `alembic_version` và dùng cùng `Settings` với backend.
 
 Khi task được giao có thay đổi model, import model vào `migrations/env.py`, tạo migration và review trước khi chạy:
 
@@ -409,13 +415,12 @@ AcademicGoal và các learning domain tiếp theo chưa được triển khai. Q
 - Frontend dependency install thành công; TypeScript check và production build thành công.
 - `npm run dev` chạy thành công; đủ 6 route trả HTTP 200 và đúng tên khu vực.
 - Health client gọi live backend từ giá trị đọc trong `.env.local`, nhận `status=ok`; kiểm chứng đổi URL và thiếu URL cũng thành công.
-- Alembic nhận diện head `0009_curriculum_refactor`; `alembic check` không phát hiện operation mới. Migration chain được kiểm thử upgrade/downgrade trên SQLite và PostgreSQL, khớp ORM metadata và giữ nguyên bảng của revision trước khi downgrade riêng từng domain.
-- PostgreSQL local `edums` đã ở `0009_curriculum_refactor (head)`. Tất cả 10 PostgreSQL integration tests pass. Curriculum import và development seed chạy lặp không tạo duplicate.
+- Alembic nhận diện head `0015_diagnostic_attempt_context`; `alembic check` không phát hiện operation mới. Migration chain được kiểm thử upgrade/downgrade trên SQLite và PostgreSQL, khớp ORM metadata và giữ nguyên bảng của revision trước khi downgrade riêng từng domain.
+- PostgreSQL local `edums` đã ở `0015_diagnostic_attempt_context (head)`. Tất cả 10 PostgreSQL integration tests pass. Curriculum import và development seed chạy lặp không tạo duplicate.
 
 ## Tham chiếu
 
 - [FastAPI: Settings and Environment Variables](https://fastapi.tiangolo.com/advanced/settings/)
 - [Next.js: Installation](https://nextjs.org/docs/app/getting-started/installation)
 - [Alembic: Tutorial](https://alembic.sqlalchemy.org/en/latest/tutorial.html)
-#   C o a c h _ L e a r n i n g  
- 
+#

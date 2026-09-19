@@ -19,7 +19,11 @@ from app.curriculum.models import (
     ProblemTypeLearningOutcome,
     Topic,
 )
-from app.diagnostics.models import DiagnosticAssessment, DiagnosticBlueprintItem
+from app.diagnostics.models import (
+    DiagnosticAssessment,
+    DiagnosticAttemptContext,
+    DiagnosticBlueprintItem,
+)
 from app.parents.models import ParentProfile, ParentStudentRelationship
 from app.mastery.models import StudentConceptMastery, StudentProblemTypeMastery
 from app.practice.models import (
@@ -37,12 +41,14 @@ from app.questions.models import (
     QuestionOption,
     QuestionProblemType,
 )
-from app.students.models import StudentProfile
+from app.students.models import AcademicGoal, AcademicGoalStatus, StudentProfile, SubjectGoal
 from app.subjects.models import Subject
 from app.teachers.models import TeacherProfile
 from app.users.models import User
 
 __all__ = [
+    "AcademicGoal",
+    "AcademicGoalStatus",
     "AuthSession",
     "Chapter",
     "Classroom",
@@ -52,6 +58,7 @@ __all__ = [
     "CurriculumImportHistory",
     "CurriculumVersion",
     "DiagnosticAssessment",
+    "DiagnosticAttemptContext",
     "DiagnosticBlueprintItem",
     "LearningOutcome",
     "StudentConceptMastery",
@@ -78,6 +85,7 @@ __all__ = [
     "StudentProfile",
     "StudySession",
     "Subject",
+    "SubjectGoal",
     "TeacherClassroom",
     "TeacherProfile",
     "Topic",

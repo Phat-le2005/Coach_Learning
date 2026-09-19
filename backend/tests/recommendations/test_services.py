@@ -297,13 +297,81 @@ def test_prerequisite_gap_is_ranked_as_repair(
         mastery=0.2,
     )
 
+    # When the problem_type is part of the active teaching plan, its prerequisite triggers repair
+    plan = ActiveTeachingPlanContext(problem_type_ids=(practice_content.problem_type.id,))
     priorities = LearningPriorityService(db_session).get_priorities(
-        student_profile.id, practice_content.subject.id
+        student_profile.id, practice_content.subject.id, active_teaching_plan=plan
     )
 
     assert priorities[0].target_type == PriorityTargetType.CONCEPT
     assert priorities[0].concept_id == prerequisite.id
     assert priorities[0].reason_code == PriorityReasonCode.PREREQUISITE_REPAIR
+
+
+def test_unrelated_weak_prerequisite_does_not_trigger_prerequisite_repair(
+    db_session: Session,
+    student_profile: StudentProfile,
+    practice_content: PracticeContent,
+) -> None:
+    # ProblemType H is the current active lesson
+    active_pt = practice_content.problem_type
+
+    # An unrelated problem type B with concept B and prerequisite A
+    unrelated_pt = _add_problem_type(db_session, practice_content, "UNRELATED_PT_B")
+    unrelated_concept_b = Concept(
+        subject_id=practice_content.subject.id,
+        code="UNRELATED_CONCEPT_B",
+        name="Unrelated Concept B",
+        description="Concept for unrelated problem type.",
+        grade_level=12,
+        order_index=80,
+    )
+    unrelated_prereq_a = Concept(
+        subject_id=practice_content.subject.id,
+        code="UNRELATED_PREREQ_A",
+        name="Unrelated Prereq A",
+        description="Prerequisite for unrelated concept B.",
+        grade_level=12,
+        order_index=81,
+    )
+    db_session.add_all([unrelated_concept_b, unrelated_prereq_a])
+    db_session.flush()
+
+    db_session.add_all([
+        ProblemTypeConcept(
+            problem_type_id=unrelated_pt.id,
+            concept_id=unrelated_concept_b.id,
+            weight=1.0,
+            is_primary=True,
+        ),
+        ConceptRelation(
+            source_concept_id=unrelated_prereq_a.id,
+            target_concept_id=unrelated_concept_b.id,
+            relation_type=RelationType.PREREQUISITE,
+        ),
+    ])
+    # Prerequisite A is WEAK
+    _set_concept_mastery(
+        db_session,
+        student_profile.id,
+        unrelated_prereq_a.id,
+        mastery=0.1,
+    )
+
+    plan = ActiveTeachingPlanContext(problem_type_ids=(active_pt.id,))
+    priorities = LearningPriorityService(db_session).get_priorities(
+        student_profile.id, practice_content.subject.id, active_teaching_plan=plan
+    )
+
+    # Top priority must be CURRENT_LESSON (active_pt), NOT unrelated prerequisite repair
+    assert priorities[0].target_type == PriorityTargetType.PROBLEM_TYPE
+    assert priorities[0].problem_type_id == active_pt.id
+    assert priorities[0].reason_code == PriorityReasonCode.CURRENT_LESSON
+
+    # Prerequisite A must NOT have PREREQUISITE_REPAIR
+    for item in priorities:
+        if item.concept_id == unrelated_prereq_a.id:
+            assert item.reason_code != PriorityReasonCode.PREREQUISITE_REPAIR
 
 
 def test_review_due_is_derived_from_stale_mastery(

@@ -9,6 +9,7 @@ from app.core.exceptions import ApplicationError
 from app.diagnostics.blueprint import DiagnosticBlueprintService
 from app.diagnostics.models import (
     DiagnosticAssessment,
+    DiagnosticAttemptContext,
     DiagnosticBlueprintItem,
     DiagnosticCompletionReason,
 )
@@ -180,6 +181,20 @@ class DiagnosticService:
             commit=False,
             complete_if_exhausted=False,
         )
+        if (
+            assessment.current_selection_reason is not None
+            and assessment.current_difficulty is not None
+        ):
+            attempt_context = DiagnosticAttemptContext(
+                attempt_id=attempt.id,
+                target_problem_type_id=assessment.current_target_problem_type_id,
+                target_concept_id=assessment.current_target_concept_id,
+                selection_reason=assessment.current_selection_reason,
+                desired_difficulty=assessment.current_difficulty,
+            )
+            self.session.add(attempt_context)
+            self.session.flush()
+
         self._clear_pending(assessment)
         question_count, coverage, confidence = self._progress(assessment, student.id)
         reason = self._completion_reason(assessment, question_count, coverage, confidence)
@@ -382,14 +397,15 @@ class DiagnosticService:
         ) or 0
         covered = set(
             self.session.scalars(
-                select(QuestionProblemType.problem_type_id)
+                select(DiagnosticAttemptContext.target_problem_type_id)
                 .join(
                     QuestionAttempt,
-                    QuestionAttempt.question_id == QuestionProblemType.question_id,
+                    QuestionAttempt.id == DiagnosticAttemptContext.attempt_id,
                 )
                 .where(
                     QuestionAttempt.practice_session_id == assessment.id,
-                    QuestionProblemType.problem_type_id.in_(blueprint_ids),
+                    DiagnosticAttemptContext.target_problem_type_id.is_not(None),
+                    DiagnosticAttemptContext.target_problem_type_id.in_(blueprint_ids),
                 )
                 .distinct()
             )
