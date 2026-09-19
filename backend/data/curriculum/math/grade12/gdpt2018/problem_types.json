@@ -1,0 +1,11 @@
+[
+  {"topic_code": "MONOTONICITY_TOPIC", "code": "MONOTONICITY_FROM_EXPRESSION", "name": "Determine monotonicity from an expression", "description": "Use derivatives and sign analysis to determine intervals of monotonicity.", "order_index": 10, "default_difficulty": 0.45, "is_active": true},
+  {"topic_code": "MONOTONICITY_TOPIC", "code": "PARAMETER_MONOTONICITY", "name": "Find parameters for monotonicity", "description": "Determine parameter conditions for increasing or decreasing behavior.", "order_index": 20, "default_difficulty": 0.7, "is_active": true},
+  {"topic_code": "EXTREMA_TOPIC", "code": "FIND_FUNCTION_EXTREMA", "name": "Find extrema of a function", "description": "Locate and evaluate extrema using derivatives.", "order_index": 10, "default_difficulty": 0.5, "is_active": true},
+  {"topic_code": "FUNCTION_ANALYSIS_TOPIC", "code": "COMPLETE_FUNCTION_ANALYSIS", "name": "Complete function analysis", "description": "Analyze variation and construct a graph.", "order_index": 10, "default_difficulty": 0.65, "is_active": true},
+  {"topic_code": "EXP_LOG_TOPIC", "code": "EXP_LOG_EQUATION", "name": "Solve exponential and logarithmic equations", "description": "Apply exponential and logarithmic properties to equations.", "order_index": 10, "default_difficulty": 0.55, "is_active": true},
+  {"topic_code": "INTEGRAL_TOPIC", "code": "CALCULATE_INTEGRAL", "name": "Calculate an integral", "description": "Calculate antiderivatives and definite integrals.", "order_index": 10, "default_difficulty": 0.5, "is_active": true},
+  {"topic_code": "PROBABILITY_TOPIC", "code": "BASIC_PROBABILITY", "name": "Calculate elementary probability", "description": "Model and calculate elementary probabilities.", "order_index": 10, "default_difficulty": 0.45, "is_active": true},
+  {"topic_code": "VECTOR_TOPIC", "code": "VECTOR_3D_RELATION", "name": "Analyze vector relationships in space", "description": "Use vectors to analyze spatial geometry.", "order_index": 10, "default_difficulty": 0.55, "is_active": true},
+  {"topic_code": "OXYZ_TOPIC", "code": "OXYZ_LINE_PLANE_INTERSECTION", "name": "Find a line-plane intersection in Oxyz", "description": "Represent a line and plane and find their intersection.", "order_index": 10, "default_difficulty": 0.7, "is_active": true}
+]

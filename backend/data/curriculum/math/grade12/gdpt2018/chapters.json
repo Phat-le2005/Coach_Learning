@@ -1,0 +1,8 @@
+[
+  {"code": "DERIVATIVE_APPLICATIONS", "name": "Applications of Derivatives", "description": "Function behavior and graph analysis using derivatives.", "order_index": 10},
+  {"code": "EXPONENTIAL_LOGARITHM", "name": "Exponential and Logarithmic Functions", "description": "Exponential and logarithmic functions and equations.", "order_index": 20},
+  {"code": "INTEGRALS", "name": "Antiderivatives and Integrals", "description": "Integral calculation and applications.", "order_index": 30},
+  {"code": "PROBABILITY_CHAPTER", "name": "Probability", "description": "Elementary probability models.", "order_index": 40},
+  {"code": "VECTORS_GEOMETRY", "name": "Vectors and Spatial Geometry", "description": "Vectors, lines and planes in space.", "order_index": 50},
+  {"code": "OXYZ_CHAPTER", "name": "Oxyz Geometry", "description": "Coordinate geometry in three-dimensional space.", "order_index": 60}
+]

@@ -1,0 +1,11 @@
+[
+  {"problem_type_code": "MONOTONICITY_FROM_EXPRESSION", "learning_outcome_code": "LO_MONOTONICITY", "weight": 1.0},
+  {"problem_type_code": "PARAMETER_MONOTONICITY", "learning_outcome_code": "LO_MONOTONICITY", "weight": 1.0},
+  {"problem_type_code": "FIND_FUNCTION_EXTREMA", "learning_outcome_code": "LO_EXTREMA", "weight": 1.0},
+  {"problem_type_code": "COMPLETE_FUNCTION_ANALYSIS", "learning_outcome_code": "LO_FUNCTION_ANALYSIS", "weight": 1.0},
+  {"problem_type_code": "EXP_LOG_EQUATION", "learning_outcome_code": "LO_EXP_LOG", "weight": 1.0},
+  {"problem_type_code": "CALCULATE_INTEGRAL", "learning_outcome_code": "LO_INTEGRAL", "weight": 1.0},
+  {"problem_type_code": "BASIC_PROBABILITY", "learning_outcome_code": "LO_PROBABILITY", "weight": 1.0},
+  {"problem_type_code": "VECTOR_3D_RELATION", "learning_outcome_code": "LO_VECTOR_3D", "weight": 1.0},
+  {"problem_type_code": "OXYZ_LINE_PLANE_INTERSECTION", "learning_outcome_code": "LO_OXYZ_INTERSECTION", "weight": 1.0}
+]

@@ -1,0 +1,16 @@
+[
+  {"code": "FUNCTION", "name": "Function", "description": "Functions and their representations.", "grade_level": 12, "order_index": 10},
+  {"code": "DERIVATIVE", "name": "Derivative", "description": "Derivative definitions and calculation rules.", "grade_level": 12, "order_index": 20},
+  {"code": "MONOTONICITY", "name": "Monotonicity", "description": "Increasing and decreasing behavior of functions.", "grade_level": 12, "order_index": 30},
+  {"code": "EXTREMA", "name": "Extrema", "description": "Local and global extrema of functions.", "grade_level": 12, "order_index": 40},
+  {"code": "FUNCTION_ANALYSIS", "name": "Function Analysis", "description": "Complete analysis and graphing of functions.", "grade_level": 12, "order_index": 50},
+  {"code": "EXPONENTIAL_FUNCTION", "name": "Exponential Function", "description": "Properties and equations of exponential functions.", "grade_level": 12, "order_index": 60},
+  {"code": "LOGARITHM", "name": "Logarithm", "description": "Logarithmic functions, properties and equations.", "grade_level": 12, "order_index": 70},
+  {"code": "INTEGRAL", "name": "Integral", "description": "Antiderivatives, definite integrals and applications.", "grade_level": 12, "order_index": 80},
+  {"code": "PROBABILITY", "name": "Probability", "description": "Counting methods and elementary probability.", "grade_level": 12, "order_index": 90},
+  {"code": "VECTOR", "name": "Vector", "description": "Vector operations and geometric applications.", "grade_level": 12, "order_index": 100},
+  {"code": "GEOMETRY_3D", "name": "3D Geometry", "description": "Lines, planes and spatial geometry.", "grade_level": 12, "order_index": 110},
+  {"code": "OXYZ", "name": "Oxyz", "description": "Coordinate geometry in three-dimensional space.", "grade_level": 12, "order_index": 120},
+  {"code": "INEQUALITY_SOLVING", "name": "Inequality Solving", "description": "Solve inequalities arising from sign and parameter analysis.", "grade_level": 12, "order_index": 130},
+  {"code": "PARAMETER_REASONING", "name": "Parameter Reasoning", "description": "Reason about parameter constraints in mathematical models.", "grade_level": 12, "order_index": 140}
+]

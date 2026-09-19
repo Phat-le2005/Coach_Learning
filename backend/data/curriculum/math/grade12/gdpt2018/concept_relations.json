@@ -1,0 +1,14 @@
+[
+  {"source_code": "FUNCTION", "target_code": "DERIVATIVE", "relation_type": "PREREQUISITE"},
+  {"source_code": "DERIVATIVE", "target_code": "MONOTONICITY", "relation_type": "PREREQUISITE"},
+  {"source_code": "MONOTONICITY", "target_code": "EXTREMA", "relation_type": "PREREQUISITE"},
+  {"source_code": "EXTREMA", "target_code": "FUNCTION_ANALYSIS", "relation_type": "PREREQUISITE"},
+  {"source_code": "FUNCTION", "target_code": "EXPONENTIAL_FUNCTION", "relation_type": "PREREQUISITE"},
+  {"source_code": "EXPONENTIAL_FUNCTION", "target_code": "LOGARITHM", "relation_type": "PREREQUISITE"},
+  {"source_code": "DERIVATIVE", "target_code": "INTEGRAL", "relation_type": "PREREQUISITE"},
+  {"source_code": "VECTOR", "target_code": "GEOMETRY_3D", "relation_type": "PREREQUISITE"},
+  {"source_code": "VECTOR", "target_code": "OXYZ", "relation_type": "PREREQUISITE"},
+  {"source_code": "GEOMETRY_3D", "target_code": "OXYZ", "relation_type": "PREREQUISITE"},
+  {"source_code": "INEQUALITY_SOLVING", "target_code": "PARAMETER_REASONING", "relation_type": "PREREQUISITE"},
+  {"source_code": "INEQUALITY_SOLVING", "target_code": "PARAMETER_REASONING", "relation_type": "RELATED_TO"}
+]

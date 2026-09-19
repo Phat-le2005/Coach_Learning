@@ -1,0 +1,21 @@
+[
+  {"problem_type_code": "MONOTONICITY_FROM_EXPRESSION", "concept_code": "MONOTONICITY", "weight": 0.6, "is_primary": true},
+  {"problem_type_code": "MONOTONICITY_FROM_EXPRESSION", "concept_code": "DERIVATIVE", "weight": 0.4, "is_primary": false},
+  {"problem_type_code": "PARAMETER_MONOTONICITY", "concept_code": "MONOTONICITY", "weight": 0.4, "is_primary": true},
+  {"problem_type_code": "PARAMETER_MONOTONICITY", "concept_code": "DERIVATIVE", "weight": 0.2, "is_primary": false},
+  {"problem_type_code": "PARAMETER_MONOTONICITY", "concept_code": "INEQUALITY_SOLVING", "weight": 0.25, "is_primary": false},
+  {"problem_type_code": "PARAMETER_MONOTONICITY", "concept_code": "PARAMETER_REASONING", "weight": 0.15, "is_primary": false},
+  {"problem_type_code": "FIND_FUNCTION_EXTREMA", "concept_code": "EXTREMA", "weight": 0.7, "is_primary": true},
+  {"problem_type_code": "FIND_FUNCTION_EXTREMA", "concept_code": "DERIVATIVE", "weight": 0.3, "is_primary": false},
+  {"problem_type_code": "COMPLETE_FUNCTION_ANALYSIS", "concept_code": "FUNCTION_ANALYSIS", "weight": 0.6, "is_primary": true},
+  {"problem_type_code": "COMPLETE_FUNCTION_ANALYSIS", "concept_code": "EXTREMA", "weight": 0.4, "is_primary": false},
+  {"problem_type_code": "EXP_LOG_EQUATION", "concept_code": "LOGARITHM", "weight": 0.5, "is_primary": true},
+  {"problem_type_code": "EXP_LOG_EQUATION", "concept_code": "EXPONENTIAL_FUNCTION", "weight": 0.5, "is_primary": false},
+  {"problem_type_code": "CALCULATE_INTEGRAL", "concept_code": "INTEGRAL", "weight": 1.0, "is_primary": true},
+  {"problem_type_code": "BASIC_PROBABILITY", "concept_code": "PROBABILITY", "weight": 1.0, "is_primary": true},
+  {"problem_type_code": "VECTOR_3D_RELATION", "concept_code": "VECTOR", "weight": 0.6, "is_primary": true},
+  {"problem_type_code": "VECTOR_3D_RELATION", "concept_code": "GEOMETRY_3D", "weight": 0.4, "is_primary": false},
+  {"problem_type_code": "OXYZ_LINE_PLANE_INTERSECTION", "concept_code": "OXYZ", "weight": 0.6, "is_primary": true},
+  {"problem_type_code": "OXYZ_LINE_PLANE_INTERSECTION", "concept_code": "GEOMETRY_3D", "weight": 0.25, "is_primary": false},
+  {"problem_type_code": "OXYZ_LINE_PLANE_INTERSECTION", "concept_code": "VECTOR", "weight": 0.15, "is_primary": false}
+]

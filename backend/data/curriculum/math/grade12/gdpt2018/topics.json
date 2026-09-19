@@ -1,0 +1,10 @@
+[
+  {"chapter_code": "DERIVATIVE_APPLICATIONS", "code": "MONOTONICITY_TOPIC", "name": "Monotonicity", "description": "Increasing and decreasing functions.", "order_index": 10},
+  {"chapter_code": "DERIVATIVE_APPLICATIONS", "code": "EXTREMA_TOPIC", "name": "Extrema", "description": "Local and global extrema.", "order_index": 20},
+  {"chapter_code": "DERIVATIVE_APPLICATIONS", "code": "FUNCTION_ANALYSIS_TOPIC", "name": "Function Analysis", "description": "Complete function analysis.", "order_index": 30},
+  {"chapter_code": "EXPONENTIAL_LOGARITHM", "code": "EXP_LOG_TOPIC", "name": "Exponential and Logarithmic Models", "description": "Properties and equations.", "order_index": 10},
+  {"chapter_code": "INTEGRALS", "code": "INTEGRAL_TOPIC", "name": "Integral Calculation", "description": "Antiderivatives and definite integrals.", "order_index": 10},
+  {"chapter_code": "PROBABILITY_CHAPTER", "code": "PROBABILITY_TOPIC", "name": "Probability Models", "description": "Counting and probability.", "order_index": 10},
+  {"chapter_code": "VECTORS_GEOMETRY", "code": "VECTOR_TOPIC", "name": "Vectors and 3D Geometry", "description": "Vector operations and spatial relationships.", "order_index": 10},
+  {"chapter_code": "OXYZ_CHAPTER", "code": "OXYZ_TOPIC", "name": "Lines and Planes in Oxyz", "description": "Coordinate representations and intersections.", "order_index": 10}
+]

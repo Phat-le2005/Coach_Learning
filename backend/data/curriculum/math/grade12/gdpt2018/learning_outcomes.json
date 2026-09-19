@@ -1,0 +1,10 @@
+[
+  {"code": "LO_MONOTONICITY", "description": "Determine intervals on which a function is increasing or decreasing.", "grade_level": 12, "order_index": 10, "source_reference": "Thông tư 32/2018/TT-BGDĐT"},
+  {"code": "LO_EXTREMA", "description": "Use derivatives to determine extrema of a function.", "grade_level": 12, "order_index": 20, "source_reference": "Thông tư 32/2018/TT-BGDĐT"},
+  {"code": "LO_FUNCTION_ANALYSIS", "description": "Analyze variation and represent the graph of a function.", "grade_level": 12, "order_index": 30, "source_reference": "Thông tư 32/2018/TT-BGDĐT"},
+  {"code": "LO_EXP_LOG", "description": "Solve exponential and logarithmic equations in standard forms.", "grade_level": 12, "order_index": 40, "source_reference": "Thông tư 32/2018/TT-BGDĐT"},
+  {"code": "LO_INTEGRAL", "description": "Calculate antiderivatives and definite integrals.", "grade_level": 12, "order_index": 50, "source_reference": "Thông tư 32/2018/TT-BGDĐT"},
+  {"code": "LO_PROBABILITY", "description": "Model and calculate probabilities of elementary events.", "grade_level": 12, "order_index": 60, "source_reference": "Thông tư 32/2018/TT-BGDĐT"},
+  {"code": "LO_VECTOR_3D", "description": "Use vectors to solve spatial geometry problems.", "grade_level": 12, "order_index": 70, "source_reference": "Thông tư 32/2018/TT-BGDĐT"},
+  {"code": "LO_OXYZ_INTERSECTION", "description": "Represent lines and planes in Oxyz and determine intersections.", "grade_level": 12, "order_index": 80, "source_reference": "Thông tư 32/2018/TT-BGDĐT"}
+]

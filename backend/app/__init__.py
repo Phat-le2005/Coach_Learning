@@ -1,0 +1,1 @@
+"""EduMS modular monolith."""
