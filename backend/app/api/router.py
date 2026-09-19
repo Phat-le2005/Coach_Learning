@@ -14,6 +14,7 @@ from app.curriculum.router import router as curriculum_router
 from app.practice.router import router as practice_router
 from app.mastery.router import router as mastery_router
 from app.digital_twin.router import router as digital_twin_router
+from app.diagnostics.router import router as diagnostics_router
 
 api_router = APIRouter()
 api_router.include_router(health_router)
@@ -30,3 +31,4 @@ api_router.include_router(questions_router)
 api_router.include_router(practice_router)
 api_router.include_router(mastery_router)
 api_router.include_router(digital_twin_router)
+api_router.include_router(diagnostics_router)

@@ -110,6 +110,9 @@ class PracticeService:
         current_user: User,
         practice_session_id: UUID,
         data: PracticeAnswerCreate,
+        *,
+        commit: bool = True,
+        complete_if_exhausted: bool = True,
     ) -> QuestionAttempt:
         student = self._student_for_user(current_user.id)
         practice_session = self.session.scalar(
@@ -176,13 +179,17 @@ class PracticeService:
                     self._make_evidence(attempt, practice_session, question), self.session
                 )
 
-            remaining = self.session.scalar(
-                self._eligible_questions(practice_session, exclude_attempted=True).limit(1)
-            )
-            if remaining is None:
-                practice_session.status = PracticeSessionStatus.COMPLETED
-                practice_session.completed_at = datetime.now(timezone.utc)
-            self.session.commit()
+            if complete_if_exhausted:
+                remaining = self.session.scalar(
+                    self._eligible_questions(practice_session, exclude_attempted=True).limit(1)
+                )
+                if remaining is None:
+                    practice_session.status = PracticeSessionStatus.COMPLETED
+                    practice_session.completed_at = datetime.now(timezone.utc)
+            if commit:
+                self.session.commit()
+            else:
+                self.session.flush()
         except IntegrityError as exc:
             self.session.rollback()
             logger.info(

@@ -1,8 +1,5 @@
 from __future__ import annotations
 
-import hashlib
-import re
-import unicodedata
 from dataclasses import dataclass
 from typing import Protocol, Sequence
 from uuid import UUID
@@ -11,6 +8,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.questions.models import Question
+from app.questions.fingerprint import question_content_hash
 
 
 @dataclass(frozen=True, slots=True)
@@ -32,24 +30,27 @@ class QuestionDuplicateDetector(Protocol):
 class ExactContentHashDuplicateDetector:
     """Detects normalized exact content matches with a SHA-256 fingerprint."""
 
-    _whitespace = re.compile(r"\s+")
-
     def fingerprint(self, content: str) -> str:
-        normalized = unicodedata.normalize("NFKC", content)
-        normalized = self._whitespace.sub(" ", normalized).strip().casefold()
-        return hashlib.sha256(normalized.encode("utf-8")).hexdigest()
+        return question_content_hash(content)
 
     def detect(
         self, session: Session, candidates: Sequence[str]
     ) -> dict[int, DuplicateMatch]:
+        fingerprints = [self.fingerprint(content) for content in candidates]
+        candidate_hashes = set(fingerprints)
         existing_by_hash: dict[str, UUID] = {}
-        for question_id, content in session.execute(select(Question.id, Question.content)):
-            existing_by_hash.setdefault(self.fingerprint(content), question_id)
+        if candidate_hashes:
+            existing = session.execute(
+                select(Question.id, Question.content_hash)
+                .where(Question.content_hash.in_(candidate_hashes))
+                .order_by(Question.id)
+            )
+            for question_id, content_hash in existing:
+                existing_by_hash.setdefault(content_hash, question_id)
 
         matches: dict[int, DuplicateMatch] = {}
         first_candidate_by_hash: dict[str, int] = {}
-        for index, content in enumerate(candidates):
-            fingerprint = self.fingerprint(content)
+        for index, fingerprint in enumerate(fingerprints):
             existing_id = existing_by_hash.get(fingerprint)
             if existing_id is not None:
                 matches[index] = DuplicateMatch(existing_question_id=existing_id)

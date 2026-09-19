@@ -12,6 +12,14 @@ from app.concepts.graph_service import ConceptGraphService
 from app.concepts.models import Concept, ConceptRelation
 from app.core.config import Settings
 from app.parents.models import ParentProfile, ParentStudentRelationship
+from app.practice.models import (
+    EvaluationStatus,
+    PracticeSession,
+    PracticeSessionStatus,
+    PracticeSessionType,
+    QuestionAttempt,
+)
+from app.questions.models import Question, QuestionStatus, QuestionType
 from app.seed_service import RESET_CONFIRMATION, SeedOperationError, SeedService
 from app.students.models import StudentProfile
 from app.subjects.models import Subject
@@ -189,6 +197,75 @@ def test_reset_recreates_same_ids_and_preserves_unrelated_records(
     assert db_session.get(User, unrelated_id) is not None
     assert set(db_session.scalars(select(User.id).where(User.id != unrelated_id))) == ids_before
     assert count(db_session, User) == 20
+
+
+def test_reset_removes_practice_data_owned_by_demo_students(
+    db_session: Session, seed_settings: Settings
+) -> None:
+    SeedService(db_session, seed_settings).seed()
+    student_id = stable_id("profile", "STUDENT_01")
+    subject = db_session.get(Subject, stable_id("subject", SUBJECT.code))
+    assert subject is not None
+    unrelated_author = User(
+        id=uuid4(),
+        email="seed-reset-question-author@example.com",
+        password_hash="synthetic-not-used",
+        full_name="Unrelated Question Author",
+        role=Role.ADMIN,
+        is_active=True,
+    )
+    db_session.add(unrelated_author)
+    db_session.flush()
+    question = Question(
+        subject_id=subject.id,
+        content="Seed reset practice reference",
+        question_type=QuestionType.TRUE_FALSE,
+        difficulty=0.2,
+        correct_answer="TRUE",
+        explanation="Test-only question.",
+        source_type="TEST",
+        source_reference="seed-reset-test",
+        exam_weight=0.1,
+        status=QuestionStatus.APPROVED,
+        created_by=unrelated_author.id,
+    )
+    practice_session = PracticeSession(
+        student_id=student_id,
+        subject_id=subject.id,
+        session_type=PracticeSessionType.PRACTICE,
+        status=PracticeSessionStatus.ACTIVE,
+    )
+    db_session.add_all([question, practice_session])
+    db_session.flush()
+    attempt = QuestionAttempt(
+        practice_session_id=practice_session.id,
+        student_id=student_id,
+        question_id=question.id,
+        student_answer="TRUE",
+        is_correct=True,
+        score=1.0,
+        response_time_seconds=10.0,
+        hint_count=0,
+        attempt_number=1,
+        evaluation_status=EvaluationStatus.AUTO_EVALUATED,
+    )
+    db_session.add(attempt)
+    db_session.commit()
+
+    SeedService(db_session, seed_settings).reset(RESET_CONFIRMATION)
+
+    assert db_session.scalar(
+        select(func.count())
+        .select_from(QuestionAttempt)
+        .where(QuestionAttempt.id == attempt.id)
+    ) == 0
+    assert db_session.scalar(
+        select(func.count())
+        .select_from(PracticeSession)
+        .where(PracticeSession.id == practice_session.id)
+    ) == 0
+    assert db_session.get(Question, question.id) is not None
+    assert db_session.get(StudentProfile, student_id) is not None
 
 
 def test_reset_rolls_back_if_nonseed_data_references_demo_user(

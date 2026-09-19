@@ -2,10 +2,11 @@ from datetime import datetime
 from enum import StrEnum
 from uuid import UUID, uuid4
 
-from sqlalchemy import JSON, Boolean, CheckConstraint, DateTime, Enum, Float, ForeignKey, Index, Integer, String, Text, UniqueConstraint, Uuid, func, false
+from sqlalchemy import JSON, Boolean, CheckConstraint, DateTime, Enum, Float, ForeignKey, Index, Integer, String, Text, UniqueConstraint, Uuid, event, func, false
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database.base import Base
+from app.questions.fingerprint import question_content_hash
 
 
 class QuestionType(StrEnum):
@@ -50,6 +51,7 @@ class Question(Base):
     __tablename__ = "questions"
     __table_args__ = (
         CheckConstraint("length(trim(content)) > 0", name="content_not_blank"),
+        CheckConstraint("length(content_hash) = 64", name="content_hash_length"),
         CheckConstraint("difficulty BETWEEN 0.0 AND 1.0", name="difficulty_range"),
         CheckConstraint("length(trim(source_type)) > 0", name="source_type_not_blank"),
         CheckConstraint("exam_weight BETWEEN 0.0 AND 1.0", name="exam_weight_range"),
@@ -58,12 +60,14 @@ class Question(Base):
         CheckConstraint("source_reference IS NULL OR length(trim(source_reference)) > 0", name="source_reference_not_blank"),
         CheckConstraint("source_year IS NULL OR source_year BETWEEN 1900 AND 2100", name="source_year_range"),
         Index("ix_questions_subject_status_type_difficulty", "subject_id", "status", "question_type", "difficulty"),
+        Index("ix_questions_content_hash", "content_hash"),
         Index("ix_questions_created_by", "created_by"),
     )
 
     id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, default=uuid4)
     subject_id: Mapped[UUID] = mapped_column(ForeignKey("subjects.id", ondelete="RESTRICT"), nullable=False)
     content: Mapped[str] = mapped_column(Text, nullable=False)
+    content_hash: Mapped[str] = mapped_column(String(64), nullable=False)
     question_type: Mapped[QuestionType] = mapped_column(Enum(QuestionType, native_enum=False, create_constraint=True, name="question_type"), nullable=False)
     difficulty: Mapped[float] = mapped_column(Float, nullable=False)
     correct_answer: Mapped[str | None] = mapped_column(Text, nullable=True)
@@ -94,6 +98,14 @@ class Question(Base):
     learning_outcome_links: Mapped[list["QuestionLearningOutcome"]] = relationship(
         back_populates="question", cascade="all, delete-orphan", passive_deletes=True
     )
+
+
+@event.listens_for(Question, "before_insert")
+@event.listens_for(Question, "before_update")
+def _synchronize_question_content_hash(
+    mapper: object, connection: object, target: Question
+) -> None:
+    target.content_hash = question_content_hash(target.content)
 
 
 class QuestionOption(Base):

@@ -14,15 +14,32 @@ logger = logging.getLogger(__name__)
 class ErrorDetail(BaseModel):
     code: str
     message: str
+    details: list["ValidationIssue"] | None = None
+
+
+class ValidationIssue(BaseModel):
+    field: str
+    message: str
 
 
 class ErrorResponse(BaseModel):
     error: ErrorDetail
 
 
-def error_response(status_code: int, code: str, message: str) -> JSONResponse:
-    body = ErrorResponse(error=ErrorDetail(code=code, message=message))
-    return JSONResponse(status_code=status_code, content=body.model_dump())
+def error_response(
+    status_code: int,
+    code: str,
+    message: str,
+    *,
+    details: list[ValidationIssue] | None = None,
+) -> JSONResponse:
+    body = ErrorResponse(
+        error=ErrorDetail(code=code, message=message, details=details)
+    )
+    return JSONResponse(
+        status_code=status_code,
+        content=body.model_dump(exclude_none=True),
+    )
 
 
 async def http_exception_handler(request: Request, exc: HTTPException) -> JSONResponse:
@@ -36,13 +53,36 @@ async def http_exception_handler(request: Request, exc: HTTPException) -> JSONRe
 async def validation_exception_handler(
     request: Request, exc: RequestValidationError
 ) -> JSONResponse:
-    # Validation input can contain passwords or tokens; never echo it back.
+    settings = request.app.state.settings
+    if settings.app_env != "production":
+        details = [
+            ValidationIssue(
+                field=" -> ".join(str(part) for part in error["loc"]),
+                message=str(error["msg"]),
+            )
+            for error in exc.errors()
+        ]
+        return error_response(
+            422,
+            "VALIDATION_ERROR",
+            "Request validation failed.",
+            details=details,
+        )
+    # Production never echoes validation input or field-level details.
     return error_response(422, "VALIDATION_ERROR", "Request validation failed.")
 
 
 async def unexpected_exception_handler(request: Request, exc: Exception) -> JSONResponse:
-    # Exception messages and locals can contain credentials; record only the type.
-    logger.error("Unexpected application error (%s)", type(exc).__name__)
+    settings = request.app.state.settings
+    if settings.debug and settings.app_env != "production":
+        logger.error(
+            "Unexpected application error (%s)",
+            type(exc).__name__,
+            exc_info=(type(exc), exc, exc.__traceback__),
+        )
+    else:
+        # Exception messages and locals can contain credentials; record only the type.
+        logger.error("Unexpected application error (%s)", type(exc).__name__)
     response = error_response(500, "INTERNAL_SERVER_ERROR", "An unexpected error occurred.")
     # The outer ServerErrorMiddleware bypasses CORSMiddleware for uncaught exceptions.
     origin = request.headers.get("origin")

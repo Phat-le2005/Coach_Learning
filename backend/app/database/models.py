@@ -19,6 +19,7 @@ from app.curriculum.models import (
     ProblemTypeLearningOutcome,
     Topic,
 )
+from app.diagnostics.models import DiagnosticAssessment, DiagnosticBlueprintItem
 from app.parents.models import ParentProfile, ParentStudentRelationship
 from app.mastery.models import StudentConceptMastery, StudentProblemTypeMastery
 from app.practice.models import (
@@ -50,6 +51,8 @@ __all__ = [
     "Curriculum",
     "CurriculumImportHistory",
     "CurriculumVersion",
+    "DiagnosticAssessment",
+    "DiagnosticBlueprintItem",
     "LearningOutcome",
     "StudentConceptMastery",
     "StudentProblemTypeMastery",

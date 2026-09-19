@@ -6,11 +6,12 @@ from uuid import UUID, uuid4
 
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import func, select
+from sqlalchemy import event, func, select
 from sqlalchemy.orm import Session
 
 from app.concepts.models import Concept
 from app.questions.duplicate_detection import ExactContentHashDuplicateDetector
+from app.questions.import_service import QuestionImportService
 from app.questions.models import (
     ImportBatchStatus,
     ImportRowStatus,
@@ -377,6 +378,148 @@ def test_exact_detector_normalizes_unicode_case_and_whitespace(db_session: Sessi
     matches = detector.detect(db_session, ["Question A", " question\nA ", "Question B"])
     assert matches[1].duplicate_of_index == 0
     assert 0 not in matches and 2 not in matches
+
+
+def test_duplicate_detector_queries_only_candidate_hashes(
+    db_session: Session,
+    db_client: TestClient,
+    question_user_factory: UserFactory,
+    question_bearer: BearerFactory,
+    math_content: tuple[Subject, Concept, Concept],
+) -> None:
+    teacher = question_user_factory(Role.TEACHER, "hash-query@example.com")
+    payload = import_record(
+        math_content[0], math_content[1], content="Existing indexed fingerprint"
+    )
+    from tests.questions.test_api import create_question, multiple_choice_payload
+
+    direct = multiple_choice_payload(math_content[0], math_content[1], math_content[2])
+    direct["content"] = payload["content"]
+    existing = create_question(db_client, question_bearer(teacher), direct)
+    statements: list[str] = []
+
+    def capture_statement(
+        connection: object,
+        cursor: object,
+        statement: str,
+        parameters: object,
+        context: object,
+        executemany: bool,
+    ) -> None:
+        statements.append(statement)
+
+    engine = db_session.get_bind()
+    event.listen(engine, "before_cursor_execute", capture_statement)
+    try:
+        matches = ExactContentHashDuplicateDetector().detect(
+            db_session, [str(payload["content"]), "Unrelated candidate"]
+        )
+    finally:
+        event.remove(engine, "before_cursor_execute", capture_statement)
+
+    assert str(matches[0].existing_question_id) == existing["id"]
+    question_selects = [
+        statement.lower()
+        for statement in statements
+        if statement.lstrip().upper().startswith("SELECT") and "from questions" in statement.lower()
+    ]
+    assert len(question_selects) == 1
+    assert "questions.content_hash" in question_selects[0]
+    assert "questions.content," not in question_selects[0]
+
+
+def test_preview_preloads_reference_catalog_once_per_batch(
+    db_session: Session,
+    question_user_factory: UserFactory,
+    math_content: tuple[Subject, Concept, Concept],
+) -> None:
+    teacher = question_user_factory(Role.TEACHER, "batch-reference-cache@example.com")
+    subject, derivative, _ = math_content
+    rows = [
+        import_record(subject, derivative, content=f"Batch preload question {index}")
+        for index in range(50)
+    ]
+    statements: list[str] = []
+
+    def capture_statement(
+        connection: object,
+        cursor: object,
+        statement: str,
+        parameters: object,
+        context: object,
+        executemany: bool,
+    ) -> None:
+        statements.append(statement)
+
+    engine = db_session.get_bind()
+    event.listen(engine, "before_cursor_execute", capture_statement)
+    try:
+        preview = QuestionImportService(db_session).preview(
+            teacher,
+            file_name="batch.json",
+            content=json.dumps(rows).encode("utf-8"),
+        )
+    finally:
+        event.remove(engine, "before_cursor_execute", capture_statement)
+
+    assert preview.report.valid == 50
+    selects = [
+        statement.lower()
+        for statement in statements
+        if statement.lstrip().upper().startswith("SELECT")
+    ]
+    assert sum("from subjects" in statement for statement in selects) == 1
+    assert sum("from concepts" in statement for statement in selects) == 1
+    assert sum("from problem_types" in statement for statement in selects) == 0
+    assert sum("from learning_outcomes" in statement for statement in selects) == 0
+
+
+def test_confirm_revalidates_references_in_batches(
+    db_session: Session,
+    question_user_factory: UserFactory,
+    math_content: tuple[Subject, Concept, Concept],
+) -> None:
+    teacher = question_user_factory(Role.TEACHER, "confirm-reference-cache@example.com")
+    subject, derivative, _ = math_content
+    rows = [
+        import_record(subject, derivative, content=f"Confirm preload question {index}")
+        for index in range(50)
+    ]
+    service = QuestionImportService(db_session)
+    preview = service.preview(
+        teacher,
+        file_name="confirm-batch.json",
+        content=json.dumps(rows).encode("utf-8"),
+    )
+    statements: list[str] = []
+
+    def capture_statement(
+        connection: object,
+        cursor: object,
+        statement: str,
+        parameters: object,
+        context: object,
+        executemany: bool,
+    ) -> None:
+        statements.append(statement)
+
+    engine = db_session.get_bind()
+    event.listen(engine, "before_cursor_execute", capture_statement)
+    try:
+        confirmed = service.confirm(teacher, preview.batch_id)
+    finally:
+        event.remove(engine, "before_cursor_execute", capture_statement)
+
+    assert confirmed.report.imported == 50
+    selects = [
+        statement.lower()
+        for statement in statements
+        if statement.lstrip().upper().startswith("SELECT")
+    ]
+    assert sum("from subjects" in statement for statement in selects) == 1
+    assert sum("from concepts" in statement for statement in selects) == 1
+    assert sum("from problem_types" in statement for statement in selects) == 0
+    assert sum("from learning_outcomes" in statement for statement in selects) == 0
 
 
 @pytest.mark.parametrize("role", [Role.STUDENT, Role.PARENT])

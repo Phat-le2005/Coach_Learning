@@ -11,6 +11,7 @@ from app.classes.models import Classroom, StudentEnrollment, TeacherClassroom
 from app.core.config import Settings
 from app.curriculum.import_service import CurriculumImportService
 from app.parents.models import ParentProfile, ParentStudentRelationship
+from app.practice.models import PracticeSession, QuestionAttempt
 from app.students.models import StudentProfile
 from app.teachers.models import TeacherProfile
 from app.users.models import Role, User
@@ -231,7 +232,24 @@ class SeedService:
     def _delete_seed_records(self) -> None:
         classroom_ids = [stable_id("classroom", fixture.code) for fixture in CLASSROOMS]
         user_ids = [stable_id("user", record.code) for record in USERS]
+        student_profile_ids = [
+            stable_id("profile", record.code)
+            for record in USERS
+            if record.role == Role.STUDENT
+        ]
         operations = (
+            (
+                "question_attempts",
+                delete(QuestionAttempt).where(
+                    QuestionAttempt.student_id.in_(student_profile_ids)
+                ),
+            ),
+            (
+                "practice_sessions",
+                delete(PracticeSession).where(
+                    PracticeSession.student_id.in_(student_profile_ids)
+                ),
+            ),
             ("student_enrollments", delete(StudentEnrollment).where(StudentEnrollment.classroom_id.in_(classroom_ids))),
             ("teacher_classrooms", delete(TeacherClassroom).where(TeacherClassroom.classroom_id.in_(classroom_ids))),
             ("classrooms", delete(Classroom).where(Classroom.id.in_(classroom_ids))),

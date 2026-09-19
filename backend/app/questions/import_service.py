@@ -4,6 +4,7 @@ import csv
 import io
 import json
 import logging
+from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -50,6 +51,20 @@ from app.subjects.models import Subject
 from app.users.models import Role, User
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass(frozen=True, slots=True)
+class _ParsedRow:
+    row_number: int
+    raw_data: dict[str, object]
+    record: QuestionImportRecord
+
+
+@dataclass(frozen=True, slots=True)
+class _ReferenceCatalog:
+    concepts: dict[tuple[UUID, str], Concept]
+    problem_types: dict[tuple[UUID, str], ProblemType]
+    learning_outcomes: dict[tuple[UUID, str], LearningOutcome]
 
 
 class QuestionImportService:
@@ -105,9 +120,9 @@ class QuestionImportService:
             file_format=file_format,
             trusted_seed_data=trusted_seed_data,
         )
+        rows = self._validate_rows(raw_rows)
         validated_rows: list[QuestionImportRow] = []
-        for row_number, raw_data in raw_rows:
-            row = self._validate_row(row_number, raw_data)
+        for row in rows:
             batch.rows.append(row)
             if row.status == ImportRowStatus.VALID:
                 validated_rows.append(row)
@@ -136,8 +151,9 @@ class QuestionImportService:
 
         self._lock_imports()
         valid_rows = [row for row in batch.rows if row.status == ImportRowStatus.VALID]
+        reference_errors = self._staged_reference_errors(valid_rows)
         for row in valid_rows:
-            reference_error = self._staged_reference_error(row)
+            reference_error = reference_errors.get(row.id)
             if reference_error is not None:
                 row.status = ImportRowStatus.INVALID
                 row.errors = [reference_error]
@@ -168,101 +184,191 @@ class QuestionImportService:
         )
         return self._view(batch)
 
-    def _validate_row(
-        self, row_number: int, raw_data: dict[str, object]
-    ) -> QuestionImportRow:
-        if "_row_error" in raw_data:
-            return QuestionImportRow(
-                row_number=row_number,
-                status=ImportRowStatus.INVALID,
-                raw_data=raw_data,
-                errors=[str(raw_data["_row_error"])],
-            )
-        try:
-            record = QuestionImportRecord.model_validate(raw_data)
-        except ValidationError as error:
-            return QuestionImportRow(
-                row_number=row_number,
-                status=ImportRowStatus.INVALID,
-                raw_data=raw_data,
-                errors=self._validation_messages(error),
-            )
+    def _validate_rows(
+        self, raw_rows: list[tuple[int, dict[str, object]]]
+    ) -> list[QuestionImportRow]:
+        results: list[QuestionImportRow | None] = [None] * len(raw_rows)
+        parsed: list[tuple[int, _ParsedRow]] = []
+        for position, (row_number, raw_data) in enumerate(raw_rows):
+            if "_row_error" in raw_data:
+                results[position] = self._invalid_row(
+                    row_number, raw_data, str(raw_data["_row_error"])
+                )
+                continue
+            try:
+                record = QuestionImportRecord.model_validate(raw_data)
+            except ValidationError as error:
+                results[position] = QuestionImportRow(
+                    row_number=row_number,
+                    status=ImportRowStatus.INVALID,
+                    raw_data=raw_data,
+                    errors=self._validation_messages(error),
+                )
+                continue
+            parsed.append((position, _ParsedRow(row_number, raw_data, record)))
 
-        subject_statement = (
-            select(Subject)
+        subject_candidates = self._load_subject_candidates(
+            {item.record.subject_code for _, item in parsed}
+        )
+        resolved: list[tuple[int, _ParsedRow, Subject]] = []
+        for position, item in parsed:
+            candidates = subject_candidates.get(item.record.subject_code, [])
+            if item.record.curriculum_version_code is not None:
+                candidates = [
+                    subject
+                    for subject, version_code in candidates
+                    if version_code == item.record.curriculum_version_code
+                ]
+            else:
+                candidates = [subject for subject, _ in candidates]
+            if not candidates:
+                results[position] = self._invalid_row(
+                    item.row_number,
+                    item.raw_data,
+                    f"subject_code: unknown subject code '{item.record.subject_code}'",
+                )
+            elif len(candidates) > 1:
+                results[position] = self._invalid_row(
+                    item.row_number,
+                    item.raw_data,
+                    "subject_code: ambiguous across curriculum versions; provide "
+                    "curriculum_version_code",
+                )
+            else:
+                resolved.append((position, item, candidates[0]))
+
+        catalog = self._load_reference_catalog(resolved)
+        for position, item, subject in resolved:
+            results[position] = self._validate_references(item, subject, catalog)
+
+        assert all(row is not None for row in results)
+        return [row for row in results if row is not None]
+
+    def _load_subject_candidates(
+        self, subject_codes: set[str]
+    ) -> dict[str, list[tuple[Subject, str]]]:
+        if not subject_codes:
+            return {}
+        rows = self.session.execute(
+            select(Subject, CurriculumVersion.code)
             .join(
                 CurriculumVersion,
                 CurriculumVersion.id == Subject.curriculum_version_id,
             )
-            .where(Subject.code == record.subject_code)
+            .where(Subject.code.in_(subject_codes))
+            .order_by(Subject.id)
         )
-        if record.curriculum_version_code is not None:
-            subject_statement = subject_statement.where(
-                CurriculumVersion.code == record.curriculum_version_code
-            )
-        subjects = list(self.session.scalars(subject_statement.order_by(Subject.id)))
-        if not subjects:
-            return self._invalid_row(
-                row_number,
-                raw_data,
-                f"subject_code: unknown subject code '{record.subject_code}'",
-            )
-        if len(subjects) > 1:
-            return self._invalid_row(
-                row_number,
-                raw_data,
-                "subject_code: ambiguous across curriculum versions; provide "
-                "curriculum_version_code",
-            )
-        subject = subjects[0]
-        codes = {item.code for item in record.concepts}
-        concepts = list(
-            self.session.scalars(
-                select(Concept).where(
-                    Concept.subject_id == subject.id,
-                    Concept.code.in_(codes),
+        by_code: dict[str, list[tuple[Subject, str]]] = {}
+        for subject, version_code in rows:
+            by_code.setdefault(subject.code, []).append((subject, version_code))
+        return by_code
+
+    def _load_reference_catalog(
+        self, rows: list[tuple[int, _ParsedRow, Subject]]
+    ) -> _ReferenceCatalog:
+        subject_ids = {subject.id for _, _, subject in rows}
+        concept_codes = {
+            link.code for _, item, _ in rows for link in item.record.concepts
+        }
+        problem_codes = {
+            link.code for _, item, _ in rows for link in item.record.problem_types
+        }
+        outcome_codes = {
+            link.code for _, item, _ in rows for link in item.record.learning_outcomes
+        }
+        concepts = (
+            list(
+                self.session.scalars(
+                    select(Concept).where(
+                        Concept.subject_id.in_(subject_ids),
+                        Concept.code.in_(concept_codes),
+                    )
                 )
             )
+            if subject_ids and concept_codes
+            else []
         )
-        concepts_by_code = {concept.code: concept for concept in concepts}
-        missing = sorted(codes - concepts_by_code.keys())
+        problem_rows = (
+            list(
+                self.session.execute(
+                    select(Chapter.subject_id, ProblemType)
+                    .join(Topic, Topic.chapter_id == Chapter.id)
+                    .join(ProblemType, ProblemType.topic_id == Topic.id)
+                    .where(
+                        Chapter.subject_id.in_(subject_ids),
+                        ProblemType.code.in_(problem_codes),
+                    )
+                )
+            )
+            if subject_ids and problem_codes
+            else []
+        )
+        outcomes = (
+            list(
+                self.session.scalars(
+                    select(LearningOutcome).where(
+                        LearningOutcome.subject_id.in_(subject_ids),
+                        LearningOutcome.code.in_(outcome_codes),
+                    )
+                )
+            )
+            if subject_ids and outcome_codes
+            else []
+        )
+        return _ReferenceCatalog(
+            concepts={(item.subject_id, item.code): item for item in concepts},
+            problem_types={
+                (subject_id, item.code): item for subject_id, item in problem_rows
+            },
+            learning_outcomes={(item.subject_id, item.code): item for item in outcomes},
+        )
+
+    def _validate_references(
+        self,
+        row: _ParsedRow,
+        subject: Subject,
+        catalog: _ReferenceCatalog,
+    ) -> QuestionImportRow:
+        record = row.record
+        concepts_by_code = {
+            item.code: catalog.concepts[(subject.id, item.code)]
+            for item in record.concepts
+            if (subject.id, item.code) in catalog.concepts
+        }
+        missing = sorted({item.code for item in record.concepts} - concepts_by_code.keys())
         if missing:
             return self._invalid_row(
-                row_number,
-                raw_data,
+                row.row_number,
+                row.raw_data,
                 f"concepts: unknown concept code(s) for subject {subject.code}: {', '.join(missing)}",
             )
-
-        problem_codes = {item.code for item in record.problem_types}
-        problem_types = list(self.session.scalars(
-            select(ProblemType)
-            .join(Topic, Topic.id == ProblemType.topic_id)
-            .join(Chapter, Chapter.id == Topic.chapter_id)
-            .where(Chapter.subject_id == subject.id, ProblemType.code.in_(problem_codes))
-        )) if problem_codes else []
-        problems_by_code = {item.code: item for item in problem_types}
-        missing_problems = sorted(problem_codes - problems_by_code.keys())
+        problems_by_code = {
+            item.code: catalog.problem_types[(subject.id, item.code)]
+            for item in record.problem_types
+            if (subject.id, item.code) in catalog.problem_types
+        }
+        missing_problems = sorted(
+            {item.code for item in record.problem_types} - problems_by_code.keys()
+        )
         if missing_problems:
             return self._invalid_row(
-                row_number,
-                raw_data,
+                row.row_number,
+                row.raw_data,
                 f"problem_types: unknown problem type code(s) for subject "
                 f"{subject.code}: {', '.join(missing_problems)}",
             )
-
-        outcome_codes = {item.code for item in record.learning_outcomes}
-        outcomes = list(self.session.scalars(
-            select(LearningOutcome).where(
-                LearningOutcome.subject_id == subject.id,
-                LearningOutcome.code.in_(outcome_codes),
-            )
-        )) if outcome_codes else []
-        outcomes_by_code = {item.code: item for item in outcomes}
-        missing_outcomes = sorted(outcome_codes - outcomes_by_code.keys())
+        outcomes_by_code = {
+            item.code: catalog.learning_outcomes[(subject.id, item.code)]
+            for item in record.learning_outcomes
+            if (subject.id, item.code) in catalog.learning_outcomes
+        }
+        missing_outcomes = sorted(
+            {item.code for item in record.learning_outcomes} - outcomes_by_code.keys()
+        )
         if missing_outcomes:
             return self._invalid_row(
-                row_number,
-                raw_data,
+                row.row_number,
+                row.raw_data,
                 f"learning_outcomes: unknown learning outcome code(s) for subject "
                 f"{subject.code}: {', '.join(missing_outcomes)}",
             )
@@ -310,9 +416,9 @@ class QuestionImportService:
             ],
         }
         return QuestionImportRow(
-            row_number=row_number,
+            row_number=row.row_number,
             status=ImportRowStatus.VALID,
-            raw_data=raw_data,
+            raw_data=row.raw_data,
             normalized_data=normalized,
             content_hash=self.duplicate_detector.fingerprint(record.content),
             errors=[],
@@ -425,12 +531,100 @@ class QuestionImportService:
                 select(func.pg_advisory_xact_lock(func.hashtext("edums:question-import")))
             )
 
-    def _staged_reference_error(self, row: QuestionImportRow) -> str | None:
+    def _staged_reference_errors(
+        self, rows: list[QuestionImportRow]
+    ) -> dict[UUID, str]:
+        subject_ids: set[UUID] = set()
+        concept_ids: set[UUID] = set()
+        problem_type_ids: set[UUID] = set()
+        outcome_ids: set[UUID] = set()
+        for row in rows:
+            data = row.normalized_data
+            if data is None:
+                continue
+            subject_ids.add(UUID(str(data["subject_id"])))
+            for link in data.get("concepts", []):
+                if isinstance(link, dict):
+                    concept_ids.add(UUID(str(link["concept_id"])))
+            for link in data.get("problem_types", []):
+                if isinstance(link, dict):
+                    problem_type_ids.add(UUID(str(link["problem_type_id"])))
+            for link in data.get("learning_outcomes", []):
+                if isinstance(link, dict):
+                    outcome_ids.add(UUID(str(link["learning_outcome_id"])))
+
+        existing_subject_ids = (
+            set(
+                self.session.scalars(
+                    select(Subject.id).where(Subject.id.in_(subject_ids))
+                )
+            )
+            if subject_ids
+            else set()
+        )
+        concept_subjects = (
+            {
+                concept_id: subject_id
+                for concept_id, subject_id in self.session.execute(
+                    select(Concept.id, Concept.subject_id).where(
+                        Concept.id.in_(concept_ids)
+                    )
+                )
+            }
+            if concept_ids
+            else {}
+        )
+        problem_subjects = (
+            {
+                problem_id: subject_id
+                for problem_id, subject_id in self.session.execute(
+                    select(ProblemType.id, Chapter.subject_id)
+                    .join(Topic, Topic.id == ProblemType.topic_id)
+                    .join(Chapter, Chapter.id == Topic.chapter_id)
+                    .where(ProblemType.id.in_(problem_type_ids))
+                )
+            }
+            if problem_type_ids
+            else {}
+        )
+        outcome_subjects = (
+            {
+                outcome_id: subject_id
+                for outcome_id, subject_id in self.session.execute(
+                    select(LearningOutcome.id, LearningOutcome.subject_id).where(
+                        LearningOutcome.id.in_(outcome_ids)
+                    )
+                )
+            }
+            if outcome_ids
+            else {}
+        )
+        errors: dict[UUID, str] = {}
+        for row in rows:
+            error = self._staged_reference_error(
+                row,
+                existing_subject_ids,
+                concept_subjects,
+                problem_subjects,
+                outcome_subjects,
+            )
+            if error is not None:
+                errors[row.id] = error
+        return errors
+
+    @staticmethod
+    def _staged_reference_error(
+        row: QuestionImportRow,
+        existing_subject_ids: set[UUID],
+        concept_subjects: dict[UUID, UUID],
+        problem_subjects: dict[UUID, UUID],
+        outcome_subjects: dict[UUID, UUID],
+    ) -> str | None:
         data = row.normalized_data
         if data is None:
             return "Staged row has no normalized data."
         subject_id = UUID(str(data["subject_id"]))
-        if self.session.get(Subject, subject_id) is None:
+        if subject_id not in existing_subject_ids:
             return "subject_code: subject was removed after preview."
         concepts = data.get("concepts", [])
         if not isinstance(concepts, list):
@@ -438,10 +632,11 @@ class QuestionImportService:
         for link in concepts:
             if not isinstance(link, dict):
                 return "concepts: staged concept data is invalid."
-            concept = self.session.get(Concept, UUID(str(link["concept_id"])))
-            if concept is None:
+            concept_id = UUID(str(link["concept_id"]))
+            concept_subject_id = concept_subjects.get(concept_id)
+            if concept_subject_id is None:
                 return f"concepts: concept '{link.get('code', 'unknown')}' was removed after preview."
-            if concept.subject_id != subject_id:
+            if concept_subject_id != subject_id:
                 return f"concepts: concept '{link.get('code', 'unknown')}' no longer belongs to the subject."
         problem_types = data.get("problem_types", [])
         if not isinstance(problem_types, list):
@@ -450,12 +645,7 @@ class QuestionImportService:
             if not isinstance(link, dict):
                 return "problem_types: staged problem type data is invalid."
             problem_id = UUID(str(link["problem_type_id"]))
-            mapped_subject = self.session.scalar(
-                select(Chapter.subject_id)
-                .join(Topic, Topic.chapter_id == Chapter.id)
-                .join(ProblemType, ProblemType.topic_id == Topic.id)
-                .where(ProblemType.id == problem_id)
-            )
+            mapped_subject = problem_subjects.get(problem_id)
             if mapped_subject is None:
                 return f"problem_types: problem type '{link.get('code', 'unknown')}' was removed after preview."
             if mapped_subject != subject_id:
@@ -466,12 +656,11 @@ class QuestionImportService:
         for link in outcomes:
             if not isinstance(link, dict):
                 return "learning_outcomes: staged learning outcome data is invalid."
-            outcome = self.session.get(
-                LearningOutcome, UUID(str(link["learning_outcome_id"]))
-            )
-            if outcome is None:
+            outcome_id = UUID(str(link["learning_outcome_id"]))
+            outcome_subject_id = outcome_subjects.get(outcome_id)
+            if outcome_subject_id is None:
                 return f"learning_outcomes: outcome '{link.get('code', 'unknown')}' was removed after preview."
-            if outcome.subject_id != subject_id:
+            if outcome_subject_id != subject_id:
                 return f"learning_outcomes: outcome '{link.get('code', 'unknown')}' no longer belongs to the subject."
         return None
 

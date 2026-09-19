@@ -2,8 +2,12 @@ import logging
 
 
 class SafeExceptionFilter(logging.Filter):
+    def __init__(self, suppress_tracebacks: bool = True) -> None:
+        super().__init__()
+        self.suppress_tracebacks = suppress_tracebacks
+
     def filter(self, record: logging.LogRecord) -> bool:
-        if record.exc_info:
+        if record.exc_info and self.suppress_tracebacks:
             exception_type = record.exc_info[0]
             record.msg = "ASGI application error (%s)"
             record.args = (exception_type.__name__ if exception_type else "Exception",)
@@ -23,5 +27,11 @@ def configure_logging(debug: bool = False) -> None:
     logging.getLogger("httpx").setLevel(logging.WARNING)
     logging.getLogger("httpcore").setLevel(logging.WARNING)
     server_logger = logging.getLogger("uvicorn.error")
-    if not any(isinstance(item, SafeExceptionFilter) for item in server_logger.filters):
-        server_logger.addFilter(SafeExceptionFilter())
+    filters = [
+        item for item in server_logger.filters if isinstance(item, SafeExceptionFilter)
+    ]
+    if filters:
+        for item in filters:
+            item.suppress_tracebacks = not debug
+    else:
+        server_logger.addFilter(SafeExceptionFilter(suppress_tracebacks=not debug))

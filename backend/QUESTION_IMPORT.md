@@ -76,7 +76,7 @@ Question chưa có ProblemType vẫn được import ở `DRAFT`, không đượ
 4. tạo SHA-256 hash;
 5. so sánh với Question Bank và các dòng trước trong file.
 
-Hash và kết quả được lưu ở staging. Confirm chạy detector lần nữa dưới PostgreSQL advisory lock, tránh hai batch đồng thời nhập cùng nội dung. Semantic duplicate detection có thể triển khai interface này ở task sau mà không thay đổi pipeline API.
+Hash được lưu cả trên `Question.content_hash` và staging. Detector chỉ query tập candidate hash qua index, không tải toàn bộ Question Bank vào RAM. Preview và confirm preload Subject, Concept, ProblemType và LearningOutcome theo batch thay vì query từng dòng. Confirm chạy detector lần nữa dưới PostgreSQL advisory lock, tránh hai batch đồng thời nhập cùng nội dung. Semantic duplicate detection có thể triển khai interface này ở task sau mà không thay đổi pipeline API.
 
 ## Import report
 
@@ -90,10 +90,10 @@ Sau confirm, `valid` đếm các dòng vẫn hợp lệ hoặc đã import; `imp
 
 ## Migration và test
 
-Revision `0007_question_import` tạo hai bảng staging, constraints, indexes và foreign keys. PostgreSQL local hiện ở:
+Revision `0007_question_import` tạo hai bảng staging, constraints, indexes và foreign keys. Revision `0012_question_content_hash` backfill SHA-256 cho question hiện có, đặt cột `content_hash` thành `NOT NULL` và tạo index. PostgreSQL local hiện ở:
 
 ```text
-0009_curriculum_refactor (head)
+0012_question_content_hash (head)
 ```
 
 Chạy lại:

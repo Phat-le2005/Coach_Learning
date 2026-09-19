@@ -64,6 +64,33 @@ def test_validation_does_not_echo_input(settings: Settings) -> None:
         response = client.get("/test-validation", params={"value": "synthetic_secret"})
     assert response.status_code == 422
     assert response.json()["error"]["code"] == "VALIDATION_ERROR"
+    assert response.json()["error"]["details"] == [
+        {
+            "field": "query -> value",
+            "message": "Input should be a valid integer, unable to parse string as an integer",
+        }
+    ]
+    assert "synthetic_secret" not in response.text
+
+
+def test_validation_details_are_hidden_in_production(settings: Settings) -> None:
+    production = settings.model_copy(update={"app_env": "production"})
+    application = create_app(production)
+
+    @application.get("/test-validation")
+    def validation_route(value: int) -> dict[str, int]:
+        return {"value": value}
+
+    with TestClient(application) as client:
+        response = client.get("/test-validation", params={"value": "synthetic_secret"})
+
+    assert response.status_code == 422
+    assert response.json() == {
+        "error": {
+            "code": "VALIDATION_ERROR",
+            "message": "Request validation failed.",
+        }
+    }
     assert "synthetic_secret" not in response.text
 
 
@@ -124,3 +151,19 @@ def test_uvicorn_exception_logging_does_not_expose_secrets(
             logger.exception("Exception in ASGI application")
     assert "RuntimeError" in caplog.text
     assert "synthetic_secret" not in caplog.text
+
+
+def test_debug_logging_preserves_traceback(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    configure_logging(debug=True)
+    logger = logging.getLogger("uvicorn.error")
+    with caplog.at_level(logging.ERROR, logger="uvicorn.error"):
+        try:
+            raise RuntimeError("development diagnostic")
+        except RuntimeError:
+            logger.exception("Exception in ASGI application")
+
+    record = caplog.records[-1]
+    assert record.exc_info is not None
+    assert "development diagnostic" in caplog.text

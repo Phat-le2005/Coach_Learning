@@ -59,6 +59,7 @@ canonical curriculum và import history không bị xóa.
 - Natural-key/stable-ID conflict làm rollback toàn transaction.
 - Import cùng dataset version nhưng content khác bị từ chối; không silently overwrite.
 - Development reset không truncate/drop schema và không xóa record ngoài stable fixture IDs.
+- Development reset xóa `QuestionAttempt` và `PracticeSession` của demo students trước khi xóa profile, tránh vi phạm FK `RESTRICT`; question bank không thuộc seed vẫn được giữ nguyên.
 - Synthetic user/attempt có marker và production analytics dùng real-only query scope.
 
 ## Verification
