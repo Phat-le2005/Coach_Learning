@@ -4,6 +4,7 @@ import logging
 from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 
+from app.concepts.models import ConceptRelation, RelationType
 from app.mastery.models import StudentConceptMastery, StudentProblemTypeMastery
 from app.mastery.strategy import (
     AttemptEvidence,
@@ -16,6 +17,8 @@ from app.mastery.strategy import (
 from app.practice.evidence import AttemptEvaluatedEvidence
 from app.practice.models import QuestionAttempt
 from app.questions.models import Question
+from app.review.models import ReviewSchedule
+from app.review.service import ReviewScheduleService
 from app.students.models import StudentProfile
 
 logger = logging.getLogger(__name__)
@@ -59,6 +62,8 @@ class MasteryAttemptEvidencePublisher:
         )
         question_evidence = QuestionEvidence(difficulty=question.difficulty)
 
+        review_service = ReviewScheduleService(session)
+
         for link in question.concept_links:
             row = session.scalar(
                 select(StudentConceptMastery)
@@ -89,6 +94,37 @@ class MasteryAttemptEvidencePublisher:
             else:
                 self._apply(row, next_state, evidence.occurred_at)
 
+            # Schedule review for prerequisite concepts when reaching MASTERED threshold
+            if next_state.mastery_score >= 0.8 and next_state.confidence >= 0.65:
+                is_prereq = session.scalar(
+                    select(ConceptRelation.id)
+                    .where(
+                        ConceptRelation.source_concept_id == link.concept_id,
+                        ConceptRelation.relation_type == RelationType.PREREQUISITE,
+                    )
+                    .limit(1)
+                ) is not None
+                if is_prereq:
+                    review_service.ensure_concept_schedule(
+                        evidence.student_id, link.concept_id, as_of=evidence.occurred_at
+                    )
+
+            # If an existing review schedule was due, record performance
+            existing_c_sched = session.scalar(
+                select(ReviewSchedule).where(
+                    ReviewSchedule.student_id == evidence.student_id,
+                    ReviewSchedule.concept_id == link.concept_id,
+                )
+            )
+            if existing_c_sched is not None and _is_due(existing_c_sched.next_review_at, evidence.occurred_at):
+                review_service.record_performance(
+                    evidence.student_id,
+                    target_concept_id=link.concept_id,
+                    score=evidence.score,
+                    is_correct=evidence.is_correct,
+                    as_of=evidence.occurred_at,
+                )
+
         for link in question.problem_type_links:
             row = session.scalar(
                 select(StudentProblemTypeMastery)
@@ -118,6 +154,28 @@ class MasteryAttemptEvidencePublisher:
                 session.add(row)
             else:
                 self._apply(row, next_state, evidence.occurred_at)
+
+            # When ProblemType reaches MASTERED: automatically create review schedule
+            if next_state.mastery_score >= 0.8 and next_state.confidence >= 0.65:
+                review_service.ensure_problem_type_schedule(
+                    evidence.student_id, link.problem_type_id, as_of=evidence.occurred_at
+                )
+
+            # If an existing review schedule was due, record performance
+            existing_pt_sched = session.scalar(
+                select(ReviewSchedule).where(
+                    ReviewSchedule.student_id == evidence.student_id,
+                    ReviewSchedule.problem_type_id == link.problem_type_id,
+                )
+            )
+            if existing_pt_sched is not None and _is_due(existing_pt_sched.next_review_at, evidence.occurred_at):
+                review_service.record_performance(
+                    evidence.student_id,
+                    target_problem_type_id=link.problem_type_id,
+                    score=evidence.score,
+                    is_correct=evidence.is_correct,
+                    as_of=evidence.occurred_at,
+                )
 
         session.flush()
         logger.info(
@@ -160,4 +218,18 @@ def _latest(current: datetime, candidate: datetime) -> datetime:
         candidate if candidate.tzinfo is not None else candidate.replace(tzinfo=timezone.utc)
     )
     return candidate if candidate_aware >= current_aware else current
+
+
+def _is_due(next_review_at: datetime, occurred_at: datetime) -> bool:
+    next_aware = (
+        next_review_at
+        if next_review_at.tzinfo is not None
+        else next_review_at.replace(tzinfo=timezone.utc)
+    )
+    occurred_aware = (
+        occurred_at
+        if occurred_at.tzinfo is not None
+        else occurred_at.replace(tzinfo=timezone.utc)
+    )
+    return next_aware <= occurred_aware
 

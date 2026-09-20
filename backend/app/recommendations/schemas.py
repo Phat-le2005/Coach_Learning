@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import StrEnum
 from uuid import UUID
 
@@ -23,6 +23,7 @@ class PriorityTargetType(StrEnum):
 @dataclass(frozen=True, slots=True)
 class ActiveTeachingPlanContext:
     problem_type_ids: tuple[UUID, ...]
+    priority_by_problem_type: dict[UUID, int] = field(default_factory=dict)
 
 
 @dataclass(frozen=True, slots=True)

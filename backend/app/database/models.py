@@ -41,6 +41,25 @@ from app.questions.models import (
     QuestionOption,
     QuestionProblemType,
 )
+from app.learning.models import (
+    ConceptSignalLevel,
+    QuickCheckQuestion,
+    QuickCheckQuestionRole,
+    QuickCheckSession,
+    QuickCheckVerdict,
+)
+from app.planning.models import (
+    StudyPlan,
+    StudyPlanStatus,
+    StudyTask,
+    StudyTaskReasonCode,
+    StudyTaskStatus,
+    StudyTaskType,
+    TeachingPlan,
+    TeachingPlanItem,
+    TeachingPlanStatus,
+)
+from app.review.models import ReviewResult, ReviewSchedule
 from app.students.models import AcademicGoal, AcademicGoalStatus, StudentProfile, SubjectGoal
 from app.subjects.models import Subject
 from app.teachers.models import TeacherProfile
@@ -79,15 +98,30 @@ __all__ = [
     "QuestionLearningOutcome",
     "QuestionOption",
     "QuestionProblemType",
+    "QuickCheckQuestion",
+    "QuickCheckQuestionRole",
+    "QuickCheckSession",
+    "QuickCheckVerdict",
     "RefreshToken",
+    "ReviewResult",
+    "ReviewSchedule",
     "StudentAttempt",
     "StudentEnrollment",
     "StudentProfile",
+    "StudyPlan",
+    "StudyPlanStatus",
     "StudySession",
+    "StudyTask",
+    "StudyTaskReasonCode",
+    "StudyTaskStatus",
+    "StudyTaskType",
     "Subject",
     "SubjectGoal",
     "TeacherClassroom",
     "TeacherProfile",
+    "TeachingPlan",
+    "TeachingPlanItem",
+    "TeachingPlanStatus",
     "Topic",
     "User",
 ]

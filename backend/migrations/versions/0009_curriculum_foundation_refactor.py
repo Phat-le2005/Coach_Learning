@@ -123,6 +123,8 @@ def upgrade() -> None:
             "order_index IS NULL OR order_index >= 0",
         )
 
+    _create_curriculum_hierarchy()
+
     with op.batch_alter_table("concepts") as batch_op:
         batch_op.drop_constraint(op.f("ck_concepts_description_not_blank"), type_="check")
         batch_op.drop_constraint(op.f("ck_concepts_grade_level_range"), type_="check")
@@ -159,7 +161,6 @@ def upgrade() -> None:
             "concepts", ["target_concept_id"], ["id"], ondelete="RESTRICT"
         )
 
-    _create_curriculum_hierarchy()
     _extend_questions()
 
     with op.batch_alter_table("student_attempts") as batch_op:
@@ -366,13 +367,6 @@ def downgrade() -> None:
     op.drop_table("problem_type_concepts")
     op.drop_index("ix_learning_outcomes_subject_order", table_name="learning_outcomes")
     op.drop_table("learning_outcomes")
-    op.drop_index("ix_problem_types_topic_order", table_name="problem_types")
-    op.drop_table("problem_types")
-    op.drop_index("ix_topics_chapter_order", table_name="topics")
-    op.drop_table("topics")
-    op.drop_index("ix_chapters_subject_order", table_name="chapters")
-    op.drop_table("chapters")
-
     with op.batch_alter_table("concept_relations") as batch_op:
         batch_op.drop_constraint(op.f("fk_concept_relations_source_concept_id_concepts"), type_="foreignkey")
         batch_op.drop_constraint(op.f("fk_concept_relations_target_concept_id_concepts"), type_="foreignkey")
@@ -395,6 +389,13 @@ def downgrade() -> None:
         batch_op.create_check_constraint(
             op.f("ck_concepts_order_index_nonnegative"), "order_index >= 0"
         )
+
+    op.drop_index("ix_problem_types_topic_order", table_name="problem_types")
+    op.drop_table("problem_types")
+    op.drop_index("ix_topics_chapter_order", table_name="topics")
+    op.drop_table("topics")
+    op.drop_index("ix_chapters_subject_order", table_name="chapters")
+    op.drop_table("chapters")
     with op.batch_alter_table("subjects") as batch_op:
         batch_op.drop_constraint(op.f("fk_subjects_curriculum_version_id_curriculum_versions"), type_="foreignkey")
         batch_op.drop_constraint(op.f("uq_subjects_version_code"), type_="unique")

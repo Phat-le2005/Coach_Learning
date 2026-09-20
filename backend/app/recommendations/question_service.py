@@ -9,8 +9,10 @@ from app.core.exceptions import ApplicationError
 from app.curriculum.models import Chapter, ProblemType, Topic
 from app.mastery.models import StudentConceptMastery, StudentProblemTypeMastery
 from app.questions.models import CognitiveLevel, Question, QuestionStatus
+from app.recommendations.mix import LearningMixConfig
 from app.recommendations.priority_service import LearningPriorityService
 from app.recommendations.schemas import (
+    ActiveTeachingPlanContext,
     LearningPriorityRead,
     PriorityReasonCode,
     PriorityTargetType,
@@ -46,6 +48,7 @@ class QuestionRecommendationService:
         target_problem_type_id: UUID | None = None,
         target_concept_id: UUID | None = None,
         desired_difficulty: float | None = None,
+        active_teaching_plan: ActiveTeachingPlanContext | None = None,
     ) -> QuestionRecommendationRead | None:
         if self.session.get(StudentProfile, student_id) is None:
             raise ApplicationError(404, "STUDENT_NOT_FOUND", "Student profile was not found.")
@@ -60,7 +63,9 @@ class QuestionRecommendationService:
             )
 
         priorities = LearningPriorityService(self.session).get_priorities(
-            student_id, subject_id
+            student_id,
+            subject_id,
+            active_teaching_plan=active_teaching_plan,
         )
         selected_priority = self._select_priority(
             priorities, target_problem_type_id, target_concept_id
@@ -150,6 +155,44 @@ class QuestionRecommendationService:
             difficulty=winner.question.difficulty,
             reason_code=reason,
         )
+
+    def recommend_mixed_batch(
+        self,
+        student_id: UUID,
+        subject_id: UUID,
+        *,
+        count: int = 5,
+        mix_config: LearningMixConfig | None = None,
+        active_teaching_plan: ActiveTeachingPlanContext | None = None,
+    ) -> list[QuestionRecommendationRead]:
+        if count < 1:
+            raise ApplicationError(422, "INVALID_BATCH_COUNT", "Batch count must be positive.")
+
+        priority_service = LearningPriorityService(self.session)
+        mixed_priorities = priority_service.get_mixed_priorities(
+            student_id,
+            subject_id,
+            total_count=count,
+            mix_config=mix_config,
+            active_teaching_plan=active_teaching_plan,
+        )
+
+        results: list[QuestionRecommendationRead] = []
+        used_question_ids: set[UUID] = set()
+
+        for priority in mixed_priorities:
+            rec = self.recommend(
+                student_id,
+                subject_id,
+                target_problem_type_id=priority.problem_type_id,
+                target_concept_id=priority.concept_id,
+                active_teaching_plan=active_teaching_plan,
+            )
+            if rec and rec.question_id not in used_question_ids:
+                used_question_ids.add(rec.question_id)
+                results.append(rec)
+
+        return results
 
     def _validate_targets(
         self,

@@ -7,6 +7,12 @@ from sqlalchemy.orm import Session
 from app.auth.dependencies import require_role
 from app.core.errors import ErrorResponse
 from app.database.session import get_db
+from app.planning.study_schemas import (
+    StudyDayRead,
+    StudyPlanRead,
+    StudyPlanRecalculateRequest,
+)
+from app.planning.study_service import StudyPlanService
 from app.students.goal_models import AcademicGoal, AcademicGoalStatus
 from app.students.goal_schemas import AcademicGoalCreate, AcademicGoalPatch, AcademicGoalRead
 from app.students.goal_service import AcademicGoalService
@@ -29,6 +35,10 @@ def get_student_service(session: Annotated[Session, Depends(get_db)]) -> Student
 
 def get_academic_goal_service(session: Annotated[Session, Depends(get_db)]) -> AcademicGoalService:
     return AcademicGoalService(session)
+
+
+def get_study_plan_service(session: Annotated[Session, Depends(get_db)]) -> StudyPlanService:
+    return StudyPlanService(session)
 
 
 @router.get("/me", response_model=StudentProfileRead)
@@ -90,3 +100,43 @@ def patch_goal(
     response.headers["Cache-Control"] = "no-store"
     student = student_service.get_for_user(user.id)
     return goal_service.patch_goal(student.id, id, data)
+
+
+@router.get("/me/today", response_model=StudyDayRead)
+def get_today_plan(
+    user: StudentUser,
+    response: Response,
+    student_service: Annotated[StudentProfileService, Depends(get_student_service)],
+    plan_service: Annotated[StudyPlanService, Depends(get_study_plan_service)],
+) -> StudyDayRead:
+    response.headers["Cache-Control"] = "no-store"
+    student = student_service.get_for_user(user.id)
+    return plan_service.get_today_plan(student.id)
+
+
+@router.get("/me/study-plan", response_model=StudyPlanRead)
+def get_study_plan(
+    user: StudentUser,
+    response: Response,
+    student_service: Annotated[StudentProfileService, Depends(get_student_service)],
+    plan_service: Annotated[StudyPlanService, Depends(get_study_plan_service)],
+) -> StudyPlanRead:
+    response.headers["Cache-Control"] = "no-store"
+    student = student_service.get_for_user(user.id)
+    return plan_service.get_study_plan(student.id)
+
+
+@router.post("/me/study-plan/recalculate", response_model=StudyPlanRead)
+def recalculate_study_plan(
+    user: StudentUser,
+    response: Response,
+    student_service: Annotated[StudentProfileService, Depends(get_student_service)],
+    plan_service: Annotated[StudyPlanService, Depends(get_study_plan_service)],
+    data: StudyPlanRecalculateRequest | None = None,
+) -> StudyPlanRead:
+    response.headers["Cache-Control"] = "no-store"
+    student = student_service.get_for_user(user.id)
+    horizon_days = data.horizon_days if data else 7
+    as_of = data.as_of if data else None
+    return plan_service.recalculate_study_plan(student.id, as_of=as_of, horizon_days=horizon_days)
+

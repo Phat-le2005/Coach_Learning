@@ -86,7 +86,11 @@ CoachLearning/
 │   │       ├── 0012_question_content_hash.py
 │   │       ├── 0013_diagnostic_assessment.py
 │   │       ├── 0014_student_academic_goals.py
-│   │       └── 0015_diagnostic_attempt_context.py
+│   │       ├── 0015_diagnostic_attempt_context.py
+│   │       ├── 0016_teacher_teaching_plans.py
+│   │       ├── 0017_quick_check.py
+│   │       ├── 0018_spaced_review.py
+│   │       └── 0019_study_planning_core.py
 │   └── tests/
 │       ├── conftest.py
 │       ├── __init__.py
@@ -100,6 +104,12 @@ CoachLearning/
 │       │                        # test_migration.py, test_postgres.py
 │       ├── classes/              # __init__.py, conftest.py, test_api.py,
 │       │                        # test_migration.py, test_postgres.py
+│       ├── planning/             # __init__.py, test_api.py, test_migration.py, test_service.py,
+│       │                        # test_recommendation_integration.py, test_study_migration.py,
+│       │                        # test_study_planning.py
+│       ├── learning/             # __init__.py, test_migration.py, test_quick_check.py
+│       ├── review/               # __init__.py, test_migration.py, test_spaced_review.py
+│       ├── recommendations/      # __init__.py, conftest.py, test_services.py, test_learning_mix.py
 │       ├── data_foundation/       # __init__.py, conftest.py, test_seed.py, test_postgres.py
 │       ├── questions/             # Question Bank/import unit, migration và PostgreSQL tests
 │       ├── synthetic/             # behavior, generator, migration và PostgreSQL tests
@@ -415,8 +425,8 @@ AcademicGoal và các learning domain tiếp theo chưa được triển khai. Q
 - Frontend dependency install thành công; TypeScript check và production build thành công.
 - `npm run dev` chạy thành công; đủ 6 route trả HTTP 200 và đúng tên khu vực.
 - Health client gọi live backend từ giá trị đọc trong `.env.local`, nhận `status=ok`; kiểm chứng đổi URL và thiếu URL cũng thành công.
-- Alembic nhận diện head `0015_diagnostic_attempt_context`; `alembic check` không phát hiện operation mới. Migration chain được kiểm thử upgrade/downgrade trên SQLite và PostgreSQL, khớp ORM metadata và giữ nguyên bảng của revision trước khi downgrade riêng từng domain.
-- PostgreSQL local `edums` đã ở `0015_diagnostic_attempt_context (head)`. Tất cả 10 PostgreSQL integration tests pass. Curriculum import và development seed chạy lặp không tạo duplicate.
+- Alembic nhận diện head `0016_teacher_teaching_plans`; `alembic check` không phát hiện operation mới. Migration chain được kiểm thử upgrade/downgrade trên SQLite và PostgreSQL, khớp ORM metadata và giữ nguyên bảng của revision trước khi downgrade riêng từng domain.
+- PostgreSQL local `edums` đã ở `0016_teacher_teaching_plans (head)`. Tất cả 10 PostgreSQL integration tests pass. Curriculum import và development seed chạy lặp không tạo duplicate.
 
 ## Tham chiếu
 

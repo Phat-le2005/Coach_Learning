@@ -17,12 +17,14 @@ from app.practice.evidence import (
     AttemptEvaluatedEvidence,
     AttemptEvidencePublisher,
 )
+from app.learning.models import QuickCheckQuestion
 from app.practice.models import (
     EvaluationStatus,
     PracticeSession,
     PracticeSessionConcept,
     PracticeSessionProblemType,
     PracticeSessionStatus,
+    PracticeSessionType,
     QuestionAttempt,
 )
 from app.practice.schemas import PracticeAnswerCreate, PracticeSessionCreate, PracticeSessionRead
@@ -228,6 +230,26 @@ class PracticeService:
     def _eligible_questions(
         self, practice_session: PracticeSession, *, exclude_attempted: bool
     ) -> Select[tuple[Question]]:
+        if practice_session.session_type == PracticeSessionType.QUICK_CHECK:
+            statement = (
+                self._question_statement()
+                .join(QuickCheckQuestion, QuickCheckQuestion.question_id == Question.id)
+                .where(
+                    QuickCheckQuestion.quick_check_id == practice_session.id,
+                    Question.status == QuestionStatus.APPROVED,
+                )
+                .order_by(QuickCheckQuestion.order_index)
+            )
+            if exclude_attempted:
+                statement = statement.where(
+                    ~Question.id.in_(
+                        select(QuestionAttempt.question_id).where(
+                            QuestionAttempt.practice_session_id == practice_session.id
+                        )
+                    )
+                )
+            return statement
+
         statement = (
             self._question_statement()
             .where(

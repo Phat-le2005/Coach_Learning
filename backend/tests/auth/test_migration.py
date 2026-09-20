@@ -32,6 +32,10 @@ def test_migration_chain_matches_models_and_can_downgrade(db_engine: Engine) -> 
             "diagnostic_assessments", "diagnostic_blueprint_items",
             "diagnostic_attempt_contexts",
             "academic_goals", "subject_goals",
+            "teaching_plans", "teaching_plan_items",
+            "quick_check_sessions", "quick_check_questions",
+            "review_schedules",
+            "study_plans", "study_tasks",
         }
         context = MigrationContext.configure(connection)
         assert compare_metadata(context, Base.metadata) == []

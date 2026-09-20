@@ -4,14 +4,21 @@ from uuid import UUID
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
+from app.classes.models import EnrollmentStatus, StudentEnrollment
 from app.concepts.models import Concept, ConceptRelation, RelationType
 from app.core.exceptions import ApplicationError
 from app.curriculum.models import Chapter, ProblemType, ProblemTypeConcept, Topic
 from app.mastery.aggregation import MasteryAggregationService
 from app.mastery.models import StudentConceptMastery, StudentProblemTypeMastery
 from app.mastery.state import DerivedMasteryState
+from app.planning.models import TeachingPlan, TeachingPlanItem, TeachingPlanStatus
 from app.practice.models import PracticeSession, PracticeSessionType, QuestionAttempt
 from app.questions.models import Question, QuestionConcept, QuestionProblemType, QuestionStatus
+from app.recommendations.mix import (
+    LearningMixCategory,
+    LearningMixConfig,
+    categorize_priority_reason,
+)
 from app.recommendations.schemas import (
     AcademicGoalContext,
     ActiveTeachingPlanContext,
@@ -19,6 +26,7 @@ from app.recommendations.schemas import (
     PriorityReasonCode,
     PriorityTargetType,
 )
+from app.review.service import ReviewScheduleService
 from app.students.models import StudentProfile
 from app.subjects.models import Subject
 
@@ -85,6 +93,8 @@ class LearningPriorityService:
             )
         )
         concept_ids = {item.id for item in concepts}
+        if active_teaching_plan is None:
+            active_teaching_plan = self._resolve_active_teaching_plan(student_id, subject_id)
         self._validate_context_ids(
             problem_type_ids,
             active_teaching_plan,
@@ -143,6 +153,10 @@ class LearningPriorityService:
                 "Exam relevance multiplier must be between 0 and 3.",
             )
 
+        due_review_pt_ids, due_review_concept_ids = ReviewScheduleService(
+            self.session
+        ).get_due_target_ids(student_id, subject_id)
+
         candidates: dict[tuple[PriorityTargetType, UUID], _PriorityCandidate] = {}
         relevant_problem_type_ids: set[UUID] = set()
         for problem_type in problem_types:
@@ -152,6 +166,7 @@ class LearningPriorityService:
                 snapshot.state,
                 active_ids,
                 diagnostic_problem_types,
+                due_review_pt_ids,
             )
             if (
                 reason in {
@@ -166,13 +181,19 @@ class LearningPriorityService:
             goal_boost = 15.0 if problem_type.id in goal_ids else 0.0
             relevance = exam_relevance_pt.get(problem_type.id, 0.0) * 10.0 * exam_multiplier
             severity = (1.0 - snapshot.mastery_score) * snapshot.confidence * 20.0
+            plan_priority = (
+                active_teaching_plan.priority_by_problem_type.get(problem_type.id, 1)
+                if active_teaching_plan and problem_type.id in active_ids
+                else 1
+            )
+            plan_boost = max(0.0, float(plan_priority - 1) * 1.0)
             self._consider(
                 candidates,
                 _PriorityCandidate(
                     target_type=PriorityTargetType.PROBLEM_TYPE,
                     target_id=problem_type.id,
                     reason_code=reason,
-                    score=self._REASON_BASE[reason] + severity + relevance + goal_boost,
+                    score=self._REASON_BASE[reason] + severity + relevance + goal_boost + plan_boost,
                     mastery_score=snapshot.mastery_score,
                     confidence=snapshot.confidence,
                     desired_difficulty=self.difficulty_for_mastery(snapshot.mastery_score),
@@ -187,7 +208,7 @@ class LearningPriorityService:
         relevant_target_concept_ids.update(diagnostic_concepts)
         for concept in concepts:
             c_snapshot = self.aggregation.snapshot(concept_mastery.get(concept.id))
-            if c_snapshot.state == DerivedMasteryState.REVIEW_DUE:
+            if concept.id in due_review_concept_ids or c_snapshot.state == DerivedMasteryState.REVIEW_DUE:
                 relevant_target_concept_ids.add(concept.id)
 
         gated_prerequisite_ids = {
@@ -205,7 +226,7 @@ class LearningPriorityService:
                 DerivedMasteryState.NOT_STARTED,
             }:
                 reason = PriorityReasonCode.PREREQUISITE_REPAIR
-            elif snapshot.state == DerivedMasteryState.REVIEW_DUE:
+            elif concept.id in due_review_concept_ids or snapshot.state == DerivedMasteryState.REVIEW_DUE:
                 reason = PriorityReasonCode.REVIEW_DUE
             elif concept.id in diagnostic_concepts:
                 reason = PriorityReasonCode.DIAGNOSTIC_FOLLOWUP
@@ -233,6 +254,67 @@ class LearningPriorityService:
             key=lambda item: (-item.score, item.target_type.value, str(item.target_id)),
         )[:limit]
         return [self._to_read(item) for item in ranked]
+
+    def get_mixed_priorities(
+        self,
+        student_id: UUID,
+        subject_id: UUID,
+        *,
+        total_count: int = 10,
+        mix_config: LearningMixConfig | None = None,
+        active_teaching_plan: ActiveTeachingPlanContext | None = None,
+        academic_goal: AcademicGoalContext | None = None,
+    ) -> list[LearningPriorityRead]:
+        config = mix_config or LearningMixConfig()
+        all_priorities = self.get_priorities(
+            student_id,
+            subject_id,
+            active_teaching_plan=active_teaching_plan,
+            academic_goal=academic_goal,
+            limit=max(50, total_count * 4),
+        )
+
+        quotas = config.allocate_quotas(total_count)
+
+        buckets: dict[LearningMixCategory, list[LearningPriorityRead]] = {
+            LearningMixCategory.CURRENT_LEARNING: [],
+            LearningMixCategory.WEAKNESS_REPAIR: [],
+            LearningMixCategory.REVIEW_DUE: [],
+            LearningMixCategory.OTHER: [],
+        }
+
+        for p in all_priorities:
+            cat = categorize_priority_reason(p.reason_code)
+            buckets[cat].append(p)
+
+        selected: list[LearningPriorityRead] = []
+        used_target_keys: set[tuple[PriorityTargetType, UUID]] = set()
+
+        # Allocate per category according to quotas
+        for cat in [
+            LearningMixCategory.CURRENT_LEARNING,
+            LearningMixCategory.WEAKNESS_REPAIR,
+            LearningMixCategory.REVIEW_DUE,
+        ]:
+            quota = quotas.get(cat, 0)
+            items = buckets[cat][:quota]
+            for it in items:
+                selected.append(it)
+                target_id = it.problem_type_id if it.problem_type_id is not None else it.concept_id
+                if target_id is not None:
+                    used_target_keys.add((it.target_type, target_id))
+
+        # Backfill remaining if any bucket was short
+        if len(selected) < total_count:
+            remaining = [
+                p
+                for p in all_priorities
+                if (p.target_type, p.problem_type_id or p.concept_id) not in used_target_keys
+            ]
+            needed = total_count - len(selected)
+            selected.extend(remaining[:needed])
+
+        return selected[:total_count]
 
     @staticmethod
     def difficulty_for_mastery(mastery_score: float) -> float:
@@ -319,10 +401,11 @@ class LearningPriorityService:
         state: DerivedMasteryState,
         active_ids: set[UUID],
         diagnostic_ids: set[UUID],
+        due_review_ids: set[UUID] | None = None,
     ) -> PriorityReasonCode:
         if problem_type_id in active_ids:
             return PriorityReasonCode.CURRENT_LESSON
-        if state == DerivedMasteryState.REVIEW_DUE:
+        if (due_review_ids and problem_type_id in due_review_ids) or state == DerivedMasteryState.REVIEW_DUE:
             return PriorityReasonCode.REVIEW_DUE
         if problem_type_id in diagnostic_ids:
             return PriorityReasonCode.DIAGNOSTIC_FOLLOWUP
@@ -370,5 +453,44 @@ class LearningPriorityService:
             mastery_score=item.mastery_score,
             confidence=item.confidence,
             desired_difficulty=item.desired_difficulty,
+        )
+
+    def _resolve_active_teaching_plan(
+        self, student_id: UUID, subject_id: UUID
+    ) -> ActiveTeachingPlanContext | None:
+        items = list(
+            self.session.execute(
+                select(TeachingPlanItem.problem_type_id, TeachingPlanItem.priority)
+                .join(TeachingPlan, TeachingPlan.id == TeachingPlanItem.teaching_plan_id)
+                .join(
+                    StudentEnrollment,
+                    StudentEnrollment.classroom_id == TeachingPlan.classroom_id,
+                )
+                .where(
+                    StudentEnrollment.student_id == student_id,
+                    StudentEnrollment.status == EnrollmentStatus.ACTIVE,
+                    TeachingPlan.subject_id == subject_id,
+                    TeachingPlan.status == TeachingPlanStatus.ACTIVE,
+                )
+                .order_by(
+                    TeachingPlanItem.priority.desc(),
+                    TeachingPlanItem.order_index,
+                    TeachingPlanItem.id,
+                )
+            ).all()
+        )
+        if not items:
+            return None
+        seen = set()
+        ordered_ids = []
+        priorities: dict[UUID, int] = {}
+        for pt_id, priority in items:
+            if pt_id not in seen:
+                seen.add(pt_id)
+                ordered_ids.append(pt_id)
+                priorities[pt_id] = priority
+        return ActiveTeachingPlanContext(
+            problem_type_ids=tuple(ordered_ids),
+            priority_by_problem_type=priorities,
         )
 
