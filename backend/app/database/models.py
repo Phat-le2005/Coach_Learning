@@ -4,6 +4,7 @@ Command-line entry points do not load FastAPI routers, so they must not rely on
 router imports to populate the declarative registry.
 """
 
+from app.ai.models import AIRequestLog
 from app.attempts.models import StudentAttempt, StudySession
 from app.auth.models import AuthSession, RefreshToken
 from app.classes.models import Classroom, StudentEnrollment, TeacherClassroom
@@ -24,6 +25,7 @@ from app.diagnostics.models import (
     DiagnosticAttemptContext,
     DiagnosticBlueprintItem,
 )
+from app.hints.models import PracticeQuestionHint, QuestionHint
 from app.parents.models import ParentProfile, ParentStudentRelationship
 from app.mastery.models import StudentConceptMastery, StudentProblemTypeMastery
 from app.practice.models import (
@@ -63,11 +65,13 @@ from app.review.models import ReviewResult, ReviewSchedule
 from app.students.models import AcademicGoal, AcademicGoalStatus, StudentProfile, SubjectGoal
 from app.subjects.models import Subject
 from app.teachers.models import TeacherProfile
+from app.rag.models import Document, DocumentChunk, DocumentSourceType, DocumentStatus
 from app.users.models import User
 
 __all__ = [
     "AcademicGoal",
     "AcademicGoalStatus",
+    "AIRequestLog",
     "AuthSession",
     "Chapter",
     "Classroom",
@@ -79,7 +83,12 @@ __all__ = [
     "DiagnosticAssessment",
     "DiagnosticAttemptContext",
     "DiagnosticBlueprintItem",
+    "Document",
+    "DocumentChunk",
+    "DocumentSourceType",
+    "DocumentStatus",
     "LearningOutcome",
+    "PracticeQuestionHint",
     "StudentConceptMastery",
     "StudentProblemTypeMastery",
     "ParentProfile",
@@ -91,6 +100,7 @@ __all__ = [
     "ProblemTypeConcept",
     "ProblemTypeLearningOutcome",
     "Question",
+    "QuestionHint",
     "QuestionAttempt",
     "QuestionConcept",
     "QuestionImportBatch",

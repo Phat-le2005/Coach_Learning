@@ -36,6 +36,9 @@ def test_migration_chain_matches_models_and_can_downgrade(db_engine: Engine) -> 
             "quick_check_sessions", "quick_check_questions",
             "review_schedules",
             "study_plans", "study_tasks",
+            "ai_request_logs",
+            "documents", "document_chunks",
+            "question_hints", "practice_question_hints",
         }
         context = MigrationContext.configure(connection)
         assert compare_metadata(context, Base.metadata) == []

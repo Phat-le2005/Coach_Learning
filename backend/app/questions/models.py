@@ -1,5 +1,6 @@
 from datetime import datetime
 from enum import StrEnum
+from typing import TYPE_CHECKING
 from uuid import UUID, uuid4
 
 from sqlalchemy import JSON, Boolean, CheckConstraint, DateTime, Enum, Float, ForeignKey, Index, Integer, String, Text, UniqueConstraint, Uuid, event, func, false
@@ -7,6 +8,9 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database.base import Base
 from app.questions.fingerprint import question_content_hash
+
+if TYPE_CHECKING:
+    from app.hints.models import QuestionHint
 
 
 class QuestionType(StrEnum):
@@ -97,6 +101,12 @@ class Question(Base):
     )
     learning_outcome_links: Mapped[list["QuestionLearningOutcome"]] = relationship(
         back_populates="question", cascade="all, delete-orphan", passive_deletes=True
+    )
+    hints: Mapped[list["QuestionHint"]] = relationship(
+        back_populates="question",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+        order_by="QuestionHint.hint_level",
     )
 
 

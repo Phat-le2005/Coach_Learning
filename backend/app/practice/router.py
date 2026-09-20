@@ -2,11 +2,18 @@ from typing import Annotated
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, status as http_status
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.auth.dependencies import require_role
+from app.ai.dependencies import get_ai_gateway
+from app.ai.gateway import AIGateway
+from app.auth.dependencies import require_any_role, require_role
 from app.core.errors import ErrorResponse
+from app.core.exceptions import ApplicationError
 from app.database.session import get_db
+from app.practice.models import QuestionAttempt
+from app.practice.open_response_evaluator import AIOpenResponseEvaluationService
+from app.practice.open_response_schemas import AIEvaluateAttemptRequest
 from app.practice.schemas import (
     PracticeAnswerCreate,
     PracticeQuestionRead,
@@ -15,6 +22,7 @@ from app.practice.schemas import (
     QuestionAttemptRead,
 )
 from app.practice.service import PracticeService
+from app.students.models import StudentProfile
 from app.users.models import Role, User
 
 router = APIRouter(
@@ -76,4 +84,38 @@ def answer_practice_question(
 ) -> QuestionAttemptRead:
     attempt = PracticeService(session).answer(current_user, practice_session_id, data)
     return QuestionAttemptRead.model_validate(attempt)
+
+
+@router.post(
+    "/attempts/{attempt_id}/ai-evaluate",
+    response_model=QuestionAttemptRead,
+)
+async def evaluate_open_response_attempt(
+    attempt_id: UUID,
+    current_user: Annotated[User, Depends(require_any_role(Role.STUDENT, Role.TEACHER, Role.ADMIN))],
+    session: Database,
+    gateway: Annotated[AIGateway, Depends(get_ai_gateway)],
+    data: AIEvaluateAttemptRequest | None = None,
+) -> QuestionAttemptRead:
+    attempt = session.get(QuestionAttempt, attempt_id)
+    if attempt is None:
+        raise ApplicationError(404, "ATTEMPT_NOT_FOUND", "Question attempt not found.")
+
+    if current_user.role == Role.STUDENT:
+        student = session.scalar(
+            select(StudentProfile).where(StudentProfile.user_id == current_user.id)
+        )
+        if student is None or attempt.student_id != student.id:
+            raise ApplicationError(
+                403, "ACCESS_DENIED", "You do not have access to evaluate this attempt."
+            )
+
+    eval_data = data or AIEvaluateAttemptRequest()
+    service = AIOpenResponseEvaluationService(session, gateway=gateway)
+    evaluated = await service.evaluate_attempt(
+        attempt_id,
+        rubric=eval_data.rubric,
+        confidence_threshold=eval_data.confidence_threshold,
+    )
+    return QuestionAttemptRead.model_validate(evaluated)
 

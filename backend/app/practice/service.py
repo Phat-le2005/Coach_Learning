@@ -18,6 +18,7 @@ from app.practice.evidence import (
     AttemptEvidencePublisher,
 )
 from app.learning.models import QuickCheckQuestion
+from app.hints.models import PracticeQuestionHint
 from app.practice.models import (
     EvaluationStatus,
     PracticeSession,
@@ -149,6 +150,17 @@ class PracticeService:
             )
 
         evaluation = self.evaluator.evaluate(question, data.student_answer)
+        persisted_hint_count = int(
+            self.session.scalar(
+                select(func.count())
+                .select_from(PracticeQuestionHint)
+                .where(
+                    PracticeQuestionHint.practice_session_id == practice_session.id,
+                    PracticeQuestionHint.question_id == question.id,
+                )
+            )
+            or 0
+        )
         previous_attempt_number = self.session.scalar(
             select(func.max(QuestionAttempt.attempt_number)).where(
                 QuestionAttempt.practice_session_id == practice_session.id
@@ -162,7 +174,10 @@ class PracticeService:
             is_correct=evaluation.is_correct,
             score=evaluation.score,
             response_time_seconds=data.response_time_seconds,
-            hint_count=data.hint_count,
+            # Persisted hint history is authoritative once the Hint System has
+            # served a hint. The request value remains as a compatibility path
+            # for attempts created before hint history existed.
+            hint_count=(persisted_hint_count or data.hint_count),
             attempt_number=(previous_attempt_number or 0) + 1,
             evaluation_status=evaluation.status,
         )

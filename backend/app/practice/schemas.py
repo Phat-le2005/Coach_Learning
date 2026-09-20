@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Any
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
@@ -64,6 +65,7 @@ class QuestionAttemptRead(BaseModel):
     hint_count: int
     attempt_number: int
     evaluation_status: EvaluationStatus
+    evaluation_details: dict[str, Any] | None = None
     created_at: datetime
 
 

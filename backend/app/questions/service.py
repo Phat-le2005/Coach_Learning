@@ -9,6 +9,8 @@ from sqlalchemy.orm import Session, selectinload
 from app.concepts.models import Concept
 from app.core.exceptions import ApplicationError
 from app.curriculum.models import Chapter, LearningOutcome, ProblemType, Topic
+from app.hints.models import QuestionHint
+from app.hints.policy import reveals_final_answer
 from app.questions.models import (
     CognitiveLevel,
     Question,
@@ -22,6 +24,7 @@ from app.questions.models import (
 from app.questions.schemas import (
     QuestionConceptInput,
     QuestionCreate,
+    QuestionHintInput,
     QuestionLearningOutcomeInput,
     QuestionOptionInput,
     QuestionPatch,
@@ -46,9 +49,18 @@ class QuestionService:
         self._validate_classifications(
             data.subject_id, data.problem_types, data.learning_outcomes
         )
+        self._validate_hints(
+            data.correct_answer, data.question_type, data.options, data.hints
+        )
         question = Question(
             **data.model_dump(
-                exclude={"options", "concepts", "problem_types", "learning_outcomes"}
+                exclude={
+                    "options",
+                    "concepts",
+                    "problem_types",
+                    "learning_outcomes",
+                    "hints",
+                }
             ),
             status=QuestionStatus.DRAFT,
             created_by=actor.id,
@@ -59,6 +71,7 @@ class QuestionService:
         question.learning_outcome_links = self._make_learning_outcomes(
             data.learning_outcomes
         )
+        question.hints = self._make_hints(data.hints)
         self.session.add(question)
         self.session.commit()
         logger.info("Question created (question_id=%s, created_by=%s)", question.id, actor.id)
@@ -87,6 +100,7 @@ class QuestionService:
             selectinload(Question.concept_links),
             selectinload(Question.problem_type_links),
             selectinload(Question.learning_outcome_links),
+            selectinload(Question.hints),
         )
         if actor.role != Role.ADMIN:
             statement = statement.where(
@@ -166,12 +180,17 @@ class QuestionService:
             )
             for link in question.learning_outcome_links
         ]
+        resulting_hints = data.hints if "hints" in supplied else [
+            QuestionHintInput(hint_level=hint.hint_level, content=hint.content)
+            for hint in question.hints
+        ]
         assert (
             resulting_type is not None
             and resulting_options is not None
             and resulting_concepts is not None
             and resulting_problem_types is not None
             and resulting_outcomes is not None
+            and resulting_hints is not None
         )
         try:
             QuestionWriteBase.validate_collections(
@@ -180,6 +199,7 @@ class QuestionService:
                 resulting_concepts,
                 resulting_problem_types,
                 resulting_outcomes,
+                resulting_hints,
             )
         except ValueError as error:
             raise ApplicationError(422, "INVALID_QUESTION", str(error)) from error
@@ -190,6 +210,12 @@ class QuestionService:
         self._validate_concepts(resulting_subject, resulting_concepts)
         self._validate_classifications(
             resulting_subject, resulting_problem_types, resulting_outcomes
+        )
+        resulting_answer = (
+            data.correct_answer if "correct_answer" in supplied else question.correct_answer
+        )
+        self._validate_hints(
+            resulting_answer, resulting_type, resulting_options, resulting_hints
         )
         for field in {
             "subject_id", "content", "question_type", "difficulty", "correct_answer",
@@ -213,6 +239,10 @@ class QuestionService:
             question.learning_outcome_links.clear()
             self.session.flush()
             question.learning_outcome_links = self._make_learning_outcomes(resulting_outcomes)
+        if "hints" in supplied:
+            question.hints.clear()
+            self.session.flush()
+            question.hints = self._make_hints(resulting_hints)
         self.session.commit()
         logger.info("Question updated (question_id=%s, actor_id=%s)", question.id, actor.id)
         return self._question_or_404(question.id)
@@ -357,6 +387,7 @@ class QuestionService:
             selectinload(Question.concept_links),
             selectinload(Question.problem_type_links),
             selectinload(Question.learning_outcome_links),
+            selectinload(Question.hints),
         )
 
     @staticmethod
@@ -378,6 +409,37 @@ class QuestionService:
         outcomes: list[QuestionLearningOutcomeInput],
     ) -> list[QuestionLearningOutcome]:
         return [QuestionLearningOutcome(**link.model_dump()) for link in outcomes]
+
+    @staticmethod
+    def _make_hints(hints: list[QuestionHintInput]) -> list[QuestionHint]:
+        return [QuestionHint(**hint.model_dump()) for hint in hints]
+
+    @staticmethod
+    def _validate_hints(
+        correct_answer: str | None,
+        question_type: QuestionType,
+        options: list[QuestionOptionInput],
+        hints: list[QuestionHintInput],
+    ) -> None:
+        if not hints or not correct_answer:
+            return
+
+        class _PolicyQuestion:
+            correct_answer: str | None
+            question_type: QuestionType
+            options: list[QuestionOptionInput]
+
+        candidate = _PolicyQuestion()
+        candidate.correct_answer = correct_answer
+        candidate.question_type = question_type
+        candidate.options = options
+        for hint in hints:
+            if reveals_final_answer(candidate, hint.hint_level, hint.content):
+                raise ApplicationError(
+                    422,
+                    "HINT_REVEALS_FINAL_ANSWER",
+                    "Predefined hints before LEVEL_4 cannot reveal the final answer.",
+                )
 
     @staticmethod
     def _access_denied() -> ApplicationError:

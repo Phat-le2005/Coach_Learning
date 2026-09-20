@@ -1,5 +1,6 @@
 from datetime import datetime
 from enum import StrEnum
+from typing import Any
 from uuid import UUID, uuid4
 
 from sqlalchemy import (
@@ -11,6 +12,7 @@ from sqlalchemy import (
     ForeignKeyConstraint,
     Index,
     Integer,
+    JSON,
     Text,
     UniqueConstraint,
     Uuid,
@@ -187,6 +189,9 @@ class QuestionAttempt(Base):
             name="question_attempt_evaluation_status",
         ),
         nullable=False,
+    )
+    evaluation_details: Mapped[dict[str, Any] | None] = mapped_column(
+        JSON, nullable=True, default=None
     )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False

@@ -17,6 +17,9 @@ from app.digital_twin.router import router as digital_twin_router
 from app.diagnostics.router import router as diagnostics_router
 from app.planning.router import router as planning_router
 from app.learning.router import router as learning_router
+from app.ai.admin_router import router as admin_ai_router
+from app.ai.tutor_router import router as tutor_router
+from app.hints.router import router as hints_router
 
 api_router = APIRouter()
 api_router.include_router(health_router)
@@ -31,8 +34,11 @@ api_router.include_router(teacher_classes_router)
 api_router.include_router(student_classes_router)
 api_router.include_router(questions_router)
 api_router.include_router(practice_router)
+api_router.include_router(hints_router)
 api_router.include_router(mastery_router)
 api_router.include_router(digital_twin_router)
 api_router.include_router(diagnostics_router)
 api_router.include_router(planning_router)
 api_router.include_router(learning_router)
+api_router.include_router(admin_ai_router)
+api_router.include_router(tutor_router)

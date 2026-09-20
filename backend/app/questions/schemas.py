@@ -4,7 +4,17 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
+from app.hints.models import HintLevel
 from app.questions.models import CognitiveLevel, QuestionStatus, QuestionType
+
+
+class QuestionHintInput(BaseModel):
+    model_config = ConfigDict(
+        extra="forbid", str_strip_whitespace=True, hide_input_in_errors=True
+    )
+
+    hint_level: HintLevel
+    content: str = Field(min_length=1, max_length=4000)
 
 
 class QuestionOptionInput(BaseModel):
@@ -48,9 +58,11 @@ class QuestionWriteBase(BaseModel):
         concepts: list[QuestionConceptInput],
         problem_types: list[QuestionProblemTypeInput] | None = None,
         learning_outcomes: list[QuestionLearningOutcomeInput] | None = None,
+        hints: list[QuestionHintInput] | None = None,
     ) -> None:
         problem_types = problem_types or []
         learning_outcomes = learning_outcomes or []
+        hints = hints or []
         if question_type == QuestionType.MULTIPLE_CHOICE:
             if not 2 <= len(options) <= 10:
                 raise ValueError("MULTIPLE_CHOICE requires 2 to 10 options")
@@ -70,6 +82,8 @@ class QuestionWriteBase(BaseModel):
             learning_outcomes
         ):
             raise ValueError("Learning outcome links must be unique")
+        if len({hint.hint_level for hint in hints}) != len(hints):
+            raise ValueError("Predefined hint levels must be unique")
 
 
 class QuestionCreate(QuestionWriteBase):
@@ -90,6 +104,7 @@ class QuestionCreate(QuestionWriteBase):
     learning_outcomes: list[QuestionLearningOutcomeInput] = Field(
         default_factory=list, max_length=20
     )
+    hints: list[QuestionHintInput] = Field(default_factory=list, max_length=4)
 
     @field_validator("source_type")
     @classmethod
@@ -104,6 +119,7 @@ class QuestionCreate(QuestionWriteBase):
             self.concepts,
             self.problem_types,
             self.learning_outcomes,
+            self.hints,
         )
         return self
 
@@ -127,6 +143,7 @@ class QuestionPatch(QuestionWriteBase):
     learning_outcomes: list[QuestionLearningOutcomeInput] | None = Field(
         default=None, max_length=20
     )
+    hints: list[QuestionHintInput] | None = Field(default=None, max_length=4)
 
     @field_validator("source_type")
     @classmethod
@@ -174,6 +191,13 @@ class QuestionLearningOutcomeRead(BaseModel):
     weight: float | None
 
 
+class QuestionHintRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    hint_level: HintLevel
+    content: str
+
+
 class QuestionRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: UUID
@@ -198,3 +222,4 @@ class QuestionRead(BaseModel):
     learning_outcomes: list[QuestionLearningOutcomeRead] = Field(
         validation_alias="learning_outcome_links"
     )
+    hints: list[QuestionHintRead] = Field(default_factory=list)
