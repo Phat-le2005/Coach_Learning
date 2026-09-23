@@ -113,6 +113,7 @@ class QuestionImportService:
                 "IMPORT_ROW_LIMIT_EXCEEDED",
                 f"Import file cannot contain more than {self.MAX_ROWS} rows.",
             )
+        self._reject_staging_candidate_payload(raw_rows)
 
         batch = QuestionImportBatch(
             created_by=actor.id,
@@ -137,6 +138,36 @@ class QuestionImportService:
             len(batch.rows),
         )
         return self._view(batch)
+
+    @staticmethod
+    def _reject_staging_candidate_payload(
+        raw_rows: list[tuple[int, dict[str, object]]],
+    ) -> None:
+        """Keep review candidates outside the production question import pipeline."""
+        for row_number, row in raw_rows:
+            if "candidate_id" not in row:
+                continue
+            question_type = row.get("question_type_detected")
+            if (
+                question_type == "TRUE_FALSE_GROUP"
+                or row.get("requires_question_group_model") is True
+            ):
+                raise ApplicationError(
+                    422,
+                    "STAGING_QUESTION_GROUP_UNSUPPORTED",
+                    f"Row {row_number}: TRUE_FALSE_GROUP requires a QuestionGroup model.",
+                )
+            if row.get("status") != "VERIFIED":
+                raise ApplicationError(
+                    422,
+                    "STAGING_CANDIDATE_NOT_VERIFIED",
+                    f"Row {row_number}: only VERIFIED staging candidates may be promoted.",
+                )
+            raise ApplicationError(
+                422,
+                "STAGING_CANDIDATE_REQUIRES_PROMOTION",
+                f"Row {row_number}: staging candidates require an explicit promotion step.",
+            )
 
     def confirm(self, actor: User, batch_id: UUID) -> QuestionImportBatchRead:
         batch = self._batch_for_update(batch_id)
