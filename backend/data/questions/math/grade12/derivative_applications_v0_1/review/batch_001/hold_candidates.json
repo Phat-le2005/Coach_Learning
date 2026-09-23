@@ -1,0 +1,24 @@
+[
+  {
+    "candidate_id": "M12_DERIV_CAND_0063",
+    "review_status": "HOLD_EXPERT_REVIEW",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "subsource_code": "NGOC_VY_2026_03",
+    "source_page": 44,
+    "question_number": "1",
+    "problem_type_code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+    "reason": "Bài toán tối ưu có mô hình chi phí/chiết khấu theo từng đoạn phức tạp. Nguồn cho đáp án 253 nhưng cần kiểm tra độc lập toàn bộ mô hình chi phí trước khi gắn VERIFIED.",
+    "status_after_review": "REVIEW_REQUIRED"
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0121",
+    "review_status": "HOLD_SOURCE_ANSWER_CONFLICT",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "subsource_code": "NGOC_VY_2026_22",
+    "source_page": 423,
+    "question_number": "6",
+    "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+    "reason": "Nguồn chọn 'không có tiệm cận xiên' cho y=(x^2-3x+2)/(x-1). Sau rút gọn, y=x-2 với x≠1 và lim[y-(x-2)]=0 khi x→±∞; cần thống nhất định nghĩa tiệm cận xiên của dự án trước khi xác minh.",
+    "status_after_review": "REVIEW_REQUIRED"
+  }
+]

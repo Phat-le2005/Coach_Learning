@@ -1,0 +1,24 @@
+[
+  {
+    "candidate_id": "M12_DERIV_CAND_0152",
+    "review_status": "REJECTED_OUT_OF_SCOPE",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "subsource_code": "NGOC_VY_2026_33",
+    "source_page": 638,
+    "question_number": "1",
+    "original_problem_type_code": "GRAPH_IDENTIFICATION_FROM_FEATURES",
+    "reason": "Nội dung là diện tích giữa hai đồ thị/thể tích bê tông, thuộc Nguyên hàm-Tích phân/ứng dụng tích phân, không thuộc chapter Ứng dụng đạo hàm.",
+    "status_after_review": "REJECTED"
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0172",
+    "review_status": "REJECTED_OUT_OF_SCOPE",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "subsource_code": "NGOC_VY_2026_40",
+    "source_page": 758,
+    "question_number": "3",
+    "original_problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+    "reason": "Nội dung kiểm tra tính đơn điệu/tập xác định của hàm mũ, logarit, lũy thừa; không phải dạng bài Ứng dụng đạo hàm lớp 12 trong taxonomy hiện tại.",
+    "status_after_review": "REJECTED"
+  }
+]

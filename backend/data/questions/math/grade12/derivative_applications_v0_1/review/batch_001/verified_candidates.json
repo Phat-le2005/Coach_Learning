@@ -1,0 +1,860 @@
+[
+  {
+    "candidate_id": "M12_DERIV_CAND_0017",
+    "review_status": "VERIFIED",
+    "reviewed_at": "2026-09-23",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "subsource_code": "VINH_PHUC_2025",
+    "source_page": 19,
+    "question_number": "6",
+    "problem_type_code": "HORIZONTAL_ASYMPTOTE_RATIONAL",
+    "concepts": [
+      {
+        "problem_type_code": "HORIZONTAL_ASYMPTOTE_RATIONAL",
+        "concept_code": "LIMIT_AT_INFINITY",
+        "weight": 0.45,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "HORIZONTAL_ASYMPTOTE_RATIONAL",
+        "concept_code": "HORIZONTAL_ASYMPTOTE",
+        "weight": 0.55,
+        "is_primary": true
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "HORIZONTAL_ASYMPTOTE_RATIONAL",
+        "learning_outcome_code": "M12_DERIV_LO_06",
+        "weight": 1.0
+      }
+    ],
+    "reviewed_question_type": "MULTIPLE_CHOICE",
+    "reviewed_content": "Tiệm cận ngang của đồ thị hàm số y = (2x - 1)/(x - 1) có phương trình là",
+    "reviewed_options": [
+      {
+        "label": "A",
+        "content": "y = 1",
+        "order_index": 0
+      },
+      {
+        "label": "B",
+        "content": "x = 1",
+        "order_index": 1
+      },
+      {
+        "label": "C",
+        "content": "x = 2",
+        "order_index": 2
+      },
+      {
+        "label": "D",
+        "content": "y = 2",
+        "order_index": 3
+      }
+    ],
+    "verified_correct_answer": "D",
+    "source_answer_detected": "D",
+    "answer_verification": "SOURCE_SOLUTION_CONFIRMED_AND_INDEPENDENT_CHECK",
+    "taxonomy_review": "CONFIRMED",
+    "content_review": "CONFIRMED_AGAINST_SOURCE_PAGE",
+    "review_note": "Đã đối chiếu trang nguồn và phần lời giải trong cùng tài liệu; giới hạn tại ±∞ bằng 2.",
+    "original_fingerprint": "95c2fe49c1f52039",
+    "corrections": {},
+    "promotion_ready": false,
+    "promotion_blocker": "CURRICULUM_TAXONOMY_STILL_STAGING_AND_EXPLICIT_PROMOTION_NOT_IMPLEMENTED"
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0033",
+    "review_status": "VERIFIED",
+    "reviewed_at": "2026-09-23",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "subsource_code": "DA_NANG_2025",
+    "source_page": 73,
+    "question_number": "6",
+    "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+    "concepts": [
+      {
+        "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+        "concept_code": "POLYNOMIAL_DIVISION",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+        "concept_code": "LIMIT_AT_INFINITY",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+        "concept_code": "OBLIQUE_ASYMPTOTE",
+        "weight": 0.5,
+        "is_primary": true
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+        "learning_outcome_code": "M12_DERIV_LO_06",
+        "weight": 1.0
+      }
+    ],
+    "reviewed_question_type": "MULTIPLE_CHOICE",
+    "reviewed_content": "Đồ thị hàm số y = -x + 2 + 1/x có đường tiệm cận xiên là",
+    "reviewed_options": [
+      {
+        "label": "A",
+        "content": "y = -x + 2",
+        "order_index": 0
+      },
+      {
+        "label": "B",
+        "content": "y = 1/x",
+        "order_index": 1
+      },
+      {
+        "label": "C",
+        "content": "y = x - 2",
+        "order_index": 2
+      },
+      {
+        "label": "D",
+        "content": "y = -1/x",
+        "order_index": 3
+      }
+    ],
+    "verified_correct_answer": "A",
+    "source_answer_detected": "A",
+    "answer_verification": "SOURCE_SOLUTION_CONFIRMED_AND_INDEPENDENT_CHECK",
+    "taxonomy_review": "CONFIRMED",
+    "content_review": "CONFIRMED_AGAINST_SOURCE_PAGE",
+    "review_note": "Đã đối chiếu trang nguồn và lời giải; y - (-x + 2) = 1/x → 0 khi x → ±∞.",
+    "original_fingerprint": "5028c5210e52fafe",
+    "corrections": {},
+    "promotion_ready": false,
+    "promotion_blocker": "CURRICULUM_TAXONOMY_STILL_STAGING_AND_EXPLICIT_PROMOTION_NOT_IMPLEMENTED"
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0038",
+    "review_status": "VERIFIED",
+    "reviewed_at": "2026-09-23",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "subsource_code": "THAI_BINH_2025",
+    "source_page": 107,
+    "question_number": "2",
+    "problem_type_code": "VERTICAL_ASYMPTOTE_RATIONAL",
+    "concepts": [
+      {
+        "problem_type_code": "VERTICAL_ASYMPTOTE_RATIONAL",
+        "concept_code": "LIMIT_AT_POINT",
+        "weight": 0.35,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "VERTICAL_ASYMPTOTE_RATIONAL",
+        "concept_code": "VERTICAL_ASYMPTOTE",
+        "weight": 0.45,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "VERTICAL_ASYMPTOTE_RATIONAL",
+        "concept_code": "FUNCTION_DOMAIN",
+        "weight": 0.2,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "VERTICAL_ASYMPTOTE_RATIONAL",
+        "learning_outcome_code": "M12_DERIV_LO_06",
+        "weight": 1.0
+      }
+    ],
+    "reviewed_question_type": "MULTIPLE_CHOICE",
+    "reviewed_content": "Tiệm cận đứng của đồ thị hàm số y = (2x - 1)/(x + 2) là đường thẳng có phương trình",
+    "reviewed_options": [
+      {
+        "label": "A",
+        "content": "x = 1/2",
+        "order_index": 0
+      },
+      {
+        "label": "B",
+        "content": "y = 2",
+        "order_index": 1
+      },
+      {
+        "label": "C",
+        "content": "x = -2",
+        "order_index": 2
+      },
+      {
+        "label": "D",
+        "content": "y = -2",
+        "order_index": 3
+      }
+    ],
+    "verified_correct_answer": "C",
+    "source_answer_detected": "C",
+    "answer_verification": "SOURCE_SOLUTION_CONFIRMED_AND_INDEPENDENT_CHECK",
+    "taxonomy_review": "CONFIRMED",
+    "content_review": "CONFIRMED_AGAINST_SOURCE_PAGE",
+    "review_note": "Sửa lỗi extraction question_type: nguồn là trắc nghiệm 4 lựa chọn, không phải SHORT_ANSWER. Đã đối chiếu lời giải nguồn.",
+    "original_fingerprint": "b00adbdb9f139339",
+    "corrections": {
+      "question_type_detected": {
+        "from": "SHORT_ANSWER",
+        "to": "MULTIPLE_CHOICE"
+      }
+    },
+    "promotion_ready": false,
+    "promotion_blocker": "CURRICULUM_TAXONOMY_STILL_STAGING_AND_EXPLICIT_PROMOTION_NOT_IMPLEMENTED"
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0042",
+    "review_status": "VERIFIED",
+    "reviewed_at": "2026-09-23",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "subsource_code": "HOA_BINH_2025",
+    "source_page": 122,
+    "question_number": "4",
+    "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+    "concepts": [
+      {
+        "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+        "concept_code": "POLYNOMIAL_DIVISION",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+        "concept_code": "LIMIT_AT_INFINITY",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+        "concept_code": "OBLIQUE_ASYMPTOTE",
+        "weight": 0.5,
+        "is_primary": true
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+        "learning_outcome_code": "M12_DERIV_LO_06",
+        "weight": 1.0
+      }
+    ],
+    "reviewed_question_type": "MULTIPLE_CHOICE",
+    "reviewed_content": "Đồ thị hàm số y = (x^2 + 2x - 3)/(x + 1) có đường tiệm cận xiên là",
+    "reviewed_options": [
+      {
+        "label": "A",
+        "content": "y = x + 3",
+        "order_index": 0
+      },
+      {
+        "label": "B",
+        "content": "y = x + 1",
+        "order_index": 1
+      },
+      {
+        "label": "C",
+        "content": "y = x - 1",
+        "order_index": 2
+      },
+      {
+        "label": "D",
+        "content": "y = -x + 1",
+        "order_index": 3
+      }
+    ],
+    "verified_correct_answer": "B",
+    "source_answer_detected": "B",
+    "answer_verification": "SOURCE_SOLUTION_CONFIRMED_AND_INDEPENDENT_CHECK",
+    "taxonomy_review": "CONFIRMED",
+    "content_review": "CONFIRMED_AGAINST_SOURCE_PAGE",
+    "review_note": "Đã đối chiếu lời giải nguồn: y = x + 1 - 4/(x + 1).",
+    "original_fingerprint": "ab65be9834767e86",
+    "corrections": {},
+    "promotion_ready": false,
+    "promotion_blocker": "CURRICULUM_TAXONOMY_STILL_STAGING_AND_EXPLICIT_PROMOTION_NOT_IMPLEMENTED"
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0050",
+    "review_status": "VERIFIED",
+    "reviewed_at": "2026-09-23",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "subsource_code": "QUANG_NINH_2025",
+    "source_page": 145,
+    "question_number": "5",
+    "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+    "concepts": [
+      {
+        "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+        "concept_code": "POLYNOMIAL_DIVISION",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+        "concept_code": "LIMIT_AT_INFINITY",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+        "concept_code": "OBLIQUE_ASYMPTOTE",
+        "weight": 0.5,
+        "is_primary": true
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+        "learning_outcome_code": "M12_DERIV_LO_06",
+        "weight": 1.0
+      }
+    ],
+    "reviewed_question_type": "MULTIPLE_CHOICE",
+    "reviewed_content": "Cho hàm số y = 2x - 1 - 3/(x + 2). Đường tiệm cận xiên của đồ thị hàm số đã cho là",
+    "reviewed_options": [
+      {
+        "label": "A",
+        "content": "y = -2x + 1",
+        "order_index": 0
+      },
+      {
+        "label": "B",
+        "content": "y = 2x - 1",
+        "order_index": 1
+      },
+      {
+        "label": "C",
+        "content": "y = 2x + 1",
+        "order_index": 2
+      },
+      {
+        "label": "D",
+        "content": "y = -2x - 1",
+        "order_index": 3
+      }
+    ],
+    "verified_correct_answer": "B",
+    "source_answer_detected": "B",
+    "answer_verification": "SOURCE_SOLUTION_CONFIRMED_AND_INDEPENDENT_CHECK",
+    "taxonomy_review": "CONFIRMED",
+    "content_review": "CONFIRMED_AGAINST_SOURCE_PAGE",
+    "review_note": "Đã đối chiếu trực tiếp trang có đáp án và lời giải trong tài liệu nguồn.",
+    "original_fingerprint": "19cf9e69d5d0f7b9",
+    "corrections": {},
+    "promotion_ready": false,
+    "promotion_blocker": "CURRICULUM_TAXONOMY_STILL_STAGING_AND_EXPLICIT_PROMOTION_NOT_IMPLEMENTED"
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0085",
+    "review_status": "VERIFIED",
+    "reviewed_at": "2026-09-23",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "subsource_code": "NGOC_VY_2026_09",
+    "source_page": 162,
+    "question_number": "1",
+    "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+    "concepts": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "SIGN_ANALYSIS",
+        "weight": 0.3,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "MONOTONICITY_CRITERION",
+        "weight": 0.45,
+        "is_primary": true
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "learning_outcome_code": "M12_DERIV_LO_01",
+        "weight": 0.5
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "learning_outcome_code": "M12_DERIV_LO_02",
+        "weight": 0.5
+      }
+    ],
+    "reviewed_question_type": "MULTIPLE_CHOICE",
+    "reviewed_content": "Hàm số y = x^3 - 3x^2 - 9x + 1 đồng biến trên mỗi khoảng",
+    "reviewed_options": [
+      {
+        "label": "A",
+        "content": "(-1;3) và (3;+∞)",
+        "order_index": 0
+      },
+      {
+        "label": "B",
+        "content": "(-∞;-1) và (1;3)",
+        "order_index": 1
+      },
+      {
+        "label": "C",
+        "content": "(-∞;3) và (3;+∞)",
+        "order_index": 2
+      },
+      {
+        "label": "D",
+        "content": "(-∞;-1) và (3;+∞)",
+        "order_index": 3
+      }
+    ],
+    "verified_correct_answer": "D",
+    "source_answer_detected": "D",
+    "answer_verification": "SOURCE_SOLUTION_CONFIRMED_AND_INDEPENDENT_CHECK",
+    "taxonomy_review": "CONFIRMED",
+    "content_review": "CONFIRMED_AGAINST_SOURCE_PAGE",
+    "review_note": "Đã đối chiếu trang lời giải; y' = 3(x+1)(x-3), dấu dương trên (-∞,-1) và (3,+∞).",
+    "original_fingerprint": "d20e4821f75e510c",
+    "corrections": {},
+    "promotion_ready": false,
+    "promotion_blocker": "CURRICULUM_TAXONOMY_STILL_STAGING_AND_EXPLICIT_PROMOTION_NOT_IMPLEMENTED"
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0092",
+    "review_status": "VERIFIED",
+    "reviewed_at": "2026-09-23",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "subsource_code": "NGOC_VY_2026_12",
+    "source_page": 230,
+    "question_number": "2",
+    "problem_type_code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+    "concepts": [
+      {
+        "problem_type_code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+        "concept_code": "MATHEMATICAL_MODELING",
+        "weight": 0.3,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+        "concept_code": "OPTIMIZATION",
+        "weight": 0.35,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+        "concept_code": "GLOBAL_EXTREMA",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+        "concept_code": "CONTEXT_INTERPRETATION",
+        "weight": 0.15,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+        "learning_outcome_code": "M12_DERIV_LO_10",
+        "weight": 1.0
+      }
+    ],
+    "reviewed_question_type": "SHORT_ANSWER",
+    "reviewed_content": "Một nhà máy sản xuất x sản phẩm mỗi tháng. Chi phí C(x) = 16000 + 500x - 1,6x^2 + 0,004x^3 (nghìn đồng), giá bán mỗi sản phẩm p(x) = 1700 - 7x (nghìn đồng). Hỏi mỗi tháng nên sản xuất bao nhiêu sản phẩm để lợi nhuận lớn nhất, giả sử sản phẩm sản xuất ra được tiêu thụ hết?",
+    "reviewed_options": [],
+    "verified_correct_answer": "100",
+    "source_answer_detected": "100",
+    "answer_verification": "SOURCE_SOLUTION_CONFIRMED_AND_INDEPENDENT_CHECK",
+    "taxonomy_review": "CONFIRMED",
+    "content_review": "CONFIRMED_AGAINST_SOURCE_PAGE",
+    "review_note": "Đã đối chiếu lời giải nguồn và kiểm tra đạo hàm của lợi nhuận; nghiệm dương cho cực đại là x = 100.",
+    "original_fingerprint": "8af7553aebff4b9c",
+    "corrections": {},
+    "promotion_ready": false,
+    "promotion_blocker": "CURRICULUM_TAXONOMY_STILL_STAGING_AND_EXPLICIT_PROMOTION_NOT_IMPLEMENTED"
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0097",
+    "review_status": "VERIFIED",
+    "reviewed_at": "2026-09-23",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "subsource_code": "NGOC_VY_2026_14",
+    "source_page": 262,
+    "question_number": "2",
+    "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+    "concepts": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "GLOBAL_EXTREMA",
+        "weight": 0.35,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "CRITICAL_POINT",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "ENDPOINT_EVALUATION",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.2,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "learning_outcome_code": "M12_DERIV_LO_05",
+        "weight": 1.0
+      }
+    ],
+    "reviewed_question_type": "MULTIPLE_CHOICE",
+    "reviewed_content": "Trên đoạn [0;3], hàm số y = x^3 - 3x + 4 đạt giá trị nhỏ nhất tại điểm",
+    "reviewed_options": [
+      {
+        "label": "A",
+        "content": "x = 1",
+        "order_index": 0
+      },
+      {
+        "label": "B",
+        "content": "x = 0",
+        "order_index": 1
+      },
+      {
+        "label": "C",
+        "content": "x = 3",
+        "order_index": 2
+      },
+      {
+        "label": "D",
+        "content": "x = 2",
+        "order_index": 3
+      }
+    ],
+    "verified_correct_answer": "A",
+    "source_answer_detected": "A",
+    "answer_verification": "SOURCE_SOLUTION_CONFIRMED_AND_INDEPENDENT_CHECK",
+    "taxonomy_review": "CONFIRMED",
+    "content_review": "CONFIRMED_AGAINST_SOURCE_PAGE",
+    "review_note": "Đã đối chiếu lời giải nguồn; so sánh y(0)=4, y(1)=2, y(3)=22.",
+    "original_fingerprint": "608c1c8df16f460c",
+    "corrections": {},
+    "promotion_ready": false,
+    "promotion_blocker": "CURRICULUM_TAXONOMY_STILL_STAGING_AND_EXPLICIT_PROMOTION_NOT_IMPLEMENTED"
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0102",
+    "review_status": "VERIFIED",
+    "reviewed_at": "2026-09-23",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "subsource_code": "NGOC_VY_2026_16",
+    "source_page": 300,
+    "question_number": "2",
+    "problem_type_code": "VERTICAL_ASYMPTOTE_RATIONAL",
+    "concepts": [
+      {
+        "problem_type_code": "VERTICAL_ASYMPTOTE_RATIONAL",
+        "concept_code": "LIMIT_AT_POINT",
+        "weight": 0.35,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "VERTICAL_ASYMPTOTE_RATIONAL",
+        "concept_code": "VERTICAL_ASYMPTOTE",
+        "weight": 0.45,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "VERTICAL_ASYMPTOTE_RATIONAL",
+        "concept_code": "FUNCTION_DOMAIN",
+        "weight": 0.2,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "VERTICAL_ASYMPTOTE_RATIONAL",
+        "learning_outcome_code": "M12_DERIV_LO_06",
+        "weight": 1.0
+      }
+    ],
+    "reviewed_question_type": "MULTIPLE_CHOICE",
+    "reviewed_content": "Tiệm cận đứng của đồ thị hàm số y = (3x + 2)/(x - 2) là đường thẳng có phương trình",
+    "reviewed_options": [
+      {
+        "label": "A",
+        "content": "x = 2",
+        "order_index": 0
+      },
+      {
+        "label": "B",
+        "content": "x = -1",
+        "order_index": 1
+      },
+      {
+        "label": "C",
+        "content": "x = 3",
+        "order_index": 2
+      },
+      {
+        "label": "D",
+        "content": "x = -2",
+        "order_index": 3
+      }
+    ],
+    "verified_correct_answer": "A",
+    "source_answer_detected": "A",
+    "answer_verification": "SOURCE_SOLUTION_CONFIRMED_AND_INDEPENDENT_CHECK",
+    "taxonomy_review": "CONFIRMED",
+    "content_review": "CONFIRMED_AGAINST_SOURCE_PAGE",
+    "review_note": "Đã đối chiếu trang lời giải; mẫu bằng 0 tại x = 2 và tử khác 0.",
+    "original_fingerprint": "413470266e38a66c",
+    "corrections": {},
+    "promotion_ready": false,
+    "promotion_blocker": "CURRICULUM_TAXONOMY_STILL_STAGING_AND_EXPLICIT_PROMOTION_NOT_IMPLEMENTED"
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0117",
+    "review_status": "VERIFIED",
+    "reviewed_at": "2026-09-23",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "subsource_code": "NGOC_VY_2026_21",
+    "source_page": 403,
+    "question_number": "1",
+    "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+    "concepts": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "SIGN_ANALYSIS",
+        "weight": 0.3,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "MONOTONICITY_CRITERION",
+        "weight": 0.45,
+        "is_primary": true
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "learning_outcome_code": "M12_DERIV_LO_01",
+        "weight": 0.5
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "learning_outcome_code": "M12_DERIV_LO_02",
+        "weight": 0.5
+      }
+    ],
+    "reviewed_question_type": "MULTIPLE_CHOICE",
+    "reviewed_content": "Hàm số y = (x + 2)/(1 - x) đồng biến trên khoảng nào sau đây?",
+    "reviewed_options": [
+      {
+        "label": "A",
+        "content": "(-1;+∞)",
+        "order_index": 0
+      },
+      {
+        "label": "B",
+        "content": "(-∞;-1)",
+        "order_index": 1
+      },
+      {
+        "label": "C",
+        "content": "(-∞;1)",
+        "order_index": 2
+      },
+      {
+        "label": "D",
+        "content": "(0;+∞)",
+        "order_index": 3
+      }
+    ],
+    "verified_correct_answer": "C",
+    "source_answer_detected": "C",
+    "answer_verification": "SOURCE_SOLUTION_CONFIRMED_AND_INDEPENDENT_CHECK",
+    "taxonomy_review": "CONFIRMED",
+    "content_review": "CONFIRMED_AGAINST_SOURCE_PAGE",
+    "review_note": "Đã đối chiếu lời giải nguồn; y' = 3/(1-x)^2 > 0 trên từng khoảng xác định.",
+    "original_fingerprint": "dafcfb2352bcead2",
+    "corrections": {},
+    "promotion_ready": false,
+    "promotion_blocker": "CURRICULUM_TAXONOMY_STILL_STAGING_AND_EXPLICIT_PROMOTION_NOT_IMPLEMENTED"
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0129",
+    "review_status": "VERIFIED",
+    "reviewed_at": "2026-09-23",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "subsource_code": "NGOC_VY_2026_25",
+    "source_page": 482,
+    "question_number": "6",
+    "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+    "concepts": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "GLOBAL_EXTREMA",
+        "weight": 0.35,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "CRITICAL_POINT",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "ENDPOINT_EVALUATION",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.2,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "learning_outcome_code": "M12_DERIV_LO_05",
+        "weight": 1.0
+      }
+    ],
+    "reviewed_question_type": "MULTIPLE_CHOICE",
+    "reviewed_content": "Giá trị nhỏ nhất của hàm số f(x) = (x^2 - 2)e^(2x) trên đoạn [-1;2] bằng",
+    "reviewed_options": [
+      {
+        "label": "A",
+        "content": "2e^4",
+        "order_index": 0
+      },
+      {
+        "label": "B",
+        "content": "-e^2",
+        "order_index": 1
+      },
+      {
+        "label": "C",
+        "content": "2e^2",
+        "order_index": 2
+      },
+      {
+        "label": "D",
+        "content": "-2e^2",
+        "order_index": 3
+      }
+    ],
+    "verified_correct_answer": "B",
+    "source_answer_detected": "B",
+    "answer_verification": "SOURCE_SOLUTION_CONFIRMED_AND_INDEPENDENT_CHECK",
+    "taxonomy_review": "CONFIRMED",
+    "content_review": "CONFIRMED_AGAINST_SOURCE_PAGE",
+    "review_note": "Đã đối chiếu lời giải nguồn; điểm tới hạn trong đoạn là x=1 và f(1)=-e^2 nhỏ nhất.",
+    "original_fingerprint": "503c13e49bcc1b88",
+    "corrections": {},
+    "promotion_ready": false,
+    "promotion_blocker": "CURRICULUM_TAXONOMY_STILL_STAGING_AND_EXPLICIT_PROMOTION_NOT_IMPLEMENTED"
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0153",
+    "review_status": "VERIFIED",
+    "reviewed_at": "2026-09-23",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "subsource_code": "NGOC_VY_2026_34",
+    "source_page": 643,
+    "question_number": "2",
+    "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+    "concepts": [
+      {
+        "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+        "concept_code": "POLYNOMIAL_DIVISION",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+        "concept_code": "LIMIT_AT_INFINITY",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+        "concept_code": "OBLIQUE_ASYMPTOTE",
+        "weight": 0.5,
+        "is_primary": true
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+        "learning_outcome_code": "M12_DERIV_LO_06",
+        "weight": 1.0
+      }
+    ],
+    "reviewed_question_type": "MULTIPLE_CHOICE",
+    "reviewed_content": "Đồ thị hàm số y = x + 2025 - 2026/(x + 1) có tiệm cận xiên là",
+    "reviewed_options": [
+      {
+        "label": "A",
+        "content": "y = x + 2025",
+        "order_index": 0
+      },
+      {
+        "label": "B",
+        "content": "y = x - 2025",
+        "order_index": 1
+      },
+      {
+        "label": "C",
+        "content": "y = x - 2026",
+        "order_index": 2
+      },
+      {
+        "label": "D",
+        "content": "y = x + 2026",
+        "order_index": 3
+      }
+    ],
+    "verified_correct_answer": "A",
+    "source_answer_detected": "A",
+    "answer_verification": "SOURCE_SOLUTION_CONFIRMED_AND_INDEPENDENT_CHECK",
+    "taxonomy_review": "CONFIRMED",
+    "content_review": "CONFIRMED_AGAINST_SOURCE_PAGE",
+    "review_note": "Đã đối chiếu câu hỏi và phần lời giải trong cùng nguồn; phần dư -2026/(x+1) → 0 khi x → ±∞.",
+    "original_fingerprint": "d4976efaea805f38",
+    "corrections": {},
+    "promotion_ready": false,
+    "promotion_blocker": "CURRICULUM_TAXONOMY_STILL_STAGING_AND_EXPLICIT_PROMOTION_NOT_IMPLEMENTED"
+  }
+]

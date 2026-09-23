@@ -6,6 +6,11 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
+from app.questions.review_overlay import (
+    QuestionReviewOverlayResolver,
+    ReviewBatchReport,
+)
+
 
 BACKEND_DATA_ROOT = Path(__file__).resolve().parents[2] / "data"
 DEFAULT_QUESTION_STAGING_PATH = (
@@ -71,6 +76,7 @@ class QuestionStagingValidationReport:
     coverage: tuple[ProblemTypeCoverage, ...]
     coverage_gaps: tuple[str, ...]
     promotion: dict[str, Any]
+    review_batches: tuple[ReviewBatchReport, ...]
 
     @property
     def is_valid(self) -> bool:
@@ -89,6 +95,7 @@ class QuestionStagingValidationReport:
             "coverage": [asdict(item) for item in self.coverage],
             "coverage_gaps": list(self.coverage_gaps),
             "promotion": self.promotion,
+            "review_batches": [batch.as_dict() for batch in self.review_batches],
         }
 
 
@@ -101,13 +108,29 @@ class QuestionStagingPromotionError(ValueError):
 
 def candidate_promotion_blockers(candidate: dict[str, Any]) -> tuple[str, ...]:
     blockers: list[str] = []
-    if candidate.get("status") != "VERIFIED":
+    review_record = candidate.get("review_record")
+    review_status = (
+        review_record.get("review_status")
+        if isinstance(review_record, dict)
+        else None
+    )
+    if candidate.get("status") == "REJECTED" or str(review_status).startswith("REJECTED"):
+        blockers.append("STATUS_REJECTED")
+    elif str(review_status).startswith("HOLD_"):
+        blockers.append("STATUS_HOLD")
+    elif candidate.get("status") != "VERIFIED":
         blockers.append("STATUS_NOT_VERIFIED")
     if (
         candidate.get("question_type_detected") == "TRUE_FALSE_GROUP"
         or candidate.get("requires_question_group_model") is True
     ):
         blockers.append("TRUE_FALSE_GROUP_UNSUPPORTED")
+    if (
+        candidate.get("status") == "VERIFIED"
+        and candidate.get("review_batch")
+        and candidate.get("promotion_ready") is not True
+    ):
+        blockers.append("EXPLICIT_PROMOTION_REQUIRED")
     return tuple(blockers)
 
 
@@ -125,9 +148,15 @@ class QuestionStagingValidator:
         self,
         dataset_path: Path = DEFAULT_QUESTION_STAGING_PATH,
         curriculum_path: Path = DEFAULT_CURRICULUM_STAGING_PATH,
+        review_root: Path | None = None,
     ) -> QuestionStagingValidationReport:
         dataset_path = dataset_path.resolve()
         curriculum_path = curriculum_path.resolve()
+        review_root = (
+            review_root.resolve()
+            if review_root is not None
+            else dataset_path.parent / "review"
+        )
         file_issues = self._validate_required_files(dataset_path)
 
         candidates_value = self._load_json(
@@ -190,7 +219,13 @@ class QuestionStagingValidator:
             ),
             "fingerprints_available": self._validate_fingerprints(candidates),
         }
+        review_results = tuple(
+            QuestionReviewOverlayResolver().resolve(candidates, batch_path)
+            for batch_path in sorted(review_root.glob("batch_*"))
+            if batch_path.is_dir()
+        ) if review_root.is_dir() else ()
         checks = {name: not issues for name, issues in check_issues.items()}
+        checks["review_overlays"] = all(result.report.is_valid for result in review_results)
         issues = tuple(sorted({issue for values in check_issues.values() for issue in values}))
 
         duplicates = self._duplicate_fingerprints(candidates)
@@ -211,12 +246,14 @@ class QuestionStagingValidator:
                 "sources": len(sources),
                 "subsources": len(subsources),
                 "duplicate_fingerprint_groups": len(duplicates),
+                "review_batches": len(review_results),
             },
             errors=issues,
             duplicate_fingerprints=duplicates,
             coverage=coverage,
             coverage_gaps=gaps,
             promotion=promotion,
+            review_batches=tuple(result.report for result in review_results),
         )
 
     @staticmethod

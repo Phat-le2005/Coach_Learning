@@ -1,0 +1,27 @@
+{
+  "dataset_code": "DATA-MATH12-005",
+  "batch_code": "DATA-MATH12-005_BATCH_001",
+  "reviewed_candidates": 16,
+  "verified": 12,
+  "hold": 2,
+  "rejected": 2,
+  "total_candidates_in_data004": 175,
+  "remaining_unreviewed": 159,
+  "verified_problem_type_counts": {
+    "HORIZONTAL_ASYMPTOTE_RATIONAL": 1,
+    "OBLIQUE_ASYMPTOTE_RATIONAL": 4,
+    "VERTICAL_ASYMPTOTE_RATIONAL": 2,
+    "MONOTONICITY_FROM_EXPRESSION": 2,
+    "REAL_WORLD_DERIVATIVE_OPTIMIZATION": 1,
+    "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL": 2
+  },
+  "important_corrections": [
+    "M12_DERIV_CAND_0038: question type corrected from SHORT_ANSWER to MULTIPLE_CHOICE"
+  ],
+  "quality_findings": [
+    "M12_DERIV_CAND_0121: source answer conflicts with the usual limit-based definition of oblique asymptote; kept on HOLD.",
+    "M12_DERIV_CAND_0152: false-positive derivative classification; moved to REJECTED_OUT_OF_SCOPE.",
+    "M12_DERIV_CAND_0172: false-positive derivative classification; moved to REJECTED_OUT_OF_SCOPE."
+  ],
+  "promotion_policy": "No question in this batch is production-importable yet. VERIFIED here means content/answer/taxonomy review passed; explicit promotion remains a separate step."
+}
