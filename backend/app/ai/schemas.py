@@ -43,7 +43,9 @@ class TaskUsageMetric(BaseModel):
     failure_rate: float
     average_latency_ms: float
     total_tokens: int
+    average_tokens_per_task: float = 0.0
     estimated_cost: float
+    average_cost_per_task: float = 0.0
 
 
 class TaskTokenMetric(BaseModel):
@@ -51,7 +53,16 @@ class TaskTokenMetric(BaseModel):
     input_tokens: int
     output_tokens: int
     total_tokens: int
+    average_tokens_per_task: float = 0.0
     estimated_cost: float
+    average_cost_per_task: float = 0.0
+
+
+class StudentDailyUsageMetric(BaseModel):
+    date: str
+    unique_students: int
+    total_requests: int
+    average_requests_per_student: float
 
 
 class AIUsageSummaryRead(BaseModel):
@@ -64,9 +75,11 @@ class AIUsageSummaryRead(BaseModel):
     total_output_tokens: int
     total_tokens: int
     total_estimated_cost: float
+    average_requests_per_student_per_day: float = 0.0
     requests_per_day: list[DailyUsageMetric] = Field(default_factory=list)
     requests_per_task: list[TaskUsageMetric] = Field(default_factory=list)
     tokens_per_task: list[TaskTokenMetric] = Field(default_factory=list)
+    student_daily_usage: list[StudentDailyUsageMetric] = Field(default_factory=list)
 
 
 class AIRequestLogPagination(BaseModel):

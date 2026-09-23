@@ -60,6 +60,7 @@ class TutorContextData(BaseModel):
     recent_attempts_context: str
     rag_context: str
     session_summary: str
+    learning_memory_context: str = "(Chưa có ký ức học tập liên quan)"
     student_query: str
 
     def to_prompt_variables(self) -> dict[str, str]:
@@ -76,6 +77,7 @@ class TutorContextData(BaseModel):
             "recent_attempts_context": self.recent_attempts_context,
             "rag_context": self.rag_context,
             "session_summary": self.session_summary,
+            "learning_memory_context": self.learning_memory_context,
             "student_query": self.student_query,
         }
 

@@ -1,0 +1,135 @@
+{
+  "dataset_version": "misconception_dataset_v1",
+  "total_samples": 26,
+  "unique_question_clusters": 22,
+  "problem_type_distribution": {
+    "MONOTONICITY_FROM_EXPRESSION": 5,
+    "PARAMETER_MONOTONICITY": 3,
+    "FIND_FUNCTION_EXTREMA": 3,
+    "EXP_LOG_EQUATION": 3,
+    "CALCULATE_INTEGRAL": 3,
+    "VECTOR_3D_RELATION": 3,
+    "BASIC_PROBABILITY": 2,
+    "OXYZ_LINE_PLANE_INTERSECTION": 2,
+    "COMPLETE_FUNCTION_ANALYSIS": 2
+  },
+  "concept_distribution": {
+    "DERIVATIVE": 8,
+    "EXTREMA": 5,
+    "OXYZ": 5,
+    "MONOTONICITY": 4,
+    "INEQUALITY_SOLVING": 3,
+    "LOGARITHM": 3,
+    "INTEGRAL": 3,
+    "VECTOR": 3,
+    "PARAMETER_REASONING": 2,
+    "PROBABILITY": 2,
+    "FUNCTION_ANALYSIS": 2,
+    "GEOMETRY_3D": 1
+  },
+  "class_distribution": {
+    "DERIVATIVE_SIGN_DIRECTION": 3,
+    "PARAMETER_CONDITION_NOT_GLOBAL": 3,
+    "DERIVATIVE_ZERO_ALWAYS_EXTREMUM": 3,
+    "LOG_SUM_DISTRIBUTION": 3,
+    "INDEFINITE_INTEGRAL_MISSING_CONSTANT": 3,
+    "VECTOR_COORDINATE_SIGN_ERROR": 3,
+    "PROBABILITY_INDEPENDENCE_ASSUMED": 2,
+    "OXYZ_NORMAL_VECTOR_MISUSED": 2,
+    "FUNCTION_GRAPH_AXES_MISREAD": 2,
+    "DERIVATIVE_ARITHMETIC_SLIP": 2
+  },
+  "error_category_distribution": {
+    "CONCEPTUAL": 11,
+    "PROCEDURAL": 8,
+    "CALCULATION": 3,
+    "READING": 2,
+    "CARELESS": 2
+  },
+  "severity_distribution": {
+    "HIGH": 12,
+    "MEDIUM": 5,
+    "LOW": 5,
+    "CRITICAL": 4
+  },
+  "recommended_hint_type_distribution": {
+    "NEXT_STEP": 13,
+    "CONCEPT_RECALL": 6,
+    "STRATEGY_DIRECTION": 5,
+    "WORKED_EXAMPLE": 2
+  },
+  "taxonomy_distribution": {
+    "REMEMBER": 10,
+    "UNDERSTAND": 8,
+    "APPLY": 8
+  },
+  "missing_values": {
+    "question": 0,
+    "problem_type": 0,
+    "concepts": 0,
+    "learning_outcomes (optional)": 10,
+    "taxonomy": 0,
+    "student_solution": 0,
+    "reference_solution": 0,
+    "verified_misconception_label": 0,
+    "error_category": 0,
+    "severity": 0,
+    "recommended_hint_type": 0
+  },
+  "duplicates_detected": 4,
+  "splits": {
+    "train": {
+      "sample_count": 18,
+      "percentage": 69.23,
+      "question_clusters_count": 15,
+      "cluster_ids": [
+        "cluster_16a6974fa2",
+        "cluster_25dee1561d",
+        "cluster_3a2a5f7613",
+        "cluster_4bb13e9cc2",
+        "cluster_5d25e11bec",
+        "cluster_6aa3c7ec97",
+        "cluster_6d3825cac2",
+        "cluster_aa3b8c6a2a",
+        "cluster_b5a346455d",
+        "cluster_c008c32fda",
+        "cluster_c478889a03",
+        "cluster_c7fb993fe1",
+        "cluster_ce6e9503ac",
+        "cluster_d00a9f1bf5",
+        "cluster_f4c464a398"
+      ]
+    },
+    "validation": {
+      "sample_count": 3,
+      "percentage": 11.54,
+      "question_clusters_count": 2,
+      "cluster_ids": [
+        "cluster_751066437f",
+        "cluster_c871a1d6ad"
+      ]
+    },
+    "test": {
+      "sample_count": 5,
+      "percentage": 19.23,
+      "question_clusters_count": 5,
+      "cluster_ids": [
+        "cluster_148da50040",
+        "cluster_2a983ec615",
+        "cluster_5ffe50f022",
+        "cluster_6958c8ce74",
+        "cluster_decad36e63"
+      ]
+    }
+  },
+  "leakage_check": {
+    "is_leak_free": true,
+    "train_val_cluster_overlap": 0,
+    "train_test_cluster_overlap": 0,
+    "val_test_cluster_overlap": 0,
+    "train_val_question_text_overlap": 0,
+    "train_test_question_text_overlap": 0,
+    "val_test_question_text_overlap": 0,
+    "notes": "Zero question leakage verified across all splits."
+  }
+}

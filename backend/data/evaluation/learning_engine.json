@@ -1,0 +1,139 @@
+{
+  "concept_mastery_tests": [
+    {
+      "test_id": "cm_01",
+      "concept_code": "DERIVATIVE",
+      "initial_score": 0.40,
+      "answer_correct": true,
+      "updated_score": 0.55,
+      "bounds_valid": true,
+      "monotonic_increase": true
+    },
+    {
+      "test_id": "cm_02",
+      "concept_code": "INTEGRAL",
+      "initial_score": 0.70,
+      "answer_correct": false,
+      "updated_score": 0.58,
+      "bounds_valid": true,
+      "monotonic_decrease": true
+    },
+    {
+      "test_id": "cm_03",
+      "concept_code": "EXTREMA",
+      "initial_score": 0.95,
+      "answer_correct": true,
+      "updated_score": 0.98,
+      "bounds_valid": true,
+      "monotonic_increase": true
+    }
+  ],
+  "problem_type_mastery_tests": [
+    {
+      "test_id": "ptm_01",
+      "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+      "window_size": 5,
+      "recent_outcomes": [true, true, true, false, true],
+      "accuracy": 0.80,
+      "expected_state": "PRACTICED",
+      "mastery_score": 0.76,
+      "consistent_with_accuracy": true
+    },
+    {
+      "test_id": "ptm_02",
+      "problem_type_code": "PARAMETER_MONOTONICITY",
+      "window_size": 5,
+      "recent_outcomes": [false, false, false, true, false],
+      "accuracy": 0.20,
+      "expected_state": "STRUGGLING",
+      "mastery_score": 0.25,
+      "consistent_with_accuracy": true
+    }
+  ],
+  "hierarchy_aggregation_tests": [
+    {
+      "test_id": "agg_01",
+      "topic_code": "MONOTONICITY_TOPIC",
+      "leaf_problem_type_scores": [0.70, 0.50],
+      "derived_topic_score": 0.60,
+      "bounded_by_leaves": true,
+      "aggregation_rule": "WEIGHTED_MEAN"
+    },
+    {
+      "test_id": "agg_02",
+      "chapter_code": "CALCULUS_APPLICATION",
+      "topic_scores": [0.60, 0.80, 0.70],
+      "derived_chapter_score": 0.70,
+      "bounded_by_leaves": true,
+      "aggregation_rule": "WEIGHTED_MEAN"
+    }
+  ],
+  "recommendation_tests": [
+    {
+      "test_id": "rec_01",
+      "student_profile": {
+        "mastered_problem_types": ["MONOTONICITY_FROM_EXPRESSION"],
+        "struggling_problem_types": ["PARAMETER_MONOTONICITY"],
+        "unpracticed_problem_types": ["FIND_FUNCTION_EXTREMA"]
+      },
+      "recommended_problem_types": ["PARAMETER_MONOTONICITY", "FIND_FUNCTION_EXTREMA"],
+      "avoids_mastered": true,
+      "targets_weakness": true,
+      "diversity_count": 2
+    },
+    {
+      "test_id": "rec_02",
+      "student_profile": {
+        "mastered_problem_types": ["EXP_LOG_EQUATION"],
+        "struggling_problem_types": ["CALCULATE_INTEGRAL"],
+        "unpracticed_problem_types": ["BASIC_PROBABILITY"]
+      },
+      "recommended_problem_types": ["CALCULATE_INTEGRAL", "BASIC_PROBABILITY"],
+      "avoids_mastered": true,
+      "targets_weakness": true,
+      "diversity_count": 2
+    }
+  ],
+  "diagnostic_tests": [
+    {
+      "test_id": "diag_01",
+      "assessment_responses": [
+        {"item": "q1_monotone", "correct": false},
+        {"item": "q2_derivative_rule", "correct": false}
+      ],
+      "diagnosed_root_cause": "PREREQUISITE_DEFICIT",
+      "prerequisite_concept_flagged": "DERIVATIVE",
+      "triggers_followup_check": true
+    },
+    {
+      "test_id": "diag_02",
+      "assessment_responses": [
+        {"item": "q1_vector_coord", "correct": true},
+        {"item": "q2_vector_dot", "correct": true}
+      ],
+      "diagnosed_root_cause": "READY_FOR_NEXT",
+      "prerequisite_concept_flagged": null,
+      "triggers_followup_check": false
+    }
+  ],
+  "repair_effectiveness_tests": [
+    {
+      "test_id": "rep_01",
+      "target_problem_type": "PARAMETER_MONOTONICITY",
+      "pre_repair_mastery": 0.30,
+      "repair_session_completed": true,
+      "post_repair_mastery": 0.58,
+      "mastery_lift": 0.28,
+      "lift_meets_threshold": true
+    },
+    {
+      "test_id": "rep_02",
+      "target_problem_type": "VECTOR_3D_RELATION",
+      "pre_repair_mastery": 0.35,
+      "repair_session_completed": true,
+      "post_repair_mastery": 0.62,
+      "mastery_lift": 0.27,
+      "lift_meets_threshold": true
+    }
+  ]
+}

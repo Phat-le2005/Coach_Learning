@@ -5,6 +5,9 @@ from typing import Any, TypeVar
 from pydantic import BaseModel
 from pydantic_core import PydanticUndefined
 
+from enum import Enum
+from uuid import UUID, uuid4
+
 from app.ai.exceptions import AIRateLimitError, AIServiceUnavailableError, AITimeoutError
 from app.ai.provider import AIProvider
 from app.ai.types import AIMessage, AIResponse, AIRoutingTier
@@ -23,7 +26,11 @@ def _generate_mock_schema_instance(schema: type[T]) -> T:
         else:
             annotation = field_info.annotation
             annotation_str = str(annotation).lower()
-            if "str" in annotation_str:
+            if isinstance(annotation, type) and issubclass(annotation, Enum):
+                values[field_name] = next(iter(annotation)).value
+            elif "uuid" in annotation_str:
+                values[field_name] = uuid4()
+            elif "str" in annotation_str:
                 values[field_name] = f"mock_{field_name}"
             elif "int" in annotation_str:
                 values[field_name] = 1

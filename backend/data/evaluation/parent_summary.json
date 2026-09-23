@@ -1,0 +1,79 @@
+{
+  "scenarios": [
+    {
+      "scenario_id": "parent_01",
+      "weekly_context": {
+        "learning_time_minutes": 150,
+        "completed_topics": ["Tính đơn điệu của hàm số"],
+        "weak_problem_types": ["Tìm tham số m cho hàm số đơn điệu"],
+        "recent_score": 7.5
+      },
+      "summary_output": {
+        "progress": "Tuần qua con đã nỗ lực duy trì 150 phút tự học nghiêm túc và hoàn thành tốt phần kiến thức nền tảng về tính đơn điệu của hàm số với điểm bài tập đạt 7.5.",
+        "current_challenge": "Con đang làm quen với các bài toán có chứa tham số m và còn đôi chút lúng túng khi xét điều kiện trên toàn tập số thực.",
+        "next_week": "Tuần tới con sẽ tiếp tục luyện tập thêm các bài toán tham số và ôn lại dấu của tam thức bậc hai.",
+        "how_parent_can_help": [
+          "Động viên con dành 20 phút mỗi tối để xem lại ví dụ mẫu đã được sửa trên hệ thống.",
+          "Khích lệ tinh thần con sau mỗi buổi làm bài tập hoàn thành."
+        ]
+      },
+      "is_data_faithful": true,
+      "is_empathetic_tone": true,
+      "has_psychological_speculation": false,
+      "max_two_parent_actions": true,
+      "leaks_raw_chat": false,
+      "leaks_class_ranking": false,
+      "contains_pii": false
+    },
+    {
+      "scenario_id": "parent_02",
+      "weekly_context": {
+        "learning_time_minutes": 180,
+        "completed_topics": ["Hàm số lũy thừa và logarit"],
+        "weak_problem_types": ["Giải phương trình logarit chứa tham số"],
+        "recent_score": 8.0
+      },
+      "summary_output": {
+        "progress": "Con học tập rất chăm chỉ với 180 phút trong tuần, nắm vững các công thức biến đổi logarit cơ bản và đạt điểm 8.0.",
+        "current_challenge": "Khi gặp các phương trình logarit nâng cao có tham số, con cần rèn luyện thêm kỹ năng đặt điều kiện xác định chặt chẽ.",
+        "next_week": "Tiếp tục hoàn thiện các dạng bài logarit nâng cao và chuẩn bị làm quen với chuyên đề tích phân.",
+        "how_parent_can_help": [
+          "Tạo không gian học tập yên tĩnh giúp con tập trung trong các buổi giải bài nâng cao.",
+          "Hỏi han động viên con sau mỗi tuần đạt kết quả tốt."
+        ]
+      },
+      "is_data_faithful": true,
+      "is_empathetic_tone": true,
+      "has_psychological_speculation": false,
+      "max_two_parent_actions": true,
+      "leaks_raw_chat": false,
+      "leaks_class_ranking": false,
+      "contains_pii": false
+    },
+    {
+      "scenario_id": "parent_03",
+      "weekly_context": {
+        "learning_time_minutes": 120,
+        "completed_topics": ["Hình học Oxyz"],
+        "weak_problem_types": ["Vectơ chỉ phương và pháp tuyến"],
+        "recent_score": 6.8
+      },
+      "summary_output": {
+        "progress": "Con tích cực dành 120 phút làm quen với hệ trục tọa độ Oxyz trong không gian và hoàn thành bài tập cơ bản đạt 6.8.",
+        "current_challenge": "Phần hình học không gian 3D tương đối trừu tượng nên con cần thêm chút thời gian để làm quen với vectơ chỉ phương.",
+        "next_week": "Hệ thống sẽ gợi ý cho con các bài luyện tập trực quan bằng hình vẽ không gian để dễ hình dung.",
+        "how_parent_can_help": [
+          "Đồng hành, nhắc nhở con theo dõi các bài giảng minh họa hình ảnh 3D trên ứng dụng.",
+          "Cùng con duy trì thói quen học tập đều đặn hàng ngày."
+        ]
+      },
+      "is_data_faithful": true,
+      "is_empathetic_tone": true,
+      "has_psychological_speculation": false,
+      "max_two_parent_actions": true,
+      "leaks_raw_chat": false,
+      "leaks_class_ranking": false,
+      "contains_pii": false
+    }
+  ]
+}

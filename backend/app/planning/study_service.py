@@ -83,6 +83,7 @@ class StudyPlanService:
         student_id: UUID,
         *,
         as_of: date | None = None,
+        include_explanation: bool = False,
     ) -> StudyDayRead:
         current_date = as_of or date.today()
         plan = self.get_or_create_active_plan(student_id, as_of=current_date)
@@ -113,6 +114,14 @@ class StudyPlanService:
         pt_ids = {t.problem_type_id for t in tasks if t.problem_type_id is not None}
         hierarchy_map = self._get_hierarchy_map(pt_ids)
 
+        explanation = None
+        if include_explanation:
+            from app.planning.study_explanation_service import StudyPlanExplanationService
+
+            explainer = StudyPlanExplanationService(self.session)
+            input_ctx = explainer.build_context(student_id, current_date)
+            explanation = explainer.explain_study_plan(input_ctx)
+
         return StudyDayRead(
             date=current_date,
             available_daily_minutes=daily_minutes,
@@ -122,7 +131,21 @@ class StudyPlanService:
             total_count=len(tasks),
             days_to_exam=days_to_exam,
             notice=notice,
+            explanation=explanation,
         )
+
+    def get_today_explanation(
+        self,
+        student_id: UUID,
+        *,
+        as_of: date | None = None,
+    ):
+        from app.planning.study_explanation_service import StudyPlanExplanationService
+
+        current_date = as_of or date.today()
+        explainer = StudyPlanExplanationService(self.session)
+        input_ctx = explainer.build_context(student_id, current_date)
+        return explainer.explain_study_plan(input_ctx)
 
     def get_study_plan(
         self,

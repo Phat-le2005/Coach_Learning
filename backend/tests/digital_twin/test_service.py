@@ -177,12 +177,12 @@ def test_snapshot_is_recomputed_and_has_no_duplicate_source_table(
     payload = second.model_dump()
     for unavailable_domain in (
         "academic_goal",
-        "known_misconceptions",
         "study_plan",
         "exam_performance",
         "risk_indicators",
     ):
         assert unavailable_domain not in payload
+    assert payload["known_misconceptions"] == []
 
 
 def test_ai_contexts_are_trimmed_for_each_consumer(
@@ -207,6 +207,7 @@ def test_ai_contexts_are_trimmed_for_each_consumer(
         "problem_type_concept_links",
         "review_due",
         "recent_attempts",
+        "known_misconceptions",
     }
     assert "recent_attempts" not in planner
     assert "basic_profile" not in planner
@@ -241,4 +242,4 @@ def test_snapshot_uses_bounded_batch_queries(
     # Profile, seven mastery batches, prerequisites, global problem/concept
     # mappings, three recent-attempt batches, and two behavior aggregates.
     # The count does not grow per row.
-    assert statements <= 16
+    assert statements <= 17

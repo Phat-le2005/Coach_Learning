@@ -20,6 +20,19 @@ from app.learning.router import router as learning_router
 from app.ai.admin_router import router as admin_ai_router
 from app.ai.tutor_router import router as tutor_router
 from app.hints.router import router as hints_router
+from app.repair.router import router as repair_router
+from app.assignments.router import (
+    student_router as student_assignments_router,
+    teacher_router as teacher_assignments_router,
+)
+from app.exams.router import router as exams_router
+from app.admission.router import router as admission_router
+from app.tutor.router import router as tutor_memory_router
+from app.parents.portal_router import (
+    parents_alias_router,
+    router as parent_portal_router,
+)
+
 
 api_router = APIRouter()
 api_router.include_router(health_router)
@@ -34,6 +47,7 @@ api_router.include_router(teacher_classes_router)
 api_router.include_router(student_classes_router)
 api_router.include_router(questions_router)
 api_router.include_router(practice_router)
+api_router.include_router(repair_router)
 api_router.include_router(hints_router)
 api_router.include_router(mastery_router)
 api_router.include_router(digital_twin_router)
@@ -42,3 +56,12 @@ api_router.include_router(planning_router)
 api_router.include_router(learning_router)
 api_router.include_router(admin_ai_router)
 api_router.include_router(tutor_router)
+api_router.include_router(tutor_memory_router)
+api_router.include_router(teacher_assignments_router)
+api_router.include_router(student_assignments_router)
+api_router.include_router(parent_portal_router)
+api_router.include_router(parents_alias_router)
+api_router.include_router(exams_router)
+api_router.include_router(admission_router)
+
+

@@ -1,0 +1,111 @@
+{
+  "rag_test_cases": [
+    {
+      "query_id": "rag_01",
+      "query": "Quy tắc tìm cực trị của hàm số sử dụng đạo hàm cấp 1 và đạo hàm cấp 2 trong chương trình Toán 12?",
+      "target_subject": "MATH_G12",
+      "target_grade": 12,
+      "ground_truth_doc_ids": ["doc_math12_extrema_rule", "doc_math12_derivative_theorem"],
+      "retrieved_docs": [
+        {
+          "doc_id": "doc_math12_extrema_rule",
+          "title": "Quy tắc tìm cực trị hàm số",
+          "subject": "MATH_G12",
+          "grade": 12,
+          "source_reference": "SGK Toán 12 GDPT 2018 - Chương 1",
+          "verified_at": "2026-01-15T00:00:00Z",
+          "is_relevant": true
+        },
+        {
+          "doc_id": "doc_math12_derivative_theorem",
+          "title": "Định lý Fermat về điểm dừng",
+          "subject": "MATH_G12",
+          "grade": 12,
+          "source_reference": "SGK Toán 12 Chuyên đề học tập",
+          "verified_at": "2026-01-15T00:00:00Z",
+          "is_relevant": true
+        },
+        {
+          "doc_id": "doc_math12_monotone",
+          "title": "Tính đơn điệu của hàm số",
+          "subject": "MATH_G12",
+          "grade": 12,
+          "source_reference": "SGK Toán 12 GDPT 2018",
+          "verified_at": "2026-01-15T00:00:00Z",
+          "is_relevant": false
+        }
+      ]
+    },
+    {
+      "query_id": "rag_02",
+      "query": "Công thức nguyên hàm từng phần và bảng nguyên hàm các hàm số cơ bản?",
+      "target_subject": "MATH_G12",
+      "target_grade": 12,
+      "ground_truth_doc_ids": ["doc_math12_integral_table", "doc_math12_by_parts"],
+      "retrieved_docs": [
+        {
+          "doc_id": "doc_math12_integral_table",
+          "title": "Bảng nguyên hàm cơ bản",
+          "subject": "MATH_G12",
+          "grade": 12,
+          "source_reference": "SGK Toán 12 GDPT 2018 - Chương 4",
+          "verified_at": "2026-01-15T00:00:00Z",
+          "is_relevant": true
+        },
+        {
+          "doc_id": "doc_math12_by_parts",
+          "title": "Phương pháp tính nguyên hàm từng phần",
+          "subject": "MATH_G12",
+          "grade": 12,
+          "source_reference": "SGK Toán 12 GDPT 2018 - Chương 4",
+          "verified_at": "2026-01-15T00:00:00Z",
+          "is_relevant": true
+        }
+      ]
+    },
+    {
+      "query_id": "rag_03_filter_test",
+      "query": "Phương trình mặt phẳng đi qua một điểm và có vectơ pháp tuyến trong không gian Oxyz?",
+      "target_subject": "MATH_G12",
+      "target_grade": 12,
+      "ground_truth_doc_ids": ["doc_math12_plane_equation"],
+      "retrieved_docs": [
+        {
+          "doc_id": "doc_math12_plane_equation",
+          "title": "Phương trình tổng quát của mặt phẳng Oxyz",
+          "subject": "MATH_G12",
+          "grade": 12,
+          "source_reference": "SGK Toán 12 GDPT 2018 - Chương 5",
+          "verified_at": "2026-01-15T00:00:00Z",
+          "is_relevant": true
+        }
+      ]
+    }
+  ],
+  "curriculum_filter_tests": [
+    {
+      "candidate_doc_id": "doc_physics10_mechanics",
+      "subject": "PHYSICS_G10",
+      "grade": 10,
+      "is_in_target_scope": false,
+      "should_be_filtered_out": true,
+      "was_filtered_out": true
+    },
+    {
+      "candidate_doc_id": "doc_math10_coordinate",
+      "subject": "MATH_G10",
+      "grade": 10,
+      "is_in_target_scope": false,
+      "should_be_filtered_out": true,
+      "was_filtered_out": true
+    },
+    {
+      "candidate_doc_id": "doc_math12_vector_3d",
+      "subject": "MATH_G12",
+      "grade": 12,
+      "is_in_target_scope": true,
+      "should_be_filtered_out": false,
+      "was_filtered_out": false
+    }
+  ]
+}

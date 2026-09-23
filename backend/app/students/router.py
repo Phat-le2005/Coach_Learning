@@ -1,12 +1,13 @@
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, Response
+from fastapi import APIRouter, Depends, Query, Response
 from sqlalchemy.orm import Session
 
 from app.auth.dependencies import require_role
 from app.core.errors import ErrorResponse
 from app.database.session import get_db
+from app.planning.study_explanation_schemas import StudyPlanExplanationRead
 from app.planning.study_schemas import (
     StudyDayRead,
     StudyPlanRead,
@@ -108,10 +109,23 @@ def get_today_plan(
     response: Response,
     student_service: Annotated[StudentProfileService, Depends(get_student_service)],
     plan_service: Annotated[StudyPlanService, Depends(get_study_plan_service)],
+    include_explanation: Annotated[bool, Query()] = False,
 ) -> StudyDayRead:
     response.headers["Cache-Control"] = "no-store"
     student = student_service.get_for_user(user.id)
-    return plan_service.get_today_plan(student.id)
+    return plan_service.get_today_plan(student.id, include_explanation=include_explanation)
+
+
+@router.get("/me/today/explanation", response_model=StudyPlanExplanationRead)
+def get_today_explanation(
+    user: StudentUser,
+    response: Response,
+    student_service: Annotated[StudentProfileService, Depends(get_student_service)],
+    plan_service: Annotated[StudyPlanService, Depends(get_study_plan_service)],
+) -> StudyPlanExplanationRead:
+    response.headers["Cache-Control"] = "no-store"
+    student = student_service.get_for_user(user.id)
+    return plan_service.get_today_explanation(student.id)
 
 
 @router.get("/me/study-plan", response_model=StudyPlanRead)

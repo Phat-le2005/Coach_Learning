@@ -9,16 +9,21 @@ from app.auth.models import AuthSession
 from app.auth.security import hash_password
 from app.classes.models import Classroom, StudentEnrollment, TeacherClassroom
 from app.core.config import Settings
+from app.concepts.models import Concept
 from app.curriculum.import_service import CurriculumImportService
+from app.curriculum.models import Chapter, ProblemType, ProblemTypeConcept, Topic
+from app.misconceptions.models import MisconceptionDefinition
 from app.parents.models import ParentProfile, ParentStudentRelationship
 from app.practice.models import PracticeSession, QuestionAttempt
 from app.students.models import StudentProfile
+from app.subjects.models import Subject
 from app.teachers.models import TeacherProfile
 from app.users.models import Role, User
 from data.fixtures import CLASSROOMS, PARENT_LINKS
 from data.curriculum import DEFAULT_CURRICULUM_DATASET
 from data.seed.demo_users import USERS
 from data.seed.identifiers import stable_id
+from data.seed.misconceptions import MISCONCEPTIONS
 from data.seed.records import UserSeed
 
 logger = logging.getLogger(__name__)
@@ -107,9 +112,83 @@ class SeedService:
         for state in ("created", "updated", "unchanged"):
             for entity, amount in getattr(curriculum, state).items():
                 self.summary.mark(entity, state, amount)
+        self._seed_misconception_definitions()
         identities = {record.code: self._seed_user(record) for record in USERS}
         self._seed_parent_links(identities)
         self._seed_classrooms(identities)
+
+    def _seed_misconception_definitions(self) -> None:
+        subject = self.session.scalar(select(Subject).where(Subject.code == "MATH_G12"))
+        if subject is None:
+            raise SeedOperationError(
+                "SEED_DATA_INVALID",
+                "Grade 12 Mathematics must exist before misconception taxonomy seeding.",
+            )
+        concept_by_code = {
+            item.code: item
+            for item in self.session.scalars(
+                select(Concept).where(Concept.subject_id == subject.id)
+            )
+        }
+        problem_type_by_code = {
+            item.code: item
+            for item in self.session.scalars(
+                select(ProblemType)
+                .join(Topic, Topic.id == ProblemType.topic_id)
+                .join(Chapter, Chapter.id == Topic.chapter_id)
+                .where(Chapter.subject_id == subject.id)
+            )
+        }
+        for record in MISCONCEPTIONS:
+            concept = concept_by_code.get(record.concept_code)
+            problem_type = (
+                problem_type_by_code.get(record.problem_type_code)
+                if record.problem_type_code is not None
+                else None
+            )
+            if concept is None or (
+                record.problem_type_code is not None and problem_type is None
+            ):
+                raise SeedOperationError(
+                    "SEED_DATA_INVALID",
+                    f"Misconception {record.code} references missing curriculum data.",
+                )
+            if problem_type is not None and self.session.get(
+                ProblemTypeConcept, (problem_type.id, concept.id)
+            ) is None:
+                raise SeedOperationError(
+                    "SEED_DATA_INVALID",
+                    f"Misconception {record.code} references an unmapped ProblemType/Concept pair.",
+                )
+
+            definition_id = stable_id("misconception-definition", record.code)
+            definition = self.session.get(MisconceptionDefinition, definition_id)
+            collision = self.session.scalar(
+                select(MisconceptionDefinition).where(
+                    MisconceptionDefinition.code == record.code
+                )
+            )
+            if collision is not None and collision.id != definition_id:
+                raise self._conflict("misconception code", record.code)
+            values = {
+                "code": record.code,
+                "concept_id": concept.id,
+                "problem_type_id": (
+                    problem_type.id if problem_type is not None else None
+                ),
+                "name": record.name,
+                "description": record.description,
+                "category": record.category,
+                "is_active": True,
+            }
+            if definition is None:
+                self.session.add(
+                    MisconceptionDefinition(id=definition_id, **values)
+                )
+                self.summary.mark("misconception_definitions", "created")
+            else:
+                self._reconcile("misconception_definitions", definition, values)
+            self.session.flush()
 
     def _seed_user(self, record: UserSeed) -> tuple[User, StudentProfile | TeacherProfile | ParentProfile | None]:
         user_id = stable_id("user", record.code)

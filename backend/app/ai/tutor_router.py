@@ -15,6 +15,7 @@ from sqlalchemy.orm import Session
 
 from app.ai.dependencies import get_ai_gateway
 from app.ai.gateway import AIGateway
+from app.ai.rate_limiter import require_ai_rate_limit
 from app.ai.student_tutor_service import StudentTutorService
 from app.ai.tutor_schemas import TutorRequest, TutorResponse
 from app.auth.dependencies import require_role
@@ -42,6 +43,7 @@ Gateway = Annotated[AIGateway, Depends(get_ai_gateway)]
 @router.post(
     "/tutor",
     response_model=None,
+    dependencies=[Depends(require_ai_rate_limit)],
     summary="AI Socratic Tutor",
     description=(
         "Gửi câu hỏi / thắc mắc đến Gia sư AI. "

@@ -39,6 +39,17 @@ def test_migration_chain_matches_models_and_can_downgrade(db_engine: Engine) -> 
             "ai_request_logs",
             "documents", "document_chunks",
             "question_hints", "practice_question_hints",
+            "misconception_definitions", "student_misconceptions",
+            "assignments", "assignment_learning_objectives",
+            "assignment_problem_types", "assignment_concepts",
+            "assignment_questions", "student_assignments",
+            "assignment_student_questions",
+            "exams", "exam_sections", "exam_questions",
+            "exam_attempts", "exam_responses",
+            "universities", "majors", "admission_methods",
+            "admission_data_sources", "admission_rules",
+            "student_admission_targets", "admission_import_histories",
+            "tutor_sessions", "tutor_session_summaries", "student_learning_memories",
         }
         context = MigrationContext.configure(connection)
         assert compare_metadata(context, Base.metadata) == []

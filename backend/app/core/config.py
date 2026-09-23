@@ -47,6 +47,10 @@ class Settings(BaseSettings):
     ai_embedding_model: str = Field(default="text-embedding-004", min_length=1)
     ai_timeout_seconds: float = Field(default=30.0, ge=0.5, le=300.0)
     ai_max_retries: int = Field(default=2, ge=0, le=5)
+    ai_rate_limit_per_minute: int = Field(default=20, ge=1, le=600)
+    ai_daily_requests_limit_per_student: int = Field(default=100, ge=1, le=10000)
+    ai_rag_top_k: int = Field(default=3, ge=1, le=10)
+    ai_max_context_chars: int = Field(default=3000, ge=200, le=50000)
 
     @field_validator("jwt_secret_key")
     @classmethod

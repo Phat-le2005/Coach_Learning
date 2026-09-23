@@ -30,6 +30,9 @@ KHÁI NIỆM ĐANG HỌC:
 [TÀI LIỆU THAM KHẢO LIÊN QUAN (RAG)]
 {rag_context}
 
+[KÝ ỨC HỌC TẬP DÀI HẠN (LONG-TERM LEARNING MEMORY)]
+{learning_memory_context}
+
 [TÓM TẮT PHIÊN HỌC HIỆN TẠI]
 {session_summary}
 

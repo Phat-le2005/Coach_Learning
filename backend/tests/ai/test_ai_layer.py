@@ -59,6 +59,7 @@ def test_all_eleven_task_types_defined():
         "QUESTION_GENERATION",
         "EXAM_ANALYSIS",
         "ADMISSION_ASSISTANT",
+        "MEMORY_EXTRACTION",
     }
     actual_tasks = {t.value for t in AITaskType}
     assert actual_tasks == expected_tasks

@@ -15,10 +15,17 @@ from uuid import UUID
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.ai.context_trimmer import ContextTrimmer
+from app.ai.tool_policy import AIToolPolicy
 from app.ai.tutor_schemas import TutorContextData, TutorRequest
 from app.concepts.models import Concept, ConceptRelation, RelationType
 from app.curriculum.models import Chapter, ProblemType, Topic
 from app.mastery.models import StudentConceptMastery, StudentProblemTypeMastery
+from app.misconceptions.models import (
+    MisconceptionDefinition,
+    StudentMisconception,
+    StudentMisconceptionStatus,
+)
 from app.practice.models import EvaluationStatus, QuestionAttempt
 from app.questions.models import Question, QuestionConcept, QuestionProblemType
 from app.rag.embedding_service import EmbeddingService
@@ -169,9 +176,22 @@ class TutorContextBuilder:
             )
 
         # --- Misconceptions context ---
-        # Currently derived from recent low-confidence attempts; future: dedicated misconception table
         misconceptions_context = self._build_misconceptions_context(
             student_id, concept_ids_for_question
+        )
+
+        # --- Learning memory context ---
+        learning_memory_context = self._build_learning_memory_context(
+            student_id=student_id,
+            subject_id=subject.id if subject else None,
+            problem_type_id=primary_problem_type.id if primary_problem_type else None,
+            concept_ids=concept_ids_for_question,
+        )
+
+        trimmed_query = ContextTrimmer.trim_text(request.message, max_chars=1000)
+        trimmed_summary = ContextTrimmer.trim_session_summary(
+            request.session_summary or "(Không có tóm tắt phiên học)",
+            max_chars=500,
         )
 
         return TutorContextData(
@@ -186,11 +206,49 @@ class TutorContextBuilder:
             question_context=question_context,
             recent_attempts_context=recent_attempts_context,
             rag_context=rag_context,
-            session_summary=request.session_summary or "(Không có tóm tắt phiên học)",
-            student_query=request.message,
+            session_summary=trimmed_summary,
+            learning_memory_context=learning_memory_context,
+            student_query=trimmed_query,
         )
 
     # ------------------------------------------------------------------ helpers
+
+    def _build_learning_memory_context(
+        self,
+        student_id: UUID | None,
+        subject_id: UUID | None,
+        problem_type_id: UUID | None,
+        concept_ids: list[UUID],
+    ) -> str:
+        if not student_id:
+            return "(Chưa có ký ức học tập)"
+
+        from app.tutor.service import MemoryService
+        mem_svc = MemoryService(self.session)
+        memories = mem_svc.get_relevant_memories(
+            student_id=student_id,
+            subject_id=subject_id,
+            problem_type_id=problem_type_id,
+            concept_ids=concept_ids,
+            limit=4,
+        )
+        if not memories:
+            return "(Chưa có ký ức học tập liên quan)"
+
+        lines: list[str] = []
+        for m in memories:
+            type_val = m.type.value if hasattr(m.type, "value") else str(m.type)
+            type_label = {
+                "LEARNING_PREFERENCE": "SỞ THÍCH HỌC TẬP",
+                "TUTORING_PREFERENCE": "PHONG CÁCH GIA SƯ",
+                "IMPORTANT_ACADEMIC_GOAL": "MỤC TIÊU HỌC TẬP",
+                "PERSISTENT_DIFFICULTY": "KHÓ KHĂN DAI DẲNG",
+                "PERSISTENT_MISCONCEPTION": "HIỂU NHẦM DAI DẲNG",
+            }.get(type_val, "KÝ ỨC")
+
+            lines.append(f"- [{type_label}]: {m.value} (độ tin cậy: {m.confidence:.2f})")
+
+        return "\n".join(lines)
 
     def _build_concept_context(self, concept: Concept | None) -> str:
         if not concept:
@@ -320,25 +378,37 @@ class TutorContextBuilder:
     def _build_misconceptions_context(
         self, student_id: UUID | None, concept_ids: list[UUID]
     ) -> str:
-        """Derive misconceptions from low-mastery concepts.
-
-        Future: can be upgraded to query a dedicated misconception table.
-        """
+        """Read explicit active misconception state for the mapped concepts."""
         if not student_id or not concept_ids:
             return "(Không có thông tin về hiểu nhầm)"
 
-        lines: list[str] = []
-        for cid in concept_ids:
-            scm = self.session.get(StudentConceptMastery, (student_id, cid))
-            if scm and scm.mastery_score < _MASTERY_LOW and scm.attempt_count >= 3:
-                concept_obj = self.session.get(Concept, cid)
-                if concept_obj:
-                    lines.append(
-                        f"- [{concept_obj.name}]: điểm thấp liên tục "
-                        f"({scm.mastery_score:.2f}), có thể có hiểu nhầm cơ bản."
-                    )
+        rows = self.session.execute(
+            select(StudentMisconception, MisconceptionDefinition)
+            .join(
+                MisconceptionDefinition,
+                MisconceptionDefinition.id
+                == StudentMisconception.misconception_definition_id,
+            )
+            .where(
+                StudentMisconception.student_id == student_id,
+                StudentMisconception.status
+                != StudentMisconceptionStatus.RESOLVED,
+                MisconceptionDefinition.is_active.is_(True),
+                MisconceptionDefinition.concept_id.in_(concept_ids),
+            )
+            .order_by(
+                StudentMisconception.confidence.desc(),
+                MisconceptionDefinition.code,
+            )
+        )
+        lines = [
+            f"- [{definition.code}] {definition.name}: "
+            f"status={state.status.value}, confidence={state.confidence:.2f}, "
+            f"occurrences={state.occurrence_count}."
+            for state, definition in rows
+        ]
 
-        return "\n".join(lines) if lines else "(Không phát hiện hiểu nhầm rõ ràng)"
+        return "\n".join(lines) if lines else "(Không phát hiện hiểu nhầm đang hoạt động)"
 
     async def _build_rag_context(
         self,
@@ -360,11 +430,9 @@ class TutorContextBuilder:
             if not results:
                 return "(Không tìm thấy tài liệu tham khảo liên quan)"
 
-            lines: list[str] = []
-            for i, item in enumerate(results, 1):
-                safe_content = item.content[:400].strip()
-                lines.append(f"[{i}] {safe_content}")
-            return "\n\n".join(lines)
+            chunks = [item.content for item in results]
+            trimmed_chunks = ContextTrimmer.trim_rag_chunks(chunks, top_k=_RAG_TOP_K, max_chars_per_chunk=400)
+            return AIToolPolicy.format_rag_data(trimmed_chunks)
         except Exception as exc:  # noqa: BLE001
             logger.warning("RAG context build failed: %s", exc)
             return "(Không thể tải tài liệu tham khảo)"

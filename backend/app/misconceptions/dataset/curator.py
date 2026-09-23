@@ -1,0 +1,408 @@
+from __future__ import annotations
+
+from app.misconceptions.dataset.anonymizer import PIISanitizer
+from app.misconceptions.dataset.schemas import (
+    CognitiveTaxonomy,
+    MisconceptionSample,
+    MisconceptionSeverity,
+    RecommendedHintType,
+)
+from app.misconceptions.models import MisconceptionCategory
+
+
+def build_curated_samples() -> list[MisconceptionSample]:
+    """Build a curated set of verified, high-quality, PII-clean misconception samples
+    covering core Grade 12 GDPT 2018 Mathematics curriculum domains.
+    
+    Includes canonical questions, multi-step student reasoning errors, and intentional
+    near-duplicate questions to validate cluster-based anti-leakage splitting.
+    """
+    raw_entries = [
+        # --- DERIVATIVE_SIGN_DIRECTION (CONCEPTUAL, HIGH, CONCEPT_RECALL) ---
+        {
+            "question": "Tìm các khoảng nghịch biến của hàm số y = x^3 - 3x^2 + 2.",
+            "problem_type": "MONOTONICITY_FROM_EXPRESSION",
+            "concepts": ["DERIVATIVE", "MONOTONICITY"],
+            "learning_outcomes": ["LO_DERIV_SIGN"],
+            "taxonomy": CognitiveTaxonomy.UNDERSTAND,
+            "student_solution": "Ta có y' = 3x^2 - 6x. Cho y' = 0 <=> x = 0 hoặc x = 2. Xét dấu: trong khoảng (0; 2) y' < 0 nên hàm số đồng biến. Trên (-inf; 0) và (2; +inf) y' > 0 nên hàm số nghịch biến.",
+            "reference_solution": "y' = 3x^2 - 6x = 3x(x - 2). Cho y' = 0 <=> x = 0 hoặc x = 2. Do hệ số a = 3 > 0, y' < 0 trên khoảng (0; 2) nên hàm số nghịch biến trên khoảng (0; 2).",
+            "verified_misconception_label": "DERIVATIVE_SIGN_DIRECTION",
+            "error_category": MisconceptionCategory.CONCEPTUAL,
+            "severity": MisconceptionSeverity.HIGH,
+            "recommended_hint_type": RecommendedHintType.CONCEPT_RECALL,
+        },
+        # Near-duplicate of above
+        {
+            "question": "Xác định các khoảng nghịch biến của hàm số f(x) = x^3 - 3x^2 + 2.",
+            "problem_type": "MONOTONICITY_FROM_EXPRESSION",
+            "concepts": ["DERIVATIVE", "MONOTONICITY"],
+            "learning_outcomes": ["LO_DERIV_SIGN"],
+            "taxonomy": CognitiveTaxonomy.UNDERSTAND,
+            "student_solution": "Đạo hàm f'(x) = 3x^2 - 6x. f'(x) = 0 <=> x = 0 hoặc x = 2. Vì f'(x) mang dấu âm trong khoảng (0; 2) nên hàm số đồng biến trên (0; 2).",
+            "reference_solution": "f'(x) = 3x^2 - 6x. f'(x) < 0 trên khoảng (0; 2) nên hàm số nghịch biến trên (0; 2).",
+            "verified_misconception_label": "DERIVATIVE_SIGN_DIRECTION",
+            "error_category": MisconceptionCategory.CONCEPTUAL,
+            "severity": MisconceptionSeverity.HIGH,
+            "recommended_hint_type": RecommendedHintType.CONCEPT_RECALL,
+        },
+        {
+            "question": "Cho hàm số f(x) có bảng xét dấu đạo hàm: f'(x) mang dấu dương trên (1; 3). Kết luận nào đúng về tính đơn điệu?",
+            "problem_type": "MONOTONICITY_FROM_EXPRESSION",
+            "concepts": ["DERIVATIVE", "MONOTONICITY"],
+            "learning_outcomes": None,
+            "taxonomy": CognitiveTaxonomy.REMEMBER,
+            "student_solution": "Vì đạo hàm f'(x) mang dấu dương trên (1; 3) nên hàm số nghịch biến trên khoảng (1; 3).",
+            "reference_solution": "Theo định lý về dấu đạo hàm, f'(x) > 0 trên khoảng (a; b) thì hàm số đồng biến trên khoảng đó. Do đó hàm số đồng biến trên (1; 3).",
+            "verified_misconception_label": "DERIVATIVE_SIGN_DIRECTION",
+            "error_category": MisconceptionCategory.CONCEPTUAL,
+            "severity": MisconceptionSeverity.HIGH,
+            "recommended_hint_type": RecommendedHintType.CONCEPT_RECALL,
+        },
+
+        # --- PARAMETER_CONDITION_NOT_GLOBAL (PROCEDURAL, CRITICAL, STRATEGY_DIRECTION) ---
+        {
+            "question": "Tìm tất cả các giá trị của m để hàm số y = x^3 - 3mx^2 + 3x - 1 đồng biến trên R.",
+            "problem_type": "PARAMETER_MONOTONICITY",
+            "concepts": ["INEQUALITY_SOLVING", "PARAMETER_REASONING", "MONOTONICITY"],
+            "learning_outcomes": ["LO_PARAM_MONOTONE"],
+            "taxonomy": CognitiveTaxonomy.APPLY,
+            "student_solution": "Ta có y' = 3x^2 - 6mx + 3. Để hàm số đồng biến trên R thì chỉ cần chọn x = 1 ta có y'(1) >= 0 <=> 3 - 6m + 3 >= 0 <=> 6m <= 6 <=> m <= 1.",
+            "reference_solution": "y' = 3x^2 - 6mx + 3 >= 0 với mọi x thuộc R <=> Delta' = 9m^2 - 9 <= 0 <=> m^2 - 1 <= 0 <=> -1 <= m <= 1.",
+            "verified_misconception_label": "PARAMETER_CONDITION_NOT_GLOBAL",
+            "error_category": MisconceptionCategory.PROCEDURAL,
+            "severity": MisconceptionSeverity.CRITICAL,
+            "recommended_hint_type": RecommendedHintType.STRATEGY_DIRECTION,
+        },
+        # Near-duplicate of parameter question
+        {
+            "question": "Tìm tất cả giá trị thực của tham số m để hàm số y = x^3 - 3mx^2 + 3x - 1 đồng biến trên toàn trục số R.",
+            "problem_type": "PARAMETER_MONOTONICITY",
+            "concepts": ["INEQUALITY_SOLVING", "PARAMETER_REASONING"],
+            "learning_outcomes": ["LO_PARAM_MONOTONE"],
+            "taxonomy": CognitiveTaxonomy.APPLY,
+            "student_solution": "y' = 3x^2 - 6mx + 3. Kiểm tra tại x = 0 ta có 3 >= 0 luôn đúng, nên m nhận mọi giá trị thực R.",
+            "reference_solution": "Hàm số đồng biến trên R <=> y' >= 0 với mọi x in R <=> a = 3 > 0 và Delta' = 9m^2 - 9 <= 0 <=> -1 <= m <= 1.",
+            "verified_misconception_label": "PARAMETER_CONDITION_NOT_GLOBAL",
+            "error_category": MisconceptionCategory.PROCEDURAL,
+            "severity": MisconceptionSeverity.CRITICAL,
+            "recommended_hint_type": RecommendedHintType.STRATEGY_DIRECTION,
+        },
+        {
+            "question": "Tìm m để tam thức bậc hai f(x) = x^2 - 2(m-1)x + 4 luôn dương với mọi x thuộc R.",
+            "problem_type": "PARAMETER_MONOTONICITY",
+            "concepts": ["INEQUALITY_SOLVING"],
+            "learning_outcomes": None,
+            "taxonomy": CognitiveTaxonomy.APPLY,
+            "student_solution": "Để f(x) > 0 với mọi x thuộc R thì f(0) > 0 <=> 4 > 0 luôn đúng với mọi m, vậy m thuộc R.",
+            "reference_solution": "Tam thức bậc hai f(x) > 0 với mọi x in R khi và chỉ khi a = 1 > 0 và Delta' = (m-1)^2 - 4 < 0 <=> m^2 - 2m - 3 < 0 <=> -1 < m < 3.",
+            "verified_misconception_label": "PARAMETER_CONDITION_NOT_GLOBAL",
+            "error_category": MisconceptionCategory.PROCEDURAL,
+            "severity": MisconceptionSeverity.HIGH,
+            "recommended_hint_type": RecommendedHintType.STRATEGY_DIRECTION,
+        },
+
+        # --- DERIVATIVE_ZERO_ALWAYS_EXTREMUM (CONCEPTUAL, HIGH, NEXT_STEP) ---
+        {
+            "question": "Tìm các điểm cực trị của hàm số y = x^4 - 4x^3 + 1.",
+            "problem_type": "FIND_FUNCTION_EXTREMA",
+            "concepts": ["EXTREMA", "DERIVATIVE"],
+            "learning_outcomes": ["LO_EXTREMA_FIND"],
+            "taxonomy": CognitiveTaxonomy.UNDERSTAND,
+            "student_solution": "y' = 4x^3 - 12x^2 = 4x^2(x - 3). Cho y' = 0 <=> x = 0 hoặc x = 3. Vậy hàm số có hai điểm cực trị là x = 0 và x = 3.",
+            "reference_solution": "y' = 4x^2(x - 3). Nghiệm x = 0 là nghiệm bội chẵn nên y' không đổi dấu khi qua x = 0. Nghiệm x = 3 là nghiệm bội lẻ, y' đổi dấu từ âm sang dương nên x = 3 là điểm cực tiểu duy nhất. Vậy hàm số chỉ có 1 điểm cực trị là x = 3.",
+            "verified_misconception_label": "DERIVATIVE_ZERO_ALWAYS_EXTREMUM",
+            "error_category": MisconceptionCategory.CONCEPTUAL,
+            "severity": MisconceptionSeverity.HIGH,
+            "recommended_hint_type": RecommendedHintType.NEXT_STEP,
+        },
+        {
+            "question": "Cho hàm số y = (x - 1)^3 + 2. Điểm x = 1 có phải là điểm cực trị của hàm số không?",
+            "problem_type": "FIND_FUNCTION_EXTREMA",
+            "concepts": ["EXTREMA", "DERIVATIVE"],
+            "learning_outcomes": None,
+            "taxonomy": CognitiveTaxonomy.UNDERSTAND,
+            "student_solution": "y' = 3(x - 1)^2. Tại x = 1 ta có y'(1) = 0, do đó x = 1 là điểm cực trị của hàm số.",
+            "reference_solution": "y' = 3(x - 1)^2 >= 0 với mọi x, y' không đổi dấu khi qua x = 1. Do đó x = 1 không phải là điểm cực trị của hàm số.",
+            "verified_misconception_label": "DERIVATIVE_ZERO_ALWAYS_EXTREMUM",
+            "error_category": MisconceptionCategory.CONCEPTUAL,
+            "severity": MisconceptionSeverity.HIGH,
+            "recommended_hint_type": RecommendedHintType.NEXT_STEP,
+        },
+        # Near-duplicate of extrema question
+        {
+            "question": "Tìm số điểm cực trị của hàm số f(x) = x^4 - 4x^3 + 5.",
+            "problem_type": "FIND_FUNCTION_EXTREMA",
+            "concepts": ["EXTREMA", "DERIVATIVE"],
+            "learning_outcomes": ["LO_EXTREMA_FIND"],
+            "taxonomy": CognitiveTaxonomy.UNDERSTAND,
+            "student_solution": "f'(x) = 4x^3 - 12x^2 = 0 <=> x = 0 hoặc x = 3. Phương trình có 2 nghiệm nên hàm số có 2 điểm cực trị.",
+            "reference_solution": "f'(x) = 4x^2(x - 3). y' chỉ đổi dấu qua nghiệm đơn x = 3, không đổi dấu qua x = 0. Vậy hàm số chỉ có 1 điểm cực trị.",
+            "verified_misconception_label": "DERIVATIVE_ZERO_ALWAYS_EXTREMUM",
+            "error_category": MisconceptionCategory.CONCEPTUAL,
+            "severity": MisconceptionSeverity.HIGH,
+            "recommended_hint_type": RecommendedHintType.NEXT_STEP,
+        },
+
+        # --- LOG_SUM_DISTRIBUTION (CONCEPTUAL, CRITICAL, CONCEPT_RECALL) ---
+        {
+            "question": "Giải phương trình: log_2(x + 2) + log_2(x) = 3.",
+            "problem_type": "EXP_LOG_EQUATION",
+            "concepts": ["LOGARITHM"],
+            "learning_outcomes": ["LO_LOG_EQUATION"],
+            "taxonomy": CognitiveTaxonomy.APPLY,
+            "student_solution": "ĐK: x > 0. Ta áp dụng log_2(x + 2) = log_2(x) + log_2(2). Khi đó log_2(x) + 1 + log_2(x) = 3 <=> 2*log_2(x) = 2 <=> log_2(x) = 1 <=> x = 2.",
+            "reference_solution": "ĐK: x > 0. Phương trình tương đương: log_2(x(x + 2)) = 3 <=> x^2 + 2x = 2^3 = 8 <=> x^2 + 2x - 8 = 0 <=> x = 2 (nhận) hoặc x = -4 (loại). Nghiệm x = 2.",
+            "verified_misconception_label": "LOG_SUM_DISTRIBUTION",
+            "error_category": MisconceptionCategory.CONCEPTUAL,
+            "severity": MisconceptionSeverity.CRITICAL,
+            "recommended_hint_type": RecommendedHintType.CONCEPT_RECALL,
+        },
+        {
+            "question": "Rút gọn biểu thức P = ln(a + b) với a, b > 0.",
+            "problem_type": "EXP_LOG_EQUATION",
+            "concepts": ["LOGARITHM"],
+            "learning_outcomes": None,
+            "taxonomy": CognitiveTaxonomy.REMEMBER,
+            "student_solution": "Theo tính chất hàm logarit, P = ln(a + b) = ln(a) + ln(b).",
+            "reference_solution": "Công thức đúng là ln(a*b) = ln(a) + ln(b). Biểu thức ln(a + b) không thể phân tách thành ln(a) + ln(b).",
+            "verified_misconception_label": "LOG_SUM_DISTRIBUTION",
+            "error_category": MisconceptionCategory.CONCEPTUAL,
+            "severity": MisconceptionSeverity.HIGH,
+            "recommended_hint_type": RecommendedHintType.CONCEPT_RECALL,
+        },
+        # Near-duplicate of log sum
+        {
+            "question": "Giải phương trình log_3(x + 4) + log_3(x) = 1 trên tập số thực.",
+            "problem_type": "EXP_LOG_EQUATION",
+            "concepts": ["LOGARITHM"],
+            "learning_outcomes": ["LO_LOG_EQUATION"],
+            "taxonomy": CognitiveTaxonomy.APPLY,
+            "student_solution": "Ta biến đổi log_3(x + 4) = log_3(x) + log_3(4). Suy ra 2*log_3(x) + log_3(4) = 1.",
+            "reference_solution": "ĐK: x > 0. Áp dụng quy tắc cộng logarit: log_3(x(x + 4)) = 1 <=> x^2 + 4x - 3 = 0 <=> x = -2 + sqrt(7).",
+            "verified_misconception_label": "LOG_SUM_DISTRIBUTION",
+            "error_category": MisconceptionCategory.CONCEPTUAL,
+            "severity": MisconceptionSeverity.CRITICAL,
+            "recommended_hint_type": RecommendedHintType.CONCEPT_RECALL,
+        },
+
+        # --- INDEFINITE_INTEGRAL_MISSING_CONSTANT (PROCEDURAL, MEDIUM, NEXT_STEP) ---
+        {
+            "question": "Tìm nguyên hàm của hàm số f(x) = 3x^2 - 4x + 1.",
+            "problem_type": "CALCULATE_INTEGRAL",
+            "concepts": ["INTEGRAL"],
+            "learning_outcomes": ["LO_ANTIDERIVATIVE"],
+            "taxonomy": CognitiveTaxonomy.REMEMBER,
+            "student_solution": "Nguyên hàm của hàm số là F(x) = x^3 - 2x^2 + x.",
+            "reference_solution": "Họ nguyên hàm của f(x) là int (3x^2 - 4x + 1) dx = x^3 - 2x^2 + x + C (với C là hằng số thực tùy ý).",
+            "verified_misconception_label": "INDEFINITE_INTEGRAL_MISSING_CONSTANT",
+            "error_category": MisconceptionCategory.PROCEDURAL,
+            "severity": MisconceptionSeverity.MEDIUM,
+            "recommended_hint_type": RecommendedHintType.NEXT_STEP,
+        },
+        {
+            "question": "Tìm họ nguyên hàm của hàm số f(x) = cos(x) + e^x.",
+            "problem_type": "CALCULATE_INTEGRAL",
+            "concepts": ["INTEGRAL"],
+            "learning_outcomes": None,
+            "taxonomy": CognitiveTaxonomy.REMEMBER,
+            "student_solution": "int (cos(x) + e^x) dx = sin(x) + e^x.",
+            "reference_solution": "int (cos(x) + e^x) dx = sin(x) + e^x + C với C in R.",
+            "verified_misconception_label": "INDEFINITE_INTEGRAL_MISSING_CONSTANT",
+            "error_category": MisconceptionCategory.PROCEDURAL,
+            "severity": MisconceptionSeverity.MEDIUM,
+            "recommended_hint_type": RecommendedHintType.NEXT_STEP,
+        },
+        # Near duplicate of integral
+        {
+            "question": "Xác định họ nguyên hàm của hàm số f(x) = 3x^2 - 4x + 5.",
+            "problem_type": "CALCULATE_INTEGRAL",
+            "concepts": ["INTEGRAL"],
+            "learning_outcomes": ["LO_ANTIDERIVATIVE"],
+            "taxonomy": CognitiveTaxonomy.REMEMBER,
+            "student_solution": "Kết quả nguyên hàm là F(x) = x^3 - 2x^2 + 5x.",
+            "reference_solution": "F(x) = int (3x^2 - 4x + 5) dx = x^3 - 2x^2 + 5x + C.",
+            "verified_misconception_label": "INDEFINITE_INTEGRAL_MISSING_CONSTANT",
+            "error_category": MisconceptionCategory.PROCEDURAL,
+            "severity": MisconceptionSeverity.MEDIUM,
+            "recommended_hint_type": RecommendedHintType.NEXT_STEP,
+        },
+
+        # --- PROBABILITY_INDEPENDENCE_ASSUMED (CONCEPTUAL, HIGH, STRATEGY_DIRECTION) ---
+        {
+            "question": "Một hộp có 4 viên bi đỏ và 6 viên bi xanh. Rút ngẫu nhiên lần lượt 2 viên bi không hoàn lại. Tính xác suất để cả 2 viên đều màu đỏ.",
+            "problem_type": "BASIC_PROBABILITY",
+            "concepts": ["PROBABILITY"],
+            "learning_outcomes": ["LO_COND_PROB"],
+            "taxonomy": CognitiveTaxonomy.APPLY,
+            "student_solution": "Xác suất lấy bi đỏ lần 1 là 4/10. Do hai lần lấy bi đỏ độc lập nên xác suất cả 2 lần lấy bi đỏ là (4/10) * (4/10) = 16/100 = 0.16.",
+            "reference_solution": "Do không hoàn lại, hai biến cố là phụ thuộc. Lần 1 lấy bi đỏ có xác suất 4/10. Khi đó trong hộp còn 9 viên bi (3 đỏ), xác suất lấy tiếp bi đỏ là 3/9. Xác suất cần tìm là (4/10) * (3/9) = 12/90 = 2/15.",
+            "verified_misconception_label": "PROBABILITY_INDEPENDENCE_ASSUMED",
+            "error_category": MisconceptionCategory.CONCEPTUAL,
+            "severity": MisconceptionSeverity.HIGH,
+            "recommended_hint_type": RecommendedHintType.STRATEGY_DIRECTION,
+        },
+        {
+            "question": "Rút liên tiếp hai lá bài từ cỗ bài 52 lá không hoàn lại. Gọi A là biến cố lá thứ nhất là Át, B là biến cố lá thứ hai là Át. Tính P(A giao B).",
+            "problem_type": "BASIC_PROBABILITY",
+            "concepts": ["PROBABILITY"],
+            "learning_outcomes": None,
+            "taxonomy": CognitiveTaxonomy.APPLY,
+            "student_solution": "Vì P(A) = 4/52 và P(B) = 4/52 nên P(A giao B) = P(A)*P(B) = (4/52)*(4/52) = 1/169.",
+            "reference_solution": "Hai biến cố không độc lập vì lấy không hoàn lại. P(A giao B) = P(A)*P(B|A) = (4/52)*(3/51) = 1/221.",
+            "verified_misconception_label": "PROBABILITY_INDEPENDENCE_ASSUMED",
+            "error_category": MisconceptionCategory.CONCEPTUAL,
+            "severity": MisconceptionSeverity.HIGH,
+            "recommended_hint_type": RecommendedHintType.STRATEGY_DIRECTION,
+        },
+
+        # --- VECTOR_COORDINATE_SIGN_ERROR (CALCULATION, LOW, NEXT_STEP) ---
+        {
+            "question": "Trong không gian Oxyz, cho hai điểm A(1; 2; -1) và B(3; -1; 2). Tìm tọa độ của vectơ AB.",
+            "problem_type": "VECTOR_3D_RELATION",
+            "concepts": ["VECTOR", "OXYZ"],
+            "learning_outcomes": ["LO_VECTOR_COORD"],
+            "taxonomy": CognitiveTaxonomy.REMEMBER,
+            "student_solution": "Ta có vectơ AB = (x_A - x_B; y_A - y_B; z_A - z_B) = (1 - 3; 2 - (-1); -1 - 2) = (-2; 3; -3).",
+            "reference_solution": "Tọa độ vectơ AB = (x_B - x_A; y_B - y_A; z_B - z_A) = (3 - 1; -1 - 2; 2 - (-1)) = (2; -3; 3).",
+            "verified_misconception_label": "VECTOR_COORDINATE_SIGN_ERROR",
+            "error_category": MisconceptionCategory.CALCULATION,
+            "severity": MisconceptionSeverity.LOW,
+            "recommended_hint_type": RecommendedHintType.NEXT_STEP,
+        },
+        # Near duplicate of vector coordinate
+        {
+            "question": "Trong không gian với hệ tọa độ Oxyz, cho điểm A(1; 2; -1) và điểm B(3; -1; 2). Xác định tọa độ vectơ AB.",
+            "problem_type": "VECTOR_3D_RELATION",
+            "concepts": ["VECTOR", "OXYZ"],
+            "learning_outcomes": ["LO_VECTOR_COORD"],
+            "taxonomy": CognitiveTaxonomy.REMEMBER,
+            "student_solution": "vectơ AB = (1 - 3; 2 - (-1); -1 - 2) = (-2; 3; -3). Lấy tọa độ điểm A trừ tọa độ điểm B.",
+            "reference_solution": "Tọa độ vectơ AB = điểm ngọn B trừ điểm gốc A: (3 - 1; -1 - 2; 2 - (-1)) = (2; -3; 3).",
+            "verified_misconception_label": "VECTOR_COORDINATE_SIGN_ERROR",
+            "error_category": MisconceptionCategory.CALCULATION,
+            "severity": MisconceptionSeverity.LOW,
+            "recommended_hint_type": RecommendedHintType.NEXT_STEP,
+        },
+        {
+            "question": "Cho hai điểm M(2; -3; 4) và N(-1; 0; 2). Tính tọa độ vectơ MN.",
+            "problem_type": "VECTOR_3D_RELATION",
+            "concepts": ["VECTOR", "OXYZ"],
+            "learning_outcomes": None,
+            "taxonomy": CognitiveTaxonomy.REMEMBER,
+            "student_solution": "vectơ MN = (2 - (-1); -3 - 0; 4 - 2) = (3; -3; 2).",
+            "reference_solution": "vectơ MN = (x_N - x_M; y_N - y_M; z_N - z_M) = (-1 - 2; 0 - (-3); 2 - 4) = (-3; 3; -2).",
+            "verified_misconception_label": "VECTOR_COORDINATE_SIGN_ERROR",
+            "error_category": MisconceptionCategory.CALCULATION,
+            "severity": MisconceptionSeverity.LOW,
+            "recommended_hint_type": RecommendedHintType.NEXT_STEP,
+        },
+
+        # --- OXYZ_NORMAL_VECTOR_MISUSED (PROCEDURAL, HIGH, WORKED_EXAMPLE) ---
+        {
+            "question": "Trong không gian Oxyz, cho mặt phẳng (P): 2x - y + 3z - 4 = 0 và đường thẳng d vuông góc với (P). Tìm một vectơ chỉ phương của d.",
+            "problem_type": "OXYZ_LINE_PLANE_INTERSECTION",
+            "concepts": ["OXYZ", "GEOMETRY_3D"],
+            "learning_outcomes": ["LO_LINE_PLANE"],
+            "taxonomy": CognitiveTaxonomy.APPLY,
+            "student_solution": "Vectơ pháp tuyến của (P) là n = (2; -1; 3). Vì đường thẳng d cắt mặt phẳng nên vectơ chỉ phương của d phải vuông góc với n, ta chọn u = (1; 2; 0) vì n.u = 0.",
+            "reference_solution": "Vì đường thẳng d vuông góc với mặt phẳng (P), giá của vectơ chỉ phương u_d song song hoặc trùng với vectơ pháp tuyến n_P. Do đó ta có thể chọn u_d = n_P = (2; -1; 3).",
+            "verified_misconception_label": "OXYZ_NORMAL_VECTOR_MISUSED",
+            "error_category": MisconceptionCategory.PROCEDURAL,
+            "severity": MisconceptionSeverity.HIGH,
+            "recommended_hint_type": RecommendedHintType.WORKED_EXAMPLE,
+        },
+        {
+            "question": "Cho mặt phẳng (alpha): x + 2y - 2z + 1 = 0. Đường thẳng Delta song song với (alpha). Hỏi vectơ pháp tuyến n = (1; 2; -2) có quan hệ thế nào với vectơ chỉ phương u của Delta?",
+            "problem_type": "OXYZ_LINE_PLANE_INTERSECTION",
+            "concepts": ["OXYZ"],
+            "learning_outcomes": None,
+            "taxonomy": CognitiveTaxonomy.UNDERSTAND,
+            "student_solution": "Vì Delta song song với mặt phẳng nên vectơ chỉ phương của Delta cùng phương với vectơ pháp tuyến của mặt phẳng: u = n = (1; 2; -2).",
+            "reference_solution": "Nếu Delta song song (alpha) thì vectơ chỉ phương của Delta phải vuông góc với vectơ pháp tuyến của (alpha), tức là n . u = 0, chứ không cùng phương.",
+            "verified_misconception_label": "OXYZ_NORMAL_VECTOR_MISUSED",
+            "error_category": MisconceptionCategory.PROCEDURAL,
+            "severity": MisconceptionSeverity.HIGH,
+            "recommended_hint_type": RecommendedHintType.WORKED_EXAMPLE,
+        },
+
+        # --- FUNCTION_GRAPH_AXES_MISREAD (READING, MEDIUM, NEXT_STEP) ---
+        {
+            "question": "Dựa vào đồ thị hàm số y = f(x), biết điểm uốn hoặc cực đại tại đỉnh (2; 5). Hãy tìm giá trị cực đại của hàm số.",
+            "problem_type": "COMPLETE_FUNCTION_ANALYSIS",
+            "concepts": ["FUNCTION_ANALYSIS", "EXTREMA"],
+            "learning_outcomes": ["LO_GRAPH_READ"],
+            "taxonomy": CognitiveTaxonomy.UNDERSTAND,
+            "student_solution": "Đỉnh đồ thị là (2; 5), tọa độ hoành độ là 2 nên giá trị cực đại của hàm số là 2.",
+            "reference_solution": "Điểm cực đại của hàm số là x = 2, còn giá trị cực đại của hàm số là tung độ y = 5.",
+            "verified_misconception_label": "FUNCTION_GRAPH_AXES_MISREAD",
+            "error_category": MisconceptionCategory.READING,
+            "severity": MisconceptionSeverity.MEDIUM,
+            "recommended_hint_type": RecommendedHintType.NEXT_STEP,
+        },
+        # Near duplicate of graph read
+        {
+            "question": "Cho đồ thị hàm số bậc ba y = f(x) có điểm cực tiểu là (1; -3). Tìm giá trị cực tiểu của hàm số đã cho.",
+            "problem_type": "COMPLETE_FUNCTION_ANALYSIS",
+            "concepts": ["FUNCTION_ANALYSIS", "EXTREMA"],
+            "learning_outcomes": ["LO_GRAPH_READ"],
+            "taxonomy": CognitiveTaxonomy.UNDERSTAND,
+            "student_solution": "Điểm cực tiểu là (1; -3) nên giá trị cực tiểu của hàm số là 1.",
+            "reference_solution": "Hoành độ x = 1 là điểm cực tiểu, giá trị cực tiểu của hàm số là y = -3.",
+            "verified_misconception_label": "FUNCTION_GRAPH_AXES_MISREAD",
+            "error_category": MisconceptionCategory.READING,
+            "severity": MisconceptionSeverity.MEDIUM,
+            "recommended_hint_type": RecommendedHintType.NEXT_STEP,
+        },
+
+        # --- DERIVATIVE_ARITHMETIC_SLIP (CARELESS, LOW, NEXT_STEP) ---
+        {
+            "question": "Tính đạo hàm của hàm số f(x) = 2x^3 - 5x^2 + 4x - 7.",
+            "problem_type": "MONOTONICITY_FROM_EXPRESSION",
+            "concepts": ["DERIVATIVE"],
+            "learning_outcomes": None,
+            "taxonomy": CognitiveTaxonomy.REMEMBER,
+            "student_solution": "f'(x) = 2*3*x^2 - 5*2*x + 4 = 6x^2 - 7x + 4 (nhầm 5*2 thành 7).",
+            "reference_solution": "f'(x) = 6x^2 - 10x + 4.",
+            "verified_misconception_label": "DERIVATIVE_ARITHMETIC_SLIP",
+            "error_category": MisconceptionCategory.CARELESS,
+            "severity": MisconceptionSeverity.LOW,
+            "recommended_hint_type": RecommendedHintType.NEXT_STEP,
+        },
+        {
+            "question": "Tính đạo hàm của hàm số y = -3x^2 + 6x - 1.",
+            "problem_type": "MONOTONICITY_FROM_EXPRESSION",
+            "concepts": ["DERIVATIVE"],
+            "learning_outcomes": None,
+            "taxonomy": CognitiveTaxonomy.REMEMBER,
+            "student_solution": "y' = -6x - 6 (nhầm dấu của hệ số bậc 1 khi đạo hàm).",
+            "reference_solution": "y' = -6x + 6.",
+            "verified_misconception_label": "DERIVATIVE_ARITHMETIC_SLIP",
+            "error_category": MisconceptionCategory.CARELESS,
+            "severity": MisconceptionSeverity.LOW,
+            "recommended_hint_type": RecommendedHintType.NEXT_STEP,
+        },
+    ]
+
+    samples: list[MisconceptionSample] = []
+    for idx, item in enumerate(raw_entries, start=1):
+        # Generate anonymous sample ID based on question and student solution
+        smp_id = PIISanitizer.generate_anonymous_sample_id(f"{item['question']}::{item['student_solution']}::{idx}")
+        
+        sample = MisconceptionSample(
+            id=smp_id,
+            question=PIISanitizer.sanitize_text(item["question"]),
+            problem_type=item["problem_type"],
+            concepts=item["concepts"],
+            learning_outcomes=item["learning_outcomes"],
+            taxonomy=item["taxonomy"],
+            student_solution=PIISanitizer.sanitize_text(item["student_solution"]),
+            reference_solution=PIISanitizer.sanitize_text(item["reference_solution"]),
+            verified_misconception_label=item["verified_misconception_label"],
+            error_category=item["error_category"],
+            severity=item["severity"],
+            recommended_hint_type=item["recommended_hint_type"],
+        )
+        samples.append(sample)
+
+    return samples

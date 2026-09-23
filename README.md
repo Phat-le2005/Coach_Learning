@@ -428,9 +428,94 @@ AcademicGoal và các learning domain tiếp theo chưa được triển khai. Q
 - Alembic nhận diện head `0016_teacher_teaching_plans`; `alembic check` không phát hiện operation mới. Migration chain được kiểm thử upgrade/downgrade trên SQLite và PostgreSQL, khớp ORM metadata và giữ nguyên bảng của revision trước khi downgrade riêng từng domain.
 - PostgreSQL local `edums` đã ở `0016_teacher_teaching_plans (head)`. Tất cả 10 PostgreSQL integration tests pass. Curriculum import và development seed chạy lặp không tạo duplicate.
 
+## MVP Demo Walkthrough & Critical Path Verification
+
+Hệ thống CoachLearning / EduMS hỗ trợ kịch bản demo và kiểm chứng trọn vẹn chuỗi hành trình cốt lõi (42 milestones critical path) xuyên suốt toàn bộ nền tảng mà không sử dụng mock/fake flow.
+
+### 1. Chuỗi hành trình 42 mắt xích (Critical Flow Map)
+
+```text
+[1. Admin import CurriculumVersion: MATH_G12_GDPT2018_CORE]
+  ↓
+[2. Subject MATH_G12] → [3. Chapters] → [4. Topics] → [5. ProblemTypes]
+  ↓
+[6. ProblemTypes map Concepts + LearningOutcomes] → [7. Valid Acyclic Concept Graph (DAG)]
+  ↓
+[8. Question Bank: Questions map ProblemType + Concepts + Outcomes + Hints]
+  ↓
+[9. Teacher tạo Classroom 12A1] → [10. Student ghi danh (Enrollment)]
+  ↓
+[11. Teacher kích hoạt TeachingPlan dạng bài mục tiêu]
+  ↓
+[12. Student đặt AcademicGoal (Kỳ thi THPT Quốc Gia, thời lượng học/ngày)]
+  ↓
+[13. Student làm Diagnostic Assessment]
+  ↓
+[14. StudentProblemTypeMastery tạo] → [15. StudentConceptMastery tạo] → [16. Topic/Chapter Aggregation]
+  ↓
+[17. Digital Twin phản ánh đồng bộ cả ProblemType và Concept]
+  ↓
+[18. Study Plan tự động tạo daily tasks bám sát TeachingPlan]
+  ↓
+[19. Student học active ProblemType] → [20. Student làm Quick Check]
+  ↓
+[21. Student trả lời sai] → [22. QuestionAttempt lưu trữ]
+  ↓
+[23. Mastery Engine cập nhật điểm tinh thông ProblemType + Concept]
+  ↓
+[24. KnowledgeGapService phân tích] → [25. Phát hiện lỗ hổng Concept tiên quyết]
+  ↓
+[26. Student xin Hint] → [27. Hệ thống Hint trả gợi ý bậc thang (Scaffolded, không lộ đáp án)]
+  ↓
+[28. Lỗi sai lặp lại] → [29. MisconceptionService ghi nhận bằng chứng & xác nhận CONFIRMED]
+  ↓
+[30. Repair Session kích hoạt 5 bước chuẩn sư phạm (Review → Easy → Guided → Medium → Recheck)]
+  ↓
+[31. Student hoàn thành 5 bước Repair] → [32. Mastery Engine ghi nhận tăng trưởng độ tinh thông]
+  ↓
+[33. Recommendation Engine đề xuất câu hỏi tiếp theo phù hợp năng lực]
+  ↓
+[34. Teacher Heatmap cập nhật ma trận năng lực theo ProblemType/Concept]
+  ↓
+[35. Tín hiệu tiên quyết (Prerequisite Signals)] → [36. Intervention Alerts kích hoạt]
+  ↓
+[37. Teacher Copilot phân tích, giải thích trạng thái lớp & đề xuất hành động sư phạm]
+  ↓
+[38. Parent Dashboard tổng hợp dữ liệu học tập tuần] → [39. Parent AI Summary tóm tắt khách quan]
+  ↓
+[40. Student làm bài thi mô phỏng chuẩn hóa (Exam Simulation)]
+  ↓
+[41. Exam Analytics phân tích kết quả đa chiều (Chương / Chủ đề / Dạng bài / Tiên quyết)]
+  ↓
+[42. AI Exam Analysis giải thích kết quả chi tiết, bảo toàn điểm số tuyệt đối]
+```
+
+### 2. Các bảo đảm kiến trúc và bất biến (Architectural Invariants)
+
+- **Zero Fake Flow**: 100% các bước sử dụng trực tiếp session cơ sở dữ liệu và domain service thật.
+- **Learning Core Resilience**: Toàn bộ hoạt động cốt lõi (chấm điểm, đánh giá chẩn đoán, Quick Check, tính độ tinh thông, phiên sửa sai, thi mô phỏng) hoạt động độc lập 100% khi AI gặp sự cố. Copilot, Parent Summary và Exam Explanation tự động rơi về chế độ tất định an toàn.
+- **Synthetic Data Isolation**: Dữ liệu giả lập mang cờ `is_synthetic=True` được tách biệt hoàn toàn khỏi báo cáo phân tích thực tế của giáo viên thông qua bộ lọc `include_synthetic=False` mặc định.
+- **Single Source of Truth**: Bảo toàn tính duy nhất và toàn vẹn tham chiếu cho chương trình học, ngân hàng câu hỏi và dữ liệu độ tinh thông.
+
+### 3. Hướng dẫn chạy kiểm thử & xác minh
+
+Trong thư mục `backend`, kích hoạt virtualenv:
+
+```powershell
+cd backend
+
+# Chạy kiểm thử tích hợp chuỗi hành trình cốt lõi và các bất biến
+.\.venv\Scripts\pytest tests/integration/test_mvp_critical_path.py -v
+
+# Chạy khung đánh giá chất lượng toàn diện (7 nhóm đánh giá)
+.\.venv\Scripts\python -m app.evaluate
+
+# Chạy toàn bộ regression test suite
+.\.venv\Scripts\pytest tests/ -q
+```
+
 ## Tham chiếu
 
 - [FastAPI: Settings and Environment Variables](https://fastapi.tiangolo.com/advanced/settings/)
 - [Next.js: Installation](https://nextjs.org/docs/app/getting-started/installation)
-- [Alembic: Tutorial](https://alembic.sqlalchemy.org/en/latest/tutorial.html)
-#
+- [Alembic: Tutorial](https://alembic.sqlalchemy.org/en/latest/tutorial.html)

@@ -61,10 +61,23 @@ class ConceptGraphService:
         self._lock_graph()
         source, target = data.source_concept_id, data.target_concept_id
         concepts = ConceptService(self.session)
-        concepts.get(source)
-        concepts.get(target)
+        source_concept = concepts.get(source)
+        target_concept = concepts.get(target)
         if source == target:
             raise ApplicationError(422, "SELF_RELATION", "A concept cannot relate to itself.")
+        # CRITICAL FIX: Prevent cross-subject concept graph edges.
+        # Source and target concepts must belong to the same Subject to preserve
+        # the integrity of the per-subject knowledge graph.
+        if source_concept.subject_id != target_concept.subject_id:
+            raise ApplicationError(
+                422,
+                "CROSS_SUBJECT_RELATION",
+                (
+                    "Cannot create a concept relation across different subjects. "
+                    f"Source concept belongs to subject '{source_concept.subject_id}', "
+                    f"target concept belongs to subject '{target_concept.subject_id}'."
+                ),
+            )
         if data.relation_type == RelationType.RELATED_TO and source > target:
             source, target = target, source
         if self._relation_exists(source, target, data.relation_type):

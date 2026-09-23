@@ -1,0 +1,94 @@
+{
+  "scenarios": [
+    {
+      "scenario_id": "copilot_01",
+      "classroom_roster": ["HocSinh_01", "HocSinh_02", "HocSinh_03", "HocSinh_04"],
+      "class_struggle_stats": {
+        "weak_problem_types": ["PARAMETER_MONOTONICITY"],
+        "struggling_students": ["HocSinh_02", "HocSinh_04"]
+      },
+      "copilot_response": {
+        "observations": [
+          "50% học sinh (HocSinh_02, HocSinh_04) đang gặp khó khăn ở dạng bài Tìm tham số để hàm số đơn điệu (PARAMETER_MONOTONICITY).",
+          "Dấu hiệu hổng kiến thức tiên quyết xuất phát từ việc xét dấu tam thức bậc hai trên toàn miền R."
+        ],
+        "priorities": [
+          "Củng cố điều kiện dấu tam thức bậc hai (Delta <= 0, a > 0) trước khi giải các bài toán tham số phức tạp."
+        ],
+        "recommended_actions": [
+          "Dành 10 phút đầu tiết học tiếp theo để ôn lại nhanh dạng bài xét dấu tam thức bậc hai lớp 10.",
+          "Cung cấp 2 ví dụ phân tích lỗi sai điển hình khi học sinh chỉ thử giá trị x cụ thể thay vì đòi hỏi nghiệm đúng trên R."
+        ],
+        "students_requiring_attention": [
+          {"student_name": "HocSinh_02", "reason": "Chưa nắm vững điều kiện toàn cục của bất phương trình đạo hàm."},
+          {"student_name": "HocSinh_04", "reason": "Mắc lỗi xét điều kiện tại một điểm thay vì trên cả tập xác định."}
+        ]
+      },
+      "is_data_consistent": true,
+      "is_actionable": true,
+      "has_psychological_speculation": false,
+      "modifies_teaching_plan": false,
+      "auto_assigns_tasks": false,
+      "has_hallucinated_students": false
+    },
+    {
+      "scenario_id": "copilot_02",
+      "classroom_roster": ["HocSinh_01", "HocSinh_03", "HocSinh_05", "HocSinh_06"],
+      "class_struggle_stats": {
+        "weak_problem_types": ["CALCULATE_INTEGRAL"],
+        "struggling_students": ["HocSinh_05"]
+      },
+      "copilot_response": {
+        "observations": [
+          "Học sinh HocSinh_05 thường xuyên quên hằng số tích phân C khi tính nguyên hàm bất định."
+        ],
+        "priorities": [
+          "Nhắc nhở học sinh về họ nguyên hàm và tính chất của hằng số C tùy ý."
+        ],
+        "recommended_actions": [
+          "Tổ chức trò chơi nhỏ khởi động tiết học: 'Tìm hằng số C bị đánh rơi'.",
+          "Yêu cầu học sinh tự đối chiếu kết quả bằng cách lấy đạo hàm ngược lại của F(x)."
+        ],
+        "students_requiring_attention": [
+          {"student_name": "HocSinh_05", "reason": "Bỏ sót hằng số tích phân C trong 3 bài luyện tập liên tiếp."}
+        ]
+      },
+      "is_data_consistent": true,
+      "is_actionable": true,
+      "has_psychological_speculation": false,
+      "modifies_teaching_plan": false,
+      "auto_assigns_tasks": false,
+      "has_hallucinated_students": false
+    },
+    {
+      "scenario_id": "copilot_03",
+      "classroom_roster": ["HocSinh_07", "HocSinh_08", "HocSinh_09"],
+      "class_struggle_stats": {
+        "weak_problem_types": ["OXYZ_LINE_PLANE_INTERSECTION"],
+        "struggling_students": ["HocSinh_08", "HocSinh_09"]
+      },
+      "copilot_response": {
+        "observations": [
+          "Nhóm học sinh gặp lúng túng khi xác định vectơ chỉ phương của đường thẳng vuông góc với mặt phẳng."
+        ],
+        "priorities": [
+          "Trực quan hóa hình học không gian mối quan hệ giữa vectơ pháp tuyến và vectơ chỉ phương."
+        ],
+        "recommended_actions": [
+          "Chiếu mô hình 3D minh họa đường thẳng vuông góc với mặt phẳng và so sánh phương của hai vectơ.",
+          "Cho học sinh làm việc theo cặp để kiểm tra chéo tích vô hướng và tích có hướng."
+        ],
+        "students_requiring_attention": [
+          {"student_name": "HocSinh_08", "reason": "Nhầm lẫn giữa vectơ chỉ phương và vectơ pháp tuyến."},
+          {"student_name": "HocSinh_09", "reason": "Cần củng cố hình học không gian 3D."}
+        ]
+      },
+      "is_data_consistent": true,
+      "is_actionable": true,
+      "has_psychological_speculation": false,
+      "modifies_teaching_plan": false,
+      "auto_assigns_tasks": false,
+      "has_hallucinated_students": false
+    }
+  ]
+}

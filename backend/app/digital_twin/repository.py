@@ -9,9 +9,15 @@ from app.core.exceptions import ApplicationError
 from app.curriculum.models import ProblemTypeConcept
 from app.digital_twin.schemas import (
     DigitalTwinBasicProfileRead,
+    KnownMisconceptionRead,
     ProblemTypeConceptLinkRead,
     RecentAttemptRead,
     StudyBehaviorRead,
+)
+from app.misconceptions.models import (
+    MisconceptionDefinition,
+    StudentMisconception,
+    StudentMisconceptionStatus,
 )
 from app.practice.models import PracticeSession, PracticeSessionStatus, PracticeSessionType, QuestionAttempt
 from app.questions.models import Question, QuestionConcept, QuestionProblemType
@@ -217,3 +223,49 @@ class StudentDigitalTwinRepository:
             total_hints=int(total_hints),
             last_activity_at=last_activity_at,
         )
+
+    def get_known_misconceptions(
+        self, student_id: UUID
+    ) -> list[KnownMisconceptionRead]:
+        rows = self.session.execute(
+            select(StudentMisconception, MisconceptionDefinition)
+            .join(
+                MisconceptionDefinition,
+                MisconceptionDefinition.id
+                == StudentMisconception.misconception_definition_id,
+            )
+            .where(
+                StudentMisconception.student_id == student_id,
+                StudentMisconception.status
+                != StudentMisconceptionStatus.RESOLVED,
+                MisconceptionDefinition.is_active.is_(True),
+            )
+            .order_by(
+                case(
+                    (
+                        StudentMisconception.status
+                        == StudentMisconceptionStatus.CONFIRMED,
+                        0,
+                    ),
+                    else_=1,
+                ),
+                StudentMisconception.confidence.desc(),
+                MisconceptionDefinition.code,
+            )
+        )
+        return [
+            KnownMisconceptionRead(
+                misconception_definition_id=definition.id,
+                code=definition.code,
+                name=definition.name,
+                category=definition.category,
+                concept_id=definition.concept_id,
+                problem_type_id=definition.problem_type_id,
+                confidence=state.confidence,
+                occurrence_count=state.occurrence_count,
+                status=state.status,
+                first_detected_at=state.first_detected_at,
+                last_detected_at=state.last_detected_at,
+            )
+            for state, definition in rows
+        ]

@@ -72,6 +72,22 @@ class QuestionService:
             data.learning_outcomes
         )
         question.hints = self._make_hints(data.hints)
+        # HIGH FIX: Check for duplicate content hash before saving.
+        # QuestionImportService runs this check during batch imports, but
+        # the single-question creation path was missing it.
+        existing_id = self.session.scalar(
+            select(Question.id).where(
+                Question.content_hash == question.content_hash,
+                Question.subject_id == question.subject_id,
+            )
+        )
+        if existing_id is not None:
+            raise ApplicationError(
+                409,
+                "DUPLICATE_QUESTION",
+                f"A question with identical content already exists (id={existing_id}). "
+                "Duplicates are not allowed in the Question Bank.",
+            )
         self.session.add(question)
         self.session.commit()
         logger.info("Question created (question_id=%s, created_by=%s)", question.id, actor.id)

@@ -94,6 +94,7 @@ class StudentDigitalTwinService:
             ),
             review_due=review_due,
             study_behavior=self.repository.get_study_behavior(student_id),
+            known_misconceptions=self.repository.get_known_misconceptions(student_id),
         )
 
     def get_ai_context(
@@ -121,6 +122,7 @@ class StudentDigitalTwinService:
                 ),
                 review_due=snapshot.review_due,
                 recent_attempts=snapshot.recent_attempts[:5],
+                known_misconceptions=snapshot.known_misconceptions,
             )
         if kind == DigitalTwinContextType.PLANNER:
             return PlannerAIContextRead(
@@ -152,6 +154,7 @@ class StudentDigitalTwinService:
                 recent_attempts=snapshot.recent_attempts[:10],
                 review_due=snapshot.review_due,
                 study_behavior=snapshot.study_behavior,
+                known_misconceptions=snapshot.known_misconceptions,
             )
         if kind == DigitalTwinContextType.PARENT_SUMMARY:
             return ParentSummaryAIContextRead(

@@ -78,18 +78,31 @@ def test_isolated_concept_has_empty_neighbors_and_single_node_tree(graph: Concep
     assert [node.id for node in tree.concepts] == [isolated.id] and tree.relations == []
 
 
-def test_graph_supports_cross_subject_prerequisites_from_database(
-    graph: ConceptGraphService, concept_factory: ConceptFactory, db_session: Session, relation_factory: RelationFactory,
+def test_cross_subject_prerequisites_are_rejected(
+    graph: ConceptGraphService, concept_factory: ConceptFactory, db_session: Session,
 ) -> None:
+    """Cross-subject concept relations must be rejected to preserve knowledge graph integrity.
+
+    Concepts belong to a Subject and form a per-subject DAG.  Allowing cross-subject
+    prerequisite edges would break the isolation invariant: the knowledge graph for
+    Toán cannot declare a dependency on a concept from Ngữ Văn.
+    """
     prerequisite = concept_factory("FOUNDATION", 0)
     other_subject = SubjectService(db_session).create(SubjectCreate(code="OTHER", name="Other subject"))
     target = ConceptService(db_session).create(ConceptCreate(
         subject_id=other_subject.id, code="TARGET", name="Target", description="Cross-subject dependency",
         grade_level=12, order_index=0,
     ))
-    relation_factory(prerequisite, target, RelationType.PREREQUISITE)
-    assert codes(graph.get_direct_prerequisites(target.id)) == ["FOUNDATION"]
-    assert {node.id for node in graph.get_prerequisite_tree(target.id).concepts} == {prerequisite.id, target.id}
+    with pytest.raises(ApplicationError) as error:
+        graph.create_relation(
+            ConceptRelationCreate(
+                source_concept_id=prerequisite.id,
+                target_concept_id=target.id,
+                relation_type=RelationType.PREREQUISITE,
+            )
+        )
+    assert error.value.status_code == 422
+    assert error.value.code == "CROSS_SUBJECT_RELATION"
 
 
 @pytest.mark.parametrize("method", ["get_direct_prerequisites", "get_dependents", "get_prerequisite_tree", "get_descendants"])

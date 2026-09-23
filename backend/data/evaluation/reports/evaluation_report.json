@@ -1,0 +1,681 @@
+{
+  "evaluation_id": "eval_20260922_133318_5ce2e3",
+  "timestamp": "2026-09-22T13:33:18.188644+00:00",
+  "framework_version": "v1.0",
+  "total_samples_evaluated": 60,
+  "overall_passed": true,
+  "groups": {
+    "LEARNING_ENGINE": {
+      "group": "LEARNING_ENGINE",
+      "passed": true,
+      "overall_score": 1.0,
+      "sample_count": 13,
+      "metrics": [
+        {
+          "name": "concept_mastery_consistency",
+          "score": 1.0,
+          "status": "PASS",
+          "threshold": 0.95,
+          "unit": "rate",
+          "description": "Concept mastery updates are bounded in [0, 1] and monotonic with practice outcome.",
+          "details": {
+            "passed": 3,
+            "total": 3
+          }
+        },
+        {
+          "name": "problem_type_mastery_consistency",
+          "score": 1.0,
+          "status": "PASS",
+          "threshold": 0.95,
+          "unit": "rate",
+          "description": "ProblemType mastery accurately reflects rolling window accuracy and state transitions.",
+          "details": {
+            "passed": 2,
+            "total": 2
+          }
+        },
+        {
+          "name": "aggregate_chapter_topic_consistency",
+          "score": 1.0,
+          "status": "PASS",
+          "threshold": 0.95,
+          "unit": "rate",
+          "description": "Topic and Chapter aggregate mastery values are mathematically bounded by leaf items.",
+          "details": {
+            "passed": 2,
+            "total": 2
+          }
+        },
+        {
+          "name": "recommendation_behavior",
+          "score": 1.0,
+          "status": "PASS",
+          "threshold": 0.9,
+          "unit": "rate",
+          "description": "Recommendations avoid mastered items, prioritize weak problem types, and ensure diversity.",
+          "details": {
+            "passed": 2,
+            "total": 2
+          }
+        },
+        {
+          "name": "diagnostic_behavior",
+          "score": 1.0,
+          "status": "PASS",
+          "threshold": 0.9,
+          "unit": "rate",
+          "description": "Diagnostics accurately isolate root causes and trigger prerequisite checkups.",
+          "details": {
+            "passed": 2,
+            "total": 2
+          }
+        },
+        {
+          "name": "repair_effectiveness_rules",
+          "score": 1.0,
+          "status": "PASS",
+          "threshold": 0.9,
+          "unit": "rate",
+          "description": "Repair sessions verify student recovery with post-repair mastery lift >= 0.15.",
+          "details": {
+            "passed": 2,
+            "total": 2
+          }
+        }
+      ],
+      "breakdown": {},
+      "confusion_matrix": null,
+      "notes": "Learning Engine satisfies all deterministic consistency, aggregation, and repair efficacy rules."
+    },
+    "MISCONCEPTION": {
+      "group": "MISCONCEPTION",
+      "passed": true,
+      "overall_score": 0.8533,
+      "sample_count": 20,
+      "metrics": [
+        {
+          "name": "precision_macro",
+          "score": 0.9091,
+          "status": "PASS",
+          "threshold": 0.8,
+          "unit": "rate",
+          "description": "Macro-averaged precision across all misconception classes.",
+          "details": {
+            "per_class_precision": {
+              "DERIVATIVE_ARITHMETIC_SLIP": 0.5,
+              "DERIVATIVE_SIGN_DIRECTION": 1.0,
+              "DERIVATIVE_ZERO_ALWAYS_EXTREMUM": 1.0,
+              "FUNCTION_GRAPH_AXES_MISREAD": 1.0,
+              "INDEFINITE_INTEGRAL_MISSING_CONSTANT": 1.0,
+              "LOG_SUM_DISTRIBUTION": 1.0,
+              "OXYZ_NORMAL_VECTOR_MISUSED": 1.0,
+              "PARAMETER_CONDITION_NOT_GLOBAL": 1.0,
+              "PROBABILITY_INDEPENDENCE_ASSUMED": 1.0,
+              "UNKNOWN": 0.5,
+              "VECTOR_COORDINATE_SIGN_ERROR": 1.0
+            }
+          }
+        },
+        {
+          "name": "recall_macro",
+          "score": 0.8788,
+          "status": "PASS",
+          "threshold": 0.75,
+          "unit": "rate",
+          "description": "Macro-averaged recall across all misconception classes.",
+          "details": {
+            "per_class_recall": {
+              "DERIVATIVE_ARITHMETIC_SLIP": 1.0,
+              "DERIVATIVE_SIGN_DIRECTION": 0.6667,
+              "DERIVATIVE_ZERO_ALWAYS_EXTREMUM": 0.5,
+              "FUNCTION_GRAPH_AXES_MISREAD": 1.0,
+              "INDEFINITE_INTEGRAL_MISSING_CONSTANT": 1.0,
+              "LOG_SUM_DISTRIBUTION": 1.0,
+              "OXYZ_NORMAL_VECTOR_MISUSED": 1.0,
+              "PARAMETER_CONDITION_NOT_GLOBAL": 1.0,
+              "PROBABILITY_INDEPENDENCE_ASSUMED": 0.5,
+              "UNKNOWN": 1.0,
+              "VECTOR_COORDINATE_SIGN_ERROR": 1.0
+            }
+          }
+        },
+        {
+          "name": "f1_macro",
+          "score": 0.8606,
+          "status": "PASS",
+          "threshold": 0.75,
+          "unit": "rate",
+          "description": "Harmonic mean of macro-precision and macro-recall.",
+          "details": {}
+        },
+        {
+          "name": "f1_weighted",
+          "score": 0.8533,
+          "status": "PASS",
+          "threshold": 0.8,
+          "unit": "rate",
+          "description": "Support-weighted F1 score across all classes.",
+          "details": {}
+        },
+        {
+          "name": "accuracy_overall",
+          "score": 0.85,
+          "status": "PASS",
+          "threshold": 0.8,
+          "unit": "rate",
+          "description": "Overall classification accuracy on the evaluation dataset.",
+          "details": {
+            "correct_predictions": 17,
+            "total_samples": 20
+          }
+        }
+      ],
+      "breakdown": {
+        "by_concept": {
+          "DERIVATIVE": {
+            "accuracy": 0.75,
+            "count": 4
+          },
+          "INEQUALITY_SOLVING": {
+            "accuracy": 1.0,
+            "count": 2
+          },
+          "EXTREMA": {
+            "accuracy": 0.5,
+            "count": 2
+          },
+          "LOGARITHM": {
+            "accuracy": 1.0,
+            "count": 2
+          },
+          "INTEGRAL": {
+            "accuracy": 1.0,
+            "count": 2
+          },
+          "PROBABILITY": {
+            "accuracy": 0.5,
+            "count": 2
+          },
+          "VECTOR": {
+            "accuracy": 1.0,
+            "count": 2
+          },
+          "OXYZ": {
+            "accuracy": 1.0,
+            "count": 1
+          },
+          "FUNCTION_ANALYSIS": {
+            "accuracy": 1.0,
+            "count": 1
+          },
+          "UNKNOWN": {
+            "accuracy": 1.0,
+            "count": 2
+          }
+        },
+        "by_problem_type": {
+          "MONOTONICITY_FROM_EXPRESSION": {
+            "accuracy": 0.75,
+            "count": 4
+          },
+          "PARAMETER_MONOTONICITY": {
+            "accuracy": 1.0,
+            "count": 2
+          },
+          "FIND_FUNCTION_EXTREMA": {
+            "accuracy": 0.5,
+            "count": 2
+          },
+          "EXP_LOG_EQUATION": {
+            "accuracy": 1.0,
+            "count": 2
+          },
+          "CALCULATE_INTEGRAL": {
+            "accuracy": 1.0,
+            "count": 2
+          },
+          "BASIC_PROBABILITY": {
+            "accuracy": 0.5,
+            "count": 2
+          },
+          "VECTOR_3D_RELATION": {
+            "accuracy": 1.0,
+            "count": 2
+          },
+          "OXYZ_LINE_PLANE_INTERSECTION": {
+            "accuracy": 1.0,
+            "count": 1
+          },
+          "COMPLETE_FUNCTION_ANALYSIS": {
+            "accuracy": 1.0,
+            "count": 1
+          },
+          "UNKNOWN": {
+            "accuracy": 1.0,
+            "count": 2
+          }
+        }
+      },
+      "confusion_matrix": {
+        "DERIVATIVE_ARITHMETIC_SLIP": {
+          "DERIVATIVE_ARITHMETIC_SLIP": 1,
+          "DERIVATIVE_SIGN_DIRECTION": 0,
+          "DERIVATIVE_ZERO_ALWAYS_EXTREMUM": 0,
+          "FUNCTION_GRAPH_AXES_MISREAD": 0,
+          "INDEFINITE_INTEGRAL_MISSING_CONSTANT": 0,
+          "LOG_SUM_DISTRIBUTION": 0,
+          "OXYZ_NORMAL_VECTOR_MISUSED": 0,
+          "PARAMETER_CONDITION_NOT_GLOBAL": 0,
+          "PROBABILITY_INDEPENDENCE_ASSUMED": 0,
+          "UNKNOWN": 0,
+          "VECTOR_COORDINATE_SIGN_ERROR": 0
+        },
+        "DERIVATIVE_SIGN_DIRECTION": {
+          "DERIVATIVE_ARITHMETIC_SLIP": 0,
+          "DERIVATIVE_SIGN_DIRECTION": 2,
+          "DERIVATIVE_ZERO_ALWAYS_EXTREMUM": 0,
+          "FUNCTION_GRAPH_AXES_MISREAD": 0,
+          "INDEFINITE_INTEGRAL_MISSING_CONSTANT": 0,
+          "LOG_SUM_DISTRIBUTION": 0,
+          "OXYZ_NORMAL_VECTOR_MISUSED": 0,
+          "PARAMETER_CONDITION_NOT_GLOBAL": 0,
+          "PROBABILITY_INDEPENDENCE_ASSUMED": 0,
+          "UNKNOWN": 1,
+          "VECTOR_COORDINATE_SIGN_ERROR": 0
+        },
+        "DERIVATIVE_ZERO_ALWAYS_EXTREMUM": {
+          "DERIVATIVE_ARITHMETIC_SLIP": 1,
+          "DERIVATIVE_SIGN_DIRECTION": 0,
+          "DERIVATIVE_ZERO_ALWAYS_EXTREMUM": 1,
+          "FUNCTION_GRAPH_AXES_MISREAD": 0,
+          "INDEFINITE_INTEGRAL_MISSING_CONSTANT": 0,
+          "LOG_SUM_DISTRIBUTION": 0,
+          "OXYZ_NORMAL_VECTOR_MISUSED": 0,
+          "PARAMETER_CONDITION_NOT_GLOBAL": 0,
+          "PROBABILITY_INDEPENDENCE_ASSUMED": 0,
+          "UNKNOWN": 0,
+          "VECTOR_COORDINATE_SIGN_ERROR": 0
+        },
+        "FUNCTION_GRAPH_AXES_MISREAD": {
+          "DERIVATIVE_ARITHMETIC_SLIP": 0,
+          "DERIVATIVE_SIGN_DIRECTION": 0,
+          "DERIVATIVE_ZERO_ALWAYS_EXTREMUM": 0,
+          "FUNCTION_GRAPH_AXES_MISREAD": 1,
+          "INDEFINITE_INTEGRAL_MISSING_CONSTANT": 0,
+          "LOG_SUM_DISTRIBUTION": 0,
+          "OXYZ_NORMAL_VECTOR_MISUSED": 0,
+          "PARAMETER_CONDITION_NOT_GLOBAL": 0,
+          "PROBABILITY_INDEPENDENCE_ASSUMED": 0,
+          "UNKNOWN": 0,
+          "VECTOR_COORDINATE_SIGN_ERROR": 0
+        },
+        "INDEFINITE_INTEGRAL_MISSING_CONSTANT": {
+          "DERIVATIVE_ARITHMETIC_SLIP": 0,
+          "DERIVATIVE_SIGN_DIRECTION": 0,
+          "DERIVATIVE_ZERO_ALWAYS_EXTREMUM": 0,
+          "FUNCTION_GRAPH_AXES_MISREAD": 0,
+          "INDEFINITE_INTEGRAL_MISSING_CONSTANT": 2,
+          "LOG_SUM_DISTRIBUTION": 0,
+          "OXYZ_NORMAL_VECTOR_MISUSED": 0,
+          "PARAMETER_CONDITION_NOT_GLOBAL": 0,
+          "PROBABILITY_INDEPENDENCE_ASSUMED": 0,
+          "UNKNOWN": 0,
+          "VECTOR_COORDINATE_SIGN_ERROR": 0
+        },
+        "LOG_SUM_DISTRIBUTION": {
+          "DERIVATIVE_ARITHMETIC_SLIP": 0,
+          "DERIVATIVE_SIGN_DIRECTION": 0,
+          "DERIVATIVE_ZERO_ALWAYS_EXTREMUM": 0,
+          "FUNCTION_GRAPH_AXES_MISREAD": 0,
+          "INDEFINITE_INTEGRAL_MISSING_CONSTANT": 0,
+          "LOG_SUM_DISTRIBUTION": 2,
+          "OXYZ_NORMAL_VECTOR_MISUSED": 0,
+          "PARAMETER_CONDITION_NOT_GLOBAL": 0,
+          "PROBABILITY_INDEPENDENCE_ASSUMED": 0,
+          "UNKNOWN": 0,
+          "VECTOR_COORDINATE_SIGN_ERROR": 0
+        },
+        "OXYZ_NORMAL_VECTOR_MISUSED": {
+          "DERIVATIVE_ARITHMETIC_SLIP": 0,
+          "DERIVATIVE_SIGN_DIRECTION": 0,
+          "DERIVATIVE_ZERO_ALWAYS_EXTREMUM": 0,
+          "FUNCTION_GRAPH_AXES_MISREAD": 0,
+          "INDEFINITE_INTEGRAL_MISSING_CONSTANT": 0,
+          "LOG_SUM_DISTRIBUTION": 0,
+          "OXYZ_NORMAL_VECTOR_MISUSED": 1,
+          "PARAMETER_CONDITION_NOT_GLOBAL": 0,
+          "PROBABILITY_INDEPENDENCE_ASSUMED": 0,
+          "UNKNOWN": 0,
+          "VECTOR_COORDINATE_SIGN_ERROR": 0
+        },
+        "PARAMETER_CONDITION_NOT_GLOBAL": {
+          "DERIVATIVE_ARITHMETIC_SLIP": 0,
+          "DERIVATIVE_SIGN_DIRECTION": 0,
+          "DERIVATIVE_ZERO_ALWAYS_EXTREMUM": 0,
+          "FUNCTION_GRAPH_AXES_MISREAD": 0,
+          "INDEFINITE_INTEGRAL_MISSING_CONSTANT": 0,
+          "LOG_SUM_DISTRIBUTION": 0,
+          "OXYZ_NORMAL_VECTOR_MISUSED": 0,
+          "PARAMETER_CONDITION_NOT_GLOBAL": 2,
+          "PROBABILITY_INDEPENDENCE_ASSUMED": 0,
+          "UNKNOWN": 0,
+          "VECTOR_COORDINATE_SIGN_ERROR": 0
+        },
+        "PROBABILITY_INDEPENDENCE_ASSUMED": {
+          "DERIVATIVE_ARITHMETIC_SLIP": 0,
+          "DERIVATIVE_SIGN_DIRECTION": 0,
+          "DERIVATIVE_ZERO_ALWAYS_EXTREMUM": 0,
+          "FUNCTION_GRAPH_AXES_MISREAD": 0,
+          "INDEFINITE_INTEGRAL_MISSING_CONSTANT": 0,
+          "LOG_SUM_DISTRIBUTION": 0,
+          "OXYZ_NORMAL_VECTOR_MISUSED": 0,
+          "PARAMETER_CONDITION_NOT_GLOBAL": 0,
+          "PROBABILITY_INDEPENDENCE_ASSUMED": 1,
+          "UNKNOWN": 1,
+          "VECTOR_COORDINATE_SIGN_ERROR": 0
+        },
+        "UNKNOWN": {
+          "DERIVATIVE_ARITHMETIC_SLIP": 0,
+          "DERIVATIVE_SIGN_DIRECTION": 0,
+          "DERIVATIVE_ZERO_ALWAYS_EXTREMUM": 0,
+          "FUNCTION_GRAPH_AXES_MISREAD": 0,
+          "INDEFINITE_INTEGRAL_MISSING_CONSTANT": 0,
+          "LOG_SUM_DISTRIBUTION": 0,
+          "OXYZ_NORMAL_VECTOR_MISUSED": 0,
+          "PARAMETER_CONDITION_NOT_GLOBAL": 0,
+          "PROBABILITY_INDEPENDENCE_ASSUMED": 0,
+          "UNKNOWN": 2,
+          "VECTOR_COORDINATE_SIGN_ERROR": 0
+        },
+        "VECTOR_COORDINATE_SIGN_ERROR": {
+          "DERIVATIVE_ARITHMETIC_SLIP": 0,
+          "DERIVATIVE_SIGN_DIRECTION": 0,
+          "DERIVATIVE_ZERO_ALWAYS_EXTREMUM": 0,
+          "FUNCTION_GRAPH_AXES_MISREAD": 0,
+          "INDEFINITE_INTEGRAL_MISSING_CONSTANT": 0,
+          "LOG_SUM_DISTRIBUTION": 0,
+          "OXYZ_NORMAL_VECTOR_MISUSED": 0,
+          "PARAMETER_CONDITION_NOT_GLOBAL": 0,
+          "PROBABILITY_INDEPENDENCE_ASSUMED": 0,
+          "UNKNOWN": 0,
+          "VECTOR_COORDINATE_SIGN_ERROR": 2
+        }
+      },
+      "notes": "Evaluated 20 diagnosis samples across 11 classes."
+    },
+    "RAG": {
+      "group": "RAG",
+      "passed": true,
+      "overall_score": 1.0,
+      "sample_count": 6,
+      "metrics": [
+        {
+          "name": "retrieval_relevance_mrr",
+          "score": 1.0,
+          "status": "PASS",
+          "threshold": 0.8,
+          "unit": "MRR",
+          "description": "Mean Reciprocal Rank of the first relevant curriculum document.",
+          "details": {
+            "average_recall_at_k": 1.0,
+            "average_precision_at_k": 0.8889
+          }
+        },
+        {
+          "name": "retrieval_recall",
+          "score": 1.0,
+          "status": "PASS",
+          "threshold": 0.85,
+          "unit": "rate",
+          "description": "Average recall of target curriculum documents in retrieval set.",
+          "details": {}
+        },
+        {
+          "name": "source_correctness",
+          "score": 1.0,
+          "status": "PASS",
+          "threshold": 0.9,
+          "unit": "rate",
+          "description": "Fraction of retrieved chunks possessing valid curriculum provenance.",
+          "details": {}
+        },
+        {
+          "name": "curriculum_filtering_accuracy",
+          "score": 1.0,
+          "status": "PASS",
+          "threshold": 0.95,
+          "unit": "rate",
+          "description": "Accuracy of filtering out materials outside Grade 12 Math GDPT 2018 scope.",
+          "details": {
+            "filtered_correctly": 3,
+            "total_filter_tests": 3
+          }
+        }
+      ],
+      "breakdown": {},
+      "confusion_matrix": null,
+      "notes": "RAG retrieval meets curriculum relevance, verified provenance, and grade-filtering criteria."
+    },
+    "AI_TUTOR": {
+      "group": "AI_TUTOR",
+      "passed": true,
+      "overall_score": 0.9714,
+      "sample_count": 10,
+      "metrics": [
+        {
+          "name": "correctness",
+          "score": 1.0,
+          "status": "PASS",
+          "threshold": 0.85,
+          "unit": "rate",
+          "description": "Mathematical correctness and accuracy of reasoning steps.",
+          "details": {}
+        },
+        {
+          "name": "pedagogical_quality",
+          "score": 0.9,
+          "status": "PASS",
+          "threshold": 0.75,
+          "unit": "rate",
+          "description": "Socratic pedagogical scaffolding rather than passive lecture dump.",
+          "details": {}
+        },
+        {
+          "name": "answer_leakage_prevention",
+          "score": 0.9,
+          "status": "PASS",
+          "threshold": 0.85,
+          "unit": "rate",
+          "description": "Resistance against prematurely revealing final answer on scaffolded levels.",
+          "details": {}
+        },
+        {
+          "name": "hallucination_resistance",
+          "score": 1.0,
+          "status": "PASS",
+          "threshold": 0.85,
+          "unit": "rate",
+          "description": "Absence of fabricated theorems, invalid rules, or imaginary curriculum codes.",
+          "details": {}
+        },
+        {
+          "name": "source_grounding",
+          "score": 1.0,
+          "status": "PASS",
+          "threshold": 0.85,
+          "unit": "rate",
+          "description": "Degree of adherence to the provided question and compact student context.",
+          "details": {}
+        },
+        {
+          "name": "problem_type_relevance",
+          "score": 1.0,
+          "status": "PASS",
+          "threshold": 0.9,
+          "unit": "rate",
+          "description": "Focus stays relevant to the target ProblemType curriculum topic.",
+          "details": {}
+        },
+        {
+          "name": "prerequisite_diagnosis_faithfulness",
+          "score": 1.0,
+          "status": "PASS",
+          "threshold": 0.85,
+          "unit": "rate",
+          "description": "Faithfulness and restraint in diagnosing prerequisite foundational gaps.",
+          "details": {}
+        }
+      ],
+      "breakdown": {},
+      "confusion_matrix": null,
+      "notes": "Evaluated 10 interactive tutor turns across 7 quality dimensions."
+    },
+    "TEACHER_COPILOT": {
+      "group": "TEACHER_COPILOT",
+      "passed": true,
+      "overall_score": 1.0,
+      "sample_count": 3,
+      "metrics": [
+        {
+          "name": "data_consistency",
+          "score": 1.0,
+          "status": "PASS",
+          "threshold": 0.85,
+          "unit": "rate",
+          "description": "Observations and student attention lists strictly match roster and class analytics.",
+          "details": {}
+        },
+        {
+          "name": "actionability",
+          "score": 1.0,
+          "status": "PASS",
+          "threshold": 0.8,
+          "unit": "rate",
+          "description": "Interventions are actionable, pedagogical, and free from negative psychological labeling.",
+          "details": {}
+        },
+        {
+          "name": "hallucination_resistance",
+          "score": 1.0,
+          "status": "PASS",
+          "threshold": 0.9,
+          "unit": "rate",
+          "description": "Zero unauthorized mutations to Teaching Plans, task auto-assignments, or invented students.",
+          "details": {}
+        }
+      ],
+      "breakdown": {},
+      "confusion_matrix": null,
+      "notes": "Evaluated 3 classroom advisory scenarios for consistency and safety."
+    },
+    "PARENT_SUMMARY": {
+      "group": "PARENT_SUMMARY",
+      "passed": true,
+      "overall_score": 1.0,
+      "sample_count": 3,
+      "metrics": [
+        {
+          "name": "data_faithfulness",
+          "score": 1.0,
+          "status": "PASS",
+          "threshold": 0.85,
+          "unit": "rate",
+          "description": "Summary faithfully reports actual learning time, topics mastered, and current challenges.",
+          "details": {}
+        },
+        {
+          "name": "tone_and_constructiveness",
+          "score": 1.0,
+          "status": "PASS",
+          "threshold": 0.85,
+          "unit": "rate",
+          "description": "Empathetic, non-judgmental tone, no psychological speculation, max 2 actionable suggestions.",
+          "details": {}
+        },
+        {
+          "name": "privacy_protection",
+          "score": 1.0,
+          "status": "PASS",
+          "threshold": 0.95,
+          "unit": "rate",
+          "description": "Zero leakage of private raw chats, comparative student rank, or sensitive PII.",
+          "details": {}
+        }
+      ],
+      "breakdown": {},
+      "confusion_matrix": null,
+      "notes": "Evaluated 3 parent summary scenarios for accuracy, empathy, and privacy."
+    },
+    "SYSTEM_AI": {
+      "group": "SYSTEM_AI",
+      "passed": true,
+      "overall_score": 0.8,
+      "sample_count": 5,
+      "metrics": [
+        {
+          "name": "average_latency",
+          "score": 352.0,
+          "status": "PASS",
+          "threshold": 800.0,
+          "unit": "ms",
+          "description": "Average end-to-end response time across all task types.",
+          "details": {
+            "p50_ms": 380,
+            "p95_ms": 520,
+            "max_ms": 520
+          }
+        },
+        {
+          "name": "p95_latency",
+          "score": 520.0,
+          "status": "PASS",
+          "threshold": 1200.0,
+          "unit": "ms",
+          "description": "95th percentile response time.",
+          "details": {}
+        },
+        {
+          "name": "average_token_consumption",
+          "score": 596.0,
+          "status": "PASS",
+          "threshold": 1500.0,
+          "unit": "tokens",
+          "description": "Average total token consumption per request.",
+          "details": {
+            "avg_prompt_tokens": 462.0,
+            "avg_completion_tokens": 134.0
+          }
+        },
+        {
+          "name": "system_resilience_rate",
+          "score": 0.8,
+          "status": "PASS",
+          "threshold": 0.75,
+          "unit": "rate",
+          "description": "Success rate across all normal and rate-limited requests.",
+          "details": {
+            "failure_count": 1,
+            "total_requests": 5
+          }
+        },
+        {
+          "name": "average_cost_per_task",
+          "score": 0.0002,
+          "status": "PASS",
+          "threshold": 0.001,
+          "unit": "USD",
+          "description": "Estimated average monetary expenditure per invocation.",
+          "details": {}
+        }
+      ],
+      "breakdown": {},
+      "confusion_matrix": null,
+      "notes": "Processed 5 system telemetry logs. Average latency: 352.0ms, average cost: $0.000204."
+    }
+  },
+  "metadata": {
+    "data_dir": "data\\evaluation",
+    "output_dir": "data\\evaluation\\reports"
+  }
+}

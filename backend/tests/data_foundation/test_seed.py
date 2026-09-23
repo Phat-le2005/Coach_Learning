@@ -12,6 +12,7 @@ from app.concepts.graph_service import ConceptGraphService
 from app.concepts.models import Concept, ConceptRelation
 from app.core.config import Settings
 from app.parents.models import ParentProfile, ParentStudentRelationship
+from app.misconceptions.models import MisconceptionDefinition
 from app.practice.models import (
     EvaluationStatus,
     PracticeSession,
@@ -29,6 +30,7 @@ from data.fixtures import CLASSROOMS, PARENT_LINKS
 from data.seed.demo_users import USERS
 from data.seed.grade12_math import CONCEPTS, PREREQUISITES, SUBJECT
 from data.seed.identifiers import stable_id
+from data.seed.misconceptions import MISCONCEPTIONS
 from data.synthetic import generate_students
 
 
@@ -44,6 +46,7 @@ def test_seed_creates_complete_stable_dataset_and_is_idempotent(
     assert first["concepts"]["created"] == 14
     assert first["concept_relations"]["created"] == 12
     assert first["problem_types"]["created"] == 9
+    assert first["misconception_definitions"]["created"] == len(MISCONCEPTIONS)
     assert first["users"]["created"] == 19
     assert first["teacher_profiles"]["created"] == 2
     assert first["student_profiles"]["created"] == 12
@@ -64,6 +67,7 @@ def test_seed_creates_complete_stable_dataset_and_is_idempotent(
         TeacherClassroom: 2,
         StudentEnrollment: 12,
         ParentStudentRelationship: 12,
+        MisconceptionDefinition: len(MISCONCEPTIONS),
     }
     assert {model.__name__: count(db_session, model) for model in expected_counts} == {
         model.__name__: expected for model, expected in expected_counts.items()

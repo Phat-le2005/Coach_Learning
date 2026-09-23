@@ -12,6 +12,10 @@ from app.mastery.schemas import (
     ProblemTypeMasteryRead,
 )
 from app.mastery.state import DerivedMasteryState
+from app.misconceptions.models import (
+    MisconceptionCategory,
+    StudentMisconceptionStatus,
+)
 from app.practice.models import EvaluationStatus, PracticeSessionType
 from app.questions.models import QuestionType
 from app.students.models import SyntheticProfile
@@ -105,6 +109,20 @@ class StudyBehaviorRead(BaseModel):
     last_activity_at: datetime | None
 
 
+class KnownMisconceptionRead(BaseModel):
+    misconception_definition_id: UUID
+    code: str
+    name: str
+    category: MisconceptionCategory
+    concept_id: UUID
+    problem_type_id: UUID | None
+    confidence: float
+    occurrence_count: int
+    status: StudentMisconceptionStatus
+    first_detected_at: datetime
+    last_detected_at: datetime
+
+
 class StudentDigitalTwinSnapshot(BaseModel):
     basic_profile: DigitalTwinBasicProfileRead
     curriculum_progress: list[CurriculumSubjectProgressRead]
@@ -114,6 +132,7 @@ class StudentDigitalTwinSnapshot(BaseModel):
     recent_attempts: list[RecentAttemptRead]
     review_due: ReviewDueRead
     study_behavior: StudyBehaviorRead
+    known_misconceptions: list[KnownMisconceptionRead]
 
 
 class SubjectProgressSummaryRead(BaseModel):
@@ -133,6 +152,7 @@ class TutorAIContextRead(BaseModel):
     problem_type_concept_links: list[ProblemTypeConceptLinkRead]
     review_due: ReviewDueRead
     recent_attempts: list[RecentAttemptRead]
+    known_misconceptions: list[KnownMisconceptionRead]
 
 
 class PlannerAIContextRead(BaseModel):
@@ -158,6 +178,7 @@ class TeacherCopilotAIContextRead(BaseModel):
     recent_attempts: list[RecentAttemptRead]
     review_due: ReviewDueRead
     study_behavior: StudyBehaviorRead
+    known_misconceptions: list[KnownMisconceptionRead]
 
 
 class ParentSummaryAIContextRead(BaseModel):

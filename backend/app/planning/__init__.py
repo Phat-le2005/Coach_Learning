@@ -9,6 +9,13 @@ from app.planning.models import (
     TeachingPlanItem,
     TeachingPlanStatus,
 )
+from app.planning.study_explanation_schemas import (
+    StudyPlanExplanationInput,
+    StudyPlanExplanationItem,
+    StudyPlanExplanationOutput,
+    StudyPlanExplanationRead,
+)
+from app.planning.study_explanation_service import StudyPlanExplanationService
 from app.planning.study_policy import PlanningContext, StudyPlanningPolicy
 from app.planning.study_schemas import (
     StudyDayRead,
@@ -22,6 +29,11 @@ __all__ = [
     "PlanningContext",
     "StudyDayRead",
     "StudyPlan",
+    "StudyPlanExplanationInput",
+    "StudyPlanExplanationItem",
+    "StudyPlanExplanationOutput",
+    "StudyPlanExplanationRead",
+    "StudyPlanExplanationService",
     "StudyPlanRead",
     "StudyPlanRecalculateRequest",
     "StudyPlanService",

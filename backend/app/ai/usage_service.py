@@ -13,6 +13,7 @@ from app.ai.schemas import (
     AIRequestLogRead,
     AIUsageSummaryRead,
     DailyUsageMetric,
+    StudentDailyUsageMetric,
     TaskTokenMetric,
     TaskUsageMetric,
 )
@@ -246,6 +247,8 @@ class AIUsageService:
             out_tok = int(r.output_tokens)
             tot_tok = in_tok + out_tok
             cost = round(float(r.cost), 6)
+            avg_tok = round(tot_tok / t_total, 2) if t_total > 0 else 0.0
+            avg_cost = round(cost / t_total, 6) if t_total > 0 else 0.0
             requests_per_task.append(
                 TaskUsageMetric(
                     task=r.task,
@@ -255,7 +258,9 @@ class AIUsageService:
                     failure_rate=t_fail_rate,
                     average_latency_ms=round(float(r.avg_latency), 2),
                     total_tokens=tot_tok,
+                    average_tokens_per_task=avg_tok,
                     estimated_cost=cost,
+                    average_cost_per_task=avg_cost,
                 )
             )
             tokens_per_task.append(
@@ -264,9 +269,46 @@ class AIUsageService:
                     input_tokens=in_tok,
                     output_tokens=out_tok,
                     total_tokens=tot_tok,
+                    average_tokens_per_task=avg_tok,
                     estimated_cost=cost,
+                    average_cost_per_task=avg_cost,
                 )
             )
+
+        # 4. Requests per student per day
+        student_daily_stmt = (
+            select(
+                date_expr.label("day"),
+                func.count(func.distinct(AIRequestLog.user_id)).label("unique_students"),
+                func.count(AIRequestLog.id).label("total_requests"),
+            )
+            .where(where_clause, AIRequestLog.user_id.is_not(None))
+            .group_by(date_expr)
+            .order_by(date_expr)
+        )
+        student_daily_rows = self.session.execute(student_daily_stmt).all()
+        student_daily_usage: list[StudentDailyUsageMetric] = []
+        student_daily_averages: list[float] = []
+
+        for r in student_daily_rows:
+            u_count = int(r.unique_students)
+            req_count = int(r.total_requests)
+            avg_req = round(req_count / u_count, 2) if u_count > 0 else 0.0
+            student_daily_averages.append(avg_req)
+            student_daily_usage.append(
+                StudentDailyUsageMetric(
+                    date=str(r.day),
+                    unique_students=u_count,
+                    total_requests=req_count,
+                    average_requests_per_student=avg_req,
+                )
+            )
+
+        avg_req_per_student_per_day = (
+            round(sum(student_daily_averages) / len(student_daily_averages), 2)
+            if student_daily_averages
+            else 0.0
+        )
 
         return AIUsageSummaryRead(
             total_requests=total_requests,
@@ -278,7 +320,32 @@ class AIUsageService:
             total_output_tokens=total_output_tokens,
             total_tokens=total_tokens,
             total_estimated_cost=total_cost,
+            average_requests_per_student_per_day=avg_req_per_student_per_day,
             requests_per_day=requests_per_day,
             requests_per_task=requests_per_task,
             tokens_per_task=tokens_per_task,
+            student_daily_usage=student_daily_usage,
         )
+
+    def get_metrics_per_task(self) -> dict[str, dict[str, Any]]:
+        """Retrieve a dictionary mapping each task type to its core performance metrics:
+        
+        - average latency/task
+        - tokens/task (total & average)
+        - estimated cost/task (total & average)
+        - requests
+        """
+        summary = self.get_usage_summary()
+        result: dict[str, dict[str, Any]] = {}
+        for m in summary.requests_per_task:
+            result[m.task] = {
+                "requests": m.requests,
+                "successful_requests": m.successful_requests,
+                "failed_requests": m.failed_requests,
+                "average_latency_ms": m.average_latency_ms,
+                "total_tokens": m.total_tokens,
+                "average_tokens_per_task": m.average_tokens_per_task,
+                "estimated_cost": m.estimated_cost,
+                "average_cost_per_task": m.average_cost_per_task,
+            }
+        return result

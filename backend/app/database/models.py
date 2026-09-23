@@ -4,7 +4,28 @@ Command-line entry points do not load FastAPI routers, so they must not rely on
 router imports to populate the declarative registry.
 """
 
+from app.admission.models import (
+    AdmissionDataSource,
+    AdmissionImportFormat,
+    AdmissionImportHistory,
+    AdmissionImportStatus,
+    AdmissionMethod,
+    AdmissionRule,
+    AdmissionTarget,
+    AdmissionTargetType,
+    Major,
+    University,
+)
 from app.ai.models import AIRequestLog
+from app.assignments.models import (
+    Assignment,
+    AssignmentConcept,
+    AssignmentLearningObjective,
+    AssignmentProblemType,
+    AssignmentQuestion,
+    AssignmentStudentQuestion,
+    StudentAssignment,
+)
 from app.attempts.models import StudentAttempt, StudySession
 from app.auth.models import AuthSession, RefreshToken
 from app.classes.models import Classroom, StudentEnrollment, TeacherClassroom
@@ -25,9 +46,20 @@ from app.diagnostics.models import (
     DiagnosticAttemptContext,
     DiagnosticBlueprintItem,
 )
+from app.exams.models import (
+    Exam,
+    ExamAttempt,
+    ExamAttemptStatus,
+    ExamQuestion,
+    ExamResponse,
+    ExamSection,
+    ExamStatus,
+    ExamType,
+)
 from app.hints.models import PracticeQuestionHint, QuestionHint
 from app.parents.models import ParentProfile, ParentStudentRelationship
 from app.mastery.models import StudentConceptMastery, StudentProblemTypeMastery
+from app.misconceptions.models import MisconceptionDefinition, StudentMisconception
 from app.practice.models import (
     PracticeSession,
     PracticeSessionConcept,
@@ -66,12 +98,30 @@ from app.students.models import AcademicGoal, AcademicGoalStatus, StudentProfile
 from app.subjects.models import Subject
 from app.teachers.models import TeacherProfile
 from app.rag.models import Document, DocumentChunk, DocumentSourceType, DocumentStatus
+from app.tutor.models import (
+    LearningMemoryType,
+    StudentLearningMemory,
+    TutorSession,
+    TutorSessionStatus,
+    TutorSessionSummary,
+)
 from app.users.models import User
 
 __all__ = [
     "AcademicGoal",
     "AcademicGoalStatus",
+    "AdmissionDataSource",
+    "AdmissionMethod",
+    "AdmissionRule",
+    "AdmissionTarget",
+    "AdmissionTargetType",
     "AIRequestLog",
+    "Assignment",
+    "AssignmentConcept",
+    "AssignmentLearningObjective",
+    "AssignmentProblemType",
+    "AssignmentQuestion",
+    "AssignmentStudentQuestion",
     "AuthSession",
     "Chapter",
     "Classroom",
@@ -87,9 +137,20 @@ __all__ = [
     "DocumentChunk",
     "DocumentSourceType",
     "DocumentStatus",
+    "Exam",
+    "ExamAttempt",
+    "ExamAttemptStatus",
+    "ExamQuestion",
+    "ExamResponse",
+    "ExamSection",
+    "ExamStatus",
+    "ExamType",
     "LearningOutcome",
+    "Major",
+    "MisconceptionDefinition",
     "PracticeQuestionHint",
     "StudentConceptMastery",
+    "StudentMisconception",
     "StudentProblemTypeMastery",
     "ParentProfile",
     "ParentStudentRelationship",
@@ -115,8 +176,10 @@ __all__ = [
     "RefreshToken",
     "ReviewResult",
     "ReviewSchedule",
+    "StudentAssignment",
     "StudentAttempt",
     "StudentEnrollment",
+    "StudentLearningMemory",
     "StudentProfile",
     "StudyPlan",
     "StudyPlanStatus",
@@ -133,5 +196,10 @@ __all__ = [
     "TeachingPlanItem",
     "TeachingPlanStatus",
     "Topic",
+    "TutorSession",
+    "TutorSessionStatus",
+    "TutorSessionSummary",
+    "LearningMemoryType",
+    "University",
     "User",
 ]

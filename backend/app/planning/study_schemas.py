@@ -3,6 +3,7 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from app.planning.study_explanation_schemas import StudyPlanExplanationRead
 from app.planning.study_models import (
     StudyPlanStatus,
     StudyTaskReasonCode,
@@ -49,6 +50,7 @@ class StudyDayRead(BaseModel):
     total_count: int
     days_to_exam: int | None = None
     notice: str | None = None
+    explanation: StudyPlanExplanationRead | None = None
 
 
 class StudyPlanRead(BaseModel):
