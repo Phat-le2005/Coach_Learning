@@ -1,0 +1,27 @@
+{
+  "unique_derivative_candidates": 175,
+  "source_counts": {
+    "SRC_MOET_EXAM_2025_SOLUTION_COMPILATION": 9,
+    "SRC_PROVINCIAL_TRIAL_2025_COLLECTION": 47,
+    "SRC_TRUONG_NGOC_VY_40_2026": 119
+  },
+  "question_type_counts": {
+    "TRUE_FALSE_GROUP": 77,
+    "MULTIPLE_CHOICE": 77,
+    "SHORT_ANSWER": 21
+  },
+  "answer_detected_count": 54,
+  "requires_question_group_count": 77,
+  "visual_review_count": 65,
+  "problem_types_total": 24,
+  "problem_types_with_candidates": 18,
+  "problem_type_gaps": [
+    "PARAMETER_MONOTONICITY",
+    "PARAMETER_EXTREMA_COUNT",
+    "GLOBAL_EXTREMA_SIMPLE_DOMAIN",
+    "COMPLETE_FUNCTION_ANALYSIS_LINEAR_FRACTION",
+    "COMPLETE_FUNCTION_ANALYSIS_QUADRATIC_OVER_LINEAR",
+    "REAL_WORLD_MONOTONICITY_INTERPRETATION"
+  ],
+  "status": "STAGING_REVIEW_REQUIRED"
+}

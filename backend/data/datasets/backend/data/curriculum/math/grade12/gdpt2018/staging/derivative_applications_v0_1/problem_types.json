@@ -1,0 +1,218 @@
+[
+  {
+    "topic_code": "MONOTONICITY_TOPIC",
+    "code": "MONOTONICITY_FROM_DERIVATIVE_SIGN",
+    "name": "Nhận biết tính đơn điệu từ dấu đạo hàm",
+    "description": "Đọc dấu f'(x) đã cho để kết luận khoảng đồng biến/nghịch biến.",
+    "order_index": 10,
+    "default_difficulty": 0.3,
+    "is_active": true
+  },
+  {
+    "topic_code": "MONOTONICITY_TOPIC",
+    "code": "MONOTONICITY_FROM_VARIATION_TABLE",
+    "name": "Nhận biết tính đơn điệu từ bảng biến thiên",
+    "description": "Đọc bảng biến thiên để xác định khoảng đồng biến/nghịch biến.",
+    "order_index": 20,
+    "default_difficulty": 0.25,
+    "is_active": true
+  },
+  {
+    "topic_code": "MONOTONICITY_TOPIC",
+    "code": "MONOTONICITY_FROM_GRAPH",
+    "name": "Nhận biết tính đơn điệu từ đồ thị",
+    "description": "Đọc đồ thị hàm số để nhận biết chiều biến thiên.",
+    "order_index": 30,
+    "default_difficulty": 0.3,
+    "is_active": true
+  },
+  {
+    "topic_code": "MONOTONICITY_TOPIC",
+    "code": "MONOTONICITY_FROM_EXPRESSION",
+    "name": "Xét tính đơn điệu bằng đạo hàm",
+    "description": "Tính đạo hàm, xét dấu và lập khoảng đồng biến/nghịch biến.",
+    "order_index": 40,
+    "default_difficulty": 0.45,
+    "is_active": true
+  },
+  {
+    "topic_code": "MONOTONICITY_TOPIC",
+    "code": "PARAMETER_MONOTONICITY",
+    "name": "Tìm tham số theo điều kiện đơn điệu",
+    "description": "Thiết lập và giải điều kiện tham số để hàm số đồng biến/nghịch biến trên miền cho trước.",
+    "order_index": 50,
+    "default_difficulty": 0.75,
+    "is_active": true
+  },
+  {
+    "topic_code": "EXTREMA_TOPIC",
+    "code": "EXTREMA_FROM_DERIVATIVE_SIGN",
+    "name": "Nhận biết cực trị từ dấu đạo hàm",
+    "description": "Xác định cực trị dựa trên sự đổi dấu của đạo hàm.",
+    "order_index": 10,
+    "default_difficulty": 0.35,
+    "is_active": true
+  },
+  {
+    "topic_code": "EXTREMA_TOPIC",
+    "code": "EXTREMA_FROM_VARIATION_TABLE",
+    "name": "Nhận biết cực trị từ bảng biến thiên",
+    "description": "Đọc điểm cực trị và giá trị cực trị từ bảng biến thiên.",
+    "order_index": 20,
+    "default_difficulty": 0.25,
+    "is_active": true
+  },
+  {
+    "topic_code": "EXTREMA_TOPIC",
+    "code": "EXTREMA_FROM_GRAPH",
+    "name": "Nhận biết cực trị từ đồ thị",
+    "description": "Đọc điểm cực trị và giá trị cực trị từ hình ảnh đồ thị.",
+    "order_index": 30,
+    "default_difficulty": 0.25,
+    "is_active": true
+  },
+  {
+    "topic_code": "EXTREMA_TOPIC",
+    "code": "FIND_FUNCTION_EXTREMA",
+    "name": "Tìm cực trị bằng đạo hàm",
+    "description": "Tính đạo hàm và xác định các cực trị của hàm số.",
+    "order_index": 40,
+    "default_difficulty": 0.5,
+    "is_active": true
+  },
+  {
+    "topic_code": "EXTREMA_TOPIC",
+    "code": "PARAMETER_EXTREMA_COUNT",
+    "name": "Tìm tham số theo số lượng cực trị",
+    "description": "Xác định điều kiện tham số để hàm có số lượng hoặc cấu hình cực trị yêu cầu.",
+    "order_index": 50,
+    "default_difficulty": 0.8,
+    "is_active": true
+  },
+  {
+    "topic_code": "GLOBAL_EXTREMA_TOPIC",
+    "code": "GLOBAL_EXTREMA_RECOGNITION",
+    "name": "Nhận biết giá trị lớn nhất/nhỏ nhất",
+    "description": "Nhận biết GTLN/GTNN từ bảng, đồ thị hoặc thông tin cho trước.",
+    "order_index": 10,
+    "default_difficulty": 0.3,
+    "is_active": true
+  },
+  {
+    "topic_code": "GLOBAL_EXTREMA_TOPIC",
+    "code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+    "name": "Tìm GTLN/GTNN trên đoạn bằng đạo hàm",
+    "description": "Tìm điểm tới hạn, kiểm tra đầu mút và so sánh giá trị.",
+    "order_index": 20,
+    "default_difficulty": 0.5,
+    "is_active": true
+  },
+  {
+    "topic_code": "GLOBAL_EXTREMA_TOPIC",
+    "code": "GLOBAL_EXTREMA_SIMPLE_DOMAIN",
+    "name": "Tìm GTLN/GTNN trên miền đơn giản",
+    "description": "Xác định GTLN/GTNN trên miền xác định đơn giản bằng biến thiên/đạo hàm.",
+    "order_index": 30,
+    "default_difficulty": 0.55,
+    "is_active": true
+  },
+  {
+    "topic_code": "FUNCTION_ANALYSIS_TOPIC",
+    "code": "ASYMPTOTE_FROM_GRAPH",
+    "name": "Nhận biết tiệm cận từ đồ thị",
+    "description": "Nhận biết tiệm cận đứng, ngang hoặc xiên từ biểu diễn hình học.",
+    "order_index": 10,
+    "default_difficulty": 0.3,
+    "is_active": true
+  },
+  {
+    "topic_code": "FUNCTION_ANALYSIS_TOPIC",
+    "code": "VERTICAL_ASYMPTOTE_RATIONAL",
+    "name": "Xác định tiệm cận đứng",
+    "description": "Xác định tiệm cận đứng của hàm phân thức phù hợp phạm vi lớp 12.",
+    "order_index": 20,
+    "default_difficulty": 0.45,
+    "is_active": true
+  },
+  {
+    "topic_code": "FUNCTION_ANALYSIS_TOPIC",
+    "code": "HORIZONTAL_ASYMPTOTE_RATIONAL",
+    "name": "Xác định tiệm cận ngang",
+    "description": "Xác định tiệm cận ngang dựa trên hành vi của hàm số khi x tiến ra vô cực.",
+    "order_index": 30,
+    "default_difficulty": 0.45,
+    "is_active": true
+  },
+  {
+    "topic_code": "FUNCTION_ANALYSIS_TOPIC",
+    "code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+    "name": "Xác định tiệm cận xiên",
+    "description": "Xác định tiệm cận xiên của hàm phân thức bậc hai trên bậc nhất.",
+    "order_index": 40,
+    "default_difficulty": 0.6,
+    "is_active": true
+  },
+  {
+    "topic_code": "FUNCTION_ANALYSIS_TOPIC",
+    "code": "COMPLETE_FUNCTION_ANALYSIS_CUBIC",
+    "name": "Khảo sát hàm bậc ba",
+    "description": "Thực hiện đầy đủ quy trình khảo sát và vẽ đồ thị hàm bậc ba.",
+    "order_index": 50,
+    "default_difficulty": 0.6,
+    "is_active": true
+  },
+  {
+    "topic_code": "FUNCTION_ANALYSIS_TOPIC",
+    "code": "COMPLETE_FUNCTION_ANALYSIS_LINEAR_FRACTION",
+    "name": "Khảo sát hàm phân thức bậc nhất/bậc nhất",
+    "description": "Thực hiện quy trình khảo sát và vẽ đồ thị hàm phân thức bậc nhất trên bậc nhất.",
+    "order_index": 60,
+    "default_difficulty": 0.65,
+    "is_active": true
+  },
+  {
+    "topic_code": "FUNCTION_ANALYSIS_TOPIC",
+    "code": "COMPLETE_FUNCTION_ANALYSIS_QUADRATIC_OVER_LINEAR",
+    "name": "Khảo sát hàm phân thức bậc hai/bậc nhất",
+    "description": "Thực hiện quy trình khảo sát và vẽ đồ thị hàm phân thức bậc hai trên bậc nhất.",
+    "order_index": 70,
+    "default_difficulty": 0.75,
+    "is_active": true
+  },
+  {
+    "topic_code": "FUNCTION_ANALYSIS_TOPIC",
+    "code": "GRAPH_IDENTIFICATION_FROM_FEATURES",
+    "name": "Nhận dạng đồ thị từ đặc trưng",
+    "description": "Ghép biểu thức/bảng biến thiên với đồ thị dựa trên cực trị, tiệm cận và chiều biến thiên.",
+    "order_index": 80,
+    "default_difficulty": 0.55,
+    "is_active": true
+  },
+  {
+    "topic_code": "FUNCTION_ANALYSIS_TOPIC",
+    "code": "GRAPH_SYMMETRY_IDENTIFICATION",
+    "name": "Nhận biết tính đối xứng của đồ thị",
+    "description": "Nhận biết trục hoặc tâm đối xứng của các họ đồ thị trong phạm vi chương trình.",
+    "order_index": 90,
+    "default_difficulty": 0.55,
+    "is_active": true
+  },
+  {
+    "topic_code": "DERIVATIVE_APPLICATION_TOPIC",
+    "code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+    "name": "Tối ưu hóa bài toán thực tiễn bằng đạo hàm",
+    "description": "Lập hàm mục tiêu, xác định miền và dùng đạo hàm để tìm phương án tối ưu.",
+    "order_index": 10,
+    "default_difficulty": 0.7,
+    "is_active": true
+  },
+  {
+    "topic_code": "DERIVATIVE_APPLICATION_TOPIC",
+    "code": "REAL_WORLD_MONOTONICITY_INTERPRETATION",
+    "name": "Diễn giải biến thiên trong bối cảnh thực tiễn",
+    "description": "Dùng tính đơn điệu/đồ thị để mô tả và giải thích sự thay đổi của đại lượng thực tế.",
+    "order_index": 20,
+    "default_difficulty": 0.6,
+    "is_active": true
+  }
+]

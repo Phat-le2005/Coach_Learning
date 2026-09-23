@@ -1,0 +1,500 @@
+[
+  {
+    "problem_type_code": "MONOTONICITY_FROM_DERIVATIVE_SIGN",
+    "concept_code": "DERIVATIVE_SIGN",
+    "weight": 0.35,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "MONOTONICITY_FROM_DERIVATIVE_SIGN",
+    "concept_code": "SIGN_ANALYSIS",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "MONOTONICITY_FROM_DERIVATIVE_SIGN",
+    "concept_code": "MONOTONICITY_CRITERION",
+    "weight": 0.4,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "MONOTONICITY_FROM_VARIATION_TABLE",
+    "concept_code": "VARIATION_TABLE",
+    "weight": 0.55,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "MONOTONICITY_FROM_VARIATION_TABLE",
+    "concept_code": "MONOTONICITY",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "MONOTONICITY_FROM_VARIATION_TABLE",
+    "concept_code": "GRAPH_READING",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "MONOTONICITY_FROM_GRAPH",
+    "concept_code": "GRAPH_READING",
+    "weight": 0.55,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "MONOTONICITY_FROM_GRAPH",
+    "concept_code": "MONOTONICITY",
+    "weight": 0.45,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+    "concept_code": "DERIVATIVE_RULES",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+    "concept_code": "SIGN_ANALYSIS",
+    "weight": 0.3,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+    "concept_code": "MONOTONICITY_CRITERION",
+    "weight": 0.45,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "PARAMETER_MONOTONICITY",
+    "concept_code": "MONOTONICITY_CRITERION",
+    "weight": 0.3,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "PARAMETER_MONOTONICITY",
+    "concept_code": "INEQUALITY_SOLVING",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "PARAMETER_MONOTONICITY",
+    "concept_code": "PARAMETER_REASONING",
+    "weight": 0.35,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "PARAMETER_MONOTONICITY",
+    "concept_code": "FUNCTION_DOMAIN",
+    "weight": 0.1,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "EXTREMA_FROM_DERIVATIVE_SIGN",
+    "concept_code": "DERIVATIVE_SIGN",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "EXTREMA_FROM_DERIVATIVE_SIGN",
+    "concept_code": "EXTREMUM_CRITERION",
+    "weight": 0.5,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "EXTREMA_FROM_DERIVATIVE_SIGN",
+    "concept_code": "LOCAL_EXTREMUM",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "EXTREMA_FROM_VARIATION_TABLE",
+    "concept_code": "VARIATION_TABLE",
+    "weight": 0.45,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "EXTREMA_FROM_VARIATION_TABLE",
+    "concept_code": "LOCAL_EXTREMUM",
+    "weight": 0.35,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "EXTREMA_FROM_VARIATION_TABLE",
+    "concept_code": "GRAPH_READING",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "EXTREMA_FROM_GRAPH",
+    "concept_code": "GRAPH_READING",
+    "weight": 0.55,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "EXTREMA_FROM_GRAPH",
+    "concept_code": "LOCAL_EXTREMUM",
+    "weight": 0.45,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "FIND_FUNCTION_EXTREMA",
+    "concept_code": "DERIVATIVE_RULES",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "FIND_FUNCTION_EXTREMA",
+    "concept_code": "CRITICAL_POINT",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "FIND_FUNCTION_EXTREMA",
+    "concept_code": "EXTREMUM_CRITERION",
+    "weight": 0.35,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "FIND_FUNCTION_EXTREMA",
+    "concept_code": "LOCAL_EXTREMUM",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "PARAMETER_EXTREMA_COUNT",
+    "concept_code": "EXTREMUM_CRITERION",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "PARAMETER_EXTREMA_COUNT",
+    "concept_code": "INEQUALITY_SOLVING",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "PARAMETER_EXTREMA_COUNT",
+    "concept_code": "PARAMETER_REASONING",
+    "weight": 0.45,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "PARAMETER_EXTREMA_COUNT",
+    "concept_code": "CRITICAL_POINT",
+    "weight": 0.15,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "GLOBAL_EXTREMA_RECOGNITION",
+    "concept_code": "GLOBAL_EXTREMA",
+    "weight": 0.55,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "GLOBAL_EXTREMA_RECOGNITION",
+    "concept_code": "GRAPH_READING",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "GLOBAL_EXTREMA_RECOGNITION",
+    "concept_code": "VARIATION_TABLE",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+    "concept_code": "GLOBAL_EXTREMA",
+    "weight": 0.35,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+    "concept_code": "CRITICAL_POINT",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+    "concept_code": "ENDPOINT_EVALUATION",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+    "concept_code": "DERIVATIVE_RULES",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "GLOBAL_EXTREMA_SIMPLE_DOMAIN",
+    "concept_code": "GLOBAL_EXTREMA",
+    "weight": 0.4,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "GLOBAL_EXTREMA_SIMPLE_DOMAIN",
+    "concept_code": "FUNCTION_DOMAIN",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "GLOBAL_EXTREMA_SIMPLE_DOMAIN",
+    "concept_code": "VARIATION_TABLE",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "GLOBAL_EXTREMA_SIMPLE_DOMAIN",
+    "concept_code": "DERIVATIVE_RULES",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "ASYMPTOTE_FROM_GRAPH",
+    "concept_code": "GRAPH_READING",
+    "weight": 0.5,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "ASYMPTOTE_FROM_GRAPH",
+    "concept_code": "VERTICAL_ASYMPTOTE",
+    "weight": 0.17,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "ASYMPTOTE_FROM_GRAPH",
+    "concept_code": "HORIZONTAL_ASYMPTOTE",
+    "weight": 0.17,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "ASYMPTOTE_FROM_GRAPH",
+    "concept_code": "OBLIQUE_ASYMPTOTE",
+    "weight": 0.16,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "VERTICAL_ASYMPTOTE_RATIONAL",
+    "concept_code": "LIMIT_AT_POINT",
+    "weight": 0.35,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "VERTICAL_ASYMPTOTE_RATIONAL",
+    "concept_code": "VERTICAL_ASYMPTOTE",
+    "weight": 0.45,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "VERTICAL_ASYMPTOTE_RATIONAL",
+    "concept_code": "FUNCTION_DOMAIN",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "HORIZONTAL_ASYMPTOTE_RATIONAL",
+    "concept_code": "LIMIT_AT_INFINITY",
+    "weight": 0.45,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "HORIZONTAL_ASYMPTOTE_RATIONAL",
+    "concept_code": "HORIZONTAL_ASYMPTOTE",
+    "weight": 0.55,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+    "concept_code": "POLYNOMIAL_DIVISION",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+    "concept_code": "LIMIT_AT_INFINITY",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+    "concept_code": "OBLIQUE_ASYMPTOTE",
+    "weight": 0.5,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "COMPLETE_FUNCTION_ANALYSIS_CUBIC",
+    "concept_code": "FUNCTION_ANALYSIS",
+    "weight": 0.45,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "COMPLETE_FUNCTION_ANALYSIS_CUBIC",
+    "concept_code": "CUBIC_FUNCTION_STRUCTURE",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "COMPLETE_FUNCTION_ANALYSIS_CUBIC",
+    "concept_code": "VARIATION_TABLE",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "COMPLETE_FUNCTION_ANALYSIS_CUBIC",
+    "concept_code": "DERIVATIVE_RULES",
+    "weight": 0.15,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "COMPLETE_FUNCTION_ANALYSIS_LINEAR_FRACTION",
+    "concept_code": "FUNCTION_ANALYSIS",
+    "weight": 0.4,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "COMPLETE_FUNCTION_ANALYSIS_LINEAR_FRACTION",
+    "concept_code": "LINEAR_FRACTION_STRUCTURE",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "COMPLETE_FUNCTION_ANALYSIS_LINEAR_FRACTION",
+    "concept_code": "VERTICAL_ASYMPTOTE",
+    "weight": 0.15,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "COMPLETE_FUNCTION_ANALYSIS_LINEAR_FRACTION",
+    "concept_code": "HORIZONTAL_ASYMPTOTE",
+    "weight": 0.15,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "COMPLETE_FUNCTION_ANALYSIS_LINEAR_FRACTION",
+    "concept_code": "DERIVATIVE_RULES",
+    "weight": 0.1,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "COMPLETE_FUNCTION_ANALYSIS_QUADRATIC_OVER_LINEAR",
+    "concept_code": "FUNCTION_ANALYSIS",
+    "weight": 0.35,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "COMPLETE_FUNCTION_ANALYSIS_QUADRATIC_OVER_LINEAR",
+    "concept_code": "QUADRATIC_OVER_LINEAR_STRUCTURE",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "COMPLETE_FUNCTION_ANALYSIS_QUADRATIC_OVER_LINEAR",
+    "concept_code": "VERTICAL_ASYMPTOTE",
+    "weight": 0.15,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "COMPLETE_FUNCTION_ANALYSIS_QUADRATIC_OVER_LINEAR",
+    "concept_code": "OBLIQUE_ASYMPTOTE",
+    "weight": 0.15,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "COMPLETE_FUNCTION_ANALYSIS_QUADRATIC_OVER_LINEAR",
+    "concept_code": "DERIVATIVE_RULES",
+    "weight": 0.15,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "GRAPH_IDENTIFICATION_FROM_FEATURES",
+    "concept_code": "GRAPH_READING",
+    "weight": 0.35,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "GRAPH_IDENTIFICATION_FROM_FEATURES",
+    "concept_code": "VARIATION_TABLE",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "GRAPH_IDENTIFICATION_FROM_FEATURES",
+    "concept_code": "FUNCTION_ANALYSIS",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "GRAPH_IDENTIFICATION_FROM_FEATURES",
+    "concept_code": "FUNCTION_GRAPH",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "GRAPH_SYMMETRY_IDENTIFICATION",
+    "concept_code": "GRAPH_SYMMETRY",
+    "weight": 0.55,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "GRAPH_SYMMETRY_IDENTIFICATION",
+    "concept_code": "GRAPH_READING",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "GRAPH_SYMMETRY_IDENTIFICATION",
+    "concept_code": "FUNCTION_ANALYSIS",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+    "concept_code": "MATHEMATICAL_MODELING",
+    "weight": 0.3,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+    "concept_code": "OPTIMIZATION",
+    "weight": 0.35,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+    "concept_code": "GLOBAL_EXTREMA",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+    "concept_code": "CONTEXT_INTERPRETATION",
+    "weight": 0.15,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "REAL_WORLD_MONOTONICITY_INTERPRETATION",
+    "concept_code": "MATHEMATICAL_MODELING",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "REAL_WORLD_MONOTONICITY_INTERPRETATION",
+    "concept_code": "MONOTONICITY_CRITERION",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "REAL_WORLD_MONOTONICITY_INTERPRETATION",
+    "concept_code": "CONTEXT_INTERPRETATION",
+    "weight": 0.4,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "REAL_WORLD_MONOTONICITY_INTERPRETATION",
+    "concept_code": "GRAPH_READING",
+    "weight": 0.1,
+    "is_primary": false
+  }
+]

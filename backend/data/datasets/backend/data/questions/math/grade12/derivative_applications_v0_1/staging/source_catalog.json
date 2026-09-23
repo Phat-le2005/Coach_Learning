@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "dataset_code": "MATH_G12_DERIVATIVE_SOURCE_CORPUS_V0_1",
+  "generated_at": "2026-09-23",
+  "sources": [
+    {
+      "source_code": "SRC_MOET_EXAM_2025_SOLUTION_COMPILATION",
+      "title": "Hướng dẫn giải đề chính thức tốt nghiệp THPT năm 2025 môn Toán",
+      "file_name": "huong-dan-giai-de-chinh-thuc-tot-nghiep-thpt-nam-2025-mon-toan.pdf",
+      "source_type": "SECONDARY_SOLUTION_COMPILATION_CONTAINING_OFFICIAL_EXAM",
+      "scope": "4 mã đề 101, 102, 103, 104",
+      "provenance_status": "PRIMARY_MOET_EXAM_CROSSCHECK_REQUIRED_BEFORE_VERIFIED",
+      "rights_status": "REVIEW_REQUIRED",
+      "drive_file_id": "1jGjnJ3Wq2ynISxB4P1g9mk2CXibl-YXy"
+    },
+    {
+      "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+      "title": "Lời giải chi tiết đề thi thử tốt nghiệp THPT 2025 môn Toán của các Sở GDĐT",
+      "file_name": "loi-giai-chi-tiet-de-thi-thu-tot-nghiep-thpt-2025-mon-toan-cua-cac-so-gddt.pdf",
+      "source_type": "SECONDARY_COLLECTION_OF_PROVINCIAL_TRIAL_EXAMS",
+      "scope": "10 đề Sở GDĐT được phát hiện",
+      "provenance_status": "PAGE_LEVEL_ISSUER_DETECTED_REVIEW_REQUIRED",
+      "rights_status": "REVIEW_REQUIRED",
+      "drive_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP"
+    },
+    {
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "title": "40 đề ôn thi tốt nghiệp THPT 2026 môn Toán có lời giải chi tiết - Trương Ngọc Vỹ",
+      "file_name": "40-de-on-thi-tot-nghiep-thpt-2026-mon-toan-co-loi-giai-chi-tiet-truong-ngoc-vy.pdf",
+      "source_type": "CURATED_PRACTICE_COLLECTION",
+      "scope": "40 đề",
+      "provenance_status": "AUTHOR_CURATED_PRACTICE",
+      "rights_status": "REVIEW_REQUIRED",
+      "drive_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1"
+    },
+    {
+      "source_code": "SRC_THPT_HUONG_HOA_CK2_2025_2026",
+      "title": "Đề cương cuối kì 2 Toán 12 năm 2025-2026 - THPT Hướng Hóa, Quảng Trị",
+      "file_name": "de-cuong-cuoi-ki-2-toan-12-nam-2025-2026-truong-thpt-huong-hoa-quang-tri.pdf",
+      "source_type": "SCHOOL_BLUEPRINT_AND_SAMPLE_EXAM",
+      "scope": "HK2: nguyên hàm-tích phân, Oxyz, xác suất có điều kiện",
+      "provenance_status": "PRIMARY_SCHOOL_DOCUMENT",
+      "rights_status": "REVIEW_REQUIRED",
+      "note": "Không có câu thuộc chapter Đạo hàm trong extraction hiện tại; giữ lại cho các chapter tiếp theo."
+    }
+  ]
+}

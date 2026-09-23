@@ -1,0 +1,148 @@
+{
+  "schema_version": "1.0",
+  "dataset_code": "MATH_G12_OFFICIAL_SCOPE_GDPT2018",
+  "dataset_status": "SOURCE_VERIFIED_SCOPE",
+  "subject_code": "MATH_G12",
+  "grade_level": 12,
+  "curriculum_code": "GDPT2018",
+  "primary_source_code": "BGDDT_MATH_PROGRAM_2018",
+  "currentness_checked_against": [
+    "BGDDT_AMENDMENT_17_2025"
+  ],
+  "currentness_as_of": "2026-09-23",
+  "core_program": [
+    {
+      "official_scope_code": "M12_CORE_CALCULUS_DERIVATIVE_APPLICATIONS",
+      "strand": "MỘT SỐ YẾU TỐ GIẢI TÍCH",
+      "official_content_title": "Ứng dụng đạo hàm để khảo sát và vẽ đồ thị của hàm số",
+      "document_pages": [
+        105,
+        106,
+        107
+      ],
+      "normalized_coverage": [
+        "tính đơn điệu và cực trị",
+        "giá trị lớn nhất và giá trị nhỏ nhất",
+        "tiệm cận và khảo sát đồ thị",
+        "ứng dụng đạo hàm và khảo sát hàm số vào thực tiễn"
+      ],
+      "provenance_type": "OFFICIAL"
+    },
+    {
+      "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+      "strand": "MỘT SỐ YẾU TỐ GIẢI TÍCH",
+      "official_content_title": "Nguyên hàm. Tích phân",
+      "document_pages": [
+        107
+      ],
+      "normalized_coverage": [
+        "khái niệm và tính chất nguyên hàm",
+        "nguyên hàm của một số hàm số sơ cấp",
+        "tích phân và tính chất",
+        "diện tích, thể tích và bài toán thực tiễn"
+      ],
+      "provenance_type": "OFFICIAL"
+    },
+    {
+      "official_scope_code": "M12_CORE_GEOMETRY_COORDINATE_3D",
+      "strand": "HÌNH HỌC VÀ ĐO LƯỜNG",
+      "official_content_title": "Phương pháp tọa độ trong không gian",
+      "document_pages": [
+        108,
+        109,
+        110
+      ],
+      "normalized_coverage": [
+        "vectơ và tọa độ trong không gian",
+        "phương trình mặt phẳng",
+        "phương trình đường thẳng trong không gian",
+        "góc và khoảng cách bằng phương pháp tọa độ",
+        "phương trình mặt cầu",
+        "vận dụng vào thực tiễn"
+      ],
+      "provenance_type": "OFFICIAL"
+    },
+    {
+      "official_scope_code": "M12_CORE_STATISTICS_GROUPED_DATA",
+      "strand": "THỐNG KÊ VÀ XÁC SUẤT",
+      "official_content_title": "Các số đặc trưng của mẫu số liệu ghép nhóm",
+      "document_pages": [
+        110
+      ],
+      "normalized_coverage": [
+        "các số đo mức độ phân tán của mẫu số liệu ghép nhóm",
+        "ý nghĩa và diễn giải các số đặc trưng trong thực tiễn"
+      ],
+      "provenance_type": "OFFICIAL"
+    },
+    {
+      "official_scope_code": "M12_CORE_PROBABILITY_CONDITIONAL",
+      "strand": "THỐNG KÊ VÀ XÁC SUẤT",
+      "official_content_title": "Xác suất có điều kiện và các quy tắc tính xác suất",
+      "document_pages": [
+        110,
+        111
+      ],
+      "normalized_coverage": [
+        "xác suất có điều kiện",
+        "xác suất toàn phần",
+        "công thức Bayes",
+        "sơ đồ hình cây và ứng dụng thực tiễn"
+      ],
+      "provenance_type": "OFFICIAL"
+    }
+  ],
+  "cross_cutting": [
+    {
+      "official_scope_code": "M12_CORE_SOFTWARE_PRACTICE",
+      "official_content_title": "Thực hành trong phòng máy tính với phần mềm toán học",
+      "document_pages": [
+        107,
+        109,
+        111
+      ],
+      "provenance_type": "OFFICIAL"
+    },
+    {
+      "official_scope_code": "M12_CORE_EXPERIENTIAL_ACTIVITIES",
+      "official_content_title": "Hoạt động thực hành và trải nghiệm",
+      "document_pages": [
+        111
+      ],
+      "provenance_type": "OFFICIAL"
+    }
+  ],
+  "optional_study_topics": [
+    {
+      "official_scope_code": "M12_SPECIAL_TOPIC_12_1",
+      "official_content_title": "Biến ngẫu nhiên rời rạc. Các số đặc trưng của biến ngẫu nhiên rời rạc",
+      "document_pages": [
+        112,
+        113
+      ],
+      "provenance_type": "OFFICIAL_OPTIONAL_SPECIAL_TOPIC"
+    },
+    {
+      "official_scope_code": "M12_SPECIAL_TOPIC_12_2",
+      "official_content_title": "Ứng dụng toán học để giải quyết một số bài toán tối ưu",
+      "document_pages": [
+        113
+      ],
+      "provenance_type": "OFFICIAL_OPTIONAL_SPECIAL_TOPIC"
+    },
+    {
+      "official_scope_code": "M12_SPECIAL_TOPIC_12_3",
+      "official_content_title": "Ứng dụng toán học trong một số vấn đề liên quan đến tài chính",
+      "document_pages": [
+        113,
+        114
+      ],
+      "provenance_type": "OFFICIAL_OPTIONAL_SPECIAL_TOPIC"
+    }
+  ],
+  "implementation_notes": [
+    "This file records source-backed official scope only.",
+    "Do not infer ProblemType, Concept, prerequisite edges, weights or difficulty from this file as if they were Ministry-issued facts.",
+    "The existing chapters.json/topics.json/problem_types.json/concepts.json remain prototype data until a separate derived-taxonomy review replaces them."
+  ]
+}

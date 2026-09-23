@@ -1,0 +1,219 @@
+[
+  {
+    "code": "FUNCTION_DOMAIN",
+    "name": "Tập xác định của hàm số",
+    "description": "Xác định miền mà hàm số có nghĩa.",
+    "grade_level": 10,
+    "order_index": 10
+  },
+  {
+    "code": "FUNCTION_GRAPH",
+    "name": "Đồ thị hàm số",
+    "description": "Đọc và diễn giải các đặc trưng cơ bản của đồ thị hàm số.",
+    "grade_level": 10,
+    "order_index": 20
+  },
+  {
+    "code": "FIRST_DERIVATIVE",
+    "name": "Đạo hàm cấp một",
+    "description": "Hiểu và sử dụng đạo hàm cấp một của hàm số.",
+    "grade_level": 11,
+    "order_index": 30
+  },
+  {
+    "code": "DERIVATIVE_RULES",
+    "name": "Quy tắc tính đạo hàm",
+    "description": "Tính đạo hàm bằng các quy tắc tổng, hiệu, tích, thương và hàm hợp.",
+    "grade_level": 11,
+    "order_index": 40
+  },
+  {
+    "code": "CRITICAL_POINT",
+    "name": "Điểm tới hạn",
+    "description": "Nhận biết các điểm trong miền cần xét khi đạo hàm bằng 0 hoặc không xác định.",
+    "grade_level": 12,
+    "order_index": 50
+  },
+  {
+    "code": "DERIVATIVE_SIGN",
+    "name": "Dấu của đạo hàm",
+    "description": "Xác định và sử dụng dấu của f'(x).",
+    "grade_level": 12,
+    "order_index": 60
+  },
+  {
+    "code": "SIGN_ANALYSIS",
+    "name": "Xét dấu biểu thức",
+    "description": "Phân tích dấu của biểu thức trên các khoảng.",
+    "grade_level": 11,
+    "order_index": 70
+  },
+  {
+    "code": "MONOTONICITY",
+    "name": "Tính đồng biến và nghịch biến",
+    "description": "Hiểu ý nghĩa của tính đơn điệu trên một khoảng.",
+    "grade_level": 12,
+    "order_index": 80
+  },
+  {
+    "code": "MONOTONICITY_CRITERION",
+    "name": "Tiêu chuẩn đạo hàm cho tính đơn điệu",
+    "description": "Liên hệ dấu đạo hàm với tính đồng biến/nghịch biến.",
+    "grade_level": 12,
+    "order_index": 90
+  },
+  {
+    "code": "VARIATION_TABLE",
+    "name": "Bảng biến thiên",
+    "description": "Lập và đọc bảng biến thiên của hàm số.",
+    "grade_level": 12,
+    "order_index": 100
+  },
+  {
+    "code": "LOCAL_EXTREMUM",
+    "name": "Cực trị địa phương",
+    "description": "Hiểu điểm cực trị và giá trị cực trị.",
+    "grade_level": 12,
+    "order_index": 110
+  },
+  {
+    "code": "EXTREMUM_CRITERION",
+    "name": "Tiêu chuẩn đổi dấu đạo hàm cho cực trị",
+    "description": "Dùng sự đổi dấu của đạo hàm để nhận biết cực đại/cực tiểu.",
+    "grade_level": 12,
+    "order_index": 120
+  },
+  {
+    "code": "GLOBAL_EXTREMA",
+    "name": "Giá trị lớn nhất và nhỏ nhất",
+    "description": "Hiểu GTLN/GTNN trên tập xác định cho trước.",
+    "grade_level": 12,
+    "order_index": 130
+  },
+  {
+    "code": "ENDPOINT_EVALUATION",
+    "name": "Kiểm tra giá trị tại đầu mút",
+    "description": "Tính và so sánh giá trị tại đầu mút khi tìm GTLN/GTNN trên đoạn.",
+    "grade_level": 12,
+    "order_index": 140
+  },
+  {
+    "code": "GRAPH_READING",
+    "name": "Đọc đặc trưng từ đồ thị",
+    "description": "Đọc biến thiên, cực trị, giao điểm và tiệm cận từ đồ thị.",
+    "grade_level": 12,
+    "order_index": 150
+  },
+  {
+    "code": "LIMIT_AT_POINT",
+    "name": "Giới hạn tại một điểm",
+    "description": "Sử dụng hành vi giới hạn của hàm số gần một điểm.",
+    "grade_level": 11,
+    "order_index": 160
+  },
+  {
+    "code": "LIMIT_AT_INFINITY",
+    "name": "Giới hạn tại vô cực",
+    "description": "Sử dụng hành vi của hàm số khi x tiến tới ±∞.",
+    "grade_level": 11,
+    "order_index": 170
+  },
+  {
+    "code": "VERTICAL_ASYMPTOTE",
+    "name": "Tiệm cận đứng",
+    "description": "Nhận biết và xác định tiệm cận đứng.",
+    "grade_level": 12,
+    "order_index": 180
+  },
+  {
+    "code": "HORIZONTAL_ASYMPTOTE",
+    "name": "Tiệm cận ngang",
+    "description": "Nhận biết và xác định tiệm cận ngang.",
+    "grade_level": 12,
+    "order_index": 190
+  },
+  {
+    "code": "OBLIQUE_ASYMPTOTE",
+    "name": "Tiệm cận xiên",
+    "description": "Nhận biết và xác định tiệm cận xiên.",
+    "grade_level": 12,
+    "order_index": 200
+  },
+  {
+    "code": "POLYNOMIAL_DIVISION",
+    "name": "Chia đa thức",
+    "description": "Biến đổi phân thức bằng phép chia đa thức khi cần.",
+    "grade_level": 10,
+    "order_index": 210
+  },
+  {
+    "code": "FUNCTION_ANALYSIS",
+    "name": "Quy trình khảo sát hàm số",
+    "description": "Tổng hợp miền xác định, biến thiên, cực trị, tiệm cận, bảng biến thiên và đồ thị.",
+    "grade_level": 12,
+    "order_index": 220
+  },
+  {
+    "code": "CUBIC_FUNCTION_STRUCTURE",
+    "name": "Cấu trúc hàm bậc ba",
+    "description": "Nhận biết đặc điểm đại số và hình học của hàm bậc ba.",
+    "grade_level": 12,
+    "order_index": 230
+  },
+  {
+    "code": "LINEAR_FRACTION_STRUCTURE",
+    "name": "Cấu trúc phân thức bậc nhất/bậc nhất",
+    "description": "Nhận biết đặc trưng của hàm phân thức bậc nhất trên bậc nhất.",
+    "grade_level": 12,
+    "order_index": 240
+  },
+  {
+    "code": "QUADRATIC_OVER_LINEAR_STRUCTURE",
+    "name": "Cấu trúc phân thức bậc hai/bậc nhất",
+    "description": "Nhận biết đặc trưng của hàm phân thức bậc hai trên bậc nhất.",
+    "grade_level": 12,
+    "order_index": 250
+  },
+  {
+    "code": "GRAPH_SYMMETRY",
+    "name": "Tính đối xứng của đồ thị",
+    "description": "Nhận biết trục đối xứng hoặc tâm đối xứng.",
+    "grade_level": 12,
+    "order_index": 260
+  },
+  {
+    "code": "INEQUALITY_SOLVING",
+    "name": "Giải bất phương trình",
+    "description": "Giải các bất phương trình xuất hiện trong xét dấu và điều kiện tham số.",
+    "grade_level": 11,
+    "order_index": 270
+  },
+  {
+    "code": "PARAMETER_REASONING",
+    "name": "Lập luận tham số",
+    "description": "Thiết lập và xử lý điều kiện đối với tham số.",
+    "grade_level": 12,
+    "order_index": 280
+  },
+  {
+    "code": "MATHEMATICAL_MODELING",
+    "name": "Mô hình hóa toán học",
+    "description": "Chuyển bài toán thực tế thành mô hình/hàm số phù hợp.",
+    "grade_level": 12,
+    "order_index": 290
+  },
+  {
+    "code": "OPTIMIZATION",
+    "name": "Tối ưu hóa",
+    "description": "Xác định hàm mục tiêu và tìm giá trị tối ưu phù hợp ràng buộc.",
+    "grade_level": 12,
+    "order_index": 300
+  },
+  {
+    "code": "CONTEXT_INTERPRETATION",
+    "name": "Diễn giải kết quả theo ngữ cảnh",
+    "description": "Diễn giải ý nghĩa của kết quả toán học trong tình huống thực tế.",
+    "grade_level": 12,
+    "order_index": 310
+  }
+]

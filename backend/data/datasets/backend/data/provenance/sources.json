@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0",
+  "scope": "MATH_G12",
+  "policy": {
+    "official_data_rule": "Canonical official curriculum facts must be traceable to a competent public authority source.",
+    "derived_data_rule": "ProblemType, Concept, prerequisite edges, weights and initial difficulty must be labeled COACH_LEARNING_DERIVED and must not be represented as Ministry-issued data.",
+    "no_fake_data": true
+  },
+  "sources": [
+    {
+      "source_code": "BGDDT_MATH_PROGRAM_2018",
+      "title": "Chương trình giáo dục phổ thông môn Toán",
+      "issuer": "Bộ Giáo dục và Đào tạo",
+      "legal_basis": "Thông tư 32/2018/TT-BGDĐT ngày 26/12/2018",
+      "document_status": "CURRENT_FOR_MATH_AS_OF_2026-09-23",
+      "reference_url": "https://thcsandong.haiphong.edu.vn/van-ban-bo-gddt/chuong-trinh-giao-duc-pho-thong-mon-toan-ban-hanh-kem-theo-thong-tu-so-322018tt/vbct/20343/91425",
+      "attachment_name": "3-cttoan.pdf",
+      "math12_pages": "105-114",
+      "role": "PRIMARY_CURRICULUM_SOURCE",
+      "verified_on": "2026-09-23"
+    },
+    {
+      "source_code": "BGDDT_AMENDMENT_17_2025",
+      "title": "Thông tư 17/2025/TT-BGDĐT",
+      "issuer": "Bộ Giáo dục và Đào tạo",
+      "legal_basis": "Thông tư 17/2025/TT-BGDĐT ngày 12/09/2025",
+      "reference_url": "https://vanban.chinhphu.vn/?docid=215347&pageid=27160",
+      "role": "CURRENTNESS_CHECK",
+      "math_effect": "NO_MATH_PROGRAM_AMENDMENT",
+      "verified_on": "2026-09-23"
+    },
+    {
+      "source_code": "BGDDT_EXAM_FORMAT_2025",
+      "title": "Cấu trúc định dạng đề thi tốt nghiệp THPT từ năm 2025",
+      "issuer": "Cục Quản lý chất lượng - Bộ Giáo dục và Đào tạo",
+      "reference_url": "https://vqa.moet.gov.vn/vi/news/thong-bao/cau-truc-dinh-dang-de-thi-tot-nghiep-thpt-tu-nam-2025-74.html",
+      "role": "ASSESSMENT_FORMAT_SOURCE",
+      "verified_on": "2026-09-23"
+    },
+    {
+      "source_code": "BGDDT_REFERENCE_EXAM_2025",
+      "title": "Đề thi tham khảo Kỳ thi tốt nghiệp THPT từ năm 2025",
+      "issuer": "Cục Quản lý chất lượng - Bộ Giáo dục và Đào tạo",
+      "reference_url": "https://vqa.moet.gov.vn/vi/news/tin-tuc-su-kien/de-thi-tham-khao-ky-thi-tot-nghiep-thpt-tu-nam-2025-159.html",
+      "role": "QUESTION_PROVENANCE_SOURCE",
+      "verified_on": "2026-09-23"
+    }
+  ]
+}

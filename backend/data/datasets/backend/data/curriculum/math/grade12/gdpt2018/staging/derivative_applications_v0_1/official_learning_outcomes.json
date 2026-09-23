@@ -1,0 +1,82 @@
+[
+  {
+    "official_outcome_code": "M12_DERIV_LO_01",
+    "content_area": "Tính đơn điệu của hàm số",
+    "normalized_description": "Nhận biết khoảng đồng biến và nghịch biến của hàm số dựa trên dấu của đạo hàm cấp một.",
+    "source_reference": "TT 32/2018/TT-BGDĐT - Chương trình môn Toán - trang 105",
+    "source_page": 105,
+    "provenance_type": "OFFICIAL_NORMALIZED"
+  },
+  {
+    "official_outcome_code": "M12_DERIV_LO_02",
+    "content_area": "Tính đơn điệu của hàm số",
+    "normalized_description": "Biểu diễn được tính đồng biến và nghịch biến trong bảng biến thiên.",
+    "source_reference": "TT 32/2018/TT-BGDĐT - Chương trình môn Toán - trang 105",
+    "source_page": 105,
+    "provenance_type": "OFFICIAL_NORMALIZED"
+  },
+  {
+    "official_outcome_code": "M12_DERIV_LO_03",
+    "content_area": "Tính đơn điệu của hàm số",
+    "normalized_description": "Nhận biết tính đơn điệu, điểm cực trị và giá trị cực trị từ bảng biến thiên hoặc đồ thị.",
+    "source_reference": "TT 32/2018/TT-BGDĐT - Chương trình môn Toán - trang 106",
+    "source_page": 106,
+    "provenance_type": "OFFICIAL_NORMALIZED"
+  },
+  {
+    "official_outcome_code": "M12_DERIV_LO_04",
+    "content_area": "Giá trị lớn nhất, giá trị nhỏ nhất của hàm số",
+    "normalized_description": "Nhận biết giá trị lớn nhất và nhỏ nhất của hàm số trên một tập xác định cho trước.",
+    "source_reference": "TT 32/2018/TT-BGDĐT - Chương trình môn Toán - trang 106",
+    "source_page": 106,
+    "provenance_type": "OFFICIAL_NORMALIZED"
+  },
+  {
+    "official_outcome_code": "M12_DERIV_LO_05",
+    "content_area": "Giá trị lớn nhất, giá trị nhỏ nhất của hàm số",
+    "normalized_description": "Xác định giá trị lớn nhất và nhỏ nhất bằng đạo hàm trong các trường hợp đơn giản.",
+    "source_reference": "TT 32/2018/TT-BGDĐT - Chương trình môn Toán - trang 106",
+    "source_page": 106,
+    "provenance_type": "OFFICIAL_NORMALIZED"
+  },
+  {
+    "official_outcome_code": "M12_DERIV_LO_06",
+    "content_area": "Khảo sát và vẽ đồ thị của hàm số",
+    "normalized_description": "Nhận biết hình ảnh hình học của tiệm cận đứng, ngang và xiên.",
+    "source_reference": "TT 32/2018/TT-BGDĐT - Chương trình môn Toán - trang 106",
+    "source_page": 106,
+    "provenance_type": "OFFICIAL_NORMALIZED"
+  },
+  {
+    "official_outcome_code": "M12_DERIV_LO_07",
+    "content_area": "Khảo sát và vẽ đồ thị của hàm số",
+    "normalized_description": "Mô tả quy trình tổng quát khảo sát hàm số gồm miền xác định, biến thiên, cực trị, tiệm cận, bảng biến thiên và đồ thị.",
+    "source_reference": "TT 32/2018/TT-BGDĐT - Chương trình môn Toán - trang 106",
+    "source_page": 106,
+    "provenance_type": "OFFICIAL_NORMALIZED"
+  },
+  {
+    "official_outcome_code": "M12_DERIV_LO_08",
+    "content_area": "Khảo sát và vẽ đồ thị của hàm số",
+    "normalized_description": "Khảo sát và vẽ đồ thị các họ hàm được chương trình quy định: hàm bậc ba, hàm phân thức bậc nhất trên bậc nhất và hàm phân thức bậc hai trên bậc nhất.",
+    "source_reference": "TT 32/2018/TT-BGDĐT - Chương trình môn Toán - trang 106",
+    "source_page": 106,
+    "provenance_type": "OFFICIAL_NORMALIZED"
+  },
+  {
+    "official_outcome_code": "M12_DERIV_LO_09",
+    "content_area": "Khảo sát và vẽ đồ thị của hàm số",
+    "normalized_description": "Nhận biết trục đối xứng hoặc tâm đối xứng của các đồ thị thuộc các họ hàm được quy định.",
+    "source_reference": "TT 32/2018/TT-BGDĐT - Chương trình môn Toán - trang 106",
+    "source_page": 106,
+    "provenance_type": "OFFICIAL_NORMALIZED"
+  },
+  {
+    "official_outcome_code": "M12_DERIV_LO_10",
+    "content_area": "Ứng dụng đạo hàm để giải quyết vấn đề thực tiễn",
+    "normalized_description": "Vận dụng đạo hàm và khảo sát hàm số để giải quyết một số vấn đề thực tiễn.",
+    "source_reference": "TT 32/2018/TT-BGDĐT - Chương trình môn Toán - trang 106-107",
+    "source_page": "106-107",
+    "provenance_type": "OFFICIAL_NORMALIZED"
+  }
+]
