@@ -31,31 +31,13 @@ def effective_question_type(candidate: dict[str, Any]) -> str | None:
 
 
 def requires_question_group(candidate: dict[str, Any]) -> bool:
-    """Return whether the effective reviewed candidate needs a group model.
-
-    A confirmed reviewed type supersedes the raw group marker because that marker was
-    derived from the same initial type detection. Explicit review-record requirements
-    remain authoritative.
-    """
+    """Return whether an effective candidate explicitly needs a group model."""
     review_record = candidate.get("review_record")
-    resolved_type = effective_question_type(candidate)
-    if resolved_type == "TRUE_FALSE_GROUP":
-        return True
-    if (
-        isinstance(review_record, dict)
-        and review_record.get("requires_question_group_model") is True
-    ):
-        return True
-    has_confirmed_reviewed_type = resolved_type is not None and (
-        "reviewed_question_type" in candidate
+    return (
+        effective_question_type(candidate) == "TRUE_FALSE_GROUP"
+        or candidate.get("requires_question_group_model") is True
         or (
             isinstance(review_record, dict)
-            and "reviewed_question_type" in review_record
+            and review_record.get("requires_question_group_model") is True
         )
-    )
-    if has_confirmed_reviewed_type:
-        return False
-    return (
-        candidate.get("question_type_detected") == "TRUE_FALSE_GROUP"
-        or candidate.get("requires_question_group_model") is True
     )

@@ -66,7 +66,7 @@ def test_invalid_reviewed_type_does_not_fall_back_to_raw_detection() -> None:
     }
 
     assert effective_question_type(candidate) is None
-    assert requires_question_group(candidate) is True
+    assert requires_question_group(candidate) is False
 
 
 def test_suggested_type_is_not_a_confirmed_override() -> None:
@@ -81,7 +81,7 @@ def test_suggested_type_is_not_a_confirmed_override() -> None:
     assert requires_question_group(candidate) is True
 
 
-def test_confirmed_mcq_overrides_raw_derived_group_marker() -> None:
+def test_explicit_candidate_group_requirement_overrides_reviewed_type() -> None:
     candidate = {
         "question_type_detected": "TRUE_FALSE_GROUP",
         "requires_question_group_model": True,
@@ -89,7 +89,29 @@ def test_confirmed_mcq_overrides_raw_derived_group_marker() -> None:
     }
 
     assert effective_question_type(candidate) == "MULTIPLE_CHOICE"
+    assert requires_question_group(candidate) is True
+
+
+def test_reviewed_type_can_correct_raw_detector_without_explicit_flag() -> None:
+    candidate = {
+        "question_type_detected": "TRUE_FALSE_GROUP",
+        "review_record": {"reviewed_question_type": "MULTIPLE_CHOICE"},
+    }
+
+    assert effective_question_type(candidate) == "MULTIPLE_CHOICE"
     assert requires_question_group(candidate) is False
+
+
+def test_explicit_review_record_group_requirement_overrides_reviewed_type() -> None:
+    candidate = {
+        "question_type_detected": "SHORT_ANSWER",
+        "review_record": {
+            "reviewed_question_type": "MULTIPLE_CHOICE",
+            "requires_question_group_model": True,
+        },
+    }
+
+    assert requires_question_group(candidate) is True
 
 
 @pytest.mark.parametrize(
@@ -119,6 +141,22 @@ def test_import_guard_rejects_untouched_true_false_group() -> None:
         if "review_record" not in item
         and item["question_type_detected"] == "TRUE_FALSE_GROUP"
     )
+
+    with pytest.raises(ApplicationError) as error:
+        QuestionImportService._reject_staging_candidate_payload([(1, candidate)])
+
+    assert error.value.code == "STAGING_QUESTION_GROUP_UNSUPPORTED"
+
+
+def test_import_guard_rejects_explicit_group_requirement_after_type_review() -> None:
+    candidate = {
+        "candidate_id": "EXPLICIT_GROUP_REQUIREMENT",
+        "question_type_detected": "TRUE_FALSE_GROUP",
+        "reviewed_question_type": "MULTIPLE_CHOICE",
+        "requires_question_group_model": True,
+        "status": "VERIFIED",
+        "promotion_ready": False,
+    }
 
     with pytest.raises(ApplicationError) as error:
         QuestionImportService._reject_staging_candidate_payload([(1, candidate)])

@@ -172,6 +172,13 @@ class QuestionReviewOverlayResolver:
             if candidate is not None:
                 candidate["review_record"] = copy.deepcopy(record)
 
+        self._clear_confirmed_raw_group_markers(
+            raw_by_id,
+            reviewed_by_id,
+            records_by_id,
+            self._patches_by_id(patches),
+        )
+
         self._validate_preserved_fields(
             raw_by_id, reviewed_by_id, all_referenced_ids, issues
         )
@@ -380,6 +387,32 @@ class QuestionReviewOverlayResolver:
             if isinstance(patch.get("candidate_id"), str)
             and isinstance(patch.get("set"), dict)
         }
+
+    @staticmethod
+    def _clear_confirmed_raw_group_markers(
+        raw_by_id: dict[str, dict[str, Any]],
+        reviewed_by_id: dict[str, dict[str, Any]],
+        records_by_id: dict[str, dict[str, Any]],
+        patches_by_id: dict[str, dict[str, Any]],
+    ) -> None:
+        """Remove a detector-derived group marker after a confirmed type correction."""
+        for candidate_id, record in records_by_id.items():
+            raw = raw_by_id.get(candidate_id)
+            candidate = reviewed_by_id.get(candidate_id)
+            patch = patches_by_id.get(candidate_id, {})
+            if raw is None or candidate is None:
+                continue
+            if (
+                raw.get("question_type_detected") == "TRUE_FALSE_GROUP"
+                and raw.get("requires_question_group_model") is True
+                and record.get("detected_question_type") == "TRUE_FALSE_GROUP"
+                and record.get("classification_review") == "CONFIRMED"
+                and record.get("reviewed_question_type")
+                in SUPPORTED_STAGING_QUESTION_TYPES - {"TRUE_FALSE_GROUP"}
+                and "requires_question_group_model" not in patch
+                and record.get("requires_question_group_model") is not True
+            ):
+                candidate.pop("requires_question_group_model", None)
 
     @staticmethod
     def _validate_reviewed_question_types(
