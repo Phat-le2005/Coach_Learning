@@ -47,6 +47,39 @@ def _write_json(path: Path, value: object) -> None:
     )
 
 
+def _copied_batch_002(tmp_path: Path) -> tuple[Path, Path]:
+    staging_path, _ = _copy_derivative_data(tmp_path)
+    return staging_path, staging_path.parent / "review" / "batch_002"
+
+
+def _set_duplicate_target(
+    batch_path: Path,
+    candidate_id: str,
+    duplicate_of_candidate_id: str,
+) -> None:
+    rejected = _read_json(batch_path / "rejected_candidates.json")
+    patches = _read_json(batch_path / "candidate_patch.json")
+    assert isinstance(rejected, list)
+    assert isinstance(patches, list)
+    record = next(
+        item
+        for item in rejected
+        if isinstance(item, dict) and item.get("candidate_id") == candidate_id
+    )
+    patch = next(
+        item
+        for item in patches
+        if isinstance(item, dict) and item.get("candidate_id") == candidate_id
+    )
+    assert record["review_status"] == "REJECTED_DUPLICATE"
+    assert isinstance(patch.get("set"), dict)
+    record["duplicate_of_candidate_id"] = duplicate_of_candidate_id
+    patch["set"]["duplicate_of_candidate_id"] = duplicate_of_candidate_id
+    patch["set"]["rejection_reason"] = f"DUPLICATE_OF:{duplicate_of_candidate_id}"
+    _write_json(batch_path / "rejected_candidates.json", rejected)
+    _write_json(batch_path / "candidate_patch.json", patches)
+
+
 def test_batch_001_resolves_and_has_exact_review_counts() -> None:
     result = QuestionReviewOverlayResolver().resolve(
         _raw_candidates(), DEFAULT_REVIEW_BATCH
@@ -141,6 +174,89 @@ def test_incomplete_verified_review_is_rejected(
 
     assert result.report.status == "FAIL"
     assert error_code in {error.code for error in result.report.errors}
+
+
+def test_mixed_visual_and_text_only_verified_candidates_validate(
+    tmp_path: Path,
+) -> None:
+    staging_path, batch_path = _copy_derivative_data(tmp_path)
+    verified = _read_json(batch_path / "verified_candidates.json")
+    patches = _read_json(batch_path / "candidate_patch.json")
+    assert isinstance(verified, list) and len(verified) >= 2
+    assert isinstance(patches, list)
+    visual_record = verified[0]
+    text_record = verified[1]
+    assert isinstance(visual_record, dict) and isinstance(text_record, dict)
+    visual_patch = next(
+        item
+        for item in patches
+        if isinstance(item, dict)
+        and item.get("candidate_id") == visual_record["candidate_id"]
+    )
+    text_patch = next(
+        item
+        for item in patches
+        if isinstance(item, dict)
+        and item.get("candidate_id") == text_record["candidate_id"]
+    )
+    assert isinstance(visual_patch.get("set"), dict)
+    assert isinstance(text_patch.get("set"), dict)
+    visual_record["visual_asset_required"] = True
+    visual_record["visual_source_page"] = int(visual_record["source_page"])
+    visual_patch["set"]["visual_asset_required"] = True
+    visual_patch["set"]["visual_source_page"] = visual_record["visual_source_page"]
+    text_record.pop("visual_asset_required", None)
+    text_record.pop("visual_source_page", None)
+    text_patch["set"].pop("visual_asset_required", None)
+    text_patch["set"].pop("visual_source_page", None)
+    _write_json(batch_path / "verified_candidates.json", verified)
+    _write_json(batch_path / "candidate_patch.json", patches)
+
+    result = QuestionReviewOverlayResolver().resolve(
+        _raw_candidates(staging_path), batch_path
+    )
+
+    assert result.report.status == "PASS"
+    assert "VISUAL_ASSET_REQUIRED" in candidate_promotion_blockers(
+        result.candidate(str(visual_record["candidate_id"]))
+    )
+    assert "VISUAL_ASSET_REQUIRED" not in candidate_promotion_blockers(
+        result.candidate(str(text_record["candidate_id"]))
+    )
+
+
+@pytest.mark.parametrize("visual_source_page", [0, -1, True, "1", None])
+def test_visual_verified_candidate_requires_positive_integer_source_page(
+    tmp_path: Path,
+    visual_source_page: object,
+) -> None:
+    staging_path, batch_path = _copy_derivative_data(tmp_path)
+    verified = _read_json(batch_path / "verified_candidates.json")
+    patches = _read_json(batch_path / "candidate_patch.json")
+    assert isinstance(verified, list) and isinstance(verified[0], dict)
+    assert isinstance(patches, list)
+    record = verified[0]
+    patch = next(
+        item
+        for item in patches
+        if isinstance(item, dict) and item.get("candidate_id") == record["candidate_id"]
+    )
+    assert isinstance(patch.get("set"), dict)
+    record["visual_asset_required"] = True
+    record["visual_source_page"] = visual_source_page
+    patch["set"]["visual_asset_required"] = True
+    patch["set"]["visual_source_page"] = visual_source_page
+    _write_json(batch_path / "verified_candidates.json", verified)
+    _write_json(batch_path / "candidate_patch.json", patches)
+
+    result = QuestionReviewOverlayResolver().resolve(
+        _raw_candidates(staging_path), batch_path
+    )
+
+    assert result.report.status == "FAIL"
+    assert "VISUAL_SOURCE_PAGE_INVALID" in {
+        error.code for error in result.report.errors
+    }
 
 
 def _promotion_blockers(result, candidate_id: str) -> tuple[str, ...]:
@@ -410,6 +526,110 @@ def test_batch_002_duplicate_targets_resolve() -> None:
     assert all(record["duplicate_of_candidate_id"] in candidates for record in duplicates)
 
 
+def test_valid_duplicate_target_passes_review_validation() -> None:
+    result = QuestionReviewOverlayResolver().resolve(
+        _raw_candidates(), SECOND_REVIEW_BATCH
+    )
+
+    assert result.report.status == "PASS"
+    assert not {
+        error.code
+        for error in result.report.errors
+        if error.check == "duplicate_references"
+    }
+
+
+def test_unknown_duplicate_target_fails(tmp_path: Path) -> None:
+    staging_path, batch_path = _copied_batch_002(tmp_path)
+    _set_duplicate_target(
+        batch_path,
+        "M12_DERIV_CAND_0045",
+        "M12_DERIV_CAND_UNKNOWN",
+    )
+
+    result = QuestionReviewOverlayResolver().resolve(
+        _raw_candidates(staging_path), batch_path
+    )
+
+    assert result.report.status == "FAIL"
+    assert "DUPLICATE_TARGET_NOT_FOUND" in {
+        error.code for error in result.report.errors
+    }
+
+
+def test_self_duplicate_target_fails(tmp_path: Path) -> None:
+    staging_path, batch_path = _copied_batch_002(tmp_path)
+    _set_duplicate_target(
+        batch_path,
+        "M12_DERIV_CAND_0045",
+        "M12_DERIV_CAND_0045",
+    )
+
+    result = QuestionReviewOverlayResolver().resolve(
+        _raw_candidates(staging_path), batch_path
+    )
+
+    assert result.report.status == "FAIL"
+    assert "DUPLICATE_TARGET_SELF" in {error.code for error in result.report.errors}
+
+
+def test_duplicate_chain_fails(tmp_path: Path) -> None:
+    staging_path, batch_path = _copied_batch_002(tmp_path)
+    _set_duplicate_target(
+        batch_path,
+        "M12_DERIV_CAND_0045",
+        "M12_DERIV_CAND_0046",
+    )
+
+    result = QuestionReviewOverlayResolver().resolve(
+        _raw_candidates(staging_path), batch_path
+    )
+
+    assert result.report.status == "FAIL"
+    assert "DUPLICATE_CHAIN_NOT_ALLOWED" in {
+        error.code for error in result.report.errors
+    }
+
+
+def test_duplicate_cycle_fails(tmp_path: Path) -> None:
+    staging_path, batch_path = _copied_batch_002(tmp_path)
+    _set_duplicate_target(
+        batch_path,
+        "M12_DERIV_CAND_0045",
+        "M12_DERIV_CAND_0046",
+    )
+    _set_duplicate_target(
+        batch_path,
+        "M12_DERIV_CAND_0046",
+        "M12_DERIV_CAND_0045",
+    )
+
+    result = QuestionReviewOverlayResolver().resolve(
+        _raw_candidates(staging_path), batch_path
+    )
+
+    assert result.report.status == "FAIL"
+    assert "DUPLICATE_CYCLE" in {error.code for error in result.report.errors}
+
+
+def test_duplicate_target_rejected_out_of_scope_fails(tmp_path: Path) -> None:
+    staging_path, batch_path = _copied_batch_002(tmp_path)
+    _set_duplicate_target(
+        batch_path,
+        "M12_DERIV_CAND_0045",
+        "M12_DERIV_CAND_0048",
+    )
+
+    result = QuestionReviewOverlayResolver().resolve(
+        _raw_candidates(staging_path), batch_path
+    )
+
+    assert result.report.status == "FAIL"
+    assert "DUPLICATE_TARGET_OUT_OF_SCOPE" in {
+        error.code for error in result.report.errors
+    }
+
+
 def test_batch_002_question_group_holds_remain_blocked() -> None:
     result = QuestionReviewOverlayResolver().resolve(
         _raw_candidates(), SECOND_REVIEW_BATCH
@@ -480,4 +700,36 @@ def test_validator_rejects_candidate_reviewed_by_multiple_batches(
     assert report.checks["review_batch_overlap"] is False
     assert "CANDIDATE_REVIEW_BATCH_OVERLAP" in {
         error.code for error in report.errors
+    }
+
+
+def test_review_overlay_failure_is_reported_at_top_level(tmp_path: Path) -> None:
+    staging_path, batch_path = _copied_batch_002(tmp_path)
+    holds = _read_json(batch_path / "hold_candidates.json")
+    assert isinstance(holds, list) and isinstance(holds[0], dict)
+    holds[0]["candidate_id"] = "M12_DERIV_CAND_UNKNOWN"
+    _write_json(batch_path / "hold_candidates.json", holds)
+
+    report = QuestionStagingValidator().validate(
+        staging_path,
+        review_root=staging_path.parent / "review",
+    )
+
+    assert report.status == "FAIL"
+    assert report.checks["review_overlays"] is False
+    top_level_errors = [
+        error for error in report.errors if error.code == "CANDIDATE_NOT_FOUND"
+    ]
+    assert len(top_level_errors) == 1
+    error = top_level_errors[0]
+    assert error.location == "batch_002/M12_DERIV_CAND_UNKNOWN"
+    assert batch_path.resolve().as_posix() in error.message
+    assert "candidate_id=M12_DERIV_CAND_UNKNOWN" in error.message
+    batch_report = next(
+        batch
+        for batch in report.review_batches
+        if batch.batch_code == "DATA-MATH12-005_BATCH_002"
+    )
+    assert "CANDIDATE_NOT_FOUND" in {
+        nested_error.code for nested_error in batch_report.errors
     }

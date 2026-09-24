@@ -170,7 +170,12 @@ def candidate_promotion_blockers(candidate: dict[str, Any]) -> tuple[str, ...]:
         and candidate.get("promotion_ready") is not True
     ):
         blockers.append("EXPLICIT_PROMOTION_REQUIRED")
-    if candidate.get("visual_asset_required") is True:
+    visual_asset_required = (
+        review_record.get("visual_asset_required") is True
+        if isinstance(review_record, dict)
+        else candidate.get("visual_asset_required") is True
+    )
+    if visual_asset_required:
         blockers.append("VISUAL_ASSET_REQUIRED")
     return tuple(blockers)
 
@@ -259,6 +264,7 @@ class QuestionStagingValidator:
                 candidates, subsources
             ),
             "fingerprints_available": self._validate_fingerprints(candidates),
+            "review_overlays": [],
             "review_batch_overlap": [],
         }
         review_results = []
@@ -278,6 +284,17 @@ class QuestionStagingValidator:
                 effective_candidates, batch_path
             )
             review_results.append(result)
+            for review_error in result.report.errors:
+                check_issues["review_overlays"].append(QuestionStagingIssue(
+                    check="review_overlays",
+                    code=review_error.code,
+                    location=f"{batch_path.name}/{review_error.candidate_id}",
+                    message=(
+                        f"{review_error.message} "
+                        f"[batch={batch_path.name}; path={result.report.path}; "
+                        f"candidate_id={review_error.candidate_id}]"
+                    ),
+                ))
             overlapping_ids = sorted(
                 set(result.report.reviewed_candidate_ids) & set(reviewed_candidate_batches)
             )
@@ -300,6 +317,7 @@ class QuestionStagingValidator:
         checks = {name: not issues for name, issues in check_issues.items()}
         checks["review_overlays"] = (
             all(result.report.is_valid for result in review_results)
+            and checks["review_overlays"]
             and checks["review_batch_overlap"]
         )
         issues = tuple(sorted({issue for values in check_issues.values() for issue in values}))

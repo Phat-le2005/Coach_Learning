@@ -179,7 +179,7 @@ class QuestionReviewOverlayResolver:
             raw_by_id, reviewed_by_id, verified, patches, issues
         )
         self._validate_holds(reviewed_by_id, holds, issues)
-        self._validate_rejected(reviewed_by_id, rejected, issues)
+        self._validate_rejected(raw_by_id, reviewed_by_id, rejected, issues)
         self._validate_stats(
             stats, group_ids, rejected, len(raw_candidates), issues
         )
@@ -396,9 +396,6 @@ class QuestionReviewOverlayResolver:
             "reviewed_options",
             "verified_correct_answer",
         )
-        validates_visual_assets = any(
-            "visual_asset_required" in record for record in verified
-        )
         for record in verified:
             candidate_id = record.get("candidate_id")
             if not isinstance(candidate_id, str):
@@ -467,24 +464,35 @@ class QuestionReviewOverlayResolver:
                     candidate_id=candidate_id,
                     message="VERIFIED review records must remain blocked from promotion.",
                 ))
-            if validates_visual_assets:
+            if record.get("visual_asset_required") is True:
                 if (
-                    record.get("visual_asset_required") is not True
-                    or patch.get("visual_asset_required") is not True
+                    patch.get("visual_asset_required") is not True
                 ):
                     issues.append(ReviewOverlayIssue(
                         check="promotion_boundary",
                         code="VISUAL_ASSET_REQUIREMENT_MISSING",
                         candidate_id=candidate_id,
                         message=(
-                            "Every VERIFIED candidate in this visual review batch must "
-                            "require a visual asset."
+                            "A VERIFIED candidate marked as visual-dependent must keep "
+                            "visual_asset_required=true in its patch."
                         ),
                     ))
+                visual_source_page = record.get("visual_source_page")
                 if (
-                    not isinstance(record.get("visual_source_page"), int)
-                    or patch.get("visual_source_page") != record.get("visual_source_page")
+                    not isinstance(visual_source_page, int)
+                    or isinstance(visual_source_page, bool)
+                    or visual_source_page <= 0
                 ):
+                    issues.append(ReviewOverlayIssue(
+                        check="verified_review",
+                        code="VISUAL_SOURCE_PAGE_INVALID",
+                        candidate_id=candidate_id,
+                        message=(
+                            "A visual-dependent VERIFIED candidate requires a positive "
+                            "integer visual_source_page."
+                        ),
+                    ))
+                elif patch.get("visual_source_page") != visual_source_page:
                     issues.append(ReviewOverlayIssue(
                         check="patch_consistency",
                         code="VISUAL_SOURCE_PAGE_MISMATCH",
@@ -556,10 +564,23 @@ class QuestionReviewOverlayResolver:
 
     @staticmethod
     def _validate_rejected(
+        raw_by_id: dict[str, dict[str, Any]],
         reviewed_by_id: dict[str, dict[str, Any]],
         rejected: list[dict[str, Any]],
         issues: list[ReviewOverlayIssue],
     ) -> None:
+        duplicate_targets: dict[str, str] = {}
+        for reviewed_candidate_id, candidate in reviewed_by_id.items():
+            review_record = candidate.get("review_record")
+            if (
+                isinstance(review_record, dict)
+                and review_record.get("review_status") == "REJECTED_DUPLICATE"
+                and isinstance(review_record.get("duplicate_of_candidate_id"), str)
+            ):
+                duplicate_targets[reviewed_candidate_id] = review_record[
+                    "duplicate_of_candidate_id"
+                ]
+
         for record in rejected:
             candidate_id = record.get("candidate_id")
             view = reviewed_by_id.get(candidate_id) if isinstance(candidate_id, str) else None
@@ -578,11 +599,7 @@ class QuestionReviewOverlayResolver:
                 ))
             if record.get("review_status") == "REJECTED_DUPLICATE":
                 duplicate_of = record.get("duplicate_of_candidate_id")
-                if (
-                    not isinstance(duplicate_of, str)
-                    or duplicate_of not in reviewed_by_id
-                    or duplicate_of == candidate_id
-                ):
+                if not isinstance(duplicate_of, str) or duplicate_of not in raw_by_id:
                     issues.append(ReviewOverlayIssue(
                         check="duplicate_references",
                         code="DUPLICATE_TARGET_NOT_FOUND",
@@ -592,6 +609,74 @@ class QuestionReviewOverlayResolver:
                             "the staging dataset."
                         ),
                     ))
+                    continue
+                if duplicate_of == candidate_id:
+                    issues.append(ReviewOverlayIssue(
+                        check="duplicate_references",
+                        code="DUPLICATE_TARGET_SELF",
+                        candidate_id=candidate_id,
+                        message="A duplicate candidate cannot point to itself.",
+                    ))
+                    continue
+
+                target = reviewed_by_id[duplicate_of]
+                target_review = target.get("review_record")
+                target_review_status = (
+                    target_review.get("review_status")
+                    if isinstance(target_review, dict)
+                    else None
+                )
+                if target_review_status == "REJECTED_DUPLICATE":
+                    issues.append(ReviewOverlayIssue(
+                        check="duplicate_references",
+                        code="DUPLICATE_CHAIN_NOT_ALLOWED",
+                        candidate_id=candidate_id,
+                        message=(
+                            f"Duplicate target {duplicate_of} is itself a duplicate; "
+                            "the record must point directly to the retained candidate."
+                        ),
+                    ))
+                elif target_review_status == "REJECTED_OUT_OF_SCOPE":
+                    issues.append(ReviewOverlayIssue(
+                        check="duplicate_references",
+                        code="DUPLICATE_TARGET_OUT_OF_SCOPE",
+                        candidate_id=candidate_id,
+                        message=(
+                            f"Duplicate target {duplicate_of} is rejected as out of scope."
+                        ),
+                    ))
+                elif target.get("status") == "REJECTED":
+                    issues.append(ReviewOverlayIssue(
+                        check="duplicate_references",
+                        code="DUPLICATE_TARGET_REJECTED",
+                        candidate_id=candidate_id,
+                        message=f"Duplicate target {duplicate_of} is rejected.",
+                    ))
+
+        cycles: set[tuple[str, ...]] = set()
+        for start in sorted(duplicate_targets):
+            path: list[str] = []
+            positions: dict[str, int] = {}
+            current = start
+            while current in duplicate_targets:
+                if current in positions:
+                    cycle = path[positions[current]:]
+                    if len(cycle) > 1:
+                        cycles.add(tuple(sorted(cycle)))
+                    break
+                positions[current] = len(path)
+                path.append(current)
+                current = duplicate_targets[current]
+        for cycle in sorted(cycles):
+            issues.append(ReviewOverlayIssue(
+                check="duplicate_references",
+                code="DUPLICATE_CYCLE",
+                candidate_id=cycle[0],
+                message=(
+                    "Duplicate reference cycle detected among candidates: "
+                    f"{', '.join(cycle)}."
+                ),
+            ))
 
     @staticmethod
     def _validate_stats(
