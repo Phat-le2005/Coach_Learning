@@ -1,0 +1,79 @@
+[
+  {
+    "candidate_id": "M12_DERIV_CAND_0034",
+    "review_status": "VERIFIED",
+    "reviewed_at": "2026-09-24",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "subsource_code": "DA_NANG_2025",
+    "source_page": 74,
+    "question_number": "10",
+    "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+    "concepts": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "SIGN_ANALYSIS",
+        "weight": 0.3,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "MONOTONICITY_CRITERION",
+        "weight": 0.45,
+        "is_primary": true
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "learning_outcome_code": "M12_DERIV_LO_01",
+        "weight": 0.5
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "learning_outcome_code": "M12_DERIV_LO_02",
+        "weight": 0.5
+      }
+    ],
+    "detected_question_type": "TRUE_FALSE_GROUP",
+    "reviewed_question_type": "MULTIPLE_CHOICE",
+    "classification_review": "CONFIRMED",
+    "reviewed_content": "Cho hàm số y = x^3 - 3x^2 - 2025. Hàm số đã cho nghịch biến trên khoảng nào dưới đây?",
+    "reviewed_options": [
+      {
+        "label": "A",
+        "content": "(2; +∞)",
+        "order_index": 0
+      },
+      {
+        "label": "B",
+        "content": "(0; 2)",
+        "order_index": 1
+      },
+      {
+        "label": "C",
+        "content": "(-∞; +∞)",
+        "order_index": 2
+      },
+      {
+        "label": "D",
+        "content": "(-∞; 0)",
+        "order_index": 3
+      }
+    ],
+    "verified_correct_answer": "B",
+    "source_answer_detected": "B",
+    "answer_verification": "SOURCE_SOLUTION_CONFIRMED_AND_INDEPENDENT_CHECK",
+    "taxonomy_review": "CONFIRMED",
+    "content_review": "CONFIRMED_AGAINST_SOURCE_PAGE",
+    "review_note": "Provincial source solution selects B. Independent check: y' = 3x^2 - 6x = 3x(x-2), hence y' < 0 exactly on (0,2).",
+    "original_fingerprint": "ddf9cb18b7a93a21",
+    "promotion_ready": false,
+    "promotion_blocker": "EXPLICIT_PROMOTION_REQUIRED"
+  }
+]

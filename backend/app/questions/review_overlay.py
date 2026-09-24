@@ -6,6 +6,10 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
+from app.questions.question_type_resolution import (
+    SUPPORTED_STAGING_QUESTION_TYPES,
+)
+
 
 PRESERVED_CANDIDATE_FIELDS = (
     "source_code",
@@ -177,6 +181,7 @@ class QuestionReviewOverlayResolver:
         self._validate_record_provenance(
             raw_by_id, groups, issues
         )
+        self._validate_reviewed_question_types(groups, patches, issues)
         self._validate_verified(
             raw_by_id, reviewed_by_id, verified, patches, issues
         )
@@ -375,6 +380,49 @@ class QuestionReviewOverlayResolver:
             if isinstance(patch.get("candidate_id"), str)
             and isinstance(patch.get("set"), dict)
         }
+
+    @staticmethod
+    def _validate_reviewed_question_types(
+        groups: dict[str, list[dict[str, Any]]],
+        patches: list[dict[str, Any]],
+        issues: list[ReviewOverlayIssue],
+    ) -> None:
+        for records in groups.values():
+            for record in records:
+                if "reviewed_question_type" not in record:
+                    continue
+                reviewed_type = record.get("reviewed_question_type")
+                if (
+                    not isinstance(reviewed_type, str)
+                    or reviewed_type not in SUPPORTED_STAGING_QUESTION_TYPES
+                ):
+                    issues.append(ReviewOverlayIssue(
+                        check="question_type_review",
+                        code="INVALID_REVIEWED_QUESTION_TYPE",
+                        candidate_id=str(record.get("candidate_id") or "<missing>"),
+                        message=(
+                            "reviewed_question_type must be a supported staging "
+                            "question type."
+                        ),
+                    ))
+        for patch in patches:
+            values = patch.get("set")
+            if not isinstance(values, dict) or "reviewed_question_type" not in values:
+                continue
+            reviewed_type = values.get("reviewed_question_type")
+            if (
+                not isinstance(reviewed_type, str)
+                or reviewed_type not in SUPPORTED_STAGING_QUESTION_TYPES
+            ):
+                issues.append(ReviewOverlayIssue(
+                    check="question_type_review",
+                    code="INVALID_REVIEWED_QUESTION_TYPE",
+                    candidate_id=str(patch.get("candidate_id") or "<missing>"),
+                    message=(
+                        "Patched reviewed_question_type must be a supported staging "
+                        "question type."
+                    ),
+                ))
 
     def _validate_verified(
         self,

@@ -1,0 +1,76 @@
+[
+  {
+    "candidate_id": "M12_DERIV_CAND_0016",
+    "review_status": "REJECTED_DUPLICATE",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "subsource_code": "HUE_2025",
+    "source_page": 11,
+    "question_number": "3",
+    "original_problem_type_code": "FIND_FUNCTION_EXTREMA",
+    "duplicate_of_candidate_id": "M12_DERIV_CAND_0012",
+    "reason": "Partial/solution-side occurrence of the same Ông An four-statement question retained as M12_DERIV_CAND_0012.",
+    "status_after_review": "REJECTED"
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0029",
+    "review_status": "REJECTED_DUPLICATE",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "subsource_code": "HA_TINH_2025",
+    "source_page": 57,
+    "question_number": "15",
+    "original_problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+    "duplicate_of_candidate_id": "M12_DERIV_CAND_0031",
+    "reason": "Truncated occurrence of the Hưng Yên four-statement question retained in the complete occurrence M12_DERIV_CAND_0031.",
+    "status_after_review": "REJECTED",
+    "corrected_subsource_code": "HUNG_YEN_2025",
+    "provenance_correction_code": "PROV_CORR_HUNG_YEN_2025_PAGE_BOUNDARY"
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0039",
+    "review_status": "REJECTED_DUPLICATE",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "subsource_code": "THAI_BINH_2025",
+    "source_page": 109,
+    "question_number": "4",
+    "original_problem_type_code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+    "duplicate_of_candidate_id": "M12_DERIV_CAND_0041",
+    "reason": "Question-side occurrence duplicated by the complete question+solution occurrence M12_DERIV_CAND_0041.",
+    "status_after_review": "REJECTED"
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0064",
+    "review_status": "REJECTED_DUPLICATE",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "subsource_code": "NGOC_VY_2026_03",
+    "source_page": 49,
+    "question_number": "1",
+    "original_problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+    "duplicate_of_candidate_id": "M12_DERIV_CAND_0062",
+    "reason": "Truncated solution-side occurrence of the same four-statement question retained as M12_DERIV_CAND_0062.",
+    "status_after_review": "REJECTED"
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0067",
+    "review_status": "REJECTED_DUPLICATE",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "subsource_code": "NGOC_VY_2026_04",
+    "source_page": 63,
+    "question_number": "4",
+    "original_problem_type_code": "COMPLETE_FUNCTION_ANALYSIS_CUBIC",
+    "duplicate_of_candidate_id": "M12_DERIV_CAND_0068",
+    "reason": "Partial occurrence of the same vehicle-motion four-statement question retained as M12_DERIV_CAND_0068.",
+    "status_after_review": "REJECTED"
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0142",
+    "review_status": "REJECTED_DUPLICATE",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "subsource_code": "NGOC_VY_2026_30",
+    "source_page": 577,
+    "question_number": "1",
+    "original_problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+    "duplicate_of_candidate_id": "M12_DERIV_CAND_0141",
+    "reason": "Truncated solution-side occurrence of the same four-statement question retained as M12_DERIV_CAND_0141.",
+    "status_after_review": "REJECTED"
+  }
+]

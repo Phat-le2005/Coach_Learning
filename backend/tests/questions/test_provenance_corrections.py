@@ -239,10 +239,10 @@ def test_validator_reports_corrections_and_preserves_review_decisions() -> None:
     assert report.provenance_corrections.errors == 0
     assert report.effective_reviewed.status_summary == {
         "total": 175,
-        "verified": 28,
-        "hold": 33,
-        "rejected": 37,
-        "untouched_review_required": 77,
+        "verified": 29,
+        "hold": 40,
+        "rejected": 43,
+        "untouched_review_required": 63,
     }
 
     current = list(_resolve().candidates)
@@ -266,6 +266,13 @@ def test_validator_reports_corrections_and_preserves_review_decisions() -> None:
     )
     assert by_id["M12_DERIV_CAND_0027"]["review_record"]["review_status"] == (
         "REJECTED_DUPLICATE"
+    )
+    candidate_0029 = by_id["M12_DERIV_CAND_0029"]
+    assert candidate_0029["status"] == "REJECTED"
+    assert candidate_0029["subsource_code"] == "HA_TINH_2025"
+    assert candidate_0029["corrected_subsource_code"] == "HUNG_YEN_2025"
+    assert candidate_0029["review_record"]["corrected_subsource_code"] == (
+        "HUNG_YEN_2025"
     )
     for candidate_id in {
         "M12_DERIV_CAND_0027",

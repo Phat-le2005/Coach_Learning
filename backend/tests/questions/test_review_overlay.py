@@ -10,6 +10,7 @@ from pathlib import Path
 import pytest
 
 from app.questions.review_overlay import QuestionReviewOverlayResolver
+from app.questions.question_type_resolution import effective_question_type
 from app.questions.staging_validator import (
     DEFAULT_QUESTION_STAGING_PATH,
     QuestionStagingPromotionError,
@@ -24,11 +25,13 @@ DEFAULT_REVIEW_BATCH = DERIVATIVE_DATA_ROOT / "review" / "batch_001"
 SECOND_REVIEW_BATCH = DERIVATIVE_DATA_ROOT / "review" / "batch_002"
 THIRD_REVIEW_BATCH = DERIVATIVE_DATA_ROOT / "review" / "batch_003"
 FOURTH_REVIEW_BATCH = DERIVATIVE_DATA_ROOT / "review" / "batch_004"
+FIFTH_REVIEW_BATCH = DERIVATIVE_DATA_ROOT / "review" / "batch_005"
 REVIEW_BATCHES = (
     DEFAULT_REVIEW_BATCH,
     SECOND_REVIEW_BATCH,
     THIRD_REVIEW_BATCH,
     FOURTH_REVIEW_BATCH,
+    FIFTH_REVIEW_BATCH,
 )
 
 
@@ -159,6 +162,22 @@ def test_batch_004_resolves_and_has_exact_review_counts() -> None:
         "reviewed": 18,
     }
     assert len(result.report.reviewed_candidate_ids) == 18
+
+
+def test_batch_005_resolves_and_has_exact_review_counts() -> None:
+    result = QuestionReviewOverlayResolver().resolve(
+        _raw_candidates(), FIFTH_REVIEW_BATCH
+    )
+
+    assert result.report.status == "PASS"
+    assert result.report.errors == ()
+    assert result.report.counts == {
+        "verified": 1,
+        "hold": 7,
+        "rejected": 6,
+        "reviewed": 14,
+    }
+    assert len(result.report.reviewed_candidate_ids) == 14
 
 
 def test_review_batch_candidate_ids_must_resolve(tmp_path: Path) -> None:
@@ -428,7 +447,7 @@ def test_question_staging_command_validation_includes_review_batch() -> None:
 
     assert report.status == "PASS"
     assert report.checks["review_overlays"] is True
-    assert len(report.review_batches) == 4
+    assert len(report.review_batches) == 5
     reports = {batch.batch_code: batch for batch in report.review_batches}
     assert reports["DATA-MATH12-005_BATCH_001"].counts == {
         "verified": 12,
@@ -454,6 +473,12 @@ def test_question_staging_command_validation_includes_review_batch() -> None:
         "rejected": 6,
         "reviewed": 18,
     }
+    assert reports["DATA-MATH12-005_BATCH_005"].counts == {
+        "verified": 1,
+        "hold": 7,
+        "rejected": 6,
+        "reviewed": 14,
+    }
 
 
 def test_validator_keeps_raw_and_effective_reviewed_counts_explicit() -> None:
@@ -468,17 +493,17 @@ def test_validator_keeps_raw_and_effective_reviewed_counts_explicit() -> None:
     }
     assert report.effective_reviewed.status_summary == {
         "total": 175,
-        "verified": 28,
-        "hold": 33,
-        "rejected": 37,
-        "untouched_review_required": 77,
+        "verified": 29,
+        "hold": 40,
+        "rejected": 43,
+        "untouched_review_required": 63,
     }
     assert 175 - report.effective_reviewed.status_summary[
         "untouched_review_required"
-    ] == 98
+    ] == 112
 
 
-def test_all_untouched_candidates_are_true_false_groups_after_batch_004() -> None:
+def test_all_untouched_candidates_are_structural_true_false_groups_after_batch_005() -> None:
     untouched = [
         candidate
         for candidate in _effective_candidates()
@@ -489,10 +514,13 @@ def test_all_untouched_candidates_are_true_false_groups_after_batch_004() -> Non
         str(candidate["question_type_detected"]) for candidate in untouched
     )
 
-    assert len(untouched) == 77
-    assert question_type_counts == {"TRUE_FALSE_GROUP": 77}
+    assert len(untouched) == 63
+    assert question_type_counts == {"TRUE_FALSE_GROUP": 63}
     assert question_type_counts["MULTIPLE_CHOICE"] == 0
     assert question_type_counts["SHORT_ANSWER"] == 0
+    for candidate in untouched:
+        raw_text = str(candidate["raw_question_text"])
+        assert all(marker in raw_text for marker in ("a)", "b)", "c)", "d)"))
 
 
 def test_effective_promotion_summary_blocks_all_verified_candidates() -> None:
@@ -502,15 +530,18 @@ def test_effective_promotion_summary_blocks_all_verified_candidates() -> None:
     assert report.effective_reviewed.promotion["blocked"] == 175
     assert report.effective_reviewed.promotion["blocker_counts"][
         "EXPLICIT_PROMOTION_REQUIRED"
-    ] == 28
-    assert report.effective_reviewed.promotion["blocker_counts"]["STATUS_HOLD"] == 33
-    assert report.effective_reviewed.promotion["blocker_counts"]["STATUS_REJECTED"] == 37
+    ] == 29
+    assert report.effective_reviewed.promotion["blocker_counts"]["STATUS_HOLD"] == 40
+    assert report.effective_reviewed.promotion["blocker_counts"]["STATUS_REJECTED"] == 43
     assert report.effective_reviewed.promotion["blocker_counts"][
         "STATUS_NOT_VERIFIED"
-    ] == 77
+    ] == 63
     assert report.effective_reviewed.promotion["blocker_counts"][
         "VISUAL_ASSET_REQUIRED"
-    ] == 35
+    ] == 42
+    assert report.effective_reviewed.promotion["blocker_counts"][
+        "TRUE_FALSE_GROUP_UNSUPPORTED"
+    ] == 74
 
 
 def test_effective_coverage_excludes_rejected_and_reports_holds() -> None:
@@ -519,11 +550,11 @@ def test_effective_coverage_excludes_rejected_and_reports_holds() -> None:
     assert sum(item.candidate_count for item in report.raw.coverage) == 175
     assert sum(
         item.candidate_count for item in report.effective_reviewed.coverage
-    ) == 138
+    ) == 132
     assert sum(
         item.rejected_excluded_count for item in report.effective_reviewed.coverage
-    ) == 37
-    assert sum(item.hold_count for item in report.effective_reviewed.coverage) == 33
+    ) == 43
+    assert sum(item.hold_count for item in report.effective_reviewed.coverage) == 40
     assert all(item.rejected_excluded_count == 0 for item in report.raw.coverage)
 
 
@@ -534,6 +565,18 @@ def test_raw_coverage_remains_available_for_audit() -> None:
     assert report.coverage_gaps is report.raw.coverage_gaps
     assert len(report.raw.coverage) == 24
     assert report.raw.promotion["blocker_counts"]["STATUS_NOT_VERIFIED"] == 175
+    assert sum(
+        item.question_type_counts["TRUE_FALSE_GROUP"]
+        for item in report.raw.coverage
+    ) == 77
+    assert sum(
+        item.question_type_counts["MULTIPLE_CHOICE"]
+        for item in report.effective_reviewed.coverage
+    ) == 57
+    assert sum(
+        item.question_type_counts["TRUE_FALSE_GROUP"]
+        for item in report.effective_reviewed.coverage
+    ) == 63
 
 
 def test_effective_view_uses_reviewed_type_for_candidate_0038() -> None:
@@ -564,7 +607,7 @@ def test_all_effective_verified_candidates_require_explicit_promotion() -> None:
 
     verified = [candidate for candidate in current if candidate.get("status") == "VERIFIED"]
 
-    assert len(verified) == 28
+    assert len(verified) == 29
     assert all(
         "EXPLICIT_PROMOTION_REQUIRED" in candidate_promotion_blockers(candidate)
         for candidate in verified
@@ -962,6 +1005,163 @@ def test_batch_004_duplicate_targets_are_direct_retained_candidates() -> None:
     ] == "HOLD_VISUAL_SOURCE_REVIEW"
 
 
+def test_batch_005_reclassifies_exactly_eight_raw_true_false_records() -> None:
+    raw_by_id = {
+        str(candidate["candidate_id"]): candidate for candidate in _raw_candidates()
+    }
+    effective_by_id = {
+        str(candidate["candidate_id"]): candidate
+        for candidate in _effective_candidates()
+    }
+    reclassified_ids = {
+        "M12_DERIV_CAND_0002",
+        "M12_DERIV_CAND_0005",
+        "M12_DERIV_CAND_0011",
+        "M12_DERIV_CAND_0023",
+        "M12_DERIV_CAND_0028",
+        "M12_DERIV_CAND_0034",
+        "M12_DERIV_CAND_0037",
+        "M12_DERIV_CAND_0051",
+    }
+
+    for candidate_id in reclassified_ids:
+        assert raw_by_id[candidate_id]["question_type_detected"] == (
+            "TRUE_FALSE_GROUP"
+        )
+        assert effective_by_id[candidate_id]["question_type_detected"] == (
+            "TRUE_FALSE_GROUP"
+        )
+        assert effective_question_type(effective_by_id[candidate_id]) == (
+            "MULTIPLE_CHOICE"
+        )
+
+    candidate_0034 = effective_by_id["M12_DERIV_CAND_0034"]
+    assert candidate_0034["status"] == "VERIFIED"
+    assert candidate_0034["verified_correct_answer"] == "B"
+    assert candidate_0034["promotion_ready"] is False
+    assert candidate_promotion_blockers(candidate_0034) == (
+        "EXPLICIT_PROMOTION_REQUIRED",
+    )
+
+
+def test_batch_005_visual_mcq_holds_remain_blocked_without_group_blocker() -> None:
+    effective_by_id = {
+        str(candidate["candidate_id"]): candidate
+        for candidate in _effective_candidates()
+    }
+    records = _read_json(FIFTH_REVIEW_BATCH / "hold_candidates.json")
+    assert isinstance(records, list)
+    expected_ids = {
+        "M12_DERIV_CAND_0002",
+        "M12_DERIV_CAND_0005",
+        "M12_DERIV_CAND_0011",
+        "M12_DERIV_CAND_0023",
+        "M12_DERIV_CAND_0028",
+        "M12_DERIV_CAND_0037",
+        "M12_DERIV_CAND_0051",
+    }
+
+    assert {str(record["candidate_id"]) for record in records} == expected_ids
+    for record in records:
+        candidate = effective_by_id[str(record["candidate_id"])]
+        assert record["classification_review"] == "CONFIRMED"
+        assert record["reviewed_question_type"] == "MULTIPLE_CHOICE"
+        assert record["visual_asset_required"] is True
+        assert candidate["status"] == "REVIEW_REQUIRED"
+        assert "reviewed_question_type" not in candidate
+        assert "verified_correct_answer" not in candidate
+        blockers = candidate_promotion_blockers(candidate)
+        assert "STATUS_HOLD" in blockers
+        assert "VISUAL_ASSET_REQUIRED" in blockers
+        assert "TRUE_FALSE_GROUP_UNSUPPORTED" not in blockers
+    for candidate_id in ("M12_DERIV_CAND_0002", "M12_DERIV_CAND_0005"):
+        assert effective_by_id[candidate_id]["review_record"][
+            "primary_source_crosscheck_required"
+        ] is True
+
+
+def test_batch_005_duplicate_targets_are_direct_retained_candidates() -> None:
+    effective_by_id = {
+        str(candidate["candidate_id"]): candidate
+        for candidate in _effective_candidates()
+    }
+    records = _read_json(FIFTH_REVIEW_BATCH / "rejected_candidates.json")
+    assert isinstance(records, list)
+    expected_mappings = {
+        "M12_DERIV_CAND_0016": "M12_DERIV_CAND_0012",
+        "M12_DERIV_CAND_0029": "M12_DERIV_CAND_0031",
+        "M12_DERIV_CAND_0039": "M12_DERIV_CAND_0041",
+        "M12_DERIV_CAND_0064": "M12_DERIV_CAND_0062",
+        "M12_DERIV_CAND_0067": "M12_DERIV_CAND_0068",
+        "M12_DERIV_CAND_0142": "M12_DERIV_CAND_0141",
+    }
+    actual_mappings = {
+        str(record["candidate_id"]): str(record["duplicate_of_candidate_id"])
+        for record in records
+    }
+    duplicate_ids = set(actual_mappings)
+
+    assert actual_mappings == expected_mappings
+    for candidate_id, target_id in actual_mappings.items():
+        assert target_id in effective_by_id
+        assert target_id != candidate_id
+        assert target_id not in duplicate_ids
+        candidate = effective_by_id[candidate_id]
+        target = effective_by_id[target_id]
+        assert candidate["status"] == "REJECTED"
+        assert candidate["duplicate_of_candidate_id"] == target_id
+        assert target["status"] != "REJECTED"
+        assert "duplicate_of_candidate_id" not in target
+
+
+@pytest.mark.parametrize("location", ["review_record", "candidate_patch"])
+def test_invalid_reviewed_question_type_fails_review_validation(
+    tmp_path: Path,
+    location: str,
+) -> None:
+    staging_path, _ = _copy_derivative_data(tmp_path)
+    batch_path = staging_path.parent / "review" / "batch_005"
+    if location == "review_record":
+        records = _read_json(batch_path / "hold_candidates.json")
+        assert isinstance(records, list) and isinstance(records[0], dict)
+        records[0]["reviewed_question_type"] = "INVALID_TYPE"
+        _write_json(batch_path / "hold_candidates.json", records)
+    else:
+        patches = _read_json(batch_path / "candidate_patch.json")
+        assert isinstance(patches, list) and isinstance(patches[0], dict)
+        assert isinstance(patches[0].get("set"), dict)
+        patches[0]["set"]["reviewed_question_type"] = "INVALID_TYPE"
+        _write_json(batch_path / "candidate_patch.json", patches)
+
+    result = QuestionReviewOverlayResolver().resolve(
+        _raw_candidates(staging_path), batch_path
+    )
+
+    assert result.report.status == "FAIL"
+    assert "INVALID_REVIEWED_QUESTION_TYPE" in {
+        issue.code for issue in result.report.errors
+    }
+
+
+def test_verified_review_and_patch_question_types_must_agree(tmp_path: Path) -> None:
+    staging_path, _ = _copy_derivative_data(tmp_path)
+    batch_path = staging_path.parent / "review" / "batch_005"
+    patches = _read_json(batch_path / "candidate_patch.json")
+    assert isinstance(patches, list) and isinstance(patches[0], dict)
+    assert isinstance(patches[0].get("set"), dict)
+    patches[0]["set"]["reviewed_question_type"] = "SHORT_ANSWER"
+    _write_json(batch_path / "candidate_patch.json", patches)
+
+    result = QuestionReviewOverlayResolver().resolve(
+        _raw_candidates(staging_path), batch_path
+    )
+
+    assert result.report.status == "FAIL"
+    assert "PATCH_REVIEW_MISMATCH" in {
+        issue.code for issue in result.report.errors
+    }
+
+
 def test_review_batch_candidate_ids_do_not_overlap() -> None:
     raw = _raw_candidates()
     reviewed_ids: set[str] = set()
@@ -971,7 +1171,7 @@ def test_review_batch_candidate_ids_do_not_overlap() -> None:
         assert reviewed_ids.isdisjoint(batch_ids)
         reviewed_ids.update(batch_ids)
 
-    assert len(reviewed_ids) == 98
+    assert len(reviewed_ids) == 112
 
 
 def test_validator_rejects_candidate_reviewed_by_multiple_batches(

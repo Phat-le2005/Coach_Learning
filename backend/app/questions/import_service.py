@@ -47,6 +47,7 @@ from app.questions.models import (
     QuestionStatus,
     QuestionType,
 )
+from app.questions.question_type_resolution import requires_question_group
 from app.subjects.models import Subject
 from app.users.models import Role, User
 
@@ -147,11 +148,7 @@ class QuestionImportService:
         for row_number, row in raw_rows:
             if "candidate_id" not in row:
                 continue
-            question_type = row.get("question_type_detected")
-            if (
-                question_type == "TRUE_FALSE_GROUP"
-                or row.get("requires_question_group_model") is True
-            ):
+            if requires_question_group(row):
                 raise ApplicationError(
                     422,
                     "STAGING_QUESTION_GROUP_UNSUPPORTED",

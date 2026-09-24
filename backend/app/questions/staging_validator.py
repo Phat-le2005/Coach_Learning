@@ -10,6 +10,11 @@ from app.questions.provenance_corrections import (
     ProvenanceCorrectionReport,
     QuestionProvenanceCorrectionResolver,
 )
+from app.questions.question_type_resolution import (
+    SUPPORTED_STAGING_QUESTION_TYPES,
+    effective_question_type,
+    requires_question_group,
+)
 from app.questions.review_overlay import (
     QuestionReviewOverlayResolver,
     ReviewBatchReport,
@@ -45,9 +50,6 @@ REQUIRED_STAGING_FILES = (
     "source_catalog.json",
     "subsource_catalog.json",
 )
-QUESTION_TYPES = ("MULTIPLE_CHOICE", "TRUE_FALSE_GROUP", "SHORT_ANSWER")
-
-
 @dataclass(frozen=True, slots=True, order=True)
 class QuestionStagingIssue:
     check: str
@@ -158,18 +160,7 @@ def candidate_promotion_blockers(candidate: dict[str, Any]) -> tuple[str, ...]:
         blockers.append("STATUS_HOLD")
     elif candidate.get("status") != "VERIFIED":
         blockers.append("STATUS_NOT_VERIFIED")
-    requires_question_group = (
-        candidate.get("question_type_detected") == "TRUE_FALSE_GROUP"
-        or candidate.get("requires_question_group_model") is True
-        or (
-            isinstance(review_record, dict)
-            and (
-                review_record.get("requires_question_group_model") is True
-                or review_record.get("suggested_question_type") == "TRUE_FALSE_GROUP"
-            )
-        )
-    )
-    if requires_question_group:
+    if requires_question_group(candidate):
         blockers.append("TRUE_FALSE_GROUP_UNSUPPORTED")
     if (
         candidate.get("status") == "VERIFIED"
@@ -665,8 +656,8 @@ class QuestionStagingValidator:
                     statuses[problem_type]["REJECTED"] += 1
                 continue
             question_type = (
-                candidate.get("reviewed_question_type")
-                if effective and candidate.get("reviewed_question_type")
+                effective_question_type(candidate)
+                if effective
                 else candidate.get("question_type_detected")
             )
             if isinstance(problem_type, str) and isinstance(question_type, str):
@@ -675,7 +666,9 @@ class QuestionStagingValidator:
         result: list[ProblemTypeCoverage] = []
         for code in problem_types:
             type_counts = by_problem_type[code]
-            known_and_observed_types = sorted(set(QUESTION_TYPES) | set(type_counts))
+            known_and_observed_types = sorted(
+                SUPPORTED_STAGING_QUESTION_TYPES | set(type_counts)
+            )
             counts = {
                 question_type: type_counts[question_type]
                 for question_type in known_and_observed_types

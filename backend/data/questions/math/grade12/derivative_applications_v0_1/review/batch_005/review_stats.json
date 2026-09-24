@@ -1,0 +1,37 @@
+{
+  "dataset_code": "DATA-MATH12-005",
+  "batch_code": "DATA-MATH12-005_BATCH_005",
+  "purpose": "QUESTION_TYPE_CLEANUP_BEFORE_QUESTION_GROUP",
+  "reviewed_candidates": 14,
+  "verified": 1,
+  "hold": 7,
+  "rejected": 6,
+  "rejected_duplicate": 6,
+  "rejected_out_of_scope": 0,
+  "type_corrections_true_false_to_mcq": 8,
+  "total_candidates_in_data004": 175,
+  "previously_reviewed_before_batch_005": 98,
+  "remaining_unreviewed_after_batch_005": 63,
+  "cumulative_reviewed": 112,
+  "cumulative_verified": 29,
+  "cumulative_hold": 40,
+  "cumulative_rejected": 43,
+  "cumulative_untouched": 63,
+  "remaining_raw_detected_question_type_counts": {
+    "TRUE_FALSE_GROUP": 63,
+    "MULTIPLE_CHOICE": 0,
+    "SHORT_ANSWER": 0
+  },
+  "remaining_structural_check": {
+    "records_with_a_b_c_d_markers": 63,
+    "note": "All 63 untouched records contain all four a)/b)/c)/d) statement markers. This is a structural readiness check, not a final academic verification."
+  },
+  "quality_findings": [
+    "Eight raw TRUE_FALSE_GROUP detections were actually A/B/C/D multiple-choice questions.",
+    "M12_DERIV_CAND_0034 is text-only, source-solution confirmed, independently checked, and becomes VERIFIED review-layer data.",
+    "Seven reclassified MCQs remain HOLD because they depend on a graph or variation table; the two MOET-compilation items also need primary-source cross-check.",
+    "Six truncated/partial records are duplicate occurrences of retained four-statement questions and are rejected without mutating raw staging.",
+    "After this cleanup, all 63 untouched records structurally contain a), b), c), and d) statements and are appropriate inputs for the upcoming QuestionGroup implementation."
+  ],
+  "promotion_policy": "No production import; VERIFIED remains blocked by explicit promotion."
+}
