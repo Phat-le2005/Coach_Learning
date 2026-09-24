@@ -30,6 +30,8 @@
     "review_status": "HOLD_VISUAL_SOURCE_REVIEW",
     "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
     "subsource_code": "HA_TINH_2025",
+    "corrected_subsource_code": "HUNG_YEN_2025",
+    "provenance_correction_code": "PROV_CORR_HUNG_YEN_2025_PAGE_BOUNDARY",
     "source_page": 60,
     "question_number": "1",
     "problem_type_code": "MONOTONICITY_FROM_GRAPH",

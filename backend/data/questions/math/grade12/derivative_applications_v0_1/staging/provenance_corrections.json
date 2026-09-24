@@ -1,0 +1,117 @@
+{
+  "schema_version": "1.0",
+  "correction_code": "PROV_CORR_HUNG_YEN_2025_PAGE_BOUNDARY",
+  "dataset_code": "DATA-MATH12-005",
+  "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+  "status": "SOURCE_PAGE_ISSUER_VERIFIED",
+  "verified_at": "2026-09-24",
+  "reason": "The original provincial subsource catalog incorrectly assigns global PDF pages 55-72 to HA_TINH_2025. Direct inspection of the source PDF shows that page 55 starts the Sở Giáo dục và Đào tạo Hưng Yên trial exam and page 73 starts the Đà Nẵng exam.",
+  "evidence": {
+    "drive_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+    "file_name": "loi-giai-chi-tiet-de-thi-thu-tot-nghiep-thpt-2025-mon-toan-cua-cac-so-gddt.pdf",
+    "observations": [
+      {
+        "global_page": 54,
+        "observation": "End of the Hà Tĩnh section; source text shows SỞ HÀ TĨNH and its final solution pages."
+      },
+      {
+        "global_page": 55,
+        "observation": "New section begins with SỞ GIÁO DỤC VÀ ĐÀO TẠO HƯNG YÊN."
+      },
+      {
+        "global_page": 72,
+        "observation": "End of the Hưng Yên solution section."
+      },
+      {
+        "global_page": 73,
+        "observation": "New section begins with SỞ GIÁO DỤC VÀ ĐÀO TẠO ĐÀ NẴNG."
+      }
+    ]
+  },
+  "subsource_catalog_changes": {
+    "update": [
+      {
+        "subsource_code": "HA_TINH_2025",
+        "old_start_page": 37,
+        "old_end_page": 72,
+        "new_start_page": 37,
+        "new_end_page": 54
+      }
+    ],
+    "add": [
+      {
+        "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+        "subsource_code": "HUNG_YEN_2025",
+        "issuer": "Sở Giáo dục và Đào tạo Hưng Yên",
+        "exam": "Kỳ thi thử tốt nghiệp THPT năm học 2024-2025 - Môn Toán 12",
+        "start_page": 55,
+        "end_page": 72
+      }
+    ]
+  },
+  "source_catalog_changes": {
+    "old_scope": "10 đề Sở GDĐT được phát hiện",
+    "new_scope": "11 đề Sở GDĐT được phát hiện"
+  },
+  "candidate_corrections": [
+    {
+      "candidate_id": "M12_DERIV_CAND_0027",
+      "source_page": 55,
+      "original_subsource_code": "HA_TINH_2025",
+      "corrected_subsource_code": "HUNG_YEN_2025"
+    },
+    {
+      "candidate_id": "M12_DERIV_CAND_0028",
+      "source_page": 56,
+      "original_subsource_code": "HA_TINH_2025",
+      "corrected_subsource_code": "HUNG_YEN_2025"
+    },
+    {
+      "candidate_id": "M12_DERIV_CAND_0029",
+      "source_page": 57,
+      "original_subsource_code": "HA_TINH_2025",
+      "corrected_subsource_code": "HUNG_YEN_2025"
+    },
+    {
+      "candidate_id": "M12_DERIV_CAND_0030",
+      "source_page": 60,
+      "original_subsource_code": "HA_TINH_2025",
+      "corrected_subsource_code": "HUNG_YEN_2025"
+    },
+    {
+      "candidate_id": "M12_DERIV_CAND_0031",
+      "source_page": 65,
+      "original_subsource_code": "HA_TINH_2025",
+      "corrected_subsource_code": "HUNG_YEN_2025"
+    },
+    {
+      "candidate_id": "M12_DERIV_CAND_0032",
+      "source_page": 70,
+      "original_subsource_code": "HA_TINH_2025",
+      "corrected_subsource_code": "HUNG_YEN_2025"
+    }
+  ],
+  "affected_review_records": [
+    {
+      "candidate_id": "M12_DERIV_CAND_0027",
+      "batch": "batch_003",
+      "current_review_status": "REJECTED_DUPLICATE"
+    },
+    {
+      "candidate_id": "M12_DERIV_CAND_0030",
+      "batch": "batch_003",
+      "current_review_status": "HOLD_VISUAL_SOURCE_REVIEW"
+    },
+    {
+      "candidate_id": "M12_DERIV_CAND_0032",
+      "batch": "batch_003",
+      "current_review_status": "VERIFIED"
+    }
+  ],
+  "raw_data_policy": {
+    "candidate_questions_json_must_remain_byte_identical": true,
+    "raw_subsource_code_must_not_be_overwritten": true,
+    "effective_view_field": "corrected_subsource_code",
+    "audit_field": "provenance_correction_code"
+  }
+}

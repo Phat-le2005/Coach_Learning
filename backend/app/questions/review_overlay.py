@@ -15,6 +15,8 @@ PRESERVED_CANDIDATE_FIELDS = (
     "fingerprint",
     "raw_question_text",
     "question_type_detected",
+    "corrected_subsource_code",
+    "provenance_correction_code",
 )
 REQUIRED_BATCH_FILES = (
     "README.md",

@@ -63,7 +63,7 @@ def test_valid_question_staging_dataset() -> None:
         "concepts": 31,
         "learning_outcomes": 10,
         "sources": 4,
-        "subsources": 54,
+        "subsources": 55,
         "duplicate_fingerprint_groups": 0,
         "review_batches": 3,
     }

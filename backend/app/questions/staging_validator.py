@@ -6,6 +6,10 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
+from app.questions.provenance_corrections import (
+    ProvenanceCorrectionReport,
+    QuestionProvenanceCorrectionResolver,
+)
 from app.questions.review_overlay import (
     QuestionReviewOverlayResolver,
     ReviewBatchReport,
@@ -36,6 +40,7 @@ REQUIRED_STAGING_FILES = (
     "candidate_questions.json",
     "coverage_report.json",
     "extraction_stats.json",
+    "provenance_corrections.json",
     "review_queue.csv",
     "source_catalog.json",
     "subsource_catalog.json",
@@ -95,6 +100,7 @@ class QuestionStagingValidationReport:
     duplicate_fingerprints: tuple[FingerprintDuplicate, ...]
     raw: CandidateViewReport
     effective_reviewed: CandidateViewReport
+    provenance_corrections: ProvenanceCorrectionReport
     review_batches: tuple[ReviewBatchReport, ...]
 
     @property
@@ -126,6 +132,7 @@ class QuestionStagingValidationReport:
             ],
             "raw": self.raw.as_dict(),
             "effective_reviewed": self.effective_reviewed.as_dict(),
+            "provenance_corrections": self.provenance_corrections.as_dict(),
             "review_batches": [batch.as_dict() for batch in self.review_batches],
         }
 
@@ -264,11 +271,28 @@ class QuestionStagingValidator:
                 candidates, subsources
             ),
             "fingerprints_available": self._validate_fingerprints(candidates),
+            "provenance_corrections": [],
             "review_overlays": [],
             "review_batch_overlap": [],
         }
+        provenance_result = QuestionProvenanceCorrectionResolver().resolve(
+            candidates,
+            dataset_path / "provenance_corrections.json",
+            subsources,
+        )
+        for correction_issue in provenance_result.report.issues:
+            check_issues["provenance_corrections"].append(QuestionStagingIssue(
+                check="provenance_corrections",
+                code=correction_issue.code,
+                location=correction_issue.candidate_id,
+                message=correction_issue.message,
+            ))
         review_results = []
-        effective_candidates = candidates
+        effective_candidates = (
+            list(provenance_result.candidates)
+            if provenance_result.report.is_valid
+            else candidates
+        )
         reviewed_candidate_batches: dict[str, str] = {}
         batch_paths = (
             tuple(
@@ -357,6 +381,7 @@ class QuestionStagingValidator:
             duplicate_fingerprints=duplicates,
             raw=raw_view,
             effective_reviewed=effective_view,
+            provenance_corrections=provenance_result.report,
             review_batches=tuple(result.report for result in review_results),
         )
 
