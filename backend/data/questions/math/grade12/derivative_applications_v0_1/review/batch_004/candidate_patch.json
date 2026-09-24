@@ -1,0 +1,62 @@
+[
+  {
+    "candidate_id": "M12_DERIV_CAND_0015",
+    "set": {
+      "status": "REJECTED",
+      "reviewed_at": "2026-09-24",
+      "review_batch": "DATA-MATH12-005_BATCH_004",
+      "duplicate_of_candidate_id": "M12_DERIV_CAND_0011",
+      "rejection_reason": "DUPLICATE_OF:M12_DERIV_CAND_0011"
+    }
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0081",
+    "set": {
+      "status": "REJECTED",
+      "reviewed_at": "2026-09-24",
+      "review_batch": "DATA-MATH12-005_BATCH_004",
+      "duplicate_of_candidate_id": "M12_DERIV_CAND_0078",
+      "rejection_reason": "DUPLICATE_OF:M12_DERIV_CAND_0078"
+    }
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0106",
+    "set": {
+      "status": "REJECTED",
+      "reviewed_at": "2026-09-24",
+      "review_batch": "DATA-MATH12-005_BATCH_004",
+      "duplicate_of_candidate_id": "M12_DERIV_CAND_0103",
+      "rejection_reason": "DUPLICATE_OF:M12_DERIV_CAND_0103"
+    }
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0109",
+    "set": {
+      "status": "REJECTED",
+      "reviewed_at": "2026-09-24",
+      "review_batch": "DATA-MATH12-005_BATCH_004",
+      "duplicate_of_candidate_id": "M12_DERIV_CAND_0107",
+      "rejection_reason": "DUPLICATE_OF:M12_DERIV_CAND_0107"
+    }
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0119",
+    "set": {
+      "status": "REJECTED",
+      "reviewed_at": "2026-09-24",
+      "review_batch": "DATA-MATH12-005_BATCH_004",
+      "duplicate_of_candidate_id": "M12_DERIV_CAND_0121",
+      "rejection_reason": "DUPLICATE_OF:M12_DERIV_CAND_0121"
+    }
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0130",
+    "set": {
+      "status": "REJECTED",
+      "reviewed_at": "2026-09-24",
+      "review_batch": "DATA-MATH12-005_BATCH_004",
+      "duplicate_of_candidate_id": "M12_DERIV_CAND_0132",
+      "rejection_reason": "DUPLICATE_OF:M12_DERIV_CAND_0132"
+    }
+  }
+]

@@ -240,9 +240,9 @@ def test_validator_reports_corrections_and_preserves_review_decisions() -> None:
     assert report.effective_reviewed.status_summary == {
         "total": 175,
         "verified": 28,
-        "hold": 21,
-        "rejected": 31,
-        "untouched_review_required": 95,
+        "hold": 33,
+        "rejected": 37,
+        "untouched_review_required": 77,
     }
 
     current = list(_resolve().candidates)

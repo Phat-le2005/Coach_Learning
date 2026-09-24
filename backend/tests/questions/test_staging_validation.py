@@ -65,7 +65,7 @@ def test_valid_question_staging_dataset() -> None:
         "sources": 4,
         "subsources": 55,
         "duplicate_fingerprint_groups": 0,
-        "review_batches": 3,
+        "review_batches": 4,
     }
     assert report.promotion == {
         "eligible": 0,

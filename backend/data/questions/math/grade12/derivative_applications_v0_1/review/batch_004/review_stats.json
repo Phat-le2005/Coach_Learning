@@ -1,0 +1,31 @@
+{
+  "dataset_code": "DATA-MATH12-005",
+  "batch_code": "DATA-MATH12-005_BATCH_004",
+  "reviewed_candidates": 18,
+  "verified": 0,
+  "hold": 12,
+  "rejected": 6,
+  "rejected_duplicate": 6,
+  "rejected_out_of_scope": 0,
+  "total_candidates_in_data004": 175,
+  "previously_reviewed_before_batch_004": 80,
+  "remaining_unreviewed_after_batch_004": 77,
+  "cumulative_reviewed": 98,
+  "cumulative_verified": 28,
+  "cumulative_hold": 33,
+  "cumulative_rejected": 37,
+  "cumulative_untouched": 77,
+  "milestone": "ALL_NON_TRUE_FALSE_CANDIDATES_REVIEWED",
+  "remaining_question_type_counts": {
+    "TRUE_FALSE_GROUP": 77,
+    "MULTIPLE_CHOICE": 0,
+    "SHORT_ANSWER": 0
+  },
+  "quality_findings": [
+    "All 18 previously-unreviewed MULTIPLE_CHOICE candidates now have a review decision.",
+    "12 retained MCQs depend on graphs or variation tables and remain HOLD until a visual asset pipeline exists.",
+    "6 repeated question/solution occurrences are rejected as duplicates.",
+    "After this batch the 77 untouched candidates are all TRUE_FALSE_GROUP, so further review should follow QuestionGroup implementation rather than force-fitting them into the current Question model."
+  ],
+  "promotion_policy": "No batch_004 candidate is production-importable; no new VERIFIED candidate is created."
+}

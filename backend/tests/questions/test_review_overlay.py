@@ -4,6 +4,7 @@ import copy
 import hashlib
 import json
 import shutil
+from collections import Counter
 from pathlib import Path
 
 import pytest
@@ -22,10 +23,12 @@ DERIVATIVE_DATA_ROOT = DEFAULT_QUESTION_STAGING_PATH.parent
 DEFAULT_REVIEW_BATCH = DERIVATIVE_DATA_ROOT / "review" / "batch_001"
 SECOND_REVIEW_BATCH = DERIVATIVE_DATA_ROOT / "review" / "batch_002"
 THIRD_REVIEW_BATCH = DERIVATIVE_DATA_ROOT / "review" / "batch_003"
+FOURTH_REVIEW_BATCH = DERIVATIVE_DATA_ROOT / "review" / "batch_004"
 REVIEW_BATCHES = (
     DEFAULT_REVIEW_BATCH,
     SECOND_REVIEW_BATCH,
     THIRD_REVIEW_BATCH,
+    FOURTH_REVIEW_BATCH,
 )
 
 
@@ -50,6 +53,15 @@ def _write_json(path: Path, value: object) -> None:
         json.dumps(value, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
+
+
+def _effective_candidates() -> list[dict[str, object]]:
+    current = _raw_candidates()
+    for batch_path in REVIEW_BATCHES:
+        result = QuestionReviewOverlayResolver().resolve(current, batch_path)
+        assert result.report.is_valid
+        current = list(result.candidates)
+    return current
 
 
 def _copied_batch_002(tmp_path: Path) -> tuple[Path, Path]:
@@ -131,6 +143,22 @@ def test_batch_003_resolves_and_has_exact_review_counts() -> None:
         "reviewed": 25,
     }
     assert len(result.report.reviewed_candidate_ids) == 25
+
+
+def test_batch_004_resolves_and_has_exact_review_counts() -> None:
+    result = QuestionReviewOverlayResolver().resolve(
+        _raw_candidates(), FOURTH_REVIEW_BATCH
+    )
+
+    assert result.report.status == "PASS"
+    assert result.report.errors == ()
+    assert result.report.counts == {
+        "verified": 0,
+        "hold": 12,
+        "rejected": 6,
+        "reviewed": 18,
+    }
+    assert len(result.report.reviewed_candidate_ids) == 18
 
 
 def test_review_batch_candidate_ids_must_resolve(tmp_path: Path) -> None:
@@ -400,7 +428,7 @@ def test_question_staging_command_validation_includes_review_batch() -> None:
 
     assert report.status == "PASS"
     assert report.checks["review_overlays"] is True
-    assert len(report.review_batches) == 3
+    assert len(report.review_batches) == 4
     reports = {batch.batch_code: batch for batch in report.review_batches}
     assert reports["DATA-MATH12-005_BATCH_001"].counts == {
         "verified": 12,
@@ -420,6 +448,12 @@ def test_question_staging_command_validation_includes_review_batch() -> None:
         "rejected": 11,
         "reviewed": 25,
     }
+    assert reports["DATA-MATH12-005_BATCH_004"].counts == {
+        "verified": 0,
+        "hold": 12,
+        "rejected": 6,
+        "reviewed": 18,
+    }
 
 
 def test_validator_keeps_raw_and_effective_reviewed_counts_explicit() -> None:
@@ -435,13 +469,30 @@ def test_validator_keeps_raw_and_effective_reviewed_counts_explicit() -> None:
     assert report.effective_reviewed.status_summary == {
         "total": 175,
         "verified": 28,
-        "hold": 21,
-        "rejected": 31,
-        "untouched_review_required": 95,
+        "hold": 33,
+        "rejected": 37,
+        "untouched_review_required": 77,
     }
     assert 175 - report.effective_reviewed.status_summary[
         "untouched_review_required"
-    ] == 80
+    ] == 98
+
+
+def test_all_untouched_candidates_are_true_false_groups_after_batch_004() -> None:
+    untouched = [
+        candidate
+        for candidate in _effective_candidates()
+        if QuestionStagingValidator._review_status(candidate)
+        == "UNTOUCHED_REVIEW_REQUIRED"
+    ]
+    question_type_counts = Counter(
+        str(candidate["question_type_detected"]) for candidate in untouched
+    )
+
+    assert len(untouched) == 77
+    assert question_type_counts == {"TRUE_FALSE_GROUP": 77}
+    assert question_type_counts["MULTIPLE_CHOICE"] == 0
+    assert question_type_counts["SHORT_ANSWER"] == 0
 
 
 def test_effective_promotion_summary_blocks_all_verified_candidates() -> None:
@@ -452,14 +503,14 @@ def test_effective_promotion_summary_blocks_all_verified_candidates() -> None:
     assert report.effective_reviewed.promotion["blocker_counts"][
         "EXPLICIT_PROMOTION_REQUIRED"
     ] == 28
-    assert report.effective_reviewed.promotion["blocker_counts"]["STATUS_HOLD"] == 21
-    assert report.effective_reviewed.promotion["blocker_counts"]["STATUS_REJECTED"] == 31
+    assert report.effective_reviewed.promotion["blocker_counts"]["STATUS_HOLD"] == 33
+    assert report.effective_reviewed.promotion["blocker_counts"]["STATUS_REJECTED"] == 37
     assert report.effective_reviewed.promotion["blocker_counts"][
         "STATUS_NOT_VERIFIED"
-    ] == 95
+    ] == 77
     assert report.effective_reviewed.promotion["blocker_counts"][
         "VISUAL_ASSET_REQUIRED"
-    ] == 23
+    ] == 35
 
 
 def test_effective_coverage_excludes_rejected_and_reports_holds() -> None:
@@ -468,11 +519,11 @@ def test_effective_coverage_excludes_rejected_and_reports_holds() -> None:
     assert sum(item.candidate_count for item in report.raw.coverage) == 175
     assert sum(
         item.candidate_count for item in report.effective_reviewed.coverage
-    ) == 144
+    ) == 138
     assert sum(
         item.rejected_excluded_count for item in report.effective_reviewed.coverage
-    ) == 31
-    assert sum(item.hold_count for item in report.effective_reviewed.coverage) == 21
+    ) == 37
+    assert sum(item.hold_count for item in report.effective_reviewed.coverage) == 33
     assert all(item.rejected_excluded_count == 0 for item in report.raw.coverage)
 
 
@@ -816,6 +867,101 @@ def test_batch_003_duplicate_targets_are_direct_retained_candidates() -> None:
             )
 
 
+def test_batch_004_visual_holds_remain_review_required_and_blocked() -> None:
+    effective_by_id = {
+        str(candidate["candidate_id"]): candidate
+        for candidate in _effective_candidates()
+    }
+    records = _read_json(FOURTH_REVIEW_BATCH / "hold_candidates.json")
+    assert isinstance(records, list)
+    expected_ids = {
+        "M12_DERIV_CAND_0060",
+        "M12_DERIV_CAND_0069",
+        "M12_DERIV_CAND_0078",
+        "M12_DERIV_CAND_0103",
+        "M12_DERIV_CAND_0107",
+        "M12_DERIV_CAND_0110",
+        "M12_DERIV_CAND_0112",
+        "M12_DERIV_CAND_0135",
+        "M12_DERIV_CAND_0137",
+        "M12_DERIV_CAND_0149",
+        "M12_DERIV_CAND_0158",
+        "M12_DERIV_CAND_0169",
+    }
+    source_answers = {
+        "M12_DERIV_CAND_0069": "D",
+        "M12_DERIV_CAND_0112": "B",
+        "M12_DERIV_CAND_0137": "A",
+        "M12_DERIV_CAND_0169": "C",
+    }
+
+    assert {str(record["candidate_id"]) for record in records} == expected_ids
+    for record in records:
+        candidate_id = str(record["candidate_id"])
+        candidate = effective_by_id[candidate_id]
+        assert record["review_status"] == "HOLD_VISUAL_SOURCE_REVIEW"
+        assert record["visual_asset_required"] is True
+        assert candidate["status"] == "REVIEW_REQUIRED"
+        assert candidate["review_record"]["visual_asset_required"] is True
+        assert "verified_correct_answer" not in candidate
+        assert "source_answer_detected" not in candidate
+        assert set(candidate_promotion_blockers(candidate)) >= {
+            "STATUS_HOLD",
+            "VISUAL_ASSET_REQUIRED",
+        }
+        with pytest.raises(QuestionStagingPromotionError):
+            assert_candidate_promotable(candidate)
+    for candidate_id, answer in source_answers.items():
+        assert effective_by_id[candidate_id]["review_record"][
+            "source_answer_detected"
+        ] == answer
+
+
+def test_batch_004_duplicate_targets_are_direct_retained_candidates() -> None:
+    effective_by_id = {
+        str(candidate["candidate_id"]): candidate
+        for candidate in _effective_candidates()
+    }
+    records = _read_json(FOURTH_REVIEW_BATCH / "rejected_candidates.json")
+    assert isinstance(records, list)
+    expected_mappings = {
+        "M12_DERIV_CAND_0015": "M12_DERIV_CAND_0011",
+        "M12_DERIV_CAND_0081": "M12_DERIV_CAND_0078",
+        "M12_DERIV_CAND_0106": "M12_DERIV_CAND_0103",
+        "M12_DERIV_CAND_0109": "M12_DERIV_CAND_0107",
+        "M12_DERIV_CAND_0119": "M12_DERIV_CAND_0121",
+        "M12_DERIV_CAND_0130": "M12_DERIV_CAND_0132",
+    }
+    actual_mappings = {
+        str(record["candidate_id"]): str(record["duplicate_of_candidate_id"])
+        for record in records
+    }
+    duplicate_ids = set(actual_mappings)
+
+    assert actual_mappings == expected_mappings
+    for candidate_id, target_id in actual_mappings.items():
+        assert candidate_id != target_id
+        assert target_id not in duplicate_ids
+        assert target_id in effective_by_id
+        candidate = effective_by_id[candidate_id]
+        target = effective_by_id[target_id]
+        assert candidate["status"] == "REJECTED"
+        assert candidate["duplicate_of_candidate_id"] == target_id
+        assert target["status"] != "REJECTED"
+        assert "duplicate_of_candidate_id" not in target
+        target_review = target.get("review_record")
+        if isinstance(target_review, dict):
+            assert not str(target_review.get("review_status", "")).startswith(
+                "REJECTED"
+            )
+    assert effective_by_id["M12_DERIV_CAND_0121"]["review_record"][
+        "review_status"
+    ] == "HOLD_SOURCE_ANSWER_CONFLICT"
+    assert effective_by_id["M12_DERIV_CAND_0132"]["review_record"][
+        "review_status"
+    ] == "HOLD_VISUAL_SOURCE_REVIEW"
+
+
 def test_review_batch_candidate_ids_do_not_overlap() -> None:
     raw = _raw_candidates()
     reviewed_ids: set[str] = set()
@@ -825,7 +971,7 @@ def test_review_batch_candidate_ids_do_not_overlap() -> None:
         assert reviewed_ids.isdisjoint(batch_ids)
         reviewed_ids.update(batch_ids)
 
-    assert len(reviewed_ids) == 80
+    assert len(reviewed_ids) == 98
 
 
 def test_validator_rejects_candidate_reviewed_by_multiple_batches(

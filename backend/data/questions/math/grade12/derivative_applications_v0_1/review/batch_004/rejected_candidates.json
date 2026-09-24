@@ -1,0 +1,74 @@
+[
+  {
+    "candidate_id": "M12_DERIV_CAND_0015",
+    "review_status": "REJECTED_DUPLICATE",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "subsource_code": "HUE_2025",
+    "source_page": 8,
+    "question_number": "8",
+    "original_problem_type_code": "MONOTONICITY_FROM_VARIATION_TABLE",
+    "duplicate_of_candidate_id": "M12_DERIV_CAND_0011",
+    "reason": "Cùng câu hỏi với occurrence trang đề M12_DERIV_CAND_0011; trang 8 là phần lặp lại trong lời giải.",
+    "status_after_review": "REJECTED"
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0081",
+    "review_status": "REJECTED_DUPLICATE",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "subsource_code": "NGOC_VY_2026_08",
+    "source_page": 144,
+    "question_number": "4",
+    "original_problem_type_code": "MONOTONICITY_FROM_VARIATION_TABLE",
+    "duplicate_of_candidate_id": "M12_DERIV_CAND_0078",
+    "reason": "Occurrence trong phần lời giải trùng câu hỏi retained ở trang đề M12_DERIV_CAND_0078.",
+    "status_after_review": "REJECTED"
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0106",
+    "review_status": "REJECTED_DUPLICATE",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "subsource_code": "NGOC_VY_2026_17",
+    "source_page": 320,
+    "question_number": "3",
+    "original_problem_type_code": "EXTREMA_FROM_GRAPH",
+    "duplicate_of_candidate_id": "M12_DERIV_CAND_0103",
+    "reason": "Occurrence phần lời giải trùng M12_DERIV_CAND_0103.",
+    "status_after_review": "REJECTED"
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0109",
+    "review_status": "REJECTED_DUPLICATE",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "subsource_code": "NGOC_VY_2026_18",
+    "source_page": 340,
+    "question_number": "4",
+    "original_problem_type_code": "MONOTONICITY_FROM_VARIATION_TABLE",
+    "duplicate_of_candidate_id": "M12_DERIV_CAND_0107",
+    "reason": "Occurrence phần lời giải trùng M12_DERIV_CAND_0107.",
+    "status_after_review": "REJECTED"
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0119",
+    "review_status": "REJECTED_DUPLICATE",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "subsource_code": "NGOC_VY_2026_22",
+    "source_page": 417,
+    "question_number": "6",
+    "original_problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+    "duplicate_of_candidate_id": "M12_DERIV_CAND_0121",
+    "reason": "Nội dung trùng M12_DERIV_CAND_0121, candidate đã được giữ HOLD_SOURCE_ANSWER_CONFLICT trong batch_001.",
+    "status_after_review": "REJECTED"
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0130",
+    "review_status": "REJECTED_DUPLICATE",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "subsource_code": "NGOC_VY_2026_26",
+    "source_page": 494,
+    "question_number": "2",
+    "original_problem_type_code": "MONOTONICITY_FROM_GRAPH",
+    "duplicate_of_candidate_id": "M12_DERIV_CAND_0132",
+    "reason": "Nội dung/occurrence trùng candidate retained M12_DERIV_CAND_0132, hiện HOLD_VISUAL_SOURCE_REVIEW.",
+    "status_after_review": "REJECTED"
+  }
+]
