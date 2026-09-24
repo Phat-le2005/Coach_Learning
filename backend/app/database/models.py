@@ -69,6 +69,8 @@ from app.practice.models import (
 from app.questions.models import (
     Question,
     QuestionConcept,
+    QuestionGroup,
+    QuestionGroupItem,
     QuestionImportBatch,
     QuestionImportRow,
     QuestionLearningOutcome,
@@ -164,6 +166,8 @@ __all__ = [
     "QuestionHint",
     "QuestionAttempt",
     "QuestionConcept",
+    "QuestionGroup",
+    "QuestionGroupItem",
     "QuestionImportBatch",
     "QuestionImportRow",
     "QuestionLearningOutcome",

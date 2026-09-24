@@ -20,6 +20,7 @@ def test_migration_chain_matches_models_and_can_downgrade(db_engine: Engine) -> 
             "subjects", "concepts", "concept_relations",
             "classrooms", "teacher_classrooms", "student_enrollments",
             "questions", "question_options", "question_concepts",
+            "question_groups", "question_group_items",
             "question_import_batches", "question_import_rows",
             "study_sessions", "student_attempts",
             "curricula", "curriculum_versions", "chapters", "topics",

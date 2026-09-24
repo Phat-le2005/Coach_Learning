@@ -34,6 +34,14 @@ class CognitiveLevel(StrEnum):
     ANALYZE = "ANALYZE"
 
 
+class QuestionGroupType(StrEnum):
+    TRUE_FALSE_FOUR = "TRUE_FALSE_FOUR"
+
+
+class QuestionGroupScoringPolicy(StrEnum):
+    MOET_2025_TRUE_FALSE = "MOET_2025_TRUE_FALSE"
+
+
 class ImportFileFormat(StrEnum):
     CSV = "CSV"
     JSON = "JSON"
@@ -116,6 +124,123 @@ def _synchronize_question_content_hash(
     mapper: object, connection: object, target: Question
 ) -> None:
     target.content_hash = question_content_hash(target.content)
+
+
+class QuestionGroup(Base):
+    __tablename__ = "question_groups"
+    __table_args__ = (
+        CheckConstraint("length(trim(content)) > 0", name="content_not_blank"),
+        CheckConstraint("difficulty BETWEEN 0.0 AND 1.0", name="difficulty_range"),
+        CheckConstraint(
+            "length(trim(source_type)) > 0", name="source_type_not_blank"
+        ),
+        CheckConstraint(
+            "source_reference IS NULL OR length(trim(source_reference)) > 0",
+            name="source_reference_not_blank",
+        ),
+        CheckConstraint(
+            "source_year IS NULL OR source_year BETWEEN 1900 AND 2100",
+            name="source_year_range",
+        ),
+        CheckConstraint("exam_weight BETWEEN 0.0 AND 1.0", name="exam_weight_range"),
+        Index("ix_question_groups_subject_status", "subject_id", "status"),
+        Index("ix_question_groups_created_by", "created_by"),
+    )
+
+    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, default=uuid4)
+    subject_id: Mapped[UUID] = mapped_column(
+        ForeignKey("subjects.id", ondelete="RESTRICT"), nullable=False
+    )
+    content: Mapped[str] = mapped_column(Text, nullable=False)
+    group_type: Mapped[QuestionGroupType] = mapped_column(
+        Enum(
+            QuestionGroupType,
+            native_enum=False,
+            create_constraint=True,
+            name="question_group_type",
+        ),
+        nullable=False,
+    )
+    scoring_policy: Mapped[QuestionGroupScoringPolicy] = mapped_column(
+        Enum(
+            QuestionGroupScoringPolicy,
+            native_enum=False,
+            create_constraint=True,
+            name="question_group_scoring_policy",
+        ),
+        nullable=False,
+    )
+    difficulty: Mapped[float] = mapped_column(Float, nullable=False)
+    source_type: Mapped[str] = mapped_column(String(50), nullable=False)
+    source_reference: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    source_year: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    cognitive_level: Mapped[CognitiveLevel | None] = mapped_column(
+        Enum(
+            CognitiveLevel,
+            native_enum=False,
+            create_constraint=True,
+            name="question_group_cognitive_level",
+        ),
+        nullable=True,
+    )
+    exam_weight: Mapped[float] = mapped_column(Float, nullable=False)
+    status: Mapped[QuestionStatus] = mapped_column(
+        Enum(
+            QuestionStatus,
+            native_enum=False,
+            create_constraint=True,
+            name="question_group_status",
+        ),
+        nullable=False,
+        default=QuestionStatus.DRAFT,
+        server_default=QuestionStatus.DRAFT.value,
+    )
+    created_by: Mapped[UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="RESTRICT"), nullable=False
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
+    )
+
+    items: Mapped[list["QuestionGroupItem"]] = relationship(
+        back_populates="group",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+        order_by="QuestionGroupItem.order_index",
+    )
+
+
+class QuestionGroupItem(Base):
+    __tablename__ = "question_group_items"
+    __table_args__ = (
+        UniqueConstraint(
+            "group_id", "label", name="uq_question_group_items_group_label"
+        ),
+        UniqueConstraint(
+            "group_id", "order_index", name="uq_question_group_items_group_order"
+        ),
+        UniqueConstraint("question_id", name="uq_question_group_items_question"),
+        CheckConstraint("label IN ('a', 'b', 'c', 'd')", name="label_allowed"),
+        CheckConstraint(
+            "order_index BETWEEN 0 AND 3", name="order_index_range"
+        ),
+    )
+
+    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, default=uuid4)
+    group_id: Mapped[UUID] = mapped_column(
+        ForeignKey("question_groups.id", ondelete="CASCADE"), nullable=False
+    )
+    question_id: Mapped[UUID] = mapped_column(
+        ForeignKey("questions.id", ondelete="RESTRICT"), nullable=False
+    )
+    label: Mapped[str] = mapped_column(String(1), nullable=False)
+    order_index: Mapped[int] = mapped_column(Integer, nullable=False)
+
+    group: Mapped[QuestionGroup] = relationship(back_populates="items")
+    question: Mapped[Question] = relationship()
 
 
 class QuestionOption(Base):
