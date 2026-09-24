@@ -1,0 +1,35 @@
+{
+  "dataset_code": "DATA-MATH12-005",
+  "batch_code": "DATA-MATH12-005_BATCH_002",
+  "reviewed_candidates": 39,
+  "verified": 13,
+  "hold": 8,
+  "rejected": 18,
+  "rejected_duplicate": 12,
+  "rejected_out_of_scope": 6,
+  "total_candidates_in_data004": 175,
+  "previously_reviewed_batch_001": 16,
+  "remaining_unreviewed_after_batch_002": 120,
+  "cumulative_reviewed": 55,
+  "cumulative_verified": 25,
+  "cumulative_hold": 10,
+  "cumulative_rejected": 20,
+  "cumulative_untouched": 120,
+  "verified_problem_type_counts": {
+    "EXTREMA_FROM_GRAPH": 1,
+    "MONOTONICITY_FROM_VARIATION_TABLE": 2,
+    "MONOTONICITY_FROM_GRAPH": 2,
+    "EXTREMA_FROM_VARIATION_TABLE": 1,
+    "GRAPH_IDENTIFICATION_FROM_FEATURES": 2,
+    "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL": 1,
+    "ASYMPTOTE_FROM_GRAPH": 4
+  },
+  "quality_findings": [
+    "3 candidates from the official-2025 secondary solution compilation are kept on HOLD until primary MOET cross-check.",
+    "5 candidates were detected as SHORT_ANSWER but actually contain four a/b/c/d statements and require TRUE_FALSE_GROUP/QuestionGroup handling.",
+    "12 duplicated extraction records are rejected in favor of already reviewed/verified counterparts.",
+    "6 candidates are routed out of the derivative chapter to Integrals or Oxyz.",
+    "All 13 newly VERIFIED candidates require a visual asset before any future production promotion."
+  ],
+  "promotion_policy": "VERIFIED remains review-layer status only. All VERIFIED candidates keep promotion_ready=false."
+}

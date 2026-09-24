@@ -180,7 +180,9 @@ class QuestionReviewOverlayResolver:
         )
         self._validate_holds(reviewed_by_id, holds, issues)
         self._validate_rejected(reviewed_by_id, rejected, issues)
-        self._validate_stats(stats, group_ids, len(raw_candidates), issues)
+        self._validate_stats(
+            stats, group_ids, rejected, len(raw_candidates), issues
+        )
 
         batch_code = str(stats.get("batch_code") or path.name)
         counts = {
@@ -394,6 +396,9 @@ class QuestionReviewOverlayResolver:
             "reviewed_options",
             "verified_correct_answer",
         )
+        validates_visual_assets = any(
+            "visual_asset_required" in record for record in verified
+        )
         for record in verified:
             candidate_id = record.get("candidate_id")
             if not isinstance(candidate_id, str):
@@ -462,6 +467,33 @@ class QuestionReviewOverlayResolver:
                     candidate_id=candidate_id,
                     message="VERIFIED review records must remain blocked from promotion.",
                 ))
+            if validates_visual_assets:
+                if (
+                    record.get("visual_asset_required") is not True
+                    or patch.get("visual_asset_required") is not True
+                ):
+                    issues.append(ReviewOverlayIssue(
+                        check="promotion_boundary",
+                        code="VISUAL_ASSET_REQUIREMENT_MISSING",
+                        candidate_id=candidate_id,
+                        message=(
+                            "Every VERIFIED candidate in this visual review batch must "
+                            "require a visual asset."
+                        ),
+                    ))
+                if (
+                    not isinstance(record.get("visual_source_page"), int)
+                    or patch.get("visual_source_page") != record.get("visual_source_page")
+                ):
+                    issues.append(ReviewOverlayIssue(
+                        check="patch_consistency",
+                        code="VISUAL_SOURCE_PAGE_MISMATCH",
+                        candidate_id=candidate_id,
+                        message=(
+                            "Verified review and patch must identify the same visual "
+                            "source page."
+                        ),
+                    ))
             if record.get("original_fingerprint") != raw.get("fingerprint"):
                 issues.append(ReviewOverlayIssue(
                     check="preserved_fields",
@@ -544,11 +576,28 @@ class QuestionReviewOverlayResolver:
                     candidate_id=candidate_id,
                     message="REJECTED candidate must remain rejected.",
                 ))
+            if record.get("review_status") == "REJECTED_DUPLICATE":
+                duplicate_of = record.get("duplicate_of_candidate_id")
+                if (
+                    not isinstance(duplicate_of, str)
+                    or duplicate_of not in reviewed_by_id
+                    or duplicate_of == candidate_id
+                ):
+                    issues.append(ReviewOverlayIssue(
+                        check="duplicate_references",
+                        code="DUPLICATE_TARGET_NOT_FOUND",
+                        candidate_id=candidate_id,
+                        message=(
+                            "REJECTED_DUPLICATE must reference another candidate in "
+                            "the staging dataset."
+                        ),
+                    ))
 
     @staticmethod
     def _validate_stats(
         stats: dict[str, Any],
         group_ids: dict[str, set[str]],
+        rejected: list[dict[str, Any]],
         total_candidates: int,
         issues: list[ReviewOverlayIssue],
     ) -> None:
@@ -561,6 +610,21 @@ class QuestionReviewOverlayResolver:
             ),
             "total_candidates_in_data004": total_candidates,
         }
+        rejected_status_counts = {
+            status: sum(
+                record.get("review_status") == status for record in rejected
+            )
+            for status in ("REJECTED_DUPLICATE", "REJECTED_OUT_OF_SCOPE")
+        }
+        optional_expected = {
+            "rejected_duplicate": rejected_status_counts["REJECTED_DUPLICATE"],
+            "rejected_out_of_scope": rejected_status_counts["REJECTED_OUT_OF_SCOPE"],
+        }
+        expected.update({
+            field: value
+            for field, value in optional_expected.items()
+            if field in stats
+        })
         for field, value in expected.items():
             if stats.get(field) != value:
                 issues.append(ReviewOverlayIssue(

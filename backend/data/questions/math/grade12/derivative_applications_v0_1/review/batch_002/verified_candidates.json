@@ -1,0 +1,982 @@
+[
+  {
+    "candidate_id": "M12_DERIV_CAND_0036",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "subsource_code": "NGHE_AN_2025",
+    "source_page": 88,
+    "question_number": "2",
+    "review_status": "VERIFIED",
+    "reviewed_at": "2026-09-23",
+    "problem_type_code": "EXTREMA_FROM_GRAPH",
+    "concepts": [
+      {
+        "problem_type_code": "EXTREMA_FROM_GRAPH",
+        "concept_code": "GRAPH_READING",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "EXTREMA_FROM_GRAPH",
+        "concept_code": "LOCAL_EXTREMUM",
+        "weight": 0.45,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "EXTREMA_FROM_GRAPH",
+        "learning_outcome_code": "M12_DERIV_LO_03",
+        "weight": 1.0
+      }
+    ],
+    "reviewed_question_type": "MULTIPLE_CHOICE",
+    "reviewed_content": "Cho hàm số y = f(x) có đồ thị như hình vẽ. Điểm cực đại của đồ thị hàm số đã cho là",
+    "reviewed_options": [
+      {
+        "label": "A",
+        "content": "M(-3; -3)",
+        "order_index": 0
+      },
+      {
+        "label": "B",
+        "content": "x = -1",
+        "order_index": 1
+      },
+      {
+        "label": "C",
+        "content": "x = -3",
+        "order_index": 2
+      },
+      {
+        "label": "D",
+        "content": "N(-1; 1)",
+        "order_index": 3
+      }
+    ],
+    "verified_correct_answer": "A",
+    "source_answer_detected": "A",
+    "answer_verification": "SOURCE_SOLUTION_CONFIRMED_AND_INDEPENDENT_CHECK",
+    "taxonomy_review": "CONFIRMED",
+    "content_review": "CONFIRMED_AGAINST_SOURCE_PAGE",
+    "visual_asset_required": true,
+    "visual_source_page": 88,
+    "review_note": "Đối chiếu trực tiếp đồ thị trang nguồn: cực đại là điểm M(-3;-3).",
+    "original_fingerprint": "040fe10aed21845f",
+    "promotion_ready": false,
+    "promotion_blocker": "EXPLICIT_PROMOTION_REQUIRED"
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0043",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "subsource_code": "HOA_BINH_2025",
+    "source_page": 122,
+    "question_number": "5",
+    "review_status": "VERIFIED",
+    "reviewed_at": "2026-09-23",
+    "problem_type_code": "MONOTONICITY_FROM_VARIATION_TABLE",
+    "concepts": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_VARIATION_TABLE",
+        "concept_code": "VARIATION_TABLE",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_VARIATION_TABLE",
+        "concept_code": "MONOTONICITY",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_VARIATION_TABLE",
+        "concept_code": "GRAPH_READING",
+        "weight": 0.2,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_VARIATION_TABLE",
+        "learning_outcome_code": "M12_DERIV_LO_02",
+        "weight": 0.5
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_VARIATION_TABLE",
+        "learning_outcome_code": "M12_DERIV_LO_03",
+        "weight": 0.5
+      }
+    ],
+    "reviewed_question_type": "MULTIPLE_CHOICE",
+    "reviewed_content": "Cho hàm số y = f(x) xác định trên R có bảng biến thiên như hình. Hàm số đã cho nghịch biến trên khoảng nào dưới đây?",
+    "reviewed_options": [
+      {
+        "label": "A",
+        "content": "(-2; 0)",
+        "order_index": 0
+      },
+      {
+        "label": "B",
+        "content": "(-3; +∞)",
+        "order_index": 1
+      },
+      {
+        "label": "C",
+        "content": "(-∞; -2)",
+        "order_index": 2
+      },
+      {
+        "label": "D",
+        "content": "(-3; 1)",
+        "order_index": 3
+      }
+    ],
+    "verified_correct_answer": "A",
+    "source_answer_detected": "A",
+    "answer_verification": "SOURCE_SOLUTION_CONFIRMED_AND_INDEPENDENT_CHECK",
+    "taxonomy_review": "CONFIRMED",
+    "content_review": "CONFIRMED_AGAINST_SOURCE_PAGE",
+    "visual_asset_required": true,
+    "visual_source_page": 122,
+    "review_note": "Bảng biến thiên cho f'(x)<0 trên (-2;0).",
+    "original_fingerprint": "dd12397980d7e404",
+    "promotion_ready": false,
+    "promotion_blocker": "EXPLICIT_PROMOTION_REQUIRED"
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0049",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "subsource_code": "QUANG_NINH_2025",
+    "source_page": 145,
+    "question_number": "4",
+    "review_status": "VERIFIED",
+    "reviewed_at": "2026-09-23",
+    "problem_type_code": "MONOTONICITY_FROM_GRAPH",
+    "concepts": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_GRAPH",
+        "concept_code": "GRAPH_READING",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_GRAPH",
+        "concept_code": "MONOTONICITY",
+        "weight": 0.45,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_GRAPH",
+        "learning_outcome_code": "M12_DERIV_LO_03",
+        "weight": 1.0
+      }
+    ],
+    "reviewed_question_type": "MULTIPLE_CHOICE",
+    "reviewed_content": "Cho hàm số y = (ax+b)/(cx+d), với c ≠ 0 và ad-bc ≠ 0, có đồ thị như hình vẽ. Khẳng định nào sau đây đúng?",
+    "reviewed_options": [
+      {
+        "label": "A",
+        "content": "Đồ thị hàm số có hai điểm cực trị.",
+        "order_index": 0
+      },
+      {
+        "label": "B",
+        "content": "lim x→-∞ f(x)=+∞ và lim x→+∞ f(x)=-∞.",
+        "order_index": 1
+      },
+      {
+        "label": "C",
+        "content": "lim x→1+ f(x)=-∞ và lim x→1- f(x)=+∞.",
+        "order_index": 2
+      },
+      {
+        "label": "D",
+        "content": "Hàm số đồng biến trên khoảng (-∞;+∞).",
+        "order_index": 3
+      }
+    ],
+    "verified_correct_answer": "C",
+    "source_answer_detected": "C",
+    "answer_verification": "SOURCE_SOLUTION_CONFIRMED_AND_INDEPENDENT_CHECK",
+    "taxonomy_review": "CONFIRMED",
+    "content_review": "CONFIRMED_AGAINST_SOURCE_PAGE",
+    "visual_asset_required": true,
+    "visual_source_page": 145,
+    "review_note": "Đồ thị cho tiệm cận đứng x=1 và hai giới hạn một phía đúng như phương án C.",
+    "original_fingerprint": "24e070a700532562",
+    "promotion_ready": false,
+    "promotion_blocker": "EXPLICIT_PROMOTION_REQUIRED"
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0056",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "subsource_code": "THANH_HOA_2025",
+    "source_page": 179,
+    "question_number": "1",
+    "review_status": "VERIFIED",
+    "reviewed_at": "2026-09-23",
+    "problem_type_code": "EXTREMA_FROM_VARIATION_TABLE",
+    "concepts": [
+      {
+        "problem_type_code": "EXTREMA_FROM_VARIATION_TABLE",
+        "concept_code": "VARIATION_TABLE",
+        "weight": 0.45,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "EXTREMA_FROM_VARIATION_TABLE",
+        "concept_code": "LOCAL_EXTREMUM",
+        "weight": 0.35,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "EXTREMA_FROM_VARIATION_TABLE",
+        "concept_code": "GRAPH_READING",
+        "weight": 0.2,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "EXTREMA_FROM_VARIATION_TABLE",
+        "learning_outcome_code": "M12_DERIV_LO_03",
+        "weight": 1.0
+      }
+    ],
+    "reviewed_question_type": "MULTIPLE_CHOICE",
+    "reviewed_content": "Cho hàm số f(x) có bảng biến thiên như hình. Giá trị cực đại của hàm số đã cho bằng",
+    "reviewed_options": [
+      {
+        "label": "A",
+        "content": "3",
+        "order_index": 0
+      },
+      {
+        "label": "B",
+        "content": "2",
+        "order_index": 1
+      },
+      {
+        "label": "C",
+        "content": "-1",
+        "order_index": 2
+      },
+      {
+        "label": "D",
+        "content": "-2",
+        "order_index": 3
+      }
+    ],
+    "verified_correct_answer": "A",
+    "source_answer_detected": "A",
+    "answer_verification": "SOURCE_SOLUTION_CONFIRMED_AND_INDEPENDENT_CHECK",
+    "taxonomy_review": "CONFIRMED",
+    "content_review": "CONFIRMED_AGAINST_SOURCE_PAGE",
+    "visual_asset_required": true,
+    "visual_source_page": 179,
+    "review_note": "Bảng biến thiên thể hiện giá trị cực đại bằng 3.",
+    "original_fingerprint": "2e9abb83d1819fd1",
+    "promotion_ready": false,
+    "promotion_blocker": "EXPLICIT_PROMOTION_REQUIRED"
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0057",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "subsource_code": "NGOC_VY_2026_01",
+    "source_page": 1,
+    "question_number": "4",
+    "review_status": "VERIFIED",
+    "reviewed_at": "2026-09-23",
+    "problem_type_code": "GRAPH_IDENTIFICATION_FROM_FEATURES",
+    "concepts": [
+      {
+        "problem_type_code": "GRAPH_IDENTIFICATION_FROM_FEATURES",
+        "concept_code": "GRAPH_READING",
+        "weight": 0.35,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "GRAPH_IDENTIFICATION_FROM_FEATURES",
+        "concept_code": "VARIATION_TABLE",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GRAPH_IDENTIFICATION_FROM_FEATURES",
+        "concept_code": "FUNCTION_ANALYSIS",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GRAPH_IDENTIFICATION_FROM_FEATURES",
+        "concept_code": "FUNCTION_GRAPH",
+        "weight": 0.2,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "GRAPH_IDENTIFICATION_FROM_FEATURES",
+        "learning_outcome_code": "M12_DERIV_LO_07",
+        "weight": 0.5
+      },
+      {
+        "problem_type_code": "GRAPH_IDENTIFICATION_FROM_FEATURES",
+        "learning_outcome_code": "M12_DERIV_LO_08",
+        "weight": 0.5
+      }
+    ],
+    "reviewed_question_type": "MULTIPLE_CHOICE",
+    "reviewed_content": "Hàm số nào dưới đây có đồ thị như đường cong trong hình bên?",
+    "reviewed_options": [
+      {
+        "label": "A",
+        "content": "y = (x^2 - 2x + 3)/(x - 1)",
+        "order_index": 0
+      },
+      {
+        "label": "B",
+        "content": "y = (x + 1)/(x - 1)",
+        "order_index": 1
+      },
+      {
+        "label": "C",
+        "content": "y = x^3 - 3x - 1",
+        "order_index": 2
+      },
+      {
+        "label": "D",
+        "content": "y = x^2 + x - 1",
+        "order_index": 3
+      }
+    ],
+    "verified_correct_answer": "C",
+    "source_answer_detected": "C",
+    "answer_verification": "SOURCE_SOLUTION_CONFIRMED_AND_INDEPENDENT_CHECK",
+    "taxonomy_review": "CONFIRMED",
+    "content_review": "CONFIRMED_AGAINST_SOURCE_PAGE",
+    "visual_asset_required": true,
+    "visual_source_page": 1,
+    "review_note": "Hình dạng và các cực trị phù hợp y=x^3-3x-1; nguồn đánh dấu C.",
+    "original_fingerprint": "891a00dbfbad1c52",
+    "promotion_ready": false,
+    "promotion_blocker": "EXPLICIT_PROMOTION_REQUIRED"
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0065",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "subsource_code": "NGOC_VY_2026_04",
+    "source_page": 61,
+    "question_number": "5",
+    "review_status": "VERIFIED",
+    "reviewed_at": "2026-09-23",
+    "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+    "concepts": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "GLOBAL_EXTREMA",
+        "weight": 0.35,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "CRITICAL_POINT",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "ENDPOINT_EVALUATION",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.2,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "learning_outcome_code": "M12_DERIV_LO_05",
+        "weight": 1.0
+      }
+    ],
+    "reviewed_question_type": "MULTIPLE_CHOICE",
+    "reviewed_content": "Cho hàm số f(x) liên tục trên đoạn [-2;3] có đồ thị như hình. Gọi m, M lần lượt là giá trị nhỏ nhất và lớn nhất của hàm số trên đoạn [-2;3]. Giá trị của 2m - 3M bằng",
+    "reviewed_options": [
+      {
+        "label": "A",
+        "content": "-13",
+        "order_index": 0
+      },
+      {
+        "label": "B",
+        "content": "-18",
+        "order_index": 1
+      },
+      {
+        "label": "C",
+        "content": "-16",
+        "order_index": 2
+      },
+      {
+        "label": "D",
+        "content": "-15",
+        "order_index": 3
+      }
+    ],
+    "verified_correct_answer": "B",
+    "source_answer_detected": "B",
+    "answer_verification": "SOURCE_SOLUTION_CONFIRMED_AND_INDEPENDENT_CHECK",
+    "taxonomy_review": "CONFIRMED",
+    "content_review": "CONFIRMED_AGAINST_SOURCE_PAGE",
+    "visual_asset_required": true,
+    "visual_source_page": 61,
+    "review_note": "Từ đồ thị: m=-3, M=4 nên 2m-3M=-18.",
+    "original_fingerprint": "edda28632a54d9ac",
+    "promotion_ready": false,
+    "promotion_blocker": "EXPLICIT_PROMOTION_REQUIRED"
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0074",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "subsource_code": "NGOC_VY_2026_06",
+    "source_page": 105,
+    "question_number": "5",
+    "review_status": "VERIFIED",
+    "reviewed_at": "2026-09-23",
+    "problem_type_code": "ASYMPTOTE_FROM_GRAPH",
+    "concepts": [
+      {
+        "problem_type_code": "ASYMPTOTE_FROM_GRAPH",
+        "concept_code": "GRAPH_READING",
+        "weight": 0.5,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "ASYMPTOTE_FROM_GRAPH",
+        "concept_code": "VERTICAL_ASYMPTOTE",
+        "weight": 0.17,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "ASYMPTOTE_FROM_GRAPH",
+        "concept_code": "HORIZONTAL_ASYMPTOTE",
+        "weight": 0.17,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "ASYMPTOTE_FROM_GRAPH",
+        "concept_code": "OBLIQUE_ASYMPTOTE",
+        "weight": 0.16,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "ASYMPTOTE_FROM_GRAPH",
+        "learning_outcome_code": "M12_DERIV_LO_06",
+        "weight": 1.0
+      }
+    ],
+    "reviewed_question_type": "MULTIPLE_CHOICE",
+    "reviewed_content": "Cho hàm số y = (ax+b)/(cx+d), với c ≠ 0 và ad-bc ≠ 0, liên tục trên tập xác định và có đồ thị như hình. Đường tiệm cận đứng của đồ thị là",
+    "reviewed_options": [
+      {
+        "label": "A",
+        "content": "x = 1",
+        "order_index": 0
+      },
+      {
+        "label": "B",
+        "content": "x = -1",
+        "order_index": 1
+      },
+      {
+        "label": "C",
+        "content": "x = 0",
+        "order_index": 2
+      },
+      {
+        "label": "D",
+        "content": "y = -1",
+        "order_index": 3
+      }
+    ],
+    "verified_correct_answer": "A",
+    "source_answer_detected": "A",
+    "answer_verification": "SOURCE_SOLUTION_CONFIRMED_AND_INDEPENDENT_CHECK",
+    "taxonomy_review": "CONFIRMED",
+    "content_review": "CONFIRMED_AGAINST_SOURCE_PAGE",
+    "visual_asset_required": true,
+    "visual_source_page": 105,
+    "review_note": "Đồ thị cho tiệm cận đứng x=1; nguồn chọn A.",
+    "original_fingerprint": "787fc722e19be908",
+    "promotion_ready": false,
+    "promotion_blocker": "EXPLICIT_PROMOTION_REQUIRED"
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0077",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "subsource_code": "NGOC_VY_2026_07",
+    "source_page": 125,
+    "question_number": "1",
+    "review_status": "VERIFIED",
+    "reviewed_at": "2026-09-23",
+    "problem_type_code": "ASYMPTOTE_FROM_GRAPH",
+    "concepts": [
+      {
+        "problem_type_code": "ASYMPTOTE_FROM_GRAPH",
+        "concept_code": "GRAPH_READING",
+        "weight": 0.5,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "ASYMPTOTE_FROM_GRAPH",
+        "concept_code": "VERTICAL_ASYMPTOTE",
+        "weight": 0.17,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "ASYMPTOTE_FROM_GRAPH",
+        "concept_code": "HORIZONTAL_ASYMPTOTE",
+        "weight": 0.17,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "ASYMPTOTE_FROM_GRAPH",
+        "concept_code": "OBLIQUE_ASYMPTOTE",
+        "weight": 0.16,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "ASYMPTOTE_FROM_GRAPH",
+        "learning_outcome_code": "M12_DERIV_LO_06",
+        "weight": 1.0
+      }
+    ],
+    "reviewed_question_type": "MULTIPLE_CHOICE",
+    "reviewed_content": "Cho hàm số f(x) có bảng biến thiên như hình. Tổng số tiệm cận ngang và tiệm cận đứng của đồ thị hàm số đã cho là",
+    "reviewed_options": [
+      {
+        "label": "A",
+        "content": "4",
+        "order_index": 0
+      },
+      {
+        "label": "B",
+        "content": "3",
+        "order_index": 1
+      },
+      {
+        "label": "C",
+        "content": "1",
+        "order_index": 2
+      },
+      {
+        "label": "D",
+        "content": "2",
+        "order_index": 3
+      }
+    ],
+    "verified_correct_answer": "D",
+    "source_answer_detected": "D",
+    "answer_verification": "SOURCE_SOLUTION_CONFIRMED_AND_INDEPENDENT_CHECK",
+    "taxonomy_review": "CONFIRMED",
+    "content_review": "CONFIRMED_AGAINST_SOURCE_PAGE",
+    "visual_asset_required": true,
+    "visual_source_page": 125,
+    "review_note": "Bảng biến thiên cho một tiệm cận đứng x=-2 và một tiệm cận ngang y=3, tổng là 2.",
+    "original_fingerprint": "e23c72c6136bcdb7",
+    "promotion_ready": false,
+    "promotion_blocker": "EXPLICIT_PROMOTION_REQUIRED"
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0086",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "subsource_code": "NGOC_VY_2026_10",
+    "source_page": 177,
+    "question_number": "2",
+    "review_status": "VERIFIED",
+    "reviewed_at": "2026-09-23",
+    "problem_type_code": "ASYMPTOTE_FROM_GRAPH",
+    "concepts": [
+      {
+        "problem_type_code": "ASYMPTOTE_FROM_GRAPH",
+        "concept_code": "GRAPH_READING",
+        "weight": 0.5,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "ASYMPTOTE_FROM_GRAPH",
+        "concept_code": "VERTICAL_ASYMPTOTE",
+        "weight": 0.17,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "ASYMPTOTE_FROM_GRAPH",
+        "concept_code": "HORIZONTAL_ASYMPTOTE",
+        "weight": 0.17,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "ASYMPTOTE_FROM_GRAPH",
+        "concept_code": "OBLIQUE_ASYMPTOTE",
+        "weight": 0.16,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "ASYMPTOTE_FROM_GRAPH",
+        "learning_outcome_code": "M12_DERIV_LO_06",
+        "weight": 1.0
+      }
+    ],
+    "reviewed_question_type": "MULTIPLE_CHOICE",
+    "reviewed_content": "Cho hàm số y = f(x) có bảng biến thiên như hình. Tổng số tiệm cận ngang và tiệm cận đứng của đồ thị hàm số đã cho là",
+    "reviewed_options": [
+      {
+        "label": "A",
+        "content": "4",
+        "order_index": 0
+      },
+      {
+        "label": "B",
+        "content": "1",
+        "order_index": 1
+      },
+      {
+        "label": "C",
+        "content": "3",
+        "order_index": 2
+      },
+      {
+        "label": "D",
+        "content": "2",
+        "order_index": 3
+      }
+    ],
+    "verified_correct_answer": "C",
+    "source_answer_detected": "C",
+    "answer_verification": "SOURCE_SOLUTION_CONFIRMED_AND_INDEPENDENT_CHECK",
+    "taxonomy_review": "CONFIRMED",
+    "content_review": "CONFIRMED_AGAINST_SOURCE_PAGE",
+    "visual_asset_required": true,
+    "visual_source_page": 177,
+    "review_note": "Bảng biến thiên cho một tiệm cận đứng và hai tiệm cận ngang, tổng là 3.",
+    "original_fingerprint": "9bf4aa58fc4fe030",
+    "promotion_ready": false,
+    "promotion_blocker": "EXPLICIT_PROMOTION_REQUIRED"
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0088",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "subsource_code": "NGOC_VY_2026_11",
+    "source_page": 196,
+    "question_number": "2",
+    "review_status": "VERIFIED",
+    "reviewed_at": "2026-09-23",
+    "problem_type_code": "GRAPH_IDENTIFICATION_FROM_FEATURES",
+    "concepts": [
+      {
+        "problem_type_code": "GRAPH_IDENTIFICATION_FROM_FEATURES",
+        "concept_code": "GRAPH_READING",
+        "weight": 0.35,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "GRAPH_IDENTIFICATION_FROM_FEATURES",
+        "concept_code": "VARIATION_TABLE",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GRAPH_IDENTIFICATION_FROM_FEATURES",
+        "concept_code": "FUNCTION_ANALYSIS",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GRAPH_IDENTIFICATION_FROM_FEATURES",
+        "concept_code": "FUNCTION_GRAPH",
+        "weight": 0.2,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "GRAPH_IDENTIFICATION_FROM_FEATURES",
+        "learning_outcome_code": "M12_DERIV_LO_07",
+        "weight": 0.5
+      },
+      {
+        "problem_type_code": "GRAPH_IDENTIFICATION_FROM_FEATURES",
+        "learning_outcome_code": "M12_DERIV_LO_08",
+        "weight": 0.5
+      }
+    ],
+    "reviewed_question_type": "MULTIPLE_CHOICE",
+    "reviewed_content": "Hàm số nào dưới đây có bảng biến thiên như hình?",
+    "reviewed_options": [
+      {
+        "label": "A",
+        "content": "y = x^4 - 2x^2",
+        "order_index": 0
+      },
+      {
+        "label": "B",
+        "content": "y = -x^3 + 3x",
+        "order_index": 1
+      },
+      {
+        "label": "C",
+        "content": "y = (x - 2)/(x + 3)",
+        "order_index": 2
+      },
+      {
+        "label": "D",
+        "content": "y = x^3 - 3x",
+        "order_index": 3
+      }
+    ],
+    "verified_correct_answer": "D",
+    "source_answer_detected": "D",
+    "answer_verification": "SOURCE_SOLUTION_CONFIRMED_AND_INDEPENDENT_CHECK",
+    "taxonomy_review": "CONFIRMED",
+    "content_review": "CONFIRMED_AGAINST_SOURCE_PAGE",
+    "visual_asset_required": true,
+    "visual_source_page": 196,
+    "review_note": "BBT có dấu đạo hàm +,-,+ tại x=-1,1 và giá trị cực trị 2,-2; phù hợp y=x^3-3x.",
+    "original_fingerprint": "6d4f424bff459e65",
+    "promotion_ready": false,
+    "promotion_blocker": "EXPLICIT_PROMOTION_REQUIRED"
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0090",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "subsource_code": "NGOC_VY_2026_12",
+    "source_page": 216,
+    "question_number": "4",
+    "review_status": "VERIFIED",
+    "reviewed_at": "2026-09-23",
+    "problem_type_code": "ASYMPTOTE_FROM_GRAPH",
+    "concepts": [
+      {
+        "problem_type_code": "ASYMPTOTE_FROM_GRAPH",
+        "concept_code": "GRAPH_READING",
+        "weight": 0.5,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "ASYMPTOTE_FROM_GRAPH",
+        "concept_code": "VERTICAL_ASYMPTOTE",
+        "weight": 0.17,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "ASYMPTOTE_FROM_GRAPH",
+        "concept_code": "HORIZONTAL_ASYMPTOTE",
+        "weight": 0.17,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "ASYMPTOTE_FROM_GRAPH",
+        "concept_code": "OBLIQUE_ASYMPTOTE",
+        "weight": 0.16,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "ASYMPTOTE_FROM_GRAPH",
+        "learning_outcome_code": "M12_DERIV_LO_06",
+        "weight": 1.0
+      }
+    ],
+    "reviewed_question_type": "MULTIPLE_CHOICE",
+    "reviewed_content": "Cho hàm số y = (ax^2+bx+c)/(mx+n), với a ≠ 0, m ≠ 0, có đồ thị như hình. Đồ thị hàm số đã cho có bao nhiêu đường tiệm cận?",
+    "reviewed_options": [
+      {
+        "label": "A",
+        "content": "4",
+        "order_index": 0
+      },
+      {
+        "label": "B",
+        "content": "2",
+        "order_index": 1
+      },
+      {
+        "label": "C",
+        "content": "1",
+        "order_index": 2
+      },
+      {
+        "label": "D",
+        "content": "3",
+        "order_index": 3
+      }
+    ],
+    "verified_correct_answer": "B",
+    "source_answer_detected": "B",
+    "answer_verification": "SOURCE_SOLUTION_CONFIRMED_AND_INDEPENDENT_CHECK",
+    "taxonomy_review": "CONFIRMED",
+    "content_review": "CONFIRMED_AGAINST_SOURCE_PAGE",
+    "visual_asset_required": true,
+    "visual_source_page": 216,
+    "review_note": "Đồ thị thể hiện một tiệm cận đứng và một tiệm cận xiên, tổng là 2.",
+    "original_fingerprint": "0b4409e3e5979356",
+    "promotion_ready": false,
+    "promotion_blocker": "EXPLICIT_PROMOTION_REQUIRED"
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0093",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "subsource_code": "NGOC_VY_2026_13",
+    "source_page": 235,
+    "question_number": "2",
+    "review_status": "VERIFIED",
+    "reviewed_at": "2026-09-23",
+    "problem_type_code": "MONOTONICITY_FROM_GRAPH",
+    "concepts": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_GRAPH",
+        "concept_code": "GRAPH_READING",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_GRAPH",
+        "concept_code": "MONOTONICITY",
+        "weight": 0.45,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_GRAPH",
+        "learning_outcome_code": "M12_DERIV_LO_03",
+        "weight": 1.0
+      }
+    ],
+    "reviewed_question_type": "MULTIPLE_CHOICE",
+    "reviewed_content": "Cho hàm số y = f(x) xác định trên R và có đồ thị như hình. Mệnh đề nào dưới đây đúng?",
+    "reviewed_options": [
+      {
+        "label": "A",
+        "content": "Hàm số đã cho nghịch biến trên khoảng (-∞;+∞).",
+        "order_index": 0
+      },
+      {
+        "label": "B",
+        "content": "Hàm số đã cho đồng biến trên khoảng (-∞;0).",
+        "order_index": 1
+      },
+      {
+        "label": "C",
+        "content": "Hàm số đã cho đồng biến trên khoảng (0;+∞).",
+        "order_index": 2
+      },
+      {
+        "label": "D",
+        "content": "Hàm số đã cho đồng biến trên khoảng (-∞;+∞).",
+        "order_index": 3
+      }
+    ],
+    "verified_correct_answer": "A",
+    "source_answer_detected": "A",
+    "answer_verification": "SOURCE_SOLUTION_CONFIRMED_AND_INDEPENDENT_CHECK",
+    "taxonomy_review": "CONFIRMED",
+    "content_review": "CONFIRMED_AGAINST_SOURCE_PAGE",
+    "visual_asset_required": true,
+    "visual_source_page": 235,
+    "review_note": "Đồ thị giảm trên toàn bộ R; nguồn chọn A.",
+    "original_fingerprint": "3c9ca68ea7f0667c",
+    "promotion_ready": false,
+    "promotion_blocker": "EXPLICIT_PROMOTION_REQUIRED"
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0098",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "subsource_code": "NGOC_VY_2026_15",
+    "source_page": 275,
+    "question_number": "1",
+    "review_status": "VERIFIED",
+    "reviewed_at": "2026-09-23",
+    "problem_type_code": "MONOTONICITY_FROM_VARIATION_TABLE",
+    "concepts": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_VARIATION_TABLE",
+        "concept_code": "VARIATION_TABLE",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_VARIATION_TABLE",
+        "concept_code": "MONOTONICITY",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_VARIATION_TABLE",
+        "concept_code": "GRAPH_READING",
+        "weight": 0.2,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_VARIATION_TABLE",
+        "learning_outcome_code": "M12_DERIV_LO_02",
+        "weight": 0.5
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_VARIATION_TABLE",
+        "learning_outcome_code": "M12_DERIV_LO_03",
+        "weight": 0.5
+      }
+    ],
+    "reviewed_question_type": "MULTIPLE_CHOICE",
+    "reviewed_content": "Cho hàm số y = f(x) xác định trên R\\{1} và có bảng biến thiên như hình. Mệnh đề nào dưới đây sai?",
+    "reviewed_options": [
+      {
+        "label": "A",
+        "content": "Hàm số đồng biến trên các khoảng (-∞;0) và (2;+∞).",
+        "order_index": 0
+      },
+      {
+        "label": "B",
+        "content": "Hàm số nghịch biến trên các khoảng (0;1) và (1;2).",
+        "order_index": 1
+      },
+      {
+        "label": "C",
+        "content": "Hàm số có điểm cực tiểu bằng 0.",
+        "order_index": 2
+      },
+      {
+        "label": "D",
+        "content": "Hàm số có giá trị cực đại bằng 2.",
+        "order_index": 3
+      }
+    ],
+    "verified_correct_answer": "C",
+    "source_answer_detected": "C",
+    "answer_verification": "SOURCE_SOLUTION_CONFIRMED_AND_INDEPENDENT_CHECK",
+    "taxonomy_review": "CONFIRMED",
+    "content_review": "CONFIRMED_AGAINST_SOURCE_PAGE",
+    "visual_asset_required": true,
+    "visual_source_page": 275,
+    "review_note": "Theo BBT, x=0 ứng với cực đại; cực tiểu ở nhánh phải có giá trị 6. Phương án C sai.",
+    "original_fingerprint": "797e8893ccab265a",
+    "promotion_ready": false,
+    "promotion_blocker": "EXPLICIT_PROMOTION_REQUIRED"
+  }
+]

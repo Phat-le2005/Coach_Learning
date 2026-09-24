@@ -1,0 +1,650 @@
+[
+  {
+    "candidate_id": "M12_DERIV_CAND_0036",
+    "set": {
+      "status": "VERIFIED",
+      "reviewed_question_type": "MULTIPLE_CHOICE",
+      "reviewed_content": "Cho hàm số y = f(x) có đồ thị như hình vẽ. Điểm cực đại của đồ thị hàm số đã cho là",
+      "reviewed_options": [
+        {
+          "label": "A",
+          "content": "M(-3; -3)",
+          "order_index": 0
+        },
+        {
+          "label": "B",
+          "content": "x = -1",
+          "order_index": 1
+        },
+        {
+          "label": "C",
+          "content": "x = -3",
+          "order_index": 2
+        },
+        {
+          "label": "D",
+          "content": "N(-1; 1)",
+          "order_index": 3
+        }
+      ],
+      "verified_correct_answer": "A",
+      "visual_asset_required": true,
+      "visual_source_page": 88,
+      "reviewed_at": "2026-09-23",
+      "review_batch": "DATA-MATH12-005_BATCH_002",
+      "promotion_ready": false
+    }
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0043",
+    "set": {
+      "status": "VERIFIED",
+      "reviewed_question_type": "MULTIPLE_CHOICE",
+      "reviewed_content": "Cho hàm số y = f(x) xác định trên R có bảng biến thiên như hình. Hàm số đã cho nghịch biến trên khoảng nào dưới đây?",
+      "reviewed_options": [
+        {
+          "label": "A",
+          "content": "(-2; 0)",
+          "order_index": 0
+        },
+        {
+          "label": "B",
+          "content": "(-3; +∞)",
+          "order_index": 1
+        },
+        {
+          "label": "C",
+          "content": "(-∞; -2)",
+          "order_index": 2
+        },
+        {
+          "label": "D",
+          "content": "(-3; 1)",
+          "order_index": 3
+        }
+      ],
+      "verified_correct_answer": "A",
+      "visual_asset_required": true,
+      "visual_source_page": 122,
+      "reviewed_at": "2026-09-23",
+      "review_batch": "DATA-MATH12-005_BATCH_002",
+      "promotion_ready": false
+    }
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0049",
+    "set": {
+      "status": "VERIFIED",
+      "reviewed_question_type": "MULTIPLE_CHOICE",
+      "reviewed_content": "Cho hàm số y = (ax+b)/(cx+d), với c ≠ 0 và ad-bc ≠ 0, có đồ thị như hình vẽ. Khẳng định nào sau đây đúng?",
+      "reviewed_options": [
+        {
+          "label": "A",
+          "content": "Đồ thị hàm số có hai điểm cực trị.",
+          "order_index": 0
+        },
+        {
+          "label": "B",
+          "content": "lim x→-∞ f(x)=+∞ và lim x→+∞ f(x)=-∞.",
+          "order_index": 1
+        },
+        {
+          "label": "C",
+          "content": "lim x→1+ f(x)=-∞ và lim x→1- f(x)=+∞.",
+          "order_index": 2
+        },
+        {
+          "label": "D",
+          "content": "Hàm số đồng biến trên khoảng (-∞;+∞).",
+          "order_index": 3
+        }
+      ],
+      "verified_correct_answer": "C",
+      "visual_asset_required": true,
+      "visual_source_page": 145,
+      "reviewed_at": "2026-09-23",
+      "review_batch": "DATA-MATH12-005_BATCH_002",
+      "promotion_ready": false
+    }
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0056",
+    "set": {
+      "status": "VERIFIED",
+      "reviewed_question_type": "MULTIPLE_CHOICE",
+      "reviewed_content": "Cho hàm số f(x) có bảng biến thiên như hình. Giá trị cực đại của hàm số đã cho bằng",
+      "reviewed_options": [
+        {
+          "label": "A",
+          "content": "3",
+          "order_index": 0
+        },
+        {
+          "label": "B",
+          "content": "2",
+          "order_index": 1
+        },
+        {
+          "label": "C",
+          "content": "-1",
+          "order_index": 2
+        },
+        {
+          "label": "D",
+          "content": "-2",
+          "order_index": 3
+        }
+      ],
+      "verified_correct_answer": "A",
+      "visual_asset_required": true,
+      "visual_source_page": 179,
+      "reviewed_at": "2026-09-23",
+      "review_batch": "DATA-MATH12-005_BATCH_002",
+      "promotion_ready": false
+    }
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0057",
+    "set": {
+      "status": "VERIFIED",
+      "reviewed_question_type": "MULTIPLE_CHOICE",
+      "reviewed_content": "Hàm số nào dưới đây có đồ thị như đường cong trong hình bên?",
+      "reviewed_options": [
+        {
+          "label": "A",
+          "content": "y = (x^2 - 2x + 3)/(x - 1)",
+          "order_index": 0
+        },
+        {
+          "label": "B",
+          "content": "y = (x + 1)/(x - 1)",
+          "order_index": 1
+        },
+        {
+          "label": "C",
+          "content": "y = x^3 - 3x - 1",
+          "order_index": 2
+        },
+        {
+          "label": "D",
+          "content": "y = x^2 + x - 1",
+          "order_index": 3
+        }
+      ],
+      "verified_correct_answer": "C",
+      "visual_asset_required": true,
+      "visual_source_page": 1,
+      "reviewed_at": "2026-09-23",
+      "review_batch": "DATA-MATH12-005_BATCH_002",
+      "promotion_ready": false
+    }
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0065",
+    "set": {
+      "status": "VERIFIED",
+      "reviewed_question_type": "MULTIPLE_CHOICE",
+      "reviewed_content": "Cho hàm số f(x) liên tục trên đoạn [-2;3] có đồ thị như hình. Gọi m, M lần lượt là giá trị nhỏ nhất và lớn nhất của hàm số trên đoạn [-2;3]. Giá trị của 2m - 3M bằng",
+      "reviewed_options": [
+        {
+          "label": "A",
+          "content": "-13",
+          "order_index": 0
+        },
+        {
+          "label": "B",
+          "content": "-18",
+          "order_index": 1
+        },
+        {
+          "label": "C",
+          "content": "-16",
+          "order_index": 2
+        },
+        {
+          "label": "D",
+          "content": "-15",
+          "order_index": 3
+        }
+      ],
+      "verified_correct_answer": "B",
+      "visual_asset_required": true,
+      "visual_source_page": 61,
+      "reviewed_at": "2026-09-23",
+      "review_batch": "DATA-MATH12-005_BATCH_002",
+      "promotion_ready": false
+    }
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0074",
+    "set": {
+      "status": "VERIFIED",
+      "reviewed_question_type": "MULTIPLE_CHOICE",
+      "reviewed_content": "Cho hàm số y = (ax+b)/(cx+d), với c ≠ 0 và ad-bc ≠ 0, liên tục trên tập xác định và có đồ thị như hình. Đường tiệm cận đứng của đồ thị là",
+      "reviewed_options": [
+        {
+          "label": "A",
+          "content": "x = 1",
+          "order_index": 0
+        },
+        {
+          "label": "B",
+          "content": "x = -1",
+          "order_index": 1
+        },
+        {
+          "label": "C",
+          "content": "x = 0",
+          "order_index": 2
+        },
+        {
+          "label": "D",
+          "content": "y = -1",
+          "order_index": 3
+        }
+      ],
+      "verified_correct_answer": "A",
+      "visual_asset_required": true,
+      "visual_source_page": 105,
+      "reviewed_at": "2026-09-23",
+      "review_batch": "DATA-MATH12-005_BATCH_002",
+      "promotion_ready": false
+    }
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0077",
+    "set": {
+      "status": "VERIFIED",
+      "reviewed_question_type": "MULTIPLE_CHOICE",
+      "reviewed_content": "Cho hàm số f(x) có bảng biến thiên như hình. Tổng số tiệm cận ngang và tiệm cận đứng của đồ thị hàm số đã cho là",
+      "reviewed_options": [
+        {
+          "label": "A",
+          "content": "4",
+          "order_index": 0
+        },
+        {
+          "label": "B",
+          "content": "3",
+          "order_index": 1
+        },
+        {
+          "label": "C",
+          "content": "1",
+          "order_index": 2
+        },
+        {
+          "label": "D",
+          "content": "2",
+          "order_index": 3
+        }
+      ],
+      "verified_correct_answer": "D",
+      "visual_asset_required": true,
+      "visual_source_page": 125,
+      "reviewed_at": "2026-09-23",
+      "review_batch": "DATA-MATH12-005_BATCH_002",
+      "promotion_ready": false
+    }
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0086",
+    "set": {
+      "status": "VERIFIED",
+      "reviewed_question_type": "MULTIPLE_CHOICE",
+      "reviewed_content": "Cho hàm số y = f(x) có bảng biến thiên như hình. Tổng số tiệm cận ngang và tiệm cận đứng của đồ thị hàm số đã cho là",
+      "reviewed_options": [
+        {
+          "label": "A",
+          "content": "4",
+          "order_index": 0
+        },
+        {
+          "label": "B",
+          "content": "1",
+          "order_index": 1
+        },
+        {
+          "label": "C",
+          "content": "3",
+          "order_index": 2
+        },
+        {
+          "label": "D",
+          "content": "2",
+          "order_index": 3
+        }
+      ],
+      "verified_correct_answer": "C",
+      "visual_asset_required": true,
+      "visual_source_page": 177,
+      "reviewed_at": "2026-09-23",
+      "review_batch": "DATA-MATH12-005_BATCH_002",
+      "promotion_ready": false
+    }
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0088",
+    "set": {
+      "status": "VERIFIED",
+      "reviewed_question_type": "MULTIPLE_CHOICE",
+      "reviewed_content": "Hàm số nào dưới đây có bảng biến thiên như hình?",
+      "reviewed_options": [
+        {
+          "label": "A",
+          "content": "y = x^4 - 2x^2",
+          "order_index": 0
+        },
+        {
+          "label": "B",
+          "content": "y = -x^3 + 3x",
+          "order_index": 1
+        },
+        {
+          "label": "C",
+          "content": "y = (x - 2)/(x + 3)",
+          "order_index": 2
+        },
+        {
+          "label": "D",
+          "content": "y = x^3 - 3x",
+          "order_index": 3
+        }
+      ],
+      "verified_correct_answer": "D",
+      "visual_asset_required": true,
+      "visual_source_page": 196,
+      "reviewed_at": "2026-09-23",
+      "review_batch": "DATA-MATH12-005_BATCH_002",
+      "promotion_ready": false
+    }
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0090",
+    "set": {
+      "status": "VERIFIED",
+      "reviewed_question_type": "MULTIPLE_CHOICE",
+      "reviewed_content": "Cho hàm số y = (ax^2+bx+c)/(mx+n), với a ≠ 0, m ≠ 0, có đồ thị như hình. Đồ thị hàm số đã cho có bao nhiêu đường tiệm cận?",
+      "reviewed_options": [
+        {
+          "label": "A",
+          "content": "4",
+          "order_index": 0
+        },
+        {
+          "label": "B",
+          "content": "2",
+          "order_index": 1
+        },
+        {
+          "label": "C",
+          "content": "1",
+          "order_index": 2
+        },
+        {
+          "label": "D",
+          "content": "3",
+          "order_index": 3
+        }
+      ],
+      "verified_correct_answer": "B",
+      "visual_asset_required": true,
+      "visual_source_page": 216,
+      "reviewed_at": "2026-09-23",
+      "review_batch": "DATA-MATH12-005_BATCH_002",
+      "promotion_ready": false
+    }
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0093",
+    "set": {
+      "status": "VERIFIED",
+      "reviewed_question_type": "MULTIPLE_CHOICE",
+      "reviewed_content": "Cho hàm số y = f(x) xác định trên R và có đồ thị như hình. Mệnh đề nào dưới đây đúng?",
+      "reviewed_options": [
+        {
+          "label": "A",
+          "content": "Hàm số đã cho nghịch biến trên khoảng (-∞;+∞).",
+          "order_index": 0
+        },
+        {
+          "label": "B",
+          "content": "Hàm số đã cho đồng biến trên khoảng (-∞;0).",
+          "order_index": 1
+        },
+        {
+          "label": "C",
+          "content": "Hàm số đã cho đồng biến trên khoảng (0;+∞).",
+          "order_index": 2
+        },
+        {
+          "label": "D",
+          "content": "Hàm số đã cho đồng biến trên khoảng (-∞;+∞).",
+          "order_index": 3
+        }
+      ],
+      "verified_correct_answer": "A",
+      "visual_asset_required": true,
+      "visual_source_page": 235,
+      "reviewed_at": "2026-09-23",
+      "review_batch": "DATA-MATH12-005_BATCH_002",
+      "promotion_ready": false
+    }
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0098",
+    "set": {
+      "status": "VERIFIED",
+      "reviewed_question_type": "MULTIPLE_CHOICE",
+      "reviewed_content": "Cho hàm số y = f(x) xác định trên R\\{1} và có bảng biến thiên như hình. Mệnh đề nào dưới đây sai?",
+      "reviewed_options": [
+        {
+          "label": "A",
+          "content": "Hàm số đồng biến trên các khoảng (-∞;0) và (2;+∞).",
+          "order_index": 0
+        },
+        {
+          "label": "B",
+          "content": "Hàm số nghịch biến trên các khoảng (0;1) và (1;2).",
+          "order_index": 1
+        },
+        {
+          "label": "C",
+          "content": "Hàm số có điểm cực tiểu bằng 0.",
+          "order_index": 2
+        },
+        {
+          "label": "D",
+          "content": "Hàm số có giá trị cực đại bằng 2.",
+          "order_index": 3
+        }
+      ],
+      "verified_correct_answer": "C",
+      "visual_asset_required": true,
+      "visual_source_page": 275,
+      "reviewed_at": "2026-09-23",
+      "review_batch": "DATA-MATH12-005_BATCH_002",
+      "promotion_ready": false
+    }
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0045",
+    "set": {
+      "status": "REJECTED",
+      "reviewed_at": "2026-09-23",
+      "review_batch": "DATA-MATH12-005_BATCH_002",
+      "duplicate_of_candidate_id": "M12_DERIV_CAND_0049",
+      "rejection_reason": "DUPLICATE_OF:M12_DERIV_CAND_0049"
+    }
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0046",
+    "set": {
+      "status": "REJECTED",
+      "reviewed_at": "2026-09-23",
+      "review_batch": "DATA-MATH12-005_BATCH_002",
+      "duplicate_of_candidate_id": "M12_DERIV_CAND_0050",
+      "rejection_reason": "DUPLICATE_OF:M12_DERIV_CAND_0050"
+    }
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0054",
+    "set": {
+      "status": "REJECTED",
+      "reviewed_at": "2026-09-23",
+      "review_batch": "DATA-MATH12-005_BATCH_002",
+      "duplicate_of_candidate_id": "M12_DERIV_CAND_0056",
+      "rejection_reason": "DUPLICATE_OF:M12_DERIV_CAND_0056"
+    }
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0071",
+    "set": {
+      "status": "REJECTED",
+      "reviewed_at": "2026-09-23",
+      "review_batch": "DATA-MATH12-005_BATCH_002",
+      "duplicate_of_candidate_id": "M12_DERIV_CAND_0074",
+      "rejection_reason": "DUPLICATE_OF:M12_DERIV_CAND_0074"
+    }
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0075",
+    "set": {
+      "status": "REJECTED",
+      "reviewed_at": "2026-09-23",
+      "review_batch": "DATA-MATH12-005_BATCH_002",
+      "duplicate_of_candidate_id": "M12_DERIV_CAND_0077",
+      "rejection_reason": "DUPLICATE_OF:M12_DERIV_CAND_0077"
+    }
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0083",
+    "set": {
+      "status": "REJECTED",
+      "reviewed_at": "2026-09-23",
+      "review_batch": "DATA-MATH12-005_BATCH_002",
+      "duplicate_of_candidate_id": "M12_DERIV_CAND_0085",
+      "rejection_reason": "DUPLICATE_OF:M12_DERIV_CAND_0085"
+    }
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0095",
+    "set": {
+      "status": "REJECTED",
+      "reviewed_at": "2026-09-23",
+      "review_batch": "DATA-MATH12-005_BATCH_002",
+      "duplicate_of_candidate_id": "M12_DERIV_CAND_0097",
+      "rejection_reason": "DUPLICATE_OF:M12_DERIV_CAND_0097"
+    }
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0100",
+    "set": {
+      "status": "REJECTED",
+      "reviewed_at": "2026-09-23",
+      "review_batch": "DATA-MATH12-005_BATCH_002",
+      "duplicate_of_candidate_id": "M12_DERIV_CAND_0102",
+      "rejection_reason": "DUPLICATE_OF:M12_DERIV_CAND_0102"
+    }
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0115",
+    "set": {
+      "status": "REJECTED",
+      "reviewed_at": "2026-09-23",
+      "review_batch": "DATA-MATH12-005_BATCH_002",
+      "duplicate_of_candidate_id": "M12_DERIV_CAND_0117",
+      "rejection_reason": "DUPLICATE_OF:M12_DERIV_CAND_0117"
+    }
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0128",
+    "set": {
+      "status": "REJECTED",
+      "reviewed_at": "2026-09-23",
+      "review_batch": "DATA-MATH12-005_BATCH_002",
+      "duplicate_of_candidate_id": "M12_DERIV_CAND_0129",
+      "rejection_reason": "DUPLICATE_OF:M12_DERIV_CAND_0129"
+    }
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0146",
+    "set": {
+      "status": "REJECTED",
+      "reviewed_at": "2026-09-23",
+      "review_batch": "DATA-MATH12-005_BATCH_002",
+      "duplicate_of_candidate_id": "M12_DERIV_CAND_0148",
+      "rejection_reason": "DUPLICATE_OF:M12_DERIV_CAND_0148"
+    }
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0173",
+    "set": {
+      "status": "REJECTED",
+      "reviewed_at": "2026-09-23",
+      "review_batch": "DATA-MATH12-005_BATCH_002",
+      "duplicate_of_candidate_id": "M12_DERIV_CAND_0085",
+      "rejection_reason": "DUPLICATE_OF:M12_DERIV_CAND_0085"
+    }
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0048",
+    "set": {
+      "status": "REJECTED",
+      "reviewed_at": "2026-09-23",
+      "review_batch": "DATA-MATH12-005_BATCH_002",
+      "suggested_target_scope": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+      "rejection_reason": "Bài toán xác định hàm phân thức từ tiệm cận nhưng đại lượng được hỏi là diện tích vùng quảng cáo; lời giải chính dùng tích phân."
+    }
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0080",
+    "set": {
+      "status": "REJECTED",
+      "reviewed_at": "2026-09-23",
+      "review_batch": "DATA-MATH12-005_BATCH_002",
+      "suggested_target_scope": "M12_CORE_GEOMETRY_COORDINATE_3D",
+      "rejection_reason": "Bài Oxyz về điểm, mặt phẳng, mặt cầu và tối ưu khoảng cách; không thuộc chapter Ứng dụng đạo hàm."
+    }
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0151",
+    "set": {
+      "status": "REJECTED",
+      "reviewed_at": "2026-09-23",
+      "review_batch": "DATA-MATH12-005_BATCH_002",
+      "suggested_target_scope": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+      "rejection_reason": "Bài bê tông con đường tính diện tích giữa hai đồ thị bằng tích phân rồi tính thể tích/chi phí."
+    }
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0166",
+    "set": {
+      "status": "REJECTED",
+      "reviewed_at": "2026-09-23",
+      "review_batch": "DATA-MATH12-005_BATCH_002",
+      "suggested_target_scope": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+      "rejection_reason": "Bài bảng quảng cáo yêu cầu diện tích; lời giải sử dụng tích phân của hàm phân thức."
+    }
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0168",
+    "set": {
+      "status": "REJECTED",
+      "reviewed_at": "2026-09-23",
+      "review_batch": "DATA-MATH12-005_BATCH_002",
+      "suggested_target_scope": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+      "rejection_reason": "Cùng bài bảng quảng cáo/diện tích; phần đánh giá chính thuộc ứng dụng tích phân."
+    }
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0171",
+    "set": {
+      "status": "REJECTED",
+      "reviewed_at": "2026-09-23",
+      "review_batch": "DATA-MATH12-005_BATCH_002",
+      "suggested_target_scope": "M12_CORE_GEOMETRY_COORDINATE_3D",
+      "rejection_reason": "Bài Oxyz về mặt cầu và khoảng cách; không thuộc chapter Ứng dụng đạo hàm."
+    }
+  }
+]

@@ -63,6 +63,26 @@ class ProblemTypeCoverage:
     candidate_count: int
     question_type_counts: dict[str, int]
     coverage_status: str
+    verified_count: int = 0
+    hold_count: int = 0
+    untouched_review_required_count: int = 0
+    rejected_excluded_count: int = 0
+
+
+@dataclass(frozen=True, slots=True)
+class CandidateViewReport:
+    status_summary: dict[str, int]
+    coverage: tuple[ProblemTypeCoverage, ...]
+    coverage_gaps: tuple[str, ...]
+    promotion: dict[str, Any]
+
+    def as_dict(self) -> dict[str, Any]:
+        return {
+            "status_summary": self.status_summary,
+            "coverage": [asdict(item) for item in self.coverage],
+            "coverage_gaps": list(self.coverage_gaps),
+            "promotion": self.promotion,
+        }
 
 
 @dataclass(frozen=True, slots=True)
@@ -73,14 +93,26 @@ class QuestionStagingValidationReport:
     counts: dict[str, int]
     errors: tuple[QuestionStagingIssue, ...]
     duplicate_fingerprints: tuple[FingerprintDuplicate, ...]
-    coverage: tuple[ProblemTypeCoverage, ...]
-    coverage_gaps: tuple[str, ...]
-    promotion: dict[str, Any]
+    raw: CandidateViewReport
+    effective_reviewed: CandidateViewReport
     review_batches: tuple[ReviewBatchReport, ...]
 
     @property
     def is_valid(self) -> bool:
         return self.status == "PASS"
+
+    @property
+    def coverage(self) -> tuple[ProblemTypeCoverage, ...]:
+        """Backward-compatible raw staging coverage for audit callers."""
+        return self.raw.coverage
+
+    @property
+    def coverage_gaps(self) -> tuple[str, ...]:
+        return self.raw.coverage_gaps
+
+    @property
+    def promotion(self) -> dict[str, Any]:
+        return self.raw.promotion
 
     def as_dict(self) -> dict[str, Any]:
         return {
@@ -92,9 +124,8 @@ class QuestionStagingValidationReport:
             "duplicate_fingerprints": [
                 asdict(duplicate) for duplicate in self.duplicate_fingerprints
             ],
-            "coverage": [asdict(item) for item in self.coverage],
-            "coverage_gaps": list(self.coverage_gaps),
-            "promotion": self.promotion,
+            "raw": self.raw.as_dict(),
+            "effective_reviewed": self.effective_reviewed.as_dict(),
             "review_batches": [batch.as_dict() for batch in self.review_batches],
         }
 
@@ -120,10 +151,18 @@ def candidate_promotion_blockers(candidate: dict[str, Any]) -> tuple[str, ...]:
         blockers.append("STATUS_HOLD")
     elif candidate.get("status") != "VERIFIED":
         blockers.append("STATUS_NOT_VERIFIED")
-    if (
+    requires_question_group = (
         candidate.get("question_type_detected") == "TRUE_FALSE_GROUP"
         or candidate.get("requires_question_group_model") is True
-    ):
+        or (
+            isinstance(review_record, dict)
+            and (
+                review_record.get("requires_question_group_model") is True
+                or review_record.get("suggested_question_type") == "TRUE_FALSE_GROUP"
+            )
+        )
+    )
+    if requires_question_group:
         blockers.append("TRUE_FALSE_GROUP_UNSUPPORTED")
     if (
         candidate.get("status") == "VERIFIED"
@@ -131,6 +170,8 @@ def candidate_promotion_blockers(candidate: dict[str, Any]) -> tuple[str, ...]:
         and candidate.get("promotion_ready") is not True
     ):
         blockers.append("EXPLICIT_PROMOTION_REQUIRED")
+    if candidate.get("visual_asset_required") is True:
+        blockers.append("VISUAL_ASSET_REQUIRED")
     return tuple(blockers)
 
 
@@ -218,22 +259,68 @@ class QuestionStagingValidator:
                 candidates, subsources
             ),
             "fingerprints_available": self._validate_fingerprints(candidates),
+            "review_batch_overlap": [],
         }
-        review_results = tuple(
-            QuestionReviewOverlayResolver().resolve(candidates, batch_path)
-            for batch_path in sorted(review_root.glob("batch_*"))
-            if batch_path.is_dir()
-        ) if review_root.is_dir() else ()
+        review_results = []
+        effective_candidates = candidates
+        reviewed_candidate_batches: dict[str, str] = {}
+        batch_paths = (
+            tuple(
+                batch_path
+                for batch_path in sorted(review_root.glob("batch_*"))
+                if batch_path.is_dir()
+            )
+            if review_root.is_dir()
+            else ()
+        )
+        for batch_path in batch_paths:
+            result = QuestionReviewOverlayResolver().resolve(
+                effective_candidates, batch_path
+            )
+            review_results.append(result)
+            overlapping_ids = sorted(
+                set(result.report.reviewed_candidate_ids) & set(reviewed_candidate_batches)
+            )
+            for candidate_id in overlapping_ids:
+                check_issues["review_batch_overlap"].append(QuestionStagingIssue(
+                    check="review_batch_overlap",
+                    code="CANDIDATE_REVIEW_BATCH_OVERLAP",
+                    location=batch_path.name,
+                    message=(
+                        f"{candidate_id} was already reviewed by "
+                        f"{reviewed_candidate_batches[candidate_id]}."
+                    ),
+                ))
+            if result.report.is_valid and not overlapping_ids:
+                effective_candidates = list(result.candidates)
+                reviewed_candidate_batches.update({
+                    candidate_id: result.report.batch_code
+                    for candidate_id in result.report.reviewed_candidate_ids
+                })
         checks = {name: not issues for name, issues in check_issues.items()}
-        checks["review_overlays"] = all(result.report.is_valid for result in review_results)
+        checks["review_overlays"] = (
+            all(result.report.is_valid for result in review_results)
+            and checks["review_batch_overlap"]
+        )
         issues = tuple(sorted({issue for values in check_issues.values() for issue in values}))
 
         duplicates = self._duplicate_fingerprints(candidates)
-        coverage = self._coverage(candidates, problem_types)
-        gaps = tuple(
-            item.problem_type_code for item in coverage if item.candidate_count == 0
+        raw_coverage = self._coverage(candidates, problem_types, effective=False)
+        effective_coverage = self._coverage(
+            effective_candidates, problem_types, effective=True
         )
-        promotion = self._promotion_summary(candidates)
+        raw_view = CandidateViewReport(
+            status_summary=self._reviewed_status_summary(candidates),
+            coverage=raw_coverage,
+            coverage_gaps=self._coverage_gaps(raw_coverage),
+            promotion=self._promotion_summary(candidates),
+        )
+        effective_view = CandidateViewReport(
+            status_summary=self._reviewed_status_summary(effective_candidates),
+            coverage=effective_coverage,
+            coverage_gaps=self._coverage_gaps(effective_coverage),
+            promotion=self._promotion_summary(effective_candidates),
+        )
         return QuestionStagingValidationReport(
             dataset_path=dataset_path.as_posix(),
             status="PASS" if all(checks.values()) else "FAIL",
@@ -250,9 +337,8 @@ class QuestionStagingValidator:
             },
             errors=issues,
             duplicate_fingerprints=duplicates,
-            coverage=coverage,
-            coverage_gaps=gaps,
-            promotion=promotion,
+            raw=raw_view,
+            effective_reviewed=effective_view,
             review_batches=tuple(result.report for result in review_results),
         )
 
@@ -523,13 +609,26 @@ class QuestionStagingValidator:
     def _coverage(
         candidates: list[dict[str, Any]],
         problem_types: tuple[str, ...],
+        *,
+        effective: bool,
     ) -> tuple[ProblemTypeCoverage, ...]:
         by_problem_type: dict[str, Counter[str]] = defaultdict(Counter)
+        statuses: dict[str, Counter[str]] = defaultdict(Counter)
         for candidate in candidates:
             problem_type = candidate.get("problem_type_code")
-            question_type = candidate.get("question_type_detected")
+            review_status = QuestionStagingValidator._review_status(candidate)
+            if effective and review_status == "REJECTED":
+                if isinstance(problem_type, str):
+                    statuses[problem_type]["REJECTED"] += 1
+                continue
+            question_type = (
+                candidate.get("reviewed_question_type")
+                if effective and candidate.get("reviewed_question_type")
+                else candidate.get("question_type_detected")
+            )
             if isinstance(problem_type, str) and isinstance(question_type, str):
                 by_problem_type[problem_type][question_type] += 1
+                statuses[problem_type][review_status] += 1
         result: list[ProblemTypeCoverage] = []
         for code in problem_types:
             type_counts = by_problem_type[code]
@@ -544,8 +643,53 @@ class QuestionStagingValidator:
                 candidate_count=total,
                 question_type_counts=counts,
                 coverage_status="HAS_CANDIDATES" if total else "GAP",
+                verified_count=statuses[code]["VERIFIED"],
+                hold_count=statuses[code]["HOLD"],
+                untouched_review_required_count=statuses[code][
+                    "UNTOUCHED_REVIEW_REQUIRED"
+                ],
+                rejected_excluded_count=statuses[code]["REJECTED"],
             ))
         return tuple(result)
+
+    @staticmethod
+    def _review_status(candidate: dict[str, Any]) -> str:
+        review_record = candidate.get("review_record")
+        review_status = (
+            review_record.get("review_status")
+            if isinstance(review_record, dict)
+            else None
+        )
+        if candidate.get("status") == "REJECTED" or str(review_status).startswith(
+            "REJECTED"
+        ):
+            return "REJECTED"
+        if str(review_status).startswith("HOLD_"):
+            return "HOLD"
+        if candidate.get("status") == "VERIFIED":
+            return "VERIFIED"
+        return "UNTOUCHED_REVIEW_REQUIRED"
+
+    @classmethod
+    def _reviewed_status_summary(
+        cls, candidates: list[dict[str, Any]]
+    ) -> dict[str, int]:
+        counts = Counter(cls._review_status(candidate) for candidate in candidates)
+        return {
+            "total": len(candidates),
+            "verified": counts["VERIFIED"],
+            "hold": counts["HOLD"],
+            "rejected": counts["REJECTED"],
+            "untouched_review_required": counts["UNTOUCHED_REVIEW_REQUIRED"],
+        }
+
+    @staticmethod
+    def _coverage_gaps(
+        coverage: tuple[ProblemTypeCoverage, ...]
+    ) -> tuple[str, ...]:
+        return tuple(
+            item.problem_type_code for item in coverage if item.candidate_count == 0
+        )
 
     @staticmethod
     def _promotion_summary(candidates: list[dict[str, Any]]) -> dict[str, Any]:
