@@ -1,0 +1,164 @@
+[
+  {
+    "candidate_id": "M12_DERIV_CAND_0013",
+    "review_status": "VERIFIED",
+    "reviewed_at": "2026-09-24",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "subsource_code": "HUE_2025",
+    "source_page": 4,
+    "question_number": "5",
+    "problem_type_code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+    "concepts": [
+      {
+        "problem_type_code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+        "concept_code": "MATHEMATICAL_MODELING",
+        "weight": 0.3,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+        "concept_code": "OPTIMIZATION",
+        "weight": 0.35,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+        "concept_code": "GLOBAL_EXTREMA",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+        "concept_code": "CONTEXT_INTERPRETATION",
+        "weight": 0.15,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+        "learning_outcome_code": "M12_DERIV_LO_10",
+        "weight": 1
+      }
+    ],
+    "reviewed_question_type": "SHORT_ANSWER",
+    "reviewed_content": "Một hộ làm nghề dệt vải lụa tơ tằm sản xuất mỗi ngày được x mét vải lụa, 1 ≤ x ≤ 20. Tổng chi phí sản xuất x mét vải là C(x) = (23/36)x^3 + x^2 + 200 (nghìn đồng). Giá bán là 300 nghìn đồng/mét và giả sử bán hết sản phẩm. Để lợi nhuận tối đa, mỗi ngày cần sản xuất bao nhiêu mét vải?",
+    "reviewed_options": [],
+    "verified_correct_answer": "12",
+    "answer_verification": "SOURCE_SOLUTION_CONFIRMED_AND_INDEPENDENT_CHECK",
+    "taxonomy_review": "CONFIRMED",
+    "content_review": "CONFIRMED_AGAINST_SOURCE_PAGE",
+    "review_note": "Nguồn lời giải ghi đáp số 12. Kiểm tra độc lập: L(x)=300x-(23/36)x^3-x^2-200, L'(x)=300-(23/12)x^2-2x; nghiệm trong [1,20] là x=12 và cho lợi nhuận lớn nhất.",
+    "original_fingerprint": "4ab076d0e844b593",
+    "promotion_ready": false,
+    "promotion_blocker": "EXPLICIT_PROMOTION_REQUIRED"
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0032",
+    "review_status": "VERIFIED",
+    "reviewed_at": "2026-09-24",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "subsource_code": "HA_TINH_2025",
+    "source_page": 70,
+    "question_number": "20",
+    "problem_type_code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+    "concepts": [
+      {
+        "problem_type_code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+        "concept_code": "MATHEMATICAL_MODELING",
+        "weight": 0.3,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+        "concept_code": "OPTIMIZATION",
+        "weight": 0.35,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+        "concept_code": "GLOBAL_EXTREMA",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+        "concept_code": "CONTEXT_INTERPRETATION",
+        "weight": 0.15,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+        "learning_outcome_code": "M12_DERIV_LO_10",
+        "weight": 1
+      }
+    ],
+    "reviewed_question_type": "SHORT_ANSWER",
+    "reviewed_content": "Một cơ sở bán mỗi bộ quần áo trẻ em với giá 80 nghìn đồng và mỗi tháng bán trung bình 1200 bộ. Mỗi lần tăng giá 5 nghìn đồng/bộ thì số lượng bán giảm 100 bộ/tháng. Chi phí sản xuất mỗi bộ không đổi là 50 nghìn đồng. Để lợi nhuận lớn nhất, giá bán một bộ nên là bao nhiêu nghìn đồng?",
+    "reviewed_options": [],
+    "verified_correct_answer": "95",
+    "answer_verification": "SOURCE_SOLUTION_CONFIRMED_AND_INDEPENDENT_CHECK",
+    "taxonomy_review": "CONFIRMED",
+    "content_review": "CONFIRMED_AGAINST_SOURCE_PAGE",
+    "review_note": "Nguồn đáp án/lời giải cho 95. Đặt x là số lần tăng 5 nghìn đồng: L(x)=(1200-100x)(30+5x)=-500x^2+3000x+36000, đạt cực đại tại x=3, nên giá bán là 80+5·3=95.",
+    "original_fingerprint": "a8d61224f3013e69",
+    "promotion_ready": false,
+    "promotion_blocker": "EXPLICIT_PROMOTION_REQUIRED"
+  },
+  {
+    "candidate_id": "M12_DERIV_CAND_0059",
+    "review_status": "VERIFIED",
+    "reviewed_at": "2026-09-24",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "subsource_code": "NGOC_VY_2026_01",
+    "source_page": 5,
+    "question_number": "2",
+    "problem_type_code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+    "concepts": [
+      {
+        "problem_type_code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+        "concept_code": "MATHEMATICAL_MODELING",
+        "weight": 0.3,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+        "concept_code": "OPTIMIZATION",
+        "weight": 0.35,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+        "concept_code": "GLOBAL_EXTREMA",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+        "concept_code": "CONTEXT_INTERPRETATION",
+        "weight": 0.15,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+        "learning_outcome_code": "M12_DERIV_LO_10",
+        "weight": 1
+      }
+    ],
+    "reviewed_question_type": "SHORT_ANSWER",
+    "reviewed_content": "Một nhà máy dự định sản xuất không quá 200 sản phẩm mỗi tháng. Chi phí sản xuất x sản phẩm (1 ≤ x ≤ 200) là C(x)=20000+800x-3,6x^2+0,004x^3 (nghìn đồng). Giá bán mỗi sản phẩm là p(x)=2000-9x (nghìn đồng). Giả sử sản phẩm sản xuất ra được tiêu thụ hết. Mỗi tháng nên sản xuất bao nhiêu sản phẩm để lợi nhuận lớn nhất?",
+    "reviewed_options": [],
+    "verified_correct_answer": "100",
+    "answer_verification": "SOURCE_SOLUTION_CONFIRMED_AND_INDEPENDENT_CHECK",
+    "taxonomy_review": "CONFIRMED",
+    "content_review": "CONFIRMED_AGAINST_SOURCE_PAGE",
+    "review_note": "Nguồn lời giải ghi đáp án 100 và tính L(x)=-0,004x^3-5,4x^2+1200x-20000; L'(x)=-0,012x^2-10,8x+1200, nghiệm phù hợp là x=100.",
+    "original_fingerprint": "6faa2d4a1a72b445",
+    "promotion_ready": false,
+    "promotion_blocker": "EXPLICIT_PROMOTION_REQUIRED"
+  }
+]

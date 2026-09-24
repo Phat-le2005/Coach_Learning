@@ -1,0 +1,26 @@
+{
+  "dataset_code": "DATA-MATH12-005",
+  "batch_code": "DATA-MATH12-005_BATCH_003",
+  "reviewed_candidates": 25,
+  "verified": 3,
+  "hold": 11,
+  "rejected": 11,
+  "rejected_duplicate": 11,
+  "rejected_out_of_scope": 0,
+  "total_candidates_in_data004": 175,
+  "previously_reviewed_before_batch_003": 55,
+  "remaining_unreviewed_after_batch_003": 95,
+  "cumulative_reviewed": 80,
+  "cumulative_verified": 28,
+  "cumulative_hold": 21,
+  "cumulative_rejected": 31,
+  "cumulative_untouched": 95,
+  "quality_findings": [
+    "3 text-only optimization questions are VERIFIED from source solution plus independent mathematical check.",
+    "10 graph/variation-table questions are held until their visual assets are extracted and attached.",
+    "2 visually dependent candidates (0030, 0040) are also misdetected as SHORT_ANSWER and should later be corrected to MULTIPLE_CHOICE in the reviewed view.",
+    "1 candidate (0133) is held because formula extraction is incomplete/corrupt.",
+    "11 duplicate occurrences are rejected and point directly to retained candidates."
+  ],
+  "promotion_policy": "No batch_003 candidate is production-importable. VERIFIED records keep promotion_ready=false."
+}
