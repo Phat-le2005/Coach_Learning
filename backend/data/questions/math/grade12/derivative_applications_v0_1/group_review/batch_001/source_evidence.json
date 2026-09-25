@@ -219,7 +219,21 @@
       "FALSE",
       "FALSE"
     ],
-    "visual_asset_required": false
+    "visual_asset_required": false,
+    "source_claimed_answer_pattern": [
+      "TRUE",
+      "TRUE",
+      "FALSE",
+      "FALSE"
+    ],
+    "conflicting_item_label": "c",
+    "conflict_explanation": "The compilation claims item c is FALSE, but an independent algebra check using the derivative printed in the same source implies TRUE.",
+    "independent_check": {
+      "derivative": "1 - 9/(x+2)^2 = ((x+5)(x-1))/(x+2)^2",
+      "sign_result": "positive on (-inf,-5) and (1,+inf)",
+      "implied_answer": "TRUE",
+      "provenance_type": "INDEPENDENT_REVIEW_CHECK"
+    }
   },
   {
     "evidence_id": "EVID_PROV_0052",

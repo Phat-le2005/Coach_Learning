@@ -1,1 +1,32 @@
-[]
+[
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0047",
+    "source_candidate_id": "M12_DERIV_CAND_0047",
+    "source_fingerprint": "802da50ed5c564b5",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "raw_subsource_code": "QUANG_NINH_2025",
+    "effective_subsource_code": "QUANG_NINH_2025",
+    "provenance_correction_code": null,
+    "candidate_extraction_page": 141,
+    "question_number": "3",
+    "review_status": "HOLD_SOURCE_ANSWER_CONFLICT",
+    "source_evidence_id": "EVID_PROV_0047",
+    "reason": "The source's claimed answer for item c conflicts with the sign conclusion obtained from the derivative printed in the same source.",
+    "source_claimed_answer_pattern": [
+      "TRUE",
+      "TRUE",
+      "FALSE",
+      "FALSE"
+    ],
+    "conflicting_item_label": "c",
+    "trusted_correct_answer": null,
+    "conflict_explanation": "The compilation labels item c FALSE, while an independent algebra check using the derivative printed by the source implies item c is TRUE. The independent check is review metadata, not an official-source fact.",
+    "independent_check": {
+      "derivative": "1 - 9/(x+2)^2 = ((x+5)(x-1))/(x+2)^2",
+      "sign_result": "positive on (-inf,-5) and (1,+inf)",
+      "implied_answer": "TRUE",
+      "provenance_type": "INDEPENDENT_REVIEW_CHECK"
+    },
+    "promotion_ready": false
+  }
+]

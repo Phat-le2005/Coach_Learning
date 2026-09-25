@@ -174,35 +174,6 @@
     }
   },
   {
-    "group_candidate_id": "M12_DERIV_GROUP_0047",
-    "set": {
-      "reviewed_group_context": "Câu 3. Cho hàm số y = x - 1 + 9/(x + 2).",
-      "reviewed_items": [
-        {
-          "label": "a",
-          "order_index": 0,
-          "reviewed_content": "Tập xác định của hàm số là ℝ \\ {-2}."
-        },
-        {
-          "label": "b",
-          "order_index": 1,
-          "reviewed_content": "Hàm số có đạo hàm y' = 1 - 9/(x + 2)^2, ∀x ≠ -2."
-        },
-        {
-          "label": "c",
-          "order_index": 2,
-          "reviewed_content": "Hàm số đồng biến trên các khoảng (-∞; -5) và (1; +∞)."
-        },
-        {
-          "label": "d",
-          "order_index": 3,
-          "reviewed_content": "Hàm số có giá trị cực đại lớn hơn giá trị cực tiểu."
-        }
-      ],
-      "visual_asset_required": false
-    }
-  },
-  {
     "group_candidate_id": "M12_DERIV_GROUP_0052",
     "set": {
       "reviewed_group_context": "Câu 2. Cho hàm số f(x) = x - sin 2x.",

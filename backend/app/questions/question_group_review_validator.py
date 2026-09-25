@@ -22,37 +22,6 @@ from app.questions.question_group_staging_validator import (
 )
 from app.questions.staging_validator import DEFAULT_CURRICULUM_STAGING_PATH
 
-
-EXPECTED_BATCH_CODE = "DATA-MATH12-007_BATCH_001"
-EXPECTED_BASE_COMMIT = "41de2ae9aaa58ac1ffbc29a9304d9216dc270efb"
-EXPECTED_ANSWER_PATTERNS = {
-    "M12_DERIV_GROUP_0012": ("TRUE", "FALSE", "FALSE", "TRUE"),
-    "M12_DERIV_GROUP_0019": ("TRUE", "FALSE", "FALSE", "TRUE"),
-    "M12_DERIV_GROUP_0024": ("FALSE", "TRUE", "TRUE", "TRUE"),
-    "M12_DERIV_GROUP_0031": ("FALSE", "TRUE", "TRUE", "FALSE"),
-    "M12_DERIV_GROUP_0035": ("TRUE", "FALSE", "TRUE", "FALSE"),
-    "M12_DERIV_GROUP_0041": ("TRUE", "FALSE", "TRUE", "TRUE"),
-    "M12_DERIV_GROUP_0047": ("TRUE", "TRUE", "FALSE", "FALSE"),
-    "M12_DERIV_GROUP_0052": ("TRUE", "FALSE", "TRUE", "TRUE"),
-}
-EXPECTED_DUPLICATES = {
-    "M12_DERIV_GROUP_0021": "M12_DERIV_GROUP_0019",
-    "M12_DERIV_GROUP_0026": "M12_DERIV_GROUP_0024",
-    "M12_DERIV_GROUP_0053": "M12_DERIV_GROUP_0052",
-}
-EXPECTED_OUT_OF_SCOPE = {
-    "M12_DERIV_GROUP_0044",
-    "M12_DERIV_GROUP_0055",
-}
-EXPECTED_VISUAL_GROUPS = {
-    "M12_DERIV_GROUP_0012",
-    "M12_DERIV_GROUP_0024",
-}
-EXPECTED_TARGET_IDS = (
-    set(EXPECTED_ANSWER_PATTERNS) | set(EXPECTED_DUPLICATES) | EXPECTED_OUT_OF_SCOPE
-)
-
-
 @dataclass(frozen=True, slots=True, order=True)
 class QuestionGroupReviewValidationIssue:
     check: str
@@ -102,7 +71,7 @@ class QuestionGroupReviewValidator:
             "structural_staging": [],
             "raw_integrity": [],
             "batch_overlay": [],
-            "batch_acceptance": [],
+            "batch_metadata": [],
             "source_evidence": [],
             "provenance": [],
             "review_content": [],
@@ -196,6 +165,7 @@ class QuestionGroupReviewValidator:
         hold_records: list[dict[str, Any]] = []
         rejected_records: list[dict[str, Any]] = []
         evidence_records: list[dict[str, Any]] = []
+        batch_codes: set[str] = set()
         for batch_path in batch_paths:
             verified = self._load_list(
                 batch_path / "verified_groups.json", issue_groups, "batch_overlay"
@@ -218,6 +188,25 @@ class QuestionGroupReviewValidator:
             source_metadata = self._load_object(
                 batch_path / "source_metadata.json", issue_groups, "source_evidence"
             )
+            batch_code = stats.get("batch_code")
+            if not isinstance(batch_code, str) or not batch_code.strip():
+                self._add(
+                    issue_groups,
+                    "batch_metadata",
+                    "BATCH_CODE_INVALID",
+                    batch_path.name,
+                    "Each review batch must have a non-empty batch_code.",
+                )
+            elif batch_code in batch_codes:
+                self._add(
+                    issue_groups,
+                    "batch_metadata",
+                    "BATCH_CODE_DUPLICATE",
+                    batch_path.name,
+                    f"batch_code {batch_code!r} is already used by another batch.",
+                )
+            else:
+                batch_codes.add(batch_code)
             current_ids = {
                 str(record.get("group_candidate_id"))
                 for record in (*verified, *holds, *rejected)
@@ -244,6 +233,7 @@ class QuestionGroupReviewValidator:
                 verified,
                 holds,
                 rejected,
+                evidence,
                 issue_groups,
             )
             self._validate_patch_consistency(
@@ -306,17 +296,17 @@ class QuestionGroupReviewValidator:
                 learning_outcome_codes,
                 issue_groups,
             )
+        for record in hold_records:
+            self._validate_hold(
+                record,
+                structural_by_id,
+                evidence_by_id,
+                issue_groups,
+            )
         self._validate_rejected(
             rejected_records,
             structural_by_id,
             evidence_by_id,
-            issue_groups,
-        )
-        self._validate_exact_acceptance(
-            verified_records,
-            hold_records,
-            rejected_records,
-            reviewed_ids,
             issue_groups,
         )
 
@@ -342,7 +332,7 @@ class QuestionGroupReviewValidator:
                 "promotion_boundary",
                 "PROMOTION_READY_NOT_ZERO",
                 "effective review",
-                "DATA-MATH12-007 must not make any group production-promotable.",
+                "Academic review overlays must not make groups production-promotable.",
             )
 
         checks = {name: not errors for name, errors in issue_groups.items()}
@@ -368,8 +358,14 @@ class QuestionGroupReviewValidator:
             "verified": len(verified_records),
             "hold": len(hold_records),
             "rejected": len(rejected_records),
-            "rejected_duplicate": len(set(EXPECTED_DUPLICATES) & rejected_ids),
-            "rejected_out_of_scope": len(EXPECTED_OUT_OF_SCOPE & rejected_ids),
+            "rejected_duplicate": sum(
+                record.get("review_status") == "REJECTED_DUPLICATE_GROUP"
+                for record in rejected_records
+            ),
+            "rejected_out_of_scope": sum(
+                record.get("review_status") == "REJECTED_OUT_OF_SCOPE"
+                for record in rejected_records
+            ),
             "verified_child_statements": verified_children,
             "assigned_child_answers": assigned_answers,
             "visual_asset_required": sum(
@@ -397,36 +393,100 @@ class QuestionGroupReviewValidator:
         verified: list[dict[str, Any]],
         holds: list[dict[str, Any]],
         rejected: list[dict[str, Any]],
+        evidence: list[dict[str, Any]],
         issues: dict[str, list[QuestionGroupReviewValidationIssue]],
     ) -> None:
+        records = (*verified, *holds, *rejected)
+        status_ids = [
+            {
+                str(record["group_candidate_id"])
+                for record in rows
+                if isinstance(record.get("group_candidate_id"), str)
+            }
+            for rows in (verified, holds, rejected)
+        ]
+        reviewed_ids = set().union(*status_ids)
+        duplicate_memberships = (
+            (status_ids[0] & status_ids[1])
+            | (status_ids[0] & status_ids[2])
+            | (status_ids[1] & status_ids[2])
+        )
+        if duplicate_memberships:
+            self._add(
+                issues,
+                "batch_metadata",
+                "BATCH_STATUS_IDS_OVERLAP",
+                batch_path.name,
+                f"Review statuses overlap for {sorted(duplicate_memberships)}.",
+            )
+        if any(
+            len(rows) != len(ids)
+            for rows, ids in zip((verified, holds, rejected), status_ids, strict=True)
+        ):
+            self._add(
+                issues,
+                "batch_metadata",
+                "BATCH_REVIEW_IDS_NOT_UNIQUE",
+                batch_path.name,
+                "Reviewed group IDs must be unique within each status file.",
+            )
+
+        verified_children = sum(
+            len(record.get("items", []))
+            for record in verified
+            if isinstance(record.get("items"), list)
+        )
+        assigned_answers = sum(
+            item.get("correct_answer") in {"TRUE", "FALSE"}
+            for record in verified
+            if isinstance(record.get("items"), list)
+            for item in record["items"]
+            if isinstance(item, dict)
+        )
         expected = {
-            "dataset_code": "DATA-MATH12-007",
-            "batch_code": EXPECTED_BATCH_CODE,
-            "base_commit": EXPECTED_BASE_COMMIT,
             "raw_candidate_sha256": EXPECTED_RAW_CANDIDATE_SHA256,
-            "target_groups": 13,
-            "reviewed_groups": 13,
-            "verified": 8,
-            "hold": 0,
-            "rejected": 5,
-            "rejected_duplicate": 3,
-            "rejected_out_of_scope": 2,
-            "verified_child_statements": 32,
-            "assigned_child_answers": 32,
-            "visual_asset_required": 2,
-            "source_evidence_backed_decisions": 13,
-            "promotion_ready": 0,
+            "target_groups": len(reviewed_ids),
+            "reviewed_groups": len(reviewed_ids),
+            "verified": len(verified),
+            "hold": len(holds),
+            "rejected": len(rejected),
+            "rejected_duplicate": sum(
+                record.get("review_status") == "REJECTED_DUPLICATE_GROUP"
+                for record in rejected
+            ),
+            "rejected_out_of_scope": sum(
+                record.get("review_status") == "REJECTED_OUT_OF_SCOPE"
+                for record in rejected
+            ),
+            "verified_child_statements": verified_children,
+            "assigned_child_answers": assigned_answers,
+            "visual_asset_required": sum(
+                record.get("visual_asset_required") is True
+                for record in verified
+            ),
+            "source_evidence_backed_decisions": len(evidence),
+            "promotion_ready": sum(
+                record.get("promotion_ready") is True for record in records
+            ),
             "production_imported": 0,
         }
         for field, value in expected.items():
             if stats.get(field) != value:
                 self._add(
                     issues,
-                    "batch_acceptance",
+                    "batch_metadata",
                     "BATCH_METADATA_MISMATCH",
                     f"{batch_path.name}/review_stats.json.{field}",
                     f"Expected {value!r}; found {stats.get(field)!r}.",
                 )
+        if not isinstance(stats.get("dataset_code"), str) or not stats["dataset_code"].strip():
+            self._add(
+                issues,
+                "batch_metadata",
+                "DATASET_CODE_INVALID",
+                batch_path.name,
+                "Review stats must contain a non-empty dataset_code.",
+            )
         if source_metadata.get("source_code") != stats.get("source_code"):
             self._add(
                 issues,
@@ -455,14 +515,33 @@ class QuestionGroupReviewValidator:
                 batch_path.name,
                 "The reviewed data bundle must not contain the source PDF binary.",
             )
-        actual_counts = (len(verified), len(holds), len(rejected))
-        if actual_counts != (8, 0, 5):
+        evidence_ids = [
+            str(record["evidence_id"])
+            for record in evidence
+            if isinstance(record.get("evidence_id"), str)
+        ]
+        evidence_group_ids = {
+            str(record["group_candidate_id"])
+            for record in evidence
+            if isinstance(record.get("group_candidate_id"), str)
+        }
+        referenced_evidence_ids = {
+            str(record["source_evidence_id"])
+            for record in records
+            if isinstance(record.get("source_evidence_id"), str)
+        }
+        if (
+            len(evidence_ids) != len(evidence)
+            or len(set(evidence_ids)) != len(evidence_ids)
+            or evidence_group_ids != reviewed_ids
+            or referenced_evidence_ids != set(evidence_ids)
+        ):
             self._add(
                 issues,
-                "batch_acceptance",
-                "BATCH_RECORD_COUNTS_MISMATCH",
+                "source_evidence",
+                "BATCH_EVIDENCE_COVERAGE_MISMATCH",
                 batch_path.name,
-                f"Expected (8, 0, 5); found {actual_counts}.",
+                "Each reviewed group must map one-to-one to unique source evidence.",
             )
 
     def _validate_verified(
@@ -613,6 +692,157 @@ class QuestionGroupReviewValidator:
                 self._add(issues, "taxonomy", "UNKNOWN_LEARNING_OUTCOME", location,
                           f"Unknown child LearningOutcome: {row.get('code') if isinstance(row, dict) else row!r}.")
 
+    def _validate_hold(
+        self,
+        record: dict[str, Any],
+        structural_by_id: dict[str, dict[str, Any]],
+        evidence_by_id: dict[str, dict[str, Any]],
+        issues: dict[str, list[QuestionGroupReviewValidationIssue]],
+    ) -> None:
+        group_id = str(record.get("group_candidate_id") or "<missing>")
+        structural = structural_by_id.get(group_id)
+        if structural is None:
+            self._add(
+                issues,
+                "review_content",
+                "HOLD_GROUP_NOT_FOUND",
+                group_id,
+                "HOLD group does not resolve in structural staging.",
+            )
+            return
+        expected_provenance = {
+            "source_candidate_id": structural.get("source_candidate_id"),
+            "source_fingerprint": structural.get("source_fingerprint"),
+            "source_code": structural.get("source_code"),
+            "raw_subsource_code": structural.get("raw_subsource_code"),
+            "effective_subsource_code": structural.get("effective_subsource_code"),
+            "provenance_correction_code": structural.get(
+                "provenance_correction_code"
+            ),
+            "candidate_extraction_page": structural.get("source_page"),
+            "question_number": structural.get("question_number"),
+        }
+        for field, value in expected_provenance.items():
+            if record.get(field) != value:
+                self._add(
+                    issues,
+                    "provenance",
+                    "HOLD_PROVENANCE_MISMATCH",
+                    f"{group_id}.{field}",
+                    f"Expected {value!r}; found {record.get(field)!r}.",
+                )
+        status = record.get("review_status")
+        if not isinstance(status, str) or not status.startswith("HOLD_"):
+            self._add(
+                issues,
+                "review_content",
+                "HOLD_STATUS_INVALID",
+                group_id,
+                "HOLD review_status must start with HOLD_.",
+            )
+        if not isinstance(record.get("reason"), str) or not record["reason"].strip():
+            self._add(
+                issues,
+                "review_content",
+                "HOLD_REASON_EMPTY",
+                group_id,
+                "HOLD records require a non-empty reason.",
+            )
+        if record.get("promotion_ready") is not False:
+            self._add(
+                issues,
+                "promotion_boundary",
+                "HOLD_PROMOTION_INVALID",
+                group_id,
+                "HOLD groups must have promotion_ready=false.",
+            )
+        evidence = evidence_by_id.get(str(record.get("source_evidence_id")))
+        if evidence is None or evidence.get("group_candidate_id") != group_id:
+            self._add(
+                issues,
+                "source_evidence",
+                "HOLD_EVIDENCE_INVALID",
+                group_id,
+                "HOLD source_evidence_id must resolve to the same group.",
+            )
+            return
+        expected_evidence_provenance = {
+            "source_code": structural.get("source_code"),
+            "effective_subsource_code": structural.get("effective_subsource_code"),
+            "candidate_extraction_page": structural.get("source_page"),
+            "question_number": structural.get("question_number"),
+        }
+        for field, value in expected_evidence_provenance.items():
+            if evidence.get(field) != value:
+                self._add(
+                    issues,
+                    "source_evidence",
+                    "HOLD_EVIDENCE_PROVENANCE_MISMATCH",
+                    f"{group_id}.{field}",
+                    f"Expected {value!r}; found {evidence.get(field)!r}.",
+                )
+
+        if status != "HOLD_SOURCE_ANSWER_CONFLICT":
+            return
+        conflicting_label = record.get("conflicting_item_label")
+        source_pattern = record.get("source_claimed_answer_pattern")
+        evidence_pattern = evidence.get(
+            "source_claimed_answer_pattern", evidence.get("answer_pattern")
+        )
+        if conflicting_label not in EXPECTED_LABELS:
+            self._add(
+                issues,
+                "review_content",
+                "CONFLICTING_ITEM_LABEL_INVALID",
+                group_id,
+                "Source-answer conflict HOLD requires an a/b/c/d item label.",
+            )
+        if (
+            not isinstance(source_pattern, list)
+            or len(source_pattern) != 4
+            or any(answer not in {"TRUE", "FALSE"} for answer in source_pattern)
+            or evidence_pattern != source_pattern
+        ):
+            self._add(
+                issues,
+                "source_evidence",
+                "SOURCE_CLAIMED_PATTERN_INVALID",
+                group_id,
+                "The source-claimed four-answer pattern must remain auditable.",
+            )
+        if (
+            not isinstance(record.get("conflict_explanation"), str)
+            or not record["conflict_explanation"].strip()
+            or not isinstance(record.get("independent_check"), dict)
+            or not record["independent_check"]
+        ):
+            self._add(
+                issues,
+                "review_content",
+                "SOURCE_ANSWER_CONFLICT_EXPLANATION_MISSING",
+                group_id,
+                "Source-answer conflict HOLD requires explanation and check metadata.",
+            )
+        conflicting_item = next(
+            (
+                item
+                for item in record.get("items", [])
+                if isinstance(item, dict) and item.get("label") == conflicting_label
+            ),
+            {},
+        )
+        if (
+            record.get("trusted_correct_answer") is not None
+            or conflicting_item.get("correct_answer") is not None
+        ):
+            self._add(
+                issues,
+                "promotion_boundary",
+                "HOLD_CONFLICT_TRUSTED_ANSWER_ASSIGNED",
+                group_id,
+                "The conflicting child must not have a trusted final answer.",
+            )
+
     def _validate_rejected(
         self,
         records: list[dict[str, Any]],
@@ -671,68 +901,6 @@ class QuestionGroupReviewValidator:
             elif status != "REJECTED_OUT_OF_SCOPE":
                 self._add(issues, "duplicate_boundary", "REJECTED_STATUS_INVALID", group_id,
                           "Rejected status is not supported by this review layer.")
-
-    def _validate_exact_acceptance(
-        self,
-        verified: list[dict[str, Any]],
-        holds: list[dict[str, Any]],
-        rejected: list[dict[str, Any]],
-        reviewed_ids: set[str],
-        issues: dict[str, list[QuestionGroupReviewValidationIssue]],
-    ) -> None:
-        if reviewed_ids != EXPECTED_TARGET_IDS:
-            self._add(issues, "batch_acceptance", "TARGET_IDS_MISMATCH", "batch_001",
-                      f"Expected {sorted(EXPECTED_TARGET_IDS)}; found {sorted(reviewed_ids)}.")
-        patterns = {
-            str(record.get("group_candidate_id")): tuple(
-                item.get("correct_answer")
-                for item in record.get("items", [])
-                if isinstance(item, dict)
-            )
-            for record in verified
-        }
-        if patterns != EXPECTED_ANSWER_PATTERNS:
-            self._add(issues, "batch_acceptance", "ANSWER_PATTERNS_MISMATCH", "batch_001",
-                      "Reviewed answer patterns differ from the approved bundle.")
-        duplicates = {
-            str(record.get("group_candidate_id")): str(record.get("duplicate_of_group_candidate_id"))
-            for record in rejected
-            if record.get("review_status") == "REJECTED_DUPLICATE_GROUP"
-        }
-        if duplicates != EXPECTED_DUPLICATES:
-            self._add(issues, "batch_acceptance", "DUPLICATE_MAPPINGS_MISMATCH", "batch_001",
-                      "Duplicate mappings differ from the approved bundle.")
-        out_of_scope = {
-            str(record.get("group_candidate_id"))
-            for record in rejected
-            if record.get("review_status") == "REJECTED_OUT_OF_SCOPE"
-        }
-        if out_of_scope != EXPECTED_OUT_OF_SCOPE:
-            self._add(issues, "batch_acceptance", "OUT_OF_SCOPE_IDS_MISMATCH", "batch_001",
-                      "Out-of-scope group IDs differ from the approved bundle.")
-        visuals = {
-            str(record.get("group_candidate_id"))
-            for record in verified
-            if record.get("visual_asset_required") is True
-        }
-        if visuals != EXPECTED_VISUAL_GROUPS:
-            self._add(issues, "batch_acceptance", "VISUAL_FLAGS_MISMATCH", "batch_001",
-                      "Visual asset flags differ from the approved bundle.")
-        if holds:
-            self._add(issues, "batch_acceptance", "UNEXPECTED_HOLD_RECORDS", "batch_001",
-                      "The approved batch contains no HOLD groups.")
-        group_0031 = next(
-            (record for record in verified if record.get("group_candidate_id") == "M12_DERIV_GROUP_0031"),
-            {},
-        )
-        expected_0031 = {
-            "raw_subsource_code": "HA_TINH_2025",
-            "effective_subsource_code": "HUNG_YEN_2025",
-            "provenance_correction_code": "PROV_CORR_HUNG_YEN_2025_PAGE_BOUNDARY",
-        }
-        if any(group_0031.get(field) != value for field, value in expected_0031.items()):
-            self._add(issues, "provenance", "GROUP_0031_PROVENANCE_MISMATCH",
-                      "M12_DERIV_GROUP_0031", "Approved provenance correction was not preserved.")
 
     def _validate_patch_consistency(
         self,

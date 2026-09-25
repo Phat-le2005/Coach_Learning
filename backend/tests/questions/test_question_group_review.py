@@ -15,11 +15,6 @@ from app.questions.question_group_review_overlay import (
     EffectiveQuestionGroupReviewMaterializer,
 )
 from app.questions.question_group_review_validator import (
-    EXPECTED_ANSWER_PATTERNS,
-    EXPECTED_DUPLICATES,
-    EXPECTED_OUT_OF_SCOPE,
-    EXPECTED_TARGET_IDS,
-    EXPECTED_VISUAL_GROUPS,
     QuestionGroupReviewValidator,
 )
 from app.questions.question_group_staging import (
@@ -28,6 +23,37 @@ from app.questions.question_group_staging import (
 )
 from app.questions.question_group_staging_validator import (
     QuestionGroupStagingValidator,
+)
+
+
+EXPECTED_ANSWER_PATTERNS = {
+    "M12_DERIV_GROUP_0012": ("TRUE", "FALSE", "FALSE", "TRUE"),
+    "M12_DERIV_GROUP_0019": ("TRUE", "FALSE", "FALSE", "TRUE"),
+    "M12_DERIV_GROUP_0024": ("FALSE", "TRUE", "TRUE", "TRUE"),
+    "M12_DERIV_GROUP_0031": ("FALSE", "TRUE", "TRUE", "FALSE"),
+    "M12_DERIV_GROUP_0035": ("TRUE", "FALSE", "TRUE", "FALSE"),
+    "M12_DERIV_GROUP_0041": ("TRUE", "FALSE", "TRUE", "TRUE"),
+    "M12_DERIV_GROUP_0052": ("TRUE", "FALSE", "TRUE", "TRUE"),
+}
+EXPECTED_HOLD_ID = "M12_DERIV_GROUP_0047"
+EXPECTED_DUPLICATES = {
+    "M12_DERIV_GROUP_0021": "M12_DERIV_GROUP_0019",
+    "M12_DERIV_GROUP_0026": "M12_DERIV_GROUP_0024",
+    "M12_DERIV_GROUP_0053": "M12_DERIV_GROUP_0052",
+}
+EXPECTED_OUT_OF_SCOPE = {
+    "M12_DERIV_GROUP_0044",
+    "M12_DERIV_GROUP_0055",
+}
+EXPECTED_VISUAL_GROUPS = {
+    "M12_DERIV_GROUP_0012",
+    "M12_DERIV_GROUP_0024",
+}
+EXPECTED_TARGET_IDS = (
+    set(EXPECTED_ANSWER_PATTERNS)
+    | {EXPECTED_HOLD_ID}
+    | set(EXPECTED_DUPLICATES)
+    | EXPECTED_OUT_OF_SCOPE
 )
 
 
@@ -55,6 +81,82 @@ def _effective_by_id() -> dict[str, dict[str, object]]:
     }
 
 
+def _add_valid_synthetic_hold_batch(review_root: Path) -> str:
+    groups = _load(
+        DEFAULT_QUESTION_GROUP_STAGING_PATH / "question_group_candidates.json"
+    )
+    assert isinstance(groups, list)
+    structural = next(
+        group
+        for group in groups
+        if group["group_candidate_id"] not in EXPECTED_TARGET_IDS
+    )
+    group_id = str(structural["group_candidate_id"])
+    evidence_id = f"EVID_TEST_{group_id}"
+    batch_path = review_root / "batch_002"
+    batch_path.mkdir()
+    (batch_path / "README.md").write_text(
+        "# Synthetic validator fixture\n", encoding="utf-8"
+    )
+    source_file = "synthetic-reviewed-source.json"
+    source_sha = "0" * 64
+    _write(batch_path / "source_metadata.json", {
+        "source_code": structural["source_code"],
+        "file_name": source_file,
+        "source_pdf_sha256": source_sha,
+        "pdf_binary_in_bundle": False,
+    })
+    _write(batch_path / "source_evidence.json", [{
+        "evidence_id": evidence_id,
+        "group_candidate_id": group_id,
+        "source_code": structural["source_code"],
+        "effective_subsource_code": structural["effective_subsource_code"],
+        "candidate_extraction_page": structural["source_page"],
+        "question_number": structural["question_number"],
+        "evidence_type": "SYNTHETIC_TEST_FIXTURE",
+    }])
+    _write(batch_path / "verified_groups.json", [])
+    _write(batch_path / "hold_groups.json", [{
+        "group_candidate_id": group_id,
+        "source_candidate_id": structural["source_candidate_id"],
+        "source_fingerprint": structural["source_fingerprint"],
+        "source_code": structural["source_code"],
+        "raw_subsource_code": structural["raw_subsource_code"],
+        "effective_subsource_code": structural["effective_subsource_code"],
+        "provenance_correction_code": structural["provenance_correction_code"],
+        "candidate_extraction_page": structural["source_page"],
+        "question_number": structural["question_number"],
+        "review_status": "HOLD_VISUAL_SOURCE_REVIEW",
+        "source_evidence_id": evidence_id,
+        "reason": "Synthetic future-batch validation fixture.",
+        "promotion_ready": False,
+    }])
+    _write(batch_path / "rejected_groups.json", [])
+    _write(batch_path / "group_patch.json", [])
+    _write(batch_path / "review_stats.json", {
+        "dataset_code": "DATA-MATH12-008_TEST",
+        "batch_code": "DATA-MATH12-008_TEST_BATCH_002",
+        "source_code": structural["source_code"],
+        "source_file": source_file,
+        "source_pdf_sha256": source_sha,
+        "raw_candidate_sha256": EXPECTED_RAW_CANDIDATE_SHA256,
+        "target_groups": 1,
+        "reviewed_groups": 1,
+        "verified": 0,
+        "hold": 1,
+        "rejected": 0,
+        "rejected_duplicate": 0,
+        "rejected_out_of_scope": 0,
+        "verified_child_statements": 0,
+        "assigned_child_answers": 0,
+        "visual_asset_required": 0,
+        "source_evidence_backed_decisions": 1,
+        "promotion_ready": 0,
+        "production_imported": 0,
+    })
+    return group_id
+
+
 def test_group_review_batch_001_passes_with_exact_acceptance_counts() -> None:
     report = QuestionGroupReviewValidator().validate()
 
@@ -67,13 +169,13 @@ def test_group_review_batch_001_passes_with_exact_acceptance_counts() -> None:
         "review_batches": 1,
         "target_groups": 13,
         "reviewed_groups": 13,
-        "verified": 8,
-        "hold": 0,
+        "verified": 7,
+        "hold": 1,
         "rejected": 5,
         "rejected_duplicate": 3,
         "rejected_out_of_scope": 2,
-        "verified_child_statements": 32,
-        "assigned_child_answers": 32,
+        "verified_child_statements": 28,
+        "assigned_child_answers": 28,
         "visual_asset_required": 2,
         "promotion_ready": 0,
         "effective_usable_groups": 62,
@@ -105,6 +207,40 @@ def test_verified_answer_patterns_visual_flags_and_promotion_boundary() -> None:
 
     assert observed_patterns == EXPECTED_ANSWER_PATTERNS
     assert visual_ids == EXPECTED_VISUAL_GROUPS
+
+
+def test_group_0047_is_a_non_promotable_source_answer_conflict_hold() -> None:
+    effective = _effective_by_id()
+    group = effective[EXPECTED_HOLD_ID]
+    record = group["academic_review_record"]
+    evidence = group["source_evidence"]
+
+    assert record["review_status"] == "HOLD_SOURCE_ANSWER_CONFLICT"
+    assert record["source_claimed_answer_pattern"] == [
+        "TRUE",
+        "TRUE",
+        "FALSE",
+        "FALSE",
+    ]
+    assert evidence["answer_pattern"] == ["TRUE", "TRUE", "FALSE", "FALSE"]
+    assert evidence["source_claimed_answer_pattern"] == [
+        "TRUE",
+        "TRUE",
+        "FALSE",
+        "FALSE",
+    ]
+    assert record["conflicting_item_label"] == "c"
+    assert record["trusted_correct_answer"] is None
+    assert record["conflict_explanation"]
+    assert record["independent_check"]["provenance_type"] == (
+        "INDEPENDENT_REVIEW_CHECK"
+    )
+    assert group["promotion_ready"] is False
+    assert all(
+        item.get("correct_answer") is None
+        for item in record.get("items", [])
+        if item.get("label") == "c"
+    )
 
 
 def test_rejection_mappings_and_effective_usable_view() -> None:
@@ -237,6 +373,30 @@ def test_unknown_child_taxonomy_code_fails_validation(tmp_path: Path) -> None:
     assert "UNKNOWN_CONCEPT" in {error.code for error in report.errors}
 
 
+def test_generic_validator_accepts_a_valid_additional_batch_with_new_counts(
+    tmp_path: Path,
+) -> None:
+    review_root = tmp_path / "group_review"
+    shutil.copytree(DEFAULT_QUESTION_GROUP_REVIEW_ROOT, review_root)
+    added_group_id = _add_valid_synthetic_hold_batch(review_root)
+
+    report = QuestionGroupReviewValidator().validate(review_root=review_root)
+
+    assert report.status == "PASS"
+    assert report.counts["review_batches"] == 2
+    assert report.counts["reviewed_groups"] == 14
+    assert report.counts["verified"] == 7
+    assert report.counts["hold"] == 2
+    assert report.counts["rejected"] == 5
+    assert added_group_id in report.review_batches[1]["reviewed_group_ids"]
+    assert report.review_batches[1]["counts"] == {
+        "reviewed": 1,
+        "verified": 0,
+        "hold": 1,
+        "rejected": 0,
+    }
+
+
 def test_overlapping_group_ids_across_batches_are_rejected(tmp_path: Path) -> None:
     review_root = tmp_path / "group_review"
     shutil.copytree(DEFAULT_QUESTION_GROUP_REVIEW_ROOT, review_root)
@@ -246,6 +406,42 @@ def test_overlapping_group_ids_across_batches_are_rejected(tmp_path: Path) -> No
 
     assert report.status == "FAIL"
     assert "GROUP_REVIEW_BATCH_OVERLAP" in {
+        error.code for error in report.errors
+    }
+
+
+def test_invalid_hold_provenance_fails_validation(tmp_path: Path) -> None:
+    review_root = tmp_path / "group_review"
+    shutil.copytree(DEFAULT_QUESTION_GROUP_REVIEW_ROOT, review_root)
+    hold_path = review_root / "batch_001" / "hold_groups.json"
+    holds = _load(hold_path)
+    assert isinstance(holds, list)
+    holds[0]["raw_subsource_code"] = "WRONG_SUBSOURCE"
+    _write(hold_path, holds)
+
+    report = QuestionGroupReviewValidator().validate(review_root=review_root)
+
+    assert report.status == "FAIL"
+    assert "HOLD_PROVENANCE_MISMATCH" in {
+        error.code for error in report.errors
+    }
+
+
+def test_source_answer_conflict_hold_rejects_trusted_final_answer(
+    tmp_path: Path,
+) -> None:
+    review_root = tmp_path / "group_review"
+    shutil.copytree(DEFAULT_QUESTION_GROUP_REVIEW_ROOT, review_root)
+    hold_path = review_root / "batch_001" / "hold_groups.json"
+    holds = _load(hold_path)
+    assert isinstance(holds, list)
+    holds[0]["trusted_correct_answer"] = "FALSE"
+    _write(hold_path, holds)
+
+    report = QuestionGroupReviewValidator().validate(review_root=review_root)
+
+    assert report.status == "FAIL"
+    assert "HOLD_CONFLICT_TRUSTED_ANSWER_ASSIGNED" in {
         error.code for error in report.errors
     }
 

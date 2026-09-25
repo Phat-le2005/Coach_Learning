@@ -11,13 +11,13 @@ This bundle is the reviewed data input for Codex integration. Codex should **not
 
 ## Review results
 - Target groups: 13
-- VERIFIED: 8
-- HOLD: 0
+- VERIFIED: 7
+- HOLD: 1 (`0047` — source-answer conflict)
 - REJECTED: 5
   - duplicate solution reprints: 3
   - out of derivative-applications scope: 2
-- VERIFIED child statements: 32
-- Source-backed child answers: 32
+- VERIFIED child statements: 28
+- Trusted source-backed child answers: 28
 - Visual asset still required: 2 groups (`0012`, `0024`)
 - Production-ready/imported: 0
 
@@ -28,8 +28,13 @@ This bundle is the reviewed data input for Codex integration. Codex should **not
 - 0031: F T T F
 - 0035: T F T F
 - 0041: T F T T
-- 0047: T T F F
 - 0052: T F T T
+
+## Source-answer conflict hold
+- 0047: the compilation claims `T T F F`, but item `c` conflicts with an
+  independent algebra check using the derivative printed in the same source.
+- The claimed pattern remains audit evidence. No trusted final answer is assigned
+  for the conflicting child, and the independent check is not an official-source fact.
 
 ## Rejections
 - 0021 -> duplicate of 0019 (solution reprint)
@@ -39,6 +44,6 @@ This bundle is the reviewed data input for Codex integration. Codex should **not
 - 0055 -> logarithm content, out of current derivative dataset
 
 ## Important
-`verified_groups.json` includes normalized source content, source-backed TRUE/FALSE answers, and child taxonomy mappings. The taxonomy mappings are explicitly `COACH_LEARNING_DERIVED`.
+`verified_groups.json` includes normalized source content, source-backed TRUE/FALSE answers, and child taxonomy mappings. The taxonomy mappings are explicitly `COACH_LEARNING_DERIVED`. `hold_groups.json` keeps unresolved review conflicts non-promotable.
 
 Do not mutate DATA-MATH12-006 artifacts or raw staging. Apply corrections as review overlays only.
