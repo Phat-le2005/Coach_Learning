@@ -1,0 +1,29 @@
+{
+  "dataset_code": "DATA-MATH12-008",
+  "batch_code": "DATA-MATH12-008_BATCH_002",
+  "scope": "Truong Ngoc Vy 2026 TRUE/FALSE QuestionGroup academic review — tests 01-10",
+  "base_commit": "a5652cac8451e1a4b69707067b7983a2ea779a6a",
+  "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+  "source_file": "40-de-on-thi-tot-nghiep-thpt-2026-mon-toan-co-loi-giai-chi-tiet-truong-ngoc-vy.pdf",
+  "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+  "raw_candidate_sha256": "b627a458e0b18c0a4e0733e18864e0bd83165f94894a7d690e4fc1313f3ed4d5",
+  "target_groups": 12,
+  "reviewed_groups": 12,
+  "verified": 5,
+  "hold": 4,
+  "rejected": 3,
+  "rejected_duplicate": 0,
+  "rejected_out_of_scope": 3,
+  "visual_asset_required": 2,
+  "source_evidence_backed_decisions": 12,
+  "verified_child_statements": 20,
+  "assigned_child_answers": 20,
+  "promotion_ready": 0,
+  "production_imported": 0,
+  "notes": [
+    "Four groups are held because the source answer table conflicts with derivations printed in the same source.",
+    "Three groups are excluded from the current derivative-applications dataset but retained conceptually for broader corpus routing.",
+    "Child taxonomy is COACH_LEARNING_DERIVED.",
+    "Codex must not access Drive/PDF for this batch."
+  ]
+}

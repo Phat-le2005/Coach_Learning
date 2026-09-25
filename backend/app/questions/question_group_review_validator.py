@@ -22,6 +22,16 @@ from app.questions.question_group_staging_validator import (
 )
 from app.questions.staging_validator import DEFAULT_CURRICULUM_STAGING_PATH
 
+
+SOURCE_BACKED_ANSWER_VERIFICATIONS = {
+    "SOURCE_BACKED",
+    "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+}
+SOURCE_VERIFIED_ANSWER_STATUSES = {
+    "SOURCE_VERIFIED",
+    "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+}
+
 @dataclass(frozen=True, slots=True, order=True)
 class QuestionGroupReviewValidationIssue:
     check: str
@@ -579,7 +589,6 @@ class QuestionGroupReviewValidator:
         required_values = {
             "review_status": "VERIFIED",
             "content_review": "CONFIRMED_FROM_SOURCE",
-            "answer_verification": "SOURCE_BACKED",
             "taxonomy_review": "CONFIRMED_DERIVED",
             "taxonomy_basis": "COACH_LEARNING_DERIVED",
             "promotion_ready": False,
@@ -590,6 +599,14 @@ class QuestionGroupReviewValidator:
                     issues, "review_content", "VERIFIED_FIELD_INVALID",
                     f"{group_id}.{field}", f"Expected {value!r}; found {record.get(field)!r}.",
                 )
+        if record.get("answer_verification") not in SOURCE_BACKED_ANSWER_VERIFICATIONS:
+            self._add(
+                issues,
+                "review_content",
+                "VERIFIED_ANSWER_VERIFICATION_INVALID",
+                f"{group_id}.answer_verification",
+                "VERIFIED answers must use an accepted source-backed status.",
+            )
         if not isinstance(record.get("reviewed_group_context"), str) or not record["reviewed_group_context"].strip():
             self._add(issues, "review_content", "REVIEWED_CONTEXT_EMPTY", group_id,
                       "VERIFIED group must have reviewed context.")
@@ -615,7 +632,10 @@ class QuestionGroupReviewValidator:
             if item.get("correct_answer") not in {"TRUE", "FALSE"}:
                 self._add(issues, "review_content", "CHILD_ANSWER_INVALID", location,
                           "Reviewed answer must be TRUE or FALSE.")
-            if item.get("answer_status") != "SOURCE_VERIFIED" or not item.get("answer_evidence"):
+            if (
+                item.get("answer_status") not in SOURCE_VERIFIED_ANSWER_STATUSES
+                or not item.get("answer_evidence")
+            ):
                 self._add(issues, "source_evidence", "CHILD_ANSWER_NOT_SOURCE_BACKED", location,
                           "Every child answer must carry source-backed evidence.")
             if item.get("taxonomy_basis") != "COACH_LEARNING_DERIVED":
@@ -630,9 +650,27 @@ class QuestionGroupReviewValidator:
                       "VERIFIED source_evidence_id does not resolve.")
         else:
             pattern = tuple(item.get("correct_answer") for item in items if isinstance(item, dict))
-            if evidence.get("group_candidate_id") != group_id or tuple(evidence.get("answer_pattern", [])) != pattern:
+            evidence_pattern = evidence.get(
+                "source_claimed_answer_pattern", evidence.get("answer_pattern", [])
+            )
+            if (
+                evidence.get("group_candidate_id") != group_id
+                or tuple(evidence_pattern) != pattern
+            ):
                 self._add(issues, "source_evidence", "ANSWER_EVIDENCE_MISMATCH", group_id,
                           "Source evidence answer pattern does not match reviewed children.")
+            if (
+                record.get("answer_verification")
+                == "SOURCE_BACKED_AND_REVIEW_CONSISTENT"
+                and evidence.get("review_consistency") != "CONFIRMED"
+            ):
+                self._add(
+                    issues,
+                    "source_evidence",
+                    "REVIEW_CONSISTENCY_NOT_CONFIRMED",
+                    group_id,
+                    "Review-consistent verification requires confirmed evidence metadata.",
+                )
             for field in ("source_code", "effective_subsource_code", "candidate_extraction_page", "question_number"):
                 if evidence.get(field) != record.get(field):
                     self._add(issues, "source_evidence", "EVIDENCE_PROVENANCE_MISMATCH",

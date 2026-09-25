@@ -1,0 +1,772 @@
+[
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0058",
+    "source_candidate_id": "M12_DERIV_CAND_0058",
+    "source_fingerprint": "be539872e7ccbee8",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_01",
+    "effective_subsource_code": "NGOC_VY_2026_01",
+    "provenance_correction_code": null,
+    "candidate_extraction_page": 3,
+    "question_number": "1",
+    "review_status": "VERIFIED",
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "taxonomy_review": "CONFIRMED_DERIVED",
+    "taxonomy_basis": "COACH_LEARNING_DERIVED",
+    "source_evidence_id": "EVID_NVY_0058",
+    "visual_asset_required": false,
+    "promotion_ready": false,
+    "reviewed_group_context": "Câu 1. Cho hàm số f(x) = 4/x + x + 1, với x ≠ 0.",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "reviewed_content": "Đạo hàm của hàm số đã cho là f'(x) = (x^2 - 4)/x^2, với x ≠ 0.",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "DERIVATIVE_RULES",
+            "weight": 0.7
+          },
+          {
+            "code": "FIRST_DERIVATIVE",
+            "weight": 0.3
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_05",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "reviewed_content": "f'(-4) = 2.",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "FIRST_DERIVATIVE",
+            "weight": 0.5
+          },
+          {
+            "code": "DERIVATIVE_RULES",
+            "weight": 0.5
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_05",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "reviewed_content": "Tổng các nghiệm của phương trình f'(x) = 0 bằng 4.",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "CRITICAL_POINT",
+            "weight": 0.6
+          },
+          {
+            "code": "DERIVATIVE_RULES",
+            "weight": 0.4
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_05",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "reviewed_content": "Hàm số f(x) có giá trị lớn nhất và giá trị nhỏ nhất trên đoạn [1;3] lần lượt bằng M, m. Khi đó M - m = -1.",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "GLOBAL_EXTREMA",
+            "weight": 0.5
+          },
+          {
+            "code": "ENDPOINT_EVALUATION",
+            "weight": 0.3
+          },
+          {
+            "code": "CRITICAL_POINT",
+            "weight": 0.2
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_05",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0066",
+    "source_candidate_id": "M12_DERIV_CAND_0066",
+    "source_fingerprint": "761753b7a8ec15f3",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_04",
+    "effective_subsource_code": "NGOC_VY_2026_04",
+    "provenance_correction_code": null,
+    "candidate_extraction_page": 63,
+    "question_number": "2",
+    "review_status": "VERIFIED",
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "taxonomy_review": "CONFIRMED_DERIVED",
+    "taxonomy_basis": "COACH_LEARNING_DERIVED",
+    "source_evidence_id": "EVID_NVY_0066",
+    "visual_asset_required": false,
+    "promotion_ready": false,
+    "reviewed_group_context": "Câu 2. Cho hàm số y = sqrt(5 - 4x).",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "reviewed_content": "Điều kiện xác định của hàm số y = sqrt(5 - 4x) là x ∈ (-∞; 5/4).",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "MONOTONICITY_FROM_EXPRESSION",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "FUNCTION_DOMAIN",
+            "weight": 0.7
+          },
+          {
+            "code": "INEQUALITY_SOLVING",
+            "weight": 0.3
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_01",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "reviewed_content": "y' = -4/sqrt(5 - 4x) với x ∈ (-∞; 5/4).",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "MONOTONICITY_FROM_EXPRESSION",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "DERIVATIVE_RULES",
+            "weight": 0.7
+          },
+          {
+            "code": "FIRST_DERIVATIVE",
+            "weight": 0.3
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_01",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "reviewed_content": "Hàm số nghịch biến trên khoảng (-1;1).",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "MONOTONICITY_FROM_EXPRESSION",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "DERIVATIVE_SIGN",
+            "weight": 0.4
+          },
+          {
+            "code": "MONOTONICITY_CRITERION",
+            "weight": 0.4
+          },
+          {
+            "code": "SIGN_ANALYSIS",
+            "weight": 0.2
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_01",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "reviewed_content": "Trên đoạn [-1;1], giá trị lớn nhất và giá trị nhỏ nhất của hàm số đã cho lần lượt là 3 và 1.",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "GLOBAL_EXTREMA",
+            "weight": 0.5
+          },
+          {
+            "code": "ENDPOINT_EVALUATION",
+            "weight": 0.3
+          },
+          {
+            "code": "MONOTONICITY",
+            "weight": 0.2
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_05",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0070",
+    "source_candidate_id": "M12_DERIV_CAND_0070",
+    "source_fingerprint": "0e8f42040884dcd1",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_05",
+    "effective_subsource_code": "NGOC_VY_2026_05",
+    "provenance_correction_code": null,
+    "candidate_extraction_page": 81,
+    "question_number": "1",
+    "review_status": "VERIFIED",
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "taxonomy_review": "CONFIRMED_DERIVED",
+    "taxonomy_basis": "COACH_LEARNING_DERIVED",
+    "source_evidence_id": "EVID_NVY_0070",
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "reviewed_group_context": "Câu 1. Cho hàm số y = f(x) thuộc họ phân thức bậc hai trên bậc nhất và có đồ thị (C) như hình vẽ trong nguồn.",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "reviewed_content": "Hàm số y=f(x) nghịch biến trên (-∞;1) và (3;+∞), đồng biến trên (1;2) và (2;3).",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "MONOTONICITY_FROM_GRAPH",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "GRAPH_READING",
+            "weight": 0.5
+          },
+          {
+            "code": "MONOTONICITY",
+            "weight": 0.3
+          },
+          {
+            "code": "FUNCTION_GRAPH",
+            "weight": 0.2
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_03",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "reviewed_content": "Đồ thị hàm số y=f(x) có tiệm cận đứng x=2 và tiệm cận xiên y=x+1.",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "ASYMPTOTE_FROM_GRAPH",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "GRAPH_READING",
+            "weight": 0.4
+          },
+          {
+            "code": "VERTICAL_ASYMPTOTE",
+            "weight": 0.3
+          },
+          {
+            "code": "OBLIQUE_ASYMPTOTE",
+            "weight": 0.3
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_06",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "reviewed_content": "Đồ thị hàm số y=f(x) có điểm cực đại (1;1) và điểm cực tiểu (3;5).",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "EXTREMA_FROM_GRAPH",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "GRAPH_READING",
+            "weight": 0.5
+          },
+          {
+            "code": "LOCAL_EXTREMUM",
+            "weight": 0.5
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_03",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "reviewed_content": "Trên khoảng (2;+∞), hàm số y=f(x) không có giá trị nhỏ nhất.",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "GLOBAL_EXTREMA_RECOGNITION",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "GRAPH_READING",
+            "weight": 0.5
+          },
+          {
+            "code": "GLOBAL_EXTREMA",
+            "weight": 0.5
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_04",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0079",
+    "source_candidate_id": "M12_DERIV_CAND_0079",
+    "source_fingerprint": "e08f5c87db3b0666",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_08",
+    "effective_subsource_code": "NGOC_VY_2026_08",
+    "provenance_correction_code": null,
+    "candidate_extraction_page": 140,
+    "question_number": "1",
+    "review_status": "VERIFIED",
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "taxonomy_review": "CONFIRMED_DERIVED",
+    "taxonomy_basis": "COACH_LEARNING_DERIVED",
+    "source_evidence_id": "EVID_NVY_0079",
+    "visual_asset_required": false,
+    "promotion_ready": false,
+    "reviewed_group_context": "Câu 1. Cho hàm số f(x) = x*sqrt(3 - x).",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "reviewed_content": "Tập xác định của hàm số đã cho là D = (-∞;3].",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "GLOBAL_EXTREMA_SIMPLE_DOMAIN",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "FUNCTION_DOMAIN",
+            "weight": 0.7
+          },
+          {
+            "code": "INEQUALITY_SOLVING",
+            "weight": 0.3
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_04",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "reviewed_content": "Đạo hàm của hàm số đã cho là f'(x) = (6 - 3x)/(2*sqrt(3 - x)), với mọi x ∈ (-∞;3].",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "GLOBAL_EXTREMA_SIMPLE_DOMAIN",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "DERIVATIVE_RULES",
+            "weight": 0.7
+          },
+          {
+            "code": "FIRST_DERIVATIVE",
+            "weight": 0.3
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_05",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "reviewed_content": "Số nghiệm của phương trình f'(x)=0 bằng 1.",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "GLOBAL_EXTREMA_SIMPLE_DOMAIN",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "CRITICAL_POINT",
+            "weight": 0.6
+          },
+          {
+            "code": "DERIVATIVE_RULES",
+            "weight": 0.4
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_05",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "reviewed_content": "Giá trị lớn nhất, giá trị nhỏ nhất của hàm số đã cho lần lượt là 2 và 0.",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "GLOBAL_EXTREMA_SIMPLE_DOMAIN",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "GLOBAL_EXTREMA",
+            "weight": 0.7
+          },
+          {
+            "code": "CRITICAL_POINT",
+            "weight": 0.3
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_04",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0087",
+    "source_candidate_id": "M12_DERIV_CAND_0087",
+    "source_fingerprint": "d106db83c573fbbf",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_10",
+    "effective_subsource_code": "NGOC_VY_2026_10",
+    "provenance_correction_code": null,
+    "candidate_extraction_page": 179,
+    "question_number": "1",
+    "review_status": "VERIFIED",
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "taxonomy_review": "CONFIRMED_DERIVED",
+    "taxonomy_basis": "COACH_LEARNING_DERIVED",
+    "source_evidence_id": "EVID_NVY_0087",
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "reviewed_group_context": "Câu 1. Cho hàm số y=f(x) liên tục trên ℝ và có bảng biến thiên như trong nguồn.",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "reviewed_content": "Hàm số nghịch biến trên (-∞;1/2025) và (2024/2025;+∞).",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "MONOTONICITY_FROM_VARIATION_TABLE",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "VARIATION_TABLE",
+            "weight": 0.6
+          },
+          {
+            "code": "MONOTONICITY",
+            "weight": 0.4
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_02",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "reviewed_content": "f(3/2025) > f(11/2025).",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "MONOTONICITY_FROM_VARIATION_TABLE",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "VARIATION_TABLE",
+            "weight": 0.5
+          },
+          {
+            "code": "MONOTONICITY",
+            "weight": 0.5
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_02",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "reviewed_content": "Điểm cực tiểu của hàm số đã cho bằng -2024.",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "EXTREMA_FROM_VARIATION_TABLE",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "VARIATION_TABLE",
+            "weight": 0.5
+          },
+          {
+            "code": "LOCAL_EXTREMUM",
+            "weight": 0.5
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_03",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "reviewed_content": "Đồ thị hàm số đã cho có điểm cực đại là (2024/2025;2025).",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "EXTREMA_FROM_VARIATION_TABLE",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "VARIATION_TABLE",
+            "weight": 0.5
+          },
+          {
+            "code": "LOCAL_EXTREMUM",
+            "weight": 0.5
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_03",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      }
+    ]
+  }
+]

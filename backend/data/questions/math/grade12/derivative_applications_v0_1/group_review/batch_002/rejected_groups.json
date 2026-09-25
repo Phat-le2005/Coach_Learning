@@ -1,0 +1,29 @@
+[
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0068",
+    "source_candidate_id": "M12_DERIV_CAND_0068",
+    "review_status": "REJECTED_OUT_OF_SCOPE",
+    "source_evidence_id": "EVID_NVY_0068",
+    "reason": "This QuestionGroup is a piecewise-velocity / traveled-distance / average-speed problem whose decisive items use integration and kinematics, not the current derivative-applications dataset.",
+    "preserve_for_broader_exam_corpus": true,
+    "promotion_ready": false
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0073",
+    "source_candidate_id": "M12_DERIV_CAND_0073",
+    "review_status": "REJECTED_OUT_OF_SCOPE",
+    "source_evidence_id": "EVID_NVY_0073",
+    "reason": "This QuestionGroup is analytic geometry in Oxyz (midpoint, sphere, locus/minimum distance), not the current derivative-applications dataset.",
+    "preserve_for_broader_exam_corpus": true,
+    "promotion_ready": false
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0082",
+    "source_candidate_id": "M12_DERIV_CAND_0082",
+    "review_status": "REJECTED_OUT_OF_SCOPE",
+    "source_evidence_id": "EVID_NVY_0082",
+    "reason": "This QuestionGroup is analytic geometry in Oxyz (line/plane/sphere/vector optimization), not the current derivative-applications dataset.",
+    "preserve_for_broader_exam_corpus": true,
+    "promotion_ready": false
+  }
+]

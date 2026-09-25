@@ -1,0 +1,114 @@
+[
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0062",
+    "source_candidate_id": "M12_DERIV_CAND_0062",
+    "source_fingerprint": "755804ce292a1842",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_03",
+    "effective_subsource_code": "NGOC_VY_2026_03",
+    "provenance_correction_code": null,
+    "candidate_extraction_page": 43,
+    "question_number": "1",
+    "review_status": "HOLD_SOURCE_ANSWER_CONFLICT",
+    "source_evidence_id": "EVID_NVY_0062",
+    "reason": "The source claims b=TRUE, but f'(x)<0 on (2,+inf) implies f(3)>f(2024)>f(2025).",
+    "source_claimed_answer_pattern": [
+      "FALSE",
+      "TRUE",
+      "TRUE",
+      "FALSE"
+    ],
+    "conflicting_item_label": "b",
+    "trusted_correct_answer": null,
+    "conflict_explanation": "The source claims b=TRUE, but f'(x)<0 on (2,+inf) implies f(3)>f(2024)>f(2025).",
+    "independent_check": {
+      "implied_answer": "FALSE",
+      "provenance_type": "INDEPENDENT_REVIEW_CHECK"
+    },
+    "promotion_ready": false
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0072",
+    "source_candidate_id": "M12_DERIV_CAND_0072",
+    "source_fingerprint": "cd89d04e1cb059cb",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_06",
+    "effective_subsource_code": "NGOC_VY_2026_06",
+    "provenance_correction_code": null,
+    "candidate_extraction_page": 100,
+    "question_number": "1",
+    "review_status": "HOLD_SOURCE_ANSWER_CONFLICT",
+    "source_evidence_id": "EVID_NVY_0072",
+    "reason": "The source claims c=FALSE, but its own solution proves f is decreasing on (1,+inf), hence also on (1,e^2).",
+    "source_claimed_answer_pattern": [
+      "FALSE",
+      "TRUE",
+      "FALSE",
+      "FALSE"
+    ],
+    "conflicting_item_label": "c",
+    "trusted_correct_answer": null,
+    "conflict_explanation": "The source claims c=FALSE, but its own solution proves f is decreasing on (1,+inf), hence also on (1,e^2).",
+    "independent_check": {
+      "implied_answer": "TRUE",
+      "provenance_type": "INDEPENDENT_REVIEW_CHECK"
+    },
+    "promotion_ready": false
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0076",
+    "source_candidate_id": "M12_DERIV_CAND_0076",
+    "source_fingerprint": "da900523ae46111b",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_07",
+    "effective_subsource_code": "NGOC_VY_2026_07",
+    "provenance_correction_code": null,
+    "candidate_extraction_page": 121,
+    "question_number": "1",
+    "review_status": "HOLD_SOURCE_ANSWER_CONFLICT",
+    "source_evidence_id": "EVID_NVY_0076",
+    "reason": "The source claims c=TRUE, but its own solution finds only x=-2 from f'(x)=0 inside [-4,-1], so the statement '2 roots' is false.",
+    "source_claimed_answer_pattern": [
+      "TRUE",
+      "FALSE",
+      "TRUE",
+      "TRUE"
+    ],
+    "conflicting_item_label": "c",
+    "trusted_correct_answer": null,
+    "conflict_explanation": "The source claims c=TRUE, but its own solution finds only x=-2 from f'(x)=0 inside [-4,-1], so the statement '2 roots' is false.",
+    "independent_check": {
+      "implied_answer": "FALSE",
+      "provenance_type": "INDEPENDENT_REVIEW_CHECK"
+    },
+    "promotion_ready": false
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0084",
+    "source_candidate_id": "M12_DERIV_CAND_0084",
+    "source_fingerprint": "4f12eadb85e8f284",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_09",
+    "effective_subsource_code": "NGOC_VY_2026_09",
+    "provenance_correction_code": null,
+    "candidate_extraction_page": 158,
+    "question_number": "1",
+    "review_status": "HOLD_SOURCE_ANSWER_CONFLICT",
+    "source_evidence_id": "EVID_NVY_0084",
+    "reason": "The source claims d=FALSE, but its own solution derives f'(x)>=0 iff x>=1/2, exactly the interval stated in d.",
+    "source_claimed_answer_pattern": [
+      "FALSE",
+      "TRUE",
+      "TRUE",
+      "FALSE"
+    ],
+    "conflicting_item_label": "d",
+    "trusted_correct_answer": null,
+    "conflict_explanation": "The source claims d=FALSE, but its own solution derives f'(x)>=0 iff x>=1/2, exactly the interval stated in d.",
+    "independent_check": {
+      "implied_answer": "TRUE",
+      "provenance_type": "INDEPENDENT_REVIEW_CHECK"
+    },
+    "promotion_ready": false
+  }
+]

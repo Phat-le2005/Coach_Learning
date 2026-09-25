@@ -86,14 +86,20 @@ def _add_valid_synthetic_hold_batch(review_root: Path) -> str:
         DEFAULT_QUESTION_GROUP_STAGING_PATH / "question_group_candidates.json"
     )
     assert isinstance(groups, list)
+    already_reviewed = {
+        str(record["group_candidate_id"])
+        for batch_path in review_root.glob("batch_*")
+        for name in ("verified_groups.json", "hold_groups.json", "rejected_groups.json")
+        for record in _load(batch_path / name)
+    }
     structural = next(
         group
         for group in groups
-        if group["group_candidate_id"] not in EXPECTED_TARGET_IDS
+        if group["group_candidate_id"] not in already_reviewed
     )
     group_id = str(structural["group_candidate_id"])
     evidence_id = f"EVID_TEST_{group_id}"
-    batch_path = review_root / "batch_002"
+    batch_path = review_root / "batch_003"
     batch_path.mkdir()
     (batch_path / "README.md").write_text(
         "# Synthetic validator fixture\n", encoding="utf-8"
@@ -135,7 +141,7 @@ def _add_valid_synthetic_hold_batch(review_root: Path) -> str:
     _write(batch_path / "group_patch.json", [])
     _write(batch_path / "review_stats.json", {
         "dataset_code": "DATA-MATH12-008_TEST",
-        "batch_code": "DATA-MATH12-008_TEST_BATCH_002",
+        "batch_code": "DATA-MATH12-008_TEST_BATCH_003",
         "source_code": structural["source_code"],
         "source_file": source_file,
         "source_pdf_sha256": source_sha,
@@ -157,7 +163,7 @@ def _add_valid_synthetic_hold_batch(review_root: Path) -> str:
     return group_id
 
 
-def test_group_review_batch_001_passes_with_exact_acceptance_counts() -> None:
+def test_group_review_batches_pass_with_expected_cumulative_counts() -> None:
     report = QuestionGroupReviewValidator().validate()
 
     assert report.status == "PASS"
@@ -166,19 +172,19 @@ def test_group_review_batch_001_passes_with_exact_acceptance_counts() -> None:
     assert report.counts == {
         "structural_groups": 67,
         "structural_holds": 1,
-        "review_batches": 1,
-        "target_groups": 13,
-        "reviewed_groups": 13,
-        "verified": 7,
-        "hold": 1,
-        "rejected": 5,
+        "review_batches": 2,
+        "target_groups": 25,
+        "reviewed_groups": 25,
+        "verified": 12,
+        "hold": 5,
+        "rejected": 8,
         "rejected_duplicate": 3,
-        "rejected_out_of_scope": 2,
-        "verified_child_statements": 28,
-        "assigned_child_answers": 28,
-        "visual_asset_required": 2,
+        "rejected_out_of_scope": 5,
+        "verified_child_statements": 48,
+        "assigned_child_answers": 48,
+        "visual_asset_required": 4,
         "promotion_ready": 0,
-        "effective_usable_groups": 62,
+        "effective_usable_groups": 59,
     }
     assert set(report.review_batches[0]["reviewed_group_ids"]) == EXPECTED_TARGET_IDS
 
@@ -383,13 +389,13 @@ def test_generic_validator_accepts_a_valid_additional_batch_with_new_counts(
     report = QuestionGroupReviewValidator().validate(review_root=review_root)
 
     assert report.status == "PASS"
-    assert report.counts["review_batches"] == 2
-    assert report.counts["reviewed_groups"] == 14
-    assert report.counts["verified"] == 7
-    assert report.counts["hold"] == 2
-    assert report.counts["rejected"] == 5
-    assert added_group_id in report.review_batches[1]["reviewed_group_ids"]
-    assert report.review_batches[1]["counts"] == {
+    assert report.counts["review_batches"] == 3
+    assert report.counts["reviewed_groups"] == 26
+    assert report.counts["verified"] == 12
+    assert report.counts["hold"] == 6
+    assert report.counts["rejected"] == 8
+    assert added_group_id in report.review_batches[2]["reviewed_group_ids"]
+    assert report.review_batches[2]["counts"] == {
         "reviewed": 1,
         "verified": 0,
         "hold": 1,
@@ -400,7 +406,7 @@ def test_generic_validator_accepts_a_valid_additional_batch_with_new_counts(
 def test_overlapping_group_ids_across_batches_are_rejected(tmp_path: Path) -> None:
     review_root = tmp_path / "group_review"
     shutil.copytree(DEFAULT_QUESTION_GROUP_REVIEW_ROOT, review_root)
-    shutil.copytree(review_root / "batch_001", review_root / "batch_002")
+    shutil.copytree(review_root / "batch_001", review_root / "batch_003")
 
     report = QuestionGroupReviewValidator().validate(review_root=review_root)
 

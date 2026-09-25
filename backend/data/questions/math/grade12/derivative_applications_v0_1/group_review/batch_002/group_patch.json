@@ -1,0 +1,147 @@
+[
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0058",
+    "set": {
+      "reviewed_group_context": "Câu 1. Cho hàm số f(x) = 4/x + x + 1, với x ≠ 0.",
+      "reviewed_items": [
+        {
+          "label": "a",
+          "order_index": 0,
+          "reviewed_content": "Đạo hàm của hàm số đã cho là f'(x) = (x^2 - 4)/x^2, với x ≠ 0."
+        },
+        {
+          "label": "b",
+          "order_index": 1,
+          "reviewed_content": "f'(-4) = 2."
+        },
+        {
+          "label": "c",
+          "order_index": 2,
+          "reviewed_content": "Tổng các nghiệm của phương trình f'(x) = 0 bằng 4."
+        },
+        {
+          "label": "d",
+          "order_index": 3,
+          "reviewed_content": "Hàm số f(x) có giá trị lớn nhất và giá trị nhỏ nhất trên đoạn [1;3] lần lượt bằng M, m. Khi đó M - m = -1."
+        }
+      ],
+      "visual_asset_required": false
+    }
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0066",
+    "set": {
+      "reviewed_group_context": "Câu 2. Cho hàm số y = sqrt(5 - 4x).",
+      "reviewed_items": [
+        {
+          "label": "a",
+          "order_index": 0,
+          "reviewed_content": "Điều kiện xác định của hàm số y = sqrt(5 - 4x) là x ∈ (-∞; 5/4)."
+        },
+        {
+          "label": "b",
+          "order_index": 1,
+          "reviewed_content": "y' = -4/sqrt(5 - 4x) với x ∈ (-∞; 5/4)."
+        },
+        {
+          "label": "c",
+          "order_index": 2,
+          "reviewed_content": "Hàm số nghịch biến trên khoảng (-1;1)."
+        },
+        {
+          "label": "d",
+          "order_index": 3,
+          "reviewed_content": "Trên đoạn [-1;1], giá trị lớn nhất và giá trị nhỏ nhất của hàm số đã cho lần lượt là 3 và 1."
+        }
+      ],
+      "visual_asset_required": false
+    }
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0070",
+    "set": {
+      "reviewed_group_context": "Câu 1. Cho hàm số y = f(x) thuộc họ phân thức bậc hai trên bậc nhất và có đồ thị (C) như hình vẽ trong nguồn.",
+      "reviewed_items": [
+        {
+          "label": "a",
+          "order_index": 0,
+          "reviewed_content": "Hàm số y=f(x) nghịch biến trên (-∞;1) và (3;+∞), đồng biến trên (1;2) và (2;3)."
+        },
+        {
+          "label": "b",
+          "order_index": 1,
+          "reviewed_content": "Đồ thị hàm số y=f(x) có tiệm cận đứng x=2 và tiệm cận xiên y=x+1."
+        },
+        {
+          "label": "c",
+          "order_index": 2,
+          "reviewed_content": "Đồ thị hàm số y=f(x) có điểm cực đại (1;1) và điểm cực tiểu (3;5)."
+        },
+        {
+          "label": "d",
+          "order_index": 3,
+          "reviewed_content": "Trên khoảng (2;+∞), hàm số y=f(x) không có giá trị nhỏ nhất."
+        }
+      ],
+      "visual_asset_required": true
+    }
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0079",
+    "set": {
+      "reviewed_group_context": "Câu 1. Cho hàm số f(x) = x*sqrt(3 - x).",
+      "reviewed_items": [
+        {
+          "label": "a",
+          "order_index": 0,
+          "reviewed_content": "Tập xác định của hàm số đã cho là D = (-∞;3]."
+        },
+        {
+          "label": "b",
+          "order_index": 1,
+          "reviewed_content": "Đạo hàm của hàm số đã cho là f'(x) = (6 - 3x)/(2*sqrt(3 - x)), với mọi x ∈ (-∞;3]."
+        },
+        {
+          "label": "c",
+          "order_index": 2,
+          "reviewed_content": "Số nghiệm của phương trình f'(x)=0 bằng 1."
+        },
+        {
+          "label": "d",
+          "order_index": 3,
+          "reviewed_content": "Giá trị lớn nhất, giá trị nhỏ nhất của hàm số đã cho lần lượt là 2 và 0."
+        }
+      ],
+      "visual_asset_required": false
+    }
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0087",
+    "set": {
+      "reviewed_group_context": "Câu 1. Cho hàm số y=f(x) liên tục trên ℝ và có bảng biến thiên như trong nguồn.",
+      "reviewed_items": [
+        {
+          "label": "a",
+          "order_index": 0,
+          "reviewed_content": "Hàm số nghịch biến trên (-∞;1/2025) và (2024/2025;+∞)."
+        },
+        {
+          "label": "b",
+          "order_index": 1,
+          "reviewed_content": "f(3/2025) > f(11/2025)."
+        },
+        {
+          "label": "c",
+          "order_index": 2,
+          "reviewed_content": "Điểm cực tiểu của hàm số đã cho bằng -2024."
+        },
+        {
+          "label": "d",
+          "order_index": 3,
+          "reviewed_content": "Đồ thị hàm số đã cho có điểm cực đại là (2024/2025;2025)."
+        }
+      ],
+      "visual_asset_required": true
+    }
+  }
+]

@@ -1,0 +1,304 @@
+[
+  {
+    "evidence_id": "EVID_NVY_0058",
+    "group_candidate_id": "M12_DERIV_GROUP_0058",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "effective_subsource_code": "NGOC_VY_2026_01",
+    "candidate_extraction_page": 3,
+    "canonical_question_pages": [
+      3
+    ],
+    "solution_pages": [
+      11
+    ],
+    "question_number": "1",
+    "evidence_type": "QUESTION_AND_EXPLICIT_SOLUTION",
+    "source_claimed_answer_pattern": [
+      "TRUE",
+      "FALSE",
+      "FALSE",
+      "FALSE"
+    ],
+    "review_consistency": "CONFIRMED"
+  },
+  {
+    "evidence_id": "EVID_NVY_0062",
+    "group_candidate_id": "M12_DERIV_GROUP_0062",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "effective_subsource_code": "NGOC_VY_2026_03",
+    "candidate_extraction_page": 43,
+    "canonical_question_pages": [
+      43,
+      44
+    ],
+    "solution_pages": [
+      50
+    ],
+    "question_number": "1",
+    "evidence_type": "QUESTION_AND_EXPLICIT_SOLUTION",
+    "source_claimed_answer_pattern": [
+      "FALSE",
+      "TRUE",
+      "TRUE",
+      "FALSE"
+    ],
+    "review_consistency": "SOURCE_ANSWER_CONFLICT",
+    "conflicting_item_label": "b",
+    "conflict_explanation": "The source claims item b is TRUE, but the same source gives f'(x)<0 on (2,+inf), which implies f(3)>f(2024)>f(2025), not the stated '<' chain.",
+    "independent_check": {
+      "basis": "DERIVATIVE_SIGN_FROM_SOURCE_SOLUTION",
+      "implied_answer": "FALSE",
+      "provenance_type": "INDEPENDENT_REVIEW_CHECK"
+    }
+  },
+  {
+    "evidence_id": "EVID_NVY_0066",
+    "group_candidate_id": "M12_DERIV_GROUP_0066",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "effective_subsource_code": "NGOC_VY_2026_04",
+    "candidate_extraction_page": 63,
+    "canonical_question_pages": [
+      63
+    ],
+    "solution_pages": [
+      70,
+      71
+    ],
+    "question_number": "2",
+    "evidence_type": "QUESTION_AND_EXPLICIT_SOLUTION",
+    "source_claimed_answer_pattern": [
+      "FALSE",
+      "FALSE",
+      "TRUE",
+      "TRUE"
+    ],
+    "review_consistency": "CONFIRMED"
+  },
+  {
+    "evidence_id": "EVID_NVY_0068",
+    "group_candidate_id": "M12_DERIV_GROUP_0068",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "effective_subsource_code": "NGOC_VY_2026_04",
+    "candidate_extraction_page": 72,
+    "canonical_question_pages": [
+      63,
+      64
+    ],
+    "solution_pages": [
+      72
+    ],
+    "question_number": "4",
+    "evidence_type": "QUESTION_AND_EXPLICIT_SOLUTION",
+    "source_claimed_answer_pattern": [
+      "TRUE",
+      "FALSE",
+      "FALSE",
+      "FALSE"
+    ],
+    "review_consistency": "OUT_OF_SCOPE_CURRENT_DATASET"
+  },
+  {
+    "evidence_id": "EVID_NVY_0070",
+    "group_candidate_id": "M12_DERIV_GROUP_0070",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "effective_subsource_code": "NGOC_VY_2026_05",
+    "candidate_extraction_page": 81,
+    "canonical_question_pages": [
+      81
+    ],
+    "solution_pages": [
+      90,
+      91
+    ],
+    "question_number": "1",
+    "evidence_type": "QUESTION_AND_EXPLICIT_SOLUTION",
+    "source_claimed_answer_pattern": [
+      "FALSE",
+      "TRUE",
+      "TRUE",
+      "FALSE"
+    ],
+    "review_consistency": "CONFIRMED",
+    "visual_asset_required": true
+  },
+  {
+    "evidence_id": "EVID_NVY_0072",
+    "group_candidate_id": "M12_DERIV_GROUP_0072",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "effective_subsource_code": "NGOC_VY_2026_06",
+    "candidate_extraction_page": 100,
+    "canonical_question_pages": [
+      100
+    ],
+    "solution_pages": [
+      108,
+      109
+    ],
+    "question_number": "1",
+    "evidence_type": "QUESTION_AND_EXPLICIT_SOLUTION",
+    "source_claimed_answer_pattern": [
+      "FALSE",
+      "TRUE",
+      "FALSE",
+      "FALSE"
+    ],
+    "review_consistency": "SOURCE_ANSWER_CONFLICT",
+    "conflicting_item_label": "c",
+    "conflict_explanation": "The source claims item c is FALSE, but its own solution derives f'(x)=(1-x)/x<0 for x>1 and explicitly says the function is decreasing on (1,+inf), so it is also decreasing on (1,e^2).",
+    "independent_check": {
+      "basis": "DERIVATIVE_SIGN_FROM_SOURCE_SOLUTION",
+      "implied_answer": "TRUE",
+      "provenance_type": "INDEPENDENT_REVIEW_CHECK"
+    }
+  },
+  {
+    "evidence_id": "EVID_NVY_0073",
+    "group_candidate_id": "M12_DERIV_GROUP_0073",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "effective_subsource_code": "NGOC_VY_2026_06",
+    "candidate_extraction_page": 100,
+    "canonical_question_pages": [
+      100
+    ],
+    "solution_pages": [
+      109
+    ],
+    "question_number": "2",
+    "evidence_type": "QUESTION_AND_EXPLICIT_SOLUTION",
+    "source_claimed_answer_pattern": [
+      "TRUE",
+      "FALSE",
+      "FALSE",
+      "TRUE"
+    ],
+    "review_consistency": "OUT_OF_SCOPE_CURRENT_DATASET"
+  },
+  {
+    "evidence_id": "EVID_NVY_0076",
+    "group_candidate_id": "M12_DERIV_GROUP_0076",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "effective_subsource_code": "NGOC_VY_2026_07",
+    "candidate_extraction_page": 121,
+    "canonical_question_pages": [
+      121
+    ],
+    "solution_pages": [
+      129,
+      130
+    ],
+    "question_number": "1",
+    "evidence_type": "QUESTION_AND_EXPLICIT_SOLUTION",
+    "source_claimed_answer_pattern": [
+      "TRUE",
+      "FALSE",
+      "TRUE",
+      "TRUE"
+    ],
+    "review_consistency": "SOURCE_ANSWER_CONFLICT",
+    "conflicting_item_label": "c",
+    "conflict_explanation": "The source claims item c is TRUE, but its own solution solves f'(x)=0 as x=-2 or x=4 and notes only x=-2 lies in [-4,-1], so the number of roots is 1, not 2.",
+    "independent_check": {
+      "basis": "ROOT_COUNT_FROM_SOURCE_SOLUTION",
+      "implied_answer": "FALSE",
+      "provenance_type": "INDEPENDENT_REVIEW_CHECK"
+    }
+  },
+  {
+    "evidence_id": "EVID_NVY_0079",
+    "group_candidate_id": "M12_DERIV_GROUP_0079",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "effective_subsource_code": "NGOC_VY_2026_08",
+    "candidate_extraction_page": 140,
+    "canonical_question_pages": [
+      140
+    ],
+    "solution_pages": [
+      148
+    ],
+    "question_number": "1",
+    "evidence_type": "QUESTION_AND_EXPLICIT_SOLUTION",
+    "source_claimed_answer_pattern": [
+      "TRUE",
+      "FALSE",
+      "TRUE",
+      "FALSE"
+    ],
+    "review_consistency": "CONFIRMED"
+  },
+  {
+    "evidence_id": "EVID_NVY_0082",
+    "group_candidate_id": "M12_DERIV_GROUP_0082",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "effective_subsource_code": "NGOC_VY_2026_08",
+    "candidate_extraction_page": 150,
+    "canonical_question_pages": [
+      141,
+      142
+    ],
+    "solution_pages": [
+      150
+    ],
+    "question_number": "4",
+    "evidence_type": "QUESTION_AND_EXPLICIT_SOLUTION",
+    "source_claimed_answer_pattern": [
+      "TRUE",
+      "FALSE",
+      "FALSE",
+      "FALSE"
+    ],
+    "review_consistency": "OUT_OF_SCOPE_CURRENT_DATASET"
+  },
+  {
+    "evidence_id": "EVID_NVY_0084",
+    "group_candidate_id": "M12_DERIV_GROUP_0084",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "effective_subsource_code": "NGOC_VY_2026_09",
+    "candidate_extraction_page": 158,
+    "canonical_question_pages": [
+      158,
+      159
+    ],
+    "solution_pages": [
+      167
+    ],
+    "question_number": "1",
+    "evidence_type": "QUESTION_AND_EXPLICIT_SOLUTION",
+    "source_claimed_answer_pattern": [
+      "FALSE",
+      "TRUE",
+      "TRUE",
+      "FALSE"
+    ],
+    "review_consistency": "SOURCE_ANSWER_CONFLICT",
+    "conflicting_item_label": "d",
+    "conflict_explanation": "The source claims item d is FALSE, but its own solution derives f'(x)>=0 iff x>=1/2 and then states the same interval [1/2,+inf), exactly matching item d.",
+    "independent_check": {
+      "basis": "INEQUALITY_SOLUTION_FROM_SOURCE_SOLUTION",
+      "implied_answer": "TRUE",
+      "provenance_type": "INDEPENDENT_REVIEW_CHECK"
+    }
+  },
+  {
+    "evidence_id": "EVID_NVY_0087",
+    "group_candidate_id": "M12_DERIV_GROUP_0087",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "effective_subsource_code": "NGOC_VY_2026_10",
+    "candidate_extraction_page": 179,
+    "canonical_question_pages": [
+      179
+    ],
+    "solution_pages": [
+      187
+    ],
+    "question_number": "1",
+    "evidence_type": "QUESTION_AND_EXPLICIT_SOLUTION",
+    "source_claimed_answer_pattern": [
+      "TRUE",
+      "FALSE",
+      "FALSE",
+      "TRUE"
+    ],
+    "review_consistency": "CONFIRMED",
+    "visual_asset_required": true
+  }
+]
