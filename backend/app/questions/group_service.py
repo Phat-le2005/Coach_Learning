@@ -114,10 +114,17 @@ class QuestionGroupService:
             self.session.commit()
         except IntegrityError as error:
             self.session.rollback()
+            if self._is_child_membership_unique_violation(error):
+                raise ApplicationError(
+                    409,
+                    "QUESTION_GROUP_CHILD_ALREADY_GROUPED",
+                    "A child question already belongs to another question group.",
+                ) from error
             raise ApplicationError(
                 409,
-                "QUESTION_GROUP_CHILD_ALREADY_GROUPED",
-                "A child question already belongs to another question group.",
+                "QUESTION_GROUP_CONFLICT",
+                "Question group could not be created because of a database "
+                "constraint conflict.",
             ) from error
         logger.info(
             "Question group created (group_id=%s, created_by=%s)",
@@ -175,3 +182,18 @@ class QuestionGroupService:
                 "QUESTION_GROUP_CHILD_DUPLICATE",
                 "Question group child question IDs must be unique.",
             )
+
+    @staticmethod
+    def _is_child_membership_unique_violation(error: IntegrityError) -> bool:
+        current: BaseException | None = error.orig
+        visited: set[int] = set()
+        while current is not None and id(current) not in visited:
+            visited.add(id(current))
+            diagnostic = getattr(current, "diag", None)
+            constraint_name = getattr(diagnostic, "constraint_name", None)
+            if constraint_name is None:
+                constraint_name = getattr(current, "constraint_name", None)
+            if constraint_name == "uq_question_group_items_question":
+                return True
+            current = current.__cause__ or current.__context__
+        return False

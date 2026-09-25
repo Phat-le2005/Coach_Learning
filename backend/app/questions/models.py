@@ -143,7 +143,13 @@ class QuestionGroup(Base):
             name="source_year_range",
         ),
         CheckConstraint("exam_weight BETWEEN 0.0 AND 1.0", name="exam_weight_range"),
-        Index("ix_question_groups_subject_status", "subject_id", "status"),
+        Index(
+            "ix_question_groups_subject_status_type_difficulty",
+            "subject_id",
+            "status",
+            "group_type",
+            "difficulty",
+        ),
         Index("ix_question_groups_created_by", "created_by"),
     )
 

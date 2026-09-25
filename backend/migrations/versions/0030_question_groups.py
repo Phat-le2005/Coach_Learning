@@ -126,9 +126,9 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint("id", name=op.f("pk_question_groups")),
     )
     op.create_index(
-        "ix_question_groups_subject_status",
+        "ix_question_groups_subject_status_type_difficulty",
         "question_groups",
-        ["subject_id", "status"],
+        ["subject_id", "status", "group_type", "difficulty"],
     )
     op.create_index(
         "ix_question_groups_created_by",
@@ -179,5 +179,8 @@ def upgrade() -> None:
 def downgrade() -> None:
     op.drop_table("question_group_items")
     op.drop_index("ix_question_groups_created_by", table_name="question_groups")
-    op.drop_index("ix_question_groups_subject_status", table_name="question_groups")
+    op.drop_index(
+        "ix_question_groups_subject_status_type_difficulty",
+        table_name="question_groups",
+    )
     op.drop_table("question_groups")

@@ -7,6 +7,7 @@ import pytest
 from alembic.migration import MigrationContext
 from alembic.operations import Operations
 from sqlalchemy import Engine, func, inspect, select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.core.exceptions import ApplicationError
@@ -373,6 +374,81 @@ def test_question_group_item_database_constraints(db_engine: Engine) -> None:
     } <= check_constraints
     assert foreign_keys[("group_id",)]["options"]["ondelete"] == "CASCADE"
     assert foreign_keys[("question_id",)]["options"]["ondelete"] == "RESTRICT"
+
+
+def test_question_group_query_index_matches_model_and_migration(
+    db_engine: Engine,
+) -> None:
+    indexes = {
+        index["name"]: index["column_names"]
+        for index in inspect(db_engine).get_indexes("question_groups")
+    }
+
+    assert indexes["ix_question_groups_subject_status_type_difficulty"] == [
+        "subject_id",
+        "status",
+        "group_type",
+        "difficulty",
+    ]
+    assert "ix_question_groups_subject_status" not in indexes
+
+
+class _ConstraintDiagnostic:
+    def __init__(self, constraint_name: str | None) -> None:
+        self.constraint_name = constraint_name
+
+
+class _DriverIntegrityError(Exception):
+    def __init__(self, constraint_name: str | None) -> None:
+        super().__init__("simulated database constraint conflict")
+        self.diag = _ConstraintDiagnostic(constraint_name)
+
+
+@pytest.mark.parametrize(
+    ("constraint_name", "expected_code"),
+    [
+        (
+            "uq_question_group_items_question",
+            "QUESTION_GROUP_CHILD_ALREADY_GROUPED",
+        ),
+        ("uq_question_groups_unrelated", "QUESTION_GROUP_CONFLICT"),
+        (None, "QUESTION_GROUP_CONFLICT"),
+    ],
+)
+def test_commit_integrity_error_mapping_is_constraint_specific_and_rolls_back(
+    db_session: Session,
+    group_content: tuple[User, Subject, list[Question]],
+    monkeypatch: pytest.MonkeyPatch,
+    constraint_name: str | None,
+    expected_code: str,
+) -> None:
+    actor, subject, questions = group_content
+    original_rollback = db_session.rollback
+    rollback_called = False
+
+    def fail_commit() -> None:
+        raise IntegrityError(
+            "INSERT INTO question_group_items ...",
+            {},
+            _DriverIntegrityError(constraint_name),
+        )
+
+    def record_rollback() -> None:
+        nonlocal rollback_called
+        rollback_called = True
+        original_rollback()
+
+    monkeypatch.setattr(db_session, "commit", fail_commit)
+    monkeypatch.setattr(db_session, "rollback", record_rollback)
+
+    with pytest.raises(ApplicationError) as error:
+        QuestionGroupService(db_session).create(actor, _data(subject, questions))
+
+    assert error.value.code == expected_code
+    assert isinstance(error.value.__cause__, IntegrityError)
+    assert rollback_called is True
+    assert db_session.scalar(select(func.count()).select_from(QuestionGroup)) == 0
+    assert db_session.scalar(select(func.count()).select_from(QuestionGroupItem)) == 0
 
 
 def test_question_type_has_no_true_false_group_member() -> None:
