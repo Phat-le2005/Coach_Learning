@@ -1,0 +1,234 @@
+[
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0012",
+    "set": {
+      "reviewed_group_context": "Câu 3. Ông An có một mảnh đất hình vuông ABCD có cạnh AB = 12 m. Ông làm một hồ bơi dạng hình thang cong (phần tô đậm) và một lối đi là đoạn thẳng HB. Nếu đặt hệ trục tọa độ có gốc tại A như hình vẽ, độ dài đơn vị là 1 m, thì đường cong EFIG là một phần đồ thị của một hàm bậc ba y = f(x) có F là điểm cực tiểu và I là điểm cực đại. Biết CH = DE = GB = 3 m và các điểm F, I cách cạnh AD lần lượt là 2 m và 6 m.",
+      "reviewed_items": [
+        {
+          "label": "a",
+          "order_index": 0,
+          "reviewed_content": "Phương trình của đường thẳng HB là y = -4x + 48."
+        },
+        {
+          "label": "b",
+          "order_index": 1,
+          "reviewed_content": "Tồn tại a ∈ ℝ sao cho f'(x) = a(x + 2)(x + 6)."
+        },
+        {
+          "label": "c",
+          "order_index": 2,
+          "reviewed_content": "Tiếp tuyến của đồ thị hàm số y = f(x) tại điểm có hoành độ bằng 7 song song với đường thẳng HB."
+        },
+        {
+          "label": "d",
+          "order_index": 3,
+          "reviewed_content": "Ông An cần đặt một cái thang lên xuống hồ bơi tại một điểm trên đường cong EFIG sao cho khoảng cách từ điểm đặt thang đến lối đi là ngắn nhất; khoảng cách đó bằng 2,56 m (làm tròn đến hàng phần trăm)."
+        }
+      ],
+      "visual_asset_required": true
+    }
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0019",
+    "set": {
+      "reviewed_group_context": "Câu 3. Cho hàm số y = (3x + 2)/(x - 2) có đồ thị là (C).",
+      "reviewed_items": [
+        {
+          "label": "a",
+          "order_index": 0,
+          "reviewed_content": "Đồ thị (C) cắt đường thẳng y = x + 3 tại hai điểm phân biệt."
+        },
+        {
+          "label": "b",
+          "order_index": 1,
+          "reviewed_content": "Tiếp tuyến của đồ thị (C) tại giao điểm của (C) với trục Oy là đường thẳng y = -2x + 1."
+        },
+        {
+          "label": "c",
+          "order_index": 2,
+          "reviewed_content": "Đường thẳng y = 3 là tiệm cận đứng của đồ thị hàm số (C)."
+        },
+        {
+          "label": "d",
+          "order_index": 3,
+          "reviewed_content": "Điểm I(2; 3) là giao điểm của các đường tiệm cận của đồ thị (C)."
+        }
+      ],
+      "visual_asset_required": false
+    }
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0024",
+    "set": {
+      "reviewed_group_context": "Câu 2. Cho hàm số y = f(x) = (x^2 - 3x + 6)/(x - 1).",
+      "reviewed_items": [
+        {
+          "label": "a",
+          "order_index": 0,
+          "reviewed_content": "Đồ thị hàm số cắt trục tung tại điểm M(0; -5)."
+        },
+        {
+          "label": "b",
+          "order_index": 1,
+          "reviewed_content": "Tiệm cận xiên của đồ thị hàm số có phương trình y = x - 2."
+        },
+        {
+          "label": "c",
+          "order_index": 2,
+          "reviewed_content": "Tập xác định của hàm số là ℝ \\ {1}."
+        },
+        {
+          "label": "d",
+          "order_index": 3,
+          "reviewed_content": "Đồ thị (C) của hàm số y = f(x) là hình vẽ bên."
+        }
+      ],
+      "visual_asset_required": true
+    }
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0031",
+    "set": {
+      "reviewed_group_context": "Câu 15. Cho hàm số f(x) = sin x - e^x.",
+      "reviewed_items": [
+        {
+          "label": "a",
+          "order_index": 0,
+          "reviewed_content": "Giá trị nhỏ nhất của f(x) trên đoạn [0; π/2] là -1."
+        },
+        {
+          "label": "b",
+          "order_index": 1,
+          "reviewed_content": "Nghiệm của phương trình f'(x) = 0 trên đoạn [0; π/2] là x = 0."
+        },
+        {
+          "label": "c",
+          "order_index": 2,
+          "reviewed_content": "Đạo hàm của hàm số đã cho là f'(x) = cos x - e^x, ∀x ∈ ℝ."
+        },
+        {
+          "label": "d",
+          "order_index": 3,
+          "reviewed_content": "f(π) = 1 - e^π; f(0) = -2."
+        }
+      ],
+      "visual_asset_required": false
+    }
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0035",
+    "set": {
+      "reviewed_group_context": "Câu 15. Cho hàm số f(x) = -2x^4 + 4x^2 + 1 có đồ thị (C).",
+      "reviewed_items": [
+        {
+          "label": "a",
+          "order_index": 0,
+          "reviewed_content": "lim_{x→-∞} f(x) = -∞."
+        },
+        {
+          "label": "b",
+          "order_index": 1,
+          "reviewed_content": "Đạo hàm của hàm số đã cho là f'(x) = -8x^3 + 8x + 1."
+        },
+        {
+          "label": "c",
+          "order_index": 2,
+          "reviewed_content": "Tập nghiệm của phương trình f'(x) = 0 là S = {-1; 0; 1}."
+        },
+        {
+          "label": "d",
+          "order_index": 3,
+          "reviewed_content": "Giá trị lớn nhất của f(x) là 1."
+        }
+      ],
+      "visual_asset_required": false
+    }
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0041",
+    "set": {
+      "reviewed_group_context": "Câu 4. Nhà máy A chuyên sản xuất một loại sản phẩm cho nhà máy B. Hằng tháng nhà máy A cung cấp cho nhà máy B số lượng theo đơn đặt hàng (tối đa 100 tấn). Nếu số lượng đặt hàng là x (tấn) thì giá bán mỗi tấn là P(x) = 45 - 0,001x^2 (triệu đồng) và chi phí sản xuất là C(x) = 100 + 30x (triệu đồng).",
+      "reviewed_items": [
+        {
+          "label": "a",
+          "order_index": 0,
+          "reviewed_content": "Chi phí để nhà máy A sản xuất 10 tấn sản phẩm trong một tháng là 400 triệu đồng."
+        },
+        {
+          "label": "b",
+          "order_index": 1,
+          "reviewed_content": "Số tiền nhà máy A thu được khi bán 10 tấn sản phẩm cho nhà máy B là 600 triệu đồng."
+        },
+        {
+          "label": "c",
+          "order_index": 2,
+          "reviewed_content": "Lợi nhuận khi bán x tấn (0 ≤ x ≤ 100) là H(x) = -0,001x^3 + 15x - 100."
+        },
+        {
+          "label": "d",
+          "order_index": 3,
+          "reviewed_content": "Nhà máy A bán khoảng 70,7 tấn sản phẩm mỗi tháng thì thu được lợi nhuận lớn nhất."
+        }
+      ],
+      "visual_asset_required": false
+    }
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0047",
+    "set": {
+      "reviewed_group_context": "Câu 3. Cho hàm số y = x - 1 + 9/(x + 2).",
+      "reviewed_items": [
+        {
+          "label": "a",
+          "order_index": 0,
+          "reviewed_content": "Tập xác định của hàm số là ℝ \\ {-2}."
+        },
+        {
+          "label": "b",
+          "order_index": 1,
+          "reviewed_content": "Hàm số có đạo hàm y' = 1 - 9/(x + 2)^2, ∀x ≠ -2."
+        },
+        {
+          "label": "c",
+          "order_index": 2,
+          "reviewed_content": "Hàm số đồng biến trên các khoảng (-∞; -5) và (1; +∞)."
+        },
+        {
+          "label": "d",
+          "order_index": 3,
+          "reviewed_content": "Hàm số có giá trị cực đại lớn hơn giá trị cực tiểu."
+        }
+      ],
+      "visual_asset_required": false
+    }
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0052",
+    "set": {
+      "reviewed_group_context": "Câu 2. Cho hàm số f(x) = x - sin 2x.",
+      "reviewed_items": [
+        {
+          "label": "a",
+          "order_index": 0,
+          "reviewed_content": "f(-π/2) = -π/2, f(π) = π."
+        },
+        {
+          "label": "b",
+          "order_index": 1,
+          "reviewed_content": "f'(x) = 1 - cos 2x."
+        },
+        {
+          "label": "c",
+          "order_index": 2,
+          "reviewed_content": "Phương trình f'(x) = 0 trên đoạn [-π/2; π] có tập nghiệm T = {-π/6; π/6; 5π/6}."
+        },
+        {
+          "label": "d",
+          "order_index": 3,
+          "reviewed_content": "Tổng giá trị lớn nhất và nhỏ nhất của hàm số trên đoạn [-π/2; π] bằng π/3 + 3/2."
+        }
+      ],
+      "visual_asset_required": false
+    }
+  }
+]

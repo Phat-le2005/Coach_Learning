@@ -1,0 +1,1262 @@
+[
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0012",
+    "source_candidate_id": "M12_DERIV_CAND_0012",
+    "source_fingerprint": "7b076df958f6c0f9",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "raw_subsource_code": "HUE_2025",
+    "effective_subsource_code": "HUE_2025",
+    "provenance_correction_code": null,
+    "candidate_extraction_page": 3,
+    "question_number": "3",
+    "review_status": "VERIFIED",
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED",
+    "taxonomy_review": "CONFIRMED_DERIVED",
+    "taxonomy_basis": "COACH_LEARNING_DERIVED",
+    "source_evidence_id": "EVID_PROV_0012",
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "reviewed_group_context": "Câu 3. Ông An có một mảnh đất hình vuông ABCD có cạnh AB = 12 m. Ông làm một hồ bơi dạng hình thang cong (phần tô đậm) và một lối đi là đoạn thẳng HB. Nếu đặt hệ trục tọa độ có gốc tại A như hình vẽ, độ dài đơn vị là 1 m, thì đường cong EFIG là một phần đồ thị của một hàm bậc ba y = f(x) có F là điểm cực tiểu và I là điểm cực đại. Biết CH = DE = GB = 3 m và các điểm F, I cách cạnh AD lần lượt là 2 m và 6 m.",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "reviewed_content": "Phương trình của đường thẳng HB là y = -4x + 48.",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "MATHEMATICAL_MODELING",
+            "weight": 0.6
+          },
+          {
+            "code": "CONTEXT_INTERPRETATION",
+            "weight": 0.4
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_10",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "reviewed_content": "Tồn tại a ∈ ℝ sao cho f'(x) = a(x + 2)(x + 6).",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "FIND_FUNCTION_EXTREMA",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "CRITICAL_POINT",
+            "weight": 0.4
+          },
+          {
+            "code": "LOCAL_EXTREMUM",
+            "weight": 0.3
+          },
+          {
+            "code": "DERIVATIVE_RULES",
+            "weight": 0.3
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_03",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "reviewed_content": "Tiếp tuyến của đồ thị hàm số y = f(x) tại điểm có hoành độ bằng 7 song song với đường thẳng HB.",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "FIRST_DERIVATIVE",
+            "weight": 0.4
+          },
+          {
+            "code": "DERIVATIVE_RULES",
+            "weight": 0.3
+          },
+          {
+            "code": "CONTEXT_INTERPRETATION",
+            "weight": 0.3
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_10",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "reviewed_content": "Ông An cần đặt một cái thang lên xuống hồ bơi tại một điểm trên đường cong EFIG sao cho khoảng cách từ điểm đặt thang đến lối đi là ngắn nhất; khoảng cách đó bằng 2,56 m (làm tròn đến hàng phần trăm).",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "OPTIMIZATION",
+            "weight": 0.5
+          },
+          {
+            "code": "MATHEMATICAL_MODELING",
+            "weight": 0.3
+          },
+          {
+            "code": "CONTEXT_INTERPRETATION",
+            "weight": 0.2
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_10",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0019",
+    "source_candidate_id": "M12_DERIV_CAND_0019",
+    "source_fingerprint": "f93e52a1da41395a",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "raw_subsource_code": "VINH_PHUC_2025",
+    "effective_subsource_code": "VINH_PHUC_2025",
+    "provenance_correction_code": null,
+    "candidate_extraction_page": 21,
+    "question_number": "3",
+    "review_status": "VERIFIED",
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED",
+    "taxonomy_review": "CONFIRMED_DERIVED",
+    "taxonomy_basis": "COACH_LEARNING_DERIVED",
+    "source_evidence_id": "EVID_PROV_0019",
+    "visual_asset_required": false,
+    "promotion_ready": false,
+    "reviewed_group_context": "Câu 3. Cho hàm số y = (3x + 2)/(x - 2) có đồ thị là (C).",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "reviewed_content": "Đồ thị (C) cắt đường thẳng y = x + 3 tại hai điểm phân biệt.",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "COMPLETE_FUNCTION_ANALYSIS_LINEAR_FRACTION",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "FUNCTION_GRAPH",
+            "weight": 0.5
+          },
+          {
+            "code": "LINEAR_FRACTION_STRUCTURE",
+            "weight": 0.5
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_08",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "reviewed_content": "Tiếp tuyến của đồ thị (C) tại giao điểm của (C) với trục Oy là đường thẳng y = -2x + 1.",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "COMPLETE_FUNCTION_ANALYSIS_LINEAR_FRACTION",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "FIRST_DERIVATIVE",
+            "weight": 0.4
+          },
+          {
+            "code": "DERIVATIVE_RULES",
+            "weight": 0.4
+          },
+          {
+            "code": "FUNCTION_GRAPH",
+            "weight": 0.2
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_08",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "reviewed_content": "Đường thẳng y = 3 là tiệm cận đứng của đồ thị hàm số (C).",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "HORIZONTAL_ASYMPTOTE_RATIONAL",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "HORIZONTAL_ASYMPTOTE",
+            "weight": 0.6
+          },
+          {
+            "code": "LIMIT_AT_INFINITY",
+            "weight": 0.4
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_06",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "reviewed_content": "Điểm I(2; 3) là giao điểm của các đường tiệm cận của đồ thị (C).",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "COMPLETE_FUNCTION_ANALYSIS_LINEAR_FRACTION",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "VERTICAL_ASYMPTOTE",
+            "weight": 0.4
+          },
+          {
+            "code": "HORIZONTAL_ASYMPTOTE",
+            "weight": 0.4
+          },
+          {
+            "code": "FUNCTION_GRAPH",
+            "weight": 0.2
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_06",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0024",
+    "source_candidate_id": "M12_DERIV_CAND_0024",
+    "source_fingerprint": "bb8e221f152cccd1",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "raw_subsource_code": "HA_TINH_2025",
+    "effective_subsource_code": "HA_TINH_2025",
+    "provenance_correction_code": null,
+    "candidate_extraction_page": 39,
+    "question_number": "2",
+    "review_status": "VERIFIED",
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED",
+    "taxonomy_review": "CONFIRMED_DERIVED",
+    "taxonomy_basis": "COACH_LEARNING_DERIVED",
+    "source_evidence_id": "EVID_PROV_0024",
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "reviewed_group_context": "Câu 2. Cho hàm số y = f(x) = (x^2 - 3x + 6)/(x - 1).",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "reviewed_content": "Đồ thị hàm số cắt trục tung tại điểm M(0; -5).",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "COMPLETE_FUNCTION_ANALYSIS_QUADRATIC_OVER_LINEAR",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "FUNCTION_GRAPH",
+            "weight": 0.5
+          },
+          {
+            "code": "QUADRATIC_OVER_LINEAR_STRUCTURE",
+            "weight": 0.5
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_08",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "reviewed_content": "Tiệm cận xiên của đồ thị hàm số có phương trình y = x - 2.",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "OBLIQUE_ASYMPTOTE",
+            "weight": 0.5
+          },
+          {
+            "code": "POLYNOMIAL_DIVISION",
+            "weight": 0.25
+          },
+          {
+            "code": "LIMIT_AT_INFINITY",
+            "weight": 0.25
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_06",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "reviewed_content": "Tập xác định của hàm số là ℝ \\ {1}.",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "COMPLETE_FUNCTION_ANALYSIS_QUADRATIC_OVER_LINEAR",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "FUNCTION_DOMAIN",
+            "weight": 0.6
+          },
+          {
+            "code": "QUADRATIC_OVER_LINEAR_STRUCTURE",
+            "weight": 0.4
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_07",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "reviewed_content": "Đồ thị (C) của hàm số y = f(x) là hình vẽ bên.",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "GRAPH_IDENTIFICATION_FROM_FEATURES",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "GRAPH_READING",
+            "weight": 0.5
+          },
+          {
+            "code": "FUNCTION_GRAPH",
+            "weight": 0.3
+          },
+          {
+            "code": "QUADRATIC_OVER_LINEAR_STRUCTURE",
+            "weight": 0.2
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_08",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0031",
+    "source_candidate_id": "M12_DERIV_CAND_0031",
+    "source_fingerprint": "5e331072e48c7641",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "raw_subsource_code": "HA_TINH_2025",
+    "effective_subsource_code": "HUNG_YEN_2025",
+    "provenance_correction_code": "PROV_CORR_HUNG_YEN_2025_PAGE_BOUNDARY",
+    "candidate_extraction_page": 65,
+    "question_number": "15",
+    "review_status": "VERIFIED",
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED",
+    "taxonomy_review": "CONFIRMED_DERIVED",
+    "taxonomy_basis": "COACH_LEARNING_DERIVED",
+    "source_evidence_id": "EVID_PROV_0031",
+    "visual_asset_required": false,
+    "promotion_ready": false,
+    "reviewed_group_context": "Câu 15. Cho hàm số f(x) = sin x - e^x.",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "reviewed_content": "Giá trị nhỏ nhất của f(x) trên đoạn [0; π/2] là -1.",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "GLOBAL_EXTREMA",
+            "weight": 0.5
+          },
+          {
+            "code": "ENDPOINT_EVALUATION",
+            "weight": 0.3
+          },
+          {
+            "code": "CRITICAL_POINT",
+            "weight": 0.2
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_05",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "reviewed_content": "Nghiệm của phương trình f'(x) = 0 trên đoạn [0; π/2] là x = 0.",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "CRITICAL_POINT",
+            "weight": 0.4
+          },
+          {
+            "code": "FIRST_DERIVATIVE",
+            "weight": 0.3
+          },
+          {
+            "code": "DERIVATIVE_RULES",
+            "weight": 0.3
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_05",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "reviewed_content": "Đạo hàm của hàm số đã cho là f'(x) = cos x - e^x, ∀x ∈ ℝ.",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "DERIVATIVE_RULES",
+            "weight": 0.7
+          },
+          {
+            "code": "FIRST_DERIVATIVE",
+            "weight": 0.3
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_05",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "reviewed_content": "f(π) = 1 - e^π; f(0) = -2.",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "ENDPOINT_EVALUATION",
+            "weight": 0.6
+          },
+          {
+            "code": "GLOBAL_EXTREMA",
+            "weight": 0.4
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_05",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0035",
+    "source_candidate_id": "M12_DERIV_CAND_0035",
+    "source_fingerprint": "7f9d43b0f7a91515",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "raw_subsource_code": "DA_NANG_2025",
+    "effective_subsource_code": "DA_NANG_2025",
+    "provenance_correction_code": null,
+    "candidate_extraction_page": 75,
+    "question_number": "15",
+    "review_status": "VERIFIED",
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED",
+    "taxonomy_review": "CONFIRMED_DERIVED",
+    "taxonomy_basis": "COACH_LEARNING_DERIVED",
+    "source_evidence_id": "EVID_PROV_0035",
+    "visual_asset_required": false,
+    "promotion_ready": false,
+    "reviewed_group_context": "Câu 15. Cho hàm số f(x) = -2x^4 + 4x^2 + 1 có đồ thị (C).",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "reviewed_content": "lim_{x→-∞} f(x) = -∞.",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "GLOBAL_EXTREMA_SIMPLE_DOMAIN",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "LIMIT_AT_INFINITY",
+            "weight": 0.6
+          },
+          {
+            "code": "GLOBAL_EXTREMA",
+            "weight": 0.4
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_04",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "reviewed_content": "Đạo hàm của hàm số đã cho là f'(x) = -8x^3 + 8x + 1.",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "GLOBAL_EXTREMA_SIMPLE_DOMAIN",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "DERIVATIVE_RULES",
+            "weight": 0.7
+          },
+          {
+            "code": "FIRST_DERIVATIVE",
+            "weight": 0.3
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_05",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "reviewed_content": "Tập nghiệm của phương trình f'(x) = 0 là S = {-1; 0; 1}.",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "GLOBAL_EXTREMA_SIMPLE_DOMAIN",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "CRITICAL_POINT",
+            "weight": 0.5
+          },
+          {
+            "code": "DERIVATIVE_RULES",
+            "weight": 0.3
+          },
+          {
+            "code": "FIRST_DERIVATIVE",
+            "weight": 0.2
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_05",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "reviewed_content": "Giá trị lớn nhất của f(x) là 1.",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "GLOBAL_EXTREMA_SIMPLE_DOMAIN",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "GLOBAL_EXTREMA",
+            "weight": 0.6
+          },
+          {
+            "code": "CRITICAL_POINT",
+            "weight": 0.4
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_05",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0041",
+    "source_candidate_id": "M12_DERIV_CAND_0041",
+    "source_fingerprint": "2e8fc52502db4095",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "raw_subsource_code": "THAI_BINH_2025",
+    "effective_subsource_code": "THAI_BINH_2025",
+    "provenance_correction_code": null,
+    "candidate_extraction_page": 116,
+    "question_number": "4",
+    "review_status": "VERIFIED",
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED",
+    "taxonomy_review": "CONFIRMED_DERIVED",
+    "taxonomy_basis": "COACH_LEARNING_DERIVED",
+    "source_evidence_id": "EVID_PROV_0041",
+    "visual_asset_required": false,
+    "promotion_ready": false,
+    "reviewed_group_context": "Câu 4. Nhà máy A chuyên sản xuất một loại sản phẩm cho nhà máy B. Hằng tháng nhà máy A cung cấp cho nhà máy B số lượng theo đơn đặt hàng (tối đa 100 tấn). Nếu số lượng đặt hàng là x (tấn) thì giá bán mỗi tấn là P(x) = 45 - 0,001x^2 (triệu đồng) và chi phí sản xuất là C(x) = 100 + 30x (triệu đồng).",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "reviewed_content": "Chi phí để nhà máy A sản xuất 10 tấn sản phẩm trong một tháng là 400 triệu đồng.",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "MATHEMATICAL_MODELING",
+            "weight": 0.6
+          },
+          {
+            "code": "CONTEXT_INTERPRETATION",
+            "weight": 0.4
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_10",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "reviewed_content": "Số tiền nhà máy A thu được khi bán 10 tấn sản phẩm cho nhà máy B là 600 triệu đồng.",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "MATHEMATICAL_MODELING",
+            "weight": 0.6
+          },
+          {
+            "code": "CONTEXT_INTERPRETATION",
+            "weight": 0.4
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_10",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "reviewed_content": "Lợi nhuận khi bán x tấn (0 ≤ x ≤ 100) là H(x) = -0,001x^3 + 15x - 100.",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "MATHEMATICAL_MODELING",
+            "weight": 0.7
+          },
+          {
+            "code": "CONTEXT_INTERPRETATION",
+            "weight": 0.3
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_10",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "reviewed_content": "Nhà máy A bán khoảng 70,7 tấn sản phẩm mỗi tháng thì thu được lợi nhuận lớn nhất.",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "OPTIMIZATION",
+            "weight": 0.6
+          },
+          {
+            "code": "GLOBAL_EXTREMA",
+            "weight": 0.2
+          },
+          {
+            "code": "CONTEXT_INTERPRETATION",
+            "weight": 0.2
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_10",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0047",
+    "source_candidate_id": "M12_DERIV_CAND_0047",
+    "source_fingerprint": "802da50ed5c564b5",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "raw_subsource_code": "QUANG_NINH_2025",
+    "effective_subsource_code": "QUANG_NINH_2025",
+    "provenance_correction_code": null,
+    "candidate_extraction_page": 141,
+    "question_number": "3",
+    "review_status": "VERIFIED",
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED",
+    "taxonomy_review": "CONFIRMED_DERIVED",
+    "taxonomy_basis": "COACH_LEARNING_DERIVED",
+    "source_evidence_id": "EVID_PROV_0047",
+    "visual_asset_required": false,
+    "promotion_ready": false,
+    "reviewed_group_context": "Câu 3. Cho hàm số y = x - 1 + 9/(x + 2).",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "reviewed_content": "Tập xác định của hàm số là ℝ \\ {-2}.",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "COMPLETE_FUNCTION_ANALYSIS_QUADRATIC_OVER_LINEAR",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "FUNCTION_DOMAIN",
+            "weight": 0.6
+          },
+          {
+            "code": "QUADRATIC_OVER_LINEAR_STRUCTURE",
+            "weight": 0.4
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_07",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "reviewed_content": "Hàm số có đạo hàm y' = 1 - 9/(x + 2)^2, ∀x ≠ -2.",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "MONOTONICITY_FROM_EXPRESSION",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "DERIVATIVE_RULES",
+            "weight": 0.7
+          },
+          {
+            "code": "FIRST_DERIVATIVE",
+            "weight": 0.3
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_01",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "reviewed_content": "Hàm số đồng biến trên các khoảng (-∞; -5) và (1; +∞).",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "MONOTONICITY_FROM_EXPRESSION",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "DERIVATIVE_SIGN",
+            "weight": 0.4
+          },
+          {
+            "code": "MONOTONICITY_CRITERION",
+            "weight": 0.4
+          },
+          {
+            "code": "SIGN_ANALYSIS",
+            "weight": 0.2
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_01",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "reviewed_content": "Hàm số có giá trị cực đại lớn hơn giá trị cực tiểu.",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "FIND_FUNCTION_EXTREMA",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "LOCAL_EXTREMUM",
+            "weight": 0.5
+          },
+          {
+            "code": "EXTREMUM_CRITERION",
+            "weight": 0.3
+          },
+          {
+            "code": "DERIVATIVE_SIGN",
+            "weight": 0.2
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_03",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0052",
+    "source_candidate_id": "M12_DERIV_CAND_0052",
+    "source_fingerprint": "9bd71b25961766b5",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "raw_subsource_code": "LAI_CHAU_2025",
+    "effective_subsource_code": "LAI_CHAU_2025",
+    "provenance_correction_code": null,
+    "candidate_extraction_page": 158,
+    "question_number": "2",
+    "review_status": "VERIFIED",
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED",
+    "taxonomy_review": "CONFIRMED_DERIVED",
+    "taxonomy_basis": "COACH_LEARNING_DERIVED",
+    "source_evidence_id": "EVID_PROV_0052",
+    "visual_asset_required": false,
+    "promotion_ready": false,
+    "reviewed_group_context": "Câu 2. Cho hàm số f(x) = x - sin 2x.",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "reviewed_content": "f(-π/2) = -π/2, f(π) = π.",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "ENDPOINT_EVALUATION",
+            "weight": 0.6
+          },
+          {
+            "code": "GLOBAL_EXTREMA",
+            "weight": 0.4
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_05",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "reviewed_content": "f'(x) = 1 - cos 2x.",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "DERIVATIVE_RULES",
+            "weight": 0.7
+          },
+          {
+            "code": "FIRST_DERIVATIVE",
+            "weight": 0.3
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_05",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "reviewed_content": "Phương trình f'(x) = 0 trên đoạn [-π/2; π] có tập nghiệm T = {-π/6; π/6; 5π/6}.",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "CRITICAL_POINT",
+            "weight": 0.5
+          },
+          {
+            "code": "DERIVATIVE_RULES",
+            "weight": 0.3
+          },
+          {
+            "code": "FIRST_DERIVATIVE",
+            "weight": 0.2
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_05",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "reviewed_content": "Tổng giá trị lớn nhất và nhỏ nhất của hàm số trên đoạn [-π/2; π] bằng π/3 + 3/2.",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED",
+        "answer_evidence": "EXPLICIT_SOLUTION_OR_ANSWER_KEY_IN_SOURCE",
+        "problem_types": [
+          {
+            "code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "GLOBAL_EXTREMA",
+            "weight": 0.6
+          },
+          {
+            "code": "ENDPOINT_EVALUATION",
+            "weight": 0.2
+          },
+          {
+            "code": "CRITICAL_POINT",
+            "weight": 0.2
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_05",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      }
+    ]
+  }
+]

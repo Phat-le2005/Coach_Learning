@@ -1,0 +1,28 @@
+{
+  "dataset_code": "DATA-MATH12-007",
+  "batch_code": "DATA-MATH12-007_BATCH_001",
+  "scope": "Provincial 2025 TRUE/FALSE QuestionGroup academic review",
+  "base_commit": "41de2ae9aaa58ac1ffbc29a9304d9216dc270efb",
+  "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+  "source_file": "loi-giai-chi-tiet-de-thi-thu-tot-nghiep-thpt-2025-mon-toan-cua-cac-so-gddt.pdf",
+  "source_pdf_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+  "raw_candidate_sha256": "b627a458e0b18c0a4e0733e18864e0bd83165f94894a7d690e4fc1313f3ed4d5",
+  "target_groups": 13,
+  "reviewed_groups": 13,
+  "verified": 8,
+  "hold": 0,
+  "rejected": 5,
+  "rejected_duplicate": 3,
+  "rejected_out_of_scope": 2,
+  "visual_asset_required": 2,
+  "source_evidence_backed_decisions": 13,
+  "verified_child_statements": 32,
+  "assigned_child_answers": 32,
+  "promotion_ready": 0,
+  "production_imported": 0,
+  "notes": [
+    "All answer assignments for VERIFIED groups come from explicit answer/solution content in the source PDF.",
+    "Child taxonomy is COACH_LEARNING_DERIVED and is not represented as an official-source fact.",
+    "DATA-MATH12-006 structural staging and raw candidate data must remain immutable."
+  ]
+}

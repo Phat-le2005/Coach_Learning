@@ -1,0 +1,288 @@
+[
+  {
+    "evidence_id": "EVID_PROV_0012",
+    "group_candidate_id": "M12_DERIV_GROUP_0012",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "effective_subsource_code": "HUE_2025",
+    "candidate_extraction_page": 3,
+    "canonical_question_pages": [
+      3
+    ],
+    "solution_pages": [
+      11,
+      12,
+      13
+    ],
+    "question_number": "3",
+    "evidence_type": "QUESTION_AND_EXPLICIT_SOLUTION",
+    "answer_pattern": [
+      "TRUE",
+      "FALSE",
+      "FALSE",
+      "TRUE"
+    ],
+    "visual_asset_required": true,
+    "review_note": "Nguồn giải ghi rõ a Đúng, b Sai, c Sai, d Đúng."
+  },
+  {
+    "evidence_id": "EVID_PROV_0019",
+    "group_candidate_id": "M12_DERIV_GROUP_0019",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "effective_subsource_code": "VINH_PHUC_2025",
+    "candidate_extraction_page": 21,
+    "canonical_question_pages": [
+      21
+    ],
+    "solution_pages": [
+      29
+    ],
+    "question_number": "3",
+    "evidence_type": "QUESTION_AND_EXPLICIT_SOLUTION",
+    "answer_pattern": [
+      "TRUE",
+      "FALSE",
+      "FALSE",
+      "TRUE"
+    ],
+    "visual_asset_required": false
+  },
+  {
+    "evidence_id": "EVID_PROV_0021_DUP",
+    "group_candidate_id": "M12_DERIV_GROUP_0021",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "effective_subsource_code": "VINH_PHUC_2025",
+    "candidate_extraction_page": 29,
+    "canonical_question_pages": [
+      21
+    ],
+    "solution_pages": [
+      29
+    ],
+    "question_number": "3",
+    "evidence_type": "SOLUTION_REPRINT_DUPLICATE",
+    "duplicate_of_group_candidate_id": "M12_DERIV_GROUP_0019"
+  },
+  {
+    "evidence_id": "EVID_PROV_0024",
+    "group_candidate_id": "M12_DERIV_GROUP_0024",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "effective_subsource_code": "HA_TINH_2025",
+    "candidate_extraction_page": 39,
+    "canonical_question_pages": [
+      39
+    ],
+    "solution_pages": [
+      46,
+      47
+    ],
+    "question_number": "2",
+    "evidence_type": "QUESTION_AND_EXPLICIT_SOLUTION",
+    "answer_pattern": [
+      "FALSE",
+      "TRUE",
+      "TRUE",
+      "TRUE"
+    ],
+    "visual_asset_required": true,
+    "review_note": "Ý d tham chiếu trực tiếp tới hình vẽ bên nên cần asset hình trước production."
+  },
+  {
+    "evidence_id": "EVID_PROV_0026_DUP",
+    "group_candidate_id": "M12_DERIV_GROUP_0026",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "effective_subsource_code": "HA_TINH_2025",
+    "candidate_extraction_page": 46,
+    "canonical_question_pages": [
+      39
+    ],
+    "solution_pages": [
+      46,
+      47
+    ],
+    "question_number": "2",
+    "evidence_type": "SOLUTION_REPRINT_DUPLICATE",
+    "duplicate_of_group_candidate_id": "M12_DERIV_GROUP_0024"
+  },
+  {
+    "evidence_id": "EVID_PROV_0031",
+    "group_candidate_id": "M12_DERIV_GROUP_0031",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "effective_subsource_code": "HUNG_YEN_2025",
+    "raw_subsource_code": "HA_TINH_2025",
+    "provenance_correction_code": "PROV_CORR_HUNG_YEN_2025_PAGE_BOUNDARY",
+    "candidate_extraction_page": 65,
+    "canonical_question_pages": [
+      57,
+      58
+    ],
+    "solution_pages": [
+      65,
+      66
+    ],
+    "question_number": "15",
+    "evidence_type": "QUESTION_AND_EXPLICIT_SOLUTION",
+    "answer_pattern": [
+      "FALSE",
+      "TRUE",
+      "TRUE",
+      "FALSE"
+    ],
+    "visual_asset_required": false,
+    "review_note": "DATA-006 OCR bị lẫn thứ tự/nội dung; reviewed content được phục hồi từ trang đề và lời giải."
+  },
+  {
+    "evidence_id": "EVID_PROV_0035",
+    "group_candidate_id": "M12_DERIV_GROUP_0035",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "effective_subsource_code": "DA_NANG_2025",
+    "candidate_extraction_page": 75,
+    "canonical_question_pages": [
+      75
+    ],
+    "solution_pages": [
+      82
+    ],
+    "question_number": "15",
+    "evidence_type": "QUESTION_AND_EXPLICIT_SOLUTION",
+    "answer_pattern": [
+      "TRUE",
+      "FALSE",
+      "TRUE",
+      "FALSE"
+    ],
+    "visual_asset_required": false
+  },
+  {
+    "evidence_id": "EVID_PROV_0041",
+    "group_candidate_id": "M12_DERIV_GROUP_0041",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "effective_subsource_code": "THAI_BINH_2025",
+    "candidate_extraction_page": 116,
+    "canonical_question_pages": [
+      109,
+      110
+    ],
+    "solution_pages": [
+      116,
+      117
+    ],
+    "question_number": "4",
+    "evidence_type": "QUESTION_AND_EXPLICIT_SOLUTION",
+    "answer_pattern": [
+      "TRUE",
+      "FALSE",
+      "TRUE",
+      "TRUE"
+    ],
+    "visual_asset_required": false
+  },
+  {
+    "evidence_id": "EVID_PROV_0044_OOS",
+    "group_candidate_id": "M12_DERIV_GROUP_0044",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "effective_subsource_code": "HOA_BINH_2025",
+    "candidate_extraction_page": 123,
+    "canonical_question_pages": [
+      123
+    ],
+    "solution_pages": [
+      130
+    ],
+    "question_number": "2",
+    "evidence_type": "SOURCE_CONTENT_OUT_OF_SCOPE",
+    "answer_pattern": [
+      "TRUE",
+      "FALSE",
+      "TRUE",
+      "TRUE"
+    ],
+    "review_note": "Câu hỏi về hàm logarit f(x)=log_2(x+2), g(x)=log_4(5x+6); không thuộc dataset Ứng dụng đạo hàm lớp 12 hiện tại."
+  },
+  {
+    "evidence_id": "EVID_PROV_0047",
+    "group_candidate_id": "M12_DERIV_GROUP_0047",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "effective_subsource_code": "QUANG_NINH_2025",
+    "candidate_extraction_page": 141,
+    "canonical_question_pages": [
+      141
+    ],
+    "solution_pages": [
+      149,
+      150
+    ],
+    "question_number": "3",
+    "evidence_type": "QUESTION_AND_EXPLICIT_SOLUTION",
+    "answer_pattern": [
+      "TRUE",
+      "TRUE",
+      "FALSE",
+      "FALSE"
+    ],
+    "visual_asset_required": false
+  },
+  {
+    "evidence_id": "EVID_PROV_0052",
+    "group_candidate_id": "M12_DERIV_GROUP_0052",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "effective_subsource_code": "LAI_CHAU_2025",
+    "candidate_extraction_page": 158,
+    "canonical_question_pages": [
+      158
+    ],
+    "solution_pages": [
+      166,
+      167,
+      168
+    ],
+    "question_number": "2",
+    "evidence_type": "QUESTION_AND_EXPLICIT_SOLUTION",
+    "answer_pattern": [
+      "TRUE",
+      "FALSE",
+      "TRUE",
+      "TRUE"
+    ],
+    "visual_asset_required": false
+  },
+  {
+    "evidence_id": "EVID_PROV_0053_DUP",
+    "group_candidate_id": "M12_DERIV_GROUP_0053",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "effective_subsource_code": "LAI_CHAU_2025",
+    "candidate_extraction_page": 166,
+    "canonical_question_pages": [
+      158
+    ],
+    "solution_pages": [
+      166,
+      167,
+      168
+    ],
+    "question_number": "2",
+    "evidence_type": "SOLUTION_REPRINT_DUPLICATE",
+    "duplicate_of_group_candidate_id": "M12_DERIV_GROUP_0052"
+  },
+  {
+    "evidence_id": "EVID_PROV_0055_OOS",
+    "group_candidate_id": "M12_DERIV_GROUP_0055",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "effective_subsource_code": "THANH_HOA_2025",
+    "candidate_extraction_page": 175,
+    "canonical_question_pages": [
+      175
+    ],
+    "solution_pages": [
+      184
+    ],
+    "question_number": "3",
+    "evidence_type": "SOURCE_CONTENT_OUT_OF_SCOPE",
+    "answer_pattern": [
+      "FALSE",
+      "FALSE",
+      "FALSE",
+      "TRUE"
+    ],
+    "review_note": "Câu hỏi về hàm logarit y=log_3(5x-3); không thuộc dataset Ứng dụng đạo hàm lớp 12 hiện tại."
+  }
+]
