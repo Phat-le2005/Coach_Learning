@@ -1,0 +1,28 @@
+[
+  {
+    "source_candidate_id": "M12_DERIV_CAND_0061",
+    "source_fingerprint": "1b3a79b7095c4004",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_02",
+    "effective_subsource_code": "NGOC_VY_2026_02",
+    "provenance_correction_code": null,
+    "source_page": 24,
+    "question_number": "1",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "hold_code": "LABEL_ORDER_INVALID",
+    "observed_labels": [
+      "a",
+      "c",
+      "b",
+      "d"
+    ],
+    "expected_labels": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "reason": "Statement labels must remain in extracted order a, b, c, d.",
+    "action": "SOURCE_PAGE_REVIEW_REQUIRED"
+  }
+]

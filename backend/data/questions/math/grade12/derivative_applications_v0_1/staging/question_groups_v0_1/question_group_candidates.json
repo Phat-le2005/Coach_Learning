@@ -1,0 +1,5415 @@
+[
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0001",
+    "source_candidate_id": "M12_DERIV_CAND_0001",
+    "source_fingerprint": "834fafa8228b014a",
+    "source_code": "SRC_MOET_EXAM_2025_SOLUTION_COMPILATION",
+    "raw_subsource_code": "MOET_2025_101",
+    "effective_subsource_code": "MOET_2025_101",
+    "provenance_correction_code": null,
+    "source_page": 5,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho hàm số f  x   x3  12x  8 . Khi đó: Mệnh đề Đúng Sai",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+    "parent_concepts": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "GLOBAL_EXTREMA",
+        "weight": 0.35,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "CRITICAL_POINT",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "ENDPOINT_EVALUATION",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.2,
+        "is_primary": false
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "learning_outcome_code": "M12_DERIV_LO_05",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Hàm số đã cho có đạo hàm là f   x   3x2  12",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Phương trình f   x   0 có tập nghiệm là S  2",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "f  2   24",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Giá trị lớn nhất của hàm số f  x  trên đoạn  3; 3 bằng 24 »",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0004",
+    "source_candidate_id": "M12_DERIV_CAND_0004",
+    "source_fingerprint": "8f6e76603facfba9",
+    "source_code": "SRC_MOET_EXAM_2025_SOLUTION_COMPILATION",
+    "raw_subsource_code": "MOET_2025_102",
+    "effective_subsource_code": "MOET_2025_102",
+    "provenance_correction_code": null,
+    "source_page": 10,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho hàm số f  x   x3  27x  81 . Khi đó: Mệnh đề Đúng Sai",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+    "parent_concepts": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "GLOBAL_EXTREMA",
+        "weight": 0.35,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "CRITICAL_POINT",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "ENDPOINT_EVALUATION",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.2,
+        "is_primary": false
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "learning_outcome_code": "M12_DERIV_LO_05",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Hàm số đã cho có đạo hàm là f   x   3x  27 2",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Phương trình f   x   0 có tập nghiệm là S  3",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "f  3  27",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Giá trị nhỏ nhất của hàm số f  x  trên đoạn 4; 4 bằng 27 »",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0006",
+    "source_candidate_id": "M12_DERIV_CAND_0006",
+    "source_fingerprint": "50430499d5a1a898",
+    "source_code": "SRC_MOET_EXAM_2025_SOLUTION_COMPILATION",
+    "raw_subsource_code": "MOET_2025_104",
+    "effective_subsource_code": "MOET_2025_104",
+    "provenance_correction_code": null,
+    "source_page": 20,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho hàm số f  x   x3  3x  91 . Khi đó: Mệnh đề Đúng Sai",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+    "parent_concepts": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "GLOBAL_EXTREMA",
+        "weight": 0.35,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "CRITICAL_POINT",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "ENDPOINT_EVALUATION",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.2,
+        "is_primary": false
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "learning_outcome_code": "M12_DERIV_LO_05",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Hàm số đã cho có đạo hàm là f   x   3x  3 2",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Phương trình f   x   0 có tập nghiệm là S  1",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "f 1  89",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Giá trị nhỏ nhất của hàm số f  x  trên đoạn  2; 2 bằng 89 »",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0008",
+    "source_candidate_id": "M12_DERIV_CAND_0008",
+    "source_fingerprint": "ae1480b2f4ec2f8d",
+    "source_code": "SRC_MOET_EXAM_2025_SOLUTION_COMPILATION",
+    "raw_subsource_code": null,
+    "effective_subsource_code": null,
+    "provenance_correction_code": null,
+    "source_page": 53,
+    "question_number": "2",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 2. Cho hàm số f  x   x3  48x  8 . Khi đó: Mệnh đề Đúng Sai",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+    "parent_concepts": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "GLOBAL_EXTREMA",
+        "weight": 0.35,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "CRITICAL_POINT",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "ENDPOINT_EVALUATION",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.2,
+        "is_primary": false
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "learning_outcome_code": "M12_DERIV_LO_05",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Hàm số đã cho có đạo hàm là f   x   3x2  48",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Phương trình f   x   0 có tập nghiệm là S  4",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "f  4   248",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Giá trị lớn nhất của hàm số f  x  trên đoạn  5; 5 bằng 248 ",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0012",
+    "source_candidate_id": "M12_DERIV_CAND_0012",
+    "source_fingerprint": "7b076df958f6c0f9",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "raw_subsource_code": "HUE_2025",
+    "effective_subsource_code": "HUE_2025",
+    "provenance_correction_code": null,
+    "source_page": 3,
+    "question_number": "3",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 3. Ông An có một mảnh đất hình vuông ABCD có cạnh AB = 12 m . Ông làm một hồ bơi dạng hình thang cong (phần tô đậm) và một lối đi là đoạn thẳng HB . Nếu đặt hệ trục tọa độ có gốc tại A như hình vẽ, độ dài đơn vị là 1 m , thì đường cong EFIG là một phần đồ thị của một hàm bậc ba y = f ( x ) có F là điểm cực tiểu và I là điểm cực đại. Biết CH= DE = GB = 3 m và các điểm F , I cách cạnh AD lần lượt là 2 m và 6 m .",
+    "source_review_status": "HOLD_QUESTION_TYPE_CORRECTION",
+    "problem_type_code": "FIND_FUNCTION_EXTREMA",
+    "parent_concepts": [
+      {
+        "problem_type_code": "FIND_FUNCTION_EXTREMA",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "FIND_FUNCTION_EXTREMA",
+        "concept_code": "CRITICAL_POINT",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "FIND_FUNCTION_EXTREMA",
+        "concept_code": "EXTREMUM_CRITERION",
+        "weight": 0.35,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "FIND_FUNCTION_EXTREMA",
+        "concept_code": "LOCAL_EXTREMUM",
+        "weight": 0.25,
+        "is_primary": false
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "FIND_FUNCTION_EXTREMA",
+        "learning_outcome_code": "M12_DERIV_LO_03",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Phương trình của đường thẳng HB là y = −4 x + 48 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Tồn tại a ∈  sao cho f ′ ( x ) =a ( x + 2 )( x + 6 ) .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Tiếp tuyến của đồ thị hàm số y = f ( x ) tại điểm có hoành độ bằng 7 song song với đường thẳng HB .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Ông An cần đặt một cái thang lên xuống hồ bơi tại một điểm trên đường cong EFIG sao cho khoảng cách từ điểm đặt thang đến lối đi là ngắn nhất, khoảng cách đó bằng 2,56 m (kết quả làm tròn đến hàng phần trăm).",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0019",
+    "source_candidate_id": "M12_DERIV_CAND_0019",
+    "source_fingerprint": "f93e52a1da41395a",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "raw_subsource_code": "VINH_PHUC_2025",
+    "effective_subsource_code": "VINH_PHUC_2025",
+    "provenance_correction_code": null,
+    "source_page": 21,
+    "question_number": "3",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 3. Cho hàm số y = có đồ thị là ( C ) x−2",
+    "source_review_status": "HOLD_QUESTION_TYPE_CORRECTION",
+    "problem_type_code": "VERTICAL_ASYMPTOTE_RATIONAL",
+    "parent_concepts": [
+      {
+        "problem_type_code": "VERTICAL_ASYMPTOTE_RATIONAL",
+        "concept_code": "LIMIT_AT_POINT",
+        "weight": 0.35,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "VERTICAL_ASYMPTOTE_RATIONAL",
+        "concept_code": "VERTICAL_ASYMPTOTE",
+        "weight": 0.45,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "VERTICAL_ASYMPTOTE_RATIONAL",
+        "concept_code": "FUNCTION_DOMAIN",
+        "weight": 0.2,
+        "is_primary": false
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "VERTICAL_ASYMPTOTE_RATIONAL",
+        "learning_outcome_code": "M12_DERIV_LO_06",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Đồ thi ( C ) cắt đường thẳng y= x + 3 tại hai điểm phân biệt.",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Tiếp tuyến của đồ thị ( C ) tại giao điểm của ( C ) với trục Oy là đường thẳng y =−2 x + 1 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Đường thẳng y = 3 là tiệm cận đứng của đồ thị hàm số (C).",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Điểm I ( 2;3) là giao điểm của các đường tiệm cận của đồ thị ( C ) . NHÓM GIÁO VIÊN TOÁN VIỆT NAM",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0021",
+    "source_candidate_id": "M12_DERIV_CAND_0021",
+    "source_fingerprint": "256d473cd25f1ab0",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "raw_subsource_code": "VINH_PHUC_2025",
+    "effective_subsource_code": "VINH_PHUC_2025",
+    "provenance_correction_code": null,
+    "source_page": 29,
+    "question_number": "3",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 3. Cho hàm số y = có đồ thị là ( C ) x−2",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "VERTICAL_ASYMPTOTE_RATIONAL",
+    "parent_concepts": [
+      {
+        "problem_type_code": "VERTICAL_ASYMPTOTE_RATIONAL",
+        "concept_code": "LIMIT_AT_POINT",
+        "weight": 0.35,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "VERTICAL_ASYMPTOTE_RATIONAL",
+        "concept_code": "VERTICAL_ASYMPTOTE",
+        "weight": 0.45,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "VERTICAL_ASYMPTOTE_RATIONAL",
+        "concept_code": "FUNCTION_DOMAIN",
+        "weight": 0.2,
+        "is_primary": false
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "VERTICAL_ASYMPTOTE_RATIONAL",
+        "learning_outcome_code": "M12_DERIV_LO_06",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Đồ thi ( C ) cắt đường thẳng y= x + 3 tại hai điểm phân biệt. NHÓM GIÁO VIÊN TOÁN VIỆT NAM",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Tiếp tuyến của đồ thị ( C ) tại giao điểm của ( C ) với trục Oy là đường thẳng y =−2 x + 1 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Đường thẳng y = 3 là tiệm cận đứng của đồ thị hàm số (C).",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Điểm I ( 2;3) là giao điểm của các đường tiệm cận của đồ thị ( C ) .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0024",
+    "source_candidate_id": "M12_DERIV_CAND_0024",
+    "source_fingerprint": "bb8e221f152cccd1",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "raw_subsource_code": "HA_TINH_2025",
+    "effective_subsource_code": "HA_TINH_2025",
+    "provenance_correction_code": null,
+    "source_page": 39,
+    "question_number": "2",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 2. Cho hàm số= y f= ( x) . x −1",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+    "parent_concepts": [
+      {
+        "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+        "concept_code": "POLYNOMIAL_DIVISION",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+        "concept_code": "LIMIT_AT_INFINITY",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+        "concept_code": "OBLIQUE_ASYMPTOTE",
+        "weight": 0.5,
+        "is_primary": true
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+        "learning_outcome_code": "M12_DERIV_LO_06",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Đồ thị hàm số cắt trục tung tại điểm M (0; −5) .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Tiệm cận xiên của đồ thị hàm số có phương trình y= x − 2 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Tập xác định của hàm số là  \\ {1} .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Đồ thị (C ) của hàm số y = f ( x) là hình vẽ bên. NHÓM GIÁO VIÊN TOÁN VIỆT",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0026",
+    "source_candidate_id": "M12_DERIV_CAND_0026",
+    "source_fingerprint": "abcbdbb91a53054c",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "raw_subsource_code": "HA_TINH_2025",
+    "effective_subsource_code": "HA_TINH_2025",
+    "provenance_correction_code": null,
+    "source_page": 46,
+    "question_number": "2",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 2. Cho hàm số= y f= ( x) . x −1",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+    "parent_concepts": [
+      {
+        "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+        "concept_code": "POLYNOMIAL_DIVISION",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+        "concept_code": "LIMIT_AT_INFINITY",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+        "concept_code": "OBLIQUE_ASYMPTOTE",
+        "weight": 0.5,
+        "is_primary": true
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+        "learning_outcome_code": "M12_DERIV_LO_06",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Đồ thị hàm số cắt trục tung tại điểm M (0; −5) .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Tiệm cận xiên của đồ thị hàm số có phương trình y= x − 2 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Tập xác định của hàm số là  \\ {1} .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Đồ thị (C ) của hàm số y = f ( x) là hình vẽ bên. https://w w w .facebook.com/groups/toanv d.v dc Trang 10",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0031",
+    "source_candidate_id": "M12_DERIV_CAND_0031",
+    "source_fingerprint": "5e331072e48c7641",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "raw_subsource_code": "HA_TINH_2025",
+    "effective_subsource_code": "HUNG_YEN_2025",
+    "provenance_correction_code": "PROV_CORR_HUNG_YEN_2025_PAGE_BOUNDARY",
+    "source_page": 65,
+    "question_number": "15",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 15. Cho hàm số f=( x ) sin x − e . x  π",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+    "parent_concepts": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "GLOBAL_EXTREMA",
+        "weight": 0.35,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "CRITICAL_POINT",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "ENDPOINT_EVALUATION",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.2,
+        "is_primary": false
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "learning_outcome_code": "M12_DERIV_LO_05",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Giá trị nhỏ nhất của f ( x ) trên đoạn 0;  là −1 .  2  π",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Nghiệm của phương trình f ′ ( x ) = 0 trên đoạn 0;  là x = 0 .  2 NHÓM GIÁO VIÊN TOÁN VIỆT NAM đã cho là f ′ ( x ) cos x − e x ; ∀x ∈  .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Đạo hàm của hàm số=",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "f (π ) = 1 − eπ ; f ( 0 ) = −2",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0035",
+    "source_candidate_id": "M12_DERIV_CAND_0035",
+    "source_fingerprint": "7f9d43b0f7a91515",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "raw_subsource_code": "DA_NANG_2025",
+    "effective_subsource_code": "DA_NANG_2025",
+    "provenance_correction_code": null,
+    "source_page": 75,
+    "question_number": "15",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 15: Cho hàm số f ( x ) = −2 x 4 + 4 x 2 + 1 có đồ thị (C ).",
+    "source_review_status": "HOLD_QUESTION_TYPE_CORRECTION",
+    "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+    "parent_concepts": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "GLOBAL_EXTREMA",
+        "weight": 0.35,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "CRITICAL_POINT",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "ENDPOINT_EVALUATION",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.2,
+        "is_primary": false
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "learning_outcome_code": "M12_DERIV_LO_05",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "lim f (x ) = −∞ . x →−∞",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Đạo hàm của hàm số đã cho là f ′ ( x ) = −8x 3 + 8x + 1 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Tập nghiệm của phương trình f ′ ( x ) = 0 là S = {−1; 0;1} .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Giá trị lớn nhất của f ( x ) là 1 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0041",
+    "source_candidate_id": "M12_DERIV_CAND_0041",
+    "source_fingerprint": "2e8fc52502db4095",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "raw_subsource_code": "THAI_BINH_2025",
+    "effective_subsource_code": "THAI_BINH_2025",
+    "provenance_correction_code": null,
+    "source_page": 116,
+    "question_number": "4",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 4: Nhà máy A chuyên sản xuất một loại sản phẩm cho nhà máy B . Hai nhà máy thỏa thuận rằng, hằng tháng nhà máy A cung cấp cho nhà máy B số lượng sản phẩm theo đơn đặt hàng của nhà máy B (tối đa 100 tấn sản phẩm). Biết rằng, nếu số lượng đặt hàng là x (tấn) sản phẩm thì giá bán cho mỗi tấn sản phẩm là P ( x= ) 45 − 0, 001x 2 (triệu đồng) và chi phí để nhà máy A sản xuất được x (tấn) sản phẩm trong một tháng là C (= x ) 100 + 30 x (triệu đồng, gồm 100 triệu đồng chi phí cố định và 30 triệu đồng cho mỗi tấn sản phẩm).",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+    "parent_concepts": [
+      {
+        "problem_type_code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+        "concept_code": "MATHEMATICAL_MODELING",
+        "weight": 0.3,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+        "concept_code": "OPTIMIZATION",
+        "weight": 0.35,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+        "concept_code": "GLOBAL_EXTREMA",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+        "concept_code": "CONTEXT_INTERPRETATION",
+        "weight": 0.15,
+        "is_primary": false
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+        "learning_outcome_code": "M12_DERIV_LO_10",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Chi phí để nhà máy A sản xuất 10 tấn sản phẩm trong một tháng là 400 triệu đồng.",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Số tiền nhà máy A thu được khi bán 10 tấn sản phẩm cho nhà máy B là 600 triệu đồng.",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Lợi nhuận mà nhà máy A thu được khi bán x (tấn) sản phẩm ( 0 ≤ x ≤ 100 ) cho nhà máy B là H ( x ) = −0, 001x 3 + 15 x − 100 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Nhà máy A bán cho nhà máy B khoảng 70,7 tấn sản phẩm mỗi tháng thì thu được lợi nhuận lớn nhất.",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0044",
+    "source_candidate_id": "M12_DERIV_CAND_0044",
+    "source_fingerprint": "dd45bc78161aa71b",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "raw_subsource_code": "HOA_BINH_2025",
+    "effective_subsource_code": "HOA_BINH_2025",
+    "provenance_correction_code": null,
+    "source_page": 123,
+    "question_number": "2",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 2: Cho hai hàm số = f ( x) log 2 ( x + 2) và= g ( x) log 4 (5 x + 6) .",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+    "parent_concepts": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "SIGN_ANALYSIS",
+        "weight": 0.3,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "MONOTONICITY_CRITERION",
+        "weight": 0.45,
+        "is_primary": true
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "learning_outcome_code": "M12_DERIV_LO_01",
+        "weight": 0.5
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "learning_outcome_code": "M12_DERIV_LO_02",
+        "weight": 0.5
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Tập xác định của hàm số y = f ( x) là (−2; +∞) .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Hàm số y = g ( x) đồng biến trên  .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Phương trình f ( x) = 5 có nghiệm x = 30",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Phương trình f ( x) = g ( x) có một nghiệm duy nhất.",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0047",
+    "source_candidate_id": "M12_DERIV_CAND_0047",
+    "source_fingerprint": "802da50ed5c564b5",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "raw_subsource_code": "QUANG_NINH_2025",
+    "effective_subsource_code": "QUANG_NINH_2025",
+    "provenance_correction_code": null,
+    "source_page": 141,
+    "question_number": "3",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 3: Cho hàm số y = x − 1 + x+2",
+    "source_review_status": "HOLD_QUESTION_TYPE_CORRECTION",
+    "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+    "parent_concepts": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "SIGN_ANALYSIS",
+        "weight": 0.3,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "MONOTONICITY_CRITERION",
+        "weight": 0.45,
+        "is_primary": true
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "learning_outcome_code": "M12_DERIV_LO_01",
+        "weight": 0.5
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "learning_outcome_code": "M12_DERIV_LO_02",
+        "weight": 0.5
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Tập xác định của hìm số là:  \\ {−2} 9",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Hàm số có đạo hàm là y ' = 1 − ; ∀x ≠ −2 ( x + 2) 2",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Hàm số đồng biến trên các khoàng ( −∞; −5 ) và (1; +∞ )",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Hàm số có giá trị cuc đại lớn hơn giá trị cực tiểu.",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0052",
+    "source_candidate_id": "M12_DERIV_CAND_0052",
+    "source_fingerprint": "9bd71b25961766b5",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "raw_subsource_code": "LAI_CHAU_2025",
+    "effective_subsource_code": "LAI_CHAU_2025",
+    "provenance_correction_code": null,
+    "source_page": 158,
+    "question_number": "2",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 2: Cho hàm số f ( x )= x − sin 2 x . π π",
+    "source_review_status": "HOLD_QUESTION_TYPE_CORRECTION",
+    "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+    "parent_concepts": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "GLOBAL_EXTREMA",
+        "weight": 0.35,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "CRITICAL_POINT",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "ENDPOINT_EVALUATION",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.2,
+        "is_primary": false
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "learning_outcome_code": "M12_DERIV_LO_05",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "f  −  = − , f (π ) = π.  2 2",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "f ′ ( x ) = 1 − cos 2 x .  π   π π 5π ",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Phương trình f ′ ( x ) = 0 trên đoạn  − ; π  có tập nghiệm là T = − ; ;  .  2   6 6 6   π  π 3",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Tổng giá trị lớn nhất và nhỏ nhất của hàm số trên đoạn  − ; π  bằng + .  2  3 2",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0053",
+    "source_candidate_id": "M12_DERIV_CAND_0053",
+    "source_fingerprint": "8149bdbf2a29ad48",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "raw_subsource_code": "LAI_CHAU_2025",
+    "effective_subsource_code": "LAI_CHAU_2025",
+    "provenance_correction_code": null,
+    "source_page": 166,
+    "question_number": "2",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 2: Cho hàm số f ( x )= x − sin 2 x . π π",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+    "parent_concepts": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "GLOBAL_EXTREMA",
+        "weight": 0.35,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "CRITICAL_POINT",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "ENDPOINT_EVALUATION",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.2,
+        "is_primary": false
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "learning_outcome_code": "M12_DERIV_LO_05",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "f  −  = − , f (π ) = π.  2 2",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "f ′ ( x ) = 1 − cos 2 x .  π   π π 5π ",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Phương trình f ′ ( x ) = 0 trên đoạn  − ; π  có tập nghiệm là T = − ; ;  .  2   6 6 6   π  π 3",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Tổng giá trị lớn nhất và nhỏ nhất của hàm số trên đoạn  − ; π  bằng + .  2  3 2 https:/w w w .facebook.com/groups/toanv d. Trang 11",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0055",
+    "source_candidate_id": "M12_DERIV_CAND_0055",
+    "source_fingerprint": "f77260421ef4a6ec",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "raw_subsource_code": "THANH_HOA_2025",
+    "effective_subsource_code": "THANH_HOA_2025",
+    "provenance_correction_code": null,
+    "source_page": 175,
+    "question_number": "3",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 3. = Cho hàm số y f= ( x ) log3 ( 5 x − 3) .",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+    "parent_concepts": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "SIGN_ANALYSIS",
+        "weight": 0.3,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "MONOTONICITY_CRITERION",
+        "weight": 0.45,
+        "is_primary": true
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "learning_outcome_code": "M12_DERIV_LO_01",
+        "weight": 0.5
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "learning_outcome_code": "M12_DERIV_LO_02",
+        "weight": 0.5
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Tập xác định của hàm số y = f ( x ) là D = ( 0; +∞ ) .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Đồ thị hàm số y = f ( x ) đi qua điểm M ( 2;7 ) .  6 12 ",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Tổng giá trị lớn nhất và giá trị nhỏ nhất của hàm số y = f ( x ) trên  ;  là 12. 5 5  3 ",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Hàm số y = f ( x ) đồng biến trên  ; +∞  . 5 ",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0058",
+    "source_candidate_id": "M12_DERIV_CAND_0058",
+    "source_fingerprint": "be539872e7ccbee8",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_01",
+    "effective_subsource_code": "NGOC_VY_2026_01",
+    "provenance_correction_code": null,
+    "source_page": 3,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho hàm số f  x    x  1 với x  0 . x x2  4",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+    "parent_concepts": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "GLOBAL_EXTREMA",
+        "weight": 0.35,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "CRITICAL_POINT",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "ENDPOINT_EVALUATION",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.2,
+        "is_primary": false
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "learning_outcome_code": "M12_DERIV_LO_05",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Đạo hàm của hàm số đã cho là f   x   với x  0 . x2",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "f   4   2 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Tổng các nghiệm của phương trình f ( x )  0 bằng 4 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Hàm số f  x  có giá trị lớn nhất và giá trị nhỏ nhất trên đoạn 1;3 lần lượt bằng M , m . Khi đó M  m  1 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0062",
+    "source_candidate_id": "M12_DERIV_CAND_0062",
+    "source_fingerprint": "755804ce292a1842",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_03",
+    "effective_subsource_code": "NGOC_VY_2026_03",
+    "provenance_correction_code": null,
+    "source_page": 43,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho hàm số y  . 4  2 x",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+    "parent_concepts": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "SIGN_ANALYSIS",
+        "weight": 0.3,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "MONOTONICITY_CRITERION",
+        "weight": 0.45,
+        "is_primary": true
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "learning_outcome_code": "M12_DERIV_LO_01",
+        "weight": 0.5
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "learning_outcome_code": "M12_DERIV_LO_02",
+        "weight": 0.5
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Hàm số đã cho luôn nghịch biến trên  .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "f  3  f  2024   f  2025 ",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Đồ thị hàm số đã cho không có cực trị.",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Hàm số đã cho nghịch biến trên các khoảng  ;  2  và  2;   .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0066",
+    "source_candidate_id": "M12_DERIV_CAND_0066",
+    "source_fingerprint": "761753b7a8ec15f3",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_04",
+    "effective_subsource_code": "NGOC_VY_2026_04",
+    "provenance_correction_code": null,
+    "source_page": 63,
+    "question_number": "2",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 2. Cho hàm số y  5  4 x .  5",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+    "parent_concepts": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "SIGN_ANALYSIS",
+        "weight": 0.3,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "MONOTONICITY_CRITERION",
+        "weight": 0.45,
+        "is_primary": true
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "learning_outcome_code": "M12_DERIV_LO_01",
+        "weight": 0.5
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "learning_outcome_code": "M12_DERIV_LO_02",
+        "weight": 0.5
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Điều kiện xác định của hàm số y  5  4 x là x   ;  .  4 4  5",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "y '  với x   ;  . 5  4x  4",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Hàm số nghịch biến trên khoảng  1;1 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Trên đoạn  1;1 , giá trị lớn nhất và giá trị nhỏ nhất của hàm số đã cho lần lượt là 3 và 1 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0068",
+    "source_candidate_id": "M12_DERIV_CAND_0068",
+    "source_fingerprint": "4755ceaaeb6f8da0",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_04",
+    "effective_subsource_code": "NGOC_VY_2026_04",
+    "provenance_correction_code": null,
+    "source_page": 72,
+    "question_number": "4",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 4. Khảo sát chuyển động của xe khách trong 30 phút trên một quãng đường ta thu được kết quả: vận tốc v (mét/phút) của xe khách theo thời gian t (phút) được biểu diễn bởi hàm số: 100t khi 0  t  10  v  t    20t  800 khi 10  t  20  10 t  1400 khi 20  t  30 ",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "COMPLETE_FUNCTION_ANALYSIS_CUBIC",
+    "parent_concepts": [
+      {
+        "problem_type_code": "COMPLETE_FUNCTION_ANALYSIS_CUBIC",
+        "concept_code": "FUNCTION_ANALYSIS",
+        "weight": 0.45,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "COMPLETE_FUNCTION_ANALYSIS_CUBIC",
+        "concept_code": "CUBIC_FUNCTION_STRUCTURE",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "COMPLETE_FUNCTION_ANALYSIS_CUBIC",
+        "concept_code": "VARIATION_TABLE",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "COMPLETE_FUNCTION_ANALYSIS_CUBIC",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.15,
+        "is_primary": false
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "COMPLETE_FUNCTION_ANALYSIS_CUBIC",
+        "learning_outcome_code": "M12_DERIV_LO_07",
+        "weight": 0.5
+      },
+      {
+        "problem_type_code": "COMPLETE_FUNCTION_ANALYSIS_CUBIC",
+        "learning_outcome_code": "M12_DERIV_LO_08",
+        "weight": 0.5
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Vận tốc của xe khách ở phút thứ 8 là 800 (mét/phút)",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Vận tốc của xe khách ở phút thứ 20 là 1000 (mét/phút)",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Quãng đường chuyển động của xe khách trong 30 phút khảo sát là 2750  m  .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Vận tốc trung bình của xe khách trong 30 phút khảo sát là 910 (mét/phút) (làm tròn kết quả đến hàng đơn vị của mét/phút)",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0070",
+    "source_candidate_id": "M12_DERIV_CAND_0070",
+    "source_fingerprint": "0e8f42040884dcd1",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_05",
+    "effective_subsource_code": "NGOC_VY_2026_05",
+    "provenance_correction_code": null,
+    "source_page": 81,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho hàm số y  ( a  0, m  0) với a, b, c, m, n là các số thực và có đồ thị là (C ) có mx  n dạng như hình vẽ sau.",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+    "parent_concepts": [
+      {
+        "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+        "concept_code": "POLYNOMIAL_DIVISION",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+        "concept_code": "LIMIT_AT_INFINITY",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+        "concept_code": "OBLIQUE_ASYMPTOTE",
+        "weight": 0.5,
+        "is_primary": true
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+        "learning_outcome_code": "M12_DERIV_LO_06",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Hàm số y  f  x  nghịch biến trong khoảng  ;1 và  3;  , đồng biến trong khoảng 1;2  và  2;3 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Đồ thị hàm số y  f  x  có tiệm cận đứng là x  2 và tiệm cận xiên là y  x  1 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Đồ thị hàm số y  f  x  có điểm cực đại 1;1 và điểm cực tiểu  3;5 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Trên khoảng  2;  , hàm số y  f  x  không có giá trị nhỏ nhất.",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0072",
+    "source_candidate_id": "M12_DERIV_CAND_0072",
+    "source_fingerprint": "cd89d04e1cb059cb",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_06",
+    "effective_subsource_code": "NGOC_VY_2026_06",
+    "provenance_correction_code": null,
+    "source_page": 100,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho hàm số f  x   ln x  x , x  (0, ) .  1  e 1",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+    "parent_concepts": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "SIGN_ANALYSIS",
+        "weight": 0.3,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "MONOTONICITY_CRITERION",
+        "weight": 0.45,
+        "is_primary": true
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "learning_outcome_code": "M12_DERIV_LO_01",
+        "weight": 0.5
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "learning_outcome_code": "M12_DERIV_LO_02",
+        "weight": 0.5
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "f    ; f  e2   2  e2 . e e x 1",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Đạo hàm của hàm số đã cho là f   x   . x",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Hàm số đã cho nghịch biến trên 1;e 2  . 1 ",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Giá trị nhỏ nhất của hàm số trên  ; e 2  là 1 . e ",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0073",
+    "source_candidate_id": "M12_DERIV_CAND_0073",
+    "source_fingerprint": "c5ab5e59000ea27d",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_06",
+    "effective_subsource_code": "NGOC_VY_2026_06",
+    "provenance_correction_code": null,
+    "source_page": 100,
+    "question_number": "2",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 2. Trong không gian Oxyz , cho hai điểm A 1; 2;3 , B  2;1;1  1 3 ",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "GLOBAL_EXTREMA_RECOGNITION",
+    "parent_concepts": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_RECOGNITION",
+        "concept_code": "GLOBAL_EXTREMA",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_RECOGNITION",
+        "concept_code": "GRAPH_READING",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_RECOGNITION",
+        "concept_code": "VARIATION_TABLE",
+        "weight": 0.2,
+        "is_primary": false
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_RECOGNITION",
+        "learning_outcome_code": "M12_DERIV_LO_04",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Điểm I   ; ; 2  là trung điểm của đoạn thẳng AB .  2 2 ",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "AB  4 . 2 2  1  3 2",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Phương trình mặt cầu đường kính AB là  S  :  x     y     z  2   14 .  2  2",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Xét các điểm M thuộc mặt phẳng  Oxz  thỏa mãn  AMB  90 . Giá trị nhỏ nhất của đoạn OM không vượt quá 1 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0076",
+    "source_candidate_id": "M12_DERIV_CAND_0076",
+    "source_fingerprint": "da900523ae46111b",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_07",
+    "effective_subsource_code": "NGOC_VY_2026_07",
+    "provenance_correction_code": null,
+    "source_page": 121,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho hàm số f  x   x  . x 1",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+    "parent_concepts": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "GLOBAL_EXTREMA",
+        "weight": 0.35,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "CRITICAL_POINT",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "ENDPOINT_EVALUATION",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.2,
+        "is_primary": false
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "learning_outcome_code": "M12_DERIV_LO_05",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Tập xác định của hàm số đã cho là : D   \\ 1 . 9",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Đạo hàm của hàm số đã cho là f   x   1  2 với x  1 .  x  1",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Số nghiệm của phương trình f ( x )  0 trên đoạn  4;  1 bằng 2 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Giá trị lớn nhất của hàm số đã cho trên đoạn  4;  1 bằng 5 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0079",
+    "source_candidate_id": "M12_DERIV_CAND_0079",
+    "source_fingerprint": "e08f5c87db3b0666",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_08",
+    "effective_subsource_code": "NGOC_VY_2026_08",
+    "provenance_correction_code": null,
+    "source_page": 140,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho hàm số f  x   x 3  x .",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+    "parent_concepts": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "GLOBAL_EXTREMA",
+        "weight": 0.35,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "CRITICAL_POINT",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "ENDPOINT_EVALUATION",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.2,
+        "is_primary": false
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "learning_outcome_code": "M12_DERIV_LO_05",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Tập xác định của hàm số đã cho là : D   ;3 . 6  3x",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Đạo hàm của hàm số đã cho là f   x   , x   ;3 . 2 3 x",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Số nghiệm của phương trình f ( x )  0 bằng 1 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Giá trị lớn nhất, giá trị nhỏ nhất của hàm số đã cho lần lượt là 2 và 0 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0082",
+    "source_candidate_id": "M12_DERIV_CAND_0082",
+    "source_fingerprint": "15e3fb431252460a",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_08",
+    "effective_subsource_code": "NGOC_VY_2026_08",
+    "provenance_correction_code": null,
+    "source_page": 150,
+    "question_number": "4",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 4. Trong không gian Oxyz cho 3 điểm A  3;1; 1 ; B  4; 1; 2  ; C 1;3; 2  và mặt phẳng   : 4 x  2 y  z  12  0 .",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "GLOBAL_EXTREMA_RECOGNITION",
+    "parent_concepts": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_RECOGNITION",
+        "concept_code": "GLOBAL_EXTREMA",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_RECOGNITION",
+        "concept_code": "GRAPH_READING",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_RECOGNITION",
+        "concept_code": "VARIATION_TABLE",
+        "weight": 0.2,
+        "is_primary": false
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_RECOGNITION",
+        "learning_outcome_code": "M12_DERIV_LO_04",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Đường thẳng BC không nằm trong mặt phẳng   . 26",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Mặt cầu tâm I  4; 4; 1 tiếp xúc với mặt phẳng  ABC  có bán kính bằng . 5 x  4  t ",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Đường thẳng AB có phương trình tham số là  y  1  2t . z  2  3y     3",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Với điểm M    thì giá trị nhỏ nhất của biểu thức MA  4 MB  3MC bằng . 21",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0084",
+    "source_candidate_id": "M12_DERIV_CAND_0084",
+    "source_fingerprint": "4f12eadb85e8f284",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_09",
+    "effective_subsource_code": "NGOC_VY_2026_09",
+    "provenance_correction_code": null,
+    "source_page": 158,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho hàm số f ( x )  e 2 x 1  2 x",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+    "parent_concepts": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "GLOBAL_EXTREMA",
+        "weight": 0.35,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "CRITICAL_POINT",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "ENDPOINT_EVALUATION",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.2,
+        "is_primary": false
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "learning_outcome_code": "M12_DERIV_LO_05",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Hàm số đã cho có tập xác định D   0;   .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Đạo hàm của hàm số đã cho là f ( x)  2e2 x 1  2 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Giá trị lớn nhất, giá trị nhỏ nhất của hàm số đã cho trên đoạn  0; 2 lần lượt là e3  4 và 0 . 1 ",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Tập nghiệm của bất phương trình f ( x )  0 là  ;   . 2 ",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0087",
+    "source_candidate_id": "M12_DERIV_CAND_0087",
+    "source_fingerprint": "d106db83c573fbbf",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_10",
+    "effective_subsource_code": "NGOC_VY_2026_10",
+    "provenance_correction_code": null,
+    "source_page": 179,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho hàm số y  f  x  liên tục trên  có bảng biến thiên sau.  1   2024 ",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "MONOTONICITY_FROM_VARIATION_TABLE",
+    "parent_concepts": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_VARIATION_TABLE",
+        "concept_code": "VARIATION_TABLE",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_VARIATION_TABLE",
+        "concept_code": "MONOTONICITY",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_VARIATION_TABLE",
+        "concept_code": "GRAPH_READING",
+        "weight": 0.2,
+        "is_primary": false
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_VARIATION_TABLE",
+        "learning_outcome_code": "M12_DERIV_LO_02",
+        "weight": 0.5
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_VARIATION_TABLE",
+        "learning_outcome_code": "M12_DERIV_LO_03",
+        "weight": 0.5
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Hàm số nghịch biến trên khoảng  ;  và  ;   .  2025   2025   3   11 ",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "f   f    2025   2025 ",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Điểm cực tiểu của hàm số đã cho bằng 2024 .  2024 ",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Đồ thị hàm số đã cho có điểm cực đại là  ; 2025  .  2025 ",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0089",
+    "source_candidate_id": "M12_DERIV_CAND_0089",
+    "source_fingerprint": "b482bd1a0d7fb9b5",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_11",
+    "effective_subsource_code": "NGOC_VY_2026_11",
+    "provenance_correction_code": null,
+    "source_page": 198,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho hàm số y  f  x  có đạo hàm y  f   x  liên tục trên  và đồ thị hàm số f   x  như hình vẽ bên.",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+    "parent_concepts": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "SIGN_ANALYSIS",
+        "weight": 0.3,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "MONOTONICITY_CRITERION",
+        "weight": 0.45,
+        "is_primary": true
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "learning_outcome_code": "M12_DERIV_LO_01",
+        "weight": 0.5
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "learning_outcome_code": "M12_DERIV_LO_02",
+        "weight": 0.5
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Hàm số có hai điểm cực trị",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Hàm số y  f  x  đồng biến trên khoảng 1;   ",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "f 1  f  2   f  4 ",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Trên đoạn 1; 4 thì giá trị lớn nhất của hàm số là f 1 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0091",
+    "source_candidate_id": "M12_DERIV_CAND_0091",
+    "source_fingerprint": "bd4d74231f22068d",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_12",
+    "effective_subsource_code": "NGOC_VY_2026_12",
+    "provenance_correction_code": null,
+    "source_page": 218,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho hàm số f ( x )  2 x  e2 x .",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+    "parent_concepts": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "GLOBAL_EXTREMA",
+        "weight": 0.35,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "CRITICAL_POINT",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "ENDPOINT_EVALUATION",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.2,
+        "is_primary": false
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "learning_outcome_code": "M12_DERIV_LO_05",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Đạo hàm của hàm số đã cho là f ( x)  2  2e 2 x .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "f '  ln 2   6",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Số nghiệm của phương trình f ( x )  0 là 2 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Giá trị lớn nhất, giá trị nhỏ nhất của hàm số đã cho trên đoạn  1; ln 2 lần lượt là 0 và 2 ln 2  4 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0094",
+    "source_candidate_id": "M12_DERIV_CAND_0094",
+    "source_fingerprint": "b5c8a2ab532e6c60",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_13",
+    "effective_subsource_code": "NGOC_VY_2026_13",
+    "provenance_correction_code": null,
+    "source_page": 237,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho hàm số f  x   x 2  2 x  3 .",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+    "parent_concepts": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "GLOBAL_EXTREMA",
+        "weight": 0.35,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "CRITICAL_POINT",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "ENDPOINT_EVALUATION",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.2,
+        "is_primary": false
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "learning_outcome_code": "M12_DERIV_LO_05",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Tập xác định của hàm số đã cho là : D   . 1 x",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Đạo hàm của hàm số đã cho là f   x   . x2  2x  3",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Số nghiệm của phương trình f ( x )  0 bằng 2 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Giá trị nhỏ nhất của hàm số đã cho bằng 2 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0096",
+    "source_candidate_id": "M12_DERIV_CAND_0096",
+    "source_fingerprint": "a9e12d9904eb4694",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_14",
+    "effective_subsource_code": "NGOC_VY_2026_14",
+    "provenance_correction_code": null,
+    "source_page": 258,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho hàm số y  . x2",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+    "parent_concepts": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "SIGN_ANALYSIS",
+        "weight": 0.3,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "MONOTONICITY_CRITERION",
+        "weight": 0.45,
+        "is_primary": true
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "learning_outcome_code": "M12_DERIV_LO_01",
+        "weight": 0.5
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "learning_outcome_code": "M12_DERIV_LO_02",
+        "weight": 0.5
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Tập xác định của hàm số đã cho là D   \\ 2",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Hàm số đã cho nghịch biến trên các khoảng  ; 2  và  2;  .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Đồ thị hàm số đã cho không có cực trị.  1",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Đồ thị hàm số đã cho cắt trục tung tại điểm 1; 0  và cắt trục hoành tại điểm  0;   .  2",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0099",
+    "source_candidate_id": "M12_DERIV_CAND_0099",
+    "source_fingerprint": "5f1bf057fce2eb4e",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_15",
+    "effective_subsource_code": "NGOC_VY_2026_15",
+    "provenance_correction_code": null,
+    "source_page": 277,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho hàm số y  2 x  x 2 .",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+    "parent_concepts": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "SIGN_ANALYSIS",
+        "weight": 0.3,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "MONOTONICITY_CRITERION",
+        "weight": 0.45,
+        "is_primary": true
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "learning_outcome_code": "M12_DERIV_LO_01",
+        "weight": 0.5
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "learning_outcome_code": "M12_DERIV_LO_02",
+        "weight": 0.5
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Tập xác định của hàm số đã cho là : D   0; 2  . 1 x",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Đạo hàm của hàm số đã cho là y '  , x   0; 2 2 x  x2",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Hàm số đã cho nghịch biến trên khoảng  0;1 , đồng biến trên khoảng 1; 2  .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Điểm cực đại và giá trị cực đại của hàm số đã cho lần lượt là x  1 ; y  1 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0101",
+    "source_candidate_id": "M12_DERIV_CAND_0101",
+    "source_fingerprint": "5213d4f7482865e4",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_16",
+    "effective_subsource_code": "NGOC_VY_2026_16",
+    "provenance_correction_code": null,
+    "source_page": 295,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho hàm số f  x   với x  1 . x 1 x2  2 x  3",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+    "parent_concepts": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "GLOBAL_EXTREMA",
+        "weight": 0.35,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "CRITICAL_POINT",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "ENDPOINT_EVALUATION",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.2,
+        "is_primary": false
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "learning_outcome_code": "M12_DERIV_LO_05",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Đạo hàm của hàm số đã cho là f   x   2 với x  1 .  x  1",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "f   1  0 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Tổng các nghiệm của phương trình f ( x )  0 bằng 4 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Giá trị lớn nhất của hàm số đã cho trên đoạn  2; 4 là 6 . https://www.facebook.com/truongngocvy8/ Trang 2",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0104",
+    "source_candidate_id": "M12_DERIV_CAND_0104",
+    "source_fingerprint": "4becd2ac60f88e08",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_17",
+    "effective_subsource_code": "NGOC_VY_2026_17",
+    "provenance_correction_code": null,
+    "source_page": 316,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho hàm số y  x 1",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "FIND_FUNCTION_EXTREMA",
+    "parent_concepts": [
+      {
+        "problem_type_code": "FIND_FUNCTION_EXTREMA",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "FIND_FUNCTION_EXTREMA",
+        "concept_code": "CRITICAL_POINT",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "FIND_FUNCTION_EXTREMA",
+        "concept_code": "EXTREMUM_CRITERION",
+        "weight": 0.35,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "FIND_FUNCTION_EXTREMA",
+        "concept_code": "LOCAL_EXTREMUM",
+        "weight": 0.25,
+        "is_primary": false
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "FIND_FUNCTION_EXTREMA",
+        "learning_outcome_code": "M12_DERIV_LO_03",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Phương trình y   0 có hai nghiệm nguyên.",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Điểm cực đại của đồ thị hàm số đã cho là  2;5 ",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "f  2   f  5   f  2025 ",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Đồ thị hàm số đã cho cắt trục tung tại hai điểm phân biệt.",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0105",
+    "source_candidate_id": "M12_DERIV_CAND_0105",
+    "source_fingerprint": "075e92fece785fc9",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_17",
+    "effective_subsource_code": "NGOC_VY_2026_17",
+    "provenance_correction_code": null,
+    "source_page": 316,
+    "question_number": "2",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 2. Bạn Nam chạy bộ trong 2 giờ, vận tốc v  km / h  phụ thuộc vào thời gian t  h  có đồ thị là một phần của đường Parabol với đỉnh I 1;5  và trục đối xứng song song với trục tung Ov như hình vẽ.",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "GRAPH_SYMMETRY_IDENTIFICATION",
+    "parent_concepts": [
+      {
+        "problem_type_code": "GRAPH_SYMMETRY_IDENTIFICATION",
+        "concept_code": "GRAPH_SYMMETRY",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "GRAPH_SYMMETRY_IDENTIFICATION",
+        "concept_code": "GRAPH_READING",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GRAPH_SYMMETRY_IDENTIFICATION",
+        "concept_code": "FUNCTION_ANALYSIS",
+        "weight": 0.25,
+        "is_primary": false
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "GRAPH_SYMMETRY_IDENTIFICATION",
+        "learning_outcome_code": "M12_DERIV_LO_09",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Vận tốc chạy bộ của bạn Nam trong giờ thứ 2 tăng dần.",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Vận tốc lớn nhất trong 2 giờ chạy của bạn Nam là 5  km / h  .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Gia tốc chạy bộ của bạn Nam tại thời điểm 1, 5 giờ là 5  km / h  .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Quãng đường bạn Nam chạy được trong 1 giờ 30 phút kể từ lúc bắt đầu chạy là 6, 63  km  (kết quả làm tròn đến 2 chữ số thập phân).",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0108",
+    "source_candidate_id": "M12_DERIV_CAND_0108",
+    "source_fingerprint": "00a4f128c66fd7d6",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_18",
+    "effective_subsource_code": "NGOC_VY_2026_18",
+    "provenance_correction_code": null,
+    "source_page": 336,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho hàm số y  2x 1",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "FIND_FUNCTION_EXTREMA",
+    "parent_concepts": [
+      {
+        "problem_type_code": "FIND_FUNCTION_EXTREMA",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "FIND_FUNCTION_EXTREMA",
+        "concept_code": "CRITICAL_POINT",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "FIND_FUNCTION_EXTREMA",
+        "concept_code": "EXTREMUM_CRITERION",
+        "weight": 0.35,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "FIND_FUNCTION_EXTREMA",
+        "concept_code": "LOCAL_EXTREMUM",
+        "weight": 0.25,
+        "is_primary": false
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "FIND_FUNCTION_EXTREMA",
+        "learning_outcome_code": "M12_DERIV_LO_03",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Tập xác định của hàm số đã cho là  .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Phương trình y   0 có hai nghiệm nguyên dương phân biệt.",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Hàm số đã cho có hai điểm cực trị và hai điểm cực trị này nằm về hai phía của trục tung",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Khi đồ thị hàm số đã cho có hai điểm cực trị thì đường thẳng đi qua hai điểm cực trị của đồ thị hàm số có phương trình y  x  1",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0111",
+    "source_candidate_id": "M12_DERIV_CAND_0111",
+    "source_fingerprint": "e36f08368583d583",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_19",
+    "effective_subsource_code": "NGOC_VY_2026_19",
+    "provenance_correction_code": null,
+    "source_page": 357,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho hàm số y  9  4 x 2 .  3 3",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+    "parent_concepts": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "SIGN_ANALYSIS",
+        "weight": 0.3,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "MONOTONICITY_CRITERION",
+        "weight": 0.45,
+        "is_primary": true
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "learning_outcome_code": "M12_DERIV_LO_01",
+        "weight": 0.5
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "learning_outcome_code": "M12_DERIV_LO_02",
+        "weight": 0.5
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Tập xác định của hàm số đã cho là D    ;  .  2 2",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Số nghiệm của phương trình f ( x )  0 bằng 1 .  3   3",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Hàm số đã cho đồng biến trên khoảng   ;0  , nghịch biến trên khoảng  0;  .  2   2 3",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Điểm cực tiểu và giá trị tiểu của hàm số đã cho lần lượt là x   ; y  0. 2",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0113",
+    "source_candidate_id": "M12_DERIV_CAND_0113",
+    "source_fingerprint": "5c65d1419850c219",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_20",
+    "effective_subsource_code": "NGOC_VY_2026_20",
+    "provenance_correction_code": null,
+    "source_page": 379,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho hàm số y  f  x  có bảng biến thiên:",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "MONOTONICITY_FROM_VARIATION_TABLE",
+    "parent_concepts": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_VARIATION_TABLE",
+        "concept_code": "VARIATION_TABLE",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_VARIATION_TABLE",
+        "concept_code": "MONOTONICITY",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_VARIATION_TABLE",
+        "concept_code": "GRAPH_READING",
+        "weight": 0.2,
+        "is_primary": false
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_VARIATION_TABLE",
+        "learning_outcome_code": "M12_DERIV_LO_02",
+        "weight": 0.5
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_VARIATION_TABLE",
+        "learning_outcome_code": "M12_DERIV_LO_03",
+        "weight": 0.5
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Hàm số đồng biến trên khoảng  ;3 và  2;   . 7",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "f  3  f   . 2",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Giá trị cực tiểu của hàm số đã cho bằng 2 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Đường thẳng đi qua hai điểm cực trị của đồ thị hàm số y  f  x  tạo với hai trục toạ độ một tam giác 64 của diện tích S bằng (đvdt). 5 x2 y3 z 4",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0114",
+    "source_candidate_id": "M12_DERIV_CAND_0114",
+    "source_fingerprint": "decfefbd2c7b0073",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_20",
+    "effective_subsource_code": "NGOC_VY_2026_20",
+    "provenance_correction_code": null,
+    "source_page": 387,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho hàm số y  f  x  có bảng biến thiên:",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "MONOTONICITY_FROM_VARIATION_TABLE",
+    "parent_concepts": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_VARIATION_TABLE",
+        "concept_code": "VARIATION_TABLE",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_VARIATION_TABLE",
+        "concept_code": "MONOTONICITY",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_VARIATION_TABLE",
+        "concept_code": "GRAPH_READING",
+        "weight": 0.2,
+        "is_primary": false
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_VARIATION_TABLE",
+        "learning_outcome_code": "M12_DERIV_LO_02",
+        "weight": 0.5
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_VARIATION_TABLE",
+        "learning_outcome_code": "M12_DERIV_LO_03",
+        "weight": 0.5
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Hàm số đồng biến trên khoảng  ;3 và  2;   . 7",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "f  3  f   . 2",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Giá trị cực tiểu của hàm số đã cho bằng 2 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Đường thẳng đi qua hai điểm cực trị của đồ thị hàm số y  f  x  tạo với hai trục toạ độ một tam giác 64 của diện tích S bằng (đvdt). 5",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0116",
+    "source_candidate_id": "M12_DERIV_CAND_0116",
+    "source_fingerprint": "c2666a5efe579a17",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_21",
+    "effective_subsource_code": "NGOC_VY_2026_21",
+    "provenance_correction_code": null,
+    "source_page": 398,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho hàm số f ( x )  e x  x 2  3 .",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+    "parent_concepts": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "GLOBAL_EXTREMA",
+        "weight": 0.35,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "CRITICAL_POINT",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "ENDPOINT_EVALUATION",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.2,
+        "is_primary": false
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "learning_outcome_code": "M12_DERIV_LO_05",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "f (0)  3; f  ln 2   2 ln 2 2  6 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Đạo hàm của hàm số đã cho là f ( x)  e x  x 2  2 x  3",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Tổng các nghiệm của phương trình f ( x )  0 là 2 . 22",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Giá trị lớn nhất của hàm số đã cho trên đoạn  5; 2  là e5 https://www.facebook.com/truongngocvy8/ Trang 2",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0118",
+    "source_candidate_id": "M12_DERIV_CAND_0118",
+    "source_fingerprint": "371c9ed98abe3ec2",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_21",
+    "effective_subsource_code": "NGOC_VY_2026_21",
+    "provenance_correction_code": null,
+    "source_page": 406,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho hàm số f ( x )  e x  x 2  3 .",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+    "parent_concepts": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "GLOBAL_EXTREMA",
+        "weight": 0.35,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "CRITICAL_POINT",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "ENDPOINT_EVALUATION",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.2,
+        "is_primary": false
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "learning_outcome_code": "M12_DERIV_LO_05",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "f (0)  3; f  ln 2   2 ln 2 2  6 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Đạo hàm của hàm số đã cho là f ( x)  e x  x 2  2 x  3",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Tổng các nghiệm của phương trình f ( x )  0 là 2 . 22",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Giá trị lớn nhất của hàm số đã cho trên đoạn  5; 2  là e5",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0120",
+    "source_candidate_id": "M12_DERIV_CAND_0120",
+    "source_fingerprint": "e1199469999c6afc",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_22",
+    "effective_subsource_code": "NGOC_VY_2026_22",
+    "provenance_correction_code": null,
+    "source_page": 418,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho hàm số y  . x5",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+    "parent_concepts": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "SIGN_ANALYSIS",
+        "weight": 0.3,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "MONOTONICITY_CRITERION",
+        "weight": 0.45,
+        "is_primary": true
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "learning_outcome_code": "M12_DERIV_LO_01",
+        "weight": 0.5
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "learning_outcome_code": "M12_DERIV_LO_02",
+        "weight": 0.5
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Tập xác định của hàm số đã cho là D   \\ 5 . x 2  10 x  31",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Đạo hàm của hàm số đã cho là y '  2 .  x  5",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Hàm số đã cho nghịch biến trên khoảng  4;10  .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Hàm số đã cho không có cực trị. y 1 z  2",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0122",
+    "source_candidate_id": "M12_DERIV_CAND_0122",
+    "source_fingerprint": "d434f1105d0a5f29",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_22",
+    "effective_subsource_code": "NGOC_VY_2026_22",
+    "provenance_correction_code": null,
+    "source_page": 426,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho hàm số y  . x5",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+    "parent_concepts": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "SIGN_ANALYSIS",
+        "weight": 0.3,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "MONOTONICITY_CRITERION",
+        "weight": 0.45,
+        "is_primary": true
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "learning_outcome_code": "M12_DERIV_LO_01",
+        "weight": 0.5
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "learning_outcome_code": "M12_DERIV_LO_02",
+        "weight": 0.5
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Tập xác định của hàm số đã cho là D   \\ 5 . x 2  10 x  31",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Đạo hàm của hàm số đã cho là y '  2 .  x  5",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Hàm số đã cho nghịch biến trên khoảng  4;10  .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Hàm số đã cho không có cực trị.",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0124",
+    "source_candidate_id": "M12_DERIV_CAND_0124",
+    "source_fingerprint": "5fabd07926ffe274",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_23",
+    "effective_subsource_code": "NGOC_VY_2026_23",
+    "provenance_correction_code": null,
+    "source_page": 438,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho hàm số f  x    x  4  . x2 64 25",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "VERTICAL_ASYMPTOTE_RATIONAL",
+    "parent_concepts": [
+      {
+        "problem_type_code": "VERTICAL_ASYMPTOTE_RATIONAL",
+        "concept_code": "LIMIT_AT_POINT",
+        "weight": 0.35,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "VERTICAL_ASYMPTOTE_RATIONAL",
+        "concept_code": "VERTICAL_ASYMPTOTE",
+        "weight": 0.45,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "VERTICAL_ASYMPTOTE_RATIONAL",
+        "concept_code": "FUNCTION_DOMAIN",
+        "weight": 0.2,
+        "is_primary": false
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "VERTICAL_ASYMPTOTE_RATIONAL",
+        "learning_outcome_code": "M12_DERIV_LO_06",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "f  7   ; f  4   . 5 2",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Đồ thị của hàm số đã cho có đường tiệm cận đứng x  2 . x2  4 x  5",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Đạo hàm của hàm số đã cho f   x   2 .  x  2 25",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Giá trị nhỏ nhất của hàm số đã cho trên đoạn  7; 4 là . 2",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0126",
+    "source_candidate_id": "M12_DERIV_CAND_0126",
+    "source_fingerprint": "684b1601a18b0c78",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_24",
+    "effective_subsource_code": "NGOC_VY_2026_24",
+    "provenance_correction_code": null,
+    "source_page": 459,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho hàm số y  x 4  2 x 2  3 .",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+    "parent_concepts": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "SIGN_ANALYSIS",
+        "weight": 0.3,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "MONOTONICITY_CRITERION",
+        "weight": 0.45,
+        "is_primary": true
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "learning_outcome_code": "M12_DERIV_LO_01",
+        "weight": 0.5
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "learning_outcome_code": "M12_DERIV_LO_02",
+        "weight": 0.5
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Đạo hàm của hàm số đã cho là y  4 x 3  4 x .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Phương trình y   0 có hai nghiệm nguyên dương phân biệt.",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Hàm số đã cho nghịch biến trên các khoảng  ; 1 và  0;1 , đồng biến trên các khoảng  1;0  và 1;   .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Đồ thị hàm số đã cho có 1 cực tiểu là  0;3 và 2 cực đại là  1; 2  , 1; 2  2 2",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0127",
+    "source_candidate_id": "M12_DERIV_CAND_0127",
+    "source_fingerprint": "a2ff4e86b8645d6d",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_24",
+    "effective_subsource_code": "NGOC_VY_2026_24",
+    "provenance_correction_code": null,
+    "source_page": 467,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho hàm số y  x 4  2 x 2  3 .",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+    "parent_concepts": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "SIGN_ANALYSIS",
+        "weight": 0.3,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "MONOTONICITY_CRITERION",
+        "weight": 0.45,
+        "is_primary": true
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "learning_outcome_code": "M12_DERIV_LO_01",
+        "weight": 0.5
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "learning_outcome_code": "M12_DERIV_LO_02",
+        "weight": 0.5
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Đạo hàm của hàm số đã cho là y  4 x 3  4 x .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Phương trình y   0 có hai nghiệm nguyên dương phân biệt.",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Hàm số đã cho nghịch biến trên các khoảng  ; 1 và  0;1 , đồng biến trên các khoảng  1;0  và 1;   .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Đồ thị hàm số đã cho có 1 cực tiểu là  0;3 và 2 cực đại là  1; 2  , 1; 2 ",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0131",
+    "source_candidate_id": "M12_DERIV_CAND_0131",
+    "source_fingerprint": "24665341af5524b0",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_26",
+    "effective_subsource_code": "NGOC_VY_2026_26",
+    "provenance_correction_code": null,
+    "source_page": 496,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho hàm số y  x  . x x2  4",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+    "parent_concepts": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "SIGN_ANALYSIS",
+        "weight": 0.3,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "MONOTONICITY_CRITERION",
+        "weight": 0.45,
+        "is_primary": true
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "learning_outcome_code": "M12_DERIV_LO_01",
+        "weight": 0.5
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "learning_outcome_code": "M12_DERIV_LO_02",
+        "weight": 0.5
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Đạo hàm của hàm số đã cho là y '  , x  0 . x2",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Phương trình y   0 có hai nghiệm nguyên.",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Hàm số đồng biến trên các khoảng  ; 2  và  2;  , nghịch biến trên các khoảng  2;0  và  0; 2 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Đồ thị hàm số đã cho có điểm cực tiểu là  2; 4  .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0134",
+    "source_candidate_id": "M12_DERIV_CAND_0134",
+    "source_fingerprint": "5fd6396655fad857",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_27",
+    "effective_subsource_code": "NGOC_VY_2026_27",
+    "provenance_correction_code": null,
+    "source_page": 516,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho hàm số f  x   sin 2 x  x .    3",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+    "parent_concepts": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "GLOBAL_EXTREMA",
+        "weight": 0.35,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "CRITICAL_POINT",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "ENDPOINT_EVALUATION",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.2,
+        "is_primary": false
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "learning_outcome_code": "M12_DERIV_LO_05",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "f (0)  0; f    . 6 6",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Đạo hàm của hàm số đã cho là f   x   cos 2 x  1   ",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Số nghiệm của phương trình f ( x )  0 trên đoạn   ;  là 2 .  2 2     ",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Giá trị lớn nhất, giá trị nhỏ nhất của hàm số đã cho trên đoạn   ;  lần lượt là và  .  2 2 2 2",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0136",
+    "source_candidate_id": "M12_DERIV_CAND_0136",
+    "source_fingerprint": "142f83f6a2535077",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_28",
+    "effective_subsource_code": "NGOC_VY_2026_28",
+    "provenance_correction_code": null,
+    "source_page": 535,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho hàm số y   x 3  x 2  5 x  4 .",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+    "parent_concepts": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "SIGN_ANALYSIS",
+        "weight": 0.3,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "MONOTONICITY_CRITERION",
+        "weight": 0.45,
+        "is_primary": true
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "learning_outcome_code": "M12_DERIV_LO_01",
+        "weight": 0.5
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "learning_outcome_code": "M12_DERIV_LO_02",
+        "weight": 0.5
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Đạo hàm của hàm số đã cho là y   3x 2  2 x  5 .  5 ",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Hàm số đã cho đồng biến trên   ;1 .  3 ",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "f  10   f  3  f  2   5 317 ",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Đồ thị hàm số đã cho có điểm cực đại là   ;  .  3 27 ",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0138",
+    "source_candidate_id": "M12_DERIV_CAND_0138",
+    "source_fingerprint": "778e514dbb8130f7",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_29",
+    "effective_subsource_code": "NGOC_VY_2026_29",
+    "provenance_correction_code": null,
+    "source_page": 554,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho hàm số f  x   ln x  2 x 2 , x  (0, ) . 5",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+    "parent_concepts": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "SIGN_ANALYSIS",
+        "weight": 0.3,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "MONOTONICITY_CRITERION",
+        "weight": 0.45,
+        "is_primary": true
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "learning_outcome_code": "M12_DERIV_LO_01",
+        "weight": 0.5
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "learning_outcome_code": "M12_DERIV_LO_02",
+        "weight": 0.5
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Tổng giá trị lớn nhất và nhỏ nhất của hàm số [1;e 2 ] là   ln 2 . 2",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Hàm số y  f ( x ) có hai điểm cực trị.",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Hàm số luôn đồng biến trên tập xác định.",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "f (1)  2; f (e 2 )  2  2e 4 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0139",
+    "source_candidate_id": "M12_DERIV_CAND_0139",
+    "source_fingerprint": "f7b52606788a5a96",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_29",
+    "effective_subsource_code": "NGOC_VY_2026_29",
+    "provenance_correction_code": null,
+    "source_page": 554,
+    "question_number": "3",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 3. Trong không gian với hệ tọa độ Oxyz , cho hai điểm A  3;1;2  , B 1;0;3 . Mặt cầu  S  có tâm I thuộc trục Ox và đi qua hai điểm A, B .",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "GLOBAL_EXTREMA_RECOGNITION",
+    "parent_concepts": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_RECOGNITION",
+        "concept_code": "GLOBAL_EXTREMA",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_RECOGNITION",
+        "concept_code": "GRAPH_READING",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_RECOGNITION",
+        "concept_code": "VARIATION_TABLE",
+        "weight": 0.2,
+        "is_primary": false
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_RECOGNITION",
+        "learning_outcome_code": "M12_DERIV_LO_04",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Bán kính của mặt cầu  S  là R  IA  IB .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "I 1;0;0)  2",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Mặt cầu  S  có phương trình là :  x  1  y 2  z 2  9 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Điểm M  x; y; z  thuộc mặt phẳng  Oyz  sao cho P  MA2  MB 2  MI 2 đạt giá trị nhỏ nhất. Khi đó giá trị biểu thức T  x  3 y  3 z  5 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0141",
+    "source_candidate_id": "M12_DERIV_CAND_0141",
+    "source_fingerprint": "0c99aeed5278322d",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_30",
+    "effective_subsource_code": "NGOC_VY_2026_30",
+    "provenance_correction_code": null,
+    "source_page": 571,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho hàm số f  x   . x 1",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+    "parent_concepts": [
+      {
+        "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+        "concept_code": "POLYNOMIAL_DIVISION",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+        "concept_code": "LIMIT_AT_INFINITY",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+        "concept_code": "OBLIQUE_ASYMPTOTE",
+        "weight": 0.5,
+        "is_primary": true
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+        "learning_outcome_code": "M12_DERIV_LO_06",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Hàm số đồng biến trên khoảng  ; 0  .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Đường thẳng y  x  3 là tiệm cận xiên của đồ thị hàm số đã cho.",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Tâm đối xứng của đồ thị hàm số đã cho là I 1;3  .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Giá trị lớn nhất của hàm số trên đoạn  3; 1 là 1 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0143",
+    "source_candidate_id": "M12_DERIV_CAND_0143",
+    "source_fingerprint": "17204655cee7349d",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_31",
+    "effective_subsource_code": "NGOC_VY_2026_31",
+    "provenance_correction_code": null,
+    "source_page": 589,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho hàm số f ( x)  . ex",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+    "parent_concepts": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "GLOBAL_EXTREMA",
+        "weight": 0.35,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "CRITICAL_POINT",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "ENDPOINT_EVALUATION",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.2,
+        "is_primary": false
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "learning_outcome_code": "M12_DERIV_LO_05",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Tập xác định của hàm số đã cho là D   \\{0} . 2 x 2  7 x  3",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "f ( x )  . e2 x",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Phương trình f ( x )  0 có hai nghiệm phân biệt trong (0;4) . 9",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Giá trị lớn nhất của hàm số đã cho trong (0;4) bằng . e3",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0144",
+    "source_candidate_id": "M12_DERIV_CAND_0144",
+    "source_fingerprint": "f242ca0794e325d0",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_31",
+    "effective_subsource_code": "NGOC_VY_2026_31",
+    "provenance_correction_code": null,
+    "source_page": 589,
+    "question_number": "3",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 3. Trong không gian Oxyz , cho A  0; 0; 2  , B 1;1;0  và mặt cầu  S  : x 2  y 2   z  1  . 4 1",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "GLOBAL_EXTREMA_RECOGNITION",
+    "parent_concepts": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_RECOGNITION",
+        "concept_code": "GLOBAL_EXTREMA",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_RECOGNITION",
+        "concept_code": "GRAPH_READING",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_RECOGNITION",
+        "concept_code": "VARIATION_TABLE",
+        "weight": 0.2,
+        "is_primary": false
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_RECOGNITION",
+        "learning_outcome_code": "M12_DERIV_LO_04",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Mặt cầu  S  có tâm I  0; 0; 1 và bán kính R  . 2",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Điểm A nằm ngoài mặt cầu  S  . 2",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Phương trình mặt cầu tâm A và đi qua B là: x 2  y 2   z  2   4 15",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Điểm M thay đổi thuộc  S  , giá trị nhỏ nhất của biểu thức MA2  2 MB 2 bằng . 4",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0145",
+    "source_candidate_id": "M12_DERIV_CAND_0145",
+    "source_fingerprint": "6635b0496e99cb1b",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_31",
+    "effective_subsource_code": "NGOC_VY_2026_31",
+    "provenance_correction_code": null,
+    "source_page": 598,
+    "question_number": "3",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 3. Trong không gian Oxyz , cho A  0; 0; 2  , B 1;1;0  và mặt cầu  S  : x 2  y 2   z  1  . 4 1",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "GLOBAL_EXTREMA_RECOGNITION",
+    "parent_concepts": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_RECOGNITION",
+        "concept_code": "GLOBAL_EXTREMA",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_RECOGNITION",
+        "concept_code": "GRAPH_READING",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_RECOGNITION",
+        "concept_code": "VARIATION_TABLE",
+        "weight": 0.2,
+        "is_primary": false
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_RECOGNITION",
+        "learning_outcome_code": "M12_DERIV_LO_04",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Mặt cầu  S  có tâm I  0; 0; 1 và bán kính R  . 2",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Điểm A nằm ngoài mặt cầu  S  . 2",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Phương trình mặt cầu tâm A và đi qua B là: x 2  y 2   z  2   4 15",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Điểm M thay đổi thuộc  S  , giá trị nhỏ nhất của biểu thức MA2  2 MB 2 bằng . 4 https://www.facebook.com/truongngocvy8/ Trang 12",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0147",
+    "source_candidate_id": "M12_DERIV_CAND_0147",
+    "source_fingerprint": "90f89555bcf24935",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_32",
+    "effective_subsource_code": "NGOC_VY_2026_32",
+    "provenance_correction_code": null,
+    "source_page": 608,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho hàm số y  f  x   có đồ thị  C  . Khi đó x 1 x2  2 x  3",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "EXTREMA_FROM_DERIVATIVE_SIGN",
+    "parent_concepts": [
+      {
+        "problem_type_code": "EXTREMA_FROM_DERIVATIVE_SIGN",
+        "concept_code": "DERIVATIVE_SIGN",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "EXTREMA_FROM_DERIVATIVE_SIGN",
+        "concept_code": "EXTREMUM_CRITERION",
+        "weight": 0.5,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "EXTREMA_FROM_DERIVATIVE_SIGN",
+        "concept_code": "LOCAL_EXTREMUM",
+        "weight": 0.25,
+        "is_primary": false
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "EXTREMA_FROM_DERIVATIVE_SIGN",
+        "learning_outcome_code": "M12_DERIV_LO_03",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "y   f   x   , x  1 ( x  1)2",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Hàm số có hai điểm cực trị trái dấu",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Khoảng cách giữa hai điểm cực trị của đồ thị  C  bằng 4",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Trên đồ thị  C  có đúng 8 điểm có tọa độ nguyên.",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0150",
+    "source_candidate_id": "M12_DERIV_CAND_0150",
+    "source_fingerprint": "4d7d27e82268c7cb",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_33",
+    "effective_subsource_code": "NGOC_VY_2026_33",
+    "provenance_correction_code": null,
+    "source_page": 626,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho hàm số f  x   x2  2 e2 x . ",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+    "parent_concepts": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "GLOBAL_EXTREMA",
+        "weight": 0.35,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "CRITICAL_POINT",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "ENDPOINT_EVALUATION",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.2,
+        "is_primary": false
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "learning_outcome_code": "M12_DERIV_LO_05",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "f (0)  2; f  ln 2   4  ln 2 2  2  .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Đạo hàm của hàm số đã cho là f ( x)   x 2  x  2  e 2 x",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Tổng các nghiệm của phương trình f ( x )  0 là 1 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Giá trị nhỏ nhất của hàm số đã cho trên đoạn  1; 2  là e 2 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0154",
+    "source_candidate_id": "M12_DERIV_CAND_0154",
+    "source_fingerprint": "a9c510e1f87aceaf",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_34",
+    "effective_subsource_code": "NGOC_VY_2026_34",
+    "provenance_correction_code": null,
+    "source_page": 644,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho hàm số y  f  x  xác định trên  và có đồ thị hàm số f '  x  là đường cong trong hình bên.",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "MONOTONICITY_FROM_GRAPH",
+    "parent_concepts": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_GRAPH",
+        "concept_code": "GRAPH_READING",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_GRAPH",
+        "concept_code": "MONOTONICITY",
+        "weight": 0.45,
+        "is_primary": false
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_GRAPH",
+        "learning_outcome_code": "M12_DERIV_LO_03",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Hàm số y  f  x  có giá trị lớn nhất bằng f  0  tại x  0 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Hàm số y  f  x  có giá trị nhỏ nhất trên bằng f  2   f  2  tại x  2 và x  2 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Hàm số y  f  x  đồng biến trên khoảng  ; 2  và  0; 2  .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Đồ thị hàm số y  f  x  có một điểm cực đại và hai điểm cực tiểu https://www.facebook.com/truongngocvy8/ Trang 2",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0155",
+    "source_candidate_id": "M12_DERIV_CAND_0155",
+    "source_fingerprint": "e244bb5870e78eb6",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_34",
+    "effective_subsource_code": "NGOC_VY_2026_34",
+    "provenance_correction_code": null,
+    "source_page": 651,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho hàm số y  f  x  xác định trên  và có đồ thị hàm số f '  x  là đường cong trong hình bên.",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "MONOTONICITY_FROM_GRAPH",
+    "parent_concepts": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_GRAPH",
+        "concept_code": "GRAPH_READING",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_GRAPH",
+        "concept_code": "MONOTONICITY",
+        "weight": 0.45,
+        "is_primary": false
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_GRAPH",
+        "learning_outcome_code": "M12_DERIV_LO_03",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Hàm số y  f  x  có giá trị lớn nhất bằng f  0  tại x  0 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Hàm số y  f  x  có giá trị nhỏ nhất trên bằng f  2   f  2  tại x  2 và x  2 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Hàm số y  f  x  đồng biến trên khoảng  ; 2  và  0; 2  .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Đồ thị hàm số y  f  x  có một điểm cực đại và hai điểm cực tiểu",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0159",
+    "source_candidate_id": "M12_DERIV_CAND_0159",
+    "source_fingerprint": "622a22f48a183456",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_36",
+    "effective_subsource_code": "NGOC_VY_2026_36",
+    "provenance_correction_code": null,
+    "source_page": 681,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho hàm số y  x 2  5 x  4 . 2x  5",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+    "parent_concepts": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "SIGN_ANALYSIS",
+        "weight": 0.3,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "concept_code": "MONOTONICITY_CRITERION",
+        "weight": 0.45,
+        "is_primary": true
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "learning_outcome_code": "M12_DERIV_LO_01",
+        "weight": 0.5
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+        "learning_outcome_code": "M12_DERIV_LO_02",
+        "weight": 0.5
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Đạo hàm của hàm số đã cho là y '  , x   ;1   4;   2 x2  5x  4 5",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Nghiệm của phương trình f ( x )  0 bằng . 2",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Hàm số đã cho nghịch biến trên khoảng  4;  , đồng biến trên khoảng  ;1 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Hàm số đã cho không có cực trị.",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0163",
+    "source_candidate_id": "M12_DERIV_CAND_0163",
+    "source_fingerprint": "354a8e20b1361b9f",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_37",
+    "effective_subsource_code": "NGOC_VY_2026_37",
+    "provenance_correction_code": null,
+    "source_page": 708,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho hàm số y  ( a  0, m  0) với a, b, c, m, n là các số thực và có đồ thị là (C ) có mx  n dạng như hình vẽ sau.",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+    "parent_concepts": [
+      {
+        "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+        "concept_code": "POLYNOMIAL_DIVISION",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+        "concept_code": "LIMIT_AT_INFINITY",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+        "concept_code": "OBLIQUE_ASYMPTOTE",
+        "weight": 0.5,
+        "is_primary": true
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+        "learning_outcome_code": "M12_DERIV_LO_06",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Hàm số y  f  x  đồng biến trong khoảng  ; 1 và  1;   .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Đồ thị hàm số y  f  x  có tiệm cận đứng là x  1 và tiệm cận xiên là y  x .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Đồ thị hàm số y  f  x  có điểm cực đại  2;0 và điểm cực tiểu  0; 2 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Trên khoảng  ; 1 , hàm số y  f  x  có giá trị lớn nhất.",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0165",
+    "source_candidate_id": "M12_DERIV_CAND_0165",
+    "source_fingerprint": "699fb8629c890480",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_38",
+    "effective_subsource_code": "NGOC_VY_2026_38",
+    "provenance_correction_code": null,
+    "source_page": 720,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho đồ thị hàm số y  có đồ thị  C  . 2x  4",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "HORIZONTAL_ASYMPTOTE_RATIONAL",
+    "parent_concepts": [
+      {
+        "problem_type_code": "HORIZONTAL_ASYMPTOTE_RATIONAL",
+        "concept_code": "LIMIT_AT_INFINITY",
+        "weight": 0.45,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "HORIZONTAL_ASYMPTOTE_RATIONAL",
+        "concept_code": "HORIZONTAL_ASYMPTOTE",
+        "weight": 0.55,
+        "is_primary": true
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "HORIZONTAL_ASYMPTOTE_RATIONAL",
+        "learning_outcome_code": "M12_DERIV_LO_06",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Đường thẳng y  2 là tiệm cận ngang của  C  .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Đường thẳng x  2 là tiệm cận đứng của  C  .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Hàm số đã cho đồng biến trên các khoảng  ; 10 và 10;   . 5 9",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Trên đoạn  3;5 , hàm số đã cho có giá trị lớn nhất bằng và có giá trị nhỏ nhất bằng . 9 14",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0170",
+    "source_candidate_id": "M12_DERIV_CAND_0170",
+    "source_fingerprint": "b5661a1375d72674",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_39",
+    "effective_subsource_code": "NGOC_VY_2026_39",
+    "provenance_correction_code": null,
+    "source_page": 740,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho hàm số y  f ( x) có bảng xét dấu đạo hàm f ( x ) như sau",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "MONOTONICITY_FROM_DERIVATIVE_SIGN",
+    "parent_concepts": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_DERIVATIVE_SIGN",
+        "concept_code": "DERIVATIVE_SIGN",
+        "weight": 0.35,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_DERIVATIVE_SIGN",
+        "concept_code": "SIGN_ANALYSIS",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "MONOTONICITY_FROM_DERIVATIVE_SIGN",
+        "concept_code": "MONOTONICITY_CRITERION",
+        "weight": 0.4,
+        "is_primary": true
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "MONOTONICITY_FROM_DERIVATIVE_SIGN",
+        "learning_outcome_code": "M12_DERIV_LO_01",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Đồ thị hàm số đã cho có 1 điểm cực đại.",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Đồ thị hàm số đã cho có 1 điểm cực tiểu.",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Hàm số đã cho nghịch biến trên khoảng  2; 2  .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "f  3  f  2024   f  2025 ",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0174",
+    "source_candidate_id": "M12_DERIV_CAND_0174",
+    "source_fingerprint": "d4d61432a3175039",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_40",
+    "effective_subsource_code": "NGOC_VY_2026_40",
+    "provenance_correction_code": null,
+    "source_page": 760,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho hàm số f  x   cos 2 x  3 .",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+    "parent_concepts": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "GLOBAL_EXTREMA",
+        "weight": 0.35,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "CRITICAL_POINT",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "ENDPOINT_EVALUATION",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.2,
+        "is_primary": false
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "learning_outcome_code": "M12_DERIV_LO_05",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Đạo hàm của hàm số đã cho là f   x    sin 2 x .  ",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "f      1 .  2",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Số nghiệm của phương trình f ( x )  0 trên đoạn  0;   bằng 3 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Giá trị nhỏ nhất của hàm số đã cho trên đoạn  0;   là 4 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0175",
+    "source_candidate_id": "M12_DERIV_CAND_0175",
+    "source_fingerprint": "90366e6fa65d23df",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_40",
+    "effective_subsource_code": "NGOC_VY_2026_40",
+    "provenance_correction_code": null,
+    "source_page": 768,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Cho hàm số f  x   cos 2 x  3 .",
+    "source_review_status": "UNTOUCHED_REVIEW_REQUIRED",
+    "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+    "parent_concepts": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "GLOBAL_EXTREMA",
+        "weight": 0.35,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "CRITICAL_POINT",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "ENDPOINT_EVALUATION",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "concept_code": "DERIVATIVE_RULES",
+        "weight": 0.2,
+        "is_primary": false
+      }
+    ],
+    "parent_learning_outcomes": [
+      {
+        "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+        "learning_outcome_code": "M12_DERIV_LO_05",
+        "weight": 1.0
+      }
+    ],
+    "child_taxonomy_status": "REVIEW_REQUIRED",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Đạo hàm của hàm số đã cho là f   x    sin 2 x .  ",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "f      1 .  2",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Số nghiệm của phương trình f ( x )  0 trên đoạn  0;   bằng 3 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Giá trị nhỏ nhất của hàm số đã cho trên đoạn  0;   là 4 . https://www.facebook.com/truongngocvy8/ Trang 11",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "REVIEW_REQUIRED"
+      }
+    ]
+  }
+]

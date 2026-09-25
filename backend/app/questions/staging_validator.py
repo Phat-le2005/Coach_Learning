@@ -6,19 +6,18 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
-from app.questions.provenance_corrections import (
-    ProvenanceCorrectionReport,
-    QuestionProvenanceCorrectionResolver,
+from app.questions.effective_staging import (
+    EffectiveQuestionStaging,
+    EffectiveQuestionStagingMaterializer,
+    effective_review_status,
 )
+from app.questions.provenance_corrections import ProvenanceCorrectionReport
 from app.questions.question_type_resolution import (
     SUPPORTED_STAGING_QUESTION_TYPES,
     effective_question_type,
     requires_question_group,
 )
-from app.questions.review_overlay import (
-    QuestionReviewOverlayResolver,
-    ReviewBatchReport,
-)
+from app.questions.review_overlay import ReviewBatchReport
 
 
 BACKEND_DATA_ROOT = Path(__file__).resolve().parents[2] / "data"
@@ -104,6 +103,7 @@ class QuestionStagingValidationReport:
     effective_reviewed: CandidateViewReport
     provenance_corrections: ProvenanceCorrectionReport
     review_batches: tuple[ReviewBatchReport, ...]
+    materialization: EffectiveQuestionStaging
 
     @property
     def is_valid(self) -> bool:
@@ -266,72 +266,23 @@ class QuestionStagingValidator:
             "review_overlays": [],
             "review_batch_overlap": [],
         }
-        provenance_result = QuestionProvenanceCorrectionResolver().resolve(
+        materialization = EffectiveQuestionStagingMaterializer().materialize(
             candidates,
-            dataset_path / "provenance_corrections.json",
             subsources,
+            dataset_path / "provenance_corrections.json",
+            review_root,
         )
-        for correction_issue in provenance_result.report.issues:
-            check_issues["provenance_corrections"].append(QuestionStagingIssue(
-                check="provenance_corrections",
-                code=correction_issue.code,
-                location=correction_issue.candidate_id,
-                message=correction_issue.message,
+        for issue in materialization.issues:
+            check_issues[issue.check].append(QuestionStagingIssue(
+                check=issue.check,
+                code=issue.code,
+                location=issue.location,
+                message=issue.message,
             ))
-        review_results = []
-        effective_candidates = (
-            list(provenance_result.candidates)
-            if provenance_result.report.is_valid
-            else candidates
-        )
-        reviewed_candidate_batches: dict[str, str] = {}
-        batch_paths = (
-            tuple(
-                batch_path
-                for batch_path in sorted(review_root.glob("batch_*"))
-                if batch_path.is_dir()
-            )
-            if review_root.is_dir()
-            else ()
-        )
-        for batch_path in batch_paths:
-            result = QuestionReviewOverlayResolver().resolve(
-                effective_candidates, batch_path
-            )
-            review_results.append(result)
-            for review_error in result.report.errors:
-                check_issues["review_overlays"].append(QuestionStagingIssue(
-                    check="review_overlays",
-                    code=review_error.code,
-                    location=f"{batch_path.name}/{review_error.candidate_id}",
-                    message=(
-                        f"{review_error.message} "
-                        f"[batch={batch_path.name}; path={result.report.path}; "
-                        f"candidate_id={review_error.candidate_id}]"
-                    ),
-                ))
-            overlapping_ids = sorted(
-                set(result.report.reviewed_candidate_ids) & set(reviewed_candidate_batches)
-            )
-            for candidate_id in overlapping_ids:
-                check_issues["review_batch_overlap"].append(QuestionStagingIssue(
-                    check="review_batch_overlap",
-                    code="CANDIDATE_REVIEW_BATCH_OVERLAP",
-                    location=batch_path.name,
-                    message=(
-                        f"{candidate_id} was already reviewed by "
-                        f"{reviewed_candidate_batches[candidate_id]}."
-                    ),
-                ))
-            if result.report.is_valid and not overlapping_ids:
-                effective_candidates = list(result.candidates)
-                reviewed_candidate_batches.update({
-                    candidate_id: result.report.batch_code
-                    for candidate_id in result.report.reviewed_candidate_ids
-                })
+        effective_candidates = list(materialization.effective_candidates)
         checks = {name: not issues for name, issues in check_issues.items()}
         checks["review_overlays"] = (
-            all(result.report.is_valid for result in review_results)
+            all(batch.is_valid for batch in materialization.review_batches)
             and checks["review_overlays"]
             and checks["review_batch_overlap"]
         )
@@ -366,14 +317,15 @@ class QuestionStagingValidator:
                 "sources": len(sources),
                 "subsources": len(subsources),
                 "duplicate_fingerprint_groups": len(duplicates),
-                "review_batches": len(review_results),
+                "review_batches": len(materialization.review_batches),
             },
             errors=issues,
             duplicate_fingerprints=duplicates,
             raw=raw_view,
             effective_reviewed=effective_view,
-            provenance_corrections=provenance_result.report,
-            review_batches=tuple(result.report for result in review_results),
+            provenance_corrections=materialization.provenance_corrections,
+            review_batches=materialization.review_batches,
+            materialization=materialization,
         )
 
     @staticmethod
@@ -690,21 +642,7 @@ class QuestionStagingValidator:
 
     @staticmethod
     def _review_status(candidate: dict[str, Any]) -> str:
-        review_record = candidate.get("review_record")
-        review_status = (
-            review_record.get("review_status")
-            if isinstance(review_record, dict)
-            else None
-        )
-        if candidate.get("status") == "REJECTED" or str(review_status).startswith(
-            "REJECTED"
-        ):
-            return "REJECTED"
-        if str(review_status).startswith("HOLD_"):
-            return "HOLD"
-        if candidate.get("status") == "VERIFIED":
-            return "VERIFIED"
-        return "UNTOUCHED_REVIEW_REQUIRED"
+        return effective_review_status(candidate)
 
     @classmethod
     def _reviewed_status_summary(

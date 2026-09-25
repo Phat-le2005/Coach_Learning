@@ -1,0 +1,24 @@
+{
+  "dataset_code": "DATA-MATH12-006",
+  "generated_version": "question_groups_v0_1",
+  "source_review_batches": [
+    "DATA-MATH12-005_BATCH_001",
+    "DATA-MATH12-005_BATCH_002",
+    "DATA-MATH12-005_BATCH_003",
+    "DATA-MATH12-005_BATCH_004",
+    "DATA-MATH12-005_BATCH_005"
+  ],
+  "academic_verification_claimed": false,
+  "production_importable": false,
+  "source_raw_sha256": "b627a458e0b18c0a4e0733e18864e0bd83165f94894a7d690e4fc1313f3ed4d5",
+  "raw_candidates": 175,
+  "raw_true_false_group_detected": 77,
+  "review_reclassified_group_to_mcq": 8,
+  "rejected_raw_group_duplicates": 6,
+  "review_added_group_requirement_from_non_group_raw": 5,
+  "active_group_inputs": 68,
+  "emitted_groups": 67,
+  "structural_holds": 1,
+  "emitted_child_statements": 268,
+  "assigned_child_answers": 0
+}
