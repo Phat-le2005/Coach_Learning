@@ -190,24 +190,25 @@ def test_review_materialization_is_deterministic_and_cumulative() -> None:
         "DATA-MATH12-008_BATCH_002",
         "DATA-MATH12-008_BATCH_003",
         "DATA-MATH12-008_BATCH_004",
+        "DATA-MATH12-008_BATCH_005",
     ]
     report = QuestionGroupReviewValidator().validate()
     assert report.counts == {
         "structural_groups": 67,
         "structural_holds": 1,
-        "review_batches": 4,
-        "target_groups": 50,
-        "reviewed_groups": 50,
-        "verified": 27,
-        "hold": 9,
-        "rejected": 14,
-        "rejected_duplicate": 7,
-        "rejected_out_of_scope": 7,
-        "verified_child_statements": 108,
-        "assigned_child_answers": 108,
-        "visual_asset_required": 6,
+        "review_batches": 5,
+        "target_groups": 63,
+        "reviewed_groups": 63,
+        "verified": 35,
+        "hold": 10,
+        "rejected": 18,
+        "rejected_duplicate": 9,
+        "rejected_out_of_scope": 9,
+        "verified_child_statements": 140,
+        "assigned_child_answers": 140,
+        "visual_asset_required": 9,
         "promotion_ready": 0,
-        "effective_usable_groups": 53,
+        "effective_usable_groups": 49,
     }
 
 

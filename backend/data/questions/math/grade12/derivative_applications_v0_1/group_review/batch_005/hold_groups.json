@@ -1,0 +1,35 @@
+[
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0159",
+    "source_candidate_id": "M12_DERIV_CAND_0159",
+    "source_fingerprint": "622a22f48a183456",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_36",
+    "effective_subsource_code": "NGOC_VY_2026_36",
+    "provenance_correction_code": null,
+    "candidate_extraction_page": 681,
+    "question_number": "1",
+    "review_status": "HOLD_SOURCE_ANSWER_CONFLICT",
+    "source_evidence_id": "EVID_NVY_0159",
+    "reason": "The source answer table marks item a TRUE, but the source detailed solution restricts the derivative formula to (-∞,1)∪(4,+∞), while the statement includes endpoints 1 and 4 where the displayed derivative denominator is zero.",
+    "source_claimed_answer_pattern": [
+      "TRUE",
+      "FALSE",
+      "FALSE",
+      "TRUE"
+    ],
+    "conflicting_item_label": "a",
+    "conflicting_item_labels": [
+      "a"
+    ],
+    "trusted_correct_answer": null,
+    "conflict_explanation": "For y=sqrt(x^2-5x+4), the function is defined on (-∞,1]∪[4,+∞), but y'=(2x-5)/(2sqrt(x^2-5x+4)) is not defined at x=1 or x=4. The source detailed solution itself writes the derivative domain as (-∞,1)∪(4,+∞), contradicting the TRUE answer assigned to item a as written.",
+    "independent_check": {
+      "implied_answer_by_review": {
+        "a": "FALSE"
+      },
+      "provenance_type": "INDEPENDENT_REVIEW_CHECK"
+    },
+    "promotion_ready": false
+  }
+]

@@ -1,0 +1,311 @@
+[
+  {
+    "evidence_id": "EVID_NVY_0143",
+    "group_candidate_id": "M12_DERIV_GROUP_0143",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "effective_subsource_code": "NGOC_VY_2026_31",
+    "candidate_extraction_page": 589,
+    "canonical_question_pages": [
+      589
+    ],
+    "solution_pages": [
+      597
+    ],
+    "question_number": "1",
+    "evidence_type": "QUESTION_AND_EXPLICIT_SOLUTION",
+    "source_claimed_answer_pattern": [
+      "FALSE",
+      "FALSE",
+      "TRUE",
+      "TRUE"
+    ],
+    "review_consistency": "CONFIRMED"
+  },
+  {
+    "evidence_id": "EVID_NVY_0144",
+    "group_candidate_id": "M12_DERIV_GROUP_0144",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "effective_subsource_code": "NGOC_VY_2026_31",
+    "candidate_extraction_page": 589,
+    "canonical_question_pages": [
+      589
+    ],
+    "solution_pages": [
+      598,
+      599
+    ],
+    "question_number": "3",
+    "evidence_type": "QUESTION_AND_EXPLICIT_SOLUTION",
+    "source_claimed_answer_pattern": [
+      "TRUE",
+      "TRUE",
+      "FALSE",
+      "FALSE"
+    ],
+    "review_consistency": "OUT_OF_SCOPE_CURRENT_DATASET"
+  },
+  {
+    "evidence_id": "EVID_NVY_0145",
+    "group_candidate_id": "M12_DERIV_GROUP_0145",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "effective_subsource_code": "NGOC_VY_2026_31",
+    "candidate_extraction_page": 598,
+    "canonical_question_pages": [
+      589
+    ],
+    "solution_pages": [
+      598,
+      599
+    ],
+    "question_number": "3",
+    "evidence_type": "SOLUTION_REPRINT_OUT_OF_SCOPE",
+    "source_claimed_answer_pattern": [
+      "TRUE",
+      "TRUE",
+      "FALSE",
+      "FALSE"
+    ],
+    "review_consistency": "OUT_OF_SCOPE_CURRENT_DATASET",
+    "duplicate_of_group_candidate_id": "M12_DERIV_GROUP_0144"
+  },
+  {
+    "evidence_id": "EVID_NVY_0147",
+    "group_candidate_id": "M12_DERIV_GROUP_0147",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "effective_subsource_code": "NGOC_VY_2026_32",
+    "candidate_extraction_page": 608,
+    "canonical_question_pages": [
+      608
+    ],
+    "solution_pages": [
+      615
+    ],
+    "question_number": "1",
+    "evidence_type": "QUESTION_AND_EXPLICIT_SOLUTION",
+    "source_claimed_answer_pattern": [
+      "TRUE",
+      "TRUE",
+      "FALSE",
+      "FALSE"
+    ],
+    "review_consistency": "CONFIRMED"
+  },
+  {
+    "evidence_id": "EVID_NVY_0150",
+    "group_candidate_id": "M12_DERIV_GROUP_0150",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "effective_subsource_code": "NGOC_VY_2026_33",
+    "candidate_extraction_page": 626,
+    "canonical_question_pages": [
+      626
+    ],
+    "solution_pages": [
+      635
+    ],
+    "question_number": "1",
+    "evidence_type": "QUESTION_AND_EXPLICIT_SOLUTION",
+    "source_claimed_answer_pattern": [
+      "TRUE",
+      "FALSE",
+      "FALSE",
+      "FALSE"
+    ],
+    "review_consistency": "CONFIRMED"
+  },
+  {
+    "evidence_id": "EVID_NVY_0154",
+    "group_candidate_id": "M12_DERIV_GROUP_0154",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "effective_subsource_code": "NGOC_VY_2026_34",
+    "candidate_extraction_page": 644,
+    "canonical_question_pages": [
+      644
+    ],
+    "solution_pages": [
+      651
+    ],
+    "question_number": "1",
+    "evidence_type": "QUESTION_AND_EXPLICIT_SOLUTION",
+    "source_claimed_answer_pattern": [
+      "FALSE",
+      "TRUE",
+      "FALSE",
+      "TRUE"
+    ],
+    "review_consistency": "CONFIRMED",
+    "visual_asset_required": true
+  },
+  {
+    "evidence_id": "EVID_NVY_0155",
+    "group_candidate_id": "M12_DERIV_GROUP_0155",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "effective_subsource_code": "NGOC_VY_2026_34",
+    "candidate_extraction_page": 651,
+    "canonical_question_pages": [
+      644
+    ],
+    "solution_pages": [
+      651
+    ],
+    "question_number": "1",
+    "evidence_type": "SOLUTION_REPRINT_DUPLICATE",
+    "source_claimed_answer_pattern": [
+      "FALSE",
+      "TRUE",
+      "FALSE",
+      "TRUE"
+    ],
+    "review_consistency": "SOLUTION_REPRINT_DUPLICATE",
+    "duplicate_of_group_candidate_id": "M12_DERIV_GROUP_0154"
+  },
+  {
+    "evidence_id": "EVID_NVY_0159",
+    "group_candidate_id": "M12_DERIV_GROUP_0159",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "effective_subsource_code": "NGOC_VY_2026_36",
+    "candidate_extraction_page": 681,
+    "canonical_question_pages": [
+      681
+    ],
+    "solution_pages": [
+      689,
+      690
+    ],
+    "question_number": "1",
+    "evidence_type": "QUESTION_AND_EXPLICIT_SOLUTION",
+    "source_claimed_answer_pattern": [
+      "TRUE",
+      "FALSE",
+      "FALSE",
+      "TRUE"
+    ],
+    "review_consistency": "SOURCE_ANSWER_CONFLICT",
+    "conflicting_item_labels": [
+      "a"
+    ],
+    "conflict_explanation": "Source table marks a TRUE, while its detailed solution explicitly excludes x=1 and x=4 from the derivative domain.",
+    "independent_check": {
+      "basis": "DERIVATIVE_DOMAIN_PRINTED_IN_SOURCE_SOLUTION",
+      "implied_answer_by_review": {
+        "a": "FALSE"
+      },
+      "provenance_type": "INDEPENDENT_REVIEW_CHECK"
+    }
+  },
+  {
+    "evidence_id": "EVID_NVY_0163",
+    "group_candidate_id": "M12_DERIV_GROUP_0163",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "effective_subsource_code": "NGOC_VY_2026_37",
+    "candidate_extraction_page": 708,
+    "canonical_question_pages": [
+      700,
+      701
+    ],
+    "solution_pages": [
+      708,
+      709
+    ],
+    "question_number": "1",
+    "evidence_type": "QUESTION_AND_EXPLICIT_SOLUTION",
+    "source_claimed_answer_pattern": [
+      "TRUE",
+      "TRUE",
+      "FALSE",
+      "FALSE"
+    ],
+    "review_consistency": "CONFIRMED",
+    "visual_asset_required": true,
+    "extraction_note": "The structural candidate was extracted from the solution-section reprint at page 708; the canonical question appears on pages 700-701 and no separate structural candidate exists for that original occurrence."
+  },
+  {
+    "evidence_id": "EVID_NVY_0165",
+    "group_candidate_id": "M12_DERIV_GROUP_0165",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "effective_subsource_code": "NGOC_VY_2026_38",
+    "candidate_extraction_page": 720,
+    "canonical_question_pages": [
+      720
+    ],
+    "solution_pages": [
+      728
+    ],
+    "question_number": "1",
+    "evidence_type": "QUESTION_AND_EXPLICIT_SOLUTION",
+    "source_claimed_answer_pattern": [
+      "FALSE",
+      "TRUE",
+      "TRUE",
+      "FALSE"
+    ],
+    "review_consistency": "CONFIRMED"
+  },
+  {
+    "evidence_id": "EVID_NVY_0170",
+    "group_candidate_id": "M12_DERIV_GROUP_0170",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "effective_subsource_code": "NGOC_VY_2026_39",
+    "candidate_extraction_page": 740,
+    "canonical_question_pages": [
+      740
+    ],
+    "solution_pages": [
+      749
+    ],
+    "question_number": "1",
+    "evidence_type": "QUESTION_AND_EXPLICIT_SOLUTION",
+    "source_claimed_answer_pattern": [
+      "TRUE",
+      "TRUE",
+      "FALSE",
+      "FALSE"
+    ],
+    "review_consistency": "CONFIRMED",
+    "visual_asset_required": true
+  },
+  {
+    "evidence_id": "EVID_NVY_0174",
+    "group_candidate_id": "M12_DERIV_GROUP_0174",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "effective_subsource_code": "NGOC_VY_2026_40",
+    "candidate_extraction_page": 760,
+    "canonical_question_pages": [
+      760
+    ],
+    "solution_pages": [
+      768
+    ],
+    "question_number": "1",
+    "evidence_type": "QUESTION_AND_EXPLICIT_SOLUTION",
+    "source_claimed_answer_pattern": [
+      "FALSE",
+      "FALSE",
+      "TRUE",
+      "TRUE"
+    ],
+    "review_consistency": "CONFIRMED"
+  },
+  {
+    "evidence_id": "EVID_NVY_0175",
+    "group_candidate_id": "M12_DERIV_GROUP_0175",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "effective_subsource_code": "NGOC_VY_2026_40",
+    "candidate_extraction_page": 768,
+    "canonical_question_pages": [
+      760
+    ],
+    "solution_pages": [
+      768
+    ],
+    "question_number": "1",
+    "evidence_type": "SOLUTION_REPRINT_DUPLICATE",
+    "source_claimed_answer_pattern": [
+      "FALSE",
+      "FALSE",
+      "TRUE",
+      "TRUE"
+    ],
+    "review_consistency": "SOLUTION_REPRINT_DUPLICATE",
+    "duplicate_of_group_candidate_id": "M12_DERIV_GROUP_0174"
+  }
+]

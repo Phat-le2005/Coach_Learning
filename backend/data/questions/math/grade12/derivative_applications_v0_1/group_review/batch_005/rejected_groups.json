@@ -1,0 +1,38 @@
+[
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0144",
+    "source_candidate_id": "M12_DERIV_CAND_0144",
+    "review_status": "REJECTED_OUT_OF_SCOPE",
+    "source_evidence_id": "EVID_NVY_0144",
+    "reason": "Spatial-geometry sphere problem. It is not part of the current derivative-applications chapter dataset; preserve it for geometry/broader exam routing.",
+    "preserve_for_broader_exam_corpus": true,
+    "promotion_ready": false
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0145",
+    "source_candidate_id": "M12_DERIV_CAND_0145",
+    "review_status": "REJECTED_OUT_OF_SCOPE",
+    "source_evidence_id": "EVID_NVY_0145",
+    "reason": "Solution-section reprint of the same spatial-geometry sphere problem represented by 0144. Because 0144 is itself rejected out of the derivative dataset and the validator forbids duplicate targets that are rejected, keep this reprint as REJECTED_OUT_OF_SCOPE and preserve lineage in source evidence.",
+    "preserve_for_broader_exam_corpus": true,
+    "promotion_ready": false
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0155",
+    "source_candidate_id": "M12_DERIV_CAND_0155",
+    "review_status": "REJECTED_DUPLICATE_GROUP",
+    "source_evidence_id": "EVID_NVY_0155",
+    "reason": "Solution-section reprint of the canonical test-34 QuestionGroup extracted again as a candidate.",
+    "duplicate_of_group_candidate_id": "M12_DERIV_GROUP_0154",
+    "promotion_ready": false
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0175",
+    "source_candidate_id": "M12_DERIV_CAND_0175",
+    "review_status": "REJECTED_DUPLICATE_GROUP",
+    "source_evidence_id": "EVID_NVY_0175",
+    "reason": "Solution-section reprint of the canonical test-40 QuestionGroup extracted again as a candidate.",
+    "duplicate_of_group_candidate_id": "M12_DERIV_GROUP_0174",
+    "promotion_ready": false
+  }
+]

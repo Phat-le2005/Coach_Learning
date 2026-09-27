@@ -1,0 +1,32 @@
+{
+  "dataset_code": "DATA-MATH12-008",
+  "batch_code": "DATA-MATH12-008_BATCH_005",
+  "scope": "Truong Ngoc Vy 2026 TRUE/FALSE QuestionGroup academic review — tests 31-40",
+  "base_commit": "d7f9711c124b38aee1b0c0b3b366127aa66d8030",
+  "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+  "source_file": "40-de-on-thi-tot-nghiep-thpt-2026-mon-toan-co-loi-giai-chi-tiet-truong-ngoc-vy.pdf",
+  "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+  "raw_candidate_sha256": "b627a458e0b18c0a4e0733e18864e0bd83165f94894a7d690e4fc1313f3ed4d5",
+  "target_groups": 13,
+  "reviewed_groups": 13,
+  "verified": 8,
+  "hold": 1,
+  "rejected": 4,
+  "rejected_duplicate": 2,
+  "rejected_out_of_scope": 2,
+  "visual_asset_required": 3,
+  "source_evidence_backed_decisions": 13,
+  "verified_child_statements": 32,
+  "assigned_child_answers": 32,
+  "promotion_ready": 0,
+  "production_imported": 0,
+  "notes": [
+    "One source-answer conflict is held: test 36 Question 1 item a includes derivative endpoints that the source detailed solution itself excludes.",
+    "Two candidates are solution-section duplicates of verified canonical groups (0155->0154 and 0175->0174).",
+    "Two spatial-geometry candidates from test 31 are excluded from the derivative dataset; 0145 is a solution-section reprint of 0144 but remains OUT_OF_SCOPE because duplicate targets may not themselves be rejected.",
+    "The test-37 structural candidate 0163 was extracted from the solution reprint; canonical question pages 700-701 are recorded and the group is VERIFIED because no separate original structural candidate exists.",
+    "Test 35 contributes no structural QuestionGroup candidate in this staging snapshot.",
+    "Three verified groups require visual assets: 0154, 0163 and 0170.",
+    "Codex must integrate this reviewed bundle only and must not access Drive/PDF or recompute answers."
+  ]
+}
