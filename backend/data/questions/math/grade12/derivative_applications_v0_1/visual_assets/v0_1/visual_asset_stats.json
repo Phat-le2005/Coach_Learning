@@ -1,0 +1,24 @@
+{
+  "dataset_code": "DATA-MATH12-010",
+  "asset_set_code": "DATA-MATH12-010_VISUAL_ASSETS_V0_1",
+  "base_commit": "1ea4cd17a841f6b503a1eccbdd67f5cb3b91fcf1",
+  "visual_required_groups": 9,
+  "manifest_records": 9,
+  "ready_source_crops": 8,
+  "blocked_source_visual_missing": 1,
+  "rights_review_required": 9,
+  "promotion_eligible": 0,
+  "unresolved_group_ids": [
+    "M12_DERIV_GROUP_0012"
+  ],
+  "ready_group_ids": [
+    "M12_DERIV_GROUP_0024",
+    "M12_DERIV_GROUP_0070",
+    "M12_DERIV_GROUP_0087",
+    "M12_DERIV_GROUP_0089",
+    "M12_DERIV_GROUP_0113",
+    "M12_DERIV_GROUP_0154",
+    "M12_DERIV_GROUP_0163",
+    "M12_DERIV_GROUP_0170"
+  ]
+}

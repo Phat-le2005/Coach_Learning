@@ -1,0 +1,293 @@
+{
+  "dataset_code": "DATA-MATH12-010",
+  "asset_set_code": "DATA-MATH12-010_VISUAL_ASSETS_V0_1",
+  "base_commit": "1ea4cd17a841f6b503a1eccbdd67f5cb3b91fcf1",
+  "chapter": "derivative_applications_v0_1",
+  "render_dpi": 200,
+  "coordinate_system": "PDF points, origin top-left for crop_box_pdf_points as normalized from rendered page crops",
+  "assets": [
+    {
+      "asset_id": "M12_DERIV_ASSET_0012_V1",
+      "group_candidate_id": "M12_DERIV_GROUP_0012",
+      "asset_kind": "GEOMETRY_DIAGRAM",
+      "asset_status": "BLOCKED_SOURCE_VISUAL_MISSING",
+      "file_name": null,
+      "mime_type": null,
+      "sha256": null,
+      "width_px": null,
+      "height_px": null,
+      "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+      "effective_subsource_code": "HUE_2025",
+      "source_file": "loi-giai-chi-tiet-de-thi-thu-tot-nghiep-thpt-2025-mon-toan-cua-cac-so-gddt.pdf",
+      "source_pdf_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+      "canonical_question_pages": [
+        3
+      ],
+      "solution_pages": [
+        11,
+        12,
+        13
+      ],
+      "asset_source_page": null,
+      "crop_box_pdf_points": null,
+      "extraction_method": "SOURCE_VISUAL_NOT_PRESENT_IN_AVAILABLE_PDF",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false,
+      "blocker_reason": "The reviewed source says “như hình vẽ”, but the available question page and solution pages do not display the referenced pool diagram. No image is fabricated or reconstructed in this dataset."
+    },
+    {
+      "asset_id": "M12_DERIV_ASSET_0024_V1",
+      "group_candidate_id": "M12_DERIV_GROUP_0024",
+      "asset_kind": "FUNCTION_GRAPH",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DERIV_GROUP_0024__function_graph.png",
+      "mime_type": "image/png",
+      "sha256": "7a449dbccfae8acb4d0ad3fc654dbd09466291658103196304b831cc5de70616",
+      "width_px": 575,
+      "height_px": 450,
+      "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+      "effective_subsource_code": "HA_TINH_2025",
+      "source_file": "loi-giai-chi-tiet-de-thi-thu-tot-nghiep-thpt-2025-mon-toan-cua-cac-so-gddt.pdf",
+      "source_pdf_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+      "canonical_question_pages": [
+        39
+      ],
+      "solution_pages": [
+        46,
+        47
+      ],
+      "asset_source_page": 39,
+      "crop_box_pdf_points": [
+        219.0,
+        474.0,
+        426.0,
+        636.0
+      ],
+      "extraction_method": "PDF_PAGE_CROP_RENDER_200_DPI",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_DERIV_ASSET_0070_V1",
+      "group_candidate_id": "M12_DERIV_GROUP_0070",
+      "asset_kind": "FUNCTION_GRAPH",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DERIV_GROUP_0070__function_graph.png",
+      "mime_type": "image/png",
+      "sha256": "9746957fb08204dedaa7fe11ff8542b1a5074bfb73c09a0fab442a8d80e76e21",
+      "width_px": 508,
+      "height_px": 441,
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "effective_subsource_code": "NGOC_VY_2026_05",
+      "source_file": "40-de-on-thi-tot-nghiep-thpt-2026-mon-toan-co-loi-giai-chi-tiet-truong-ngoc-vy.pdf",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        81
+      ],
+      "solution_pages": [
+        90,
+        91
+      ],
+      "asset_source_page": 81,
+      "crop_box_pdf_points": [
+        222.0,
+        294.0,
+        405.0,
+        453.0
+      ],
+      "extraction_method": "PDF_PAGE_CROP_RENDER_200_DPI",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_DERIV_ASSET_0087_V1",
+      "group_candidate_id": "M12_DERIV_GROUP_0087",
+      "asset_kind": "VARIATION_TABLE",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DERIV_GROUP_0087__variation_table.png",
+      "mime_type": "image/png",
+      "sha256": "71cf7ba1ffdb93e54540066ac7fe3eb5aa415443d0c64c31c477cd818b06a051",
+      "width_px": 934,
+      "height_px": 408,
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "effective_subsource_code": "NGOC_VY_2026_10",
+      "source_file": "40-de-on-thi-tot-nghiep-thpt-2026-mon-toan-co-loi-giai-chi-tiet-truong-ngoc-vy.pdf",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        179
+      ],
+      "solution_pages": [
+        187
+      ],
+      "asset_source_page": 179,
+      "crop_box_pdf_points": [
+        147.0,
+        105.0,
+        483.0,
+        252.0
+      ],
+      "extraction_method": "PDF_PAGE_CROP_RENDER_200_DPI",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_DERIV_ASSET_0089_V1",
+      "group_candidate_id": "M12_DERIV_GROUP_0089",
+      "asset_kind": "DERIVATIVE_GRAPH",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DERIV_GROUP_0089__derivative_graph.png",
+      "mime_type": "image/png",
+      "sha256": "d68c131c2c858ec0218994063d249e217c0243ece8a6e59ceee9f163928bbd12",
+      "width_px": 433,
+      "height_px": 317,
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "effective_subsource_code": "NGOC_VY_2026_11",
+      "source_file": "40-de-on-thi-tot-nghiep-thpt-2026-mon-toan-co-loi-giai-chi-tiet-truong-ngoc-vy.pdf",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        198
+      ],
+      "solution_pages": [
+        205,
+        206
+      ],
+      "asset_source_page": 198,
+      "crop_box_pdf_points": [
+        234.0,
+        129.0,
+        390.0,
+        243.0
+      ],
+      "extraction_method": "PDF_PAGE_CROP_RENDER_200_DPI",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_DERIV_ASSET_0113_V1",
+      "group_candidate_id": "M12_DERIV_GROUP_0113",
+      "asset_kind": "VARIATION_TABLE",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DERIV_GROUP_0113__variation_table.png",
+      "mime_type": "image/png",
+      "sha256": "4ae2396411d9b485c9d30de50a5635c2015b0ffcd23c0fae8330ba970e1d1de7",
+      "width_px": 908,
+      "height_px": 291,
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "effective_subsource_code": "NGOC_VY_2026_20",
+      "source_file": "40-de-on-thi-tot-nghiep-thpt-2026-mon-toan-co-loi-giai-chi-tiet-truong-ngoc-vy.pdf",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        379
+      ],
+      "solution_pages": [
+        387,
+        388
+      ],
+      "asset_source_page": 379,
+      "crop_box_pdf_points": [
+        150.0,
+        240.0,
+        477.0,
+        345.0
+      ],
+      "extraction_method": "PDF_PAGE_CROP_RENDER_200_DPI",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_DERIV_ASSET_0154_V1",
+      "group_candidate_id": "M12_DERIV_GROUP_0154",
+      "asset_kind": "DERIVATIVE_GRAPH",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DERIV_GROUP_0154__derivative_graph.png",
+      "mime_type": "image/png",
+      "sha256": "5fa1583424e7f41663ac946d7a77cc328589d49b04d71bfc94f3938f3db9001b",
+      "width_px": 342,
+      "height_px": 275,
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "effective_subsource_code": "NGOC_VY_2026_34",
+      "source_file": "40-de-on-thi-tot-nghiep-thpt-2026-mon-toan-co-loi-giai-chi-tiet-truong-ngoc-vy.pdf",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        644
+      ],
+      "solution_pages": [
+        651
+      ],
+      "asset_source_page": 644,
+      "crop_box_pdf_points": [
+        237.0,
+        588.0,
+        360.0,
+        687.0
+      ],
+      "extraction_method": "PDF_PAGE_CROP_RENDER_200_DPI",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_DERIV_ASSET_0163_V1",
+      "group_candidate_id": "M12_DERIV_GROUP_0163",
+      "asset_kind": "FUNCTION_GRAPH",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DERIV_GROUP_0163__function_graph.png",
+      "mime_type": "image/png",
+      "sha256": "2b0e19a95b280f24f0065fcd2ff1f4e5eb0f542e77d3cb875288fa3e6b65ae34",
+      "width_px": 550,
+      "height_px": 442,
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "effective_subsource_code": "NGOC_VY_2026_37",
+      "source_file": "40-de-on-thi-tot-nghiep-thpt-2026-mon-toan-co-loi-giai-chi-tiet-truong-ngoc-vy.pdf",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        700,
+        701
+      ],
+      "solution_pages": [
+        708,
+        709
+      ],
+      "asset_source_page": 701,
+      "crop_box_pdf_points": [
+        216.0,
+        45.0,
+        414.0,
+        204.0
+      ],
+      "extraction_method": "PDF_PAGE_CROP_RENDER_200_DPI",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_DERIV_ASSET_0170_V1",
+      "group_candidate_id": "M12_DERIV_GROUP_0170",
+      "asset_kind": "DERIVATIVE_SIGN_TABLE",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DERIV_GROUP_0170__derivative_sign_table.png",
+      "mime_type": "image/png",
+      "sha256": "48732ca65910a6eb55049dd616de062dacd1dd4c8e2f5452517d67d676232dda",
+      "width_px": 1066,
+      "height_px": 100,
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "effective_subsource_code": "NGOC_VY_2026_39",
+      "source_file": "40-de-on-thi-tot-nghiep-thpt-2026-mon-toan-co-loi-giai-chi-tiet-truong-ngoc-vy.pdf",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        740
+      ],
+      "solution_pages": [
+        749
+      ],
+      "asset_source_page": 740,
+      "crop_box_pdf_points": [
+        123.0,
+        141.0,
+        507.0,
+        177.0
+      ],
+      "extraction_method": "PDF_PAGE_CROP_RENDER_200_DPI",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    }
+  ]
+}
