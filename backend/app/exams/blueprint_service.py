@@ -10,6 +10,7 @@ from app.core.exceptions import ApplicationError
 from app.curriculum.models import Chapter, ProblemType, Topic
 from app.exams.models import Exam, ExamQuestion, ExamSection
 from app.exams.schemas import ExamBlueprintConfig, ExamBlueprintRule
+from app.questions.eligibility import standalone_question_only
 from app.questions.models import Question, QuestionProblemType, QuestionStatus
 
 logger = logging.getLogger(__name__)
@@ -137,6 +138,7 @@ class ExamBlueprintService:
             .where(
                 Question.subject_id == subject_id,
                 Question.status == QuestionStatus.APPROVED,
+                standalone_question_only(),
             )
         )
 
@@ -188,6 +190,7 @@ class ExamBlueprintService:
                 .where(
                     Question.subject_id == subject_id,
                     Question.status == QuestionStatus.APPROVED,
+                    standalone_question_only(),
                 )
             )
             if fallback_excluded:

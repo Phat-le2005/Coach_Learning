@@ -1,0 +1,19 @@
+{
+  "policy_code": "GROUP_CHILD_STANDALONE_ISOLATION_V0_1",
+  "rule": "Any Question whose id appears in question_group_items.question_id is an internal group child and must be excluded from every automated/student-facing standalone Question selector, regardless of group/child status.",
+  "administrative_exception": "Staff Question Bank CRUD/list/get may still expose child rows for review and maintenance.",
+  "shared_helper": "Implement one reusable SQLAlchemy predicate/helper, e.g. standalone_question_only(), rather than duplicating ad-hoc subqueries.",
+  "selectors_to_audit_and_patch": [
+    "app/practice/service.py",
+    "app/recommendations/question_service.py",
+    "app/recommendations/priority_service.py",
+    "app/diagnostics/selector.py",
+    "app/diagnostics/blueprint.py",
+    "app/repair/service.py",
+    "app/exams/blueprint_service.py",
+    "app/learning/service.py",
+    "app/assignments/service.py",
+    "app/synthetic_student_service.py"
+  ],
+  "required_outcome": "Even if all 152 child rows are APPROVED in a future release, no child can be selected as an independent practice/recommendation/assignment/diagnostic/repair/exam question."
+}

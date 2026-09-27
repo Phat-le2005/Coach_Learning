@@ -21,6 +21,7 @@ from app.questions.models import (
     QuestionStatus,
     QuestionType,
 )
+from app.questions.eligibility import standalone_question_only
 from app.questions.schemas import (
     QuestionConceptInput,
     QuestionCreate,
@@ -290,7 +291,9 @@ class QuestionService:
     def get_approved_for_learning(self, question_id: UUID) -> Question:
         question = self.session.scalar(
             self._question_statement().where(
-                Question.id == question_id, Question.status == QuestionStatus.APPROVED
+                Question.id == question_id,
+                Question.status == QuestionStatus.APPROVED,
+                standalone_question_only(),
             )
         )
         if question is None:

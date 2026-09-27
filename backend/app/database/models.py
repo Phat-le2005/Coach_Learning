@@ -65,6 +65,8 @@ from app.practice.models import (
     PracticeSessionConcept,
     PracticeSessionProblemType,
     QuestionAttempt,
+    QuestionGroupAttempt,
+    QuestionGroupAttemptItem,
 )
 from app.questions.models import (
     Question,
@@ -165,6 +167,8 @@ __all__ = [
     "Question",
     "QuestionHint",
     "QuestionAttempt",
+    "QuestionGroupAttempt",
+    "QuestionGroupAttemptItem",
     "QuestionConcept",
     "QuestionGroup",
     "QuestionGroupItem",

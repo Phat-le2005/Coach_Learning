@@ -16,10 +16,13 @@ from app.practice.open_response_evaluator import AIOpenResponseEvaluationService
 from app.practice.open_response_schemas import AIEvaluateAttemptRequest
 from app.practice.schemas import (
     PracticeAnswerCreate,
+    PracticeGroupAnswerCreate,
+    PracticeItemRead,
     PracticeQuestionRead,
     PracticeSessionCreate,
     PracticeSessionRead,
     QuestionAttemptRead,
+    QuestionGroupAttemptRead,
 )
 from app.practice.service import PracticeService
 from app.students.models import StudentProfile
@@ -71,6 +74,16 @@ def get_next_practice_question(
     return PracticeQuestionRead.model_validate(question)
 
 
+@router.get(
+    "/sessions/{practice_session_id}/next-item",
+    response_model=PracticeItemRead,
+)
+def get_next_practice_item(
+    practice_session_id: UUID, current_user: StudentUser, session: Database
+) -> PracticeItemRead:
+    return PracticeService(session).get_next_item(current_user, practice_session_id)
+
+
 @router.post(
     "/sessions/{practice_session_id}/answer",
     response_model=QuestionAttemptRead,
@@ -84,6 +97,23 @@ def answer_practice_question(
 ) -> QuestionAttemptRead:
     attempt = PracticeService(session).answer(current_user, practice_session_id, data)
     return QuestionAttemptRead.model_validate(attempt)
+
+
+@router.post(
+    "/sessions/{practice_session_id}/group-answer",
+    response_model=QuestionGroupAttemptRead,
+    status_code=http_status.HTTP_201_CREATED,
+)
+def answer_practice_question_group(
+    practice_session_id: UUID,
+    data: PracticeGroupAnswerCreate,
+    current_user: StudentUser,
+    session: Database,
+) -> QuestionGroupAttemptRead:
+    attempt = PracticeService(session).answer_group(
+        current_user, practice_session_id, data
+    )
+    return QuestionGroupAttemptRead.model_validate(attempt)
 
 
 @router.post(
@@ -118,4 +148,3 @@ async def evaluate_open_response_attempt(
         confidence_threshold=eval_data.confidence_threshold,
     )
     return QuestionAttemptRead.model_validate(evaluated)
-

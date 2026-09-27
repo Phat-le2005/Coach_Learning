@@ -8,6 +8,7 @@ from app.concepts.models import Concept
 from app.core.exceptions import ApplicationError
 from app.curriculum.models import Chapter, ProblemType, Topic
 from app.mastery.models import StudentConceptMastery, StudentProblemTypeMastery
+from app.questions.eligibility import standalone_question_only
 from app.questions.models import CognitiveLevel, Question, QuestionStatus
 from app.recommendations.mix import LearningMixConfig
 from app.recommendations.priority_service import LearningPriorityService
@@ -107,6 +108,7 @@ class QuestionRecommendationService:
             .where(
                 Question.subject_id == subject_id,
                 Question.status == QuestionStatus.APPROVED,
+                standalone_question_only(),
                 Question.problem_type_links.any(),
                 Question.concept_links.any(),
                 Question.learning_outcome_links.any(),
@@ -315,4 +317,3 @@ def _preferred_cognitive_levels(difficulty: float) -> set[CognitiveLevel]:
     if difficulty < 0.7:
         return {CognitiveLevel.UNDERSTAND, CognitiveLevel.APPLY}
     return {CognitiveLevel.APPLY, CognitiveLevel.ANALYZE}
-

@@ -13,6 +13,7 @@ from sqlalchemy import (
     Index,
     Integer,
     JSON,
+    String,
     Text,
     UniqueConstraint,
     Uuid,
@@ -21,6 +22,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database.base import Base
+from app.questions.models import QuestionGroupScoringPolicy
 
 
 class PracticeSessionType(StrEnum):
@@ -110,6 +112,12 @@ class PracticeSession(Base):
         passive_deletes=True,
         order_by="QuestionAttempt.attempt_number",
     )
+    group_attempts: Mapped[list["QuestionGroupAttempt"]] = relationship(
+        back_populates="practice_session",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+        order_by="QuestionGroupAttempt.created_at",
+    )
 
 
 class PracticeSessionProblemType(Base):
@@ -198,3 +206,121 @@ class QuestionAttempt(Base):
     )
 
     practice_session: Mapped[PracticeSession] = relationship(back_populates="attempts")
+    group_attempt_item: Mapped["QuestionGroupAttemptItem | None"] = relationship(
+        back_populates="question_attempt",
+        uselist=False,
+    )
+
+
+class QuestionGroupAttempt(Base):
+    __tablename__ = "question_group_attempts"
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["practice_session_id", "student_id"],
+            ["practice_sessions.id", "practice_sessions.student_id"],
+            ondelete="CASCADE",
+            name="fk_group_attempts_session_student_practice_sessions",
+        ),
+        UniqueConstraint(
+            "practice_session_id",
+            "question_group_id",
+            name="uq_question_group_attempts_session_group",
+        ),
+        CheckConstraint(
+            "correct_count BETWEEN 0 AND 4", name="correct_count_range"
+        ),
+        CheckConstraint("score BETWEEN 0.0 AND 1.0", name="score_range"),
+        CheckConstraint(
+            "response_time_seconds IS NULL OR response_time_seconds > 0",
+            name="response_time_positive",
+        ),
+        Index(
+            "ix_question_group_attempts_student_created", "student_id", "created_at"
+        ),
+        Index(
+            "ix_question_group_attempts_group_created",
+            "question_group_id",
+            "created_at",
+        ),
+    )
+
+    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, default=uuid4)
+    practice_session_id: Mapped[UUID] = mapped_column(Uuid, nullable=False)
+    student_id: Mapped[UUID] = mapped_column(Uuid, nullable=False)
+    question_group_id: Mapped[UUID] = mapped_column(
+        ForeignKey("question_groups.id", ondelete="RESTRICT"), nullable=False
+    )
+    correct_count: Mapped[int] = mapped_column(Integer, nullable=False)
+    score: Mapped[float] = mapped_column(Float, nullable=False)
+    response_time_seconds: Mapped[float | None] = mapped_column(Float, nullable=True)
+    scoring_policy: Mapped[QuestionGroupScoringPolicy] = mapped_column(
+        Enum(
+            QuestionGroupScoringPolicy,
+            native_enum=False,
+            create_constraint=True,
+            name="question_group_attempt_scoring_policy",
+        ),
+        nullable=False,
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+
+    practice_session: Mapped[PracticeSession] = relationship(
+        back_populates="group_attempts"
+    )
+    question_group: Mapped["QuestionGroup"] = relationship()
+    attempt_items: Mapped[list["QuestionGroupAttemptItem"]] = relationship(
+        back_populates="group_attempt",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+        order_by="QuestionGroupAttemptItem.order_index",
+    )
+
+
+class QuestionGroupAttemptItem(Base):
+    __tablename__ = "question_group_attempt_items"
+    __table_args__ = (
+        UniqueConstraint(
+            "question_group_attempt_id",
+            "label",
+            name="uq_question_group_attempt_items_parent_label",
+        ),
+        UniqueConstraint(
+            "question_group_attempt_id",
+            "order_index",
+            name="uq_question_group_attempt_items_parent_order",
+        ),
+        UniqueConstraint(
+            "question_attempt_id",
+            name="uq_question_group_attempt_items_question_attempt",
+        ),
+        CheckConstraint("label IN ('a', 'b', 'c', 'd')", name="label_allowed"),
+        CheckConstraint(
+            "order_index BETWEEN 0 AND 3", name="order_index_range"
+        ),
+        Index(
+            "ix_question_group_attempt_items_group_item", "question_group_item_id"
+        ),
+    )
+
+    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, default=uuid4)
+    question_group_attempt_id: Mapped[UUID] = mapped_column(
+        ForeignKey("question_group_attempts.id", ondelete="CASCADE"), nullable=False
+    )
+    question_group_item_id: Mapped[UUID] = mapped_column(
+        ForeignKey("question_group_items.id", ondelete="RESTRICT"), nullable=False
+    )
+    question_attempt_id: Mapped[UUID] = mapped_column(
+        ForeignKey("question_attempts.id", ondelete="RESTRICT"), nullable=False
+    )
+    label: Mapped[str] = mapped_column(String(1), nullable=False)
+    order_index: Mapped[int] = mapped_column(Integer, nullable=False)
+
+    group_attempt: Mapped[QuestionGroupAttempt] = relationship(
+        back_populates="attempt_items"
+    )
+    question_group_item: Mapped["QuestionGroupItem"] = relationship()
+    question_attempt: Mapped[QuestionAttempt] = relationship(
+        back_populates="group_attempt_item"
+    )

@@ -42,6 +42,7 @@ from app.concepts.models import Concept
 from app.core.exceptions import ApplicationError
 from app.curriculum.models import LearningOutcome, ProblemType
 from app.mastery.models import StudentProblemTypeMastery
+from app.questions.eligibility import standalone_question_only
 from app.questions.models import (
     Question,
     QuestionLearningOutcome,
@@ -151,8 +152,19 @@ class AssignmentService:
             if data.question_ids:
                 # Validate provided questions
                 for idx, qid in enumerate(data.question_ids):
-                    question = self.session.get(Question, qid)
+                    question = self.session.scalar(
+                        select(Question).where(
+                            Question.id == qid,
+                            standalone_question_only(),
+                        )
+                    )
                     if question is None:
+                        if self.session.get(Question, qid) is not None:
+                            raise ApplicationError(
+                                422,
+                                "QUESTION_NOT_ELIGIBLE",
+                                f"Question {qid} is an internal QuestionGroup child.",
+                            )
                         raise ApplicationError(404, "QUESTION_NOT_FOUND", f"Question {qid} not found.")
                     if question.status != QuestionStatus.APPROVED:
                         raise ApplicationError(
@@ -770,6 +782,7 @@ class AssignmentService:
             .where(
                 Question.subject_id == subject_id,
                 Question.status == QuestionStatus.APPROVED,
+                standalone_question_only(),
             )
         )
         if target_pt_ids:
@@ -816,6 +829,7 @@ class AssignmentService:
             .where(
                 Question.subject_id == assignment.subject_id,
                 Question.status == QuestionStatus.APPROVED,
+                standalone_question_only(),
             )
         )
         if target_pt_ids:
@@ -840,6 +854,7 @@ class AssignmentService:
                 .where(
                     Question.subject_id == assignment.subject_id,
                     Question.status == QuestionStatus.APPROVED,
+                    standalone_question_only(),
                 )
                 .limit(assignment.question_count)
             )

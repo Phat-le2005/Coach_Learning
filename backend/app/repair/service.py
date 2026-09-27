@@ -23,6 +23,7 @@ from app.practice.models import (
     PracticeSessionType,
     QuestionAttempt,
 )
+from app.questions.eligibility import standalone_question_only
 from app.questions.models import (
     Question,
     QuestionConcept,
@@ -394,6 +395,7 @@ class RepairSessionService:
                 .where(
                     QuestionConcept.concept_id == target_id,
                     Question.status == QuestionStatus.APPROVED,
+                    standalone_question_only(),
                 )
                 .order_by(Question.difficulty.asc())
                 .limit(4)
@@ -406,6 +408,7 @@ class RepairSessionService:
                 .where(
                     QuestionProblemType.problem_type_id == target_id,
                     Question.status == QuestionStatus.APPROVED,
+                    standalone_question_only(),
                 )
                 .order_by(Question.difficulty.asc())
                 .limit(4)
@@ -420,6 +423,7 @@ class RepairSessionService:
                 .where(
                     Question.subject_id == subject_id,
                     Question.status == QuestionStatus.APPROVED,
+                    standalone_question_only(),
                 )
                 .order_by(Question.difficulty.asc())
                 .limit(4)
@@ -594,4 +598,3 @@ class RepairSessionService:
             ),
             occurred_at=attempt.created_at or datetime.now(timezone.utc),
         )
-

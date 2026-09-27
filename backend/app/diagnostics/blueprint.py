@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 
 from app.core.exceptions import ApplicationError
 from app.curriculum.models import Chapter, ProblemType, Topic
+from app.questions.eligibility import standalone_question_only
 from app.questions.models import (
     Question,
     QuestionProblemType,
@@ -73,6 +74,7 @@ class DiagnosticBlueprintService:
                 Chapter.subject_id == subject_id,
                 ProblemType.is_active.is_(True),
                 Question.status == QuestionStatus.APPROVED,
+                standalone_question_only(),
                 Question.question_type.in_(self.AUTO_EVALUATED_TYPES),
                 Question.problem_type_links.any(),
                 Question.concept_links.any(),

@@ -38,6 +38,7 @@ from app.practice.models import (
 )
 from app.practice.schemas import PracticeAnswerCreate, QuestionAttemptRead
 from app.practice.service import PracticeService
+from app.questions.eligibility import standalone_question_only
 from app.questions.models import (
     CognitiveLevel,
     Question,
@@ -363,6 +364,7 @@ class QuickCheckService:
                 .where(
                     Question.subject_id == plan.subject_id,
                     Question.status == QuestionStatus.APPROVED,
+                    standalone_question_only(),
                     QuestionConcept.concept_id == prereq_cid,
                 )
                 .order_by(Question.difficulty.asc(), Question.id)
@@ -401,6 +403,7 @@ class QuickCheckService:
                 .where(
                     Question.subject_id == plan.subject_id,
                     Question.status == QuestionStatus.APPROVED,
+                    standalone_question_only(),
                     QuestionProblemType.problem_type_id == pt_id,
                     ~Question.id.in_(used_qids) if used_qids else True,
                     (
@@ -432,6 +435,7 @@ class QuickCheckService:
                 .where(
                     Question.subject_id == plan.subject_id,
                     Question.status == QuestionStatus.APPROVED,
+                    standalone_question_only(),
                     QuestionProblemType.problem_type_id == pt_id,
                     ~Question.id.in_(used_qids) if used_qids else True,
                     (
@@ -466,6 +470,7 @@ class QuickCheckService:
                     .where(
                         Question.subject_id == plan.subject_id,
                         Question.status == QuestionStatus.APPROVED,
+                        standalone_question_only(),
                         QuestionProblemType.problem_type_id.in_(target_pt_ids),
                         ~Question.id.in_(used_qids) if used_qids else True,
                     )

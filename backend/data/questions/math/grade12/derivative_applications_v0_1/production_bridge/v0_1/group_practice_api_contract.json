@@ -1,0 +1,72 @@
+{
+  "legacy_endpoints": {
+    "GET /practice/sessions/{id}/next-question": "Keep for backwards compatibility; return standalone questions only.",
+    "POST /practice/sessions/{id}/answer": "Keep for standalone questions; grouped child IDs must be rejected as QUESTION_NOT_ELIGIBLE."
+  },
+  "new_endpoints": {
+    "GET /practice/sessions/{id}/next-item": {
+      "behavior": "Return an eligible QuestionGroup first when one remains; otherwise return an eligible standalone Question. Never return a child Question.",
+      "response_shape": {
+        "item_type": "QUESTION | QUESTION_GROUP",
+        "question": "PracticeQuestionRead | null",
+        "question_group": "PracticeQuestionGroupRead | null"
+      }
+    },
+    "POST /practice/sessions/{id}/group-answer": {
+      "request": {
+        "question_group_id": "UUID",
+        "answers": [
+          {
+            "label": "a",
+            "student_answer": "TRUE|FALSE"
+          },
+          {
+            "label": "b",
+            "student_answer": "TRUE|FALSE"
+          },
+          {
+            "label": "c",
+            "student_answer": "TRUE|FALSE"
+          },
+          {
+            "label": "d",
+            "student_answer": "TRUE|FALSE"
+          }
+        ],
+        "response_time_seconds": "optional positive float"
+      },
+      "response": "QuestionGroupAttemptRead"
+    }
+  },
+  "question_group_read": {
+    "must_include": [
+      "id",
+      "subject_id",
+      "content",
+      "group_type",
+      "scoring_policy",
+      "difficulty",
+      "exam_weight",
+      "cognitive_level",
+      "four ordered items with label/order_index/question_id/content"
+    ],
+    "must_not_include_before_submission": [
+      "child correct_answer",
+      "child is_correct",
+      "source answer evidence"
+    ]
+  },
+  "group_attempt_read": {
+    "must_include": [
+      "id",
+      "practice_session_id",
+      "student_id",
+      "question_group_id",
+      "correct_count",
+      "score",
+      "scoring_policy",
+      "four ordered child attempt results",
+      "created_at"
+    ]
+  }
+}

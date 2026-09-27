@@ -1,0 +1,65 @@
+{
+  "dataset_code": "DATA-MATH12-014",
+  "contract_code": "GROUP_AWARE_PRACTICE_V0_1",
+  "base_commit": "483ff09112a1f694699b28704a48f8293040ed92",
+  "goal": "Serve TRUE_FALSE_FOUR as one student-facing item, submit a/b/c/d atomically, score the group with MOET_2025_TRUE_FALSE, and publish exactly four child-level mastery evidence events without exposing grouped children as standalone questions.",
+  "student_facing_unit": "QuestionGroup",
+  "mastery_evidence_unit": "child QuestionAttempt",
+  "group_scoring": {
+    "policy": "MOET_2025_TRUE_FALSE",
+    "max_points_in_practice": 1.0,
+    "fractions_by_correct_count": {
+      "0": 0.0,
+      "1": 0.1,
+      "2": 0.25,
+      "3": 0.5,
+      "4": 1.0
+    }
+  },
+  "mastery_semantics": {
+    "child_attempts_per_group_submission": 4,
+    "group_level_mastery_events": 0,
+    "static_concept_graph_mutation": false,
+    "updated_projections": [
+      "StudentConceptMastery",
+      "StudentProblemTypeMastery",
+      "review schedules through existing MasteryAttemptEvidencePublisher"
+    ],
+    "reason": "Each child has its own reviewed Concept/ProblemType taxonomy. Group score is assessment scoring, not a fifth knowledge observation."
+  },
+  "eligibility": {
+    "group_status": "APPROVED",
+    "group_type": "TRUE_FALSE_FOUR",
+    "scoring_policy": "MOET_2025_TRUE_FALSE",
+    "child_count": 4,
+    "child_labels": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "child_status": "APPROVED",
+    "child_question_type": "TRUE_FALSE",
+    "child_requires_problem_type": true,
+    "child_requires_concept": true,
+    "child_requires_learning_outcome": true,
+    "subject_must_match_practice_session": true,
+    "scope_rule": "For each non-empty practice target dimension, the group must contain at least one child matching one of the target IDs in that dimension."
+  },
+  "current_dataset_safety": {
+    "trusted_imported_groups_status": "DRAFT",
+    "trusted_imported_children_status": "DRAFT",
+    "current_groups_served_by_new_path": 0,
+    "production_release_eligible": 0,
+    "note": "This phase builds the runtime path only. It must not approve DATA-MATH12-011/012 imported data or clear rights."
+  },
+  "not_in_scope": [
+    "Teacher assignment -> mastery integration",
+    "QuestionGroup assignment support",
+    "QuestionGroup approval workflow",
+    "rights clearance",
+    "visual asset public delivery",
+    "automatic remediation orchestration",
+    "changing static ConceptRelation graph"
+  ]
+}

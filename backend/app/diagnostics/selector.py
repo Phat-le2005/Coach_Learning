@@ -8,6 +8,7 @@ from app.concepts.models import Concept, ConceptRelation, RelationType
 from app.diagnostics.models import DiagnosticSelectionReason
 from app.mastery.models import StudentConceptMastery, StudentProblemTypeMastery
 from app.practice.models import QuestionAttempt
+from app.questions.eligibility import standalone_question_only
 from app.questions.models import (
     Question,
     QuestionConcept,
@@ -215,6 +216,7 @@ class DiagnosticQuestionSelector:
             .where(
                 Question.subject_id == subject_id,
                 Question.status == QuestionStatus.APPROVED,
+                standalone_question_only(),
                 Question.question_type.in_(self.AUTO_EVALUATED_TYPES),
                 Question.problem_type_links.any(),
                 Question.concept_links.any(),

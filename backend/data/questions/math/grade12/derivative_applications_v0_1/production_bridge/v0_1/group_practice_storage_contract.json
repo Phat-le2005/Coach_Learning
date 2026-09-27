@@ -1,0 +1,46 @@
+{
+  "migration_revision": "0031_question_group_practice",
+  "down_revision": "0030_question_groups",
+  "tables": {
+    "question_group_attempts": {
+      "columns": [
+        "id UUID PK",
+        "practice_session_id UUID NOT NULL",
+        "student_id UUID NOT NULL",
+        "question_group_id UUID NOT NULL",
+        "correct_count INTEGER NOT NULL CHECK 0..4",
+        "score FLOAT NOT NULL CHECK 0..1",
+        "response_time_seconds FLOAT NULL CHECK >0",
+        "scoring_policy enum/value snapshot NOT NULL",
+        "created_at timestamptz NOT NULL"
+      ],
+      "constraints": [
+        "composite FK (practice_session_id, student_id) -> practice_sessions(id, student_id) ON DELETE CASCADE",
+        "FK question_group_id -> question_groups(id) ON DELETE RESTRICT",
+        "UNIQUE(practice_session_id, question_group_id)"
+      ]
+    },
+    "question_group_attempt_items": {
+      "columns": [
+        "id UUID PK",
+        "question_group_attempt_id UUID NOT NULL",
+        "question_group_item_id UUID NOT NULL",
+        "question_attempt_id UUID NOT NULL",
+        "label VARCHAR(1) NOT NULL",
+        "order_index INTEGER NOT NULL"
+      ],
+      "constraints": [
+        "FK question_group_attempt_id -> question_group_attempts(id) ON DELETE CASCADE",
+        "FK question_group_item_id -> question_group_items(id) ON DELETE RESTRICT",
+        "FK question_attempt_id -> question_attempts(id) ON DELETE RESTRICT",
+        "UNIQUE(question_group_attempt_id, label)",
+        "UNIQUE(question_group_attempt_id, order_index)",
+        "UNIQUE(question_attempt_id)",
+        "CHECK labels a,b,c,d",
+        "CHECK order_index 0..3"
+      ]
+    }
+  },
+  "child_attempt_rule": "Create four ordinary QuestionAttempt rows in a,b,c,d order, with consecutive session attempt_number values, AUTO_EVALUATED status, score 1.0/0.0 per child, response_time_seconds=null, hint_count=0. Link them to the parent through question_group_attempt_items.",
+  "transaction_rule": "Parent attempt, four child attempts, four attempt-item links, and all four mastery projections are one transaction. Any failure rolls back everything."
+}

@@ -17,6 +17,7 @@ from app.concepts.models import Concept, RelationType
 from app.core.config import Settings
 from app.curriculum.models import Chapter, ProblemType, ProblemTypeConcept, Topic
 from app.parents.models import ParentStudentRelationship  # noqa: F401; registers mapper target
+from app.questions.eligibility import standalone_question_only
 from app.questions.models import (
     Question,
     QuestionConcept,
@@ -336,7 +337,10 @@ class SyntheticStudentService:
         rows = self.session.execute(
             select(QuestionConcept.concept_id, Question.id)
             .join(Question, Question.id == QuestionConcept.question_id)
-            .where(Question.status == QuestionStatus.APPROVED)
+            .where(
+                Question.status == QuestionStatus.APPROVED,
+                standalone_question_only(),
+            )
             .order_by(QuestionConcept.concept_id, Question.id)
         )
         for concept_id, question_id in rows:
@@ -348,7 +352,10 @@ class SyntheticStudentService:
         rows = self.session.execute(
             select(QuestionProblemType.problem_type_id, Question.id)
             .join(Question, Question.id == QuestionProblemType.question_id)
-            .where(Question.status == QuestionStatus.APPROVED)
+            .where(
+                Question.status == QuestionStatus.APPROVED,
+                standalone_question_only(),
+            )
             .order_by(QuestionProblemType.problem_type_id, Question.id)
         )
         for problem_type_id, question_id in rows:

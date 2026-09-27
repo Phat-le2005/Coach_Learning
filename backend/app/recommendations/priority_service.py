@@ -13,6 +13,7 @@ from app.mastery.models import StudentConceptMastery, StudentProblemTypeMastery
 from app.mastery.state import DerivedMasteryState
 from app.planning.models import TeachingPlan, TeachingPlanItem, TeachingPlanStatus
 from app.practice.models import PracticeSession, PracticeSessionType, QuestionAttempt
+from app.questions.eligibility import standalone_question_only
 from app.questions.models import Question, QuestionConcept, QuestionProblemType, QuestionStatus
 from app.recommendations.mix import (
     LearningMixCategory,
@@ -336,6 +337,7 @@ class LearningPriorityService:
             .where(
                 Question.subject_id == subject_id,
                 Question.status == QuestionStatus.APPROVED,
+                standalone_question_only(),
                 QuestionProblemType.problem_type_id.in_(problem_type_ids),
             )
             .group_by(QuestionProblemType.problem_type_id)
@@ -346,6 +348,7 @@ class LearningPriorityService:
             .where(
                 Question.subject_id == subject_id,
                 Question.status == QuestionStatus.APPROVED,
+                standalone_question_only(),
                 QuestionConcept.concept_id.in_(concept_ids),
             )
             .group_by(QuestionConcept.concept_id)
@@ -493,4 +496,3 @@ class LearningPriorityService:
             problem_type_ids=tuple(ordered_ids),
             priority_by_problem_type=priorities,
         )
-
