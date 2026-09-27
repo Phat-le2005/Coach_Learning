@@ -1,0 +1,37 @@
+{
+  "dataset_code": "DATA-MATH12-011",
+  "promotion_set_code": "DATA-MATH12-011_PROMOTION_V0_1",
+  "base_commit": "cc24bbf1f09f8bff9a2e81a6235b8682c755f4e9",
+  "structural_groups": 67,
+  "reviewed_groups": 67,
+  "academic_verified_groups": 39,
+  "academic_hold_groups": 10,
+  "academic_rejected_groups": 18,
+  "canonical_snapshot_ready_groups": 38,
+  "canonical_snapshot_ready_children": 152,
+  "canonical_snapshot_blocked_groups": 1,
+  "visual_ready_groups": 8,
+  "visual_not_required_groups": 30,
+  "visual_missing_groups": 1,
+  "rights_review_required_groups": 39,
+  "taxonomy_staging_only_groups": 39,
+  "production_release_eligible_groups": 0,
+  "database_import_ready_groups": 0,
+  "unresolved_visual_group_ids": [
+    "M12_DERIV_GROUP_0012"
+  ],
+  "source_breakdown": {
+    "SRC_PROVINCIAL_TRIAL_2025_COLLECTION": {
+      "academic_verified": 7,
+      "canonical_snapshot_ready": 6
+    },
+    "SRC_TRUONG_NGOC_VY_40_2026": {
+      "academic_verified": 28,
+      "canonical_snapshot_ready": 28
+    },
+    "SRC_MOET_EXAM_2025_SOLUTION_COMPILATION": {
+      "academic_verified": 4,
+      "canonical_snapshot_ready": 4
+    }
+  }
+}

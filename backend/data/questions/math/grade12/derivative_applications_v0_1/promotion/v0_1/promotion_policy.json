@@ -1,0 +1,58 @@
+{
+  "policy_version": "promotion_policy_v0_1",
+  "principles": [
+    "Academic VERIFIED is necessary but not sufficient for production release.",
+    "HOLD and REJECTED QuestionGroups must never enter the canonical snapshot.",
+    "A visual-required group enters the internal canonical snapshot only when its registry status is READY_SOURCE_CROP.",
+    "A missing source visual must remain blocked; no reconstructed or fabricated image is allowed.",
+    "Canonical snapshot materialization may preserve reviewed taxonomy codes while those taxonomy artifacts are still staging, but production release must remain blocked until curriculum taxonomy is canonical.",
+    "Source rights REVIEW_REQUIRED blocks production distribution even when academic review and visual extraction pass.",
+    "Do not invent difficulty, exam_weight, cognitive_level, or explanations. Missing required DB scoring metadata remains a production-import blocker.",
+    "Do not flatten a TRUE_FALSE_FOUR QuestionGroup into four unrelated production questions. Group identity and scoring policy must be preserved.",
+    "Existing group_review promotion_ready fields remain false in this phase."
+  ],
+  "canonical_snapshot_gate": {
+    "required": [
+      "academic_review_status == VERIFIED",
+      "exactly 4 reviewed children labelled a,b,c,d in order 0..3",
+      "each child has TRUE/FALSE trusted answer",
+      "each child has reviewed ProblemType/Concept/LearningOutcome mappings",
+      "visual not required OR visual registry status == READY_SOURCE_CROP"
+    ],
+    "not_required": [
+      "rights clearance",
+      "production DB UUIDs",
+      "difficulty/exam_weight"
+    ]
+  },
+  "production_release_gate": {
+    "required": [
+      "canonical_snapshot_ready == true",
+      "rights_status cleared by an explicit reviewed source-rights decision",
+      "curriculum taxonomy imported/canonical and codes resolve deterministically",
+      "trusted Question + QuestionGroup import/promotion lifecycle exists",
+      "reviewed deterministic difficulty and exam_weight policy exists",
+      "visual asset distribution rights are cleared when visual is required"
+    ],
+    "current_result": "0 groups eligible"
+  },
+  "canonical_materialization": {
+    "group_key": "reuse group_candidate_id as immutable external lineage key; do not mint DB UUIDs in data files",
+    "group_content": "academic_review_record.reviewed_group_context",
+    "group_type": "TRUE_FALSE_FOUR",
+    "scoring_policy": "MOET_2025_TRUE_FALSE",
+    "child_question_type": "TRUE_FALSE",
+    "child_key": "<group_candidate_id>:<label>",
+    "child_content": "academic_review_record.items[].reviewed_content",
+    "child_correct_answer": "academic_review_record.items[].correct_answer",
+    "child_taxonomy": "copy reviewed problem_types, concepts, learning_outcomes and taxonomy_basis exactly",
+    "source_lineage": "copy source_code/subsource/pages/source_evidence_id/review batch without rewriting raw staging",
+    "visual_reference": "for visual groups reference visual_asset_id; never embed image bytes/base64",
+    "forbidden_inference_fields": [
+      "difficulty",
+      "exam_weight",
+      "cognitive_level",
+      "explanation"
+    ]
+  }
+}
