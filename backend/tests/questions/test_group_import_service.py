@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable
+from pathlib import Path
 from uuid import UUID
 
 import pytest
@@ -9,7 +10,12 @@ from sqlalchemy.orm import Session
 
 from app.concepts.models import Concept
 from app.core.exceptions import ApplicationError
+from app.curriculum.derivative_activation import (
+    DATASET_CODE,
+    DerivativeTaxonomyActivationValidator,
+)
 from app.curriculum.derivative_candidate import DerivativeCurriculumCandidateBuilder
+from app.curriculum.import_service import CurriculumImportService
 from app.curriculum.models import (
     Chapter,
     Curriculum,
@@ -17,6 +23,7 @@ from app.curriculum.models import (
     LearningOutcome,
     ProblemType,
     Topic,
+    CurriculumImportHistory,
 )
 from app.questions.group_import_service import (
     CANONICAL_SUBJECT_CODE,
@@ -76,7 +83,7 @@ def _seed_subject(
     return subject
 
 
-def _seed_candidate_taxonomy(session: Session) -> Subject:
+def _seed_candidate_entities_only(session: Session) -> Subject:
     candidate = DerivativeCurriculumCandidateBuilder().build()
     subject = _seed_subject(session)
     chapters = {
@@ -146,6 +153,26 @@ def _seed_candidate_taxonomy(session: Session) -> Subject:
     return subject
 
 
+def _import_candidate_taxonomy(session: Session, tmp_path: Path) -> Subject:
+    data_root = tmp_path / "curriculum"
+    expected = DerivativeTaxonomyActivationValidator.write_import_dataset(data_root)
+    result = CurriculumImportService(session, data_root=data_root).import_dataset(
+        DATASET_CODE
+    )
+    assert result.content_hash == expected.content_hash
+    history = session.scalar(
+        select(CurriculumImportHistory).where(
+            CurriculumImportHistory.dataset_code == DATASET_CODE
+        )
+    )
+    assert history is not None
+    activation = DerivativeTaxonomyActivationValidator(session).validate()
+    assert activation.is_valid, activation.as_dict()
+    subject = session.scalar(select(Subject).where(Subject.code == CANONICAL_SUBJECT_CODE))
+    assert subject is not None
+    return subject
+
+
 def _actor(
     question_user_factory: Callable[[Role, str], User],
     suffix: str,
@@ -210,7 +237,7 @@ def test_confirm_rejects_missing_detailed_taxonomy(
     with pytest.raises(ApplicationError) as captured:
         service.confirm(preview, actor.id)
 
-    assert captured.value.code == "TRUSTED_GROUP_TAXONOMY_NOT_READY"
+    assert captured.value.code == "TRUSTED_GROUP_TAXONOMY_NOT_ACTIVATED"
     assert db_session.scalar(select(func.count()).select_from(Question)) == 0
     assert db_session.scalar(select(func.count()).select_from(QuestionGroup)) == 0
 
@@ -226,7 +253,7 @@ def test_confirm_never_resolves_or_creates_fake_math12_subject(
     with pytest.raises(ApplicationError) as captured:
         service.confirm(service.preview(), actor.id)
 
-    assert captured.value.code == "TRUSTED_GROUP_TAXONOMY_NOT_READY"
+    assert captured.value.code == "TRUSTED_GROUP_TAXONOMY_NOT_ACTIVATED"
     assert db_session.scalar(
         select(func.count()).select_from(Subject).where(
             Subject.code == CANONICAL_SUBJECT_CODE
@@ -242,8 +269,9 @@ def test_confirm_never_resolves_or_creates_fake_math12_subject(
 def test_confirm_creates_draft_only_and_is_idempotent(
     db_session: Session,
     question_user_factory: Callable[[Role, str], User],
+    tmp_path: Path,
 ) -> None:
-    subject = _seed_candidate_taxonomy(db_session)
+    subject = _import_candidate_taxonomy(db_session, tmp_path)
     actor = _actor(question_user_factory, "success")
     service = TrustedQuestionGroupImportService(db_session)
     preview = service.preview()
@@ -294,8 +322,9 @@ def test_confirm_creates_draft_only_and_is_idempotent(
 def test_existing_question_content_drift_is_rejected(
     db_session: Session,
     question_user_factory: Callable[[Role, str], User],
+    tmp_path: Path,
 ) -> None:
-    _seed_candidate_taxonomy(db_session)
+    _import_candidate_taxonomy(db_session, tmp_path)
     actor = _actor(question_user_factory, "content-drift")
     service = TrustedQuestionGroupImportService(db_session)
     preview = service.preview()
@@ -314,8 +343,9 @@ def test_existing_question_content_drift_is_rejected(
 def test_existing_question_taxonomy_drift_is_rejected(
     db_session: Session,
     question_user_factory: Callable[[Role, str], User],
+    tmp_path: Path,
 ) -> None:
-    _seed_candidate_taxonomy(db_session)
+    _import_candidate_taxonomy(db_session, tmp_path)
     actor = _actor(question_user_factory, "taxonomy-drift")
     service = TrustedQuestionGroupImportService(db_session)
     preview = service.preview()
@@ -334,8 +364,9 @@ def test_existing_question_taxonomy_drift_is_rejected(
 def test_existing_child_membership_conflict_blocks_entire_import(
     db_session: Session,
     question_user_factory: Callable[[Role, str], User],
+    tmp_path: Path,
 ) -> None:
-    subject = _seed_candidate_taxonomy(db_session)
+    subject = _import_candidate_taxonomy(db_session, tmp_path)
     actor = _actor(question_user_factory, "membership-conflict")
     service = TrustedQuestionGroupImportService(db_session)
     preview = service.preview()
@@ -394,8 +425,9 @@ def test_existing_child_membership_conflict_blocks_entire_import(
 def test_confirm_rolls_back_entire_batch_on_late_database_error(
     db_session: Session,
     question_user_factory: Callable[[Role, str], User],
+    tmp_path: Path,
 ) -> None:
-    _seed_candidate_taxonomy(db_session)
+    _import_candidate_taxonomy(db_session, tmp_path)
     actor = _actor(question_user_factory, "rollback")
     service = TrustedQuestionGroupImportService(db_session)
     preview = service.preview()

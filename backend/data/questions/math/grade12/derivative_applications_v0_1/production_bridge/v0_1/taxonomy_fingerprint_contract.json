@@ -1,0 +1,79 @@
+{
+  "fingerprint_code": "DERIVATIVE_CANONICAL_GRAPH_FINGERPRINT_V0_1",
+  "canonicalization": {
+    "encoding": "UTF-8 JSON",
+    "json_options": "ensure_ascii=false, sort_keys=true, separators=(',', ':')",
+    "ordering": "sort every entity/link collection by stable semantic key before serialization",
+    "hash": "SHA-256"
+  },
+  "payload": {
+    "dataset_identity": [
+      "dataset_code",
+      "dataset_version",
+      "curriculum_code",
+      "curriculum_version_code",
+      "subject_code"
+    ],
+    "subject": [
+      "code",
+      "name",
+      "grade_level",
+      "description",
+      "order_index"
+    ],
+    "chapters": [
+      "code",
+      "name",
+      "description",
+      "order_index"
+    ],
+    "topics": [
+      "chapter_code",
+      "code",
+      "name",
+      "description",
+      "order_index"
+    ],
+    "problem_types": [
+      "topic_code",
+      "code",
+      "name",
+      "description",
+      "order_index",
+      "default_difficulty",
+      "is_active"
+    ],
+    "concepts": [
+      "code",
+      "name",
+      "description",
+      "grade_level",
+      "order_index"
+    ],
+    "learning_outcomes": [
+      "code",
+      "description",
+      "grade_level",
+      "order_index",
+      "source_reference"
+    ],
+    "concept_relations": [
+      "source_code",
+      "target_code",
+      "relation_type"
+    ],
+    "problem_type_concepts": [
+      "problem_type_code",
+      "concept_code",
+      "weight",
+      "is_primary"
+    ],
+    "problem_type_learning_outcomes": [
+      "problem_type_code",
+      "learning_outcome_code",
+      "weight"
+    ]
+  },
+  "db_scope": "MATH_G12 under GDPT2018_2018; compare exact candidate semantic graph, not only rows referenced by the 152 imported children.",
+  "identity_check": "Separately validate DB stable UUIDs using the same identity rules as CurriculumImportService; semantic fingerprint alone is insufficient."
+}

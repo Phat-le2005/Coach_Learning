@@ -18,6 +18,9 @@ from app.curriculum.derivative_candidate import (
     DerivativeCurriculumCandidate,
     DerivativeCurriculumCandidateValidator,
 )
+from app.curriculum.derivative_activation import (
+    DerivativeTaxonomyActivationValidator,
+)
 from app.curriculum.models import (
     Chapter,
     CurriculumVersion,
@@ -203,6 +206,15 @@ class TrustedQuestionGroupImportService:
                     "Import actor was not found.",
                 )
             self._lock()
+            activation = DerivativeTaxonomyActivationValidator(self.session).validate()
+            if not activation.is_valid:
+                issue_codes = sorted({issue.code for issue in activation.errors})
+                raise ApplicationError(
+                    409,
+                    "TRUSTED_GROUP_TAXONOMY_NOT_ACTIVATED",
+                    "Canonical derivative taxonomy activation proof failed: "
+                    + ", ".join(issue_codes[:8]),
+                )
             subject, problem_types, concepts, outcomes = self._resolve_taxonomy(
                 current
             )

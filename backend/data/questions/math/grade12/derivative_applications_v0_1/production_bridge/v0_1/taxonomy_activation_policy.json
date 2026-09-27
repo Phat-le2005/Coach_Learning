@@ -1,0 +1,58 @@
+{
+  "dataset_code": "DATA-MATH12-013",
+  "policy_code": "DERIVATIVE_TAXONOMY_ACTIVATION_GATE_V0_1",
+  "base_commit": "09e554281da2b868f3fd27cbfff6aa3160bb2ae7",
+  "purpose": "Block trusted QuestionGroup confirm unless the database contains the exact reviewed Grade 12 curriculum candidate, including graph relations and mappings, and the candidate was activated through CurriculumImportService.",
+  "canonical_dataset": {
+    "dataset_code": "MATH_G12_GDPT2018_CORE",
+    "dataset_version": "1.2.0",
+    "curriculum_code": "GDPT2018",
+    "curriculum_version_code": "GDPT2018_2018",
+    "subject_code": "MATH_G12",
+    "verified_at": null,
+    "legacy_identity_compatible": true
+  },
+  "expected_candidate_counts": {
+    "subjects": 1,
+    "chapters": 6,
+    "topics": 10,
+    "problem_types": 30,
+    "concepts": 41,
+    "learning_outcomes": 18,
+    "concept_relations": 48,
+    "problem_type_concepts": 100,
+    "problem_type_learning_outcomes": 40
+  },
+  "activation_requirements": [
+    "DerivativeCurriculumCandidateValidator passes.",
+    "DB Curriculum/CurriculumVersion/Subject identity matches the canonical dataset and canonical stable-ID rules.",
+    "All candidate Chapters, Topics, ProblemTypes, Concepts, LearningOutcomes exist with exact reviewed fields.",
+    "All candidate ConceptRelations exist with exact source/target/relation_type and no missing candidate edge.",
+    "All candidate ProblemTypeConcept links exist with exact weight/is_primary and no missing candidate link.",
+    "All candidate ProblemTypeLearningOutcome links exist with exact weight and no missing candidate link.",
+    "The candidate-scoped DB graph fingerprint exactly equals the deterministic candidate fingerprint.",
+    "CurriculumImportHistory contains dataset_code MATH_G12_GDPT2018_CORE, dataset_version 1.2.0, and the exact canonical import content_hash expected for this candidate.",
+    "The history curriculum_version_id equals the active GDPT2018_2018 CurriculumVersion used by Subject MATH_G12."
+  ],
+  "strictness": {
+    "reject_manual_entity_only_seed": true,
+    "reject_missing_relation": true,
+    "reject_extra_or_drifted_candidate_relation": true,
+    "reject_missing_problem_type_concept_link": true,
+    "reject_weight_or_primary_drift": true,
+    "reject_missing_problem_type_learning_outcome_link": true,
+    "reject_history_missing": true,
+    "reject_history_version_mismatch": true,
+    "reject_history_hash_mismatch": true,
+    "reject_wrong_stable_identity": true
+  },
+  "confirm_error_code": "TRUSTED_GROUP_TAXONOMY_NOT_ACTIVATED",
+  "non_goals": [
+    "Do not clear domain-review status.",
+    "Do not set verified_at.",
+    "Do not change source rights.",
+    "Do not approve Question or QuestionGroup rows.",
+    "Do not publish visual assets.",
+    "Do not make learning/recommendation group-aware yet."
+  ]
+}

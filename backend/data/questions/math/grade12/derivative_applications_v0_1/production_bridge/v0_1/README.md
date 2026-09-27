@@ -62,3 +62,10 @@ Importer must be deterministic and idempotent:
 
 Raw candidate SHA must remain:
 `b627a458e0b18c0a4e0733e18864e0bd83165f94894a7d690e4fc1313f3ed4d5`.
+
+## Taxonomy activation gate
+
+DATA-MATH12-013 adds a full-graph fingerprint and import-history gate. Trusted group
+confirmation is allowed only after the exact `MATH_G12_GDPT2018_CORE / 1.2.0`
+candidate has been processed by `CurriculumImportService`. The gate does not set
+`verified_at`, clear rights, or approve any Question/QuestionGroup row.
