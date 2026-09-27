@@ -1,0 +1,51 @@
+{
+  "dataset_code": "DATA-MATH12-012",
+  "candidate_code": "MATH_G12_GDPT2018_CORE_CANDIDATE_1_2_0",
+  "base_commit": "6adfc8f6b24f21edad401242a67572457a9bcce6",
+  "canonical_dataset_code": "MATH_G12_GDPT2018_CORE",
+  "current_dataset_version": "1.1.0",
+  "candidate_dataset_version": "1.2.0",
+  "curriculum_version_code": "GDPT2018_2018",
+  "canonical_subject_code": "MATH_G12",
+  "legacy_alias_to_reject_for_db_identity": "MATH12",
+  "verified_at": null,
+  "status": "CANONICAL_CANDIDATE_DOMAIN_REVIEW_REQUIRED",
+  "merge_scope": "DERIVATIVE_APPLICATIONS only; preserve all non-derivative canonical records",
+  "merge_strategy": {
+    "chapters": "preserve canonical chapters unchanged",
+    "topics": "upsert staging derivative topics by code; preserve all other canonical topics",
+    "problem_types": "upsert staging derivative problem types by code; preserve other chapters; retain legacy COMPLETE_FUNCTION_ANALYSIS as compatibility record with is_active=false",
+    "concepts": "union canonical concepts and detailed derivative staging concepts by code; staging wins on exact code overlap",
+    "learning_outcomes": "union canonical broad outcomes and M12_DERIV_LO_01..10; no destructive deletion",
+    "concept_relations": "set-union by (source_code,target_code,relation_type); staging wins exact duplicate",
+    "problem_type_concepts": "upsert by (problem_type_code,concept_code); staging wins exact overlap",
+    "problem_type_learning_outcomes": "upsert by (problem_type_code,learning_outcome_code); staging wins exact overlap"
+  },
+  "expected_candidate_counts": {
+    "subjects": 1,
+    "chapters": 6,
+    "topics": 10,
+    "problem_types": 30,
+    "concepts": 41,
+    "learning_outcomes": 18,
+    "concept_relations": 48,
+    "problem_type_concepts": 100,
+    "problem_type_learning_outcomes": 40
+  },
+  "derivative_staging_counts": {
+    "topics": 5,
+    "problem_types": 24,
+    "concepts": 31,
+    "learning_outcomes": 10,
+    "concept_relations": 37,
+    "problem_type_concepts": 83,
+    "problem_type_learning_outcomes": 31
+  },
+  "review_boundaries": [
+    "Do not set canonical root manifest verified_at.",
+    "Do not overwrite canonical root files in this phase.",
+    "Candidate files must not be discoverable as an importable manifest by CurriculumImportService.",
+    "Official learning outcomes remain source-backed; derived topics/problem types/concepts/weights/difficulty remain Coach Learning derived.",
+    "Human/domain review remains required before canonical root promotion."
+  ]
+}

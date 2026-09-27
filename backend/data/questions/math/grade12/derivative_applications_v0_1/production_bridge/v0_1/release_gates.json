@@ -1,0 +1,24 @@
+{
+  "base_commit": "6adfc8f6b24f21edad401242a67572457a9bcce6",
+  "current_state": {
+    "academic_review": "PASS_67_OF_67",
+    "canonical_snapshot": "38_GROUPS_152_CHILDREN",
+    "visual_registry": "8_READY_1_MISSING",
+    "curriculum": "DETAILED_DERIVATIVE_TAXONOMY_STAGING",
+    "rights": "REVIEW_REQUIRED",
+    "group_learning_path": "NOT_GROUP_AWARE",
+    "production_release_eligible_groups": 0
+  },
+  "gates_to_clear_before_APPROVED": [
+    "DOMAIN_REVIEW_CURRICULUM_CANDIDATE",
+    "PROMOTE_CANDIDATE_TO_CANONICAL_CURRICULUM_ROOT_AND_IMPORT",
+    "DOMAIN_REVIEW_SCORING_METADATA_POLICY",
+    "SOURCE_RIGHTS_CLEARANCE",
+    "GROUP_AWARE_LEARNING_OR_EXAM_CONSUMER",
+    "VISUAL_ASSET_DELIVERY_MODEL_WITH_RIGHTS_CLEARANCE"
+  ],
+  "explicitly_not_blocking_DRAFT_internal_import": [
+    "public rights clearance",
+    "group-aware recommendation path"
+  ]
+}

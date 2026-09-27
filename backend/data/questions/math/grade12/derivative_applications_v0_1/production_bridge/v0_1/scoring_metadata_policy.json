@@ -1,0 +1,56 @@
+{
+  "policy_code": "DERIVATIVE_SCORING_METADATA_CANDIDATE_V0_1",
+  "status": "CANDIDATE_NOT_PRODUCTION_APPROVED",
+  "base_commit": "6adfc8f6b24f21edad401242a67572457a9bcce6",
+  "scope": "38 canonical-snapshot-ready TRUE_FALSE_FOUR groups / 152 child statements",
+  "difficulty": {
+    "child_rule": "Use default_difficulty of the exactly-one primary ProblemType in the reviewed child taxonomy.",
+    "basis": "COACH_LEARNING_DERIVED_INITIAL_EXPERT_DIFFICULTY",
+    "empirical": false,
+    "requires_domain_review_before_approval": true,
+    "validated_input_state": {
+      "children": 152,
+      "children_with_exactly_one_primary_problem_type": 152,
+      "children_with_resolvable_primary_default_difficulty": 152
+    },
+    "candidate_distribution": {
+      "0.25": 11,
+      "0.30": 14,
+      "0.35": 4,
+      "0.45": 24,
+      "0.50": 69,
+      "0.55": 16,
+      "0.60": 2,
+      "0.65": 5,
+      "0.70": 4,
+      "0.75": 3
+    },
+    "group_rule": "Arithmetic mean of the four child candidate difficulties, rounded to 3 decimals.",
+    "group_candidate_range": [
+      0.25,
+      0.7
+    ],
+    "forbidden": [
+      "LLM-estimated difficulty",
+      "difficulty inferred from source answer correctness",
+      "difficulty inferred from question length",
+      "silent fallback when primary ProblemType/default_difficulty is missing"
+    ]
+  },
+  "exam_weight": {
+    "child_rule": 0.0,
+    "child_semantics": "Child Question rows are structural members of a TRUE_FALSE_FOUR group and must not be scored or prioritized as standalone exam items.",
+    "group_rule": 1.0,
+    "group_semantics": "Normalized full-group weight aligned with score_question_group(..., max_points=1.0); actual exam blueprint points may override max_points later.",
+    "policy_type": "SYSTEM_STRUCTURAL_POLICY_NOT_SOURCE_FACT",
+    "requires_domain_review_before_approval": true
+  },
+  "cognitive_level": {
+    "value": null,
+    "rule": "Remain null until a separate reviewed cognitive-level policy exists."
+  },
+  "explanation": {
+    "value": null,
+    "rule": "Do not synthesize explanations during import."
+  }
+}

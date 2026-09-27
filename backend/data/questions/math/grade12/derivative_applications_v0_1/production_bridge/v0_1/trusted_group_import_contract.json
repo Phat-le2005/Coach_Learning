@@ -1,0 +1,61 @@
+{
+  "contract_code": "TRUSTED_QUESTION_GROUP_IMPORT_V0_1",
+  "base_commit": "6adfc8f6b24f21edad401242a67572457a9bcce6",
+  "input": "DATA-MATH12-011 canonical snapshot + DATA-MATH12-012 candidate curriculum/scoring policy",
+  "subject_resolution": {
+    "snapshot_legacy_subject_code": "MATH12",
+    "canonical_subject_code": "MATH_G12",
+    "rule": "Importer must resolve DB Subject by canonical MATH_G12. Treat MATH12 only as historical snapshot metadata; do not query/create Subject MATH12."
+  },
+  "identity": {
+    "group_uuid": "stable_id('question-group', external_group_key)",
+    "child_uuid": "stable_id('question', external_question_key)",
+    "idempotency": "same external keys must resolve to same UUIDs; re-run is no-op when content/taxonomy matches; drift is a conflict"
+  },
+  "write_mode": {
+    "preview_default": true,
+    "confirm_allowed": true,
+    "created_status": "DRAFT",
+    "trusted_approved_import": false,
+    "production_publish": false,
+    "reason": "Learning/recommendation engines are Question-centric and not group-aware; approving child Questions would leak them as standalone items."
+  },
+  "group_fields": {
+    "group_type": "TRUE_FALSE_FOUR",
+    "scoring_policy": "MOET_2025_TRUE_FALSE",
+    "difficulty": "candidate mean from scoring policy",
+    "exam_weight": 1.0,
+    "cognitive_level": null
+  },
+  "child_fields": {
+    "question_type": "TRUE_FALSE",
+    "difficulty": "primary ProblemType default_difficulty candidate",
+    "exam_weight": 0.0,
+    "cognitive_level": null,
+    "explanation": null
+  },
+  "taxonomy_requirements": [
+    "canonical Subject MATH_G12 exists",
+    "all child ProblemType codes resolve under MATH_G12",
+    "all child Concept codes resolve under MATH_G12",
+    "all child LearningOutcome codes resolve under MATH_G12",
+    "taxonomy candidate/content hash matches the reviewed candidate used for preview"
+  ],
+  "visual_requirements": [
+    "8 visual groups keep existing visual_asset_id lineage",
+    "Question/QuestionGroup DB schema currently has no media attachment; importer stores visual lineage only in import preview/report, not in fake content fields",
+    "M12_DERIV_GROUP_0012 is excluded"
+  ],
+  "rights_requirements": [
+    "rights_status=REVIEW_REQUIRED never permits APPROVED/published status",
+    "DRAFT import is for internal review only",
+    "no public asset-serving endpoint is added in this phase"
+  ],
+  "transaction_rules": [
+    "all four child Questions and parent QuestionGroup created in one transaction",
+    "no partial group on error",
+    "advisory lock on trusted group import in PostgreSQL",
+    "exact content/taxonomy revalidation at confirm time",
+    "conflict if deterministic UUID already exists with different immutable imported content"
+  ]
+}
