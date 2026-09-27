@@ -823,18 +823,49 @@ class QuestionGroupReviewValidator:
         if status != "HOLD_SOURCE_ANSWER_CONFLICT":
             return
         conflicting_label = record.get("conflicting_item_label")
+        conflicting_labels_value = record.get("conflicting_item_labels")
+        conflicting_labels: tuple[str, ...] = ()
         source_pattern = record.get("source_claimed_answer_pattern")
         evidence_pattern = evidence.get(
             "source_claimed_answer_pattern", evidence.get("answer_pattern")
         )
-        if conflicting_label not in EXPECTED_LABELS:
+        if conflicting_labels_value is None:
+            if conflicting_label in EXPECTED_LABELS:
+                conflicting_labels = (str(conflicting_label),)
+            else:
+                self._add(
+                    issues,
+                    "review_content",
+                    "CONFLICTING_ITEM_LABEL_INVALID",
+                    group_id,
+                    "Source-answer conflict HOLD requires an a/b/c/d item label.",
+                )
+        elif (
+            not isinstance(conflicting_labels_value, list)
+            or not conflicting_labels_value
+            or any(label not in EXPECTED_LABELS for label in conflicting_labels_value)
+            or len(set(conflicting_labels_value)) != len(conflicting_labels_value)
+        ):
             self._add(
                 issues,
                 "review_content",
-                "CONFLICTING_ITEM_LABEL_INVALID",
+                "CONFLICTING_ITEM_LABELS_INVALID",
                 group_id,
-                "Source-answer conflict HOLD requires an a/b/c/d item label.",
+                "conflicting_item_labels must be a non-empty unique a/b/c/d list.",
             )
+        else:
+            conflicting_labels = tuple(conflicting_labels_value)
+            if (
+                conflicting_label is not None
+                and conflicting_label not in conflicting_labels
+            ):
+                self._add(
+                    issues,
+                    "review_content",
+                    "CONFLICTING_ITEM_LABEL_INCONSISTENT",
+                    group_id,
+                    "conflicting_item_label must be a member of conflicting_item_labels.",
+                )
         if (
             not isinstance(source_pattern, list)
             or len(source_pattern) != 4
@@ -848,11 +879,12 @@ class QuestionGroupReviewValidator:
                 group_id,
                 "The source-claimed four-answer pattern must remain auditable.",
             )
+        independent_check = record.get("independent_check")
         if (
             not isinstance(record.get("conflict_explanation"), str)
             or not record["conflict_explanation"].strip()
-            or not isinstance(record.get("independent_check"), dict)
-            or not record["independent_check"]
+            or not isinstance(independent_check, dict)
+            or not independent_check
         ):
             self._add(
                 issues,
@@ -861,24 +893,57 @@ class QuestionGroupReviewValidator:
                 group_id,
                 "Source-answer conflict HOLD requires explanation and check metadata.",
             )
-        conflicting_item = next(
-            (
-                item
-                for item in record.get("items", [])
-                if isinstance(item, dict) and item.get("label") == conflicting_label
-            ),
-            {},
-        )
-        if (
+        elif "implied_answer_by_review" in independent_check:
+            implied_answers = independent_check["implied_answer_by_review"]
+            if (
+                not isinstance(implied_answers, dict)
+                or set(implied_answers) != set(conflicting_labels)
+                or any(
+                    answer not in {"TRUE", "FALSE"}
+                    for answer in implied_answers.values()
+                )
+            ):
+                self._add(
+                    issues,
+                    "review_content",
+                    "INDEPENDENT_CONFLICT_ANSWERS_INVALID",
+                    group_id,
+                    "implied_answer_by_review must map every conflicting label to TRUE/FALSE.",
+                )
+
+        conflicting_items = [
+            item
+            for item in record.get("items", [])
+            if isinstance(item, dict) and item.get("label") in conflicting_labels
+        ]
+        trusted_answer_maps = [
+            value
+            for field in (
+                "trusted_correct_answers",
+                "trusted_correct_answer_by_item",
+            )
+            if isinstance((value := record.get(field)), dict)
+        ]
+        trusted_answer_assigned = (
             record.get("trusted_correct_answer") is not None
-            or conflicting_item.get("correct_answer") is not None
-        ):
+            or any(
+                item.get("correct_answer") is not None
+                or item.get("trusted_correct_answer") is not None
+                for item in conflicting_items
+            )
+            or any(
+                answers.get(label) is not None
+                for answers in trusted_answer_maps
+                for label in conflicting_labels
+            )
+        )
+        if trusted_answer_assigned:
             self._add(
                 issues,
                 "promotion_boundary",
                 "HOLD_CONFLICT_TRUSTED_ANSWER_ASSIGNED",
                 group_id,
-                "The conflicting child must not have a trusted final answer.",
+                "Conflicting children must not have trusted final answers.",
             )
 
     def _validate_rejected(

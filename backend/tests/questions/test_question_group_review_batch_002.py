@@ -153,7 +153,7 @@ def test_batch_002_out_of_scope_groups_are_excluded_from_usable_view() -> None:
         assert group_id not in usable_ids
 
 
-def test_two_batch_materialization_is_deterministic_and_lexical() -> None:
+def test_review_materialization_is_deterministic_and_lexical() -> None:
     groups = _load(
         DEFAULT_QUESTION_GROUP_STAGING_PATH / "question_group_candidates.json"
     )
@@ -168,6 +168,7 @@ def test_two_batch_materialization_is_deterministic_and_lexical() -> None:
     assert [batch.batch_code for batch in first.review_batches] == [
         "DATA-MATH12-007_BATCH_001",
         "DATA-MATH12-008_BATCH_002",
+        "DATA-MATH12-008_BATCH_003",
     ]
     assert not first.issues
 

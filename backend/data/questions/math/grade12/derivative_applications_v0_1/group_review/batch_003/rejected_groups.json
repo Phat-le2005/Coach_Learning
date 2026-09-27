@@ -1,0 +1,20 @@
+[
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0105",
+    "source_candidate_id": "M12_DERIV_CAND_0105",
+    "review_status": "REJECTED_OUT_OF_SCOPE",
+    "source_evidence_id": "EVID_NVY_0105",
+    "reason": "Mixed real-world velocity group: item d requires definite integration to obtain traveled distance. Keep for broader/mixed chapter routing rather than the current derivative-applications dataset.",
+    "preserve_for_broader_exam_corpus": true,
+    "promotion_ready": false
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0114",
+    "source_candidate_id": "M12_DERIV_CAND_0114",
+    "review_status": "REJECTED_DUPLICATE_GROUP",
+    "duplicate_of_group_candidate_id": "M12_DERIV_GROUP_0113",
+    "source_evidence_id": "EVID_NVY_0114",
+    "reason": "Candidate page 387 is the solution-section reprint of test 20 Question 1 whose canonical question occurrence is page 379.",
+    "promotion_ready": false
+  }
+]

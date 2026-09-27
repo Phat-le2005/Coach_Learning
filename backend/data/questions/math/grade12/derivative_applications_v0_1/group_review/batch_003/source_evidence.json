@@ -1,0 +1,315 @@
+[
+  {
+    "evidence_id": "EVID_NVY_0089",
+    "group_candidate_id": "M12_DERIV_GROUP_0089",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "effective_subsource_code": "NGOC_VY_2026_11",
+    "candidate_extraction_page": 198,
+    "canonical_question_pages": [
+      198
+    ],
+    "solution_pages": [
+      205,
+      206
+    ],
+    "question_number": "1",
+    "evidence_type": "QUESTION_AND_EXPLICIT_SOLUTION",
+    "source_claimed_answer_pattern": [
+      "FALSE",
+      "FALSE",
+      "TRUE",
+      "TRUE"
+    ],
+    "review_consistency": "CONFIRMED",
+    "visual_asset_required": true
+  },
+  {
+    "evidence_id": "EVID_NVY_0091",
+    "group_candidate_id": "M12_DERIV_GROUP_0091",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "effective_subsource_code": "NGOC_VY_2026_12",
+    "candidate_extraction_page": 218,
+    "canonical_question_pages": [
+      218
+    ],
+    "solution_pages": [
+      225
+    ],
+    "question_number": "1",
+    "evidence_type": "QUESTION_AND_EXPLICIT_SOLUTION",
+    "source_claimed_answer_pattern": [
+      "TRUE",
+      "FALSE",
+      "FALSE",
+      "TRUE"
+    ],
+    "review_consistency": "CONFIRMED"
+  },
+  {
+    "evidence_id": "EVID_NVY_0094",
+    "group_candidate_id": "M12_DERIV_GROUP_0094",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "effective_subsource_code": "NGOC_VY_2026_13",
+    "candidate_extraction_page": 237,
+    "canonical_question_pages": [
+      237
+    ],
+    "solution_pages": [
+      246
+    ],
+    "question_number": "1",
+    "evidence_type": "QUESTION_AND_EXPLICIT_SOLUTION",
+    "source_claimed_answer_pattern": [
+      "TRUE",
+      "FALSE",
+      "FALSE",
+      "FALSE"
+    ],
+    "review_consistency": "CONFIRMED"
+  },
+  {
+    "evidence_id": "EVID_NVY_0096",
+    "group_candidate_id": "M12_DERIV_GROUP_0096",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "effective_subsource_code": "NGOC_VY_2026_14",
+    "candidate_extraction_page": 258,
+    "canonical_question_pages": [
+      258
+    ],
+    "solution_pages": [
+      266
+    ],
+    "question_number": "1",
+    "evidence_type": "QUESTION_AND_EXPLICIT_SOLUTION",
+    "source_claimed_answer_pattern": [
+      "TRUE",
+      "FALSE",
+      "TRUE",
+      "FALSE"
+    ],
+    "review_consistency": "CONFIRMED"
+  },
+  {
+    "evidence_id": "EVID_NVY_0099",
+    "group_candidate_id": "M12_DERIV_GROUP_0099",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "effective_subsource_code": "NGOC_VY_2026_15",
+    "candidate_extraction_page": 277,
+    "canonical_question_pages": [
+      277
+    ],
+    "solution_pages": [
+      285
+    ],
+    "question_number": "1",
+    "evidence_type": "QUESTION_AND_EXPLICIT_SOLUTION",
+    "source_claimed_answer_pattern": [
+      "TRUE",
+      "FALSE",
+      "FALSE",
+      "TRUE"
+    ],
+    "review_consistency": "CONFIRMED"
+  },
+  {
+    "evidence_id": "EVID_NVY_0101",
+    "group_candidate_id": "M12_DERIV_GROUP_0101",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "effective_subsource_code": "NGOC_VY_2026_16",
+    "candidate_extraction_page": 295,
+    "canonical_question_pages": [
+      295
+    ],
+    "solution_pages": [
+      303,
+      304
+    ],
+    "question_number": "1",
+    "evidence_type": "QUESTION_AND_EXPLICIT_SOLUTION",
+    "source_claimed_answer_pattern": [
+      "TRUE",
+      "TRUE",
+      "FALSE",
+      "FALSE"
+    ],
+    "review_consistency": "CONFIRMED"
+  },
+  {
+    "evidence_id": "EVID_NVY_0104",
+    "group_candidate_id": "M12_DERIV_GROUP_0104",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "effective_subsource_code": "NGOC_VY_2026_17",
+    "candidate_extraction_page": 316,
+    "canonical_question_pages": [
+      316
+    ],
+    "solution_pages": [
+      324,
+      325
+    ],
+    "question_number": "1",
+    "evidence_type": "QUESTION_AND_EXPLICIT_SOLUTION",
+    "source_claimed_answer_pattern": [
+      "TRUE",
+      "FALSE",
+      "FALSE",
+      "TRUE"
+    ],
+    "review_consistency": "SOURCE_ANSWER_CONFLICT",
+    "conflicting_item_labels": [
+      "d"
+    ],
+    "conflict_explanation": "The source marks item d TRUE, but item d says the graph intersects the y-axis at two distinct points. The source's own detailed solution actually solves y=0 and finds two x-intercepts, then incorrectly concludes that there are two y-axis intersections. A function graph can have at most one y-axis intersection.",
+    "independent_check": {
+      "basis": "SOURCE_STATEMENT_AND_SOURCE_DETAILED_SOLUTION",
+      "implied_answer_by_review": {
+        "d": "FALSE"
+      },
+      "provenance_type": "INDEPENDENT_REVIEW_CHECK"
+    }
+  },
+  {
+    "evidence_id": "EVID_NVY_0105",
+    "group_candidate_id": "M12_DERIV_GROUP_0105",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "effective_subsource_code": "NGOC_VY_2026_17",
+    "candidate_extraction_page": 316,
+    "canonical_question_pages": [
+      316
+    ],
+    "solution_pages": [
+      325,
+      326
+    ],
+    "question_number": "2",
+    "evidence_type": "QUESTION_AND_EXPLICIT_SOLUTION",
+    "source_claimed_answer_pattern": [
+      "FALSE",
+      "TRUE",
+      "FALSE",
+      "FALSE"
+    ],
+    "review_consistency": "OUT_OF_SCOPE_CURRENT_DATASET"
+  },
+  {
+    "evidence_id": "EVID_NVY_0108",
+    "group_candidate_id": "M12_DERIV_GROUP_0108",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "effective_subsource_code": "NGOC_VY_2026_18",
+    "candidate_extraction_page": 336,
+    "canonical_question_pages": [
+      336
+    ],
+    "solution_pages": [
+      345
+    ],
+    "question_number": "1",
+    "evidence_type": "QUESTION_AND_EXPLICIT_SOLUTION",
+    "source_claimed_answer_pattern": [
+      "TRUE",
+      "TRUE",
+      "FALSE",
+      "TRUE"
+    ],
+    "review_consistency": "SOURCE_ANSWER_CONFLICT",
+    "conflicting_item_labels": [
+      "a",
+      "b",
+      "c"
+    ],
+    "conflict_explanation": "The source answer table is inconsistent with its own detailed solution for items a, b and c. The detailed solution gives domain R\\{-1/2}, roots y'=0 at x=1 and x=-2, and extrema on opposite sides of the y-axis. These facts imply a=FALSE, b=FALSE, c=TRUE, while the source table claims TRUE, TRUE, FALSE.",
+    "independent_check": {
+      "basis": "DOMAIN_AND_DERIVATIVE_FACTS_PRINTED_IN_SOURCE_SOLUTION",
+      "implied_answer_by_review": {
+        "a": "FALSE",
+        "b": "FALSE",
+        "c": "TRUE"
+      },
+      "provenance_type": "INDEPENDENT_REVIEW_CHECK"
+    }
+  },
+  {
+    "evidence_id": "EVID_NVY_0111",
+    "group_candidate_id": "M12_DERIV_GROUP_0111",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "effective_subsource_code": "NGOC_VY_2026_19",
+    "candidate_extraction_page": 357,
+    "canonical_question_pages": [
+      357
+    ],
+    "solution_pages": [
+      365,
+      366
+    ],
+    "question_number": "1",
+    "evidence_type": "QUESTION_AND_EXPLICIT_SOLUTION",
+    "source_claimed_answer_pattern": [
+      "FALSE",
+      "TRUE",
+      "FALSE",
+      "TRUE"
+    ],
+    "review_consistency": "SOURCE_ANSWER_CONFLICT",
+    "conflicting_item_labels": [
+      "c",
+      "d"
+    ],
+    "conflict_explanation": "The source table claims c=FALSE and d=TRUE. Its own detailed solution says the function is increasing on (-3/2,0), decreasing on (0,3/2), has a local maximum at x=0 with value 3, and has no local minimum. Thus the detailed solution implies c=TRUE and d=FALSE.",
+    "independent_check": {
+      "basis": "MONOTONICITY_AND_EXTREMA_FACTS_PRINTED_IN_SOURCE_SOLUTION",
+      "implied_answer_by_review": {
+        "c": "TRUE",
+        "d": "FALSE"
+      },
+      "provenance_type": "INDEPENDENT_REVIEW_CHECK"
+    }
+  },
+  {
+    "evidence_id": "EVID_NVY_0113",
+    "group_candidate_id": "M12_DERIV_GROUP_0113",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "effective_subsource_code": "NGOC_VY_2026_20",
+    "candidate_extraction_page": 379,
+    "canonical_question_pages": [
+      379
+    ],
+    "solution_pages": [
+      387,
+      388
+    ],
+    "question_number": "1",
+    "evidence_type": "QUESTION_AND_EXPLICIT_SOLUTION",
+    "source_claimed_answer_pattern": [
+      "FALSE",
+      "FALSE",
+      "TRUE",
+      "TRUE"
+    ],
+    "review_consistency": "CONFIRMED",
+    "visual_asset_required": true
+  },
+  {
+    "evidence_id": "EVID_NVY_0114",
+    "group_candidate_id": "M12_DERIV_GROUP_0114",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "effective_subsource_code": "NGOC_VY_2026_20",
+    "candidate_extraction_page": 387,
+    "canonical_question_pages": [
+      379
+    ],
+    "solution_pages": [
+      387,
+      388
+    ],
+    "question_number": "1",
+    "evidence_type": "SOLUTION_REPRINT_DUPLICATE",
+    "source_claimed_answer_pattern": [
+      "FALSE",
+      "FALSE",
+      "TRUE",
+      "TRUE"
+    ],
+    "review_consistency": "SOLUTION_REPRINT_DUPLICATE",
+    "duplicate_of_group_candidate_id": "M12_DERIV_GROUP_0113"
+  }
+]

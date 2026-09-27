@@ -1,0 +1,107 @@
+[
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0104",
+    "source_candidate_id": "M12_DERIV_CAND_0104",
+    "source_fingerprint": "4becd2ac60f88e08",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_17",
+    "effective_subsource_code": "NGOC_VY_2026_17",
+    "provenance_correction_code": null,
+    "candidate_extraction_page": 316,
+    "question_number": "1",
+    "review_status": "HOLD_SOURCE_ANSWER_CONFLICT",
+    "source_evidence_id": "EVID_NVY_0104",
+    "reason": "The source marks item d TRUE but its own detailed solution solves for x-intercepts and then incorrectly calls them two y-axis intersections.",
+    "source_claimed_answer_pattern": [
+      "TRUE",
+      "FALSE",
+      "FALSE",
+      "TRUE"
+    ],
+    "conflicting_item_label": "d",
+    "conflicting_item_labels": [
+      "d"
+    ],
+    "trusted_correct_answer": null,
+    "conflict_explanation": "A function graph cannot intersect the y-axis at two distinct points; the source's detailed algebra solves y=0 and finds two x-intercepts.",
+    "independent_check": {
+      "implied_answer_by_review": {
+        "d": "FALSE"
+      },
+      "provenance_type": "INDEPENDENT_REVIEW_CHECK"
+    },
+    "promotion_ready": false
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0108",
+    "source_candidate_id": "M12_DERIV_CAND_0108",
+    "source_fingerprint": "00a4f128c66fd7d6",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_18",
+    "effective_subsource_code": "NGOC_VY_2026_18",
+    "provenance_correction_code": null,
+    "candidate_extraction_page": 336,
+    "question_number": "1",
+    "review_status": "HOLD_SOURCE_ANSWER_CONFLICT",
+    "source_evidence_id": "EVID_NVY_0108",
+    "reason": "The source answer table conflicts with its own domain/derivative/extrema derivation for items a, b and c.",
+    "source_claimed_answer_pattern": [
+      "TRUE",
+      "TRUE",
+      "FALSE",
+      "TRUE"
+    ],
+    "conflicting_item_label": "a",
+    "conflicting_item_labels": [
+      "a",
+      "b",
+      "c"
+    ],
+    "trusted_correct_answer": null,
+    "conflict_explanation": "Source solution gives D=R\\{-1/2}, y'=0 at x=1 and x=-2, and two extrema on opposite sides of the y-axis; these imply a=FALSE,b=FALSE,c=TRUE, unlike the source table.",
+    "independent_check": {
+      "implied_answer_by_review": {
+        "a": "FALSE",
+        "b": "FALSE",
+        "c": "TRUE"
+      },
+      "provenance_type": "INDEPENDENT_REVIEW_CHECK"
+    },
+    "promotion_ready": false
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0111",
+    "source_candidate_id": "M12_DERIV_CAND_0111",
+    "source_fingerprint": "e36f08368583d583",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_19",
+    "effective_subsource_code": "NGOC_VY_2026_19",
+    "provenance_correction_code": null,
+    "candidate_extraction_page": 357,
+    "question_number": "1",
+    "review_status": "HOLD_SOURCE_ANSWER_CONFLICT",
+    "source_evidence_id": "EVID_NVY_0111",
+    "reason": "The source answer table conflicts with its own monotonicity/extrema explanation for items c and d.",
+    "source_claimed_answer_pattern": [
+      "FALSE",
+      "TRUE",
+      "FALSE",
+      "TRUE"
+    ],
+    "conflicting_item_label": "c",
+    "conflicting_item_labels": [
+      "c",
+      "d"
+    ],
+    "trusted_correct_answer": null,
+    "conflict_explanation": "The source solution itself states increasing on (-3/2,0), decreasing on (0,3/2), local maximum at x=0, and no local minimum; this implies c=TRUE and d=FALSE.",
+    "independent_check": {
+      "implied_answer_by_review": {
+        "c": "TRUE",
+        "d": "FALSE"
+      },
+      "provenance_type": "INDEPENDENT_REVIEW_CHECK"
+    },
+    "promotion_ready": false
+  }
+]
