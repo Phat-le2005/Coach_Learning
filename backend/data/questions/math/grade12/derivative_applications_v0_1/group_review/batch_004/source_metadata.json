@@ -1,0 +1,21 @@
+{
+  "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+  "file_name": "40-de-on-thi-tot-nghiep-thpt-2026-mon-toan-co-loi-giai-chi-tiet-truong-ngoc-vy.pdf",
+  "drive_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+  "pdf_pages": 778,
+  "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+  "reviewed_test_numbers": [
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30
+  ],
+  "review_method": "Direct question/solution page review; source answer tables cross-checked against detailed derivations printed in the same source. Test 25 produced no structural QuestionGroup in the current derivative staging snapshot.",
+  "pdf_binary_in_bundle": false
+}

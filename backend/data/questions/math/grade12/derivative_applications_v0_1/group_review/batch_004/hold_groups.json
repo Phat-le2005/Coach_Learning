@@ -1,0 +1,37 @@
+[
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0138",
+    "source_candidate_id": "M12_DERIV_CAND_0138",
+    "source_fingerprint": "778e514dbb8130f7",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "raw_subsource_code": "NGOC_VY_2026_29",
+    "effective_subsource_code": "NGOC_VY_2026_29",
+    "provenance_correction_code": null,
+    "candidate_extraction_page": 554,
+    "question_number": "1",
+    "review_status": "HOLD_SOURCE_ANSWER_CONFLICT",
+    "source_evidence_id": "EVID_NVY_0138",
+    "reason": "The source answer table conflicts with its own detailed monotonicity and direct function-value calculations for items c and d.",
+    "source_claimed_answer_pattern": [
+      "FALSE",
+      "FALSE",
+      "TRUE",
+      "FALSE"
+    ],
+    "conflicting_item_label": "c",
+    "conflicting_item_labels": [
+      "c",
+      "d"
+    ],
+    "trusted_correct_answer": null,
+    "conflict_explanation": "The detailed solution shows f is increasing only on (0,1/2) and decreasing on (1/2,+∞), which makes c FALSE, and explicitly verifies f(1)=-2 and f(e^2)=2-2e^4, which makes d TRUE. The printed answer table gives the opposite values for c and d.",
+    "independent_check": {
+      "implied_answer_by_review": {
+        "c": "FALSE",
+        "d": "TRUE"
+      },
+      "provenance_type": "INDEPENDENT_REVIEW_CHECK"
+    },
+    "promotion_ready": false
+  }
+]

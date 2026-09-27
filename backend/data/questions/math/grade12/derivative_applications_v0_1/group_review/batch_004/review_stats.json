@@ -1,0 +1,31 @@
+{
+  "dataset_code": "DATA-MATH12-008",
+  "batch_code": "DATA-MATH12-008_BATCH_004",
+  "scope": "Truong Ngoc Vy 2026 TRUE/FALSE QuestionGroup academic review — tests 21-30",
+  "base_commit": "2b87a9ff468a05ae0ae7d9b022bd62cedb97f1e1",
+  "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+  "source_file": "40-de-on-thi-tot-nghiep-thpt-2026-mon-toan-co-loi-giai-chi-tiet-truong-ngoc-vy.pdf",
+  "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+  "raw_candidate_sha256": "b627a458e0b18c0a4e0733e18864e0bd83165f94894a7d690e4fc1313f3ed4d5",
+  "target_groups": 13,
+  "reviewed_groups": 13,
+  "verified": 8,
+  "hold": 1,
+  "rejected": 4,
+  "rejected_duplicate": 3,
+  "rejected_out_of_scope": 1,
+  "visual_asset_required": 0,
+  "source_evidence_backed_decisions": 13,
+  "verified_child_statements": 32,
+  "assigned_child_answers": 32,
+  "promotion_ready": 0,
+  "production_imported": 0,
+  "notes": [
+    "One source-answer conflict is held: test 29 Question 1 items c and d conflict with the source detailed solution.",
+    "Three candidates are solution-section duplicates of canonical test questions.",
+    "One spatial-geometry group is excluded only from the current derivative-applications dataset and preserved for broader routing.",
+    "Test 25 contributes no structural QuestionGroup candidate in this staging snapshot.",
+    "No visual asset is required by the eight verified groups.",
+    "Codex must integrate this reviewed bundle only and must not access Drive/PDF or recompute answers."
+  ]
+}

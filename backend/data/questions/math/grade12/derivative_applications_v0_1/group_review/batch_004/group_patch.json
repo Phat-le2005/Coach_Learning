@@ -1,0 +1,234 @@
+[
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0116",
+    "set": {
+      "reviewed_group_context": "Câu 1. Cho hàm số f(x) = e^x(x^2 - 3).",
+      "reviewed_items": [
+        {
+          "label": "a",
+          "order_index": 0,
+          "reviewed_content": "f(0) = -3; f(ln 2) = 2(ln 2)^2 - 6."
+        },
+        {
+          "label": "b",
+          "order_index": 1,
+          "reviewed_content": "Đạo hàm của hàm số đã cho là f'(x) = e^x(x^2 + 2x - 3)."
+        },
+        {
+          "label": "c",
+          "order_index": 2,
+          "reviewed_content": "Tổng các nghiệm của phương trình f'(x)=0 là 2."
+        },
+        {
+          "label": "d",
+          "order_index": 3,
+          "reviewed_content": "Giá trị lớn nhất của hàm số đã cho trên đoạn [-5;-2] là 22/e^5."
+        }
+      ],
+      "visual_asset_required": false
+    }
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0120",
+    "set": {
+      "reviewed_group_context": "Câu 1. Cho hàm số y = (x^2 - 8x + 9)/(x - 5).",
+      "reviewed_items": [
+        {
+          "label": "a",
+          "order_index": 0,
+          "reviewed_content": "Tập xác định của hàm số đã cho là D = ℝ \\ {5}."
+        },
+        {
+          "label": "b",
+          "order_index": 1,
+          "reviewed_content": "Đạo hàm của hàm số đã cho là y' = (x^2 - 10x + 31)/(x - 5)^2."
+        },
+        {
+          "label": "c",
+          "order_index": 2,
+          "reviewed_content": "Hàm số đã cho nghịch biến trên khoảng (4;10)."
+        },
+        {
+          "label": "d",
+          "order_index": 3,
+          "reviewed_content": "Hàm số đã cho không có cực trị."
+        }
+      ],
+      "visual_asset_required": false
+    }
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0124",
+    "set": {
+      "reviewed_group_context": "Câu 1. Cho hàm số f(x) = -x + 4 - 9/(x + 2).",
+      "reviewed_items": [
+        {
+          "label": "a",
+          "order_index": 0,
+          "reviewed_content": "f(-7) = 64/5; f(-4) = 25/2."
+        },
+        {
+          "label": "b",
+          "order_index": 1,
+          "reviewed_content": "Đồ thị của hàm số đã cho có đường tiệm cận đứng x = -2."
+        },
+        {
+          "label": "c",
+          "order_index": 2,
+          "reviewed_content": "Đạo hàm của hàm số đã cho là f'(x) = (-x^2 - 4x - 5)/(x + 2)^2."
+        },
+        {
+          "label": "d",
+          "order_index": 3,
+          "reviewed_content": "Giá trị nhỏ nhất của hàm số đã cho trên đoạn [-7;-4] là 25/2."
+        }
+      ],
+      "visual_asset_required": false
+    }
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0126",
+    "set": {
+      "reviewed_group_context": "Câu 1. Cho hàm số y = x^4 - 2x^2 + 3.",
+      "reviewed_items": [
+        {
+          "label": "a",
+          "order_index": 0,
+          "reviewed_content": "Đạo hàm của hàm số đã cho là y' = 4x^3 - 4x."
+        },
+        {
+          "label": "b",
+          "order_index": 1,
+          "reviewed_content": "Phương trình y'=0 có hai nghiệm nguyên dương phân biệt."
+        },
+        {
+          "label": "c",
+          "order_index": 2,
+          "reviewed_content": "Hàm số đã cho nghịch biến trên các khoảng (-∞;-1) và (0;1), đồng biến trên các khoảng (-1;0) và (1;+∞)."
+        },
+        {
+          "label": "d",
+          "order_index": 3,
+          "reviewed_content": "Đồ thị hàm số đã cho có 1 cực tiểu là (0;3) và 2 cực đại là (-1;2), (1;2)."
+        }
+      ],
+      "visual_asset_required": false
+    }
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0131",
+    "set": {
+      "reviewed_group_context": "Câu 1. Cho hàm số y = x + 4/x.",
+      "reviewed_items": [
+        {
+          "label": "a",
+          "order_index": 0,
+          "reviewed_content": "Đạo hàm của hàm số đã cho là y' = (x^2 + 4)/x^2, với mọi x ≠ 0."
+        },
+        {
+          "label": "b",
+          "order_index": 1,
+          "reviewed_content": "Phương trình y'=0 có hai nghiệm nguyên."
+        },
+        {
+          "label": "c",
+          "order_index": 2,
+          "reviewed_content": "Hàm số đồng biến trên các khoảng (-∞;-2) và (2;+∞), nghịch biến trên các khoảng (-2;0) và (0;2)."
+        },
+        {
+          "label": "d",
+          "order_index": 3,
+          "reviewed_content": "Đồ thị hàm số đã cho có điểm cực tiểu là (-2;-4)."
+        }
+      ],
+      "visual_asset_required": false
+    }
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0134",
+    "set": {
+      "reviewed_group_context": "Câu 1. Cho hàm số f(x) = sin(2x) - x.",
+      "reviewed_items": [
+        {
+          "label": "a",
+          "order_index": 0,
+          "reviewed_content": "f(0)=0; f(π/6)=(3+π)/6."
+        },
+        {
+          "label": "b",
+          "order_index": 1,
+          "reviewed_content": "Đạo hàm của hàm số đã cho là f'(x) = cos(2x) - 1."
+        },
+        {
+          "label": "c",
+          "order_index": 2,
+          "reviewed_content": "Số nghiệm của phương trình f'(x)=0 trên đoạn [-π/2;π/2] là 2."
+        },
+        {
+          "label": "d",
+          "order_index": 3,
+          "reviewed_content": "Giá trị lớn nhất, giá trị nhỏ nhất của hàm số đã cho trên đoạn [-π/2;π/2] lần lượt là π/2 và -π/2."
+        }
+      ],
+      "visual_asset_required": false
+    }
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0136",
+    "set": {
+      "reviewed_group_context": "Câu 1. Cho hàm số y = -x^3 - x^2 + 5x + 4.",
+      "reviewed_items": [
+        {
+          "label": "a",
+          "order_index": 0,
+          "reviewed_content": "Đạo hàm của hàm số đã cho là y' = -3x^2 - 2x + 5."
+        },
+        {
+          "label": "b",
+          "order_index": 1,
+          "reviewed_content": "Hàm số đã cho đồng biến trên (-5/3;1)."
+        },
+        {
+          "label": "c",
+          "order_index": 2,
+          "reviewed_content": "f(-10) < f(-3) < f(-2)."
+        },
+        {
+          "label": "d",
+          "order_index": 3,
+          "reviewed_content": "Đồ thị hàm số đã cho có điểm cực đại là (-5/3;-317/27)."
+        }
+      ],
+      "visual_asset_required": false
+    }
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0141",
+    "set": {
+      "reviewed_group_context": "Câu 1. Cho hàm số f(x) = (x^2 + 2x - 1)/(x - 1).",
+      "reviewed_items": [
+        {
+          "label": "a",
+          "order_index": 0,
+          "reviewed_content": "Hàm số đồng biến trên khoảng (-∞;0)."
+        },
+        {
+          "label": "b",
+          "order_index": 1,
+          "reviewed_content": "Đường thẳng y = x + 3 là tiệm cận xiên của đồ thị hàm số đã cho."
+        },
+        {
+          "label": "c",
+          "order_index": 2,
+          "reviewed_content": "Tâm đối xứng của đồ thị hàm số đã cho là I(1;3)."
+        },
+        {
+          "label": "d",
+          "order_index": 3,
+          "reviewed_content": "Giá trị lớn nhất của hàm số trên đoạn [-3;-1] là 1."
+        }
+      ],
+      "visual_asset_required": false
+    }
+  }
+]

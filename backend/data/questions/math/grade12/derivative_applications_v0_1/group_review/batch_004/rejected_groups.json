@@ -1,0 +1,38 @@
+[
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0118",
+    "source_candidate_id": "M12_DERIV_CAND_0118",
+    "review_status": "REJECTED_DUPLICATE_GROUP",
+    "source_evidence_id": "EVID_NVY_0118",
+    "reason": "Solution-section reprint of the canonical test-21 QuestionGroup extracted again as a candidate.",
+    "duplicate_of_group_candidate_id": "M12_DERIV_GROUP_0116",
+    "promotion_ready": false
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0122",
+    "source_candidate_id": "M12_DERIV_CAND_0122",
+    "review_status": "REJECTED_DUPLICATE_GROUP",
+    "source_evidence_id": "EVID_NVY_0122",
+    "reason": "Solution-section reprint of the canonical test-22 QuestionGroup extracted again as a candidate.",
+    "duplicate_of_group_candidate_id": "M12_DERIV_GROUP_0120",
+    "promotion_ready": false
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0127",
+    "source_candidate_id": "M12_DERIV_CAND_0127",
+    "review_status": "REJECTED_DUPLICATE_GROUP",
+    "source_evidence_id": "EVID_NVY_0127",
+    "reason": "Solution-section reprint of the canonical test-24 QuestionGroup extracted again as a candidate.",
+    "duplicate_of_group_candidate_id": "M12_DERIV_GROUP_0126",
+    "promotion_ready": false
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0139",
+    "source_candidate_id": "M12_DERIV_CAND_0139",
+    "review_status": "REJECTED_OUT_OF_SCOPE",
+    "source_evidence_id": "EVID_NVY_0139",
+    "reason": "Spatial-geometry sphere problem. The minimum-value statement does not make it part of the current derivative-applications chapter dataset. Preserve for broader exam/geometry routing.",
+    "preserve_for_broader_exam_corpus": true,
+    "promotion_ready": false
+  }
+]

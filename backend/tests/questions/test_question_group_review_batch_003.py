@@ -174,7 +174,7 @@ def test_batch_003_rejections_are_exact_and_excluded_from_usable_view() -> None:
         assert group_id not in usable_ids
 
 
-def test_three_batch_materialization_is_deterministic_and_cumulative() -> None:
+def test_review_materialization_is_deterministic_and_cumulative() -> None:
     groups = _load(
         DEFAULT_QUESTION_GROUP_STAGING_PATH / "question_group_candidates.json"
     )
@@ -189,24 +189,25 @@ def test_three_batch_materialization_is_deterministic_and_cumulative() -> None:
         "DATA-MATH12-007_BATCH_001",
         "DATA-MATH12-008_BATCH_002",
         "DATA-MATH12-008_BATCH_003",
+        "DATA-MATH12-008_BATCH_004",
     ]
     report = QuestionGroupReviewValidator().validate()
     assert report.counts == {
         "structural_groups": 67,
         "structural_holds": 1,
-        "review_batches": 3,
-        "target_groups": 37,
-        "reviewed_groups": 37,
-        "verified": 19,
-        "hold": 8,
-        "rejected": 10,
-        "rejected_duplicate": 4,
-        "rejected_out_of_scope": 6,
-        "verified_child_statements": 76,
-        "assigned_child_answers": 76,
+        "review_batches": 4,
+        "target_groups": 50,
+        "reviewed_groups": 50,
+        "verified": 27,
+        "hold": 9,
+        "rejected": 14,
+        "rejected_duplicate": 7,
+        "rejected_out_of_scope": 7,
+        "verified_child_statements": 108,
+        "assigned_child_answers": 108,
         "visual_asset_required": 6,
         "promotion_ready": 0,
-        "effective_usable_groups": 57,
+        "effective_usable_groups": 53,
     }
 
 
