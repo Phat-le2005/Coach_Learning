@@ -1,0 +1,118 @@
+[
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0001",
+    "set": {
+      "reviewed_group_context": "Câu 1. Cho hàm số f(x) = x^3 - 12x - 8.",
+      "reviewed_items": [
+        {
+          "label": "a",
+          "order_index": 0,
+          "reviewed_content": "Hàm số đã cho có đạo hàm là f'(x) = 3x^2 - 12."
+        },
+        {
+          "label": "b",
+          "order_index": 1,
+          "reviewed_content": "Phương trình f'(x)=0 có tập nghiệm là S={2}."
+        },
+        {
+          "label": "c",
+          "order_index": 2,
+          "reviewed_content": "f(2)=24."
+        },
+        {
+          "label": "d",
+          "order_index": 3,
+          "reviewed_content": "Giá trị lớn nhất của hàm số f(x) trên đoạn [-3;3] bằng 24."
+        }
+      ],
+      "visual_asset_required": false
+    }
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0004",
+    "set": {
+      "reviewed_group_context": "Câu 1. Cho hàm số f(x) = x^3 - 27x + 81.",
+      "reviewed_items": [
+        {
+          "label": "a",
+          "order_index": 0,
+          "reviewed_content": "Hàm số đã cho có đạo hàm là f'(x) = 3x^2 - 27."
+        },
+        {
+          "label": "b",
+          "order_index": 1,
+          "reviewed_content": "Phương trình f'(x)=0 có tập nghiệm là S={3}."
+        },
+        {
+          "label": "c",
+          "order_index": 2,
+          "reviewed_content": "f(3)=27."
+        },
+        {
+          "label": "d",
+          "order_index": 3,
+          "reviewed_content": "Giá trị nhỏ nhất của hàm số f(x) trên đoạn [-4;4] bằng 27."
+        }
+      ],
+      "visual_asset_required": false
+    }
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0006",
+    "set": {
+      "reviewed_group_context": "Câu 1. Cho hàm số f(x) = x^3 - 3x + 91.",
+      "reviewed_items": [
+        {
+          "label": "a",
+          "order_index": 0,
+          "reviewed_content": "Hàm số đã cho có đạo hàm là f'(x) = 3x^2 - 3."
+        },
+        {
+          "label": "b",
+          "order_index": 1,
+          "reviewed_content": "Phương trình f'(x)=0 có tập nghiệm là S={1}."
+        },
+        {
+          "label": "c",
+          "order_index": 2,
+          "reviewed_content": "f(1)=89."
+        },
+        {
+          "label": "d",
+          "order_index": 3,
+          "reviewed_content": "Giá trị nhỏ nhất của hàm số f(x) trên đoạn [-2;2] bằng 89."
+        }
+      ],
+      "visual_asset_required": false
+    }
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0008",
+    "set": {
+      "reviewed_group_context": "Câu 2. Cho hàm số f(x) = x^3 - 48x - 8.",
+      "reviewed_items": [
+        {
+          "label": "a",
+          "order_index": 0,
+          "reviewed_content": "Hàm số đã cho có đạo hàm là f'(x) = 3x^2 - 48."
+        },
+        {
+          "label": "b",
+          "order_index": 1,
+          "reviewed_content": "Phương trình f'(x)=0 có tập nghiệm là S={4}."
+        },
+        {
+          "label": "c",
+          "order_index": 2,
+          "reviewed_content": "f(4)=248."
+        },
+        {
+          "label": "d",
+          "order_index": 3,
+          "reviewed_content": "Giá trị lớn nhất của hàm số f(x) trên đoạn [-5;5] bằng 248."
+        }
+      ],
+      "visual_asset_required": false
+    }
+  }
+]

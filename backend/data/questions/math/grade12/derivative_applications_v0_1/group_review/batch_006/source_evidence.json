@@ -1,0 +1,154 @@
+[
+  {
+    "evidence_id": "EVID_MOET_0001",
+    "group_candidate_id": "M12_DERIV_GROUP_0001",
+    "source_code": "SRC_MOET_EXAM_2025_SOLUTION_COMPILATION",
+    "effective_subsource_code": "MOET_2025_101",
+    "candidate_extraction_page": 5,
+    "canonical_question_pages": [
+      5
+    ],
+    "solution_pages": [
+      27,
+      28
+    ],
+    "question_number": "1",
+    "evidence_type": "QUESTION_DETAILED_SOLUTION_AND_OFFICIAL_MOET_ANSWER_KEY",
+    "source_claimed_answer_pattern": [
+      "TRUE",
+      "FALSE",
+      "FALSE",
+      "FALSE"
+    ],
+    "review_consistency": "CONFIRMED",
+    "primary_crosscheck": {
+      "issuer": "Bộ Giáo dục và Đào tạo",
+      "release": "Đáp án Kỳ thi tốt nghiệp THPT năm 2025 - Môn Toán - Chương trình GDPT 2018",
+      "official_answer_file_name": "01.Toan_2018.pdf",
+      "official_answer_drive_file_id": "1GuZuVoDDxbES41-1OA0azCFiD0NuBq76",
+      "official_answer_pdf_sha256": "25631480f3a830c65571142b795755ae235d8734f1e621b19e992ae15f0f7b41",
+      "official_answer_exam_code": "0101",
+      "official_answer_row": 13,
+      "official_answer_pattern": [
+        "TRUE",
+        "FALSE",
+        "FALSE",
+        "FALSE"
+      ]
+    }
+  },
+  {
+    "evidence_id": "EVID_MOET_0004",
+    "group_candidate_id": "M12_DERIV_GROUP_0004",
+    "source_code": "SRC_MOET_EXAM_2025_SOLUTION_COMPILATION",
+    "effective_subsource_code": "MOET_2025_102",
+    "candidate_extraction_page": 10,
+    "canonical_question_pages": [
+      10
+    ],
+    "solution_pages": [
+      40
+    ],
+    "question_number": "1",
+    "evidence_type": "QUESTION_DETAILED_SOLUTION_AND_OFFICIAL_MOET_ANSWER_KEY",
+    "source_claimed_answer_pattern": [
+      "TRUE",
+      "FALSE",
+      "TRUE",
+      "TRUE"
+    ],
+    "review_consistency": "CONFIRMED",
+    "primary_crosscheck": {
+      "issuer": "Bộ Giáo dục và Đào tạo",
+      "release": "Đáp án Kỳ thi tốt nghiệp THPT năm 2025 - Môn Toán - Chương trình GDPT 2018",
+      "official_answer_file_name": "01.Toan_2018.pdf",
+      "official_answer_drive_file_id": "1GuZuVoDDxbES41-1OA0azCFiD0NuBq76",
+      "official_answer_pdf_sha256": "25631480f3a830c65571142b795755ae235d8734f1e621b19e992ae15f0f7b41",
+      "official_answer_exam_code": "0102",
+      "official_answer_row": 13,
+      "official_answer_pattern": [
+        "TRUE",
+        "FALSE",
+        "TRUE",
+        "TRUE"
+      ]
+    }
+  },
+  {
+    "evidence_id": "EVID_MOET_0006",
+    "group_candidate_id": "M12_DERIV_GROUP_0006",
+    "source_code": "SRC_MOET_EXAM_2025_SOLUTION_COMPILATION",
+    "effective_subsource_code": "MOET_2025_104",
+    "candidate_extraction_page": 20,
+    "canonical_question_pages": [
+      20
+    ],
+    "solution_pages": [
+      64
+    ],
+    "question_number": "1",
+    "evidence_type": "QUESTION_DETAILED_SOLUTION_AND_OFFICIAL_MOET_ANSWER_KEY",
+    "source_claimed_answer_pattern": [
+      "TRUE",
+      "FALSE",
+      "TRUE",
+      "TRUE"
+    ],
+    "review_consistency": "CONFIRMED",
+    "primary_crosscheck": {
+      "issuer": "Bộ Giáo dục và Đào tạo",
+      "release": "Đáp án Kỳ thi tốt nghiệp THPT năm 2025 - Môn Toán - Chương trình GDPT 2018",
+      "official_answer_file_name": "01.Toan_2018.pdf",
+      "official_answer_drive_file_id": "1GuZuVoDDxbES41-1OA0azCFiD0NuBq76",
+      "official_answer_pdf_sha256": "25631480f3a830c65571142b795755ae235d8734f1e621b19e992ae15f0f7b41",
+      "official_answer_exam_code": "0104",
+      "official_answer_row": 13,
+      "official_answer_pattern": [
+        "TRUE",
+        "FALSE",
+        "TRUE",
+        "TRUE"
+      ]
+    }
+  },
+  {
+    "evidence_id": "EVID_MOET_0008",
+    "group_candidate_id": "M12_DERIV_GROUP_0008",
+    "source_code": "SRC_MOET_EXAM_2025_SOLUTION_COMPILATION",
+    "effective_subsource_code": null,
+    "candidate_extraction_page": 53,
+    "canonical_question_pages": [
+      14,
+      15
+    ],
+    "solution_pages": [
+      53
+    ],
+    "question_number": "2",
+    "evidence_type": "SOLUTION_REPRINT_WITH_CANONICAL_QUESTION_AND_OFFICIAL_MOET_ANSWER_KEY",
+    "source_claimed_answer_pattern": [
+      "TRUE",
+      "FALSE",
+      "FALSE",
+      "FALSE"
+    ],
+    "review_consistency": "CONFIRMED",
+    "primary_crosscheck": {
+      "issuer": "Bộ Giáo dục và Đào tạo",
+      "release": "Đáp án Kỳ thi tốt nghiệp THPT năm 2025 - Môn Toán - Chương trình GDPT 2018",
+      "official_answer_file_name": "01.Toan_2018.pdf",
+      "official_answer_drive_file_id": "1GuZuVoDDxbES41-1OA0azCFiD0NuBq76",
+      "official_answer_pdf_sha256": "25631480f3a830c65571142b795755ae235d8734f1e621b19e992ae15f0f7b41",
+      "official_answer_exam_code": "0103",
+      "official_answer_row": 14,
+      "official_answer_pattern": [
+        "TRUE",
+        "FALSE",
+        "FALSE",
+        "FALSE"
+      ]
+    },
+    "canonical_subsource_code": "MOET_2025_103",
+    "provenance_note": "The structural candidate was extracted from the solution reprint on page 53 and therefore has null structural subsource. Canonical question pages 14-15 belong to exam code 103; keep structural provenance immutable and record the canonical source only as evidence metadata."
+  }
+]

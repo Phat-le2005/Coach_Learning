@@ -1,0 +1,21 @@
+{
+  "source_code": "SRC_MOET_EXAM_2025_SOLUTION_COMPILATION",
+  "file_name": "huong-dan-giai-de-chinh-thuc-tot-nghiep-thpt-nam-2025-mon-toan.pdf",
+  "drive_file_id": "1jGjnJ3Wq2ynISxB4P1g9mk2CXibl-YXy",
+  "pdf_pages": 71,
+  "source_pdf_sha256": "90d5cb68a6f91418287c6643548f4f40ea9bb1598705a177b41bce07b09df11f",
+  "source_type": "SECONDARY_SOLUTION_COMPILATION_CONTAINING_OFFICIAL_EXAM",
+  "primary_crosscheck_status": "CROSSCHECKED_WITH_OFFICIAL_MOET_ANSWER_KEY",
+  "official_answer_release_page": "https://vqa.moet.gov.vn/vi/news/tin-tuc-su-kien/cong-bo-dap-an-cac-mon-thi-cua-ky-thi-tot-nghiep-thpt-2025-208.html",
+  "official_answer_file_name": "01.Toan_2018.pdf",
+  "official_answer_drive_file_id": "1GuZuVoDDxbES41-1OA0azCFiD0NuBq76",
+  "official_answer_pdf_sha256": "25631480f3a830c65571142b795755ae235d8734f1e621b19e992ae15f0f7b41",
+  "reviewed_exam_codes": [
+    "101",
+    "102",
+    "103",
+    "104"
+  ],
+  "review_method": "Direct question/solution review in the secondary compilation plus independent cross-check against the official Ministry of Education and Training 2025 Mathematics answer key.",
+  "pdf_binary_in_bundle": false
+}

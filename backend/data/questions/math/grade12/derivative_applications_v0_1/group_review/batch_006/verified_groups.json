@@ -1,0 +1,618 @@
+[
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0001",
+    "source_candidate_id": "M12_DERIV_CAND_0001",
+    "source_fingerprint": "834fafa8228b014a",
+    "source_code": "SRC_MOET_EXAM_2025_SOLUTION_COMPILATION",
+    "raw_subsource_code": "MOET_2025_101",
+    "effective_subsource_code": "MOET_2025_101",
+    "provenance_correction_code": null,
+    "candidate_extraction_page": 5,
+    "question_number": "1",
+    "review_status": "VERIFIED",
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "taxonomy_review": "CONFIRMED_DERIVED",
+    "taxonomy_basis": "COACH_LEARNING_DERIVED",
+    "source_evidence_id": "EVID_MOET_0001",
+    "visual_asset_required": false,
+    "promotion_ready": false,
+    "reviewed_group_context": "Câu 1. Cho hàm số f(x) = x^3 - 12x - 8.",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "reviewed_content": "Hàm số đã cho có đạo hàm là f'(x) = 3x^2 - 12.",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "answer_evidence": "SECONDARY_DETAILED_SOLUTION_AND_OFFICIAL_MOET_ANSWER_KEY",
+        "problem_types": [
+          {
+            "code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "DERIVATIVE_RULES",
+            "weight": 0.7
+          },
+          {
+            "code": "FIRST_DERIVATIVE",
+            "weight": 0.3
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_05",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "reviewed_content": "Phương trình f'(x)=0 có tập nghiệm là S={2}.",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "answer_evidence": "SECONDARY_DETAILED_SOLUTION_AND_OFFICIAL_MOET_ANSWER_KEY",
+        "problem_types": [
+          {
+            "code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "CRITICAL_POINT",
+            "weight": 0.6
+          },
+          {
+            "code": "DERIVATIVE_RULES",
+            "weight": 0.4
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_05",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "reviewed_content": "f(2)=24.",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "answer_evidence": "SECONDARY_DETAILED_SOLUTION_AND_OFFICIAL_MOET_ANSWER_KEY",
+        "problem_types": [
+          {
+            "code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "CRITICAL_POINT",
+            "weight": 0.5
+          },
+          {
+            "code": "GLOBAL_EXTREMA",
+            "weight": 0.5
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_05",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "reviewed_content": "Giá trị lớn nhất của hàm số f(x) trên đoạn [-3;3] bằng 24.",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "answer_evidence": "SECONDARY_DETAILED_SOLUTION_AND_OFFICIAL_MOET_ANSWER_KEY",
+        "problem_types": [
+          {
+            "code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "GLOBAL_EXTREMA",
+            "weight": 0.4
+          },
+          {
+            "code": "CRITICAL_POINT",
+            "weight": 0.3
+          },
+          {
+            "code": "ENDPOINT_EVALUATION",
+            "weight": 0.3
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_05",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0004",
+    "source_candidate_id": "M12_DERIV_CAND_0004",
+    "source_fingerprint": "8f6e76603facfba9",
+    "source_code": "SRC_MOET_EXAM_2025_SOLUTION_COMPILATION",
+    "raw_subsource_code": "MOET_2025_102",
+    "effective_subsource_code": "MOET_2025_102",
+    "provenance_correction_code": null,
+    "candidate_extraction_page": 10,
+    "question_number": "1",
+    "review_status": "VERIFIED",
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "taxonomy_review": "CONFIRMED_DERIVED",
+    "taxonomy_basis": "COACH_LEARNING_DERIVED",
+    "source_evidence_id": "EVID_MOET_0004",
+    "visual_asset_required": false,
+    "promotion_ready": false,
+    "reviewed_group_context": "Câu 1. Cho hàm số f(x) = x^3 - 27x + 81.",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "reviewed_content": "Hàm số đã cho có đạo hàm là f'(x) = 3x^2 - 27.",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "answer_evidence": "SECONDARY_DETAILED_SOLUTION_AND_OFFICIAL_MOET_ANSWER_KEY",
+        "problem_types": [
+          {
+            "code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "DERIVATIVE_RULES",
+            "weight": 0.7
+          },
+          {
+            "code": "FIRST_DERIVATIVE",
+            "weight": 0.3
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_05",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "reviewed_content": "Phương trình f'(x)=0 có tập nghiệm là S={3}.",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "answer_evidence": "SECONDARY_DETAILED_SOLUTION_AND_OFFICIAL_MOET_ANSWER_KEY",
+        "problem_types": [
+          {
+            "code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "CRITICAL_POINT",
+            "weight": 0.6
+          },
+          {
+            "code": "DERIVATIVE_RULES",
+            "weight": 0.4
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_05",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "reviewed_content": "f(3)=27.",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "answer_evidence": "SECONDARY_DETAILED_SOLUTION_AND_OFFICIAL_MOET_ANSWER_KEY",
+        "problem_types": [
+          {
+            "code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "CRITICAL_POINT",
+            "weight": 0.5
+          },
+          {
+            "code": "GLOBAL_EXTREMA",
+            "weight": 0.5
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_05",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "reviewed_content": "Giá trị nhỏ nhất của hàm số f(x) trên đoạn [-4;4] bằng 27.",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "answer_evidence": "SECONDARY_DETAILED_SOLUTION_AND_OFFICIAL_MOET_ANSWER_KEY",
+        "problem_types": [
+          {
+            "code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "GLOBAL_EXTREMA",
+            "weight": 0.4
+          },
+          {
+            "code": "CRITICAL_POINT",
+            "weight": 0.3
+          },
+          {
+            "code": "ENDPOINT_EVALUATION",
+            "weight": 0.3
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_05",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0006",
+    "source_candidate_id": "M12_DERIV_CAND_0006",
+    "source_fingerprint": "50430499d5a1a898",
+    "source_code": "SRC_MOET_EXAM_2025_SOLUTION_COMPILATION",
+    "raw_subsource_code": "MOET_2025_104",
+    "effective_subsource_code": "MOET_2025_104",
+    "provenance_correction_code": null,
+    "candidate_extraction_page": 20,
+    "question_number": "1",
+    "review_status": "VERIFIED",
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "taxonomy_review": "CONFIRMED_DERIVED",
+    "taxonomy_basis": "COACH_LEARNING_DERIVED",
+    "source_evidence_id": "EVID_MOET_0006",
+    "visual_asset_required": false,
+    "promotion_ready": false,
+    "reviewed_group_context": "Câu 1. Cho hàm số f(x) = x^3 - 3x + 91.",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "reviewed_content": "Hàm số đã cho có đạo hàm là f'(x) = 3x^2 - 3.",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "answer_evidence": "SECONDARY_DETAILED_SOLUTION_AND_OFFICIAL_MOET_ANSWER_KEY",
+        "problem_types": [
+          {
+            "code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "DERIVATIVE_RULES",
+            "weight": 0.7
+          },
+          {
+            "code": "FIRST_DERIVATIVE",
+            "weight": 0.3
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_05",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "reviewed_content": "Phương trình f'(x)=0 có tập nghiệm là S={1}.",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "answer_evidence": "SECONDARY_DETAILED_SOLUTION_AND_OFFICIAL_MOET_ANSWER_KEY",
+        "problem_types": [
+          {
+            "code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "CRITICAL_POINT",
+            "weight": 0.6
+          },
+          {
+            "code": "DERIVATIVE_RULES",
+            "weight": 0.4
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_05",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "reviewed_content": "f(1)=89.",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "answer_evidence": "SECONDARY_DETAILED_SOLUTION_AND_OFFICIAL_MOET_ANSWER_KEY",
+        "problem_types": [
+          {
+            "code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "CRITICAL_POINT",
+            "weight": 0.5
+          },
+          {
+            "code": "GLOBAL_EXTREMA",
+            "weight": 0.5
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_05",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "reviewed_content": "Giá trị nhỏ nhất của hàm số f(x) trên đoạn [-2;2] bằng 89.",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "answer_evidence": "SECONDARY_DETAILED_SOLUTION_AND_OFFICIAL_MOET_ANSWER_KEY",
+        "problem_types": [
+          {
+            "code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "GLOBAL_EXTREMA",
+            "weight": 0.4
+          },
+          {
+            "code": "CRITICAL_POINT",
+            "weight": 0.3
+          },
+          {
+            "code": "ENDPOINT_EVALUATION",
+            "weight": 0.3
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_05",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DERIV_GROUP_0008",
+    "source_candidate_id": "M12_DERIV_CAND_0008",
+    "source_fingerprint": "ae1480b2f4ec2f8d",
+    "source_code": "SRC_MOET_EXAM_2025_SOLUTION_COMPILATION",
+    "raw_subsource_code": null,
+    "effective_subsource_code": null,
+    "provenance_correction_code": null,
+    "candidate_extraction_page": 53,
+    "question_number": "2",
+    "review_status": "VERIFIED",
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "taxonomy_review": "CONFIRMED_DERIVED",
+    "taxonomy_basis": "COACH_LEARNING_DERIVED",
+    "source_evidence_id": "EVID_MOET_0008",
+    "visual_asset_required": false,
+    "promotion_ready": false,
+    "reviewed_group_context": "Câu 2. Cho hàm số f(x) = x^3 - 48x - 8.",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "reviewed_content": "Hàm số đã cho có đạo hàm là f'(x) = 3x^2 - 48.",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "answer_evidence": "SECONDARY_DETAILED_SOLUTION_AND_OFFICIAL_MOET_ANSWER_KEY",
+        "problem_types": [
+          {
+            "code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "DERIVATIVE_RULES",
+            "weight": 0.7
+          },
+          {
+            "code": "FIRST_DERIVATIVE",
+            "weight": 0.3
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_05",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "reviewed_content": "Phương trình f'(x)=0 có tập nghiệm là S={4}.",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "answer_evidence": "SECONDARY_DETAILED_SOLUTION_AND_OFFICIAL_MOET_ANSWER_KEY",
+        "problem_types": [
+          {
+            "code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "CRITICAL_POINT",
+            "weight": 0.6
+          },
+          {
+            "code": "DERIVATIVE_RULES",
+            "weight": 0.4
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_05",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "reviewed_content": "f(4)=248.",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "answer_evidence": "SECONDARY_DETAILED_SOLUTION_AND_OFFICIAL_MOET_ANSWER_KEY",
+        "problem_types": [
+          {
+            "code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "CRITICAL_POINT",
+            "weight": 0.5
+          },
+          {
+            "code": "GLOBAL_EXTREMA",
+            "weight": 0.5
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_05",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "reviewed_content": "Giá trị lớn nhất của hàm số f(x) trên đoạn [-5;5] bằng 248.",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "answer_evidence": "SECONDARY_DETAILED_SOLUTION_AND_OFFICIAL_MOET_ANSWER_KEY",
+        "problem_types": [
+          {
+            "code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+            "weight": 1.0,
+            "is_primary": true
+          }
+        ],
+        "concepts": [
+          {
+            "code": "GLOBAL_EXTREMA",
+            "weight": 0.4
+          },
+          {
+            "code": "CRITICAL_POINT",
+            "weight": 0.3
+          },
+          {
+            "code": "ENDPOINT_EVALUATION",
+            "weight": 0.3
+          }
+        ],
+        "learning_outcomes": [
+          {
+            "code": "M12_DERIV_LO_05",
+            "weight": 1.0
+          }
+        ],
+        "taxonomy_basis": "COACH_LEARNING_DERIVED"
+      }
+    ]
+  }
+]

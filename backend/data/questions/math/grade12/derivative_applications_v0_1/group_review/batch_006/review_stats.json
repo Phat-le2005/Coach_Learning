@@ -1,0 +1,30 @@
+{
+  "dataset_code": "DATA-MATH12-009",
+  "batch_code": "DATA-MATH12-009_BATCH_006",
+  "scope": "Close the remaining MOET 2025 structural TRUE/FALSE QuestionGroups with official Ministry answer-key cross-check",
+  "base_commit": "85093ad6a0c446b567fc3c48ac9a3266be1332e9",
+  "source_code": "SRC_MOET_EXAM_2025_SOLUTION_COMPILATION",
+  "source_file": "huong-dan-giai-de-chinh-thuc-tot-nghiep-thpt-nam-2025-mon-toan.pdf",
+  "source_pdf_sha256": "90d5cb68a6f91418287c6643548f4f40ea9bb1598705a177b41bce07b09df11f",
+  "official_answer_pdf_sha256": "25631480f3a830c65571142b795755ae235d8734f1e621b19e992ae15f0f7b41",
+  "raw_candidate_sha256": "b627a458e0b18c0a4e0733e18864e0bd83165f94894a7d690e4fc1313f3ed4d5",
+  "target_groups": 4,
+  "reviewed_groups": 4,
+  "verified": 4,
+  "hold": 0,
+  "rejected": 0,
+  "rejected_duplicate": 0,
+  "rejected_out_of_scope": 0,
+  "visual_asset_required": 0,
+  "source_evidence_backed_decisions": 4,
+  "verified_child_statements": 16,
+  "assigned_child_answers": 16,
+  "promotion_ready": 0,
+  "production_imported": 0,
+  "notes": [
+    "All four remaining structural QuestionGroups are VERIFIED after cross-checking the secondary detailed solutions against the official Ministry of Education and Training 2025 Mathematics answer key.",
+    "Group 0008 is structurally extracted from the code-103 solution reprint and has null structural subsource; canonical code-103 provenance is recorded only in source evidence and must not mutate staging.",
+    "This batch completes academic review coverage of all 67 structural QuestionGroups.",
+    "No new visual blocker is introduced; promotion remains a separate later step."
+  ]
+}

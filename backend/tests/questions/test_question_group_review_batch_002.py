@@ -171,6 +171,7 @@ def test_review_materialization_is_deterministic_and_lexical() -> None:
         "DATA-MATH12-008_BATCH_003",
         "DATA-MATH12-008_BATCH_004",
         "DATA-MATH12-008_BATCH_005",
+        "DATA-MATH12-009_BATCH_006",
     ]
     assert not first.issues
 

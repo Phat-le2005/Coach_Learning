@@ -81,25 +81,20 @@ def _effective_by_id() -> dict[str, dict[str, object]]:
     }
 
 
-def _add_valid_synthetic_hold_batch(review_root: Path) -> str:
+def _add_valid_synthetic_hold_batch(
+    review_root: Path,
+) -> tuple[str, dict[str, object]]:
     groups = _load(
         DEFAULT_QUESTION_GROUP_STAGING_PATH / "question_group_candidates.json"
     )
     assert isinstance(groups, list)
-    already_reviewed = {
-        str(record["group_candidate_id"])
-        for batch_path in review_root.glob("batch_*")
-        for name in ("verified_groups.json", "hold_groups.json", "rejected_groups.json")
-        for record in _load(batch_path / name)
-    }
-    structural = next(
-        group
-        for group in groups
-        if group["group_candidate_id"] not in already_reviewed
-    )
-    group_id = str(structural["group_candidate_id"])
+    structural = copy.deepcopy(groups[0])
+    group_id = "M12_DERIV_GROUP_SYNTHETIC_FUTURE"
+    structural["group_candidate_id"] = group_id
+    structural["source_candidate_id"] = "M12_DERIV_CAND_SYNTHETIC_FUTURE"
+    structural["source_fingerprint"] = "synthetic-future-review-fixture"
     evidence_id = f"EVID_TEST_{group_id}"
-    batch_path = review_root / "batch_006"
+    batch_path = review_root / "batch_007"
     batch_path.mkdir()
     (batch_path / "README.md").write_text(
         "# Synthetic validator fixture\n", encoding="utf-8"
@@ -141,7 +136,7 @@ def _add_valid_synthetic_hold_batch(review_root: Path) -> str:
     _write(batch_path / "group_patch.json", [])
     _write(batch_path / "review_stats.json", {
         "dataset_code": "DATA-MATH12-008_TEST",
-        "batch_code": "DATA-MATH12-008_TEST_BATCH_006",
+        "batch_code": "DATA-MATH12-008_TEST_BATCH_007",
         "source_code": structural["source_code"],
         "source_file": source_file,
         "source_pdf_sha256": source_sha,
@@ -160,7 +155,7 @@ def _add_valid_synthetic_hold_batch(review_root: Path) -> str:
         "promotion_ready": 0,
         "production_imported": 0,
     })
-    return group_id
+    return group_id, structural
 
 
 def test_group_review_batches_pass_with_expected_cumulative_counts() -> None:
@@ -172,16 +167,16 @@ def test_group_review_batches_pass_with_expected_cumulative_counts() -> None:
     assert report.counts == {
         "structural_groups": 67,
         "structural_holds": 1,
-        "review_batches": 5,
-        "target_groups": 63,
-        "reviewed_groups": 63,
-        "verified": 35,
+        "review_batches": 6,
+        "target_groups": 67,
+        "reviewed_groups": 67,
+        "verified": 39,
         "hold": 10,
         "rejected": 18,
         "rejected_duplicate": 9,
         "rejected_out_of_scope": 9,
-        "verified_child_statements": 140,
-        "assigned_child_answers": 140,
+        "verified_child_statements": 156,
+        "assigned_child_answers": 156,
         "visual_asset_required": 9,
         "promotion_ready": 0,
         "effective_usable_groups": 49,
@@ -379,23 +374,38 @@ def test_unknown_child_taxonomy_code_fails_validation(tmp_path: Path) -> None:
     assert "UNKNOWN_CONCEPT" in {error.code for error in report.errors}
 
 
-def test_generic_validator_accepts_a_valid_additional_batch_with_new_counts(
+def test_generic_materializer_accepts_a_valid_additional_batch_with_new_counts(
     tmp_path: Path,
 ) -> None:
     review_root = tmp_path / "group_review"
     shutil.copytree(DEFAULT_QUESTION_GROUP_REVIEW_ROOT, review_root)
-    added_group_id = _add_valid_synthetic_hold_batch(review_root)
+    added_group_id, synthetic_group = _add_valid_synthetic_hold_batch(review_root)
+    groups = _load(
+        DEFAULT_QUESTION_GROUP_STAGING_PATH / "question_group_candidates.json"
+    )
+    assert isinstance(groups, list)
 
-    report = QuestionGroupReviewValidator().validate(review_root=review_root)
+    materialization = EffectiveQuestionGroupReviewMaterializer().materialize(
+        [*groups, synthetic_group], review_root
+    )
+    statuses = [
+        str(group.get("academic_review_status", ""))
+        for group in materialization.effective_groups
+    ]
+    reviewed_ids = {
+        group_id
+        for batch in materialization.review_batches
+        for group_id in batch.reviewed_group_ids
+    }
 
-    assert report.status == "PASS"
-    assert report.counts["review_batches"] == 6
-    assert report.counts["reviewed_groups"] == 64
-    assert report.counts["verified"] == 35
-    assert report.counts["hold"] == 11
-    assert report.counts["rejected"] == 18
-    assert added_group_id in report.review_batches[5]["reviewed_group_ids"]
-    assert report.review_batches[5]["counts"] == {
+    assert materialization.is_valid
+    assert len(materialization.review_batches) == 7
+    assert len(reviewed_ids) == 68
+    assert statuses.count("VERIFIED") == 39
+    assert sum(status.startswith("HOLD_") for status in statuses) == 11
+    assert sum(status.startswith("REJECTED_") for status in statuses) == 18
+    assert added_group_id in materialization.review_batches[6].reviewed_group_ids
+    assert materialization.review_batches[6].counts == {
         "reviewed": 1,
         "verified": 0,
         "hold": 1,
@@ -406,7 +416,7 @@ def test_generic_validator_accepts_a_valid_additional_batch_with_new_counts(
 def test_overlapping_group_ids_across_batches_are_rejected(tmp_path: Path) -> None:
     review_root = tmp_path / "group_review"
     shutil.copytree(DEFAULT_QUESTION_GROUP_REVIEW_ROOT, review_root)
-    shutil.copytree(review_root / "batch_001", review_root / "batch_006")
+    shutil.copytree(review_root / "batch_001", review_root / "batch_007")
 
     report = QuestionGroupReviewValidator().validate(review_root=review_root)
 
