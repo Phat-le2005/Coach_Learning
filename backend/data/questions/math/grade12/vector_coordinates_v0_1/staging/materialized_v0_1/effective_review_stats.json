@@ -1,0 +1,43 @@
+{
+  "materialization_code": "MATH12_VECTOR_EFFECTIVE_REVIEW_V0_1",
+  "status": "STRUCTURAL_REVIEW_REQUIRED",
+  "raw_counts": {
+    "candidates": 72,
+    "standalone": 58,
+    "true_false_four_groups": 14,
+    "structural_holds": 0
+  },
+  "scope_overlay_counts": {
+    "excluded": 3,
+    "boundary_holds": 1
+  },
+  "effective_review_counts": {
+    "candidates": 68,
+    "standalone": 54,
+    "true_false_four_groups": 14,
+    "question_type_counts": {
+      "MULTIPLE_CHOICE": 51,
+      "TRUE_FALSE_GROUP": 14,
+      "SHORT_ANSWER": 3
+    },
+    "visual_required": 50,
+    "answer_detected": 47,
+    "mixed_scope_groups": 12,
+    "problem_types_total": 15,
+    "problem_types_with_candidates": 9,
+    "problem_type_gaps": [
+      "VECTOR_SCALAR_MULTIPLICATION_3D",
+      "POINT_COORDINATES_3D",
+      "VECTOR_COORDINATES_FROM_POINTS_3D",
+      "VECTOR_COORDINATE_LINEAR_OPERATIONS_3D",
+      "VECTOR_COORDINATE_DOT_PRODUCT_3D",
+      "MIDPOINT_CENTROID_COORDINATES_3D"
+    ],
+    "verified": 0,
+    "approved": 0,
+    "production_release_eligible": 0
+  },
+  "academic_review_complete": false,
+  "database_import_allowed": false,
+  "canonical_snapshot_allowed": false
+}

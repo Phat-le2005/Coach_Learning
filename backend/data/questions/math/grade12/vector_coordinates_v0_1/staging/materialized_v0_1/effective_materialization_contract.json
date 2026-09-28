@@ -1,0 +1,34 @@
+{
+  "contract_code": "MATH12_VECTOR_EFFECTIVE_MATERIALIZATION_V0_1",
+  "base_commit": "8ca3eef5351fc7f42954bc40084bf364016031d4",
+  "raw_counts": {
+    "candidates": 72,
+    "standalone": 58,
+    "true_false_four_groups": 14,
+    "structural_holds": 0
+  },
+  "scope_overlay_counts": {
+    "excluded": 3,
+    "boundary_holds": 1
+  },
+  "effective_review_counts": {
+    "candidates": 68,
+    "standalone": 54,
+    "true_false_four_groups": 14,
+    "question_type_counts": {
+      "MULTIPLE_CHOICE": 51,
+      "TRUE_FALSE_GROUP": 14,
+      "SHORT_ANSWER": 3
+    },
+    "visual_required": 50,
+    "answer_detected": 47,
+    "mixed_scope_groups": 12,
+    "problem_types_total": 15,
+    "problem_types_with_candidates": 9,
+    "production_release_eligible": 0
+  },
+  "effective_projection_rule": "raw candidates minus EXCLUDE_* decisions minus HOLD_* decisions",
+  "group_rule": "No TRUE_FALSE_FOUR group is excluded by this overlay; all 14 remain atomic.",
+  "review_queue_rule": "review_queue.csv must contain exactly the 68 effective candidates once each.",
+  "raw_materialization_rule": "candidate_questions.json remains the immutable 72-row raw materialization unless a separate source/provenance correction is required."
+}

@@ -1,0 +1,26 @@
+{
+  "overlay_code": "MATH12_VECTOR_SCOPE_REVIEW_OVERRIDES_V0_1",
+  "status": "PASS",
+  "raw_candidate_count": 72,
+  "raw_standalone_count": 58,
+  "decision_counts": {
+    "excluded": 3,
+    "boundary_holds": 1
+  },
+  "excluded_candidate_ids": [
+    "M12_VECTOR_CAND_0019",
+    "M12_VECTOR_CAND_0035",
+    "M12_VECTOR_CAND_0037"
+  ],
+  "boundary_hold_candidate_ids": [
+    "M12_VECTOR_CAND_0046"
+  ],
+  "effective_candidate_count": 68,
+  "effective_standalone_count": 54,
+  "preserved_question_group_count": 14,
+  "preserved_mixed_scope_group_count": 12,
+  "raw_materialization_modified": false,
+  "academic_review_started": false,
+  "production_release_eligible": 0,
+  "raw_candidate_semantic_sha256": "1b364f145fcd6110ba99ee32dc91928a5d3909eac3347e315c40bd7e73fee1ab"
+}

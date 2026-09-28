@@ -1,0 +1,24 @@
+{
+  "contract_code": "MATH12_VECTOR_AGGREGATE_HASH_V0_2",
+  "goal": "Make the hard-coded aggregate SHA bind the actual semantic file contents, not merely the manifest-declared per-file hashes.",
+  "algorithm": {
+    "semantic_files_order": [
+      "candidate_questions.json",
+      "standalone_candidates.json",
+      "question_group_candidates.json",
+      "structural_holds.json",
+      "coverage_report.json",
+      "extraction_stats.json",
+      "source_hash_verification.json",
+      "materialization_policy.json",
+      "scope_review_overrides.json",
+      "effective_candidates.json",
+      "effective_standalone_candidates.json",
+      "effective_review_stats.json"
+    ],
+    "canonicalization": "JSON parse -> json.dumps(ensure_ascii=False, sort_keys=True, separators=(',', ':'))",
+    "aggregate_encoding": "For each file in exact listed order: UTF-8 filename + NUL + canonical JSON bytes + NUL; SHA-256 over concatenation.",
+    "manifest_rule": "manifest semantic_file_hashes remain integrity checks, but aggregate is recomputed directly from files and compared to a hard-coded EXPECTED_AGGREGATE_SEMANTIC_SHA256.",
+    "critical_negative_test": "Mutate a semantic file, update that file's per-file hash in materialization_manifest.json, leave aggregate unchanged: validator must still fail aggregate integrity."
+  }
+}

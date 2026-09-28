@@ -1,0 +1,48 @@
+{
+  "overlay_code": "MATH12_VECTOR_SCOPE_REVIEW_OVERRIDES_V0_1",
+  "base_commit": "8ca3eef5351fc7f42954bc40084bf364016031d4",
+  "raw_materialization_dataset": "DATA-MATH12-016",
+  "policy": {
+    "preserve_raw_candidate_ids": true,
+    "preserve_raw_dedupe_hashes": true,
+    "do_not_rewrite_source_provenance": true,
+    "do_not_mark_verified": true,
+    "do_not_mark_approved": true,
+    "do_not_import_database": true,
+    "effective_academic_review_projection_only": true
+  },
+  "decisions": [
+    {
+      "candidate_id": "M12_VECTOR_CAND_0019",
+      "decision": "EXCLUDE_OUT_OF_SCOPE_GRADE12",
+      "reason_code": "SPATIAL_GEOMETRY_RELATIONS_NOT_VECTOR_PRIMARY",
+      "reason": "Primary task concerns line-plane parallelism/concurrency in a tetrahedron, not vector operations or vector coordinates.",
+      "destination_hint": "LEGACY_SPATIAL_GEOMETRY_OR_NON_G12_CORPUS",
+      "academic_review_required_for_destination": true
+    },
+    {
+      "candidate_id": "M12_VECTOR_CAND_0035",
+      "decision": "EXCLUDE_OUT_OF_SCOPE_GRADE12",
+      "reason_code": "SPATIAL_PERPENDICULAR_GEOMETRY_NOT_VECTOR_PRIMARY",
+      "reason": "Primary task asks perpendicular relations among edges/segments in a regular pyramid; no vector operation is the assessed object.",
+      "destination_hint": "LEGACY_SPATIAL_GEOMETRY_OR_NON_G12_CORPUS",
+      "academic_review_required_for_destination": true
+    },
+    {
+      "candidate_id": "M12_VECTOR_CAND_0037",
+      "decision": "EXCLUDE_OUT_OF_SCOPE_GRADE12",
+      "reason_code": "LINE_PLANE_RELATIONS_NOT_VECTOR_PRIMARY",
+      "reason": "Primary task asks line-line and line-plane parallel/intersection relations; it is outside the Vector/Vector-coordinate chapter boundary.",
+      "destination_hint": "LEGACY_SPATIAL_GEOMETRY_OR_NON_G12_CORPUS",
+      "academic_review_required_for_destination": true
+    },
+    {
+      "candidate_id": "M12_VECTOR_CAND_0046",
+      "decision": "HOLD_VECTOR_OXYZ_BOUNDARY",
+      "reason_code": "TRAJECTORY_PLANE_INTERSECTION_BOUNDARY",
+      "reason": "The problem uses a velocity vector, but solving requires intersecting the trajectory with a plane equation; keep it out of the clean Vector review projection until explicit academic boundary review.",
+      "destination_hint": "VECTOR_OR_OXYZ_PENDING_REVIEW",
+      "academic_review_required_for_destination": true
+    }
+  ]
+}

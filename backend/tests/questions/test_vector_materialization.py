@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import csv
 import json
 import shutil
 from pathlib import Path
@@ -18,7 +19,11 @@ from app.questions.question_group_visual_assets import QuestionGroupVisualAssetV
 from app.questions.vector_materialization import (
     DEFAULT_VECTOR_MATERIALIZATION_PATH,
     EXPECTED_AGGREGATE_SEMANTIC_SHA256,
+    EXPECTED_BOUNDARY_HOLD_IDS,
     EXPECTED_COUNTS,
+    EXPECTED_EFFECTIVE_REVIEW_COUNTS,
+    EXPECTED_EXCLUDED_IDS,
+    EXPECTED_SCOPE_DECISIONS,
     EXPECTED_SOURCE_LOCKS,
     SEMANTIC_FILES,
     VectorQuestionMaterializationValidator,
@@ -27,15 +32,33 @@ from app.questions.vector_source_staging import VectorQuestionSourceValidator
 from app.validate_vector_materialization import main
 
 
-def _load_list(name: str, root: Path = DEFAULT_VECTOR_MATERIALIZATION_PATH) -> list[dict]:
+RAW_CANDIDATE_SEMANTIC_SHA256 = (
+    "1b364f145fcd6110ba99ee32dc91928a5d3909eac3347e315c40bd7e73fee1ab"
+)
+
+
+def _load_list(
+    name: str, root: Path = DEFAULT_VECTOR_MATERIALIZATION_PATH
+) -> list[dict]:
     return json.loads((root / name).read_text(encoding="utf-8"))
 
 
-def _load_object(name: str, root: Path = DEFAULT_VECTOR_MATERIALIZATION_PATH) -> dict:
+def _load_object(
+    name: str, root: Path = DEFAULT_VECTOR_MATERIALIZATION_PATH
+) -> dict:
     return json.loads((root / name).read_text(encoding="utf-8"))
 
 
-def test_manifest_and_semantic_hashes_are_exact_and_deterministic() -> None:
+def _review_queue_ids(
+    root: Path = DEFAULT_VECTOR_MATERIALIZATION_PATH,
+) -> list[str]:
+    with (root / "review_queue.csv").open(
+        "r", encoding="utf-8-sig", newline=""
+    ) as handle:
+        return [row["candidate_id"] for row in csv.DictReader(handle)]
+
+
+def test_manifest_semantic_hashes_and_direct_aggregate_are_deterministic() -> None:
     validator = VectorQuestionMaterializationValidator()
     first = validator.validate()
     second = validator.validate()
@@ -43,19 +66,29 @@ def test_manifest_and_semantic_hashes_are_exact_and_deterministic() -> None:
 
     assert first.is_valid, first.as_dict()
     assert first.as_dict() == second.as_dict()
+    assert validator.aggregate_semantic_sha256(
+        DEFAULT_VECTOR_MATERIALIZATION_PATH
+    ) == validator.aggregate_semantic_sha256(DEFAULT_VECTOR_MATERIALIZATION_PATH)
     assert first.aggregate_semantic_sha256 == EXPECTED_AGGREGATE_SEMANTIC_SHA256
     assert manifest["aggregate_semantic_sha256"] == EXPECTED_AGGREGATE_SEMANTIC_SHA256
+    assert list(manifest["semantic_file_hashes"]) == list(SEMANTIC_FILES)
     assert {
-        name: validator.semantic_sha256(json.loads((DEFAULT_VECTOR_MATERIALIZATION_PATH / name).read_text(encoding="utf-8")))
+        name: validator.semantic_sha256(
+            json.loads(
+                (DEFAULT_VECTOR_MATERIALIZATION_PATH / name).read_text(
+                    encoding="utf-8"
+                )
+            )
+        )
         for name in SEMANTIC_FILES
     } == manifest["semantic_file_hashes"]
 
 
-def test_exact_materialization_and_question_type_counts() -> None:
+def test_raw_and_effective_counts_remain_distinct() -> None:
     report = VectorQuestionMaterializationValidator().validate()
 
     assert report.is_valid, report.as_dict()
-    assert report.counts == {
+    assert report.counts["raw"] == {
         "raw_included_occurrences": 132,
         "materialized_unique_candidates": 72,
         "standalone_candidates": 58,
@@ -73,18 +106,71 @@ def test_exact_materialization_and_question_type_counts() -> None:
         "problem_types_with_candidates": 9,
         "production_release_eligible": 0,
     }
+    assert report.counts["scope"] == {"excluded": 3, "boundary_holds": 1}
+    assert report.counts["effective"] == EXPECTED_EFFECTIVE_REVIEW_COUNTS
     assert _load_object("extraction_stats.json") == EXPECTED_COUNTS
     assert _load_object("materialization_manifest.json")["counts"] == EXPECTED_COUNTS
 
 
-def test_candidate_ids_and_dedupe_hashes_are_unique() -> None:
+def test_scope_overlay_has_exact_ids_decisions_and_safety_policy() -> None:
+    overlay = _load_object("scope_review_overrides.json")
+    decisions = overlay["decisions"]
+
+    assert {
+        row["candidate_id"]: row["decision"] for row in decisions
+    } == EXPECTED_SCOPE_DECISIONS
+    assert len({row["candidate_id"] for row in decisions}) == 4
+    assert tuple(
+        row["candidate_id"]
+        for row in decisions
+        if row["decision"].startswith("EXCLUDE_")
+    ) == EXPECTED_EXCLUDED_IDS
+    assert tuple(
+        row["candidate_id"]
+        for row in decisions
+        if row["decision"].startswith("HOLD_")
+    ) == EXPECTED_BOUNDARY_HOLD_IDS
+    assert all(overlay["policy"].values())
+
+
+def test_effective_files_are_exact_filtered_raw_projections() -> None:
+    validator = VectorQuestionMaterializationValidator()
+    raw = _load_list("candidate_questions.json")
+    raw_standalone = _load_list("standalone_candidates.json")
+    effective = _load_list("effective_candidates.json")
+    effective_standalone = _load_list("effective_standalone_candidates.json")
+    blocked = set(EXPECTED_SCOPE_DECISIONS)
+
+    assert validator.semantic_sha256(raw) == RAW_CANDIDATE_SEMANTIC_SHA256
+    assert len(raw) == 72
+    assert effective == [row for row in raw if row["candidate_id"] not in blocked]
+    assert effective_standalone == [
+        row for row in raw_standalone if row["candidate_id"] not in blocked
+    ]
+    assert len(effective) == 68
+    assert len(effective_standalone) == 54
+    assert blocked.isdisjoint({row["candidate_id"] for row in effective})
+
+
+def test_review_queue_contains_each_effective_id_once() -> None:
+    effective_ids = [
+        row["candidate_id"] for row in _load_list("effective_candidates.json")
+    ]
+    queue_ids = _review_queue_ids()
+
+    assert len(queue_ids) == len(set(queue_ids)) == 68
+    assert queue_ids == effective_ids
+    assert set(EXPECTED_SCOPE_DECISIONS).isdisjoint(queue_ids)
+
+
+def test_raw_candidate_ids_dedupe_and_provenance_remain_unchanged() -> None:
     candidates = _load_list("candidate_questions.json")
     ids = [row["candidate_id"] for row in candidates]
     hashes = [row["dedupe_hash"] for row in candidates]
 
-    assert len(ids) == len(set(ids)) == 72
-    assert len(hashes) == len(set(hashes)) == 72
     assert ids == [f"M12_VECTOR_CAND_{number:04d}" for number in range(1, 73)]
+    assert len(hashes) == len(set(hashes)) == 72
+    assert all(row["duplicate_occurrences"] for row in candidates)
 
 
 def test_source_ids_hashes_pages_and_duplicate_occurrences_are_locked() -> None:
@@ -105,36 +191,59 @@ def test_source_ids_hashes_pages_and_duplicate_occurrences_are_locked() -> None:
             assert 1 <= occurrence["source_page"] <= occurrence_lock["page_count"]
 
 
-def test_candidate_taxonomy_mappings_exactly_match_data_015() -> None:
+def test_taxonomy_stays_provisional_and_matches_data_015() -> None:
     candidates = _load_list("candidate_questions.json")
+    candidate_by_id = {row["candidate_id"]: row for row in candidates}
     curriculum_root = (
         Path(__file__).resolve().parents[2]
         / "data/curriculum/math/grade12/gdpt2018/staging/vector_coordinates_v0_1"
     )
-    concept_rows = json.loads((curriculum_root / "problem_type_concepts.json").read_text(encoding="utf-8"))
-    outcome_rows = json.loads((curriculum_root / "problem_type_learning_outcomes.json").read_text(encoding="utf-8"))
+    concept_rows = json.loads(
+        (curriculum_root / "problem_type_concepts.json").read_text(encoding="utf-8")
+    )
+    outcome_rows = json.loads(
+        (curriculum_root / "problem_type_learning_outcomes.json").read_text(
+            encoding="utf-8"
+        )
+    )
 
     for row in candidates:
         code = row["problem_type_code"]
-        assert row["concepts"] == [item for item in concept_rows if item["problem_type_code"] == code]
-        assert row["learning_outcomes"] == [item for item in outcome_rows if item["problem_type_code"] == code]
+        assert row["concepts"] == [
+            item for item in concept_rows if item["problem_type_code"] == code
+        ]
+        assert row["learning_outcomes"] == [
+            item for item in outcome_rows if item["problem_type_code"] == code
+        ]
         assert row["classification_method"] == "RULE_BASED_INITIAL_FROM_SOURCE_TEXT"
+    assert candidate_by_id["M12_VECTOR_CAND_0008"]["problem_type_code"] == (
+        "VECTOR_RELATION_IDENTIFICATION_3D"
+    )
+    assert candidate_by_id["M12_VECTOR_CAND_0011"]["problem_type_code"] == (
+        "VECTOR_RELATION_IDENTIFICATION_3D"
+    )
+    assert candidate_by_id["M12_VECTOR_CAND_0066"]["problem_type_code"] == (
+        "VECTOR_GEOMETRIC_DECOMPOSITION_3D"
+    )
 
 
-def test_true_false_groups_remain_atomic_unanswered_and_outside_standalone() -> None:
-    candidates = _load_list("candidate_questions.json")
-    standalone = _load_list("standalone_candidates.json")
+def test_all_true_false_groups_remain_atomic_unanswered_and_effective() -> None:
+    raw = _load_list("candidate_questions.json")
+    effective = _load_list("effective_candidates.json")
+    effective_standalone = _load_list("effective_standalone_candidates.json")
     groups = _load_list("question_group_candidates.json")
-    standalone_ids = {row["candidate_id"] for row in standalone}
+    effective_ids = {row["candidate_id"] for row in effective}
+    standalone_ids = {row["candidate_id"] for row in effective_standalone}
 
     assert len(groups) == 14
-    assert {row["question_type_detected"] for row in standalone} == {
-        "MULTIPLE_CHOICE", "SHORT_ANSWER"
-    }
-    assert all(row["requires_question_group_model"] is False for row in standalone)
-    assert {row["source_candidate_id"] for row in groups}.isdisjoint(standalone_ids)
-    assert {row["source_candidate_id"] for row in groups} == {
-        row["candidate_id"] for row in candidates
+    assert sum(group["mixed_scope"] for group in groups) == 12
+    assert {group["source_candidate_id"] for group in groups} <= effective_ids
+    assert {group["source_candidate_id"] for group in groups}.isdisjoint(
+        standalone_ids
+    )
+    assert {group["source_candidate_id"] for group in groups} == {
+        row["candidate_id"]
+        for row in raw
         if row["question_type_detected"] == "TRUE_FALSE_GROUP"
     }
     for group in groups:
@@ -144,53 +253,70 @@ def test_true_false_groups_remain_atomic_unanswered_and_outside_standalone() -> 
         assert [item["order_index"] for item in group["items"]] == [0, 1, 2, 3]
         assert all(item["correct_answer"] is None for item in group["items"])
         assert all(item["answer_status"] == "UNREVIEWED" for item in group["items"])
-        assert all(item["taxonomy_status"] == "NOT_REVIEWED" for item in group["items"])
+        assert all(
+            item["taxonomy_status"] == "NOT_REVIEWED" for item in group["items"]
+        )
 
 
-def test_mixed_scope_groups_and_review_boundaries_are_preserved() -> None:
-    candidates = _load_list("candidate_questions.json")
-    standalone = _load_list("standalone_candidates.json")
-    groups = _load_list("question_group_candidates.json")
+def test_effective_review_boundaries_and_counts_are_locked() -> None:
+    effective = _load_list("effective_candidates.json")
+    stats = _load_object("effective_review_stats.json")
 
-    assert sum(group["mixed_scope"] for group in groups) == 12
-    assert not any(row["mixed_scope"] for row in standalone)
-    assert {row["candidate_id"] for row in candidates if row["mixed_scope"]} == {
-        group["source_candidate_id"] for group in groups if group["mixed_scope"]
-    }
-    assert all(row["status"] == "STRUCTURAL_CANDIDATE" for row in candidates)
-    assert all(row["academic_review_status"] == "NOT_REVIEWED" for row in candidates)
-    assert all(row["promotion_eligible"] is False for row in candidates)
-    assert all("correct_answer" not in row for row in candidates)
-    assert sum(row["answer_detected"] is not None for row in candidates) == 47
+    assert stats["effective_review_counts"] == EXPECTED_EFFECTIVE_REVIEW_COUNTS
+    assert all(row["status"] == "STRUCTURAL_CANDIDATE" for row in effective)
+    assert all(row["academic_review_status"] == "NOT_REVIEWED" for row in effective)
+    assert all(row["promotion_eligible"] is False for row in effective)
+    assert all("correct_answer" not in row for row in effective)
+    assert stats["database_import_allowed"] is False
+    assert stats["canonical_snapshot_allowed"] is False
 
 
-def test_exact_six_coverage_gaps_and_no_source_pdf() -> None:
+def test_exact_six_coverage_gaps_rights_and_no_source_pdf() -> None:
     report = VectorQuestionMaterializationValidator().validate()
     coverage = _load_list("coverage_report.json")
+    repository_root = Path(__file__).resolve().parents[3]
 
     assert report.problem_type_gaps == tuple(EXPECTED_COUNTS["problem_type_gaps"])
-    assert [row["problem_type_code"] for row in coverage if row["coverage_status"] == "GAP"] == EXPECTED_COUNTS["problem_type_gaps"]
+    assert [
+        row["problem_type_code"]
+        for row in coverage
+        if row["coverage_status"] == "GAP"
+    ] == EXPECTED_COUNTS["problem_type_gaps"]
     assert not any(
         path.suffix.lower() == ".pdf"
-        for path in DEFAULT_VECTOR_MATERIALIZATION_PATH.rglob("*")
+        for path in repository_root.rglob("*")
+        if ".venv" not in path.parts
     )
     assert report.rights_status == "REVIEW_REQUIRED"
 
 
-def test_validator_rejects_semantic_mutation(tmp_path: Path) -> None:
+def test_mutated_file_with_updated_per_file_hash_still_fails_aggregate(
+    tmp_path: Path,
+) -> None:
     target = tmp_path / "materialized_v0_1"
     shutil.copytree(DEFAULT_VECTOR_MATERIALIZATION_PATH, target)
-    candidates = _load_list("candidate_questions.json", target)
-    candidates[0]["status"] = "VERIFIED"
-    (target / "candidate_questions.json").write_text(
+    candidates = _load_list("effective_candidates.json", target)
+    candidates[0]["raw_question_text"] += " MUTATED"
+    (target / "effective_candidates.json").write_text(
         json.dumps(candidates, ensure_ascii=False), encoding="utf-8"
+    )
+    manifest = _load_object("materialization_manifest.json", target)
+    manifest["semantic_file_hashes"]["effective_candidates.json"] = (
+        VectorQuestionMaterializationValidator.semantic_sha256(candidates)
+    )
+    (target / "materialization_manifest.json").write_text(
+        json.dumps(manifest, ensure_ascii=False), encoding="utf-8"
     )
 
     report = VectorQuestionMaterializationValidator().validate(target)
 
     assert report.status == "FAIL"
-    assert report.checks["semantic_hashes"] is False
-    assert report.checks["review_boundary"] is False
+    assert report.checks["semantic_hashes"] is True
+    assert report.checks["aggregate_integrity"] is False
+    assert any(
+        error.code == "AGGREGATE_SEMANTIC_SHA256_MISMATCH"
+        for error in report.errors
+    )
 
 
 def test_validator_rejects_taxonomy_mapping_mutation(tmp_path: Path) -> None:
@@ -206,6 +332,7 @@ def test_validator_rejects_taxonomy_mapping_mutation(tmp_path: Path) -> None:
 
     assert report.status == "FAIL"
     assert report.checks["taxonomy_mappings"] is False
+    assert report.checks["aggregate_integrity"] is False
 
 
 def test_data_015_scope_taxonomy_and_source_regressions() -> None:

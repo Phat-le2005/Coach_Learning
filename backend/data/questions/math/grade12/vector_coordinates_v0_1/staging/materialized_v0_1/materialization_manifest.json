@@ -52,9 +52,13 @@
     "coverage_report.json": "409b113fa86f48113c4f696fc9f5cd7092f0d54d4bd41779504654fe0c430f28",
     "extraction_stats.json": "af9362b03ab0c2e7e0fafdd001df1e8e1e0cd2e16006e63123cc6f352cf7e973",
     "source_hash_verification.json": "ba3d447b526262331ecfab83bd24990399b01a5c30a6177d50e0c9386414ec06",
-    "materialization_policy.json": "310b881ea8e9a2744ad67d0c2784b5b5882498f7d2866ddb1dd4fbbe7a54ecba"
+    "materialization_policy.json": "310b881ea8e9a2744ad67d0c2784b5b5882498f7d2866ddb1dd4fbbe7a54ecba",
+    "scope_review_overrides.json": "55ef7084544f6cc00253cd486370e1514020f2656d978750db7970f0a3828156",
+    "effective_candidates.json": "21a2f955b07fcb212c5924138f4ee0086d417d857b44949c11f62dd700aafb05",
+    "effective_standalone_candidates.json": "9cbb9fdd076d0dccf4288cd3ab831ff3322c131f55790f6e7cdb4ae068020fc7",
+    "effective_review_stats.json": "8cc35c39a298f80d240b2c622d75e666494d9cb1d0ff4af3edc1c9c044123852"
   },
-  "aggregate_semantic_sha256": "1271542ffd3a215f47e61fc75c741f6d3864cb38dda33baab1c03e921396a893",
+  "aggregate_semantic_sha256": "6ee45529e5cdc78d7f07c02f94e9b0c0a6a42b1b9117fdf80e424df8f9eae697",
   "source_pdf_binaries_in_repo": false,
   "db_migration_required": false,
   "canonical_curriculum_modified": false

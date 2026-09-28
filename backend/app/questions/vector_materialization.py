@@ -26,8 +26,20 @@ DEFAULT_VECTOR_MATERIALIZATION_PATH = (
 
 EXPECTED_BASE_COMMIT = "1bbd044497b873df78fa5cfdcb388ca8ecff9035"
 EXPECTED_AGGREGATE_SEMANTIC_SHA256 = (
-    "1271542ffd3a215f47e61fc75c741f6d3864cb38dda33baab1c03e921396a893"
+    "6ee45529e5cdc78d7f07c02f94e9b0c0a6a42b1b9117fdf80e424df8f9eae697"
 )
+EXPECTED_SCOPE_DECISIONS = {
+    "M12_VECTOR_CAND_0019": "EXCLUDE_OUT_OF_SCOPE_GRADE12",
+    "M12_VECTOR_CAND_0035": "EXCLUDE_OUT_OF_SCOPE_GRADE12",
+    "M12_VECTOR_CAND_0037": "EXCLUDE_OUT_OF_SCOPE_GRADE12",
+    "M12_VECTOR_CAND_0046": "HOLD_VECTOR_OXYZ_BOUNDARY",
+}
+EXPECTED_EXCLUDED_IDS = (
+    "M12_VECTOR_CAND_0019",
+    "M12_VECTOR_CAND_0035",
+    "M12_VECTOR_CAND_0037",
+)
+EXPECTED_BOUNDARY_HOLD_IDS = ("M12_VECTOR_CAND_0046",)
 EXPECTED_COUNTS: dict[str, Any] = {
     "materialization_code": "MATH12_VECTOR_MATERIALIZATION_V0_1",
     "status": "STRUCTURAL_REVIEW_REQUIRED",
@@ -96,7 +108,30 @@ SEMANTIC_FILES = (
     "extraction_stats.json",
     "source_hash_verification.json",
     "materialization_policy.json",
+    "scope_review_overrides.json",
+    "effective_candidates.json",
+    "effective_standalone_candidates.json",
+    "effective_review_stats.json",
 )
+EXPECTED_EFFECTIVE_REVIEW_COUNTS: dict[str, Any] = {
+    "candidates": 68,
+    "standalone": 54,
+    "true_false_four_groups": 14,
+    "question_type_counts": {
+        "MULTIPLE_CHOICE": 51,
+        "TRUE_FALSE_GROUP": 14,
+        "SHORT_ANSWER": 3,
+    },
+    "visual_required": 50,
+    "answer_detected": 47,
+    "mixed_scope_groups": 12,
+    "problem_types_total": 15,
+    "problem_types_with_candidates": 9,
+    "problem_type_gaps": EXPECTED_COUNTS["problem_type_gaps"],
+    "verified": 0,
+    "approved": 0,
+    "production_release_eligible": 0,
+}
 
 
 @dataclass(frozen=True, slots=True, order=True)
@@ -156,6 +191,23 @@ class VectorQuestionMaterializationValidator:
         groups = self._load_list(path / "question_group_candidates.json", issues)
         holds = self._load_list(path / "structural_holds.json", issues)
         coverage = self._load_list(path / "coverage_report.json", issues)
+        overlay = self._load_object(path / "scope_review_overrides.json", issues)
+        effective_candidates = self._load_list(
+            path / "effective_candidates.json", issues
+        )
+        effective_standalone = self._load_list(
+            path / "effective_standalone_candidates.json", issues
+        )
+        effective_stats = self._load_object(
+            path / "effective_review_stats.json", issues
+        )
+        scope_report = self._load_object(path / "scope_review_report.json", issues)
+        aggregate_contract = self._load_object(
+            path / "aggregate_hash_contract.json", issues
+        )
+        effective_contract = self._load_object(
+            path / "effective_materialization_contract.json", issues
+        )
         review_rows = self._load_review_queue(path / "review_queue.csv", issues)
         source_manifest = self._load_object(
             source_staging_path.resolve() / "source_manifest.json", issues,
@@ -178,9 +230,32 @@ class VectorQuestionMaterializationValidator:
         check_errors: dict[str, list[VectorMaterializationIssue]] = {
             "required_files": [i for i in issues if i.check == "required_files"],
             "manifest_boundary": self._validate_manifest(manifest, stats),
+            "aggregate_contract": self._validate_aggregate_contract(
+                aggregate_contract
+            ),
+            "effective_contract": self._validate_effective_contract(
+                effective_contract
+            ),
             "semantic_hashes": self._validate_semantic_hashes(path, manifest),
+            "aggregate_integrity": self._validate_aggregate_integrity(
+                path, manifest
+            ),
             "exact_counts": self._validate_counts(candidates, standalone, groups, holds),
             "candidate_identity": self._validate_candidate_identity(candidates),
+            "scope_overlay": self._validate_scope_overlay(
+                candidates, groups, overlay
+            ),
+            "effective_projection": self._validate_effective_projection(
+                candidates,
+                standalone,
+                groups,
+                overlay,
+                effective_candidates,
+                effective_standalone,
+                effective_stats,
+                scope_report,
+                problem_types,
+            ),
             "review_boundary": self._validate_review_boundary(candidates, groups, policy),
             "source_registry": [
                 *[i for i in issues if i.check == "source_registry"],
@@ -197,7 +272,9 @@ class VectorQuestionMaterializationValidator:
             "standalone_projection": self._validate_standalone(candidates, standalone),
             "question_groups": self._validate_groups(candidates, standalone, groups),
             "coverage": self._validate_coverage(candidates, coverage, problem_types),
-            "review_queue": self._validate_review_queue(candidates, review_rows),
+            "review_queue": self._validate_review_queue(
+                effective_candidates, review_rows
+            ),
             "visual_and_rights_boundary": self._validate_visual_boundary(
                 path, candidates, policy, source_manifest
             ),
@@ -208,15 +285,30 @@ class VectorQuestionMaterializationValidator:
             if name != "required_files":
                 all_issues.extend(errors)
         checks = {name: not errors for name, errors in check_errors.items()}
-        counts = self._derive_counts(candidates, standalone, groups, holds, problem_types)
+        counts = {
+            "raw": self._derive_counts(
+                candidates, standalone, groups, holds, problem_types
+            ),
+            "scope": {
+                "excluded": len(EXPECTED_EXCLUDED_IDS),
+                "boundary_holds": len(EXPECTED_BOUNDARY_HOLD_IDS),
+            },
+            "effective": self._derive_effective_counts(
+                effective_candidates, effective_standalone, groups, problem_types
+            ),
+        }
         ordered = tuple(sorted(set(all_issues)))
         gaps = stats.get("problem_type_gaps", [])
+        try:
+            aggregate_sha256 = self.aggregate_semantic_sha256(path)
+        except (OSError, json.JSONDecodeError, TypeError, ValueError):
+            aggregate_sha256 = None
         return VectorMaterializationReport(
             dataset_path=path.as_posix(),
             status="PASS" if all(checks.values()) else "FAIL",
             checks=checks,
             counts=counts,
-            aggregate_semantic_sha256=manifest.get("aggregate_semantic_sha256"),
+            aggregate_semantic_sha256=aggregate_sha256,
             problem_type_gaps=tuple(gaps) if isinstance(gaps, list) else (),
             rights_status=source_manifest.get("rights_status"),
             errors=ordered,
@@ -228,6 +320,24 @@ class VectorQuestionMaterializationValidator:
             value, ensure_ascii=False, sort_keys=True, separators=(",", ":")
         ).encode("utf-8")
         return hashlib.sha256(payload).hexdigest()
+
+    @classmethod
+    def aggregate_semantic_sha256(cls, path: Path) -> str:
+        """Hash canonical semantic files in the contract-defined order."""
+        digest = hashlib.sha256()
+        for name in SEMANTIC_FILES:
+            value = json.loads((path / name).read_text(encoding="utf-8"))
+            canonical = json.dumps(
+                value,
+                ensure_ascii=False,
+                sort_keys=True,
+                separators=(",", ":"),
+            ).encode("utf-8")
+            digest.update(name.encode("utf-8"))
+            digest.update(b"\0")
+            digest.update(canonical)
+            digest.update(b"\0")
+        return digest.hexdigest()
 
     @staticmethod
     def _add(
@@ -332,11 +442,113 @@ class VectorQuestionMaterializationValidator:
             actual = cls.semantic_sha256(value)
             if supplied.get(name) != actual:
                 cls._add(errors, "semantic_hashes", "SEMANTIC_SHA256_MISMATCH", name, f"Expected {supplied.get(name)}; found {actual}.")
-        if manifest.get("aggregate_semantic_sha256") != EXPECTED_AGGREGATE_SEMANTIC_SHA256:
+        return errors
+
+    @classmethod
+    def _validate_aggregate_contract(
+        cls, contract: dict[str, Any]
+    ) -> list[VectorMaterializationIssue]:
+        errors: list[VectorMaterializationIssue] = []
+        algorithm = contract.get("algorithm")
+        valid = (
+            contract.get("contract_code") == "MATH12_VECTOR_AGGREGATE_HASH_V0_2"
+            and isinstance(algorithm, dict)
+            and algorithm.get("semantic_files_order") == list(SEMANTIC_FILES)
+            and algorithm.get("canonicalization")
+            == "JSON parse -> json.dumps(ensure_ascii=False, sort_keys=True, separators=(',', ':'))"
+            and algorithm.get("aggregate_encoding")
+            == "For each file in exact listed order: UTF-8 filename + NUL + canonical JSON bytes + NUL; SHA-256 over concatenation."
+        )
+        if not valid:
             cls._add(
-                errors, "semantic_hashes", "AGGREGATE_SEMANTIC_SHA256_MISMATCH",
+                errors,
+                "aggregate_contract",
+                "AGGREGATE_HASH_CONTRACT_MISMATCH",
+                "aggregate_hash_contract.json",
+                "Semantic file order, canonicalization, or aggregate encoding changed.",
+            )
+        return errors
+
+    @classmethod
+    def _validate_effective_contract(
+        cls, contract: dict[str, Any]
+    ) -> list[VectorMaterializationIssue]:
+        errors: list[VectorMaterializationIssue] = []
+        expected_effective_counts = {
+            key: EXPECTED_EFFECTIVE_REVIEW_COUNTS[key]
+            for key in (
+                "candidates",
+                "standalone",
+                "true_false_four_groups",
+                "question_type_counts",
+                "visual_required",
+                "answer_detected",
+                "mixed_scope_groups",
+                "problem_types_total",
+                "problem_types_with_candidates",
+                "production_release_eligible",
+            )
+        }
+        valid = (
+            contract.get("contract_code")
+            == "MATH12_VECTOR_EFFECTIVE_MATERIALIZATION_V0_1"
+            and contract.get("base_commit")
+            == "8ca3eef5351fc7f42954bc40084bf364016031d4"
+            and contract.get("raw_counts")
+            == {
+                "candidates": 72,
+                "standalone": 58,
+                "true_false_four_groups": 14,
+                "structural_holds": 0,
+            }
+            and contract.get("scope_overlay_counts")
+            == {"excluded": 3, "boundary_holds": 1}
+            and contract.get("effective_review_counts")
+            == expected_effective_counts
+            and contract.get("effective_projection_rule")
+            == "raw candidates minus EXCLUDE_* decisions minus HOLD_* decisions"
+            and contract.get("group_rule")
+            == "No TRUE_FALSE_FOUR group is excluded by this overlay; all 14 remain atomic."
+            and contract.get("review_queue_rule")
+            == "review_queue.csv must contain exactly the 68 effective candidates once each."
+        )
+        if not valid:
+            cls._add(
+                errors,
+                "effective_contract",
+                "EFFECTIVE_MATERIALIZATION_CONTRACT_MISMATCH",
+                "effective_materialization_contract.json",
+                "Raw/effective counts or explicit projection rules changed.",
+            )
+        return errors
+
+    @classmethod
+    def _validate_aggregate_integrity(
+        cls, path: Path, manifest: dict[str, Any]
+    ) -> list[VectorMaterializationIssue]:
+        errors: list[VectorMaterializationIssue] = []
+        try:
+            actual = cls.aggregate_semantic_sha256(path)
+        except (OSError, json.JSONDecodeError, TypeError, ValueError) as error:
+            cls._add(
+                errors,
+                "aggregate_integrity",
+                "AGGREGATE_SEMANTIC_INPUT_INVALID",
+                "semantic_files",
+                str(error),
+            )
+            return errors
+        declared = manifest.get("aggregate_semantic_sha256")
+        if actual != declared or actual != EXPECTED_AGGREGATE_SEMANTIC_SHA256:
+            cls._add(
+                errors,
+                "aggregate_integrity",
+                "AGGREGATE_SEMANTIC_SHA256_MISMATCH",
                 "materialization_manifest.json.aggregate_semantic_sha256",
-                f"Expected {EXPECTED_AGGREGATE_SEMANTIC_SHA256}.",
+                (
+                    f"Recomputed {actual}; manifest declares {declared}; "
+                    f"expected {EXPECTED_AGGREGATE_SEMANTIC_SHA256}."
+                ),
             )
         return errors
 
@@ -373,6 +585,194 @@ class VectorQuestionMaterializationValidator:
         selected = Counter(row.get("source_code") for row in candidates)
         if dict(selected) != EXPECTED_COUNTS["selected_source_counts"] or dict(occurrences) != EXPECTED_COUNTS["all_provenance_occurrence_counts"]:
             cls._add(errors, "exact_counts", "SOURCE_COUNTS_MISMATCH", "candidate_questions.json", f"Selected={dict(selected)}; occurrences={dict(occurrences)}.")
+        return errors
+
+    @classmethod
+    def _validate_scope_overlay(
+        cls,
+        candidates: list[dict[str, Any]],
+        groups: list[dict[str, Any]],
+        overlay: dict[str, Any],
+    ) -> list[VectorMaterializationIssue]:
+        errors: list[VectorMaterializationIssue] = []
+        decisions = overlay.get("decisions")
+        if not isinstance(decisions, list) or not all(
+            isinstance(row, dict) for row in decisions
+        ):
+            cls._add(
+                errors,
+                "scope_overlay",
+                "INVALID_SCOPE_DECISIONS",
+                "scope_review_overrides.json.decisions",
+                "Scope decisions must be an array of objects.",
+            )
+            return errors
+        ids = [row.get("candidate_id") for row in decisions]
+        actual = {row.get("candidate_id"): row.get("decision") for row in decisions}
+        raw_ids = {row.get("candidate_id") for row in candidates}
+        group_source_ids = {row.get("source_candidate_id") for row in groups}
+        policy = overlay.get("policy")
+        required_policy = {
+            "preserve_raw_candidate_ids": True,
+            "preserve_raw_dedupe_hashes": True,
+            "do_not_rewrite_source_provenance": True,
+            "do_not_mark_verified": True,
+            "do_not_mark_approved": True,
+            "do_not_import_database": True,
+            "effective_academic_review_projection_only": True,
+        }
+        if (
+            overlay.get("overlay_code")
+            != "MATH12_VECTOR_SCOPE_REVIEW_OVERRIDES_V0_1"
+            or overlay.get("base_commit")
+            != "8ca3eef5351fc7f42954bc40084bf364016031d4"
+            or overlay.get("raw_materialization_dataset") != "DATA-MATH12-016"
+            or policy != required_policy
+        ):
+            cls._add(
+                errors,
+                "scope_overlay",
+                "SCOPE_OVERLAY_METADATA_MISMATCH",
+                "scope_review_overrides.json",
+                "Scope overlay identity or safety policy changed.",
+            )
+        if len(ids) != len(set(ids)):
+            cls._add(
+                errors,
+                "scope_overlay",
+                "DUPLICATE_SCOPE_DECISION",
+                "scope_review_overrides.json.decisions",
+                "Each raw candidate may have at most one scope decision.",
+            )
+        if any(candidate_id not in raw_ids for candidate_id in ids):
+            cls._add(
+                errors,
+                "scope_overlay",
+                "UNKNOWN_SCOPE_CANDIDATE",
+                "scope_review_overrides.json.decisions",
+                "Every overlay candidate ID must resolve in raw materialization.",
+            )
+        if actual != EXPECTED_SCOPE_DECISIONS:
+            cls._add(
+                errors,
+                "scope_overlay",
+                "SCOPE_DECISION_SET_MISMATCH",
+                "scope_review_overrides.json.decisions",
+                f"Expected {EXPECTED_SCOPE_DECISIONS}; found {actual}.",
+            )
+        if set(ids) & group_source_ids:
+            cls._add(
+                errors,
+                "scope_overlay",
+                "QUESTION_GROUP_SCOPE_DECISION_FORBIDDEN",
+                "scope_review_overrides.json.decisions",
+                "This overlay must preserve all 14 QuestionGroups.",
+            )
+        return errors
+
+    @classmethod
+    def _validate_effective_projection(
+        cls,
+        candidates: list[dict[str, Any]],
+        standalone: list[dict[str, Any]],
+        groups: list[dict[str, Any]],
+        overlay: dict[str, Any],
+        effective_candidates: list[dict[str, Any]],
+        effective_standalone: list[dict[str, Any]],
+        effective_stats: dict[str, Any],
+        scope_report: dict[str, Any],
+        problem_types: list[dict[str, Any]],
+    ) -> list[VectorMaterializationIssue]:
+        errors: list[VectorMaterializationIssue] = []
+        decisions = overlay.get("decisions", [])
+        blocked_ids = {
+            row.get("candidate_id")
+            for row in decisions
+            if isinstance(row, dict)
+        }
+        expected_candidates = [
+            row for row in candidates if row.get("candidate_id") not in blocked_ids
+        ]
+        expected_standalone = [
+            row for row in standalone if row.get("candidate_id") not in blocked_ids
+        ]
+        if effective_candidates != expected_candidates:
+            cls._add(
+                errors,
+                "effective_projection",
+                "EFFECTIVE_CANDIDATE_PROJECTION_MISMATCH",
+                "effective_candidates.json",
+                "Effective candidates must equal raw candidates minus explicit overlay IDs.",
+            )
+        if effective_standalone != expected_standalone:
+            cls._add(
+                errors,
+                "effective_projection",
+                "EFFECTIVE_STANDALONE_PROJECTION_MISMATCH",
+                "effective_standalone_candidates.json",
+                "Effective standalone rows must be the exact filtered raw projection.",
+            )
+        effective_counts = cls._derive_effective_counts(
+            effective_candidates, effective_standalone, groups, problem_types
+        )
+        if effective_counts != EXPECTED_EFFECTIVE_REVIEW_COUNTS:
+            cls._add(
+                errors,
+                "effective_projection",
+                "EFFECTIVE_COUNTS_MISMATCH",
+                "effective_candidates.json",
+                f"Expected {EXPECTED_EFFECTIVE_REVIEW_COUNTS}; found {effective_counts}.",
+            )
+        expected_stats = {
+            "materialization_code": "MATH12_VECTOR_EFFECTIVE_REVIEW_V0_1",
+            "status": "STRUCTURAL_REVIEW_REQUIRED",
+            "raw_counts": {
+                "candidates": 72,
+                "standalone": 58,
+                "true_false_four_groups": 14,
+                "structural_holds": 0,
+            },
+            "scope_overlay_counts": {"excluded": 3, "boundary_holds": 1},
+            "effective_review_counts": EXPECTED_EFFECTIVE_REVIEW_COUNTS,
+            "academic_review_complete": False,
+            "database_import_allowed": False,
+            "canonical_snapshot_allowed": False,
+        }
+        if effective_stats != expected_stats:
+            cls._add(
+                errors,
+                "effective_projection",
+                "EFFECTIVE_STATS_MISMATCH",
+                "effective_review_stats.json",
+                "Effective stats must preserve the raw/effective count distinction.",
+            )
+        expected_report = {
+            "overlay_code": "MATH12_VECTOR_SCOPE_REVIEW_OVERRIDES_V0_1",
+            "status": "PASS",
+            "raw_candidate_count": 72,
+            "raw_standalone_count": 58,
+            "decision_counts": {"excluded": 3, "boundary_holds": 1},
+            "excluded_candidate_ids": list(EXPECTED_EXCLUDED_IDS),
+            "boundary_hold_candidate_ids": list(EXPECTED_BOUNDARY_HOLD_IDS),
+            "effective_candidate_count": 68,
+            "effective_standalone_count": 54,
+            "preserved_question_group_count": 14,
+            "preserved_mixed_scope_group_count": 12,
+            "raw_materialization_modified": False,
+            "academic_review_started": False,
+            "production_release_eligible": 0,
+            "raw_candidate_semantic_sha256": (
+                "1b364f145fcd6110ba99ee32dc91928a5d3909eac3347e315c40bd7e73fee1ab"
+            ),
+        }
+        if scope_report != expected_report:
+            cls._add(
+                errors,
+                "effective_projection",
+                "SCOPE_REVIEW_REPORT_MISMATCH",
+                "scope_review_report.json",
+                "Scope review report does not match the explicit overlay projection.",
+            )
         return errors
 
     @classmethod
@@ -618,8 +1018,21 @@ class VectorQuestionMaterializationValidator:
         errors: list[VectorMaterializationIssue] = []
         candidate_by_id = {row.get("candidate_id"): row for row in candidates}
         ids = [row.get("candidate_id") for row in rows]
-        if len(rows) != 72 or len(ids) != len(set(ids)) or set(ids) != set(candidate_by_id):
-            cls._add(errors, "review_queue", "REVIEW_QUEUE_SET_MISMATCH", "review_queue.csv", "Review queue must contain each of the 72 candidates exactly once.")
+        if (
+            len(rows) != len(candidates)
+            or len(ids) != len(set(ids))
+            or set(ids) != set(candidate_by_id)
+        ):
+            cls._add(
+                errors,
+                "review_queue",
+                "REVIEW_QUEUE_SET_MISMATCH",
+                "review_queue.csv",
+                (
+                    "Review queue must contain each effective candidate exactly once; "
+                    f"expected {len(candidates)} rows."
+                ),
+            )
         for index, row in enumerate(rows):
             candidate = candidate_by_id.get(row.get("candidate_id"))
             if candidate and (
@@ -700,4 +1113,44 @@ class VectorQuestionMaterializationValidator:
             "problem_types_total": len(problem_types),
             "problem_types_with_candidates": len(covered),
             "production_release_eligible": sum(row.get("promotion_eligible") is True for row in candidates),
+        }
+
+    @staticmethod
+    def _derive_effective_counts(
+        candidates: list[dict[str, Any]],
+        standalone: list[dict[str, Any]],
+        groups: list[dict[str, Any]],
+        problem_types: list[dict[str, Any]],
+    ) -> dict[str, Any]:
+        covered = {row.get("problem_type_code") for row in candidates}
+        all_problem_types = [row.get("code") for row in problem_types]
+        return {
+            "candidates": len(candidates),
+            "standalone": len(standalone),
+            "true_false_four_groups": len(groups),
+            "question_type_counts": dict(
+                Counter(row.get("question_type_detected") for row in candidates)
+            ),
+            "visual_required": sum(
+                row.get("visual_required") is True for row in candidates
+            ),
+            "answer_detected": sum(
+                row.get("answer_detected") is not None for row in candidates
+            ),
+            "mixed_scope_groups": sum(
+                row.get("mixed_scope") is True for row in groups
+            ),
+            "problem_types_total": len(problem_types),
+            "problem_types_with_candidates": len(covered),
+            "problem_type_gaps": [
+                code for code in all_problem_types if code not in covered
+            ],
+            "verified": sum(
+                row.get("academic_review_status") == "VERIFIED"
+                for row in candidates
+            ),
+            "approved": sum(row.get("status") == "APPROVED" for row in candidates),
+            "production_release_eligible": sum(
+                row.get("promotion_eligible") is True for row in candidates
+            ),
         }

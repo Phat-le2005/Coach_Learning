@@ -30,3 +30,14 @@ All three local PDF binaries were SHA-256 checked and exactly match the DATA-MAT
 `answer_detected` is only extraction evidence, never an approved answer. TRUE_FALSE child correct answers remain null. All candidates remain `STRUCTURAL_CANDIDATE` / `NOT_REVIEWED`.
 
 OXYZ-primary standalone tasks are excluded. A mixed TRUE_FALSE_FOUR is retained atomically only when vector-scope children share context with OXYZ children; it is marked `mixed_scope=true` for academic review.
+
+## Scope-review projection
+
+The 72-row `candidate_questions.json` remains the immutable raw/audit materialization.
+`scope_review_overrides.json` records three explicit out-of-scope exclusions and one
+Vector/OXYZ boundary hold. The derived academic-review projection therefore contains
+68 candidates and 54 standalone candidates. All 14 TRUE_FALSE_FOUR groups remain
+unchanged and atomic.
+
+`answer_detected` remains extraction evidence only. No effective candidate is VERIFIED,
+APPROVED, production eligible, or database importable.
