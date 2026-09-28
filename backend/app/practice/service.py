@@ -375,7 +375,6 @@ class PracticeService:
                     question_attempt_id=attempt.id,
                     label=item.label,
                     order_index=item.order_index,
-                    question_attempt=attempt,
                 )
                 for item, attempt in zip(
                     ordered_items, child_attempts, strict=True
@@ -525,6 +524,7 @@ class PracticeService:
             .where(
                 QuestionGroupItem.group_id == QuestionGroup.id,
                 or_(
+                    Question.subject_id != QuestionGroup.subject_id,
                     Question.status != QuestionStatus.APPROVED,
                     Question.question_type != QuestionType.TRUE_FALSE,
                     ~Question.problem_type_links.any(),

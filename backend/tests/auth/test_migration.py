@@ -29,6 +29,7 @@ def test_migration_chain_matches_models_and_can_downgrade(db_engine: Engine) -> 
             "question_problem_types", "question_learning_outcomes",
             "practice_sessions", "practice_session_problem_types",
             "practice_session_concepts", "question_attempts",
+            "question_group_attempts", "question_group_attempt_items",
             "student_concept_mastery", "student_problem_type_mastery",
             "diagnostic_assessments", "diagnostic_blueprint_items",
             "diagnostic_attempt_contexts",
