@@ -1,0 +1,34 @@
+[
+  {
+    "candidate_id": "M12_VECTOR_CAND_0018",
+    "patch_type": "CONTENT_NORMALIZATION_FROM_SOURCE_AND_SOLUTION",
+    "source_question_pages": [
+      42
+    ],
+    "source_solution_pages": [
+      48
+    ],
+    "reason": "PDF text extraction collapsed the vector arrow distinction in options A/C. The source solution confirms option A is false and the true vector equality is AB = DC.",
+    "reviewed_content": "Câu 7. Cho hình lập phương ABCD.A'B'C'D'. Mệnh đề nào sau đây sai? A. vector AB = vector CD. B. vector AB + vector AD + vector AA' = vector AC'. C. vector AB = vector DC. D. vector AC = vector AB + vector AD."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0044",
+    "patch_type": "CONTIGUOUS_PAGE_CONTENT_RECONSTRUCTION",
+    "source_question_pages": [
+      397,
+      398
+    ],
+    "source_solution_pages": [
+      404
+    ],
+    "reason": "The structural extraction stopped at the page boundary before the answer choices.",
+    "reviewed_content": "Câu 8. Trong không gian Oxyz, cho hai vectơ a, b thỏa mãn |a| = 2√3, |b| = 3, góc(a,b) = 30°. Độ dài vectơ 3a - 2b là A. 6. B. 5. C. 7. D. 3."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0010",
+    "patch_type": "ACADEMIC_MIXED_SCOPE_CORRECTION",
+    "structural_mixed_scope": false,
+    "reviewed_mixed_scope": true,
+    "reason": "Children a/d are vector-motion/modeling while b/c assess line-plane angle and a line equation."
+  }
+]

@@ -1,0 +1,219 @@
+[
+  {
+    "candidate_id": "M12_VECTOR_CAND_0001",
+    "structural_problem_type_code": "VECTOR_RELATION_IDENTIFICATION_3D",
+    "reviewed_problem_type_code": "VECTOR_SUM_DIFFERENCE_3D",
+    "review_status": "VERIFIED",
+    "reason": "Academic review of the assessed mathematical operation/object."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0002",
+    "structural_problem_type_code": "VECTOR_RELATION_IDENTIFICATION_3D",
+    "reviewed_problem_type_code": "VECTOR_SUM_DIFFERENCE_3D",
+    "review_status": "VERIFIED",
+    "reason": "Academic review of the assessed mathematical operation/object."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0003",
+    "structural_problem_type_code": "VECTOR_RELATION_IDENTIFICATION_3D",
+    "reviewed_problem_type_code": "VECTOR_SUM_DIFFERENCE_3D",
+    "review_status": "REJECTED_DUPLICATE",
+    "reason": "Academic review of the assessed mathematical operation/object."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0004",
+    "structural_problem_type_code": "VECTOR_RELATION_IDENTIFICATION_3D",
+    "reviewed_problem_type_code": "VECTOR_SUM_DIFFERENCE_3D",
+    "review_status": "REJECTED_DUPLICATE",
+    "reason": "Academic review of the assessed mathematical operation/object."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0005",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_SUM_DIFFERENCE_3D",
+    "review_status": "VERIFIED",
+    "reason": "Academic review of the assessed mathematical operation/object."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0008",
+    "structural_problem_type_code": "VECTOR_RELATION_IDENTIFICATION_3D",
+    "reviewed_problem_type_code": "VECTOR_COORDINATE_DOT_PRODUCT_3D",
+    "review_status": "VERIFIED",
+    "reason": "Academic review of the assessed mathematical operation/object."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0011",
+    "structural_problem_type_code": "VECTOR_RELATION_IDENTIFICATION_3D",
+    "reviewed_problem_type_code": "VECTOR_LENGTH_DISTANCE_3D",
+    "review_status": "VERIFIED",
+    "reason": "Academic review of the assessed mathematical operation/object."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0018",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_RELATION_IDENTIFICATION_3D",
+    "review_status": "VERIFIED",
+    "reason": "Academic review of the assessed mathematical operation/object."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0020",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_SUM_DIFFERENCE_3D",
+    "review_status": "VERIFIED",
+    "reason": "Academic review of the assessed mathematical operation/object."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0022",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_RELATION_IDENTIFICATION_3D",
+    "review_status": "VERIFIED",
+    "reason": "Academic review of the assessed mathematical operation/object."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0023",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_RELATION_IDENTIFICATION_3D",
+    "review_status": "VERIFIED",
+    "reason": "Academic review of the assessed mathematical operation/object."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0027",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_SUM_DIFFERENCE_3D",
+    "review_status": "VERIFIED",
+    "reason": "Academic review of the assessed mathematical operation/object."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0028",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_SUM_DIFFERENCE_3D",
+    "review_status": "VERIFIED",
+    "reason": "Academic review of the assessed mathematical operation/object."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0031",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_DOT_PRODUCT_3D",
+    "review_status": "VERIFIED",
+    "reason": "Academic review of the assessed mathematical operation/object."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0034",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+    "review_status": "VERIFIED",
+    "reason": "Academic review of the assessed mathematical operation/object."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0036",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_SUM_DIFFERENCE_3D",
+    "review_status": "VERIFIED",
+    "reason": "Academic review of the assessed mathematical operation/object."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0039",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_LENGTH_DISTANCE_3D",
+    "review_status": "VERIFIED",
+    "reason": "Academic review of the assessed mathematical operation/object."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0041",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_SUM_DIFFERENCE_3D",
+    "review_status": "REJECTED_DUPLICATE",
+    "reason": "Academic review of the assessed mathematical operation/object."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0043",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_SUM_DIFFERENCE_3D",
+    "review_status": "VERIFIED",
+    "reason": "Academic review of the assessed mathematical operation/object."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0047",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_RELATION_IDENTIFICATION_3D",
+    "review_status": "VERIFIED",
+    "reason": "Academic review of the assessed mathematical operation/object."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0050",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_SUM_DIFFERENCE_3D",
+    "review_status": "VERIFIED",
+    "reason": "Academic review of the assessed mathematical operation/object."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0053",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_SUM_DIFFERENCE_3D",
+    "review_status": "VERIFIED",
+    "reason": "Academic review of the assessed mathematical operation/object."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0056",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_SUM_DIFFERENCE_3D",
+    "review_status": "VERIFIED",
+    "reason": "Academic review of the assessed mathematical operation/object."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0057",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_SUM_DIFFERENCE_3D",
+    "review_status": "VERIFIED",
+    "reason": "Academic review of the assessed mathematical operation/object."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0058",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_SUM_DIFFERENCE_3D",
+    "review_status": "REJECTED_DUPLICATE",
+    "reason": "Academic review of the assessed mathematical operation/object."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0059",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+    "review_status": "VERIFIED",
+    "reason": "Academic review of the assessed mathematical operation/object."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0061",
+    "structural_problem_type_code": "VECTOR_SUM_DIFFERENCE_3D",
+    "reviewed_problem_type_code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+    "review_status": "VERIFIED",
+    "reason": "Academic review of the assessed mathematical operation/object."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0065",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_RELATION_IDENTIFICATION_3D",
+    "review_status": "VERIFIED",
+    "reason": "Academic review of the assessed mathematical operation/object."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0066",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_ANGLE_3D",
+    "review_status": "VERIFIED",
+    "reason": "Academic review of the assessed mathematical operation/object."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0068",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_DOT_PRODUCT_3D",
+    "review_status": "VERIFIED",
+    "reason": "Academic review of the assessed mathematical operation/object."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0069",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_SUM_DIFFERENCE_3D",
+    "review_status": "VERIFIED",
+    "reason": "Academic review of the assessed mathematical operation/object."
+  }
+]

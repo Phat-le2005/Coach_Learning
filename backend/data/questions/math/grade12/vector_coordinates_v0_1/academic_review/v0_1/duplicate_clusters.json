@@ -1,0 +1,51 @@
+[
+  {
+    "cluster_id": "VECTOR_DUP_001",
+    "canonical_candidate_id": "M12_VECTOR_CAND_0001",
+    "duplicate_candidate_ids": [
+      "M12_VECTOR_CAND_0003"
+    ],
+    "reason": "Same prism vector-sum identity; option order differs."
+  },
+  {
+    "cluster_id": "VECTOR_DUP_002",
+    "canonical_candidate_id": "M12_VECTOR_CAND_0002",
+    "duplicate_candidate_ids": [
+      "M12_VECTOR_CAND_0004"
+    ],
+    "reason": "Same regular-pyramid sum-of-four-vectors identity; option order differs."
+  },
+  {
+    "cluster_id": "VECTOR_DUP_003",
+    "canonical_candidate_id": "M12_VECTOR_CAND_0005",
+    "duplicate_candidate_ids": [
+      "M12_VECTOR_CAND_0041"
+    ],
+    "reason": "Same parallelogram-base pyramid identity SA + BC."
+  },
+  {
+    "cluster_id": "VECTOR_DUP_004",
+    "canonical_candidate_id": "M12_VECTOR_CAND_0013",
+    "duplicate_candidate_ids": [
+      "M12_VECTOR_CAND_0033",
+      "M12_VECTOR_CAND_0038"
+    ],
+    "reason": "Same cube question asking the angle between vectors AB and DC'."
+  },
+  {
+    "cluster_id": "VECTOR_DUP_005",
+    "canonical_candidate_id": "M12_VECTOR_CAND_0025",
+    "duplicate_candidate_ids": [
+      "M12_VECTOR_CAND_0026"
+    ],
+    "reason": "Same tetrahedron midpoint vector-decomposition problem; second occurrence is a truncated solution reprint."
+  },
+  {
+    "cluster_id": "VECTOR_DUP_006",
+    "canonical_candidate_id": "M12_VECTOR_CAND_0057",
+    "duplicate_candidate_ids": [
+      "M12_VECTOR_CAND_0058"
+    ],
+    "reason": "Same cube-center vector-sum problem; second occurrence is a solution reprint."
+  }
+]

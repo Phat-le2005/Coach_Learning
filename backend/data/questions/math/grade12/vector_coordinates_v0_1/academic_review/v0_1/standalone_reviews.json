@@ -1,0 +1,3010 @@
+[
+  {
+    "candidate_id": "M12_VECTOR_CAND_0001",
+    "source_code": "SRC_MOET_EXAM_2025_SOLUTION_COMPILATION",
+    "source_file_id": "1jGjnJ3Wq2ynISxB4P1g9mk2CXibl-YXy",
+    "source_sha256": "90d5cb68a6f91418287c6643548f4f40ea9bb1598705a177b41bce07b09df11f",
+    "candidate_source_page": 4,
+    "question_number": "1",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "C",
+    "source_evidence_id": "EVID_VECTOR_0001",
+    "taxonomy_review": "CORRECTED_DERIVED",
+    "structural_problem_type_code": "VECTOR_RELATION_IDENTIFICATION_3D",
+    "reviewed_problem_type_code": "VECTOR_SUM_DIFFERENCE_3D",
+    "taxonomy": {
+      "status": "CORRECTED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_SUM_DIFFERENCE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.5,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.5,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0002",
+    "source_code": "SRC_MOET_EXAM_2025_SOLUTION_COMPILATION",
+    "source_file_id": "1jGjnJ3Wq2ynISxB4P1g9mk2CXibl-YXy",
+    "source_sha256": "90d5cb68a6f91418287c6643548f4f40ea9bb1598705a177b41bce07b09df11f",
+    "candidate_source_page": 10,
+    "question_number": "12",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "A",
+    "source_evidence_id": "EVID_VECTOR_0002",
+    "taxonomy_review": "CORRECTED_DERIVED",
+    "structural_problem_type_code": "VECTOR_RELATION_IDENTIFICATION_3D",
+    "reviewed_problem_type_code": "VECTOR_SUM_DIFFERENCE_3D",
+    "taxonomy": {
+      "status": "CORRECTED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_SUM_DIFFERENCE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.5,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.5,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0003",
+    "source_code": "SRC_MOET_EXAM_2025_SOLUTION_COMPILATION",
+    "source_file_id": "1jGjnJ3Wq2ynISxB4P1g9mk2CXibl-YXy",
+    "source_sha256": "90d5cb68a6f91418287c6643548f4f40ea9bb1598705a177b41bce07b09df11f",
+    "candidate_source_page": 14,
+    "question_number": "6",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "REJECTED_DUPLICATE",
+    "duplicate_of": "M12_VECTOR_CAND_0001",
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "A",
+    "source_evidence_id": "EVID_VECTOR_0003",
+    "taxonomy_review": "CORRECTED_DERIVED",
+    "structural_problem_type_code": "VECTOR_RELATION_IDENTIFICATION_3D",
+    "reviewed_problem_type_code": "VECTOR_SUM_DIFFERENCE_3D",
+    "taxonomy": {
+      "status": "CORRECTED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_SUM_DIFFERENCE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.5,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.5,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "REJECTED_DUPLICATE"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0004",
+    "source_code": "SRC_MOET_EXAM_2025_SOLUTION_COMPILATION",
+    "source_file_id": "1jGjnJ3Wq2ynISxB4P1g9mk2CXibl-YXy",
+    "source_sha256": "90d5cb68a6f91418287c6643548f4f40ea9bb1598705a177b41bce07b09df11f",
+    "candidate_source_page": 19,
+    "question_number": "5",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "REJECTED_DUPLICATE",
+    "duplicate_of": "M12_VECTOR_CAND_0002",
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "B",
+    "source_evidence_id": "EVID_VECTOR_0004",
+    "taxonomy_review": "CORRECTED_DERIVED",
+    "structural_problem_type_code": "VECTOR_RELATION_IDENTIFICATION_3D",
+    "reviewed_problem_type_code": "VECTOR_SUM_DIFFERENCE_3D",
+    "taxonomy": {
+      "status": "CORRECTED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_SUM_DIFFERENCE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.5,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.5,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "REJECTED_DUPLICATE"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0005",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+    "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+    "candidate_source_page": 1,
+    "question_number": "4",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "A",
+    "source_evidence_id": "EVID_VECTOR_0005",
+    "taxonomy_review": "CORRECTED_DERIVED",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_SUM_DIFFERENCE_3D",
+    "taxonomy": {
+      "status": "CORRECTED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_SUM_DIFFERENCE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.5,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.5,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0008",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+    "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+    "candidate_source_page": 24,
+    "question_number": "3",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "B",
+    "source_evidence_id": "EVID_VECTOR_0008",
+    "taxonomy_review": "CORRECTED_DERIVED",
+    "structural_problem_type_code": "VECTOR_RELATION_IDENTIFICATION_3D",
+    "reviewed_problem_type_code": "VECTOR_COORDINATE_DOT_PRODUCT_3D",
+    "taxonomy": {
+      "status": "CORRECTED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_COORDINATE_DOT_PRODUCT_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "DOT_PRODUCT_3D",
+          "weight": 0.5,
+          "is_primary": true
+        },
+        {
+          "code": "COORDINATE_VECTOR_OPERATIONS_3D",
+          "weight": 0.5,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_COORDINATE_EXPRESSIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": false,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0009",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+    "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+    "candidate_source_page": 38,
+    "question_number": "12",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "C",
+    "source_evidence_id": "EVID_VECTOR_0009",
+    "taxonomy_review": "CONFIRMED_DERIVED",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "taxonomy": {
+      "status": "CONFIRMED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.35,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+          "weight": 0.4,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0011",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+    "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+    "candidate_source_page": 108,
+    "question_number": "12",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "A",
+    "source_evidence_id": "EVID_VECTOR_0011",
+    "taxonomy_review": "CORRECTED_DERIVED",
+    "structural_problem_type_code": "VECTOR_RELATION_IDENTIFICATION_3D",
+    "reviewed_problem_type_code": "VECTOR_LENGTH_DISTANCE_3D",
+    "taxonomy": {
+      "status": "CORRECTED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_LENGTH_DISTANCE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_LENGTH_3D",
+          "weight": 0.6,
+          "is_primary": true
+        },
+        {
+          "code": "DISTANCE_3D",
+          "weight": 0.4,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_LENGTH",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0013",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+    "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+    "candidate_source_page": 122,
+    "question_number": "8",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "C",
+    "source_evidence_id": "EVID_VECTOR_0013",
+    "taxonomy_review": "CONFIRMED_DERIVED",
+    "structural_problem_type_code": "VECTOR_ANGLE_3D",
+    "reviewed_problem_type_code": "VECTOR_ANGLE_3D",
+    "taxonomy": {
+      "status": "CONFIRMED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_ANGLE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_ANGLE_3D",
+          "weight": 0.6,
+          "is_primary": true
+        },
+        {
+          "code": "DOT_PRODUCT_3D",
+          "weight": 0.4,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0014",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+    "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+    "candidate_source_page": 139,
+    "question_number": "6",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "B",
+    "source_evidence_id": "EVID_VECTOR_0014",
+    "taxonomy_review": "CONFIRMED_DERIVED",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "taxonomy": {
+      "status": "CONFIRMED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.35,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+          "weight": 0.4,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0015",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+    "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+    "candidate_source_page": 179,
+    "question_number": "3",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "D",
+    "source_evidence_id": "EVID_VECTOR_0015",
+    "taxonomy_review": "CONFIRMED_DERIVED",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "taxonomy": {
+      "status": "CONFIRMED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.35,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+          "weight": 0.4,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0016",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 2,
+    "question_number": "8",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "D",
+    "source_evidence_id": "EVID_VECTOR_0016",
+    "taxonomy_review": "CONFIRMED_DERIVED",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "taxonomy": {
+      "status": "CONFIRMED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.35,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+          "weight": 0.4,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0017",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 23,
+    "question_number": "7",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "A",
+    "source_evidence_id": "EVID_VECTOR_0017",
+    "taxonomy_review": "CONFIRMED_DERIVED",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "taxonomy": {
+      "status": "CONFIRMED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.35,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+          "weight": 0.4,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0018",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 42,
+    "question_number": "7",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CORRECTED_FROM_SOURCE",
+    "content_patch_required": true,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "A",
+    "source_evidence_id": "EVID_VECTOR_0018",
+    "taxonomy_review": "CORRECTED_DERIVED",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_RELATION_IDENTIFICATION_3D",
+    "taxonomy": {
+      "status": "CORRECTED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_RELATION_IDENTIFICATION_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "SPACE_VECTOR",
+          "weight": 0.5,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIRECTION_3D",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "VECTOR_EQUALITY_3D",
+          "weight": 0.25,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0020",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 87,
+    "question_number": "8",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "C",
+    "source_evidence_id": "EVID_VECTOR_0020",
+    "taxonomy_review": "CORRECTED_DERIVED",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_SUM_DIFFERENCE_3D",
+    "taxonomy": {
+      "status": "CORRECTED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_SUM_DIFFERENCE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.5,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.5,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0021",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 106,
+    "question_number": "7",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "A",
+    "source_evidence_id": "EVID_VECTOR_0021",
+    "taxonomy_review": "CONFIRMED_DERIVED",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "taxonomy": {
+      "status": "CONFIRMED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.35,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+          "weight": 0.4,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0022",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 127,
+    "question_number": "8",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "A",
+    "source_evidence_id": "EVID_VECTOR_0022",
+    "taxonomy_review": "CORRECTED_DERIVED",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_RELATION_IDENTIFICATION_3D",
+    "taxonomy": {
+      "status": "CORRECTED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_RELATION_IDENTIFICATION_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "SPACE_VECTOR",
+          "weight": 0.5,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIRECTION_3D",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "VECTOR_EQUALITY_3D",
+          "weight": 0.25,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0023",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 139,
+    "question_number": "6",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "D",
+    "source_evidence_id": "EVID_VECTOR_0023",
+    "taxonomy_review": "CORRECTED_DERIVED",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_RELATION_IDENTIFICATION_3D",
+    "taxonomy": {
+      "status": "CORRECTED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_RELATION_IDENTIFICATION_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "SPACE_VECTOR",
+          "weight": 0.5,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIRECTION_3D",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "VECTOR_EQUALITY_3D",
+          "weight": 0.25,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0025",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 157,
+    "question_number": "9",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "A",
+    "source_evidence_id": "EVID_VECTOR_0025",
+    "taxonomy_review": "CONFIRMED_DERIVED",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "taxonomy": {
+      "status": "CONFIRMED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.35,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+          "weight": 0.4,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0026",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 164,
+    "question_number": "9",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "REJECTED_DUPLICATE",
+    "duplicate_of": "M12_VECTOR_CAND_0025",
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "A",
+    "source_evidence_id": "EVID_VECTOR_0026",
+    "taxonomy_review": "CONFIRMED_DERIVED",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "taxonomy": {
+      "status": "CONFIRMED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.35,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+          "weight": 0.4,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "REJECTED_DUPLICATE"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0027",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 178,
+    "question_number": "7",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "B",
+    "source_evidence_id": "EVID_VECTOR_0027",
+    "taxonomy_review": "CORRECTED_DERIVED",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_SUM_DIFFERENCE_3D",
+    "taxonomy": {
+      "status": "CORRECTED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_SUM_DIFFERENCE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.5,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.5,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0028",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 197,
+    "question_number": "8",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "B",
+    "source_evidence_id": "EVID_VECTOR_0028",
+    "taxonomy_review": "CORRECTED_DERIVED",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_SUM_DIFFERENCE_3D",
+    "taxonomy": {
+      "status": "CORRECTED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_SUM_DIFFERENCE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.5,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.5,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0029",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 217,
+    "question_number": "7",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "B",
+    "source_evidence_id": "EVID_VECTOR_0029",
+    "taxonomy_review": "CONFIRMED_DERIVED",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "taxonomy": {
+      "status": "CONFIRMED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.35,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+          "weight": 0.4,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0031",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 237,
+    "question_number": "12",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "A",
+    "source_evidence_id": "EVID_VECTOR_0031",
+    "taxonomy_review": "CORRECTED_DERIVED",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_DOT_PRODUCT_3D",
+    "taxonomy": {
+      "status": "CORRECTED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_DOT_PRODUCT_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "DOT_PRODUCT_3D",
+          "weight": 0.7,
+          "is_primary": true
+        },
+        {
+          "code": "SPACE_VECTOR",
+          "weight": 0.3,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0033",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 263,
+    "question_number": "6",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "REJECTED_DUPLICATE",
+    "duplicate_of": "M12_VECTOR_CAND_0013",
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "C",
+    "source_evidence_id": "EVID_VECTOR_0033",
+    "taxonomy_review": "CONFIRMED_DERIVED",
+    "structural_problem_type_code": "VECTOR_ANGLE_3D",
+    "reviewed_problem_type_code": "VECTOR_ANGLE_3D",
+    "taxonomy": {
+      "status": "CONFIRMED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_ANGLE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_ANGLE_3D",
+          "weight": 0.6,
+          "is_primary": true
+        },
+        {
+          "code": "DOT_PRODUCT_3D",
+          "weight": 0.4,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "REJECTED_DUPLICATE"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0034",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 276,
+    "question_number": "5",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "D",
+    "source_evidence_id": "EVID_VECTOR_0034",
+    "taxonomy_review": "CORRECTED_DERIVED",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+    "taxonomy": {
+      "status": "CORRECTED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+          "weight": 0.7,
+          "is_primary": true
+        },
+        {
+          "code": "SPACE_VECTOR",
+          "weight": 0.3,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0036",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 301,
+    "question_number": "7",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "B",
+    "source_evidence_id": "EVID_VECTOR_0036",
+    "taxonomy_review": "CORRECTED_DERIVED",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_SUM_DIFFERENCE_3D",
+    "taxonomy": {
+      "status": "CORRECTED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_SUM_DIFFERENCE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.5,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.5,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0038",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 322,
+    "question_number": "8",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "REJECTED_DUPLICATE",
+    "duplicate_of": "M12_VECTOR_CAND_0013",
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "C",
+    "source_evidence_id": "EVID_VECTOR_0038",
+    "taxonomy_review": "CONFIRMED_DERIVED",
+    "structural_problem_type_code": "VECTOR_ANGLE_3D",
+    "reviewed_problem_type_code": "VECTOR_ANGLE_3D",
+    "taxonomy": {
+      "status": "CONFIRMED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_ANGLE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_ANGLE_3D",
+          "weight": 0.6,
+          "is_primary": true
+        },
+        {
+          "code": "DOT_PRODUCT_3D",
+          "weight": 0.4,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "REJECTED_DUPLICATE"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0039",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 342,
+    "question_number": "8",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "D",
+    "source_evidence_id": "EVID_VECTOR_0039",
+    "taxonomy_review": "CORRECTED_DERIVED",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_LENGTH_DISTANCE_3D",
+    "taxonomy": {
+      "status": "CORRECTED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_LENGTH_DISTANCE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_LENGTH_3D",
+          "weight": 0.6,
+          "is_primary": true
+        },
+        {
+          "code": "DISTANCE_3D",
+          "weight": 0.4,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_LENGTH",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0041",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 364,
+    "question_number": "8",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "REJECTED_DUPLICATE",
+    "duplicate_of": "M12_VECTOR_CAND_0005",
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "A",
+    "source_evidence_id": "EVID_VECTOR_0041",
+    "taxonomy_review": "CORRECTED_DERIVED",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_SUM_DIFFERENCE_3D",
+    "taxonomy": {
+      "status": "CORRECTED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_SUM_DIFFERENCE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.5,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.5,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "REJECTED_DUPLICATE"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0043",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 385,
+    "question_number": "8",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "C",
+    "source_evidence_id": "EVID_VECTOR_0043",
+    "taxonomy_review": "CORRECTED_DERIVED",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_SUM_DIFFERENCE_3D",
+    "taxonomy": {
+      "status": "CORRECTED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_SUM_DIFFERENCE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.5,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.5,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0044",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 397,
+    "question_number": "8",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CORRECTED_FROM_SOURCE",
+    "content_patch_required": true,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "A",
+    "source_evidence_id": "EVID_VECTOR_0044",
+    "taxonomy_review": "CONFIRMED_DERIVED",
+    "structural_problem_type_code": "VECTOR_LENGTH_DISTANCE_3D",
+    "reviewed_problem_type_code": "VECTOR_LENGTH_DISTANCE_3D",
+    "taxonomy": {
+      "status": "CONFIRMED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_LENGTH_DISTANCE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_LENGTH_3D",
+          "weight": 0.6,
+          "is_primary": true
+        },
+        {
+          "code": "DISTANCE_3D",
+          "weight": 0.4,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_LENGTH",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": false,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0047",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 416,
+    "question_number": "2",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "A",
+    "source_evidence_id": "EVID_VECTOR_0047",
+    "taxonomy_review": "CORRECTED_DERIVED",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_RELATION_IDENTIFICATION_3D",
+    "taxonomy": {
+      "status": "CORRECTED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_RELATION_IDENTIFICATION_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "SPACE_VECTOR",
+          "weight": 0.5,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIRECTION_3D",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "VECTOR_EQUALITY_3D",
+          "weight": 0.25,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0049",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 440,
+    "question_number": "4",
+    "question_type": "SHORT_ANSWER",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "-2",
+    "source_evidence_id": "EVID_VECTOR_0049",
+    "taxonomy_review": "CONFIRMED_DERIVED",
+    "structural_problem_type_code": "REAL_WORLD_VECTOR_COORDINATE_MODELING_3D",
+    "reviewed_problem_type_code": "REAL_WORLD_VECTOR_COORDINATE_MODELING_3D",
+    "taxonomy": {
+      "status": "CONFIRMED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "REAL_WORLD_VECTOR_COORDINATE_MODELING_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "REAL_WORLD_VECTOR_MODELING_3D",
+          "weight": 0.6,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_COORDINATES_3D",
+          "weight": 0.2,
+          "is_primary": false
+        },
+        {
+          "code": "VECTOR_LENGTH_3D",
+          "weight": 0.2,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_REAL_WORLD",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": false,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0050",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 444,
+    "question_number": "8",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "C",
+    "source_evidence_id": "EVID_VECTOR_0050",
+    "taxonomy_review": "CORRECTED_DERIVED",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_SUM_DIFFERENCE_3D",
+    "taxonomy": {
+      "status": "CORRECTED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_SUM_DIFFERENCE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.5,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.5,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0051",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 461,
+    "question_number": "4",
+    "question_type": "SHORT_ANSWER",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "240",
+    "source_evidence_id": "EVID_VECTOR_0051",
+    "taxonomy_review": "CONFIRMED_DERIVED",
+    "structural_problem_type_code": "REAL_WORLD_VECTOR_COORDINATE_MODELING_3D",
+    "reviewed_problem_type_code": "REAL_WORLD_VECTOR_COORDINATE_MODELING_3D",
+    "taxonomy": {
+      "status": "CONFIRMED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "REAL_WORLD_VECTOR_COORDINATE_MODELING_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "REAL_WORLD_VECTOR_MODELING_3D",
+          "weight": 0.6,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_COORDINATES_3D",
+          "weight": 0.2,
+          "is_primary": false
+        },
+        {
+          "code": "VECTOR_LENGTH_3D",
+          "weight": 0.2,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_REAL_WORLD",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": false,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0052",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 465,
+    "question_number": "7",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "B",
+    "source_evidence_id": "EVID_VECTOR_0052",
+    "taxonomy_review": "CONFIRMED_DERIVED",
+    "structural_problem_type_code": "VECTOR_ANGLE_3D",
+    "reviewed_problem_type_code": "VECTOR_ANGLE_3D",
+    "taxonomy": {
+      "status": "CONFIRMED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_ANGLE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_ANGLE_3D",
+          "weight": 0.6,
+          "is_primary": true
+        },
+        {
+          "code": "DOT_PRODUCT_3D",
+          "weight": 0.4,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0053",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 477,
+    "question_number": "10",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "B",
+    "source_evidence_id": "EVID_VECTOR_0053",
+    "taxonomy_review": "CORRECTED_DERIVED",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_SUM_DIFFERENCE_3D",
+    "taxonomy": {
+      "status": "CORRECTED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_SUM_DIFFERENCE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.5,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.5,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0054",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 498,
+    "question_number": "4",
+    "question_type": "SHORT_ANSWER",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "-4",
+    "source_evidence_id": "EVID_VECTOR_0054",
+    "taxonomy_review": "CONFIRMED_DERIVED",
+    "structural_problem_type_code": "REAL_WORLD_VECTOR_COORDINATE_MODELING_3D",
+    "reviewed_problem_type_code": "REAL_WORLD_VECTOR_COORDINATE_MODELING_3D",
+    "taxonomy": {
+      "status": "CONFIRMED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "REAL_WORLD_VECTOR_COORDINATE_MODELING_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "REAL_WORLD_VECTOR_MODELING_3D",
+          "weight": 0.6,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_COORDINATES_3D",
+          "weight": 0.2,
+          "is_primary": false
+        },
+        {
+          "code": "VECTOR_LENGTH_3D",
+          "weight": 0.2,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_REAL_WORLD",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": false,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0055",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 502,
+    "question_number": "7",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "A",
+    "source_evidence_id": "EVID_VECTOR_0055",
+    "taxonomy_review": "CONFIRMED_DERIVED",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "taxonomy": {
+      "status": "CONFIRMED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.35,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+          "weight": 0.4,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0056",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 522,
+    "question_number": "12",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "A",
+    "source_evidence_id": "EVID_VECTOR_0056",
+    "taxonomy_review": "CORRECTED_DERIVED",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_SUM_DIFFERENCE_3D",
+    "taxonomy": {
+      "status": "CORRECTED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_SUM_DIFFERENCE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.5,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.5,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0057",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 534,
+    "question_number": "8",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "B",
+    "source_evidence_id": "EVID_VECTOR_0057",
+    "taxonomy_review": "CORRECTED_DERIVED",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_SUM_DIFFERENCE_3D",
+    "taxonomy": {
+      "status": "CORRECTED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_SUM_DIFFERENCE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.5,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.5,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0058",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 540,
+    "question_number": "8",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "REJECTED_DUPLICATE",
+    "duplicate_of": "M12_VECTOR_CAND_0057",
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "B",
+    "source_evidence_id": "EVID_VECTOR_0058",
+    "taxonomy_review": "CORRECTED_DERIVED",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_SUM_DIFFERENCE_3D",
+    "taxonomy": {
+      "status": "CORRECTED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_SUM_DIFFERENCE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.5,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.5,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "REJECTED_DUPLICATE"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0059",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 559,
+    "question_number": "8",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "C",
+    "source_evidence_id": "EVID_VECTOR_0059",
+    "taxonomy_review": "CORRECTED_DERIVED",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+    "taxonomy": {
+      "status": "CORRECTED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+          "weight": 0.7,
+          "is_primary": true
+        },
+        {
+          "code": "SPACE_VECTOR",
+          "weight": 0.3,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0060",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 576,
+    "question_number": "8",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "A",
+    "source_evidence_id": "EVID_VECTOR_0060",
+    "taxonomy_review": "CONFIRMED_DERIVED",
+    "structural_problem_type_code": "VECTOR_DOT_PRODUCT_3D",
+    "reviewed_problem_type_code": "VECTOR_DOT_PRODUCT_3D",
+    "taxonomy": {
+      "status": "CONFIRMED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_DOT_PRODUCT_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "DOT_PRODUCT_3D",
+          "weight": 0.7,
+          "is_primary": true
+        },
+        {
+          "code": "SPACE_VECTOR",
+          "weight": 0.3,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0061",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 595,
+    "question_number": "7",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "B",
+    "source_evidence_id": "EVID_VECTOR_0061",
+    "taxonomy_review": "CORRECTED_DERIVED",
+    "structural_problem_type_code": "VECTOR_SUM_DIFFERENCE_3D",
+    "reviewed_problem_type_code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+    "taxonomy": {
+      "status": "CORRECTED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+          "weight": 0.7,
+          "is_primary": true
+        },
+        {
+          "code": "SPACE_VECTOR",
+          "weight": 0.3,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": false,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0062",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 613,
+    "question_number": "8",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "B",
+    "source_evidence_id": "EVID_VECTOR_0062",
+    "taxonomy_review": "CONFIRMED_DERIVED",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "taxonomy": {
+      "status": "CONFIRMED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.35,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+          "weight": 0.4,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0064",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 633,
+    "question_number": "8",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "A",
+    "source_evidence_id": "EVID_VECTOR_0064",
+    "taxonomy_review": "CONFIRMED_DERIVED",
+    "structural_problem_type_code": "VECTOR_LENGTH_DISTANCE_3D",
+    "reviewed_problem_type_code": "VECTOR_LENGTH_DISTANCE_3D",
+    "taxonomy": {
+      "status": "CONFIRMED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_LENGTH_DISTANCE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_LENGTH_3D",
+          "weight": 0.6,
+          "is_primary": true
+        },
+        {
+          "code": "DISTANCE_3D",
+          "weight": 0.4,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_LENGTH",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0065",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 668,
+    "question_number": "8",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "C",
+    "source_evidence_id": "EVID_VECTOR_0065",
+    "taxonomy_review": "CORRECTED_DERIVED",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_RELATION_IDENTIFICATION_3D",
+    "taxonomy": {
+      "status": "CORRECTED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_RELATION_IDENTIFICATION_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "SPACE_VECTOR",
+          "weight": 0.5,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIRECTION_3D",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "VECTOR_EQUALITY_3D",
+          "weight": 0.25,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0066",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 687,
+    "question_number": "8",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "A",
+    "source_evidence_id": "EVID_VECTOR_0066",
+    "taxonomy_review": "CORRECTED_DERIVED",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_ANGLE_3D",
+    "taxonomy": {
+      "status": "CORRECTED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_ANGLE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_ANGLE_3D",
+          "weight": 0.6,
+          "is_primary": true
+        },
+        {
+          "code": "DOT_PRODUCT_3D",
+          "weight": 0.4,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0068",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 706,
+    "question_number": "7",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "A",
+    "source_evidence_id": "EVID_VECTOR_0068",
+    "taxonomy_review": "CORRECTED_DERIVED",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_DOT_PRODUCT_3D",
+    "taxonomy": {
+      "status": "CORRECTED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_DOT_PRODUCT_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "DOT_PRODUCT_3D",
+          "weight": 0.7,
+          "is_primary": true
+        },
+        {
+          "code": "SPACE_VECTOR",
+          "weight": 0.3,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0069",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 726,
+    "question_number": "7",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "D",
+    "source_evidence_id": "EVID_VECTOR_0069",
+    "taxonomy_review": "CORRECTED_DERIVED",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_SUM_DIFFERENCE_3D",
+    "taxonomy": {
+      "status": "CORRECTED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_SUM_DIFFERENCE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.5,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.5,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0071",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 747,
+    "question_number": "8",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "C",
+    "source_evidence_id": "EVID_VECTOR_0071",
+    "taxonomy_review": "CONFIRMED_DERIVED",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "taxonomy": {
+      "status": "CONFIRMED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.35,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+          "weight": 0.4,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0072",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 767,
+    "question_number": "9",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "content_patch_required": false,
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "A",
+    "source_evidence_id": "EVID_VECTOR_0072",
+    "taxonomy_review": "CONFIRMED_DERIVED",
+    "structural_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "reviewed_problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "taxonomy": {
+      "status": "CONFIRMED_DERIVED",
+      "basis": "COACH_LEARNING_DERIVED",
+      "problem_types": [
+        {
+          "code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.35,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+          "weight": 0.4,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  }
+]

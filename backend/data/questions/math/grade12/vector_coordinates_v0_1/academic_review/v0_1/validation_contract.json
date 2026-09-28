@@ -1,0 +1,56 @@
+{
+  "contract_code": "DATA_MATH12_017_VALIDATION_V0_1",
+  "required_invariants": {
+    "input_base_commit": "d2693571a6129b8bd4828f66bdea8105cc0dbfaf",
+    "input_materialization_aggregate_sha256": "6ee45529e5cdc78d7f07c02f94e9b0c0a6a42b1b9117fdf80e424df8f9eae697",
+    "input_raw_candidate_semantic_sha256": "1b364f145fcd6110ba99ee32dc91928a5d3909eac3347e315c40bd7e73fee1ab",
+    "target_candidate_ids_exactly_match_effective_016": true,
+    "reviewed_candidates": 68,
+    "verified": 48,
+    "hold_mixed_vector_oxyz": 4,
+    "rejected_duplicate": 7,
+    "rejected_out_of_scope_oxyz": 9,
+    "standalone_reviews": 54,
+    "group_reviews": 14,
+    "true_false_children": 56,
+    "verified_group_ids": [
+      "M12_VECTOR_GROUP_0040"
+    ],
+    "all_groups_atomic": true,
+    "all_group_child_answers_source_backed": true,
+    "no_oxyz_child_gets_vector_taxonomy": true,
+    "reviewed_problem_type_coverage": 11,
+    "reviewed_problem_type_gaps": [
+      "POINT_COORDINATES_3D",
+      "VECTOR_COORDINATE_LINEAR_OPERATIONS_3D",
+      "VECTOR_COORDINATE_ANGLE_3D",
+      "PARAMETER_VECTOR_COORDINATE_CONDITION_3D"
+    ],
+    "verified_visual_required": 42,
+    "production_release_eligible": 0,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  "status_values": [
+    "VERIFIED",
+    "HOLD_MIXED_VECTOR_OXYZ",
+    "REJECTED_DUPLICATE",
+    "REJECTED_OUT_OF_SCOPE_OXYZ"
+  ],
+  "taxonomy_policy": {
+    "verified_vector_items": "Must use only DATA-015 ProblemType/Concept/LearningOutcome codes.",
+    "oxyz_items": "Must use DEFERRED_TO_OXYZ_CHAPTER and carry no Vector ProblemType/Concept/LO.",
+    "hybrid_items": "May carry a provisional Vector ProblemType suggestion but cannot be promotion-ready.",
+    "topics_problem_types_concepts_are": "COACH_LEARNING_DERIVED"
+  },
+  "answer_policy": {
+    "standalone": "Every reviewed standalone must have a source-backed correct_answer.",
+    "true_false_four": "All 14 groups must have exactly four source-backed TRUE/FALSE child answers.",
+    "detected_answer_is_not_authority": "Source solution evidence plus academic review is the authority."
+  },
+  "immutability_policy": {
+    "raw_72_materialization_modified": false,
+    "effective_68_input_modified": false,
+    "review_artifacts_are_overlay_only": true
+  }
+}

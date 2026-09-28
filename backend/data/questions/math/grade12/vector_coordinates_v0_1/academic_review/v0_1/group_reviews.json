@@ -1,0 +1,1468 @@
+[
+  {
+    "group_candidate_id": "M12_VECTOR_GROUP_0006",
+    "source_candidate_id": "M12_VECTOR_CAND_0006",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+    "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+    "candidate_source_page": 3,
+    "question_number": "2",
+    "review_status": "REJECTED_OUT_OF_SCOPE_OXYZ",
+    "scope_review": "OXYZ_PRIMARY",
+    "structural_mixed_scope": true,
+    "reviewed_mixed_scope": false,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "source_evidence_id": "EVID_VECTOR_GROUP_0006",
+    "visual_asset_required": false,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "REJECTED_FROM_VECTOR_CHAPTER"
+    ],
+    "reviewed_group_context": "Câu 2. Trong không gian Oxyz , cho đường thẳng d : = = và điểm A ( 2; −5; −6 ) . 2 1 −3",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "reviewed_content": "Đường thẳng d có một vectơ chỉ phương là=u ( 2;1; −3) .",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "reviewed_content": "Mặt phẳng đi qua A và vuông góc với d có phương trình là 2 x + y − 3 z + 17 = 0.",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "reviewed_content": "Gọi H là hình chiếu vuông góc của A lên d . Tọa độ của H là H ( 3; −1; −4 ) .",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "reviewed_content": "Gọi ( P ) là mặt phẳng chứa đường thẳng d sao cho khoảng cách từ A đến ( P ) lớn nhất, khi đó phương trình của mặt phẳng ( P ) là x + 4 y + 2 z + 7 =0.",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_VECTOR_GROUP_0007",
+    "source_candidate_id": "M12_VECTOR_CAND_0007",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+    "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+    "candidate_source_page": 21,
+    "question_number": "2",
+    "review_status": "HOLD_MIXED_VECTOR_OXYZ",
+    "scope_review": "MIXED_VECTOR_OXYZ",
+    "structural_mixed_scope": true,
+    "reviewed_mixed_scope": true,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "source_evidence_id": "EVID_VECTOR_GROUP_0007",
+    "visual_asset_required": false,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "MIXED_SCOPE_REQUIRES_CHAPTER_POLICY",
+      "RIGHTS_REVIEW_REQUIRED"
+    ],
+    "reviewed_group_context": "Câu 2. Trong không gian Oxyz , một viên đạn được bắn ra từ vị trí A (1; 2;3) hướng đến vị trí B ( 0;1; −6 ) , bia chắn là mặt phẳng ( P ) : 4 x − y + 2 z + 13 =0 , đơn vị là kilomet.",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "reviewed_content": "Hình chiếu vuông góc của A trên ( Oxy ) là H ( 0; 2;3) .",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "reviewed_content": "Góc giữa đường thẳng AB và mặt phẳng ( P ) (làm tròn đến hàng đơn vị) là 60° .",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "reviewed_content": "Điểm B thuộc mặt phẳng ( P ) . ",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "reviewed_content": "Giả sử viên đạn chuyển động thẳng đều theo hướng vecto v ( −2; −2; −18 ) với vận tốc 800m / s (bỏ qua mọi lực cản và chướng ngại vật), sau một phút bắn ra đi qua điểm B . 3x + 2",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "VECTOR",
+        "taxonomy_status": "VECTOR_TAXONOMY_REVIEWED_BUT_GROUP_HELD",
+        "taxonomy": {
+          "status": "VECTOR_TAXONOMY_REVIEWED_BUT_GROUP_HELD",
+          "basis": "COACH_LEARNING_DERIVED",
+          "problem_types": [
+            {
+              "code": "REAL_WORLD_VECTOR_COORDINATE_MODELING_3D",
+              "weight": 1.0,
+              "is_primary": true
+            }
+          ],
+          "concepts": [
+            {
+              "code": "REAL_WORLD_VECTOR_MODELING_3D",
+              "weight": 0.6,
+              "is_primary": true
+            },
+            {
+              "code": "VECTOR_COORDINATES_3D",
+              "weight": 0.2,
+              "is_primary": false
+            },
+            {
+              "code": "VECTOR_LENGTH_3D",
+              "weight": 0.2,
+              "is_primary": false
+            }
+          ],
+          "learning_outcomes": [
+            {
+              "code": "LO_M12_VECTOR_REAL_WORLD",
+              "weight": 1.0
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_VECTOR_GROUP_0010",
+    "source_candidate_id": "M12_VECTOR_CAND_0010",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+    "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+    "candidate_source_page": 64,
+    "question_number": "14",
+    "review_status": "HOLD_MIXED_VECTOR_OXYZ",
+    "scope_review": "MIXED_VECTOR_OXYZ",
+    "structural_mixed_scope": false,
+    "reviewed_mixed_scope": true,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "source_evidence_id": "EVID_VECTOR_GROUP_0010",
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "MIXED_SCOPE_REQUIRES_CHAPTER_POLICY",
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ],
+    "reviewed_group_context": "Câu 14. Một cabin cáp treo xuất phát từ điểm A (10;3;0 ) và chuyển động đều theo đường cáp có vectơ  u ( 2; − 2;1) với tốc độ là 5 ( m / s ) ( đơn vị trên mỗi trục tọa độ là mét) được chỉ phương là = mô hình hóa như các hình vẽ sau:",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "reviewed_content": "Cabin dừng ở điểm B có hoành độ xB = 550 . Khi đó quãng đường AB có độ dài bằng 810 ( m ) .",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "VECTOR",
+        "taxonomy_status": "VECTOR_TAXONOMY_REVIEWED_BUT_GROUP_HELD",
+        "taxonomy": {
+          "status": "VECTOR_TAXONOMY_REVIEWED_BUT_GROUP_HELD",
+          "basis": "COACH_LEARNING_DERIVED",
+          "problem_types": [
+            {
+              "code": "REAL_WORLD_VECTOR_COORDINATE_MODELING_3D",
+              "weight": 1.0,
+              "is_primary": true
+            }
+          ],
+          "concepts": [
+            {
+              "code": "REAL_WORLD_VECTOR_MODELING_3D",
+              "weight": 0.6,
+              "is_primary": true
+            },
+            {
+              "code": "VECTOR_COORDINATES_3D",
+              "weight": 0.2,
+              "is_primary": false
+            },
+            {
+              "code": "VECTOR_LENGTH_3D",
+              "weight": 0.2,
+              "is_primary": false
+            }
+          ],
+          "learning_outcomes": [
+            {
+              "code": "LO_M12_VECTOR_REAL_WORLD",
+              "weight": 1.0
+            }
+          ]
+        }
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "reviewed_content": "Đường cáp AB tạo với mặt ( Oxy ) một góc 22° (làm tròn đến hàng đơn vị của độ). x − 10 y − 3 z",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "reviewed_content": "Phương trình chính tắc của đường cáp là = = . 2 −2 1",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "reviewed_content": "Giả sử sau t giây kể từ lúc xuất phát ( t ≥ 0 ) , cabin đến vị trí điểm M . Khi đó tọa độ của  10 10 5  điểm M là  t + 10; − t + 3; t  .  3 3 3 ",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "VECTOR",
+        "taxonomy_status": "VECTOR_TAXONOMY_REVIEWED_BUT_GROUP_HELD",
+        "taxonomy": {
+          "status": "VECTOR_TAXONOMY_REVIEWED_BUT_GROUP_HELD",
+          "basis": "COACH_LEARNING_DERIVED",
+          "problem_types": [
+            {
+              "code": "REAL_WORLD_VECTOR_COORDINATE_MODELING_3D",
+              "weight": 1.0,
+              "is_primary": true
+            }
+          ],
+          "concepts": [
+            {
+              "code": "REAL_WORLD_VECTOR_MODELING_3D",
+              "weight": 0.6,
+              "is_primary": true
+            },
+            {
+              "code": "VECTOR_COORDINATES_3D",
+              "weight": 0.2,
+              "is_primary": false
+            },
+            {
+              "code": "VECTOR_LENGTH_3D",
+              "weight": 0.2,
+              "is_primary": false
+            }
+          ],
+          "learning_outcomes": [
+            {
+              "code": "LO_M12_VECTOR_REAL_WORLD",
+              "weight": 1.0
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_VECTOR_GROUP_0012",
+    "source_candidate_id": "M12_VECTOR_CAND_0012",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+    "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+    "candidate_source_page": 115,
+    "question_number": "2",
+    "review_status": "REJECTED_OUT_OF_SCOPE_OXYZ",
+    "scope_review": "OXYZ_PRIMARY",
+    "structural_mixed_scope": true,
+    "reviewed_mixed_scope": false,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "source_evidence_id": "EVID_VECTOR_GROUP_0012",
+    "visual_asset_required": false,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "REJECTED_FROM_VECTOR_CHAPTER"
+    ],
+    "reviewed_group_context": "Câu 2: Trong không gian Oxyz , cho điểm M 3;1;9 , đường thẳng d :  y  1 t và mặt phẳng   z  2  2t α  : x  y  z  3  0 . ",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "reviewed_content": "Một vectơ pháp tuyến của mặt phẳng α  là n  1;1; 1 .",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "reviewed_content": "Điểm M thuộc đường thẳng d .",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "reviewed_content": "Điểm A có toạ độ dạng At ; 1 t ; 2  2t  với t   thì A thuộc đường thẳng d .",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "reviewed_content": "Đường thẳng  đi qua M , cắt đường thẳng d và song song với mặt phẳng α  có phương x 1 y  2 z  4 trình là   . 2 3 5",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_VECTOR_GROUP_0024",
+    "source_candidate_id": "M12_VECTOR_CAND_0024",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 141,
+    "question_number": "4",
+    "review_status": "HOLD_MIXED_VECTOR_OXYZ",
+    "scope_review": "MIXED_VECTOR_OXYZ",
+    "structural_mixed_scope": true,
+    "reviewed_mixed_scope": true,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "source_evidence_id": "EVID_VECTOR_GROUP_0024",
+    "visual_asset_required": false,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "MIXED_SCOPE_REQUIRES_CHAPTER_POLICY",
+      "RIGHTS_REVIEW_REQUIRED"
+    ],
+    "reviewed_group_context": "Câu 4. Trong không gian Oxyz cho 3 điểm A  3;1; 1 ; B  4; 1; 2  ; C 1;3; 2  và mặt phẳng   : 4 x  2 y  z  12  0 .",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "reviewed_content": "Đường thẳng BC không nằm trong mặt phẳng   . 26",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "reviewed_content": "Mặt cầu tâm I  4; 4; 1 tiếp xúc với mặt phẳng  ABC  có bán kính bằng . 5 x  4  t ",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "reviewed_content": "Đường thẳng AB có phương trình tham số là  y  1  2t . z  2  3y     3",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "reviewed_content": "Với điểm M    thì giá trị nhỏ nhất của biểu thức MA  4 MB  3MC bằng . 21 PHẦN III. Thí sinh trả lời từ câu 1 đến câu 6.",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "HYBRID_VECTOR_OXYZ",
+        "taxonomy_status": "HOLD_HYBRID_VECTOR_OXYZ",
+        "taxonomy": {
+          "status": "HOLD_HYBRID_VECTOR_OXYZ",
+          "basis": "COACH_LEARNING_DERIVED_PROVISIONAL_FOR_VECTOR_ASPECT",
+          "suggested_vector_problem_type_code": "PARAMETER_VECTOR_COORDINATE_CONDITION_3D",
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_VECTOR_GROUP_0030",
+    "source_candidate_id": "M12_VECTOR_CAND_0030",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 219,
+    "question_number": "4",
+    "review_status": "HOLD_MIXED_VECTOR_OXYZ",
+    "scope_review": "MIXED_VECTOR_OXYZ",
+    "structural_mixed_scope": true,
+    "reviewed_mixed_scope": true,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "source_evidence_id": "EVID_VECTOR_GROUP_0030",
+    "visual_asset_required": false,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "MIXED_SCOPE_REQUIRES_CHAPTER_POLICY",
+      "RIGHTS_REVIEW_REQUIRED"
+    ],
+    "reviewed_group_context": "Câu 4. Trong không gian Oxyz , biết hai điểm M  1; 2; 4  , N  2; 2;1 thuộc mặt cầu  S  có tâm I .  x  4  3t  Điểm I thuộc đường thẳng  :  y  3  t ,  t    .  z  4  3t  ",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "reviewed_content": "Vectơ chỉ phương của đường thẳng  là u   4;3; 4  . ",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "reviewed_content": "Biết điểm I  4  3t ;3  t; 4  3t  thì MI   3  3t;1  t; 3t  . 2 2 2",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "VECTOR",
+        "taxonomy_status": "VECTOR_TAXONOMY_REVIEWED_BUT_GROUP_HELD",
+        "taxonomy": {
+          "status": "VECTOR_TAXONOMY_REVIEWED_BUT_GROUP_HELD",
+          "basis": "COACH_LEARNING_DERIVED",
+          "problem_types": [
+            {
+              "code": "VECTOR_COORDINATES_FROM_POINTS_3D",
+              "weight": 1.0,
+              "is_primary": true
+            }
+          ],
+          "concepts": [
+            {
+              "code": "VECTOR_FROM_POINTS_3D",
+              "weight": 0.6,
+              "is_primary": true
+            },
+            {
+              "code": "POINT_COORDINATES_3D",
+              "weight": 0.2,
+              "is_primary": false
+            },
+            {
+              "code": "VECTOR_COORDINATES_3D",
+              "weight": 0.2,
+              "is_primary": false
+            }
+          ],
+          "learning_outcomes": [
+            {
+              "code": "LO_M12_VECTOR_COORDINATES",
+              "weight": 1.0
+            }
+          ]
+        }
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "reviewed_content": "Biết điểm I  4  3t ;3  t; 4  3t  thì IN   6  3t    1  t    3  3t  .",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "VECTOR",
+        "taxonomy_status": "VECTOR_TAXONOMY_REVIEWED_BUT_GROUP_HELD",
+        "taxonomy": {
+          "status": "VECTOR_TAXONOMY_REVIEWED_BUT_GROUP_HELD",
+          "basis": "COACH_LEARNING_DERIVED",
+          "problem_types": [
+            {
+              "code": "VECTOR_LENGTH_DISTANCE_3D",
+              "weight": 1.0,
+              "is_primary": true
+            }
+          ],
+          "concepts": [
+            {
+              "code": "VECTOR_LENGTH_3D",
+              "weight": 0.6,
+              "is_primary": true
+            },
+            {
+              "code": "DISTANCE_3D",
+              "weight": 0.4,
+              "is_primary": false
+            }
+          ],
+          "learning_outcomes": [
+            {
+              "code": "LO_M12_VECTOR_LENGTH",
+              "weight": 1.0
+            }
+          ]
+        }
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "reviewed_content": "Điểm A 1; 2;5  ở ngoài mặt cầu  S  . PHẦN III. Thí sinh trả lời từ câu 1 đến câu 6.",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_VECTOR_GROUP_0032",
+    "source_candidate_id": "M12_VECTOR_CAND_0032",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 259,
+    "question_number": "3",
+    "review_status": "REJECTED_OUT_OF_SCOPE_OXYZ",
+    "scope_review": "OXYZ_PRIMARY",
+    "structural_mixed_scope": true,
+    "reviewed_mixed_scope": false,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "source_evidence_id": "EVID_VECTOR_GROUP_0032",
+    "visual_asset_required": false,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "REJECTED_FROM_VECTOR_CHAPTER"
+    ],
+    "reviewed_group_context": "Câu 3. Trong không gian với hệ tọa độ Oxyz (đơn vị trên mỗi trục là km ). Một trạm kiểm soát không lưu sân bay được đặt tại điểm O  0;0;0  . Máy bay trong phạm vi cách trạm kiểm soát không lưu 300 km sẽ hiển thị trên màn hình radar. Một máy bay dân dụng sau khi cất cánh và đạt được độ cao phù hợp thì tổ  x  200  800t  bay bắt đầu thiết lập chế độ bay tự động cho máy bay theo một đường thẳng d :  y  300  500t ( t là số  z  10  giờ bay kể từ khi tổ bay bắt đầu thiết lập chế độ bay tự động). ",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "reviewed_content": "Một vectơ chỉ phương của đường thẳng d là u  (8;5;0) .",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "reviewed_content": "Phương trình mặt cầu mô tả ranh giới bên ngoài của vùng mà máy bay hiển thị trên màn hình radar là x 2  y 2  z 2  90000 .",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "reviewed_content": "Tại thời điểm mà tổ bay bắt đầu thiết lập chế độ bay tự động cho máy bay thì máy bay hiển thị trên màn hình radar.",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "reviewed_content": "Thời gian máy bay hiển thị trên màn hình radar kể từ khi tổ bay bắt đầu thiết lập chế độ bay tự động nhỏ hơn 30 phút.",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_VECTOR_GROUP_0040",
+    "source_candidate_id": "M12_VECTOR_CAND_0040",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 358,
+    "question_number": "3",
+    "review_status": "VERIFIED",
+    "scope_review": "VECTOR",
+    "structural_mixed_scope": false,
+    "reviewed_mixed_scope": false,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "source_evidence_id": "EVID_VECTOR_GROUP_0040",
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ],
+    "reviewed_group_context": "Câu 3. Thầy Nam muốn xây một ngôi nhà có kích thước như hình 1. Ngôi nhà được gắn trong hệ trục tọa độ Oxyz như hình 2 (đơn vị: mét), trong đó nền nhà, bốn bức tường là hình chữ nhật và hai mái nhà là hai hình chữ nhật bằng nhau. ",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "reviewed_content": "OP   4; 0; 4, 7 ",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "VECTOR",
+        "taxonomy_status": "CONFIRMED_DERIVED",
+        "taxonomy": {
+          "status": "CONFIRMED_DERIVED",
+          "basis": "COACH_LEARNING_DERIVED",
+          "problem_types": [
+            {
+              "code": "VECTOR_COORDINATES_FROM_POINTS_3D",
+              "weight": 1.0,
+              "is_primary": true
+            }
+          ],
+          "concepts": [
+            {
+              "code": "VECTOR_FROM_POINTS_3D",
+              "weight": 0.6,
+              "is_primary": true
+            },
+            {
+              "code": "POINT_COORDINATES_3D",
+              "weight": 0.2,
+              "is_primary": false
+            },
+            {
+              "code": "VECTOR_COORDINATES_3D",
+              "weight": 0.2,
+              "is_primary": false
+            }
+          ],
+          "learning_outcomes": [
+            {
+              "code": "LO_M12_VECTOR_COORDINATES",
+              "weight": 1.0
+            }
+          ]
+        }
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "reviewed_content": "AQ  290  m ",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "VECTOR",
+        "taxonomy_status": "CONFIRMED_DERIVED",
+        "taxonomy": {
+          "status": "CONFIRMED_DERIVED",
+          "basis": "COACH_LEARNING_DERIVED",
+          "problem_types": [
+            {
+              "code": "VECTOR_LENGTH_DISTANCE_3D",
+              "weight": 1.0,
+              "is_primary": true
+            }
+          ],
+          "concepts": [
+            {
+              "code": "VECTOR_LENGTH_3D",
+              "weight": 0.6,
+              "is_primary": true
+            },
+            {
+              "code": "DISTANCE_3D",
+              "weight": 0.4,
+              "is_primary": false
+            }
+          ],
+          "learning_outcomes": [
+            {
+              "code": "LO_M12_VECTOR_LENGTH",
+              "weight": 1.0
+            }
+          ]
+        }
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "reviewed_content": "Thầy Nam muốn treo bóng đèn tại trung điểm cạnh PQ . Tọa độ vị trí bóng đèn là  4; 7, 5; 4, 7  .",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "VECTOR",
+        "taxonomy_status": "CONFIRMED_DERIVED",
+        "taxonomy": {
+          "status": "CONFIRMED_DERIVED",
+          "basis": "COACH_LEARNING_DERIVED",
+          "problem_types": [
+            {
+              "code": "MIDPOINT_CENTROID_COORDINATES_3D",
+              "weight": 1.0,
+              "is_primary": true
+            }
+          ],
+          "concepts": [
+            {
+              "code": "MIDPOINT_3D",
+              "weight": 0.5,
+              "is_primary": true
+            },
+            {
+              "code": "CENTROID_3D",
+              "weight": 0.3,
+              "is_primary": false
+            },
+            {
+              "code": "POINT_COORDINATES_3D",
+              "weight": 0.2,
+              "is_primary": false
+            }
+          ],
+          "learning_outcomes": [
+            {
+              "code": "LO_M12_VECTOR_COORDINATE_EXPRESSIONS",
+              "weight": 1.0
+            }
+          ]
+        }
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "reviewed_content": "Hai mái nhà hợp nhau một góc bằng 33, 40 (làm tròn kết quả đến hàng phần mười của độ).",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "VECTOR",
+        "taxonomy_status": "CONFIRMED_DERIVED",
+        "taxonomy": {
+          "status": "CONFIRMED_DERIVED",
+          "basis": "COACH_LEARNING_DERIVED",
+          "problem_types": [
+            {
+              "code": "VECTOR_ANGLE_3D",
+              "weight": 1.0,
+              "is_primary": true
+            }
+          ],
+          "concepts": [
+            {
+              "code": "VECTOR_ANGLE_3D",
+              "weight": 0.6,
+              "is_primary": true
+            },
+            {
+              "code": "DOT_PRODUCT_3D",
+              "weight": 0.4,
+              "is_primary": false
+            }
+          ],
+          "learning_outcomes": [
+            {
+              "code": "LO_M12_VECTOR_OPERATIONS",
+              "weight": 1.0
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_VECTOR_GROUP_0042",
+    "source_candidate_id": "M12_VECTOR_CAND_0042",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 379,
+    "question_number": "2",
+    "review_status": "REJECTED_OUT_OF_SCOPE_OXYZ",
+    "scope_review": "OXYZ_PRIMARY",
+    "structural_mixed_scope": true,
+    "reviewed_mixed_scope": false,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "source_evidence_id": "EVID_VECTOR_GROUP_0042",
+    "visual_asset_required": false,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "REJECTED_FROM_VECTOR_CHAPTER"
+    ],
+    "reviewed_group_context": "Câu 2. Trong không gian với hệ tọa độ Oxyz , cho hai đường thẳng chéo nhau d :   2 3 5 x 1 y  4 z  4 và d  :   . 3 2 1 ",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "reviewed_content": "Đường thẳng d có một vectơ chỉ phương là ud   2;3; 5  . ",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "reviewed_content": "Đường thẳng d  có một vectơ chỉ phương là ud    3; 2;1 .  x  at ",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "reviewed_content": "Phương trình đường vuông góc chung của d và d  có dạng  y  bt  t    , khi đó a  b  c  1 . z  c  t ",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "reviewed_content": "Phương trình mặt cầu có bán kính nhỏ nhất tiếp xúc với cả hai đường thẳng  d  ,  d  là 2 2 2  x  1   y  1   z  2   3",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_VECTOR_GROUP_0045",
+    "source_candidate_id": "M12_VECTOR_CAND_0045",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 399,
+    "question_number": "2",
+    "review_status": "REJECTED_OUT_OF_SCOPE_OXYZ",
+    "scope_review": "OXYZ_PRIMARY",
+    "structural_mixed_scope": true,
+    "reviewed_mixed_scope": false,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "source_evidence_id": "EVID_VECTOR_GROUP_0045",
+    "visual_asset_required": false,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "REJECTED_FROM_VECTOR_CHAPTER"
+    ],
+    "reviewed_group_context": "Câu 2. Trong không gian Oxyz , cho đường thẳng  :   và hai mặt phẳng 3 2 2  P  : x  2 y  2z  2  0 , Q  : x  2 y  2z  4  0 . ",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "reviewed_content": "Mặt phẳng  P  có một vec tơ pháp tuyến là n P   1; 2; 2  .  x  2  3t ",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "reviewed_content": "Phương trình tham số của  là  y  1  2t  t    .  z  1  2t ",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "reviewed_content": "Gọi  S  là mặt cầu có tâm I  x0 ; y0 ; z0  thuộc đường thẳng  và tiếp xúc với hai mặt phẳng  P  ,  Q  . Khi đó x0  y0  z0  4 .",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "reviewed_content": "Gọi  S  là mặt cầu có tâm I thuộc đường thẳng  và tiếp xúc với hai mặt phẳng  P  ,  Q  . Khi đó, 2 2 2 phương trình mặt cầu  S  là  x  1   y  3   z  3  1 .",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_VECTOR_GROUP_0048",
+    "source_candidate_id": "M12_VECTOR_CAND_0048",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 418,
+    "question_number": "2",
+    "review_status": "REJECTED_OUT_OF_SCOPE_OXYZ",
+    "scope_review": "OXYZ_PRIMARY",
+    "structural_mixed_scope": true,
+    "reviewed_mixed_scope": false,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "source_evidence_id": "EVID_VECTOR_GROUP_0048",
+    "visual_asset_required": false,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "REJECTED_FROM_VECTOR_CHAPTER"
+    ],
+    "reviewed_group_context": "Câu 2. Trong không gian với hệ trục tọa độ Oxyz , cho đường thẳng d : x   và mặt phẳng 2 1  P  : 3x  y  z  5  0 . Mặt cầu  S  có tâm I thuộc đường thẳng d và cắt mặt phẳng  P  theo giao tuyến là đường tròn lớn nhất có bán kính r  5 . ",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "reviewed_content": "Mặt phẳng  P  có vectơ pháp tuyến n   3;1; 1 .  xt ",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "reviewed_content": "Đường thẳng d có phương trình tham số là  y  1  2t .  z  2t ",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "reviewed_content": "d  I ,  P    5 . 2 2 2",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "reviewed_content": "Mặt cầu  S  có phương trình là  x  1   y  3   z  1  25 .",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_VECTOR_GROUP_0063",
+    "source_candidate_id": "M12_VECTOR_CAND_0063",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 627,
+    "question_number": "3",
+    "review_status": "REJECTED_OUT_OF_SCOPE_OXYZ",
+    "scope_review": "OXYZ_PRIMARY",
+    "structural_mixed_scope": true,
+    "reviewed_mixed_scope": false,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "source_evidence_id": "EVID_VECTOR_GROUP_0063",
+    "visual_asset_required": false,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "REJECTED_FROM_VECTOR_CHAPTER"
+    ],
+    "reviewed_group_context": "Câu 3. Trong không gian với hệ tọa độ Oxyz , cho A  0;1;1 , B 1;0; 3  , C  1; 2; 3  và mặt cầu  S  có phương trình x 2  y 2  z 2  2 x  2 z  2  0 .",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "reviewed_content": "Mặt cầu  S  có tâm I  1; 0;1 , bán kính R  2 .  ",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "reviewed_content": " AB, AC    8;8; 4 ",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "reviewed_content": "Phương trình mặt phẳng  ABC  có dạng ax  by  z  d  0 . Khi đó a  b  d  5 . 4 3",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "reviewed_content": "Mặt phẳng  ABC  cắt mặt cầu  S  theo một đường tròn có bán kính bằng . 3",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_VECTOR_GROUP_0067",
+    "source_candidate_id": "M12_VECTOR_CAND_0067",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 701,
+    "question_number": "2",
+    "review_status": "REJECTED_OUT_OF_SCOPE_OXYZ",
+    "scope_review": "OXYZ_PRIMARY",
+    "structural_mixed_scope": true,
+    "reviewed_mixed_scope": false,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "source_evidence_id": "EVID_VECTOR_GROUP_0067",
+    "visual_asset_required": false,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "REJECTED_FROM_VECTOR_CHAPTER"
+    ],
+    "reviewed_group_context": "Câu 2. Trong không gian Oxyz, cho mặt cầu S  có tâm I  2;3; 1 cắt đường thẳng x  11 y z  25 d  :   tại hai điểm A, B sao cho AB  16 . 2 1 2 ",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "reviewed_content": "Đường thẳng  d  có vectơ chỉ phương là u   2;1; 2  .",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "reviewed_content": "Mặt phẳng  P  chứa I  2;3; 1 và vuông góc với đường thẳng  d  có phương trình là 2 x  y  2 z  9  0.",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "reviewed_content": "Mặt cầu  S  có bán kính bằng 17 . 2 2 2",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "reviewed_content": "Mặt cầu  S  có phương trình là  x  2    y  3   z  1  289",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      }
+    ]
+  },
+  {
+    "group_candidate_id": "M12_VECTOR_GROUP_0070",
+    "source_candidate_id": "M12_VECTOR_CAND_0070",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 741,
+    "question_number": "3",
+    "review_status": "REJECTED_OUT_OF_SCOPE_OXYZ",
+    "scope_review": "OXYZ_PRIMARY",
+    "structural_mixed_scope": true,
+    "reviewed_mixed_scope": false,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "source_evidence_id": "EVID_VECTOR_GROUP_0070",
+    "visual_asset_required": false,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "REJECTED_FROM_VECTOR_CHAPTER"
+    ],
+    "reviewed_group_context": "Câu 3. Trong không gian Oxyz , cho mặt cầu  S  : x 2  y 2   z  1  5 và hai điểm A  2; 2;4  , B  3;3; 1 .",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "reviewed_content": "Mặt cầu  S  có tâm I  0;0;1 và bán kính R  5 .  ",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "reviewed_content": " AB, AI    5;5; 0 ",
+        "correct_answer": "FALSE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "reviewed_content": "Đường thẳng AB cắt mặt cầu  S  tại hai điểm phân biệt.",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "reviewed_content": "Điểm M thay đổi thuộc  S  , biểu thức 2MA2  3MB 2 đạt giá trị nhỏ nhất bằng 108 (Làm tròn kết quả đến hàng đơn vị).",
+        "correct_answer": "TRUE",
+        "answer_status": "SOURCE_VERIFIED_AND_REVIEW_CONSISTENT",
+        "scope_classification": "OXYZ",
+        "taxonomy_status": "DEFERRED_TO_OXYZ_CHAPTER",
+        "taxonomy": {
+          "status": "DEFERRED_TO_OXYZ_CHAPTER",
+          "basis": "NO_VECTOR_TAXONOMY_ASSIGNED",
+          "problem_types": [],
+          "concepts": [],
+          "learning_outcomes": []
+        }
+      }
+    ]
+  }
+]

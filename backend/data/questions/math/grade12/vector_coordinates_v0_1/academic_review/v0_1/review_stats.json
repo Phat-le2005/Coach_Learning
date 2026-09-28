@@ -1,0 +1,39 @@
+{
+  "review_code": "DATA-MATH12-017_VECTOR_ACADEMIC_REVIEW_V0_1",
+  "base_commit": "d2693571a6129b8bd4828f66bdea8105cc0dbfaf",
+  "input_dataset": "DATA-MATH12-016",
+  "input_effective_candidate_count": 68,
+  "reviewed_candidates": 68,
+  "review_status_counts": {
+    "VERIFIED": 48,
+    "REJECTED_DUPLICATE": 7,
+    "REJECTED_OUT_OF_SCOPE_OXYZ": 9,
+    "HOLD_MIXED_VECTOR_OXYZ": 4
+  },
+  "verified": 48,
+  "hold": 4,
+  "rejected": 16,
+  "rejected_duplicate": 7,
+  "rejected_out_of_scope_oxyz": 9,
+  "verified_standalone": 47,
+  "verified_true_false_four_groups": 1,
+  "true_false_four_groups_reviewed": 14,
+  "true_false_child_answers_reviewed": 56,
+  "standalone_answers_reviewed": 54,
+  "taxonomy_corrections_standalone": 31,
+  "verified_visual_required": 42,
+  "problem_types_total": 15,
+  "problem_types_with_verified_evidence": 11,
+  "problem_type_gaps": [
+    "POINT_COORDINATES_3D",
+    "VECTOR_COORDINATE_LINEAR_OPERATIONS_3D",
+    "VECTOR_COORDINATE_ANGLE_3D",
+    "PARAMETER_VECTOR_COORDINATE_CONDITION_3D"
+  ],
+  "academic_review_complete": true,
+  "production_release_eligible": 0,
+  "promotion_ready": 0,
+  "rights_status": "REVIEW_REQUIRED",
+  "database_import_allowed": false,
+  "canonical_snapshot_allowed": false
+}
