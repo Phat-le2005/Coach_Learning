@@ -1,0 +1,79 @@
+{
+  "scan_summary_code": "MATH12_VECTOR_SOURCE_SCAN_SEED_V0_1",
+  "note": "Heuristic keyword triage only; counts are NOT candidate counts and include false positives/OXYZ tasks for manual filtering.",
+  "sources": [
+    {
+      "source_key": "NGOC_VY_40_DE_2026",
+      "raw_keyword_hits": 342,
+      "heuristic_unique_windows": 220
+    },
+    {
+      "source_key": "PROVINCIAL_TRIAL_2025",
+      "raw_keyword_hits": 26,
+      "heuristic_unique_windows": 15
+    },
+    {
+      "source_key": "OFFICIAL_EXAM_SOLUTIONS_2025",
+      "raw_keyword_hits": 40,
+      "heuristic_unique_windows": 26
+    }
+  ],
+  "confirmed_seed_examples": [
+    {
+      "source_key": "NGOC_VY_40_DE_2026",
+      "source_page": 2,
+      "question_number": "8",
+      "scope_decision": "INCLUDE_VECTOR",
+      "summary": "Hình lập phương; biểu diễn AO theo AB, AD, AA'.",
+      "suggested_problem_type": "VECTOR_GEOMETRIC_DECOMPOSITION_3D"
+    },
+    {
+      "source_key": "NGOC_VY_40_DE_2026",
+      "source_page": 2,
+      "question_number": "7",
+      "scope_decision": "INCLUDE_VECTOR",
+      "summary": "Tứ diện; trọng tâm tam giác BCD; nhận biết đẳng thức vectơ.",
+      "suggested_problem_type": "VECTOR_GEOMETRIC_DECOMPOSITION_3D"
+    },
+    {
+      "source_key": "PROVINCIAL_TRIAL_2025",
+      "source_page": 1,
+      "question_number": "3",
+      "scope_decision": "INCLUDE_VECTOR",
+      "summary": "Hình chóp đáy hình bình hành, M là trung điểm CD; chọn biểu thức vectơ SM.",
+      "suggested_problem_type": "VECTOR_GEOMETRIC_DECOMPOSITION_3D"
+    },
+    {
+      "source_key": "OFFICIAL_EXAM_SOLUTIONS_2025",
+      "source_page": 3,
+      "question_number": "1",
+      "scope_decision": "INCLUDE_VECTOR",
+      "summary": "Hình lăng trụ; chọn đẳng thức tổng vectơ đúng.",
+      "suggested_problem_type": "VECTOR_SUM_DIFFERENCE_3D"
+    },
+    {
+      "source_key": "OFFICIAL_EXAM_SOLUTIONS_2025",
+      "source_page": 5,
+      "question_number": "3",
+      "scope_decision": "MANUAL_MIXED_REVIEW",
+      "summary": "Mô hình chuyển động trong Oxyz dùng vectơ đơn vị/tọa độ; review toàn group.",
+      "suggested_problem_type": "REAL_WORLD_VECTOR_COORDINATE_MODELING_3D"
+    }
+  ],
+  "confirmed_exclusion_examples": [
+    {
+      "source_key": "NGOC_VY_40_DE_2026",
+      "source_page": 2,
+      "question_number": "9",
+      "scope_decision": "EXCLUDE_TO_OXYZ",
+      "summary": "Tìm vectơ pháp tuyến của mặt phẳng; primary intent là mặt phẳng."
+    },
+    {
+      "source_key": "OFFICIAL_EXAM_SOLUTIONS_2025",
+      "source_page": 4,
+      "question_number": "9",
+      "scope_decision": "EXCLUDE_TO_OXYZ",
+      "summary": "Lập phương trình mặt phẳng qua điểm với vectơ pháp tuyến."
+    }
+  ]
+}

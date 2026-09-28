@@ -1,0 +1,46 @@
+{
+  "manifest_code": "MATH12_VECTOR_SOURCE_MANIFEST_V0_1",
+  "status": "SOURCE_LOCK_CANDIDATE",
+  "primary_sources": [
+    {
+      "source_key": "NGOC_VY_40_DE_2026",
+      "drive_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "title": "40-de-on-thi-tot-nghiep-thpt-2026-mon-toan-co-loi-giai-chi-tiet-truong-ngoc-vy.pdf",
+      "sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "role": "PRIMARY_QUESTION_AND_SOLUTION_SOURCE"
+    },
+    {
+      "source_key": "PROVINCIAL_TRIAL_2025",
+      "drive_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+      "title": "loi-giai-chi-tiet-de-thi-thu-tot-nghiep-thpt-2025-mon-toan-cua-cac-so-gddt.pdf",
+      "sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+      "role": "PRIMARY_PROVINCIAL_QUESTION_AND_SOLUTION_SOURCE"
+    },
+    {
+      "source_key": "OFFICIAL_EXAM_SOLUTIONS_2025",
+      "drive_file_id": "1jGjnJ3Wq2ynISxB4P1g9mk2CXibl-YXy",
+      "title": "huong-dan-giai-de-chinh-thuc-tot-nghiep-thpt-nam-2025-mon-toan.pdf",
+      "sha256": "90d5cb68a6f91418287c6643548f4f40ea9bb1598705a177b41bce07b09df11f",
+      "role": "PRIMARY_OFFICIAL_EXAM_QUESTION_SOLUTION_COMPILATION"
+    }
+  ],
+  "secondary_sources": [
+    {
+      "source_key": "REFERENCE_EXAM_2025_PPTX",
+      "drive_file_id": "1Grv0wWnH6JlQUjFFQwoByvQX42S646DV",
+      "title": "loi-giai-chi-tiet-de-tham-khao-ky-thi-tot-nghiep-thpt-mon-toan-tu-nam-2025.pptx",
+      "sha256": null,
+      "role": "SECONDARY_UNTIL_HASH_AND_PROVENANCE_LOCKED",
+      "promotion_allowed": false
+    }
+  ],
+  "answer_authority": [
+    {
+      "drive_file_id": "1GuZuVoDDxbES41-1OA0azCFiD0NuBq76",
+      "title": "01.Toan_2018.pdf",
+      "sha256": "25631480f3a830c65571142b795755ae235d8734f1e621b19e992ae15f0f7b41",
+      "role": "OFFICIAL_MOET_2025_ANSWER_KEY_WHERE_APPLICABLE"
+    }
+  ],
+  "rights_status": "REVIEW_REQUIRED"
+}

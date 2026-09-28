@@ -1,0 +1,137 @@
+[
+  {
+    "topic_code": "SPACE_VECTOR_OPERATIONS_TOPIC",
+    "code": "VECTOR_RELATION_IDENTIFICATION_3D",
+    "name": "Nhận biết quan hệ vectơ trong hình không gian",
+    "description": "Nhận biết quan hệ vectơ trong hình không gian.",
+    "order_index": 10,
+    "default_difficulty": 0.25,
+    "is_active": true
+  },
+  {
+    "topic_code": "SPACE_VECTOR_OPERATIONS_TOPIC",
+    "code": "VECTOR_SUM_DIFFERENCE_3D",
+    "name": "Tính/biến đổi tổng hiệu vectơ trong không gian",
+    "description": "Tính/biến đổi tổng hiệu vectơ trong không gian.",
+    "order_index": 20,
+    "default_difficulty": 0.35,
+    "is_active": true
+  },
+  {
+    "topic_code": "SPACE_VECTOR_OPERATIONS_TOPIC",
+    "code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+    "name": "Nhân vectơ với số trong không gian",
+    "description": "Nhân vectơ với số trong không gian.",
+    "order_index": 30,
+    "default_difficulty": 0.35,
+    "is_active": true
+  },
+  {
+    "topic_code": "SPACE_VECTOR_OPERATIONS_TOPIC",
+    "code": "VECTOR_DOT_PRODUCT_3D",
+    "name": "Tính tích vô hướng của hai vectơ trong không gian",
+    "description": "Tính tích vô hướng của hai vectơ trong không gian.",
+    "order_index": 40,
+    "default_difficulty": 0.45,
+    "is_active": true
+  },
+  {
+    "topic_code": "SPACE_VECTOR_OPERATIONS_TOPIC",
+    "code": "VECTOR_ANGLE_3D",
+    "name": "Xác định góc giữa hai vectơ",
+    "description": "Xác định góc giữa hai vectơ.",
+    "order_index": 50,
+    "default_difficulty": 0.45,
+    "is_active": true
+  },
+  {
+    "topic_code": "SPACE_VECTOR_OPERATIONS_TOPIC",
+    "code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "name": "Phân tích vectơ theo các vectơ cơ sở hình học",
+    "description": "Phân tích vectơ theo các vectơ cơ sở hình học.",
+    "order_index": 60,
+    "default_difficulty": 0.55,
+    "is_active": true
+  },
+  {
+    "topic_code": "OXYZ_VECTOR_COORDINATES_TOPIC",
+    "code": "POINT_COORDINATES_3D",
+    "name": "Xác định tọa độ điểm trong Oxyz",
+    "description": "Xác định tọa độ điểm trong Oxyz.",
+    "order_index": 10,
+    "default_difficulty": 0.3,
+    "is_active": true
+  },
+  {
+    "topic_code": "OXYZ_VECTOR_COORDINATES_TOPIC",
+    "code": "VECTOR_COORDINATES_FROM_POINTS_3D",
+    "name": "Xác định tọa độ vectơ từ hai điểm",
+    "description": "Xác định tọa độ vectơ từ hai điểm.",
+    "order_index": 20,
+    "default_difficulty": 0.3,
+    "is_active": true
+  },
+  {
+    "topic_code": "VECTOR_COORDINATE_OPERATIONS_TOPIC",
+    "code": "VECTOR_LENGTH_DISTANCE_3D",
+    "name": "Tính độ dài vectơ và khoảng cách hai điểm",
+    "description": "Tính độ dài vectơ và khoảng cách hai điểm.",
+    "order_index": 30,
+    "default_difficulty": 0.35,
+    "is_active": true
+  },
+  {
+    "topic_code": "VECTOR_COORDINATE_OPERATIONS_TOPIC",
+    "code": "VECTOR_COORDINATE_LINEAR_OPERATIONS_3D",
+    "name": "Thực hiện phép toán tuyến tính trên tọa độ vectơ",
+    "description": "Thực hiện phép toán tuyến tính trên tọa độ vectơ.",
+    "order_index": 40,
+    "default_difficulty": 0.35,
+    "is_active": true
+  },
+  {
+    "topic_code": "VECTOR_COORDINATE_OPERATIONS_TOPIC",
+    "code": "VECTOR_COORDINATE_DOT_PRODUCT_3D",
+    "name": "Tính tích vô hướng bằng tọa độ",
+    "description": "Tính tích vô hướng bằng tọa độ.",
+    "order_index": 50,
+    "default_difficulty": 0.4,
+    "is_active": true
+  },
+  {
+    "topic_code": "VECTOR_COORDINATE_OPERATIONS_TOPIC",
+    "code": "VECTOR_COORDINATE_ANGLE_3D",
+    "name": "Tính góc bằng tọa độ vectơ",
+    "description": "Tính góc bằng tọa độ vectơ.",
+    "order_index": 60,
+    "default_difficulty": 0.45,
+    "is_active": true
+  },
+  {
+    "topic_code": "VECTOR_COORDINATE_OPERATIONS_TOPIC",
+    "code": "MIDPOINT_CENTROID_COORDINATES_3D",
+    "name": "Tìm tọa độ trung điểm/trọng tâm",
+    "description": "Tìm tọa độ trung điểm/trọng tâm.",
+    "order_index": 10,
+    "default_difficulty": 0.4,
+    "is_active": true
+  },
+  {
+    "topic_code": "VECTOR_APPLICATION_TOPIC",
+    "code": "PARAMETER_VECTOR_COORDINATE_CONDITION_3D",
+    "name": "Tìm tham số từ điều kiện vectơ/tọa độ",
+    "description": "Tìm tham số từ điều kiện vectơ/tọa độ.",
+    "order_index": 20,
+    "default_difficulty": 0.6,
+    "is_active": true
+  },
+  {
+    "topic_code": "VECTOR_APPLICATION_TOPIC",
+    "code": "REAL_WORLD_VECTOR_COORDINATE_MODELING_3D",
+    "name": "Mô hình hóa thực tiễn bằng vectơ và tọa độ",
+    "description": "Mô hình hóa thực tiễn bằng vectơ và tọa độ.",
+    "order_index": 30,
+    "default_difficulty": 0.65,
+    "is_active": true
+  }
+]

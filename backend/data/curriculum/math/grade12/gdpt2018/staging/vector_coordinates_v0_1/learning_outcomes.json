@@ -1,0 +1,37 @@
+[
+  {
+    "code": "LO_M12_VECTOR_OPERATIONS",
+    "description": "Nhận biết và thực hiện các phép toán cơ bản với vectơ trong không gian.",
+    "grade_level": 12,
+    "order_index": 10,
+    "source_reference": "TT 32/2018/TT-BGDĐT - Lớp 12 - Phương pháp tọa độ trong không gian"
+  },
+  {
+    "code": "LO_M12_VECTOR_COORDINATES",
+    "description": "Nhận biết và xác định tọa độ điểm, tọa độ vectơ trong hệ trục Oxyz.",
+    "grade_level": 12,
+    "order_index": 20,
+    "source_reference": "TT 32/2018/TT-BGDĐT - Lớp 12 - Phương pháp tọa độ trong không gian"
+  },
+  {
+    "code": "LO_M12_VECTOR_LENGTH",
+    "description": "Xác định độ dài vectơ và khoảng cách giữa hai điểm từ tọa độ.",
+    "grade_level": 12,
+    "order_index": 30,
+    "source_reference": "TT 32/2018/TT-BGDĐT - Lớp 12 - Phương pháp tọa độ trong không gian"
+  },
+  {
+    "code": "LO_M12_VECTOR_COORDINATE_EXPRESSIONS",
+    "description": "Sử dụng biểu thức tọa độ của các phép toán vectơ để giải bài toán.",
+    "grade_level": 12,
+    "order_index": 40,
+    "source_reference": "TT 32/2018/TT-BGDĐT - Lớp 12 - Phương pháp tọa độ trong không gian"
+  },
+  {
+    "code": "LO_M12_VECTOR_REAL_WORLD",
+    "description": "Vận dụng tọa độ vectơ để giải một số bài toán có liên quan đến thực tiễn.",
+    "grade_level": 12,
+    "order_index": 50,
+    "source_reference": "TT 32/2018/TT-BGDĐT - Lớp 12 - Phương pháp tọa độ trong không gian"
+  }
+]

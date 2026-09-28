@@ -1,0 +1,68 @@
+{
+  "registry_code": "MATH_G12_GDPT2018_SCOPE_V0_1",
+  "status": "REVIEW_CANDIDATE",
+  "subject_code": "MATH_G12",
+  "curriculum_code": "GDPT2018",
+  "curriculum_version_code": "GDPT2018_2018",
+  "base_commit": "687fb69976ad1597157e47e2697bded61f67c2fc",
+  "policy": {
+    "authoritative_basis": "Chương trình GDPT môn Toán ban hành kèm TT 32/2018/TT-BGDĐT",
+    "do_not_delete_legacy_rows": true,
+    "reason": "Curriculum importer is upsert-only and Chapter/Topic have no is_active.",
+    "canonical_change_requires_separate_reviewed_promotion": true
+  },
+  "grade12_chapters": [
+    {
+      "order_index": 10,
+      "code": "DERIVATIVE_APPLICATIONS",
+      "name_vi": "Ứng dụng đạo hàm để khảo sát và vẽ đồ thị của hàm số",
+      "scope_status": "IN_SCOPE_GRADE12",
+      "repo_action": "KEEP_AND_REFINE"
+    },
+    {
+      "order_index": 20,
+      "code": "VECTORS_GEOMETRY",
+      "name_vi": "Vectơ và hệ tọa độ trong không gian",
+      "scope_status": "IN_SCOPE_GRADE12",
+      "repo_action": "REFINE_EXISTING_CODE"
+    },
+    {
+      "order_index": 30,
+      "code": "GROUPED_DATA_DISPERSION",
+      "name_vi": "Các số đặc trưng đo mức độ phân tán cho mẫu số liệu ghép nhóm",
+      "scope_status": "IN_SCOPE_GRADE12",
+      "repo_action": "ADD_MISSING_STAGING_CHAPTER"
+    },
+    {
+      "order_index": 40,
+      "code": "INTEGRALS",
+      "name_vi": "Nguyên hàm và tích phân",
+      "scope_status": "IN_SCOPE_GRADE12",
+      "repo_action": "KEEP_AND_REFINE"
+    },
+    {
+      "order_index": 50,
+      "code": "OXYZ_CHAPTER",
+      "name_vi": "Phương pháp tọa độ trong không gian: mặt phẳng, đường thẳng, mặt cầu",
+      "scope_status": "IN_SCOPE_GRADE12",
+      "repo_action": "REFINE_EXISTING_CODE"
+    },
+    {
+      "order_index": 60,
+      "code": "PROBABILITY_CHAPTER",
+      "name_vi": "Xác suất có điều kiện, công thức xác suất toàn phần và Bayes",
+      "scope_status": "IN_SCOPE_GRADE12",
+      "repo_action": "REFINE_EXISTING_CODE"
+    }
+  ],
+  "legacy_out_of_scope": [
+    {
+      "code": "EXPONENTIAL_LOGARITHM",
+      "current_repo_location": "backend/data/curriculum/math/grade12/gdpt2018",
+      "scope_status": "OUT_OF_SCOPE_GRADE12",
+      "actual_grade_level": 11,
+      "action": "PRESERVE_LEGACY_ROW_BUT_EXCLUDE_FROM_GRADE12_SCOPE_AND_FUTURE_G12_PROMOTION",
+      "destructive_delete_allowed": false
+    }
+  ]
+}

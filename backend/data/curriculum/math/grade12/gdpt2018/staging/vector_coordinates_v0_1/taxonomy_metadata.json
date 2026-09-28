@@ -1,0 +1,19 @@
+{
+  "taxonomy_code": "MATH12_VECTOR_COORDINATES_V0_1",
+  "status": "REVIEW_CANDIDATE",
+  "subject_code": "MATH_G12",
+  "chapter_code": "VECTORS_GEOMETRY",
+  "chapter_name_vi": "Vectơ và hệ tọa độ trong không gian",
+  "official_source": "TT 32/2018/TT-BGDĐT - Chương trình GDPT môn Toán - Lớp 12 - Phương pháp tọa độ trong không gian",
+  "classification": {
+    "official_learning_outcomes": "OFFICIAL_NORMALIZED",
+    "topics": "COACH_LEARNING_DERIVED",
+    "problem_types": "COACH_LEARNING_DERIVED",
+    "concepts": "COACH_LEARNING_DERIVED",
+    "concept_relations": "COACH_LEARNING_DERIVED",
+    "weights": "COACH_LEARNING_DERIVED_INITIAL_EXPERT_WEIGHTS",
+    "difficulty": "COACH_LEARNING_DERIVED_INITIAL_EXPERT_DIFFICULTY"
+  },
+  "merge_policy": "Do not promote to canonical curriculum or mark verified until human/domain review passes.",
+  "scope_boundary": "Vector operations and vector coordinates only. Plane/line/sphere equation tasks belong to OXYZ_CHAPTER."
+}

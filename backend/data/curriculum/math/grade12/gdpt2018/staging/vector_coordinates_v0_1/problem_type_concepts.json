@@ -1,0 +1,224 @@
+[
+  {
+    "problem_type_code": "VECTOR_RELATION_IDENTIFICATION_3D",
+    "concept_code": "SPACE_VECTOR",
+    "weight": 0.5,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "VECTOR_RELATION_IDENTIFICATION_3D",
+    "concept_code": "VECTOR_DIRECTION_3D",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "VECTOR_RELATION_IDENTIFICATION_3D",
+    "concept_code": "VECTOR_EQUALITY_3D",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "VECTOR_SUM_DIFFERENCE_3D",
+    "concept_code": "VECTOR_SUM_3D",
+    "weight": 0.5,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "VECTOR_SUM_DIFFERENCE_3D",
+    "concept_code": "VECTOR_DIFFERENCE_3D",
+    "weight": 0.5,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+    "concept_code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+    "weight": 0.7,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+    "concept_code": "SPACE_VECTOR",
+    "weight": 0.3,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "VECTOR_DOT_PRODUCT_3D",
+    "concept_code": "DOT_PRODUCT_3D",
+    "weight": 0.7,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "VECTOR_DOT_PRODUCT_3D",
+    "concept_code": "SPACE_VECTOR",
+    "weight": 0.3,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "VECTOR_ANGLE_3D",
+    "concept_code": "VECTOR_ANGLE_3D",
+    "weight": 0.6,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "VECTOR_ANGLE_3D",
+    "concept_code": "DOT_PRODUCT_3D",
+    "weight": 0.4,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "concept_code": "VECTOR_SUM_3D",
+    "weight": 0.35,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "concept_code": "VECTOR_DIFFERENCE_3D",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "concept_code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+    "weight": 0.4,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "POINT_COORDINATES_3D",
+    "concept_code": "POINT_COORDINATES_3D",
+    "weight": 0.7,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "POINT_COORDINATES_3D",
+    "concept_code": "OXYZ_COORDINATE_SYSTEM",
+    "weight": 0.3,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "VECTOR_COORDINATES_FROM_POINTS_3D",
+    "concept_code": "VECTOR_FROM_POINTS_3D",
+    "weight": 0.6,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "VECTOR_COORDINATES_FROM_POINTS_3D",
+    "concept_code": "POINT_COORDINATES_3D",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "VECTOR_COORDINATES_FROM_POINTS_3D",
+    "concept_code": "VECTOR_COORDINATES_3D",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "VECTOR_LENGTH_DISTANCE_3D",
+    "concept_code": "VECTOR_LENGTH_3D",
+    "weight": 0.6,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "VECTOR_LENGTH_DISTANCE_3D",
+    "concept_code": "DISTANCE_3D",
+    "weight": 0.4,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "VECTOR_COORDINATE_LINEAR_OPERATIONS_3D",
+    "concept_code": "COORDINATE_VECTOR_OPERATIONS_3D",
+    "weight": 0.7,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "VECTOR_COORDINATE_LINEAR_OPERATIONS_3D",
+    "concept_code": "VECTOR_COORDINATES_3D",
+    "weight": 0.3,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "VECTOR_COORDINATE_DOT_PRODUCT_3D",
+    "concept_code": "DOT_PRODUCT_3D",
+    "weight": 0.5,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "VECTOR_COORDINATE_DOT_PRODUCT_3D",
+    "concept_code": "COORDINATE_VECTOR_OPERATIONS_3D",
+    "weight": 0.5,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "VECTOR_COORDINATE_ANGLE_3D",
+    "concept_code": "VECTOR_ANGLE_3D",
+    "weight": 0.45,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "VECTOR_COORDINATE_ANGLE_3D",
+    "concept_code": "DOT_PRODUCT_3D",
+    "weight": 0.3,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "VECTOR_COORDINATE_ANGLE_3D",
+    "concept_code": "VECTOR_LENGTH_3D",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "MIDPOINT_CENTROID_COORDINATES_3D",
+    "concept_code": "MIDPOINT_3D",
+    "weight": 0.5,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "MIDPOINT_CENTROID_COORDINATES_3D",
+    "concept_code": "CENTROID_3D",
+    "weight": 0.3,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "MIDPOINT_CENTROID_COORDINATES_3D",
+    "concept_code": "POINT_COORDINATES_3D",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "PARAMETER_VECTOR_COORDINATE_CONDITION_3D",
+    "concept_code": "VECTOR_COORDINATE_CONSTRAINTS_3D",
+    "weight": 0.6,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "PARAMETER_VECTOR_COORDINATE_CONDITION_3D",
+    "concept_code": "COORDINATE_VECTOR_OPERATIONS_3D",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "PARAMETER_VECTOR_COORDINATE_CONDITION_3D",
+    "concept_code": "DOT_PRODUCT_3D",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "REAL_WORLD_VECTOR_COORDINATE_MODELING_3D",
+    "concept_code": "REAL_WORLD_VECTOR_MODELING_3D",
+    "weight": 0.6,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "REAL_WORLD_VECTOR_COORDINATE_MODELING_3D",
+    "concept_code": "VECTOR_COORDINATES_3D",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "REAL_WORLD_VECTOR_COORDINATE_MODELING_3D",
+    "concept_code": "VECTOR_LENGTH_3D",
+    "weight": 0.2,
+    "is_primary": false
+  }
+]

@@ -1,0 +1,30 @@
+[
+  {
+    "chapter_code": "VECTORS_GEOMETRY",
+    "code": "SPACE_VECTOR_OPERATIONS_TOPIC",
+    "name": "Vectơ và các phép toán vectơ trong không gian",
+    "description": "Quan hệ vectơ, cộng trừ vectơ, nhân số và tích vô hướng trong không gian.",
+    "order_index": 10
+  },
+  {
+    "chapter_code": "VECTORS_GEOMETRY",
+    "code": "OXYZ_VECTOR_COORDINATES_TOPIC",
+    "name": "Tọa độ điểm và vectơ trong không gian",
+    "description": "Hệ trục Oxyz, tọa độ điểm, tọa độ vectơ và vectơ xác định bởi hai điểm.",
+    "order_index": 20
+  },
+  {
+    "chapter_code": "VECTORS_GEOMETRY",
+    "code": "VECTOR_COORDINATE_OPERATIONS_TOPIC",
+    "name": "Biểu thức tọa độ của các phép toán vectơ",
+    "description": "Phép toán tọa độ, độ dài, khoảng cách, tích vô hướng, góc, trung điểm và trọng tâm.",
+    "order_index": 30
+  },
+  {
+    "chapter_code": "VECTORS_GEOMETRY",
+    "code": "VECTOR_APPLICATION_TOPIC",
+    "name": "Vận dụng vectơ và tọa độ vectơ",
+    "description": "Bài toán tham số, mô hình hóa và tình huống thực tiễn dùng vectơ/tọa độ.",
+    "order_index": 40
+  }
+]

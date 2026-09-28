@@ -1,0 +1,67 @@
+{
+  "scan_code": "MATH12_VECTOR_QUESTION_SCAN_V0_1",
+  "status": "STRUCTURAL_SCAN",
+  "target_chapter_code": "VECTORS_GEOMETRY",
+  "allowed_question_structures": [
+    "MULTIPLE_CHOICE",
+    "SHORT_ANSWER",
+    "TRUE_FALSE_FOUR"
+  ],
+  "include_intents": [
+    "vector relations and identities in spatial figures",
+    "sum/difference/scalar multiplication of vectors in space",
+    "dot product and vector angle as vector concepts",
+    "point/vector coordinates in Oxyz",
+    "vector coordinates from two points",
+    "vector length and point-to-point distance",
+    "coordinate expressions of vector operations",
+    "midpoint/centroid by coordinates",
+    "parameter conditions whose main object is vector coordinates",
+    "real-world vector-coordinate modeling"
+  ],
+  "exclude_primary_intents": [
+    "plane equation or plane normal as the main task",
+    "line equation or line direction representation as the main task",
+    "sphere equation/center/radius/tangent plane as the main task",
+    "coordinate geometry distance tasks whose primary object is plane/line/sphere",
+    "Grade-11 exponential/logarithm questions"
+  ],
+  "mixed_group_policy": {
+    "rule": "Never split a shared-context TRUE_FALSE_FOUR during structural staging.",
+    "action": "Keep full group, set mixed_scope=true, classify each child during academic review."
+  },
+  "visual_policy": {
+    "source_validation": "Do not redraw or fabricate; crop exact source later.",
+    "rights_status": "REVIEW_REQUIRED"
+  },
+  "dedupe_policy": {
+    "individual": "normalized content hash + structure + answer signature where available",
+    "group": "normalized shared context + ordered a/b/c/d child content hash",
+    "duplicate_action": "Preserve one canonical candidate and all duplicate provenance references."
+  },
+  "candidate_required_fields": [
+    "candidate_id",
+    "source_key",
+    "source_file_id",
+    "source_sha256",
+    "source_page",
+    "exam_identifier",
+    "section",
+    "question_number",
+    "question_structure",
+    "raw_text",
+    "normalized_text",
+    "visual_required",
+    "mixed_scope",
+    "answer_evidence",
+    "answer_confidence",
+    "dedupe_hash",
+    "status"
+  ],
+  "initial_status": "STRUCTURAL_CANDIDATE",
+  "never_auto_set": [
+    "VERIFIED",
+    "APPROVED",
+    "production_eligible"
+  ]
+}

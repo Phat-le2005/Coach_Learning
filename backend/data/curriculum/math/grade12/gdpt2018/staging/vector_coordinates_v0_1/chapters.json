@@ -1,0 +1,8 @@
+[
+  {
+    "code": "VECTORS_GEOMETRY",
+    "name": "Vectơ và hệ tọa độ trong không gian",
+    "description": "Vectơ trong không gian; tọa độ vectơ; biểu thức tọa độ của các phép toán vectơ và vận dụng.",
+    "order_index": 20
+  }
+]

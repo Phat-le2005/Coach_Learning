@@ -1,0 +1,37 @@
+[
+  {
+    "official_outcome_code": "M12_VECTOR_OFFICIAL_01",
+    "content_area": "Vectơ trong không gian",
+    "normalized_description": "Nhận biết vectơ và các phép toán vectơ trong không gian gồm tổng, hiệu, tích của một số với một vectơ và tích vô hướng của hai vectơ.",
+    "source_reference": "TT 32/2018/TT-BGDĐT - Chương trình môn Toán - Lớp 12 - Phương pháp tọa độ trong không gian",
+    "provenance_type": "OFFICIAL_NORMALIZED"
+  },
+  {
+    "official_outcome_code": "M12_VECTOR_OFFICIAL_02",
+    "content_area": "Tọa độ vectơ",
+    "normalized_description": "Nhận biết tọa độ của một vectơ đối với hệ trục tọa độ trong không gian.",
+    "source_reference": "TT 32/2018/TT-BGDĐT - Chương trình môn Toán - Lớp 12 - Phương pháp tọa độ trong không gian",
+    "provenance_type": "OFFICIAL_NORMALIZED"
+  },
+  {
+    "official_outcome_code": "M12_VECTOR_OFFICIAL_03",
+    "content_area": "Độ dài vectơ",
+    "normalized_description": "Xác định độ dài của một vectơ khi biết tọa độ hai đầu mút.",
+    "source_reference": "TT 32/2018/TT-BGDĐT - Chương trình môn Toán - Lớp 12 - Phương pháp tọa độ trong không gian",
+    "provenance_type": "OFFICIAL_NORMALIZED"
+  },
+  {
+    "official_outcome_code": "M12_VECTOR_OFFICIAL_04",
+    "content_area": "Biểu thức tọa độ của phép toán vectơ",
+    "normalized_description": "Mô tả và sử dụng biểu thức tọa độ của các phép toán vectơ trong không gian.",
+    "source_reference": "TT 32/2018/TT-BGDĐT - Chương trình môn Toán - Lớp 12 - Phương pháp tọa độ trong không gian",
+    "provenance_type": "OFFICIAL_NORMALIZED"
+  },
+  {
+    "official_outcome_code": "M12_VECTOR_OFFICIAL_05",
+    "content_area": "Vận dụng tọa độ vectơ",
+    "normalized_description": "Vận dụng tọa độ vectơ để giải một số bài toán liên quan đến thực tiễn.",
+    "source_reference": "TT 32/2018/TT-BGDĐT - Chương trình môn Toán - Lớp 12 - Phương pháp tọa độ trong không gian",
+    "provenance_type": "OFFICIAL_NORMALIZED"
+  }
+]

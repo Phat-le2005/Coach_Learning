@@ -1,0 +1,135 @@
+[
+  {
+    "code": "SPACE_VECTOR",
+    "name": "Vectơ trong không gian",
+    "description": "Vectơ trong không gian.",
+    "grade_level": 12,
+    "order_index": 10
+  },
+  {
+    "code": "VECTOR_DIRECTION_3D",
+    "name": "Phương và hướng vectơ trong không gian",
+    "description": "Phương và hướng vectơ trong không gian.",
+    "grade_level": 12,
+    "order_index": 20
+  },
+  {
+    "code": "VECTOR_EQUALITY_3D",
+    "name": "Hai vectơ bằng nhau trong không gian",
+    "description": "Hai vectơ bằng nhau trong không gian.",
+    "grade_level": 12,
+    "order_index": 30
+  },
+  {
+    "code": "VECTOR_SUM_3D",
+    "name": "Tổng vectơ trong không gian",
+    "description": "Tổng vectơ trong không gian.",
+    "grade_level": 12,
+    "order_index": 40
+  },
+  {
+    "code": "VECTOR_DIFFERENCE_3D",
+    "name": "Hiệu vectơ trong không gian",
+    "description": "Hiệu vectơ trong không gian.",
+    "grade_level": 12,
+    "order_index": 50
+  },
+  {
+    "code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+    "name": "Tích một số với vectơ trong không gian",
+    "description": "Tích một số với vectơ trong không gian.",
+    "grade_level": 12,
+    "order_index": 60
+  },
+  {
+    "code": "DOT_PRODUCT_3D",
+    "name": "Tích vô hướng trong không gian",
+    "description": "Tích vô hướng trong không gian.",
+    "grade_level": 12,
+    "order_index": 70
+  },
+  {
+    "code": "VECTOR_ANGLE_3D",
+    "name": "Góc giữa hai vectơ trong không gian",
+    "description": "Góc giữa hai vectơ trong không gian.",
+    "grade_level": 12,
+    "order_index": 80
+  },
+  {
+    "code": "OXYZ_COORDINATE_SYSTEM",
+    "name": "Hệ trục tọa độ Oxyz",
+    "description": "Hệ trục tọa độ Oxyz.",
+    "grade_level": 12,
+    "order_index": 90
+  },
+  {
+    "code": "POINT_COORDINATES_3D",
+    "name": "Tọa độ điểm trong Oxyz",
+    "description": "Tọa độ điểm trong Oxyz.",
+    "grade_level": 12,
+    "order_index": 100
+  },
+  {
+    "code": "VECTOR_COORDINATES_3D",
+    "name": "Tọa độ vectơ trong Oxyz",
+    "description": "Tọa độ vectơ trong Oxyz.",
+    "grade_level": 12,
+    "order_index": 110
+  },
+  {
+    "code": "VECTOR_FROM_POINTS_3D",
+    "name": "Vectơ xác định bởi hai điểm",
+    "description": "Vectơ xác định bởi hai điểm.",
+    "grade_level": 12,
+    "order_index": 120
+  },
+  {
+    "code": "VECTOR_LENGTH_3D",
+    "name": "Độ dài vectơ trong Oxyz",
+    "description": "Độ dài vectơ trong Oxyz.",
+    "grade_level": 12,
+    "order_index": 130
+  },
+  {
+    "code": "DISTANCE_3D",
+    "name": "Khoảng cách giữa hai điểm trong Oxyz",
+    "description": "Khoảng cách giữa hai điểm trong Oxyz.",
+    "grade_level": 12,
+    "order_index": 140
+  },
+  {
+    "code": "COORDINATE_VECTOR_OPERATIONS_3D",
+    "name": "Phép toán vectơ theo tọa độ",
+    "description": "Phép toán vectơ theo tọa độ.",
+    "grade_level": 12,
+    "order_index": 150
+  },
+  {
+    "code": "MIDPOINT_3D",
+    "name": "Trung điểm trong Oxyz",
+    "description": "Trung điểm trong Oxyz.",
+    "grade_level": 12,
+    "order_index": 160
+  },
+  {
+    "code": "CENTROID_3D",
+    "name": "Trọng tâm trong Oxyz",
+    "description": "Trọng tâm trong Oxyz.",
+    "grade_level": 12,
+    "order_index": 170
+  },
+  {
+    "code": "VECTOR_COORDINATE_CONSTRAINTS_3D",
+    "name": "Điều kiện vectơ theo tọa độ",
+    "description": "Điều kiện vectơ theo tọa độ.",
+    "grade_level": 12,
+    "order_index": 180
+  },
+  {
+    "code": "REAL_WORLD_VECTOR_MODELING_3D",
+    "name": "Mô hình hóa bằng vectơ/tọa độ 3D",
+    "description": "Mô hình hóa bằng vectơ/tọa độ 3D.",
+    "grade_level": 12,
+    "order_index": 190
+  }
+]

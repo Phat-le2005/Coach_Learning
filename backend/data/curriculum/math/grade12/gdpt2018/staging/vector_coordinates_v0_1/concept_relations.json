@@ -1,0 +1,122 @@
+[
+  {
+    "source_code": "SPACE_VECTOR",
+    "target_code": "VECTOR_DIRECTION_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "SPACE_VECTOR",
+    "target_code": "VECTOR_EQUALITY_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "SPACE_VECTOR",
+    "target_code": "VECTOR_SUM_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "SPACE_VECTOR",
+    "target_code": "VECTOR_DIFFERENCE_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "SPACE_VECTOR",
+    "target_code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "SPACE_VECTOR",
+    "target_code": "DOT_PRODUCT_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "DOT_PRODUCT_3D",
+    "target_code": "VECTOR_ANGLE_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "OXYZ_COORDINATE_SYSTEM",
+    "target_code": "POINT_COORDINATES_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "OXYZ_COORDINATE_SYSTEM",
+    "target_code": "VECTOR_COORDINATES_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "POINT_COORDINATES_3D",
+    "target_code": "VECTOR_FROM_POINTS_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "VECTOR_COORDINATES_3D",
+    "target_code": "VECTOR_FROM_POINTS_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "VECTOR_FROM_POINTS_3D",
+    "target_code": "VECTOR_LENGTH_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "VECTOR_LENGTH_3D",
+    "target_code": "DISTANCE_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "VECTOR_COORDINATES_3D",
+    "target_code": "COORDINATE_VECTOR_OPERATIONS_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "VECTOR_SUM_3D",
+    "target_code": "COORDINATE_VECTOR_OPERATIONS_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "VECTOR_DIFFERENCE_3D",
+    "target_code": "COORDINATE_VECTOR_OPERATIONS_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+    "target_code": "COORDINATE_VECTOR_OPERATIONS_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "DOT_PRODUCT_3D",
+    "target_code": "COORDINATE_VECTOR_OPERATIONS_3D",
+    "relation_type": "RELATED_TO"
+  },
+  {
+    "source_code": "POINT_COORDINATES_3D",
+    "target_code": "MIDPOINT_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "POINT_COORDINATES_3D",
+    "target_code": "CENTROID_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "COORDINATE_VECTOR_OPERATIONS_3D",
+    "target_code": "VECTOR_COORDINATE_CONSTRAINTS_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "VECTOR_LENGTH_3D",
+    "target_code": "VECTOR_COORDINATE_CONSTRAINTS_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "DOT_PRODUCT_3D",
+    "target_code": "VECTOR_COORDINATE_CONSTRAINTS_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "VECTOR_COORDINATES_3D",
+    "target_code": "REAL_WORLD_VECTOR_MODELING_3D",
+    "relation_type": "PREREQUISITE"
+  }
+]
