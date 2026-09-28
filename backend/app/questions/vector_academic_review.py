@@ -568,11 +568,41 @@ class VectorAcademicReviewValidator:
         for row in standalone:
             raw = candidate_by_id.get(row.get("candidate_id"), {})
             evidence_row = evidence_by_id.get(row.get("source_evidence_id"), {})
+            location = str(row.get("candidate_id"))
             if not cls._source_matches(row, raw, evidence_row):
-                cls._add(errors, "source_evidence", "STANDALONE_SOURCE_LINEAGE_MISMATCH", str(row.get("candidate_id")), "Review/evidence source identity must match DATA-016.")
+                cls._add(errors, "source_evidence", "STANDALONE_SOURCE_LINEAGE_MISMATCH", location, "Review/evidence source identity must match DATA-016.")
+            source_answer = evidence_row.get("source_claimed_answer")
+            if (
+                evidence_row.get("question_unit_type") != "STANDALONE"
+                or source_answer is None
+            ):
+                cls._add(
+                    errors,
+                    "source_evidence",
+                    "SOURCE_EVIDENCE_ANSWER_SHAPE_INVALID",
+                    location,
+                    "Standalone evidence must carry a non-null source-claimed answer.",
+                )
+            elif row.get("correct_answer") != source_answer:
+                cls._add(
+                    errors,
+                    "source_evidence",
+                    "STANDALONE_ANSWER_EVIDENCE_MISMATCH",
+                    location,
+                    "Reviewed answer must equal the source-claimed evidence answer.",
+                )
+            if evidence_row.get("review_consistency") != "CONFIRMED":
+                cls._add(
+                    errors,
+                    "source_evidence",
+                    "SOURCE_EVIDENCE_REVIEW_NOT_CONFIRMED",
+                    location,
+                    "Source evidence review consistency must be CONFIRMED.",
+                )
         for row in groups:
             structural = structural_by_id.get(row.get("group_candidate_id"), {})
             evidence_row = evidence_by_id.get(row.get("source_evidence_id"), {})
+            location = str(row.get("group_candidate_id"))
             if (
                 row.get("source_candidate_id") != structural.get("source_candidate_id")
                 or row.get("source_code") != structural.get("source_code")
@@ -584,7 +614,45 @@ class VectorAcademicReviewValidator:
                 or evidence_row.get("source_file_id") != row.get("source_file_id")
                 or evidence_row.get("source_sha256") != row.get("source_sha256")
             ):
-                cls._add(errors, "source_evidence", "GROUP_SOURCE_LINEAGE_MISMATCH", str(row.get("group_candidate_id")), "Group review/evidence source identity must match DATA-016.")
+                cls._add(errors, "source_evidence", "GROUP_SOURCE_LINEAGE_MISMATCH", location, "Group review/evidence source identity must match DATA-016.")
+            pattern = evidence_row.get("source_claimed_answer_pattern")
+            pattern_is_valid = (
+                evidence_row.get("question_unit_type") == "TRUE_FALSE_FOUR"
+                and isinstance(pattern, list)
+                and len(pattern) == 4
+                and all(value in {"TRUE", "FALSE"} for value in pattern)
+            )
+            if not pattern_is_valid:
+                cls._add(
+                    errors,
+                    "source_evidence",
+                    "SOURCE_EVIDENCE_ANSWER_SHAPE_INVALID",
+                    location,
+                    "Group evidence must carry four ordered TRUE/FALSE source answers.",
+                )
+            else:
+                items = row.get("items")
+                reviewed = (
+                    [item.get("correct_answer") for item in items]
+                    if isinstance(items, list)
+                    else []
+                )
+                if reviewed != pattern:
+                    cls._add(
+                        errors,
+                        "source_evidence",
+                        "GROUP_ANSWER_EVIDENCE_MISMATCH",
+                        location,
+                        "Reviewed group answer pattern must equal source evidence.",
+                    )
+            if evidence_row.get("review_consistency") != "CONFIRMED":
+                cls._add(
+                    errors,
+                    "source_evidence",
+                    "SOURCE_EVIDENCE_REVIEW_NOT_CONFIRMED",
+                    location,
+                    "Source evidence review consistency must be CONFIRMED.",
+                )
         return errors
 
     @staticmethod

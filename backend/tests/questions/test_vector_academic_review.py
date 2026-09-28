@@ -5,6 +5,9 @@ import shutil
 from collections import Counter
 from pathlib import Path
 
+import pytest
+
+from app.questions import vector_academic_review
 from app.questions.group_import_service import TrustedQuestionGroupImportService
 from app.questions.question_group_promotion import QuestionGroupPromotionValidator
 from app.questions.question_group_review_validator import QuestionGroupReviewValidator
@@ -40,6 +43,29 @@ def _load_object(
     name: str, root: Path = DEFAULT_VECTOR_ACADEMIC_REVIEW_PATH
 ) -> dict:
     return json.loads((root / name).read_text(encoding="utf-8"))
+
+
+def _write_semantic_file_and_lock_aggregate(
+    root: Path,
+    name: str,
+    payload: list[dict],
+) -> str:
+    (root / name).write_text(
+        json.dumps(payload, ensure_ascii=False), encoding="utf-8"
+    )
+    manifest = _load_object("review_manifest.json", root)
+    manifest["semantic_file_hashes"][name] = (
+        VectorAcademicReviewValidator.semantic_sha256(payload)
+    )
+    (root / "review_manifest.json").write_text(
+        json.dumps(manifest, ensure_ascii=False), encoding="utf-8"
+    )
+    aggregate = VectorAcademicReviewValidator.aggregate_semantic_sha256(root)
+    manifest["review_aggregate_semantic_sha256"] = aggregate
+    (root / "review_manifest.json").write_text(
+        json.dumps(manifest, ensure_ascii=False), encoding="utf-8"
+    )
+    return aggregate
 
 
 def test_exact_review_totals_and_statuses() -> None:
@@ -96,6 +122,37 @@ def test_standalone_answers_are_source_backed_and_non_promotable() -> None:
         "VERIFIED": 47,
         "REJECTED_DUPLICATE": 7,
     }
+
+
+def test_all_standalone_answers_are_bound_to_confirmed_source_evidence() -> None:
+    standalone = _load_list("standalone_reviews.json")
+    evidence_by_id = {
+        row["evidence_id"]: row for row in _load_list("source_evidence.json")
+    }
+
+    assert len(standalone) == 54
+    for review in standalone:
+        evidence = evidence_by_id[review["source_evidence_id"]]
+        assert evidence["question_unit_type"] == "STANDALONE"
+        assert evidence["review_consistency"] == "CONFIRMED"
+        assert review["correct_answer"] == evidence["source_claimed_answer"]
+
+
+def test_all_group_answers_are_bound_to_confirmed_source_evidence() -> None:
+    groups = _load_list("group_reviews.json")
+    evidence_by_id = {
+        row["evidence_id"]: row for row in _load_list("source_evidence.json")
+    }
+
+    assert len(groups) == 14
+    assert sum(len(group["items"]) for group in groups) == 56
+    for group in groups:
+        evidence = evidence_by_id[group["source_evidence_id"]]
+        assert evidence["question_unit_type"] == "TRUE_FALSE_FOUR"
+        assert evidence["review_consistency"] == "CONFIRMED"
+        assert [item["correct_answer"] for item in group["items"]] == (
+            evidence["source_claimed_answer_pattern"]
+        )
 
 
 def test_exact_duplicate_clusters_and_verified_targets() -> None:
@@ -337,6 +394,137 @@ def test_mutated_review_with_updated_file_hash_still_fails_aggregate(
     assert report.checks["aggregate_integrity"] is False
     assert any(
         error.code == "REVIEW_AGGREGATE_SEMANTIC_SHA256_MISMATCH"
+        for error in report.errors
+    )
+
+
+def test_standalone_answer_mismatch_fails_after_relocking_review_hashes(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    target = tmp_path / "review"
+    shutil.copytree(DEFAULT_VECTOR_ACADEMIC_REVIEW_PATH, target)
+    rows = _load_list("standalone_reviews.json", target)
+    rows[0]["correct_answer"] = (
+        "A" if rows[0]["correct_answer"] != "A" else "B"
+    )
+    aggregate = _write_semantic_file_and_lock_aggregate(
+        target, "standalone_reviews.json", rows
+    )
+    monkeypatch.setattr(
+        vector_academic_review,
+        "EXPECTED_REVIEW_AGGREGATE_SHA256",
+        aggregate,
+    )
+
+    report = VectorAcademicReviewValidator().validate(target)
+
+    assert report.status == "FAIL"
+    assert report.checks["semantic_hashes"] is True
+    assert report.checks["aggregate_integrity"] is True
+    assert report.checks["source_evidence"] is False
+    assert any(
+        error.code == "STANDALONE_ANSWER_EVIDENCE_MISMATCH"
+        for error in report.errors
+    )
+
+
+def test_group_answer_mismatch_fails_after_relocking_review_hashes(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    target = tmp_path / "review"
+    shutil.copytree(DEFAULT_VECTOR_ACADEMIC_REVIEW_PATH, target)
+    groups = _load_list("group_reviews.json", target)
+    group = next(
+        row
+        for row in groups
+        if row["group_candidate_id"] == "M12_VECTOR_GROUP_0007"
+    )
+    first_answer = group["items"][0]["correct_answer"]
+    group["items"][0]["correct_answer"] = (
+        "FALSE" if first_answer == "TRUE" else "TRUE"
+    )
+    aggregate = _write_semantic_file_and_lock_aggregate(
+        target, "group_reviews.json", groups
+    )
+    monkeypatch.setattr(
+        vector_academic_review,
+        "EXPECTED_REVIEW_AGGREGATE_SHA256",
+        aggregate,
+    )
+
+    report = VectorAcademicReviewValidator().validate(target)
+
+    assert report.status == "FAIL"
+    assert report.checks["semantic_hashes"] is True
+    assert report.checks["aggregate_integrity"] is True
+    assert report.checks["source_evidence"] is False
+    assert any(
+        error.code == "GROUP_ANSWER_EVIDENCE_MISMATCH"
+        for error in report.errors
+    )
+
+
+def test_unconfirmed_evidence_fails_after_relocking_review_hashes(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    target = tmp_path / "review"
+    shutil.copytree(DEFAULT_VECTOR_ACADEMIC_REVIEW_PATH, target)
+    evidence = _load_list("source_evidence.json", target)
+    evidence[0]["review_consistency"] = "NOT_CONFIRMED"
+    aggregate = _write_semantic_file_and_lock_aggregate(
+        target, "source_evidence.json", evidence
+    )
+    monkeypatch.setattr(
+        vector_academic_review,
+        "EXPECTED_REVIEW_AGGREGATE_SHA256",
+        aggregate,
+    )
+
+    report = VectorAcademicReviewValidator().validate(target)
+
+    assert report.status == "FAIL"
+    assert report.checks["semantic_hashes"] is True
+    assert report.checks["aggregate_integrity"] is True
+    assert report.checks["source_evidence"] is False
+    assert any(
+        error.code == "SOURCE_EVIDENCE_REVIEW_NOT_CONFIRMED"
+        for error in report.errors
+    )
+
+
+def test_invalid_group_evidence_shape_fails_after_relocking_review_hashes(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    target = tmp_path / "review"
+    shutil.copytree(DEFAULT_VECTOR_ACADEMIC_REVIEW_PATH, target)
+    evidence = _load_list("source_evidence.json", target)
+    group_evidence = next(
+        row
+        for row in evidence
+        if row.get("group_candidate_id") == "M12_VECTOR_GROUP_0007"
+    )
+    group_evidence["source_claimed_answer_pattern"] = ["TRUE", "FALSE", "TRUE"]
+    aggregate = _write_semantic_file_and_lock_aggregate(
+        target, "source_evidence.json", evidence
+    )
+    monkeypatch.setattr(
+        vector_academic_review,
+        "EXPECTED_REVIEW_AGGREGATE_SHA256",
+        aggregate,
+    )
+
+    report = VectorAcademicReviewValidator().validate(target)
+
+    assert report.status == "FAIL"
+    assert report.checks["semantic_hashes"] is True
+    assert report.checks["aggregate_integrity"] is True
+    assert report.checks["source_evidence"] is False
+    assert any(
+        error.code == "SOURCE_EVIDENCE_ANSWER_SHAPE_INVALID"
         for error in report.errors
     )
 
