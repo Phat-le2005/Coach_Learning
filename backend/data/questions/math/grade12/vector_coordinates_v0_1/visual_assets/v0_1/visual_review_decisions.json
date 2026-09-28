@@ -1,0 +1,386 @@
+[
+  {
+    "candidate_id": "M12_VECTOR_CAND_0001",
+    "academic_visual_required": true,
+    "visual_review_status": "READY_SOURCE_CROP",
+    "visual_asset_id": "M12_VECTOR_CAND_0001_VISUAL_V1",
+    "visual_required_for_canonical_snapshot": true,
+    "reason": "Source question contains a distinct diagram/figure component required to preserve the visual problem statement."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0002",
+    "academic_visual_required": true,
+    "visual_review_status": "READY_SOURCE_CROP",
+    "visual_asset_id": "M12_VECTOR_CAND_0002_VISUAL_V1",
+    "visual_required_for_canonical_snapshot": true,
+    "reason": "Source question contains a distinct diagram/figure component required to preserve the visual problem statement."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0005",
+    "academic_visual_required": true,
+    "visual_review_status": "READY_SOURCE_CROP",
+    "visual_asset_id": "M12_VECTOR_CAND_0005_VISUAL_V1",
+    "visual_required_for_canonical_snapshot": true,
+    "reason": "Source question contains a distinct diagram/figure component required to preserve the visual problem statement."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0008",
+    "academic_visual_required": false,
+    "visual_review_status": "NOT_REQUIRED_FROM_ACADEMIC_REVIEW",
+    "visual_asset_id": null,
+    "visual_required_for_canonical_snapshot": false,
+    "reason": "Academic review did not require a source visual asset for this verified unit."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0009",
+    "academic_visual_required": true,
+    "visual_review_status": "READY_SOURCE_CROP",
+    "visual_asset_id": "M12_VECTOR_CAND_0009_VISUAL_V1",
+    "visual_required_for_canonical_snapshot": true,
+    "reason": "Source question contains a distinct diagram/figure component required to preserve the visual problem statement."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0011",
+    "academic_visual_required": true,
+    "visual_review_status": "NOT_REQUIRED_AFTER_VISUAL_REVIEW",
+    "visual_asset_id": null,
+    "visual_required_for_canonical_snapshot": false,
+    "reason": "No distinct source diagram/graph/table component was found in the reviewed question region; the item is text/formula-only after visual inspection."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0013",
+    "academic_visual_required": true,
+    "visual_review_status": "READY_SOURCE_CROP",
+    "visual_asset_id": "M12_VECTOR_CAND_0013_VISUAL_V1",
+    "visual_required_for_canonical_snapshot": true,
+    "reason": "Source question contains a distinct diagram/figure component required to preserve the visual problem statement."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0014",
+    "academic_visual_required": true,
+    "visual_review_status": "READY_SOURCE_CROP",
+    "visual_asset_id": "M12_VECTOR_CAND_0014_VISUAL_V1",
+    "visual_required_for_canonical_snapshot": true,
+    "reason": "Source question contains a distinct diagram/figure component required to preserve the visual problem statement."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0015",
+    "academic_visual_required": true,
+    "visual_review_status": "NOT_REQUIRED_AFTER_VISUAL_REVIEW",
+    "visual_asset_id": null,
+    "visual_required_for_canonical_snapshot": false,
+    "reason": "No distinct source diagram/graph/table component was found in the reviewed question region; the item is text/formula-only after visual inspection."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0016",
+    "academic_visual_required": true,
+    "visual_review_status": "READY_SOURCE_CROP",
+    "visual_asset_id": "M12_VECTOR_CAND_0016_VISUAL_V1",
+    "visual_required_for_canonical_snapshot": true,
+    "reason": "Source question contains a distinct diagram/figure component required to preserve the visual problem statement."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0017",
+    "academic_visual_required": true,
+    "visual_review_status": "READY_SOURCE_CROP",
+    "visual_asset_id": "M12_VECTOR_CAND_0017_VISUAL_V1",
+    "visual_required_for_canonical_snapshot": true,
+    "reason": "Source question contains a distinct diagram/figure component required to preserve the visual problem statement."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0018",
+    "academic_visual_required": true,
+    "visual_review_status": "NOT_REQUIRED_AFTER_VISUAL_REVIEW",
+    "visual_asset_id": null,
+    "visual_required_for_canonical_snapshot": false,
+    "reason": "No distinct source diagram/graph/table component was found in the reviewed question region; the item is text/formula-only after visual inspection."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0020",
+    "academic_visual_required": true,
+    "visual_review_status": "READY_SOURCE_CROP",
+    "visual_asset_id": "M12_VECTOR_CAND_0020_VISUAL_V1",
+    "visual_required_for_canonical_snapshot": true,
+    "reason": "Source question contains a distinct diagram/figure component required to preserve the visual problem statement."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0021",
+    "academic_visual_required": true,
+    "visual_review_status": "READY_SOURCE_CROP",
+    "visual_asset_id": "M12_VECTOR_CAND_0021_VISUAL_V1",
+    "visual_required_for_canonical_snapshot": true,
+    "reason": "Source question contains a distinct diagram/figure component required to preserve the visual problem statement."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0022",
+    "academic_visual_required": true,
+    "visual_review_status": "NOT_REQUIRED_AFTER_VISUAL_REVIEW",
+    "visual_asset_id": null,
+    "visual_required_for_canonical_snapshot": false,
+    "reason": "No distinct source diagram/graph/table component was found in the reviewed question region; the item is text/formula-only after visual inspection."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0023",
+    "academic_visual_required": true,
+    "visual_review_status": "READY_SOURCE_CROP",
+    "visual_asset_id": "M12_VECTOR_CAND_0023_VISUAL_V1",
+    "visual_required_for_canonical_snapshot": true,
+    "reason": "Source question contains a distinct diagram/figure component required to preserve the visual problem statement."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0025",
+    "academic_visual_required": true,
+    "visual_review_status": "READY_SOURCE_CROP",
+    "visual_asset_id": "M12_VECTOR_CAND_0025_VISUAL_V1",
+    "visual_required_for_canonical_snapshot": true,
+    "reason": "Source question contains a distinct diagram/figure component required to preserve the visual problem statement."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0027",
+    "academic_visual_required": true,
+    "visual_review_status": "READY_SOURCE_CROP",
+    "visual_asset_id": "M12_VECTOR_CAND_0027_VISUAL_V1",
+    "visual_required_for_canonical_snapshot": true,
+    "reason": "Source question contains a distinct diagram/figure component required to preserve the visual problem statement."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0028",
+    "academic_visual_required": true,
+    "visual_review_status": "READY_SOURCE_CROP",
+    "visual_asset_id": "M12_VECTOR_CAND_0028_VISUAL_V1",
+    "visual_required_for_canonical_snapshot": true,
+    "reason": "Source question contains a distinct diagram/figure component required to preserve the visual problem statement."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0029",
+    "academic_visual_required": true,
+    "visual_review_status": "READY_SOURCE_CROP",
+    "visual_asset_id": "M12_VECTOR_CAND_0029_VISUAL_V1",
+    "visual_required_for_canonical_snapshot": true,
+    "reason": "Source question contains a distinct diagram/figure component required to preserve the visual problem statement."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0031",
+    "academic_visual_required": true,
+    "visual_review_status": "NOT_REQUIRED_AFTER_VISUAL_REVIEW",
+    "visual_asset_id": null,
+    "visual_required_for_canonical_snapshot": false,
+    "reason": "No distinct source diagram/graph/table component was found in the reviewed question region; the item is text/formula-only after visual inspection."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0034",
+    "academic_visual_required": true,
+    "visual_review_status": "READY_SOURCE_CROP",
+    "visual_asset_id": "M12_VECTOR_CAND_0034_VISUAL_V1",
+    "visual_required_for_canonical_snapshot": true,
+    "reason": "Source question contains a distinct diagram/figure component required to preserve the visual problem statement."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0036",
+    "academic_visual_required": true,
+    "visual_review_status": "READY_SOURCE_CROP",
+    "visual_asset_id": "M12_VECTOR_CAND_0036_VISUAL_V1",
+    "visual_required_for_canonical_snapshot": true,
+    "reason": "Source question contains a distinct diagram/figure component required to preserve the visual problem statement."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0039",
+    "academic_visual_required": true,
+    "visual_review_status": "READY_SOURCE_CROP",
+    "visual_asset_id": "M12_VECTOR_CAND_0039_VISUAL_V1",
+    "visual_required_for_canonical_snapshot": true,
+    "reason": "Source question contains a distinct diagram/figure component required to preserve the visual problem statement."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0040",
+    "academic_visual_required": true,
+    "visual_review_status": "READY_SOURCE_CROP",
+    "visual_asset_id": "M12_VECTOR_CAND_0040_VISUAL_V1",
+    "visual_required_for_canonical_snapshot": true,
+    "reason": "Source question contains a distinct diagram/figure component required to preserve the visual problem statement."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0043",
+    "academic_visual_required": true,
+    "visual_review_status": "READY_SOURCE_CROP",
+    "visual_asset_id": "M12_VECTOR_CAND_0043_VISUAL_V1",
+    "visual_required_for_canonical_snapshot": true,
+    "reason": "Source question contains a distinct diagram/figure component required to preserve the visual problem statement."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0044",
+    "academic_visual_required": false,
+    "visual_review_status": "NOT_REQUIRED_FROM_ACADEMIC_REVIEW",
+    "visual_asset_id": null,
+    "visual_required_for_canonical_snapshot": false,
+    "reason": "Academic review did not require a source visual asset for this verified unit."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0047",
+    "academic_visual_required": true,
+    "visual_review_status": "READY_SOURCE_CROP",
+    "visual_asset_id": "M12_VECTOR_CAND_0047_VISUAL_V1",
+    "visual_required_for_canonical_snapshot": true,
+    "reason": "Source question contains a distinct diagram/figure component required to preserve the visual problem statement."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0049",
+    "academic_visual_required": false,
+    "visual_review_status": "NOT_REQUIRED_FROM_ACADEMIC_REVIEW",
+    "visual_asset_id": null,
+    "visual_required_for_canonical_snapshot": false,
+    "reason": "Academic review did not require a source visual asset for this verified unit."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0050",
+    "academic_visual_required": true,
+    "visual_review_status": "READY_SOURCE_CROP",
+    "visual_asset_id": "M12_VECTOR_CAND_0050_VISUAL_V1",
+    "visual_required_for_canonical_snapshot": true,
+    "reason": "Source question contains a distinct diagram/figure component required to preserve the visual problem statement."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0051",
+    "academic_visual_required": false,
+    "visual_review_status": "NOT_REQUIRED_FROM_ACADEMIC_REVIEW",
+    "visual_asset_id": null,
+    "visual_required_for_canonical_snapshot": false,
+    "reason": "Academic review did not require a source visual asset for this verified unit."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0052",
+    "academic_visual_required": true,
+    "visual_review_status": "NOT_REQUIRED_AFTER_VISUAL_REVIEW",
+    "visual_asset_id": null,
+    "visual_required_for_canonical_snapshot": false,
+    "reason": "No distinct source diagram/graph/table component was found in the reviewed question region; the item is text/formula-only after visual inspection."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0053",
+    "academic_visual_required": true,
+    "visual_review_status": "READY_SOURCE_CROP",
+    "visual_asset_id": "M12_VECTOR_CAND_0053_VISUAL_V1",
+    "visual_required_for_canonical_snapshot": true,
+    "reason": "Source question contains a distinct diagram/figure component required to preserve the visual problem statement."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0054",
+    "academic_visual_required": false,
+    "visual_review_status": "NOT_REQUIRED_FROM_ACADEMIC_REVIEW",
+    "visual_asset_id": null,
+    "visual_required_for_canonical_snapshot": false,
+    "reason": "Academic review did not require a source visual asset for this verified unit."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0055",
+    "academic_visual_required": true,
+    "visual_review_status": "READY_SOURCE_CROP",
+    "visual_asset_id": "M12_VECTOR_CAND_0055_VISUAL_V1",
+    "visual_required_for_canonical_snapshot": true,
+    "reason": "Source question contains a distinct diagram/figure component required to preserve the visual problem statement."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0056",
+    "academic_visual_required": true,
+    "visual_review_status": "READY_SOURCE_CROP",
+    "visual_asset_id": "M12_VECTOR_CAND_0056_VISUAL_V1",
+    "visual_required_for_canonical_snapshot": true,
+    "reason": "Source question contains a distinct diagram/figure component required to preserve the visual problem statement."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0057",
+    "academic_visual_required": true,
+    "visual_review_status": "NOT_REQUIRED_AFTER_VISUAL_REVIEW",
+    "visual_asset_id": null,
+    "visual_required_for_canonical_snapshot": false,
+    "reason": "No distinct source diagram/graph/table component was found in the reviewed question region; the item is text/formula-only after visual inspection."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0059",
+    "academic_visual_required": true,
+    "visual_review_status": "READY_SOURCE_CROP",
+    "visual_asset_id": "M12_VECTOR_CAND_0059_VISUAL_V1",
+    "visual_required_for_canonical_snapshot": true,
+    "reason": "Source question contains a distinct diagram/figure component required to preserve the visual problem statement."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0060",
+    "academic_visual_required": true,
+    "visual_review_status": "READY_SOURCE_CROP",
+    "visual_asset_id": "M12_VECTOR_CAND_0060_VISUAL_V1",
+    "visual_required_for_canonical_snapshot": true,
+    "reason": "Source question contains a distinct diagram/figure component required to preserve the visual problem statement."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0061",
+    "academic_visual_required": false,
+    "visual_review_status": "NOT_REQUIRED_FROM_ACADEMIC_REVIEW",
+    "visual_asset_id": null,
+    "visual_required_for_canonical_snapshot": false,
+    "reason": "Academic review did not require a source visual asset for this verified unit."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0062",
+    "academic_visual_required": true,
+    "visual_review_status": "READY_SOURCE_CROP",
+    "visual_asset_id": "M12_VECTOR_CAND_0062_VISUAL_V1",
+    "visual_required_for_canonical_snapshot": true,
+    "reason": "Source question contains a distinct diagram/figure component required to preserve the visual problem statement."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0064",
+    "academic_visual_required": true,
+    "visual_review_status": "NOT_REQUIRED_AFTER_VISUAL_REVIEW",
+    "visual_asset_id": null,
+    "visual_required_for_canonical_snapshot": false,
+    "reason": "No distinct source diagram/graph/table component was found in the reviewed question region; the item is text/formula-only after visual inspection."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0065",
+    "academic_visual_required": true,
+    "visual_review_status": "READY_SOURCE_CROP",
+    "visual_asset_id": "M12_VECTOR_CAND_0065_VISUAL_V1",
+    "visual_required_for_canonical_snapshot": true,
+    "reason": "Source question contains a distinct diagram/figure component required to preserve the visual problem statement."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0066",
+    "academic_visual_required": true,
+    "visual_review_status": "NOT_REQUIRED_AFTER_VISUAL_REVIEW",
+    "visual_asset_id": null,
+    "visual_required_for_canonical_snapshot": false,
+    "reason": "No distinct source diagram/graph/table component was found in the reviewed question region; the item is text/formula-only after visual inspection."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0068",
+    "academic_visual_required": true,
+    "visual_review_status": "NOT_REQUIRED_AFTER_VISUAL_REVIEW",
+    "visual_asset_id": null,
+    "visual_required_for_canonical_snapshot": false,
+    "reason": "No distinct source diagram/graph/table component was found in the reviewed question region; the item is text/formula-only after visual inspection."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0069",
+    "academic_visual_required": true,
+    "visual_review_status": "READY_SOURCE_CROP",
+    "visual_asset_id": "M12_VECTOR_CAND_0069_VISUAL_V1",
+    "visual_required_for_canonical_snapshot": true,
+    "reason": "Source question contains a distinct diagram/figure component required to preserve the visual problem statement."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0071",
+    "academic_visual_required": true,
+    "visual_review_status": "READY_SOURCE_CROP",
+    "visual_asset_id": "M12_VECTOR_CAND_0071_VISUAL_V1",
+    "visual_required_for_canonical_snapshot": true,
+    "reason": "Source question contains a distinct diagram/figure component required to preserve the visual problem statement."
+  },
+  {
+    "candidate_id": "M12_VECTOR_CAND_0072",
+    "academic_visual_required": true,
+    "visual_review_status": "READY_SOURCE_CROP",
+    "visual_asset_id": "M12_VECTOR_CAND_0072_VISUAL_V1",
+    "visual_required_for_canonical_snapshot": true,
+    "reason": "Source question contains a distinct diagram/figure component required to preserve the visual problem statement."
+  }
+]

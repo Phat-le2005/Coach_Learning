@@ -1,0 +1,187 @@
+[
+  {
+    "snapshot_key": "M12_VECTOR_GROUP_0040",
+    "group_candidate_id": "M12_VECTOR_GROUP_0040",
+    "source_candidate_id": "M12_VECTOR_CAND_0040",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "group_type": "TRUE_FALSE_FOUR",
+    "scoring_policy": "MOET_2025_TRUE_FALSE",
+    "group_context": "Câu 3. Thầy Nam muốn xây một ngôi nhà có kích thước như hình 1. Ngôi nhà được gắn trong hệ trục tọa độ Oxyz như hình 2 (đơn vị: mét), trong đó nền nhà, bốn bức tường là hình chữ nhật và hai mái nhà là hai hình chữ nhật bằng nhau. ",
+    "items": [
+      {
+        "child_key": "M12_VECTOR_GROUP_0040:a",
+        "label": "a",
+        "order_index": 0,
+        "question_type": "TRUE_FALSE",
+        "content": "OP   4; 0; 4, 7 ",
+        "correct_answer": "TRUE",
+        "taxonomy": {
+          "problem_types": [
+            {
+              "code": "VECTOR_COORDINATES_FROM_POINTS_3D",
+              "weight": 1.0,
+              "is_primary": true
+            }
+          ],
+          "concepts": [
+            {
+              "code": "VECTOR_FROM_POINTS_3D",
+              "weight": 0.6,
+              "is_primary": true
+            },
+            {
+              "code": "POINT_COORDINATES_3D",
+              "weight": 0.2,
+              "is_primary": false
+            },
+            {
+              "code": "VECTOR_COORDINATES_3D",
+              "weight": 0.2,
+              "is_primary": false
+            }
+          ],
+          "learning_outcomes": [
+            {
+              "code": "LO_M12_VECTOR_COORDINATES",
+              "weight": 1.0
+            }
+          ],
+          "taxonomy_basis": "COACH_LEARNING_DERIVED"
+        }
+      },
+      {
+        "child_key": "M12_VECTOR_GROUP_0040:b",
+        "label": "b",
+        "order_index": 1,
+        "question_type": "TRUE_FALSE",
+        "content": "AQ  290  m ",
+        "correct_answer": "TRUE",
+        "taxonomy": {
+          "problem_types": [
+            {
+              "code": "VECTOR_LENGTH_DISTANCE_3D",
+              "weight": 1.0,
+              "is_primary": true
+            }
+          ],
+          "concepts": [
+            {
+              "code": "VECTOR_LENGTH_3D",
+              "weight": 0.6,
+              "is_primary": true
+            },
+            {
+              "code": "DISTANCE_3D",
+              "weight": 0.4,
+              "is_primary": false
+            }
+          ],
+          "learning_outcomes": [
+            {
+              "code": "LO_M12_VECTOR_LENGTH",
+              "weight": 1.0
+            }
+          ],
+          "taxonomy_basis": "COACH_LEARNING_DERIVED"
+        }
+      },
+      {
+        "child_key": "M12_VECTOR_GROUP_0040:c",
+        "label": "c",
+        "order_index": 2,
+        "question_type": "TRUE_FALSE",
+        "content": "Thầy Nam muốn treo bóng đèn tại trung điểm cạnh PQ . Tọa độ vị trí bóng đèn là  4; 7, 5; 4, 7  .",
+        "correct_answer": "TRUE",
+        "taxonomy": {
+          "problem_types": [
+            {
+              "code": "MIDPOINT_CENTROID_COORDINATES_3D",
+              "weight": 1.0,
+              "is_primary": true
+            }
+          ],
+          "concepts": [
+            {
+              "code": "MIDPOINT_3D",
+              "weight": 0.5,
+              "is_primary": true
+            },
+            {
+              "code": "CENTROID_3D",
+              "weight": 0.3,
+              "is_primary": false
+            },
+            {
+              "code": "POINT_COORDINATES_3D",
+              "weight": 0.2,
+              "is_primary": false
+            }
+          ],
+          "learning_outcomes": [
+            {
+              "code": "LO_M12_VECTOR_COORDINATE_EXPRESSIONS",
+              "weight": 1.0
+            }
+          ],
+          "taxonomy_basis": "COACH_LEARNING_DERIVED"
+        }
+      },
+      {
+        "child_key": "M12_VECTOR_GROUP_0040:d",
+        "label": "d",
+        "order_index": 3,
+        "question_type": "TRUE_FALSE",
+        "content": "Hai mái nhà hợp nhau một góc bằng 33, 40 (làm tròn kết quả đến hàng phần mười của độ).",
+        "correct_answer": "FALSE",
+        "taxonomy": {
+          "problem_types": [
+            {
+              "code": "VECTOR_ANGLE_3D",
+              "weight": 1.0,
+              "is_primary": true
+            }
+          ],
+          "concepts": [
+            {
+              "code": "VECTOR_ANGLE_3D",
+              "weight": 0.6,
+              "is_primary": true
+            },
+            {
+              "code": "DOT_PRODUCT_3D",
+              "weight": 0.4,
+              "is_primary": false
+            }
+          ],
+          "learning_outcomes": [
+            {
+              "code": "LO_M12_VECTOR_OPERATIONS",
+              "weight": 1.0
+            }
+          ],
+          "taxonomy_basis": "COACH_LEARNING_DERIVED"
+        }
+      }
+    ],
+    "source_lineage": {
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "candidate_source_page": 358,
+      "source_evidence_id": "EVID_VECTOR_GROUP_0040"
+    },
+    "visual": {
+      "status": "READY_SOURCE_CROP",
+      "asset_id": "M12_VECTOR_CAND_0040_VISUAL_V1"
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  }
+]

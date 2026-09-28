@@ -1,0 +1,1142 @@
+{
+  "dataset_code": "DATA-MATH12-018",
+  "asset_set_code": "MATH12_VECTOR_VISUAL_ASSETS_V0_1",
+  "base_commit": "10e56b62584216617c79bac97638701a4a5c1ae1",
+  "input_review_aggregate_sha256": "603c3094daef4032d0d079e491e05d278778c32638fbba4b953f26133d330690",
+  "chapter_code": "VECTORS_GEOMETRY",
+  "render_dpi": 200,
+  "coordinate_system": "PDF points, origin top-left as represented by PyMuPDF page coordinates",
+  "asset_policy": {
+    "crop_scope": "DISTINCT_SOURCE_VISUAL_COMPONENT_ONLY",
+    "no_full_question_crop_for_production": "Avoid answer leakage from source pages that may highlight correct options.",
+    "fabrication_allowed": false,
+    "redraw_allowed": false,
+    "rights_status": "REVIEW_REQUIRED"
+  },
+  "assets": [
+    {
+      "asset_id": "M12_VECTOR_CAND_0001_VISUAL_V1",
+      "candidate_id": "M12_VECTOR_CAND_0001",
+      "group_candidate_id": null,
+      "asset_kind": "SOURCE_GEOMETRY_OR_FIGURE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_VECTOR_CAND_0001__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "8fa43347be7d4dd3582bb6f379a9efd9ca1777606176a0c9976bf1c04eb9f135",
+      "width_px": 359,
+      "height_px": 306,
+      "source_code": "SRC_MOET_EXAM_2025_SOLUTION_COMPILATION",
+      "source_file_id": "1jGjnJ3Wq2ynISxB4P1g9mk2CXibl-YXy",
+      "source_pdf_sha256": "90d5cb68a6f91418287c6643548f4f40ea9bb1598705a177b41bce07b09df11f",
+      "canonical_question_pages": [
+        4
+      ],
+      "solution_pages": [
+        24
+      ],
+      "asset_source_page": 4,
+      "crop_box_pdf_points": [
+        437.75,
+        183.99,
+        566.61,
+        293.82
+      ],
+      "component_types": [
+        "IMAGE"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_VECTOR_CAND_0002_VISUAL_V1",
+      "candidate_id": "M12_VECTOR_CAND_0002",
+      "group_candidate_id": null,
+      "asset_kind": "SOURCE_GEOMETRY_OR_FIGURE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_VECTOR_CAND_0002__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "45ae511bcbf76540bbb90ef7995efee2c1cccb3e35ee081e70216518ff7b6b47",
+      "width_px": 404,
+      "height_px": 336,
+      "source_code": "SRC_MOET_EXAM_2025_SOLUTION_COMPILATION",
+      "source_file_id": "1jGjnJ3Wq2ynISxB4P1g9mk2CXibl-YXy",
+      "source_pdf_sha256": "90d5cb68a6f91418287c6643548f4f40ea9bb1598705a177b41bce07b09df11f",
+      "canonical_question_pages": [
+        10
+      ],
+      "solution_pages": [
+        39
+      ],
+      "asset_source_page": 10,
+      "crop_box_pdf_points": [
+        400.0,
+        292.76,
+        545.05,
+        413.51
+      ],
+      "component_types": [
+        "IMAGE"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_VECTOR_CAND_0005_VISUAL_V1",
+      "candidate_id": "M12_VECTOR_CAND_0005",
+      "group_candidate_id": null,
+      "asset_kind": "SOURCE_GEOMETRY_OR_FIGURE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_VECTOR_CAND_0005__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "054b524ece976efa47399352aaf67f887f73f6098b9aee159606d473b253dfef",
+      "width_px": 314,
+      "height_px": 268,
+      "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+      "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+      "source_pdf_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+      "canonical_question_pages": [
+        1
+      ],
+      "solution_pages": [
+        7
+      ],
+      "asset_source_page": 1,
+      "crop_box_pdf_points": [
+        265.09,
+        469.03,
+        377.88,
+        565.16
+      ],
+      "component_types": [
+        "VECTOR_DRAWING"
+      ],
+      "component_count": 3,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_VECTOR_CAND_0009_VISUAL_V1",
+      "candidate_id": "M12_VECTOR_CAND_0009",
+      "group_candidate_id": null,
+      "asset_kind": "SOURCE_GEOMETRY_OR_FIGURE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_VECTOR_CAND_0009__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "bbd5e04f46feac429315affb0e1a67294eb8c7feb9f08224b129c503d944fd9e",
+      "width_px": 407,
+      "height_px": 338,
+      "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+      "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+      "source_pdf_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+      "canonical_question_pages": [
+        38
+      ],
+      "solution_pages": [
+        45
+      ],
+      "asset_source_page": 38,
+      "crop_box_pdf_points": [
+        249.23,
+        549.81,
+        395.38,
+        671.24
+      ],
+      "component_types": [
+        "IMAGE"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_VECTOR_CAND_0013_VISUAL_V1",
+      "candidate_id": "M12_VECTOR_CAND_0013",
+      "group_candidate_id": null,
+      "asset_kind": "SOURCE_GEOMETRY_OR_FIGURE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_VECTOR_CAND_0013__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "234917ef186d85e4e49fd3409d76d65d242c1903b6d7b74694e96b40adc75b58",
+      "width_px": 279,
+      "height_px": 262,
+      "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+      "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+      "source_pdf_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+      "canonical_question_pages": [
+        122,
+        156
+      ],
+      "solution_pages": [
+        127,
+        163
+      ],
+      "asset_source_page": 122,
+      "crop_box_pdf_points": [
+        247.65,
+        712.49,
+        347.6,
+        806.44
+      ],
+      "component_types": [
+        "IMAGE"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_VECTOR_CAND_0014_VISUAL_V1",
+      "candidate_id": "M12_VECTOR_CAND_0014",
+      "group_candidate_id": null,
+      "asset_kind": "SOURCE_GEOMETRY_OR_FIGURE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_VECTOR_CAND_0014__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "ffa3adb375f798ca0576740d2ed84a3bd4b72d361fd8c61dd35c1e11493865cb",
+      "width_px": 339,
+      "height_px": 353,
+      "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+      "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+      "source_pdf_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+      "canonical_question_pages": [
+        62,
+        139
+      ],
+      "solution_pages": [
+        145
+      ],
+      "asset_source_page": 139,
+      "crop_box_pdf_points": [
+        261.65,
+        675.08,
+        383.21,
+        801.78
+      ],
+      "component_types": [
+        "IMAGE"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_VECTOR_CAND_0016_VISUAL_V1",
+      "candidate_id": "M12_VECTOR_CAND_0016",
+      "group_candidate_id": null,
+      "asset_kind": "SOURCE_GEOMETRY_OR_FIGURE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_VECTOR_CAND_0016__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "11e42ed2f4015ff96d333ea40ef7593a5a6753bda647f531f8393f62527e03d2",
+      "width_px": 424,
+      "height_px": 339,
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        2
+      ],
+      "solution_pages": [
+        9
+      ],
+      "asset_source_page": 2,
+      "crop_box_pdf_points": [
+        207.28,
+        290.88,
+        359.36,
+        412.72
+      ],
+      "component_types": [
+        "IMAGE"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_VECTOR_CAND_0017_VISUAL_V1",
+      "candidate_id": "M12_VECTOR_CAND_0017",
+      "group_candidate_id": null,
+      "asset_kind": "SOURCE_GEOMETRY_OR_FIGURE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_VECTOR_CAND_0017__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "d1b59478c6f0a8a5b66f53641f7b8aceb50a57cd31712d34dcdfd3077972e8e1",
+      "width_px": 433,
+      "height_px": 524,
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        23
+      ],
+      "solution_pages": [
+        30
+      ],
+      "asset_source_page": 23,
+      "crop_box_pdf_points": [
+        205.36,
+        91.44,
+        361.04,
+        279.76
+      ],
+      "component_types": [
+        "IMAGE"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_VECTOR_CAND_0020_VISUAL_V1",
+      "candidate_id": "M12_VECTOR_CAND_0020",
+      "group_candidate_id": null,
+      "asset_kind": "SOURCE_GEOMETRY_OR_FIGURE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_VECTOR_CAND_0020__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "600c825106e6c4c20a0021a1a121802f33df328ea1e674242eaf4b1477efb7d2",
+      "width_px": 491,
+      "height_px": 321,
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        80
+      ],
+      "solution_pages": [
+        87
+      ],
+      "asset_source_page": 80,
+      "crop_box_pdf_points": [
+        195.04,
+        346.32,
+        371.36,
+        461.68
+      ],
+      "component_types": [
+        "IMAGE"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_VECTOR_CAND_0021_VISUAL_V1",
+      "candidate_id": "M12_VECTOR_CAND_0021",
+      "group_candidate_id": null,
+      "asset_kind": "SOURCE_GEOMETRY_OR_FIGURE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_VECTOR_CAND_0021__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "de369146e8f3c5c6a4a9952c605d53dafe1b7997898f9cbfb87403c14a7b833c",
+      "width_px": 282,
+      "height_px": 202,
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        99
+      ],
+      "solution_pages": [
+        106
+      ],
+      "asset_source_page": 99,
+      "crop_box_pdf_points": [
+        232.72,
+        304.8,
+        333.92,
+        376.96
+      ],
+      "component_types": [
+        "VECTOR_DRAWING"
+      ],
+      "component_count": 2,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_VECTOR_CAND_0023_VISUAL_V1",
+      "candidate_id": "M12_VECTOR_CAND_0023",
+      "group_candidate_id": null,
+      "asset_kind": "SOURCE_GEOMETRY_OR_FIGURE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_VECTOR_CAND_0023__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "c7c5475f7f1c725bdf62fce444a6bc0577df517d1474034d097052779dd499b6",
+      "width_px": 644,
+      "height_px": 442,
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        139
+      ],
+      "solution_pages": [
+        145
+      ],
+      "asset_source_page": 139,
+      "crop_box_pdf_points": [
+        167.44,
+        47.52,
+        398.96,
+        206.32
+      ],
+      "component_types": [
+        "IMAGE"
+      ],
+      "component_count": 2,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_VECTOR_CAND_0025_VISUAL_V1",
+      "candidate_id": "M12_VECTOR_CAND_0025",
+      "group_candidate_id": null,
+      "asset_kind": "SOURCE_GEOMETRY_OR_FIGURE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_VECTOR_CAND_0025__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "1467caaf5ea4e635c6293777a9d940d542120d350526c4120873e43b8c651429",
+      "width_px": 630,
+      "height_px": 433,
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        157
+      ],
+      "solution_pages": [
+        165
+      ],
+      "asset_source_page": 157,
+      "crop_box_pdf_points": [
+        170.08,
+        399.84,
+        396.56,
+        555.28
+      ],
+      "component_types": [
+        "IMAGE"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_VECTOR_CAND_0027_VISUAL_V1",
+      "candidate_id": "M12_VECTOR_CAND_0027",
+      "group_candidate_id": null,
+      "asset_kind": "SOURCE_GEOMETRY_OR_FIGURE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_VECTOR_CAND_0027__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "3ecd6f163db00f92406e03a51ece3a98b6230bf266b75e8aafab3088aff49c8b",
+      "width_px": 422,
+      "height_px": 424,
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        178
+      ],
+      "solution_pages": [
+        185
+      ],
+      "asset_source_page": 178,
+      "crop_box_pdf_points": [
+        207.52,
+        47.52,
+        359.12,
+        199.84
+      ],
+      "component_types": [
+        "IMAGE"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_VECTOR_CAND_0028_VISUAL_V1",
+      "candidate_id": "M12_VECTOR_CAND_0028",
+      "group_candidate_id": null,
+      "asset_kind": "SOURCE_GEOMETRY_OR_FIGURE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_VECTOR_CAND_0028__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "c7c5475f7f1c725bdf62fce444a6bc0577df517d1474034d097052779dd499b6",
+      "width_px": 644,
+      "height_px": 442,
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        197
+      ],
+      "solution_pages": [
+        203
+      ],
+      "asset_source_page": 197,
+      "crop_box_pdf_points": [
+        167.44,
+        47.52,
+        398.96,
+        206.32
+      ],
+      "component_types": [
+        "IMAGE"
+      ],
+      "component_count": 2,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_VECTOR_CAND_0029_VISUAL_V1",
+      "candidate_id": "M12_VECTOR_CAND_0029",
+      "group_candidate_id": null,
+      "asset_kind": "SOURCE_GEOMETRY_OR_FIGURE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_VECTOR_CAND_0029__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "c52aae5015e444024688ec7a1ba94d5d604dc1640ad1e3df5121a016c24b360e",
+      "width_px": 397,
+      "height_px": 404,
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        217
+      ],
+      "solution_pages": [
+        223
+      ],
+      "asset_source_page": 217,
+      "crop_box_pdf_points": [
+        211.84,
+        204.96,
+        354.56,
+        350.08
+      ],
+      "component_types": [
+        "IMAGE"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_VECTOR_CAND_0034_VISUAL_V1",
+      "candidate_id": "M12_VECTOR_CAND_0034",
+      "group_candidate_id": null,
+      "asset_kind": "SOURCE_GEOMETRY_OR_FIGURE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_VECTOR_CAND_0034__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "fb0d44c8e9a87caa15d8b19db7823fe9172cd9cbd5513bac050fb187ff29e67d",
+      "width_px": 644,
+      "height_px": 442,
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        276
+      ],
+      "solution_pages": [
+        282
+      ],
+      "asset_source_page": 276,
+      "crop_box_pdf_points": [
+        167.44,
+        71.04,
+        398.96,
+        229.84
+      ],
+      "component_types": [
+        "IMAGE"
+      ],
+      "component_count": 2,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_VECTOR_CAND_0036_VISUAL_V1",
+      "candidate_id": "M12_VECTOR_CAND_0036",
+      "group_candidate_id": null,
+      "asset_kind": "SOURCE_GEOMETRY_OR_FIGURE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_VECTOR_CAND_0036__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "914733b472fa002e6bace0f11a8c1545a0cbce45d2c58f549834450bc95a659c",
+      "width_px": 540,
+      "height_px": 422,
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        301
+      ],
+      "solution_pages": [
+        301
+      ],
+      "asset_source_page": 301,
+      "crop_box_pdf_points": [
+        186.16,
+        570.24,
+        380.24,
+        722.08
+      ],
+      "component_types": [
+        "IMAGE"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_VECTOR_CAND_0039_VISUAL_V1",
+      "candidate_id": "M12_VECTOR_CAND_0039",
+      "group_candidate_id": null,
+      "asset_kind": "SOURCE_GEOMETRY_OR_FIGURE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_VECTOR_CAND_0039__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "ee2d6825ab582e1e89a922ca0197136ff7d1f5141a5c3713b28ffce7142995dd",
+      "width_px": 659,
+      "height_px": 468,
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        335
+      ],
+      "solution_pages": [
+        342
+      ],
+      "asset_source_page": 335,
+      "crop_box_pdf_points": [
+        164.8,
+        339.84,
+        401.6,
+        508.0
+      ],
+      "component_types": [
+        "IMAGE"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_VECTOR_CAND_0040_VISUAL_V1",
+      "candidate_id": "M12_VECTOR_CAND_0040",
+      "group_candidate_id": "M12_VECTOR_GROUP_0040",
+      "asset_kind": "SOURCE_GEOMETRY_OR_FIGURE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_VECTOR_CAND_0040__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "90951cb96f1e9ae9840642095affec07e3c85102e1a54a06fa13313fde8d2a58",
+      "width_px": 1304,
+      "height_px": 571,
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        358
+      ],
+      "solution_pages": [
+        368
+      ],
+      "asset_source_page": 358,
+      "crop_box_pdf_points": [
+        48.64,
+        153.84,
+        517.76,
+        358.96
+      ],
+      "component_types": [
+        "IMAGE"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_VECTOR_CAND_0043_VISUAL_V1",
+      "candidate_id": "M12_VECTOR_CAND_0043",
+      "group_candidate_id": null,
+      "asset_kind": "SOURCE_GEOMETRY_OR_FIGURE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_VECTOR_CAND_0043__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "93b108f15fff2b830a21585f569ef2e63618098662a13a1d34449d3fce08f102",
+      "width_px": 644,
+      "height_px": 442,
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        378
+      ],
+      "solution_pages": [
+        385
+      ],
+      "asset_source_page": 378,
+      "crop_box_pdf_points": [
+        167.44,
+        384.72,
+        398.96,
+        543.52
+      ],
+      "component_types": [
+        "IMAGE"
+      ],
+      "component_count": 2,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_VECTOR_CAND_0047_VISUAL_V1",
+      "candidate_id": "M12_VECTOR_CAND_0047",
+      "group_candidate_id": null,
+      "asset_kind": "SOURCE_GEOMETRY_OR_FIGURE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_VECTOR_CAND_0047__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "d397de6dcaf84d26352016ab2962f72eb1386cf20bcf3725c8aafaa9a9f7ebc8",
+      "width_px": 644,
+      "height_px": 442,
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        416
+      ],
+      "solution_pages": [
+        422
+      ],
+      "asset_source_page": 416,
+      "crop_box_pdf_points": [
+        196.24,
+        408.24,
+        427.76,
+        567.04
+      ],
+      "component_types": [
+        "IMAGE"
+      ],
+      "component_count": 2,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_VECTOR_CAND_0050_VISUAL_V1",
+      "candidate_id": "M12_VECTOR_CAND_0050",
+      "group_candidate_id": null,
+      "asset_kind": "SOURCE_GEOMETRY_OR_FIGURE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_VECTOR_CAND_0050__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "9547fce48e7fa6397e3c7893fb1fae944ee788304cb94ac6dce9dde3656a3830",
+      "width_px": 422,
+      "height_px": 424,
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        437
+      ],
+      "solution_pages": [
+        444
+      ],
+      "asset_source_page": 437,
+      "crop_box_pdf_points": [
+        207.52,
+        335.52,
+        359.12,
+        487.84
+      ],
+      "component_types": [
+        "IMAGE"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_VECTOR_CAND_0053_VISUAL_V1",
+      "candidate_id": "M12_VECTOR_CAND_0053",
+      "group_candidate_id": null,
+      "asset_kind": "SOURCE_GEOMETRY_OR_FIGURE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_VECTOR_CAND_0053__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "4046602b208e34650efab5031f3d1659cc13ba08df40ea370ebb319c2a1f90bb",
+      "width_px": 422,
+      "height_px": 424,
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        477
+      ],
+      "solution_pages": [
+        484
+      ],
+      "asset_source_page": 477,
+      "crop_box_pdf_points": [
+        207.52,
+        235.68,
+        359.12,
+        388.0
+      ],
+      "component_types": [
+        "IMAGE"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_VECTOR_CAND_0055_VISUAL_V1",
+      "candidate_id": "M12_VECTOR_CAND_0055",
+      "group_candidate_id": null,
+      "asset_kind": "SOURCE_GEOMETRY_OR_FIGURE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_VECTOR_CAND_0055__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "fb0d44c8e9a87caa15d8b19db7823fe9172cd9cbd5513bac050fb187ff29e67d",
+      "width_px": 644,
+      "height_px": 442,
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        495
+      ],
+      "solution_pages": [
+        502
+      ],
+      "asset_source_page": 495,
+      "crop_box_pdf_points": [
+        167.44,
+        283.44,
+        398.96,
+        442.24
+      ],
+      "component_types": [
+        "IMAGE"
+      ],
+      "component_count": 2,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_VECTOR_CAND_0056_VISUAL_V1",
+      "candidate_id": "M12_VECTOR_CAND_0056",
+      "group_candidate_id": null,
+      "asset_kind": "SOURCE_GEOMETRY_OR_FIGURE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_VECTOR_CAND_0056__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "34cc813e09af0a20f41927689cbcaa44e6ceab29008adda9de3702b7c7712a37",
+      "width_px": 659,
+      "height_px": 468,
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        515
+      ],
+      "solution_pages": [
+        522
+      ],
+      "asset_source_page": 515,
+      "crop_box_pdf_points": [
+        164.8,
+        499.92,
+        401.6,
+        668.08
+      ],
+      "component_types": [
+        "IMAGE"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_VECTOR_CAND_0059_VISUAL_V1",
+      "candidate_id": "M12_VECTOR_CAND_0059",
+      "group_candidate_id": null,
+      "asset_kind": "SOURCE_GEOMETRY_OR_FIGURE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_VECTOR_CAND_0059__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "fb0d44c8e9a87caa15d8b19db7823fe9172cd9cbd5513bac050fb187ff29e67d",
+      "width_px": 644,
+      "height_px": 442,
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        553
+      ],
+      "solution_pages": [
+        559
+      ],
+      "asset_source_page": 553,
+      "crop_box_pdf_points": [
+        167.44,
+        273.36,
+        398.96,
+        432.16
+      ],
+      "component_types": [
+        "IMAGE"
+      ],
+      "component_count": 2,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_VECTOR_CAND_0060_VISUAL_V1",
+      "candidate_id": "M12_VECTOR_CAND_0060",
+      "group_candidate_id": null,
+      "asset_kind": "SOURCE_GEOMETRY_OR_FIGURE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_VECTOR_CAND_0060__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "ea57c8003353b5e6cb303b7a220d7b59a0bbf574a21f62c36474743c7ce1b5bd",
+      "width_px": 282,
+      "height_px": 201,
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        570
+      ],
+      "solution_pages": [
+        576,
+        649
+      ],
+      "asset_source_page": 570,
+      "crop_box_pdf_points": [
+        232.72,
+        178.56,
+        333.92,
+        250.72
+      ],
+      "component_types": [
+        "VECTOR_DRAWING"
+      ],
+      "component_count": 2,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_VECTOR_CAND_0062_VISUAL_V1",
+      "candidate_id": "M12_VECTOR_CAND_0062",
+      "group_candidate_id": null,
+      "asset_kind": "SOURCE_GEOMETRY_OR_FIGURE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_VECTOR_CAND_0062__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "de2f65a80bda93e6570885e394752b9d73beb1064697a6145313fee9b3d20d3b",
+      "width_px": 441,
+      "height_px": 427,
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        607
+      ],
+      "solution_pages": [
+        613
+      ],
+      "asset_source_page": 607,
+      "crop_box_pdf_points": [
+        204.16,
+        301.2,
+        362.72,
+        454.48
+      ],
+      "component_types": [
+        "IMAGE"
+      ],
+      "component_count": 3,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_VECTOR_CAND_0065_VISUAL_V1",
+      "candidate_id": "M12_VECTOR_CAND_0065",
+      "group_candidate_id": null,
+      "asset_kind": "SOURCE_GEOMETRY_OR_FIGURE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_VECTOR_CAND_0065__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "1557b8370e43dd5a3cd6c0317628f33af724de0a37d748d13c54b07148dda33f",
+      "width_px": 644,
+      "height_px": 442,
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        662
+      ],
+      "solution_pages": [
+        668
+      ],
+      "asset_source_page": 662,
+      "crop_box_pdf_points": [
+        167.44,
+        74.4,
+        398.96,
+        233.2
+      ],
+      "component_types": [
+        "IMAGE"
+      ],
+      "component_count": 2,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_VECTOR_CAND_0069_VISUAL_V1",
+      "candidate_id": "M12_VECTOR_CAND_0069",
+      "group_candidate_id": null,
+      "asset_kind": "SOURCE_GEOMETRY_OR_FIGURE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_VECTOR_CAND_0069__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "fb0d44c8e9a87caa15d8b19db7823fe9172cd9cbd5513bac050fb187ff29e67d",
+      "width_px": 644,
+      "height_px": 442,
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        719
+      ],
+      "solution_pages": [
+        726
+      ],
+      "asset_source_page": 719,
+      "crop_box_pdf_points": [
+        167.44,
+        245.28,
+        398.96,
+        404.08
+      ],
+      "component_types": [
+        "IMAGE"
+      ],
+      "component_count": 2,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_VECTOR_CAND_0071_VISUAL_V1",
+      "candidate_id": "M12_VECTOR_CAND_0071",
+      "group_candidate_id": null,
+      "asset_kind": "SOURCE_GEOMETRY_OR_FIGURE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_VECTOR_CAND_0071__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "fb0d44c8e9a87caa15d8b19db7823fe9172cd9cbd5513bac050fb187ff29e67d",
+      "width_px": 644,
+      "height_px": 442,
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        739
+      ],
+      "solution_pages": [
+        747
+      ],
+      "asset_source_page": 739,
+      "crop_box_pdf_points": [
+        167.44,
+        328.08,
+        398.96,
+        486.88
+      ],
+      "component_types": [
+        "IMAGE"
+      ],
+      "component_count": 2,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_VECTOR_CAND_0072_VISUAL_V1",
+      "candidate_id": "M12_VECTOR_CAND_0072",
+      "group_candidate_id": null,
+      "asset_kind": "SOURCE_GEOMETRY_OR_FIGURE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_VECTOR_CAND_0072__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "44fc760bd1c0638baab0f8fd5a24423442cde13ac95cbcd0416061dadb10c980",
+      "width_px": 440,
+      "height_px": 443,
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        759
+      ],
+      "solution_pages": [
+        767
+      ],
+      "asset_source_page": 759,
+      "crop_box_pdf_points": [
+        204.4,
+        279.36,
+        362.24,
+        438.64
+      ],
+      "component_types": [
+        "IMAGE"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    }
+  ]
+}

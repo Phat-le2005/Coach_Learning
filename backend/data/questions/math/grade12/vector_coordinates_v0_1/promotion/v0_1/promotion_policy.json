@@ -1,0 +1,35 @@
+{
+  "policy_version": "vector_promotion_preflight_v0_1",
+  "principles": [
+    "Academic VERIFIED is necessary but not sufficient for production release.",
+    "Only the 48 DATA-MATH12-017 VERIFIED units may enter this canonical preflight snapshot.",
+    "HOLD, duplicate-rejected, and OXYZ-rejected units must never enter the Vector snapshot.",
+    "A distinct source diagram/figure must be backed by a READY_SOURCE_CROP asset.",
+    "Full-question source crops are forbidden as production visuals because source answer highlighting can leak the correct answer.",
+    "A visual flag may be reclassified to NOT_REQUIRED only when visual review finds no distinct diagram/graph/table component in the reviewed source question.",
+    "No visual may be fabricated or redrawn.",
+    "Source rights REVIEW_REQUIRED blocks production release.",
+    "Vector curriculum taxonomy remains staging/review-candidate and blocks production release until canonical activation.",
+    "No difficulty, exam_weight, cognitive_level, or explanation is invented in this preflight.",
+    "TRUE_FALSE_FOUR remains one group with four ordered children and MOET_2025_TRUE_FALSE scoring."
+  ],
+  "canonical_snapshot_gate": {
+    "required": [
+      "review_status == VERIFIED",
+      "answer is source-evidence-bound",
+      "reviewed taxonomy resolves to DATA-015 staging",
+      "visual READY_SOURCE_CROP OR visual not required after reviewed visual decision"
+    ]
+  },
+  "production_release_gate": {
+    "required": [
+      "canonical_snapshot_ready == true",
+      "explicit rights clearance",
+      "Vector taxonomy canonical activation",
+      "trusted import bridge for standalone and group units",
+      "reviewed difficulty/exam_weight policy",
+      "visual distribution rights clearance when asset is required"
+    ],
+    "current_result": "0 units eligible"
+  }
+}

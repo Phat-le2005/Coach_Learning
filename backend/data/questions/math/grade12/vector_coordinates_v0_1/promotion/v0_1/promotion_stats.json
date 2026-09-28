@@ -1,0 +1,22 @@
+{
+  "dataset_code": "DATA-MATH12-018",
+  "promotion_set_code": "MATH12_VECTOR_PROMOTION_PREFLIGHT_V0_1",
+  "base_commit": "10e56b62584216617c79bac97638701a4a5c1ae1",
+  "input_review_aggregate_sha256": "603c3094daef4032d0d079e491e05d278778c32638fbba4b953f26133d330690",
+  "academic_reviewed_candidates": 68,
+  "academic_verified_units": 48,
+  "academic_hold_units": 4,
+  "academic_rejected_units": 16,
+  "canonical_snapshot_ready_units": 48,
+  "canonical_snapshot_ready_standalone": 47,
+  "canonical_snapshot_ready_groups": 1,
+  "canonical_snapshot_ready_group_children": 4,
+  "visual_ready_source_crops": 32,
+  "visual_reclassified_not_required": 10,
+  "visual_academic_not_required": 6,
+  "visual_unresolved": 0,
+  "rights_review_required_units": 48,
+  "taxonomy_staging_only_units": 48,
+  "production_release_eligible_units": 0,
+  "database_import_ready_units": 0
+}

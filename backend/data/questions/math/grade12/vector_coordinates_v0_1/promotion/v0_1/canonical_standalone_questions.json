@@ -1,0 +1,2781 @@
+[
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0001",
+    "source_candidate_id": "M12_VECTOR_CAND_0001",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "MULTIPLE_CHOICE",
+    "content": "» Câu 1. Cho hình lăng trụ ABC.ABC (xem hình vẽ). Phát biểu nào sau đây là đúng? A. BA  AC   BC  . B. BA  AC   C B . C. BA  AC   BC . D. BA  AC   AA .",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "C",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "VECTOR_SUM_DIFFERENCE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.5,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.5,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_MOET_EXAM_2025_SOLUTION_COMPILATION",
+      "source_file_id": "1jGjnJ3Wq2ynISxB4P1g9mk2CXibl-YXy",
+      "source_sha256": "90d5cb68a6f91418287c6643548f4f40ea9bb1598705a177b41bce07b09df11f",
+      "candidate_source_page": 4,
+      "source_evidence_id": "EVID_VECTOR_0001"
+    },
+    "visual": {
+      "status": "READY_SOURCE_CROP",
+      "asset_id": "M12_VECTOR_CAND_0001_VISUAL_V1"
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0002",
+    "source_candidate_id": "M12_VECTOR_CAND_0002",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "MULTIPLE_CHOICE",
+    "content": "» Câu 12. Cho hình chóp tứ giác đều S.ABCD (xem hình vẽ). Gọi O là giao điểm của AC và BD . Phát biểu nào sau đây là đúng? A. SA  SB  SC  SD  4SO . B. SA  SB  SC  SD  2SO . C. SA  SB  SC  SD  0 . D. SA  SB  SC  SD  SO . B. Câu hỏi – Trả lời đúng/sai",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "A",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "VECTOR_SUM_DIFFERENCE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.5,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.5,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_MOET_EXAM_2025_SOLUTION_COMPILATION",
+      "source_file_id": "1jGjnJ3Wq2ynISxB4P1g9mk2CXibl-YXy",
+      "source_sha256": "90d5cb68a6f91418287c6643548f4f40ea9bb1598705a177b41bce07b09df11f",
+      "candidate_source_page": 10,
+      "source_evidence_id": "EVID_VECTOR_0002"
+    },
+    "visual": {
+      "status": "READY_SOURCE_CROP",
+      "asset_id": "M12_VECTOR_CAND_0002_VISUAL_V1"
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0005",
+    "source_candidate_id": "M12_VECTOR_CAND_0005",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "MULTIPLE_CHOICE",
+    "content": "Câu 4. Cho hình chóp S . ABCD có đáy ABCD là hình bình hành. Khi đó SA + BC bằng S A D B C     A. SD. B. SC. C. SA. D. SB. z",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "A",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "VECTOR_SUM_DIFFERENCE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.5,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.5,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+      "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+      "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+      "candidate_source_page": 1,
+      "source_evidence_id": "EVID_VECTOR_0005"
+    },
+    "visual": {
+      "status": "READY_SOURCE_CROP",
+      "asset_id": "M12_VECTOR_CAND_0005_VISUAL_V1"
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0008",
+    "source_candidate_id": "M12_VECTOR_CAND_0008",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "MULTIPLE_CHOICE",
+    "content": "Câu 3. Trong không gian Oxyz , cho hai véc tơ a = (1; −2; −1) và = b ( 2; −4; 2 ) . Khi đó a ⋅ b bằng? A. −8 . B. 8 . C. −12 . D. 12 .",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "B",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "VECTOR_COORDINATE_DOT_PRODUCT_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "DOT_PRODUCT_3D",
+          "weight": 0.5,
+          "is_primary": true
+        },
+        {
+          "code": "COORDINATE_VECTOR_OPERATIONS_3D",
+          "weight": 0.5,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_COORDINATE_EXPRESSIONS",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+      "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+      "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+      "candidate_source_page": 24,
+      "source_evidence_id": "EVID_VECTOR_0008"
+    },
+    "visual": {
+      "status": "NOT_REQUIRED_FROM_ACADEMIC_REVIEW",
+      "asset_id": null
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0009",
+    "source_candidate_id": "M12_VECTOR_CAND_0009",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "MULTIPLE_CHOICE",
+    "content": "Câu 12. Trong không gian cho hình hộp ABCD. A′B′C ′D′ . Mệnh đề nào dưới đây sai?         A. CA′ = CB + CD + CC ′ . B. AC ′ = AB + AD + AA′ .        C. BD′ = BA + BD + BB′ . D. CA = CB + CD . PHẦN II. Câu trắc nghiệm đúng sai. Thí sinh trả lời từ câu 1 đến câu 4. Trong mỗi ý a), b), c), d) ở mỗi câu, thí sinh chọn đúng hoặc sai. w w .facebook.com/groups/toanv d.v dc TĨNH- 24-25",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "C",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.35,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+          "weight": 0.4,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+      "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+      "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+      "candidate_source_page": 38,
+      "source_evidence_id": "EVID_VECTOR_0009"
+    },
+    "visual": {
+      "status": "READY_SOURCE_CROP",
+      "asset_id": "M12_VECTOR_CAND_0009_VISUAL_V1"
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0011",
+    "source_candidate_id": "M12_VECTOR_CAND_0011",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "MULTIPLE_CHOICE",
+    "content": "Câu 12: Cho hình lập phương ABCD. A′B′C ′D′ có độ dài mỗi cạnh bằng 1 . Tính độ dài của AB + CC ′ A. 2. B. 3. C. 1 . D. 2 . PHẦN II. Trắc nghiệm chọn đúng sai ( thí sinh làm từ câu 13 đến câu 16) x2 + 4",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "A",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "VECTOR_LENGTH_DISTANCE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_LENGTH_3D",
+          "weight": 0.6,
+          "is_primary": true
+        },
+        {
+          "code": "DISTANCE_3D",
+          "weight": 0.4,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_LENGTH",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+      "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+      "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+      "candidate_source_page": 108,
+      "source_evidence_id": "EVID_VECTOR_0011"
+    },
+    "visual": {
+      "status": "NOT_REQUIRED_AFTER_VISUAL_REVIEW",
+      "asset_id": null
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0013",
+    "source_candidate_id": "M12_VECTOR_CAND_0013",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "MULTIPLE_CHOICE",
+    "content": "Câu 8: Cho hình lập phương ABCD. A′B ′C ′D ′ . https:/w w w .facebook.com/groups/toanv d.    Góc giữa hai vec tơ AB và DC ' bằng: A. 60° . B. 90° . C. 45° . D. 120° .",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "C",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "VECTOR_ANGLE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_ANGLE_3D",
+          "weight": 0.6,
+          "is_primary": true
+        },
+        {
+          "code": "DOT_PRODUCT_3D",
+          "weight": 0.4,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+      "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+      "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+      "candidate_source_page": 122,
+      "source_evidence_id": "EVID_VECTOR_0013"
+    },
+    "visual": {
+      "status": "READY_SOURCE_CROP",
+      "asset_id": "M12_VECTOR_CAND_0013_VISUAL_V1"
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0014",
+    "source_candidate_id": "M12_VECTOR_CAND_0014",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "MULTIPLE_CHOICE",
+    "content": "Câu 6: Cho tứ diện ABCD , hai điểm M , N theo thứ tự là trung điểm của AB, CD . Điểm G là trung điểm của đoạn thẳng MN ( Tham khảo hình vẽ bên). Phát biểu nào sau đây sai? https:/w w w .facebook.com/groups/toanv d.           A. GA + GB + GC + GD = 0. B. AD + BC = AC + DB .        C. AD + BC = AC + BD . D. AD + BC = 2 MN .",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "B",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.35,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+          "weight": 0.4,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+      "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+      "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+      "candidate_source_page": 139,
+      "source_evidence_id": "EVID_VECTOR_0014"
+    },
+    "visual": {
+      "status": "READY_SOURCE_CROP",
+      "asset_id": "M12_VECTOR_CAND_0014_VISUAL_V1"
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0015",
+    "source_candidate_id": "M12_VECTOR_CAND_0015",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "MULTIPLE_CHOICE",
+    "content": "Câu 3. Cho hình chóp S . ABCD có đáy ABCD là hình bình hành và M là trung điểm của CD . Phát biểu nào sau đây là đúng?  1     1    A. SM= 2 ( SA − SB − 2 SC . ) B. SM= 2 SA + SB + SC . ( )  1     1    C. SM= 2 ( SA + SB + 2 SC . ) D. SM= 2 ( SA − SB + 2 SC . )",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "D",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.35,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+          "weight": 0.4,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+      "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+      "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+      "candidate_source_page": 179,
+      "source_evidence_id": "EVID_VECTOR_0015"
+    },
+    "visual": {
+      "status": "NOT_REQUIRED_AFTER_VISUAL_REVIEW",
+      "asset_id": null
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0016",
+    "source_candidate_id": "M12_VECTOR_CAND_0016",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "MULTIPLE_CHOICE",
+    "content": "Câu 8. Cho hình lập phương ABCD. ABC D . Gọi O là tâm của hình lập phương. Khẳng định nào sau đây là đúng?  1     2    4  A. AO  AB  AD  AA .   B. AO  AB  AD  AA . 3   1     1    3  C. AO  AB  AD  AA .   D. AO  AB  AD  AA . 2  x y z",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "D",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.35,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+          "weight": 0.4,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "candidate_source_page": 2,
+      "source_evidence_id": "EVID_VECTOR_0016"
+    },
+    "visual": {
+      "status": "READY_SOURCE_CROP",
+      "asset_id": "M12_VECTOR_CAND_0016_VISUAL_V1"
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0017",
+    "source_candidate_id": "M12_VECTOR_CAND_0017",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "MULTIPLE_CHOICE",
+    "content": "Câu 7. Cho hình tứ diện ABCD . Gọi G là trọng tâm của ta giác BCD . Mệnh đề nào sau đây đúng?         A. AB  AC  AD  3 AG . B. AB  AC  AD  3 AG .         C. BC  AD  AC  AC . D. AB  CD  AD  AD .",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "A",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.35,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+          "weight": 0.4,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "candidate_source_page": 23,
+      "source_evidence_id": "EVID_VECTOR_0017"
+    },
+    "visual": {
+      "status": "READY_SOURCE_CROP",
+      "asset_id": "M12_VECTOR_CAND_0017_VISUAL_V1"
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0018",
+    "source_candidate_id": "M12_VECTOR_CAND_0018",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "MULTIPLE_CHOICE",
+    "content": "Câu 7. Cho hình lập phương ABCD.A'B'C'D'. Mệnh đề nào sau đây sai? A. vector AB = vector CD. B. vector AB + vector AD + vector AA' = vector AC'. C. vector AB = vector DC. D. vector AC = vector AB + vector AD.",
+    "content_basis": "ACADEMIC_REVIEW_PATCH",
+    "correct_answer": "A",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "VECTOR_RELATION_IDENTIFICATION_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "SPACE_VECTOR",
+          "weight": 0.5,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIRECTION_3D",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "VECTOR_EQUALITY_3D",
+          "weight": 0.25,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "candidate_source_page": 42,
+      "source_evidence_id": "EVID_VECTOR_0018"
+    },
+    "visual": {
+      "status": "NOT_REQUIRED_AFTER_VISUAL_REVIEW",
+      "asset_id": null
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0020",
+    "source_candidate_id": "M12_VECTOR_CAND_0020",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "MULTIPLE_CHOICE",
+    "content": "Câu 8. Cho hình hộp ABCD.EFGH (minh họa hình bên).   Kết quả của phép toán AB  EH là     A. FH . B. BH . C. DB . D. AE .",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "C",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "VECTOR_SUM_DIFFERENCE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.5,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.5,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "candidate_source_page": 87,
+      "source_evidence_id": "EVID_VECTOR_0020"
+    },
+    "visual": {
+      "status": "READY_SOURCE_CROP",
+      "asset_id": "M12_VECTOR_CAND_0020_VISUAL_V1"
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0021",
+    "source_candidate_id": "M12_VECTOR_CAND_0021",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "MULTIPLE_CHOICE",
+    "content": "Câu 7. Cho tứ diện ABCD . Đặt AB  a, AC  b, AD  c , gọi M là trung điểm của BC . A B D C Trong các khẳng định sau, khẳng định nào đúng?  1     1    2  A. DM  a  b  2c .   B. DM  a  2b  c . 2   1     1    2  C. DM  2a  b  c .   D. DM  a  2b  c 2 ",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "A",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.35,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+          "weight": 0.4,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "candidate_source_page": 106,
+      "source_evidence_id": "EVID_VECTOR_0021"
+    },
+    "visual": {
+      "status": "READY_SOURCE_CROP",
+      "asset_id": "M12_VECTOR_CAND_0021_VISUAL_V1"
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0022",
+    "source_candidate_id": "M12_VECTOR_CAND_0022",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "MULTIPLE_CHOICE",
+    "content": "Câu 8. Cho hình lập phương ABCD. A ' B ' C ' D ' cạnh a . Khẳng định nào sau đây sai?        A. AC  A ' C '  0 . B. BA  BC  BB '  BD ' .   C. BD '  a 3 . D. BD  a 2 .",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "A",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "VECTOR_RELATION_IDENTIFICATION_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "SPACE_VECTOR",
+          "weight": 0.5,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIRECTION_3D",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "VECTOR_EQUALITY_3D",
+          "weight": 0.25,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "candidate_source_page": 127,
+      "source_evidence_id": "EVID_VECTOR_0022"
+    },
+    "visual": {
+      "status": "NOT_REQUIRED_AFTER_VISUAL_REVIEW",
+      "asset_id": null
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0023",
+    "source_candidate_id": "M12_VECTOR_CAND_0023",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "MULTIPLE_CHOICE",
+    "content": "Câu 6. Cho hình hộp chữ nhật ABCD  ABC D (tham khảo hình vẽ duới đây). Khẳng định nào dưới đây là đúng?         A. AD  AB . B. AD  AC . C. AD  AB . D. AB  DC  . 4 4 4",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "D",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "VECTOR_RELATION_IDENTIFICATION_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "SPACE_VECTOR",
+          "weight": 0.5,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIRECTION_3D",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "VECTOR_EQUALITY_3D",
+          "weight": 0.25,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "candidate_source_page": 139,
+      "source_evidence_id": "EVID_VECTOR_0023"
+    },
+    "visual": {
+      "status": "READY_SOURCE_CROP",
+      "asset_id": "M12_VECTOR_CAND_0023_VISUAL_V1"
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0025",
+    "source_candidate_id": "M12_VECTOR_CAND_0025",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "MULTIPLE_CHOICE",
+    "content": "Câu 9. Cho tứ diện ABCD . Gọi M và P lần lượt là trung điểm các cạnh AB và CD . Đặt       BA  b, AC  c, AD  d . Khẳng định nào sau đây là đúng?  1     1     1     1    2   A. MP  c  d  b . B. MP  d  b  c . 2    C. MP  c  b  d . 2   D. MP  c  d  b . 2 ",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "A",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.35,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+          "weight": 0.4,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "candidate_source_page": 157,
+      "source_evidence_id": "EVID_VECTOR_0025"
+    },
+    "visual": {
+      "status": "READY_SOURCE_CROP",
+      "asset_id": "M12_VECTOR_CAND_0025_VISUAL_V1"
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0027",
+    "source_candidate_id": "M12_VECTOR_CAND_0027",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "MULTIPLE_CHOICE",
+    "content": "Câu 7. Cho hình chóp S . ABCD có đáy ABCD là hình bình hành tâm O . Khẳng định nào sau đây đúng?     1       A. SA  SB  SC  SD  SO . B. SA  SB  SC  SD  4 SO . 4          1  C. SA  SB  SC  SD  2 SO . D. SA  SB  SC  SD  SO . 2",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "B",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "VECTOR_SUM_DIFFERENCE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.5,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.5,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "candidate_source_page": 178,
+      "source_evidence_id": "EVID_VECTOR_0027"
+    },
+    "visual": {
+      "status": "READY_SOURCE_CROP",
+      "asset_id": "M12_VECTOR_CAND_0027_VISUAL_V1"
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0028",
+    "source_candidate_id": "M12_VECTOR_CAND_0028",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "MULTIPLE_CHOICE",
+    "content": "Câu 8. Cho hình hộp ABCD. ABC D như hình vẽ    Vectơ tổng AB  AD  AA bằng vectơ nào dưới đây?     A. AD . B. AC  . C. AC . D. AB .",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "B",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "VECTOR_SUM_DIFFERENCE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.5,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.5,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "candidate_source_page": 197,
+      "source_evidence_id": "EVID_VECTOR_0028"
+    },
+    "visual": {
+      "status": "READY_SOURCE_CROP",
+      "asset_id": "M12_VECTOR_CAND_0028_VISUAL_V1"
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0029",
+    "source_candidate_id": "M12_VECTOR_CAND_0029",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "MULTIPLE_CHOICE",
+    "content": "Câu 7. Cho tứ diện ABCD . Đặt DA  a, DB  b, DC  c . Nếu M , N lần lượt là trung điểm của hai cạnh BD và AC thì  1     1     1     1    2   A. MN   a  b  c . B. MN  a  b  c . 2    C. MN  a  b  c . 2   D. MN  a  b  c . 2  z",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "B",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.35,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+          "weight": 0.4,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "candidate_source_page": 217,
+      "source_evidence_id": "EVID_VECTOR_0029"
+    },
+    "visual": {
+      "status": "READY_SOURCE_CROP",
+      "asset_id": "M12_VECTOR_CAND_0029_VISUAL_V1"
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0031",
+    "source_candidate_id": "M12_VECTOR_CAND_0031",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "MULTIPLE_CHOICE",
+    "content": "Câu 12. Cho hình chóp S . ABCD có tất cả các cạnh bên và cạnh đáy đều bằng a và ABCD là hình vuông. Gọi M là trung điểm của CD .   Giá trị của MS .CB bằng a2 a2 a2 2a 2 A. . B.  . C. . D. . 2 2 3 2 PHẦN II. Thí sinh trả lời từ câu 1 đến câu 4. Trong mỗi ý a), b), c), d) ở mỗi câu, thí sinh chọn đúng hoặc sai.",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "A",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "VECTOR_DOT_PRODUCT_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "DOT_PRODUCT_3D",
+          "weight": 0.7,
+          "is_primary": true
+        },
+        {
+          "code": "SPACE_VECTOR",
+          "weight": 0.3,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "candidate_source_page": 237,
+      "source_evidence_id": "EVID_VECTOR_0031"
+    },
+    "visual": {
+      "status": "NOT_REQUIRED_AFTER_VISUAL_REVIEW",
+      "asset_id": null
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0034",
+    "source_candidate_id": "M12_VECTOR_CAND_0034",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "MULTIPLE_CHOICE",
+    "content": "Câu 5. Cho hình hộp ABCD. ABC D có đáy ABCD là hình bình hành tâm O . Khi đó 2.AO bằng véc tơ nào sau đây?     A. AC . B. AB . C. AD . D. AC . x2  2x 1",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "D",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+          "weight": 0.7,
+          "is_primary": true
+        },
+        {
+          "code": "SPACE_VECTOR",
+          "weight": 0.3,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "candidate_source_page": 276,
+      "source_evidence_id": "EVID_VECTOR_0034"
+    },
+    "visual": {
+      "status": "READY_SOURCE_CROP",
+      "asset_id": "M12_VECTOR_CAND_0034_VISUAL_V1"
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0036",
+    "source_candidate_id": "M12_VECTOR_CAND_0036",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "MULTIPLE_CHOICE",
+    "content": "Câu 7. Cho hình chóp S . ABCD có đáy là hình bình hành. Đẳng thức nào sau đây là đẳng thức đúng?          A. SA  SB  SC  SD  0 . B. SA  SC  SB  SD .         C. SA  SB  SC  SD . D. SB  SC  SA  SD .",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "B",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "VECTOR_SUM_DIFFERENCE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.5,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.5,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "candidate_source_page": 301,
+      "source_evidence_id": "EVID_VECTOR_0036"
+    },
+    "visual": {
+      "status": "READY_SOURCE_CROP",
+      "asset_id": "M12_VECTOR_CAND_0036_VISUAL_V1"
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0039",
+    "source_candidate_id": "M12_VECTOR_CAND_0039",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "MULTIPLE_CHOICE",
+    "content": "Câu 8. Cho hình chóp S . ABCD , có đáy ABCD là hình bình hành tâm O . Tam giác SAC đều cạnh bằng a .   Khi đó SB  SD bằng a 3 a 3 A. . B. . C. 2a 3 . D. a 3 . 4 2",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "D",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "VECTOR_LENGTH_DISTANCE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_LENGTH_3D",
+          "weight": 0.6,
+          "is_primary": true
+        },
+        {
+          "code": "DISTANCE_3D",
+          "weight": 0.4,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_LENGTH",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "candidate_source_page": 342,
+      "source_evidence_id": "EVID_VECTOR_0039"
+    },
+    "visual": {
+      "status": "READY_SOURCE_CROP",
+      "asset_id": "M12_VECTOR_CAND_0039_VISUAL_V1"
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0043",
+    "source_candidate_id": "M12_VECTOR_CAND_0043",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "MULTIPLE_CHOICE",
+    "content": "Câu 8. Cho hình hộp ABCD. A ' B ' C ' D ' có tâm O . Khi đó, AB  AD  AA '  AC ' bằng:     A. BD . B. 2OC ' . C. 4AO . D. 2AC",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "C",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "VECTOR_SUM_DIFFERENCE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.5,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.5,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "candidate_source_page": 385,
+      "source_evidence_id": "EVID_VECTOR_0043"
+    },
+    "visual": {
+      "status": "READY_SOURCE_CROP",
+      "asset_id": "M12_VECTOR_CAND_0043_VISUAL_V1"
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0044",
+    "source_candidate_id": "M12_VECTOR_CAND_0044",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "MULTIPLE_CHOICE",
+    "content": "Câu 8. Trong không gian Oxyz, cho hai vectơ a, b thỏa mãn |a| = 2√3, |b| = 3, góc(a,b) = 30°. Độ dài vectơ 3a - 2b là A. 6. B. 5. C. 7. D. 3.",
+    "content_basis": "ACADEMIC_REVIEW_PATCH",
+    "correct_answer": "A",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "VECTOR_LENGTH_DISTANCE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_LENGTH_3D",
+          "weight": 0.6,
+          "is_primary": true
+        },
+        {
+          "code": "DISTANCE_3D",
+          "weight": 0.4,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_LENGTH",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "candidate_source_page": 397,
+      "source_evidence_id": "EVID_VECTOR_0044"
+    },
+    "visual": {
+      "status": "NOT_REQUIRED_FROM_ACADEMIC_REVIEW",
+      "asset_id": null
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0047",
+    "source_candidate_id": "M12_VECTOR_CAND_0047",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "MULTIPLE_CHOICE",
+    "content": "Câu 2. Cho hình hộp ABCD  A BC  D (hình vẽ). Đẳng thức nào sau đây sai?             A. AB  CB  AC  . B. AC  BB  AC . C. AB  AD  AC . D. AD  CC   AD . 1",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "A",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "VECTOR_RELATION_IDENTIFICATION_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "SPACE_VECTOR",
+          "weight": 0.5,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIRECTION_3D",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "VECTOR_EQUALITY_3D",
+          "weight": 0.25,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "candidate_source_page": 416,
+      "source_evidence_id": "EVID_VECTOR_0047"
+    },
+    "visual": {
+      "status": "READY_SOURCE_CROP",
+      "asset_id": "M12_VECTOR_CAND_0047_VISUAL_V1"
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0049",
+    "source_candidate_id": "M12_VECTOR_CAND_0049",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "SHORT_ANSWER",
+    "content": "Câu 4. Trong không gian Oxyz , một con chim đang đậu trên cành cây có toạ độ  1  m;3  m; 4m  với m   . Cùng thời điểm đó, có một thợ săn bắn ra một viên đạn từ điểm A 1;3;4  , đầu đạn đi với vận  tốc không đổi và có vectơ vận tốc là v   2;1; 6  . Để thợ săn đó bắn trúng con chim thì giá trị của m bằng bao nhiêu? Trả lời: ………………..",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "-2",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "REAL_WORLD_VECTOR_COORDINATE_MODELING_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "REAL_WORLD_VECTOR_MODELING_3D",
+          "weight": 0.6,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_COORDINATES_3D",
+          "weight": 0.2,
+          "is_primary": false
+        },
+        {
+          "code": "VECTOR_LENGTH_3D",
+          "weight": 0.2,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_REAL_WORLD",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "candidate_source_page": 440,
+      "source_evidence_id": "EVID_VECTOR_0049"
+    },
+    "visual": {
+      "status": "NOT_REQUIRED_FROM_ACADEMIC_REVIEW",
+      "asset_id": null
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0050",
+    "source_candidate_id": "M12_VECTOR_CAND_0050",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "MULTIPLE_CHOICE",
+    "content": "Câu 8. Cho hình chóp S . ABCD có đáy ABCD là hình bình hành. Đặt SA  a , SB  b, SC  c , SD  d . Khẳng định nào dưới đây đúng?                  A. a  b  c  d . B. a  d  b  c . C. a  c  b  d . D. a  b  c  d  0 .",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "C",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "VECTOR_SUM_DIFFERENCE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.5,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.5,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "candidate_source_page": 444,
+      "source_evidence_id": "EVID_VECTOR_0050"
+    },
+    "visual": {
+      "status": "READY_SOURCE_CROP",
+      "asset_id": "M12_VECTOR_CAND_0050_VISUAL_V1"
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0051",
+    "source_candidate_id": "M12_VECTOR_CAND_0051",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "SHORT_ANSWER",
+    "content": "Câu 4. Trong không gian Oxyz , một khinh khí cầu ở tọa độ A  16; 10;10  bắt đầu bay với vectơ vận  tốc không đổi v   4;3; 1 (đơn vị vận tốc là km/h) và dự kiến bay trong thời gian 10 giờ. Biết trạm kiểm soát không lưu đặt ở vị trí gốc tọa độ O kiểm soát được các vật thể cách trạm một khoảng tối đa bằng 12km. Thời gian kể từ khi trạm kiểm soát không lưu phát hiện ra khinh khí cầu đến khi khinh khí cầu ra khỏi vùng kiểm soát là bao nhiêu phút? Trả lời: ………………..",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "240",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "REAL_WORLD_VECTOR_COORDINATE_MODELING_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "REAL_WORLD_VECTOR_MODELING_3D",
+          "weight": 0.6,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_COORDINATES_3D",
+          "weight": 0.2,
+          "is_primary": false
+        },
+        {
+          "code": "VECTOR_LENGTH_3D",
+          "weight": 0.2,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_REAL_WORLD",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "candidate_source_page": 461,
+      "source_evidence_id": "EVID_VECTOR_0051"
+    },
+    "visual": {
+      "status": "NOT_REQUIRED_FROM_ACADEMIC_REVIEW",
+      "asset_id": null
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0052",
+    "source_candidate_id": "M12_VECTOR_CAND_0052",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "MULTIPLE_CHOICE",
+    "content": "Câu 7. Cho hình lập phương ABCD. ABC D . Góc giữa hai vectơ AB và CD bằng A. 30 . B. 135 . C. 60 . D. 45 .",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "B",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "VECTOR_ANGLE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_ANGLE_3D",
+          "weight": 0.6,
+          "is_primary": true
+        },
+        {
+          "code": "DOT_PRODUCT_3D",
+          "weight": 0.4,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "candidate_source_page": 465,
+      "source_evidence_id": "EVID_VECTOR_0052"
+    },
+    "visual": {
+      "status": "NOT_REQUIRED_AFTER_VISUAL_REVIEW",
+      "asset_id": null
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0053",
+    "source_candidate_id": "M12_VECTOR_CAND_0053",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "MULTIPLE_CHOICE",
+    "content": "Câu 10. Cho hình chóp S . ABCD có đáy là hình bình hành tâm O . Phát biểu nào sau đây là đúng?         A. SA  OC  SB  CO . B. SA  OC  SB  BO .         C. SA  OC  SB  OB . D. SA  OC  SB  0 .",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "B",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "VECTOR_SUM_DIFFERENCE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.5,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.5,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "candidate_source_page": 477,
+      "source_evidence_id": "EVID_VECTOR_0053"
+    },
+    "visual": {
+      "status": "READY_SOURCE_CROP",
+      "asset_id": "M12_VECTOR_CAND_0053_VISUAL_V1"
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0054",
+    "source_candidate_id": "M12_VECTOR_CAND_0054",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "SHORT_ANSWER",
+    "content": "Câu 4. Trong không gian Oxyz , một con chim bay từ vị trí M  0;1;0  với vận tốc không đổi và vectơ  vận tốc là v1  1; 1; 2  . Cùng thời điểm đó, bạn Minh Hiền núp ở gốc cây và bắn ra một viên đạn từ  điểm N 1; 2; 2  , đầu đạn đi với vận tốc không đổi và có vectơ vận tốc là v2   5;1; 2  . Biết bạn Minh Hiền bắn trúng con chim ở toạ độ A  x; y; z  , hãy giá trị biểu thức T  3 x  6 y  9 z . Trả lời: ………………..",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "-4",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "REAL_WORLD_VECTOR_COORDINATE_MODELING_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "REAL_WORLD_VECTOR_MODELING_3D",
+          "weight": 0.6,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_COORDINATES_3D",
+          "weight": 0.2,
+          "is_primary": false
+        },
+        {
+          "code": "VECTOR_LENGTH_3D",
+          "weight": 0.2,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_REAL_WORLD",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "candidate_source_page": 498,
+      "source_evidence_id": "EVID_VECTOR_0054"
+    },
+    "visual": {
+      "status": "NOT_REQUIRED_FROM_ACADEMIC_REVIEW",
+      "asset_id": null
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0055",
+    "source_candidate_id": "M12_VECTOR_CAND_0055",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "MULTIPLE_CHOICE",
+    "content": "Câu 7. Cho hình hộp ABCD. A ' B ' C ' D ' . Chọn đẳng thức vectơ đúng:         A. DB '  DA  DD '  DC . B. AC '  AC  AB  AD .         C. DB  DA  DD '  DC . D. AC '  AB  AB '  AD .",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "A",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.35,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+          "weight": 0.4,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "candidate_source_page": 502,
+      "source_evidence_id": "EVID_VECTOR_0055"
+    },
+    "visual": {
+      "status": "READY_SOURCE_CROP",
+      "asset_id": "M12_VECTOR_CAND_0055_VISUAL_V1"
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0056",
+    "source_candidate_id": "M12_VECTOR_CAND_0056",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "MULTIPLE_CHOICE",
+    "content": "Câu 12. Cho hình chóp S . ABCD có đáy ABCD là hình bình hành tâm O (tham khảo hình vẽ). Khẳng định nào dưới đây đúng?       A. SA  SC  2 SO . B. SA  SB  2SO .         C. SA  SB  SC  SD  2 SO . D. SB  SD  SO .",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "A",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "VECTOR_SUM_DIFFERENCE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.5,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.5,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "candidate_source_page": 522,
+      "source_evidence_id": "EVID_VECTOR_0056"
+    },
+    "visual": {
+      "status": "READY_SOURCE_CROP",
+      "asset_id": "M12_VECTOR_CAND_0056_VISUAL_V1"
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0057",
+    "source_candidate_id": "M12_VECTOR_CAND_0057",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "MULTIPLE_CHOICE",
+    "content": "Câu 8. Cho hình lập phương ABCD. ABC D có cạnh bằng a . Gọi O và O ' lần lượt là tâm của hình          vuông ABCD và ABC D . Đặt u  OA  OB  OC  OD  OA  OB  OC   OD . Khẳng định nào sau đây đúng?     A. u  a . B. u  4a . C. u  6a . D. u  2a .",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "B",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "VECTOR_SUM_DIFFERENCE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.5,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.5,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "candidate_source_page": 534,
+      "source_evidence_id": "EVID_VECTOR_0057"
+    },
+    "visual": {
+      "status": "NOT_REQUIRED_AFTER_VISUAL_REVIEW",
+      "asset_id": null
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0059",
+    "source_candidate_id": "M12_VECTOR_CAND_0059",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "MULTIPLE_CHOICE",
+    "content": "Câu 8. Cho hình hộp ABCD. ABC D .     Tìm giá trị của k thích hợp điền vào đẳng thức vectơ: BD  DD  BD  k . AA . A. k  2 . B. k  1 . C. k  1 . D. k  2 .",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "C",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+          "weight": 0.7,
+          "is_primary": true
+        },
+        {
+          "code": "SPACE_VECTOR",
+          "weight": 0.3,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "candidate_source_page": 559,
+      "source_evidence_id": "EVID_VECTOR_0059"
+    },
+    "visual": {
+      "status": "READY_SOURCE_CROP",
+      "asset_id": "M12_VECTOR_CAND_0059_VISUAL_V1"
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0060",
+    "source_candidate_id": "M12_VECTOR_CAND_0060",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "MULTIPLE_CHOICE",
+    "content": "Câu 8. Trong không gian, cho tứ diện đều ABCD có các cạnh bằng a . A B D C   Tính tích vô hướng AB.CD bằng A. 0 . B. 4a 2 . C. 2a 2 . D. a 2 .",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "A",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "VECTOR_DOT_PRODUCT_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "DOT_PRODUCT_3D",
+          "weight": 0.7,
+          "is_primary": true
+        },
+        {
+          "code": "SPACE_VECTOR",
+          "weight": 0.3,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "candidate_source_page": 576,
+      "source_evidence_id": "EVID_VECTOR_0060"
+    },
+    "visual": {
+      "status": "READY_SOURCE_CROP",
+      "asset_id": "M12_VECTOR_CAND_0060_VISUAL_V1"
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0061",
+    "source_candidate_id": "M12_VECTOR_CAND_0061",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "MULTIPLE_CHOICE",
+    "content": "Câu 7. Cho ba véc tơ a , b , c đồng phẳng. Xét các véc tơ x  2a  b ; y  4a  2b ; z  3b  2c . Chọn khẳng định đúng?.     A. Hai véc tơ y; z cùng phương. B. Hai véc tơ x; y cùng phương.      C. Hai véc tơ x; z cùng phương. D. Ba véc tơ x; y; z đồng phẳng",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "B",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+          "weight": 0.7,
+          "is_primary": true
+        },
+        {
+          "code": "SPACE_VECTOR",
+          "weight": 0.3,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "candidate_source_page": 595,
+      "source_evidence_id": "EVID_VECTOR_0061"
+    },
+    "visual": {
+      "status": "NOT_REQUIRED_FROM_ACADEMIC_REVIEW",
+      "asset_id": null
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0062",
+    "source_candidate_id": "M12_VECTOR_CAND_0062",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "MULTIPLE_CHOICE",
+    "content": "Câu 8. Cho hình lăng trụ ABC . A ' B ' C ' . Phát biểu nào sau đây là đúng         A. B ' C   AA '  AB  AC . B. B ' C   AA '  AB  AC .         C. B ' C   AA '  AB  AC. D. B ' C  AA '  AB  AC.",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "B",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.35,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+          "weight": 0.4,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "candidate_source_page": 613,
+      "source_evidence_id": "EVID_VECTOR_0062"
+    },
+    "visual": {
+      "status": "READY_SOURCE_CROP",
+      "asset_id": "M12_VECTOR_CAND_0062_VISUAL_V1"
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0064",
+    "source_candidate_id": "M12_VECTOR_CAND_0064",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "MULTIPLE_CHOICE",
+    "content": "Câu 8. Cho hình lập phương ABCD. A ' B ' C ' D ' có độ dài mỗi cạnh bằng 1 . Tính độ dài của vecto   AC  C ' D ' A. 1 . B. 2 2 . C. 3. D. 2.",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "A",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "VECTOR_LENGTH_DISTANCE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_LENGTH_3D",
+          "weight": 0.6,
+          "is_primary": true
+        },
+        {
+          "code": "DISTANCE_3D",
+          "weight": 0.4,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_LENGTH",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "candidate_source_page": 633,
+      "source_evidence_id": "EVID_VECTOR_0064"
+    },
+    "visual": {
+      "status": "NOT_REQUIRED_AFTER_VISUAL_REVIEW",
+      "asset_id": null
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0065",
+    "source_candidate_id": "M12_VECTOR_CAND_0065",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "MULTIPLE_CHOICE",
+    "content": "Câu 8. Trong không gian, cho hình hộp ABCD. ABC D . Mệnh đề nào dưới đây sai?         A. CA  CB  CD  CC  . B. AC   AB  AD  AA .        C. BD  BA  BC  BB . D. C A  C B  C D .",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "C",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "VECTOR_RELATION_IDENTIFICATION_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "SPACE_VECTOR",
+          "weight": 0.5,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIRECTION_3D",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "VECTOR_EQUALITY_3D",
+          "weight": 0.25,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "candidate_source_page": 668,
+      "source_evidence_id": "EVID_VECTOR_0065"
+    },
+    "visual": {
+      "status": "READY_SOURCE_CROP",
+      "asset_id": "M12_VECTOR_CAND_0065_VISUAL_V1"
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0066",
+    "source_candidate_id": "M12_VECTOR_CAND_0066",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "MULTIPLE_CHOICE",
+    "content": "Câu 8. Cho tứ diện OABC có ba cạnh OA, OB, OC đôi một vuông góc và OA  OB  OC  a. Gọi M   là trung điểm cạnh AB. Góc tạo bởi hai vectơ AC và OM bằng A. 120 . B. 60 . C. 135 . D. 45 .",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "A",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "VECTOR_ANGLE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_ANGLE_3D",
+          "weight": 0.6,
+          "is_primary": true
+        },
+        {
+          "code": "DOT_PRODUCT_3D",
+          "weight": 0.4,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "candidate_source_page": 687,
+      "source_evidence_id": "EVID_VECTOR_0066"
+    },
+    "visual": {
+      "status": "NOT_REQUIRED_AFTER_VISUAL_REVIEW",
+      "asset_id": null
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0068",
+    "source_candidate_id": "M12_VECTOR_CAND_0068",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "MULTIPLE_CHOICE",
+    "content": "Câu 7. Cho hình lập phương ABCD. A ' B ' C ' D ' có cạnh a .   Giá trị của AC '.B ' D ' bằng 1 2 2 A. 0 . B.  a 2 . C. 6a 2 . D.  a . 2 2",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "A",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "VECTOR_DOT_PRODUCT_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "DOT_PRODUCT_3D",
+          "weight": 0.7,
+          "is_primary": true
+        },
+        {
+          "code": "SPACE_VECTOR",
+          "weight": 0.3,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "candidate_source_page": 706,
+      "source_evidence_id": "EVID_VECTOR_0068"
+    },
+    "visual": {
+      "status": "NOT_REQUIRED_AFTER_VISUAL_REVIEW",
+      "asset_id": null
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0069",
+    "source_candidate_id": "M12_VECTOR_CAND_0069",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "MULTIPLE_CHOICE",
+    "content": "Câu 7. Cho hình hộp ABCD. ABC D . Khẳng định nào sau đây đúng?         A. AB  AC  AA  AC  . B. AB  AB  AA  AC  .         C. AB  AD  AA  AC  . D. AB  AD  AA  AC  .",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "D",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "VECTOR_SUM_DIFFERENCE_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.5,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.5,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "candidate_source_page": 726,
+      "source_evidence_id": "EVID_VECTOR_0069"
+    },
+    "visual": {
+      "status": "READY_SOURCE_CROP",
+      "asset_id": "M12_VECTOR_CAND_0069_VISUAL_V1"
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0071",
+    "source_candidate_id": "M12_VECTOR_CAND_0071",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "MULTIPLE_CHOICE",
+    "content": "Câu 8. Cho hình hộp ABCD. ABC D . Đặt AB  a, AD  b, AA  c . Phân tích vectơ AC  theo a, b, c ?                 A. AC   a  b  c . B. AC   a  b  c . C. AC   a  b  c . D. AC   a  b  c .",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "C",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.35,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+          "weight": 0.4,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "candidate_source_page": 747,
+      "source_evidence_id": "EVID_VECTOR_0071"
+    },
+    "visual": {
+      "status": "READY_SOURCE_CROP",
+      "asset_id": "M12_VECTOR_CAND_0071_VISUAL_V1"
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  },
+  {
+    "snapshot_key": "M12_VECTOR_CAND_0072",
+    "source_candidate_id": "M12_VECTOR_CAND_0072",
+    "subject_code": "MATH_G12",
+    "chapter_code": "VECTORS_GEOMETRY",
+    "question_type": "MULTIPLE_CHOICE",
+    "content": "Câu 9. Cho hình lăng trụ tam giác ABC . ABC  , gọi M là trung điểm cạnh bên BB ' . Đặt       CA  a, CB  b, CC   c . Khẳng định nào sau đây là đúng?    1  1     1     1   A. AM   a  b  c . B. AM   a  b  c . C. AM  a  b  c . D. AM  a  b  c 2 2 2 2",
+    "content_basis": "DATA_016_SOURCE_TEXT",
+    "correct_answer": "A",
+    "taxonomy": {
+      "problem_types": [
+        {
+          "code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+          "weight": 1.0,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "VECTOR_SUM_3D",
+          "weight": 0.35,
+          "is_primary": true
+        },
+        {
+          "code": "VECTOR_DIFFERENCE_3D",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+          "weight": 0.4,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_VECTOR_OPERATIONS",
+          "weight": 1.0
+        }
+      ],
+      "taxonomy_basis": "COACH_LEARNING_DERIVED"
+    },
+    "source_lineage": {
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "candidate_source_page": 767,
+      "source_evidence_id": "EVID_VECTOR_0072"
+    },
+    "visual": {
+      "status": "READY_SOURCE_CROP",
+      "asset_id": "M12_VECTOR_CAND_0072_VISUAL_V1"
+    },
+    "canonical_snapshot_ready": true,
+    "production_release_eligible": false,
+    "production_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VECTOR_TAXONOMY_NOT_CANONICALLY_ACTIVATED",
+      "VECTOR_TRUSTED_IMPORT_BRIDGE_NOT_IMPLEMENTED",
+      "SCORING_METADATA_POLICY_NOT_REVIEWED"
+    ]
+  }
+]
