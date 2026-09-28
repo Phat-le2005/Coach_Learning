@@ -1,0 +1,61 @@
+{
+  "dataset_code": "DATA-MATH12-016",
+  "dataset_name": "MATH12_VECTOR_MATERIALIZATION_V0_1",
+  "base_commit": "1bbd044497b873df78fa5cfdcb388ca8ecff9035",
+  "status": "STRUCTURAL_REVIEW_REQUIRED",
+  "chapter_code": "VECTORS_GEOMETRY",
+  "subject_code": "MATH_G12",
+  "counts": {
+    "materialization_code": "MATH12_VECTOR_MATERIALIZATION_V0_1",
+    "status": "STRUCTURAL_REVIEW_REQUIRED",
+    "raw_included_occurrences": 132,
+    "materialized_unique_candidates": 72,
+    "standalone_candidates": 58,
+    "true_false_four_groups": 14,
+    "structural_holds": 0,
+    "question_type_counts": {
+      "MULTIPLE_CHOICE": 54,
+      "TRUE_FALSE_GROUP": 14,
+      "SHORT_ANSWER": 4
+    },
+    "selected_source_counts": {
+      "SRC_MOET_EXAM_2025_SOLUTION_COMPILATION": 4,
+      "SRC_PROVINCIAL_TRIAL_2025_COLLECTION": 11,
+      "SRC_TRUONG_NGOC_VY_40_2026": 57
+    },
+    "all_provenance_occurrence_counts": {
+      "SRC_MOET_EXAM_2025_SOLUTION_COMPILATION": 8,
+      "SRC_PROVINCIAL_TRIAL_2025_COLLECTION": 23,
+      "SRC_TRUONG_NGOC_VY_40_2026": 101
+    },
+    "answer_detected_count": 47,
+    "mixed_scope_group_count": 12,
+    "visual_required_count": 53,
+    "problem_types_total": 15,
+    "problem_types_with_candidates": 9,
+    "problem_type_gaps": [
+      "VECTOR_SCALAR_MULTIPLICATION_3D",
+      "POINT_COORDINATES_3D",
+      "VECTOR_COORDINATES_FROM_POINTS_3D",
+      "VECTOR_COORDINATE_LINEAR_OPERATIONS_3D",
+      "VECTOR_COORDINATE_DOT_PRODUCT_3D",
+      "MIDPOINT_CENTROID_COORDINATES_3D"
+    ],
+    "production_release_eligible": 0,
+    "academic_review_complete": false
+  },
+  "semantic_file_hashes": {
+    "candidate_questions.json": "1b364f145fcd6110ba99ee32dc91928a5d3909eac3347e315c40bd7e73fee1ab",
+    "standalone_candidates.json": "ad7b118c2ec9b481c8c6b906398fbb8dc186cf216d550cef5c2b89aef2e3ead5",
+    "question_group_candidates.json": "c8377a51f32057b8a2d8e24ba4b55bbb04cea4687badb5e0519cbb4d4dfaf0bb",
+    "structural_holds.json": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "coverage_report.json": "409b113fa86f48113c4f696fc9f5cd7092f0d54d4bd41779504654fe0c430f28",
+    "extraction_stats.json": "af9362b03ab0c2e7e0fafdd001df1e8e1e0cd2e16006e63123cc6f352cf7e973",
+    "source_hash_verification.json": "ba3d447b526262331ecfab83bd24990399b01a5c30a6177d50e0c9386414ec06",
+    "materialization_policy.json": "310b881ea8e9a2744ad67d0c2784b5b5882498f7d2866ddb1dd4fbbe7a54ecba"
+  },
+  "aggregate_semantic_sha256": "1271542ffd3a215f47e61fc75c741f6d3864cb38dda33baab1c03e921396a893",
+  "source_pdf_binaries_in_repo": false,
+  "db_migration_required": false,
+  "canonical_curriculum_modified": false
+}

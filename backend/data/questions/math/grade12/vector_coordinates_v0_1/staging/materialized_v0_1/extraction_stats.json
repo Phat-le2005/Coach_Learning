@@ -1,0 +1,39 @@
+{
+  "materialization_code": "MATH12_VECTOR_MATERIALIZATION_V0_1",
+  "status": "STRUCTURAL_REVIEW_REQUIRED",
+  "raw_included_occurrences": 132,
+  "materialized_unique_candidates": 72,
+  "standalone_candidates": 58,
+  "true_false_four_groups": 14,
+  "structural_holds": 0,
+  "question_type_counts": {
+    "MULTIPLE_CHOICE": 54,
+    "TRUE_FALSE_GROUP": 14,
+    "SHORT_ANSWER": 4
+  },
+  "selected_source_counts": {
+    "SRC_MOET_EXAM_2025_SOLUTION_COMPILATION": 4,
+    "SRC_PROVINCIAL_TRIAL_2025_COLLECTION": 11,
+    "SRC_TRUONG_NGOC_VY_40_2026": 57
+  },
+  "all_provenance_occurrence_counts": {
+    "SRC_MOET_EXAM_2025_SOLUTION_COMPILATION": 8,
+    "SRC_PROVINCIAL_TRIAL_2025_COLLECTION": 23,
+    "SRC_TRUONG_NGOC_VY_40_2026": 101
+  },
+  "answer_detected_count": 47,
+  "mixed_scope_group_count": 12,
+  "visual_required_count": 53,
+  "problem_types_total": 15,
+  "problem_types_with_candidates": 9,
+  "problem_type_gaps": [
+    "VECTOR_SCALAR_MULTIPLICATION_3D",
+    "POINT_COORDINATES_3D",
+    "VECTOR_COORDINATES_FROM_POINTS_3D",
+    "VECTOR_COORDINATE_LINEAR_OPERATIONS_3D",
+    "VECTOR_COORDINATE_DOT_PRODUCT_3D",
+    "MIDPOINT_CENTROID_COORDINATES_3D"
+  ],
+  "production_release_eligible": 0,
+  "academic_review_complete": false
+}

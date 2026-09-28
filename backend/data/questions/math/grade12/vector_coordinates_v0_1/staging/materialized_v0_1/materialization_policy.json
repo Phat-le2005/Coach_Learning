@@ -1,0 +1,53 @@
+{
+  "policy_code": "MATH12_VECTOR_MATERIALIZATION_POLICY_V0_1",
+  "base_commit": "1bbd044497b873df78fa5cfdcb388ca8ecff9035",
+  "chapter_code": "VECTORS_GEOMETRY",
+  "candidate_status": "STRUCTURAL_CANDIDATE",
+  "academic_review_status": "NOT_REVIEWED",
+  "production_release_eligible": false,
+  "answer_policy": {
+    "detected_answers_are_authoritative": false,
+    "meaning": "answer_detected is only structural evidence extracted from duplicated solution occurrences; academic review must confirm it",
+    "true_false_child_answers": "Always null in DATA-016; assign only during academic review."
+  },
+  "dedupe_policy": {
+    "method": "normalized exact + conservative fuzzy duplicate clustering across question/solution repetitions",
+    "canonical_candidate_source": "earliest question occurrence; solution occurrences remain duplicate provenance/answer evidence",
+    "never_merge_on_question_number_alone": true
+  },
+  "true_false_policy": {
+    "atomic_group_type": "TRUE_FALSE_FOUR",
+    "required_labels": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "required_order_indexes": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "split_children_into_standalone_candidates": false,
+    "mixed_scope_allowed": true,
+    "mixed_scope_meaning": "At least one child is vector-scope while shared group context/other children may be OXYZ; keep group atomic for review."
+  },
+  "visual_policy": {
+    "visual_required_is_preflight_only": true,
+    "crop_or_redraw_in_this_phase": false,
+    "rights_status": "REVIEW_REQUIRED"
+  },
+  "promotion_policy": {
+    "verified_allowed": false,
+    "approved_allowed": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  "taxonomy_policy": {
+    "classification_method": "RULE_BASED_INITIAL_FROM_SOURCE_TEXT",
+    "human_review_required": true,
+    "taxonomy_source": "DATA-MATH12-015 vector_coordinates_v0_1 staging"
+  },
+  "oxyz_boundary": "Standalone candidates whose primary intent is plane/line/sphere must not enter vector corpus. Mixed TRUE_FALSE_FOUR may remain only with mixed_scope=true."
+}
