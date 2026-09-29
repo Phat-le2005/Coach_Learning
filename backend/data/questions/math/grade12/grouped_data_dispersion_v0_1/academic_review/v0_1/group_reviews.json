@@ -1,0 +1,120 @@
+[
+  {
+    "group_candidate_id": "M12_DISP_GROUP_0032",
+    "source_candidate_id": "M12_DISP_CAND_0032",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "source_key": "PROVINCIAL_TRIAL_2025",
+    "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+    "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+    "candidate_source_page": 2,
+    "question_number": "1",
+    "group_type": "TRUE_FALSE_FOUR",
+    "review_status": "HOLD_MIXED_SCOPE",
+    "content_review": "CONFIRMED_FROM_SOURCE_TEXT",
+    "answer_verification": "DEFERRED_MIXED_SCOPE_CHILD_REVIEW",
+    "mixed_scope": true,
+    "structural_problem_type_code": "CALCULATE_GROUPED_RANGE",
+    "reviewed_problem_type_code": "CALCULATE_GROUPED_RANGE",
+    "taxonomy_review": "GROUP_LEVEL_ONLY",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Khoảng biến thiên của mẫu số liệu ghép nhóm trên là 100.",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "MIXED_SCOPE_HOLD"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Số học sinh đạt điểm 60 trở lên là 38 học sinh. C B S A",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "MIXED_SCOPE_HOLD"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Số điểm trung bình của học sinh đạt được từ bảng số liệu trên là 54 điểm.",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "MIXED_SCOPE_HOLD"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Chọn ngẫu nhiên một học sinh từ 120 học sinh trên, xác suất chọn được học sinh có điểm thuộc nhóm chứa trung vị là 1 8 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "MIXED_SCOPE_HOLD"
+      }
+    ],
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "MIXED_SCOPE_CHILD_REVIEW_REQUIRED",
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "group_candidate_id": "M12_DISP_GROUP_0035",
+    "source_candidate_id": "M12_DISP_CAND_0035",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "source_key": "PROVINCIAL_TRIAL_2025",
+    "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+    "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+    "candidate_source_page": 39,
+    "question_number": "3",
+    "group_type": "TRUE_FALSE_FOUR",
+    "review_status": "HOLD_MIXED_SCOPE",
+    "content_review": "CONFIRMED_FROM_SOURCE_TEXT",
+    "answer_verification": "DEFERRED_MIXED_SCOPE_CHILD_REVIEW",
+    "mixed_scope": true,
+    "structural_problem_type_code": "CALCULATE_GROUPED_RANGE",
+    "reviewed_problem_type_code": "CALCULATE_GROUPED_RANGE",
+    "taxonomy_review": "GROUP_LEVEL_ONLY",
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Lớp có ít nhất 11 học sinh có chiêu cao lớn hơn chiều cao trung bình của lớp.",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "MIXED_SCOPE_HOLD"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Chiều cao trung bình của lớp 12A1 là 164 (cm).",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "MIXED_SCOPE_HOLD"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Khoảng biến thiên mẫu số liệu trên là 50.",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "MIXED_SCOPE_HOLD"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Chọn ngầu nhiên 5 học sinh của lớp tham gia đội tình nguyện. Xác suất để chọn được \"5 học sinh có chiều cao lớn hơn hoặc bằng 170 (cm)\" là 11 38 NHÓM GIÁO VIÊN TOÁN VIỆT NHÓM GIÁO VIÊN TOÁN VIỆT NAM",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "MIXED_SCOPE_HOLD"
+      }
+    ],
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "MIXED_SCOPE_CHILD_REVIEW_REQUIRED",
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  }
+]
