@@ -1,21 +1,33 @@
 {
-  "contract_code": "DATA_MATH12_021_VALIDATION_V0_1",
+  "contract_code": "DATA_MATH12_021_DATA_CONTRACT_V0_2",
   "required_invariants": {
-    "input_dataset": "DATA-MATH12-020",
     "input_candidate_count": 41,
     "standalone_reviews": 39,
     "group_reviews": 2,
-    "verified": 38,
-    "hold_missing_source_answer": 1,
-    "hold_mixed_scope": 2,
+    "verified_standalone": 38,
+    "rejected_duplicate": 1,
+    "hold_mixed_scope_groups": 2,
+    "true_false_child_answers_verified": 8,
     "production_release_eligible": 0,
     "database_import_allowed": false,
     "canonical_snapshot_allowed": false
   },
-  "review_policy": {
-    "answer_detected_alone_is_not_authority": true,
-    "verified_requires_source_solution_occurrence": true,
-    "mixed_scope_groups_are_not_promotable": true,
-    "synthetic_gap_fill_forbidden": true
-  }
+  "duplicate_resolution": {
+    "M12_DISP_CAND_0014": "M12_DISP_CAND_0015"
+  },
+  "group_answer_keys": {
+    "M12_DISP_GROUP_0032": [
+      true,
+      false,
+      false,
+      true
+    ],
+    "M12_DISP_GROUP_0035": [
+      true,
+      false,
+      true,
+      false
+    ]
+  },
+  "implementation_note": "Application code may adapt to this dataset contract; curated academic fields are not implementation-owned."
 }
