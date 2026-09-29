@@ -1,0 +1,21 @@
+{
+  "validation_code": "MATH12_GROUPED_DATA_DISPERSION_STAGING_V0_1",
+  "status": "PASS_STRUCTURAL_CONTRACT",
+  "base_commit": "556aa84f7c90705d9d89ad2333782b7311ee9b03",
+  "counts": {
+    "chapters": 1,
+    "topics": 4,
+    "problem_types": 12,
+    "concepts": 15,
+    "official_learning_outcomes": 4,
+    "learning_outcomes": 4,
+    "concept_relations": 21,
+    "problem_type_concepts": 40,
+    "problem_type_learning_outcomes": 12
+  },
+  "promotion_ready": false,
+  "academic_review_complete": false,
+  "question_candidates_materialized": false,
+  "canonical_curriculum_modified": false,
+  "database_import_allowed": false
+}

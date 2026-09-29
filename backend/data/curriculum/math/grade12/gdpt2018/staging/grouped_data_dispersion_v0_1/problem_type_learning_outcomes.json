@@ -1,0 +1,62 @@
+[
+  {
+    "problem_type_code": "CALCULATE_GROUPED_RANGE",
+    "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "CALCULATE_GROUPED_IQR",
+    "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+    "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "COMPARE_GROUPED_RANGE",
+    "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CONCLUDE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "COMPARE_GROUPED_IQR",
+    "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CONCLUDE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "COMPARE_GROUPED_VARIANCE_SD",
+    "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CONCLUDE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "IDENTIFY_MORE_STABLE_GROUPED_DATA",
+    "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_EXPLAIN",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "INTERPRET_GROUPED_DISPERSION_MEASURE",
+    "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_EXPLAIN",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "CONCLUDE_FROM_GROUPED_DISPERSION",
+    "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CONCLUDE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "PARAMETER_FROM_GROUPED_VARIANCE_SD",
+    "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "MULTI_MEASURE_GROUPED_DISPERSION_ANALYSIS",
+    "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CONNECT",
+    "weight": 1.0
+  }
+]

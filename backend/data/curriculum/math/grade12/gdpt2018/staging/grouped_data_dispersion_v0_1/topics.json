@@ -1,0 +1,30 @@
+[
+  {
+    "chapter_code": "GROUPED_DATA_DISPERSION",
+    "code": "GROUPED_RANGE_IQR_TOPIC",
+    "name": "Khoảng biến thiên và khoảng tứ phân vị",
+    "description": "Đo độ phân tán bằng khoảng biến thiên và khoảng tứ phân vị của mẫu ghép nhóm.",
+    "order_index": 10
+  },
+  {
+    "chapter_code": "GROUPED_DATA_DISPERSION",
+    "code": "GROUPED_VARIANCE_SD_TOPIC",
+    "name": "Phương sai và độ lệch chuẩn",
+    "description": "Tính và sử dụng phương sai, độ lệch chuẩn cho mẫu số liệu ghép nhóm.",
+    "order_index": 20
+  },
+  {
+    "chapter_code": "GROUPED_DATA_DISPERSION",
+    "code": "GROUPED_DISPERSION_COMPARISON_TOPIC",
+    "name": "So sánh và diễn giải mức độ phân tán",
+    "description": "So sánh độ ổn định/phân tán của các mẫu và diễn giải ý nghĩa số đo.",
+    "order_index": 30
+  },
+  {
+    "chapter_code": "GROUPED_DATA_DISPERSION",
+    "code": "GROUPED_DISPERSION_APPLICATION_TOPIC",
+    "name": "Vận dụng độ phân tán trong thực tiễn",
+    "description": "Dùng các số đo phân tán để kết luận, ra quyết định hoặc giải bài toán thực tiễn/liên môn.",
+    "order_index": 40
+  }
+]

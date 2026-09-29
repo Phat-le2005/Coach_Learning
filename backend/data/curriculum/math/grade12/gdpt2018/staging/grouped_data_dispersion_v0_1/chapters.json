@@ -1,0 +1,8 @@
+[
+  {
+    "code": "GROUPED_DATA_DISPERSION",
+    "name": "Các số đặc trưng đo mức độ phân tán cho mẫu số liệu ghép nhóm",
+    "description": "Khoảng biến thiên, khoảng tứ phân vị, phương sai, độ lệch chuẩn; so sánh, diễn giải và vận dụng.",
+    "order_index": 30
+  }
+]

@@ -1,0 +1,110 @@
+[
+  {
+    "topic_code": "GROUPED_RANGE_IQR_TOPIC",
+    "code": "CALCULATE_GROUPED_RANGE",
+    "name": "Tính khoảng biến thiên của mẫu ghép nhóm",
+    "description": "Xác định khoảng biến thiên từ các lớp có tần số khác 0.",
+    "order_index": 10,
+    "default_difficulty": 0.25,
+    "is_active": true
+  },
+  {
+    "topic_code": "GROUPED_RANGE_IQR_TOPIC",
+    "code": "CALCULATE_GROUPED_IQR",
+    "name": "Tính khoảng tứ phân vị của mẫu ghép nhóm",
+    "description": "Tính Q1, Q3 cần thiết và khoảng tứ phân vị Q3-Q1 cho mẫu ghép nhóm.",
+    "order_index": 20,
+    "default_difficulty": 0.45,
+    "is_active": true
+  },
+  {
+    "topic_code": "GROUPED_VARIANCE_SD_TOPIC",
+    "code": "CALCULATE_GROUPED_VARIANCE",
+    "name": "Tính phương sai của mẫu ghép nhóm",
+    "description": "Dùng giá trị đại diện và tần số để tính phương sai mẫu ghép nhóm.",
+    "order_index": 10,
+    "default_difficulty": 0.45,
+    "is_active": true
+  },
+  {
+    "topic_code": "GROUPED_VARIANCE_SD_TOPIC",
+    "code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "name": "Tính độ lệch chuẩn của mẫu ghép nhóm",
+    "description": "Tính căn bậc hai của phương sai hoặc tính trực tiếp từ bảng ghép nhóm.",
+    "order_index": 20,
+    "default_difficulty": 0.45,
+    "is_active": true
+  },
+  {
+    "topic_code": "GROUPED_DISPERSION_COMPARISON_TOPIC",
+    "code": "COMPARE_GROUPED_RANGE",
+    "name": "So sánh mẫu bằng khoảng biến thiên",
+    "description": "So sánh độ phân tán của hai hay nhiều mẫu ghép nhóm theo khoảng biến thiên.",
+    "order_index": 10,
+    "default_difficulty": 0.35,
+    "is_active": true
+  },
+  {
+    "topic_code": "GROUPED_DISPERSION_COMPARISON_TOPIC",
+    "code": "COMPARE_GROUPED_IQR",
+    "name": "So sánh mẫu bằng khoảng tứ phân vị",
+    "description": "So sánh độ phân tán/độ ổn định bằng IQR.",
+    "order_index": 20,
+    "default_difficulty": 0.5,
+    "is_active": true
+  },
+  {
+    "topic_code": "GROUPED_DISPERSION_COMPARISON_TOPIC",
+    "code": "COMPARE_GROUPED_VARIANCE_SD",
+    "name": "So sánh mẫu bằng phương sai hoặc độ lệch chuẩn",
+    "description": "Tính/đối chiếu variance hoặc standard deviation của nhiều mẫu.",
+    "order_index": 30,
+    "default_difficulty": 0.55,
+    "is_active": true
+  },
+  {
+    "topic_code": "GROUPED_DISPERSION_COMPARISON_TOPIC",
+    "code": "IDENTIFY_MORE_STABLE_GROUPED_DATA",
+    "name": "Nhận biết mẫu ổn định hơn",
+    "description": "Suy luận mẫu ổn định/đồng đều hơn từ các số đo phân tán.",
+    "order_index": 40,
+    "default_difficulty": 0.5,
+    "is_active": true
+  },
+  {
+    "topic_code": "GROUPED_DISPERSION_APPLICATION_TOPIC",
+    "code": "INTERPRET_GROUPED_DISPERSION_MEASURE",
+    "name": "Giải thích ý nghĩa số đo phân tán",
+    "description": "Diễn giải ý nghĩa của range, IQR, variance hoặc standard deviation trong ngữ cảnh.",
+    "order_index": 10,
+    "default_difficulty": 0.5,
+    "is_active": true
+  },
+  {
+    "topic_code": "GROUPED_DISPERSION_APPLICATION_TOPIC",
+    "code": "CONCLUDE_FROM_GROUPED_DISPERSION",
+    "name": "Rút ra kết luận từ độ phân tán",
+    "description": "Chỉ ra kết luận phù hợp từ một hoặc nhiều số đo phân tán.",
+    "order_index": 20,
+    "default_difficulty": 0.55,
+    "is_active": true
+  },
+  {
+    "topic_code": "GROUPED_DISPERSION_APPLICATION_TOPIC",
+    "code": "PARAMETER_FROM_GROUPED_VARIANCE_SD",
+    "name": "Tìm tham số từ phương sai/độ lệch chuẩn",
+    "description": "Thiết lập điều kiện từ variance/standard deviation để tìm tần số, tham số hoặc dữ kiện chưa biết.",
+    "order_index": 30,
+    "default_difficulty": 0.7,
+    "is_active": true
+  },
+  {
+    "topic_code": "GROUPED_DISPERSION_APPLICATION_TOPIC",
+    "code": "MULTI_MEASURE_GROUPED_DISPERSION_ANALYSIS",
+    "name": "Phân tích kết hợp nhiều số đo phân tán",
+    "description": "Kết hợp range/IQR/variance/standard deviation để so sánh hoặc kết luận.",
+    "order_index": 40,
+    "default_difficulty": 0.65,
+    "is_active": true
+  }
+]

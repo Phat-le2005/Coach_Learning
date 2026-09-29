@@ -1,0 +1,30 @@
+[
+  {
+    "code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+    "description": "Tính được khoảng biến thiên, khoảng tứ phân vị, phương sai và độ lệch chuẩn của mẫu số liệu ghép nhóm.",
+    "grade_level": 12,
+    "order_index": 10,
+    "source_reference": "TT 32/2018/TT-BGDĐT - Lớp 12 - Thống kê - Các số đặc trưng của mẫu số liệu ghép nhóm"
+  },
+  {
+    "code": "LO_M12_GROUPED_DISPERSION_EXPLAIN",
+    "description": "Giải thích được ý nghĩa và vai trò của các số đặc trưng đo mức độ phân tán trong thực tiễn.",
+    "grade_level": 12,
+    "order_index": 20,
+    "source_reference": "TT 32/2018/TT-BGDĐT - Lớp 12 - Thống kê - Các số đặc trưng của mẫu số liệu ghép nhóm"
+  },
+  {
+    "code": "LO_M12_GROUPED_DISPERSION_CONCLUDE",
+    "description": "Rút ra được kết luận đơn giản từ các số đặc trưng đo mức độ phân tán.",
+    "grade_level": 12,
+    "order_index": 30,
+    "source_reference": "TT 32/2018/TT-BGDĐT - Lớp 12 - Thống kê - Các số đặc trưng của mẫu số liệu ghép nhóm"
+  },
+  {
+    "code": "LO_M12_GROUPED_DISPERSION_CONNECT",
+    "description": "Nhận biết và vận dụng mối liên hệ của thống kê với thực tiễn và các môn học khác ở lớp 12.",
+    "grade_level": 12,
+    "order_index": 40,
+    "source_reference": "TT 32/2018/TT-BGDĐT - Lớp 12 - Thống kê - Các số đặc trưng của mẫu số liệu ghép nhóm"
+  }
+]

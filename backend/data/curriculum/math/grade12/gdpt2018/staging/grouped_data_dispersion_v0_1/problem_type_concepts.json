@@ -1,0 +1,242 @@
+[
+  {
+    "problem_type_code": "CALCULATE_GROUPED_RANGE",
+    "concept_code": "GROUPED_RANGE",
+    "weight": 0.6,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "CALCULATE_GROUPED_RANGE",
+    "concept_code": "GROUPED_DATA_CLASS_BOUNDARY",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "CALCULATE_GROUPED_RANGE",
+    "concept_code": "GROUPED_DATA_FREQUENCY",
+    "weight": 0.15,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "CALCULATE_GROUPED_IQR",
+    "concept_code": "GROUPED_IQR",
+    "weight": 0.55,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "CALCULATE_GROUPED_IQR",
+    "concept_code": "GROUPED_QUARTILE_INTERPOLATION",
+    "weight": 0.35,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "CALCULATE_GROUPED_IQR",
+    "concept_code": "GROUPED_DATA_FREQUENCY",
+    "weight": 0.1,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+    "concept_code": "GROUPED_VARIANCE",
+    "weight": 0.55,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+    "concept_code": "GROUPED_MEAN_FOR_DISPERSION",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+    "concept_code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+    "weight": 0.15,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+    "concept_code": "GROUPED_DATA_FREQUENCY",
+    "weight": 0.1,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "concept_code": "GROUPED_STANDARD_DEVIATION",
+    "weight": 0.55,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "concept_code": "GROUPED_VARIANCE",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "concept_code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+    "weight": 0.1,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "concept_code": "GROUPED_DATA_FREQUENCY",
+    "weight": 0.1,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "COMPARE_GROUPED_RANGE",
+    "concept_code": "DISPERSION_COMPARISON",
+    "weight": 0.55,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "COMPARE_GROUPED_RANGE",
+    "concept_code": "GROUPED_RANGE",
+    "weight": 0.45,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "COMPARE_GROUPED_IQR",
+    "concept_code": "DISPERSION_COMPARISON",
+    "weight": 0.5,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "COMPARE_GROUPED_IQR",
+    "concept_code": "GROUPED_IQR",
+    "weight": 0.4,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "COMPARE_GROUPED_IQR",
+    "concept_code": "IQR_ROBUSTNESS",
+    "weight": 0.1,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "COMPARE_GROUPED_VARIANCE_SD",
+    "concept_code": "DISPERSION_COMPARISON",
+    "weight": 0.45,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "COMPARE_GROUPED_VARIANCE_SD",
+    "concept_code": "GROUPED_VARIANCE",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "COMPARE_GROUPED_VARIANCE_SD",
+    "concept_code": "GROUPED_STANDARD_DEVIATION",
+    "weight": 0.3,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "IDENTIFY_MORE_STABLE_GROUPED_DATA",
+    "concept_code": "DATA_STABILITY_CONSISTENCY",
+    "weight": 0.5,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "IDENTIFY_MORE_STABLE_GROUPED_DATA",
+    "concept_code": "DISPERSION_COMPARISON",
+    "weight": 0.35,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "IDENTIFY_MORE_STABLE_GROUPED_DATA",
+    "concept_code": "DISPERSION_INTERPRETATION",
+    "weight": 0.15,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "INTERPRET_GROUPED_DISPERSION_MEASURE",
+    "concept_code": "DISPERSION_INTERPRETATION",
+    "weight": 0.6,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "INTERPRET_GROUPED_DISPERSION_MEASURE",
+    "concept_code": "REAL_WORLD_DISPERSION_MODELING",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "INTERPRET_GROUPED_DISPERSION_MEASURE",
+    "concept_code": "DATA_STABILITY_CONSISTENCY",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "CONCLUDE_FROM_GROUPED_DISPERSION",
+    "concept_code": "DISPERSION_INTERPRETATION",
+    "weight": 0.4,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "CONCLUDE_FROM_GROUPED_DISPERSION",
+    "concept_code": "DATA_STABILITY_CONSISTENCY",
+    "weight": 0.3,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "CONCLUDE_FROM_GROUPED_DISPERSION",
+    "concept_code": "REAL_WORLD_DISPERSION_MODELING",
+    "weight": 0.3,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "PARAMETER_FROM_GROUPED_VARIANCE_SD",
+    "concept_code": "GROUPED_VARIANCE",
+    "weight": 0.35,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "PARAMETER_FROM_GROUPED_VARIANCE_SD",
+    "concept_code": "GROUPED_STANDARD_DEVIATION",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "PARAMETER_FROM_GROUPED_VARIANCE_SD",
+    "concept_code": "GROUPED_MEAN_FOR_DISPERSION",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "PARAMETER_FROM_GROUPED_VARIANCE_SD",
+    "concept_code": "GROUPED_DATA_FREQUENCY",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "MULTI_MEASURE_GROUPED_DISPERSION_ANALYSIS",
+    "concept_code": "DISPERSION_COMPARISON",
+    "weight": 0.35,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "MULTI_MEASURE_GROUPED_DISPERSION_ANALYSIS",
+    "concept_code": "GROUPED_IQR",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "MULTI_MEASURE_GROUPED_DISPERSION_ANALYSIS",
+    "concept_code": "GROUPED_VARIANCE",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "MULTI_MEASURE_GROUPED_DISPERSION_ANALYSIS",
+    "concept_code": "GROUPED_STANDARD_DEVIATION",
+    "weight": 0.15,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "MULTI_MEASURE_GROUPED_DISPERSION_ANALYSIS",
+    "concept_code": "REAL_WORLD_DISPERSION_MODELING",
+    "weight": 0.1,
+    "is_primary": false
+  }
+]

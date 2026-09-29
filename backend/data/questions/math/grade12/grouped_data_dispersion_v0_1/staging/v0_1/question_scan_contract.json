@@ -1,0 +1,47 @@
+{
+  "scan_code": "MATH12_GROUPED_DISPERSION_SCAN_V0_1",
+  "status": "STRUCTURAL_SCAN",
+  "target_chapter_code": "GROUPED_DATA_DISPERSION",
+  "allowed_question_structures": [
+    "MULTIPLE_CHOICE",
+    "SHORT_ANSWER",
+    "TRUE_FALSE_FOUR"
+  ],
+  "include_primary_intents": [
+    "calculate grouped-data range",
+    "calculate grouped-data interquartile range",
+    "calculate grouped-data variance",
+    "calculate grouped-data standard deviation",
+    "compare grouped samples using range/IQR/variance/standard deviation",
+    "infer stability/consistency from dispersion",
+    "interpret or conclude from dispersion measures",
+    "real-world/interdisciplinary use of grouped-data dispersion"
+  ],
+  "exclude_primary_intents": [
+    "grouped-data mean only",
+    "grouped-data median only",
+    "grouped-data mode only",
+    "Q1/Q2/Q3 only when no dispersion measure or comparison is assessed",
+    "identify the median group only",
+    "probability tasks that merely reuse a grouped-data table"
+  ],
+  "prerequisite_policy": {
+    "rule": "Quartile interpolation and grouped mean may appear as prerequisite computation inside a Grade-12 dispersion task, but standalone central-tendency/location questions remain outside this chapter.",
+    "grade11_boundary": "Mean, median, quartiles and mode of grouped data are treated as Grade-11 prerequisite content when they are the sole assessed objective."
+  },
+  "mixed_group_policy": {
+    "rule": "Never split TRUE_FALSE_FOUR shared context during structural staging.",
+    "action": "Keep full group; mark mixed_scope=true when only some children assess Grade-12 dispersion."
+  },
+  "visual_policy": {
+    "visual_required_when": "A table/chart/diagram is necessary to reconstruct the question faithfully.",
+    "source_validation": "Do not redraw or fabricate. Later crop only the required source component from the exact source page.",
+    "rights_status": "REVIEW_REQUIRED"
+  },
+  "initial_status": "STRUCTURAL_CANDIDATE",
+  "never_auto_set": [
+    "VERIFIED",
+    "APPROVED",
+    "production_eligible"
+  ]
+}

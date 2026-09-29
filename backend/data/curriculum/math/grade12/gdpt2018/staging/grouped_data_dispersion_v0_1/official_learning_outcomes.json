@@ -1,0 +1,30 @@
+[
+  {
+    "official_outcome_code": "M12_GROUPED_DISPERSION_OFFICIAL_01",
+    "content_area": "Tính các số đặc trưng đo mức độ phân tán",
+    "normalized_description": "Tính được khoảng biến thiên, khoảng tứ phân vị, phương sai và độ lệch chuẩn cho mẫu số liệu ghép nhóm.",
+    "source_reference": "TT 32/2018/TT-BGDĐT - Lớp 12 - Thống kê - Các số đặc trưng của mẫu số liệu ghép nhóm",
+    "provenance_type": "OFFICIAL_NORMALIZED"
+  },
+  {
+    "official_outcome_code": "M12_GROUPED_DISPERSION_OFFICIAL_02",
+    "content_area": "Ý nghĩa và vai trò",
+    "normalized_description": "Giải thích được ý nghĩa và vai trò của các số đặc trưng đo mức độ phân tán của mẫu số liệu trong thực tiễn.",
+    "source_reference": "TT 32/2018/TT-BGDĐT - Lớp 12 - Thống kê - Các số đặc trưng của mẫu số liệu ghép nhóm",
+    "provenance_type": "OFFICIAL_NORMALIZED"
+  },
+  {
+    "official_outcome_code": "M12_GROUPED_DISPERSION_OFFICIAL_03",
+    "content_area": "Kết luận từ độ phân tán",
+    "normalized_description": "Chỉ ra được những kết luận trong trường hợp đơn giản nhờ ý nghĩa của các số đặc trưng đo mức độ phân tán.",
+    "source_reference": "TT 32/2018/TT-BGDĐT - Lớp 12 - Thống kê - Các số đặc trưng của mẫu số liệu ghép nhóm",
+    "provenance_type": "OFFICIAL_NORMALIZED"
+  },
+  {
+    "official_outcome_code": "M12_GROUPED_DISPERSION_OFFICIAL_04",
+    "content_area": "Liên hệ thực tiễn và liên môn",
+    "normalized_description": "Nhận biết được mối liên hệ giữa thống kê với kiến thức các môn học khác trong chương trình lớp 12 và trong thực tiễn.",
+    "source_reference": "TT 32/2018/TT-BGDĐT - Lớp 12 - Thống kê - Các số đặc trưng của mẫu số liệu ghép nhóm",
+    "provenance_type": "OFFICIAL_NORMALIZED"
+  }
+]

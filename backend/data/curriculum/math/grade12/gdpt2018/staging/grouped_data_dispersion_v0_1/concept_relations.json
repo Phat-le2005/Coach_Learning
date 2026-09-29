@@ -1,0 +1,107 @@
+[
+  {
+    "source_code": "GROUPED_DATA_CLASS_INTERVAL",
+    "target_code": "GROUPED_DATA_CLASS_BOUNDARY",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "GROUPED_DATA_CLASS_INTERVAL",
+    "target_code": "GROUPED_DATA_FREQUENCY",
+    "relation_type": "RELATED_TO"
+  },
+  {
+    "source_code": "GROUPED_DATA_CLASS_INTERVAL",
+    "target_code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "GROUPED_DATA_CLASS_BOUNDARY",
+    "target_code": "GROUPED_RANGE",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "GROUPED_DATA_FREQUENCY",
+    "target_code": "GROUPED_RANGE",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "GROUPED_DATA_FREQUENCY",
+    "target_code": "GROUPED_QUARTILE_INTERPOLATION",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "GROUPED_QUARTILE_INTERPOLATION",
+    "target_code": "GROUPED_IQR",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+    "target_code": "GROUPED_MEAN_FOR_DISPERSION",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "GROUPED_DATA_FREQUENCY",
+    "target_code": "GROUPED_MEAN_FOR_DISPERSION",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "GROUPED_MEAN_FOR_DISPERSION",
+    "target_code": "GROUPED_VARIANCE",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+    "target_code": "GROUPED_VARIANCE",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "GROUPED_DATA_FREQUENCY",
+    "target_code": "GROUPED_VARIANCE",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "GROUPED_VARIANCE",
+    "target_code": "GROUPED_STANDARD_DEVIATION",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "GROUPED_RANGE",
+    "target_code": "DISPERSION_COMPARISON",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "GROUPED_IQR",
+    "target_code": "DISPERSION_COMPARISON",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "GROUPED_VARIANCE",
+    "target_code": "DISPERSION_COMPARISON",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "GROUPED_STANDARD_DEVIATION",
+    "target_code": "DISPERSION_COMPARISON",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "GROUPED_IQR",
+    "target_code": "IQR_ROBUSTNESS",
+    "relation_type": "RELATED_TO"
+  },
+  {
+    "source_code": "DISPERSION_COMPARISON",
+    "target_code": "DATA_STABILITY_CONSISTENCY",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "DISPERSION_COMPARISON",
+    "target_code": "DISPERSION_INTERPRETATION",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "DISPERSION_INTERPRETATION",
+    "target_code": "REAL_WORLD_DISPERSION_MODELING",
+    "relation_type": "PREREQUISITE"
+  }
+]

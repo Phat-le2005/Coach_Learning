@@ -1,0 +1,101 @@
+{
+  "scan_summary_code": "MATH12_GROUPED_DISPERSION_SOURCE_SCAN_SEED_V0_1",
+  "status": "HEURISTIC_TRIAGE",
+  "note": "Keyword/question-window triage only. Counts intentionally include duplicates and Grade-11 prerequisite false positives; they are NOT final candidate counts.",
+  "sources": [
+    {
+      "source_key": "NGOC_VY_40_DE_2026",
+      "raw_question_windows_with_dispersion_keywords": 75,
+      "heuristic_unique_windows": 48,
+      "term_counts": {
+        "phương sai": 20,
+        "độ lệch chuẩn": 46,
+        "khoảng tứ phân vị": 27,
+        "khoảng biến thiên": 6,
+        "mẫu số liệu ghép nhóm": 83
+      }
+    },
+    {
+      "source_key": "PROVINCIAL_TRIAL_2025",
+      "raw_question_windows_with_dispersion_keywords": 24,
+      "heuristic_unique_windows": 16,
+      "term_counts": {
+        "phương sai": 3,
+        "độ lệch chuẩn": 0,
+        "khoảng tứ phân vị": 7,
+        "khoảng biến thiên": 18,
+        "mẫu số liệu ghép nhóm": 25
+      }
+    },
+    {
+      "source_key": "OFFICIAL_EXAM_SOLUTIONS_2025",
+      "raw_question_windows_with_dispersion_keywords": 8,
+      "heuristic_unique_windows": 4,
+      "term_counts": {
+        "phương sai": 0,
+        "độ lệch chuẩn": 0,
+        "khoảng tứ phân vị": 0,
+        "khoảng biến thiên": 0,
+        "mẫu số liệu ghép nhóm": 8
+      }
+    }
+  ],
+  "confirmed_include_examples": [
+    {
+      "source_key": "NGOC_VY_40_DE_2026",
+      "source_page": 1,
+      "question_number": "6",
+      "summary": "Tuổi thọ linh kiện điện tử theo bảng ghép nhóm; tính phương sai.",
+      "suggested_problem_type": "CALCULATE_GROUPED_VARIANCE"
+    },
+    {
+      "source_key": "NGOC_VY_40_DE_2026",
+      "source_page": 2,
+      "question_number": "6",
+      "summary": "Tốc độ giao bóng theo bảng ghép nhóm; tính khoảng tứ phân vị.",
+      "suggested_problem_type": "CALCULATE_GROUPED_IQR"
+    },
+    {
+      "source_key": "NGOC_VY_40_DE_2026",
+      "source_page": 2,
+      "question_number": "8",
+      "summary": "Kết quả đo hiệu điện thế theo bảng ghép nhóm; tính độ lệch chuẩn.",
+      "suggested_problem_type": "CALCULATE_GROUPED_STANDARD_DEVIATION"
+    },
+    {
+      "source_key": "PROVINCIAL_TRIAL_2025",
+      "source_page": 2,
+      "question_number": "11",
+      "summary": "Đường kính thân cây theo bảng ghép nhóm; tính khoảng biến thiên.",
+      "suggested_problem_type": "CALCULATE_GROUPED_RANGE"
+    },
+    {
+      "source_key": "PROVINCIAL_TRIAL_2025",
+      "source_page": 2,
+      "question_number": "12",
+      "summary": "Quãng đường đi bộ theo bảng ghép nhóm; tính khoảng tứ phân vị.",
+      "suggested_problem_type": "CALCULATE_GROUPED_IQR"
+    }
+  ],
+  "confirmed_exclusion_examples": [
+    {
+      "source_key": "NGOC_VY_40_DE_2026",
+      "source_page": 8,
+      "question_number": "6",
+      "reason": "Asks grouped-data mean only; Grade-11 prerequisite/central tendency, not Grade-12 dispersion."
+    },
+    {
+      "source_key": "PROVINCIAL_TRIAL_2025",
+      "source_page": 6,
+      "question_number": "8",
+      "reason": "Asks only for the median group; outside Grade-12 dispersion target."
+    },
+    {
+      "source_key": "OFFICIAL_EXAM_SOLUTIONS_2025",
+      "source_page": 3,
+      "question_number": "3",
+      "reason": "Asks Q3 itself; quartile-location task is prerequisite/Grade-11 when no dispersion measure is assessed."
+    }
+  ],
+  "next_materialization_rule": "DATA-MATH12-020 must materialize only target-scope questions after semantic filtering; do not use raw keyword counts as candidate counts."
+}

@@ -1,0 +1,107 @@
+[
+  {
+    "code": "GROUPED_DATA_CLASS_INTERVAL",
+    "name": "Khoảng lớp của mẫu ghép nhóm",
+    "description": "Khoảng giá trị tạo nên một nhóm/lớp.",
+    "grade_level": 12,
+    "order_index": 10
+  },
+  {
+    "code": "GROUPED_DATA_CLASS_BOUNDARY",
+    "name": "Cận lớp",
+    "description": "Cận dưới và cận trên của nhóm dữ liệu.",
+    "grade_level": 12,
+    "order_index": 20
+  },
+  {
+    "code": "GROUPED_DATA_FREQUENCY",
+    "name": "Tần số nhóm",
+    "description": "Số quan sát thuộc mỗi nhóm.",
+    "grade_level": 12,
+    "order_index": 30
+  },
+  {
+    "code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+    "name": "Giá trị đại diện của nhóm",
+    "description": "Trung điểm của khoảng lớp dùng trong tính toán gần đúng.",
+    "grade_level": 12,
+    "order_index": 40
+  },
+  {
+    "code": "GROUPED_RANGE",
+    "name": "Khoảng biến thiên mẫu ghép nhóm",
+    "description": "Hiệu giữa cận trên của nhóm cuối có tần số và cận dưới của nhóm đầu có tần số.",
+    "grade_level": 12,
+    "order_index": 50
+  },
+  {
+    "code": "GROUPED_QUARTILE_INTERPOLATION",
+    "name": "Nội suy tứ phân vị mẫu ghép nhóm",
+    "description": "Xác định Q1/Q3 trong nhóm chứa tứ phân vị; là kỹ năng tiền đề để tính IQR.",
+    "grade_level": 12,
+    "order_index": 60
+  },
+  {
+    "code": "GROUPED_IQR",
+    "name": "Khoảng tứ phân vị mẫu ghép nhóm",
+    "description": "Hiệu Q3-Q1, đo độ phân tán của 50% dữ liệu trung tâm.",
+    "grade_level": 12,
+    "order_index": 70
+  },
+  {
+    "code": "GROUPED_MEAN_FOR_DISPERSION",
+    "name": "Số trung bình phục vụ tính độ phân tán",
+    "description": "Số trung bình gần đúng từ giá trị đại diện và tần số.",
+    "grade_level": 12,
+    "order_index": 80
+  },
+  {
+    "code": "GROUPED_VARIANCE",
+    "name": "Phương sai mẫu ghép nhóm",
+    "description": "Số đo bình phương độ lệch quanh số trung bình.",
+    "grade_level": 12,
+    "order_index": 90
+  },
+  {
+    "code": "GROUPED_STANDARD_DEVIATION",
+    "name": "Độ lệch chuẩn mẫu ghép nhóm",
+    "description": "Căn bậc hai của phương sai, cùng đơn vị với dữ liệu.",
+    "grade_level": 12,
+    "order_index": 100
+  },
+  {
+    "code": "DISPERSION_COMPARISON",
+    "name": "So sánh độ phân tán",
+    "description": "Đối chiếu các mẫu theo một số đo phân tán phù hợp.",
+    "grade_level": 12,
+    "order_index": 110
+  },
+  {
+    "code": "DISPERSION_INTERPRETATION",
+    "name": "Diễn giải độ phân tán",
+    "description": "Giải thích số đo phân tán trong ngữ cảnh.",
+    "grade_level": 12,
+    "order_index": 120
+  },
+  {
+    "code": "DATA_STABILITY_CONSISTENCY",
+    "name": "Độ ổn định/đồng đều của dữ liệu",
+    "description": "Liên hệ độ phân tán nhỏ với tính ổn định/đồng đều cao hơn.",
+    "grade_level": 12,
+    "order_index": 130
+  },
+  {
+    "code": "IQR_ROBUSTNESS",
+    "name": "Tính bền vững của IQR",
+    "description": "IQR tập trung vào 50% giữa và ít nhạy với giá trị cực đoan hơn range.",
+    "grade_level": 12,
+    "order_index": 140
+  },
+  {
+    "code": "REAL_WORLD_DISPERSION_MODELING",
+    "name": "Mô hình hóa thực tiễn bằng độ phân tán",
+    "description": "Sử dụng số đo phân tán trong tình huống thực tế hoặc liên môn.",
+    "grade_level": 12,
+    "order_index": 150
+  }
+]
