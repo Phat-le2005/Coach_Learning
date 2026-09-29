@@ -1,0 +1,26 @@
+[
+  {
+    "evidence_id": "M12_INT_GAP_EVID_0001",
+    "candidate_id": "M12_INT_GAP_CAND_0001",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "question_page": 557,
+    "solution_answer_page": 557,
+    "source_claimed_answer": "A",
+    "evidence_type": "SOURCE_QUESTION_AND_EXPLICIT_SOLUTION_ANSWER",
+    "review_consistency": "CONFIRMED"
+  },
+  {
+    "evidence_id": "M12_INT_GAP_EVID_0002",
+    "candidate_id": "M12_INT_GAP_CAND_0002",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "question_page": 667,
+    "solution_answer_page": 667,
+    "source_claimed_answer": "D",
+    "evidence_type": "SOURCE_QUESTION_AND_EXPLICIT_SOLUTION_ANSWER",
+    "review_consistency": "CONFIRMED"
+  }
+]

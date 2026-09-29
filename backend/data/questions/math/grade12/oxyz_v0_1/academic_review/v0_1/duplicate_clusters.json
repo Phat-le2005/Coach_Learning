@@ -1,0 +1,1022 @@
+[
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0001",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0014",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRIAL_2026_13"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0002",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0029",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRIAL_2026_03"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0003",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0030",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRIAL_2026_04"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0004",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0031",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0005",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0036",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0006",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0042",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0007",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0047",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0008",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0053",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0009",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0056",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0010",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0059",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0011",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0062",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0012",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0063",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0013",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0067",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0014",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0068",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0015",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0074",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0016",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0076",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0017",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0079",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0018",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0080",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0019",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0082",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0020",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0084",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0021",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0085",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0022",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0087",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0023",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0089",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0024",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0092",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0025",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0095",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0026",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0096",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0027",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0098",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0028",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0099",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0029",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0100",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0030",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0103",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0031",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0104",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0032",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0106",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0033",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0108",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0034",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0109",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0035",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0111",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0036",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0113",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0037",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0114",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0038",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0121",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0039",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0122",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0040",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0126",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0041",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0129",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0042",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0132",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0043",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0137",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0044",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0138",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0045",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0140",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0046",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0143",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0047",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0145",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0048",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0147",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0049",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0148",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0050",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0150",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0051",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0151",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0052",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0152",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0053",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0154",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0054",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0155",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0055",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0161",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0056",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0164",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0057",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0166",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0058",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0167",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0059",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0169",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0060",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0175",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0061",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0176",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0062",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0178",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0063",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0179",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0064",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0180",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0065",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0182",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 4,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0066",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0184",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0067",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0187",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0068",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0188",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0069",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0190",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0070",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0192",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0071",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0196",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0072",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0200",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0073",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0201",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0074",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0205",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0075",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0206",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0076",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0209",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0077",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0210",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0078",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0216",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0079",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0218",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0080",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0219",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0081",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0223",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0082",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0227",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0083",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0228",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0084",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0269",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_PROVINCIAL_TRIAL_2025_COLLECTION"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0085",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0270",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_PROVINCIAL_TRIAL_2025_COLLECTION"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0086",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0281",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_PROVINCIAL_TRIAL_2025_COLLECTION"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0087",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0282",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_PROVINCIAL_TRIAL_2025_COLLECTION"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0088",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0284",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_PROVINCIAL_TRIAL_2025_COLLECTION"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0089",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0286",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_PROVINCIAL_TRIAL_2025_COLLECTION"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0090",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0289",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_PROVINCIAL_TRIAL_2025_COLLECTION"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0091",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0294",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_PROVINCIAL_TRIAL_2025_COLLECTION"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0092",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0295",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_PROVINCIAL_TRIAL_2025_COLLECTION"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0093",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0299",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_PROVINCIAL_TRIAL_2025_COLLECTION"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0094",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0300",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_PROVINCIAL_TRIAL_2025_COLLECTION"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0095",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0301",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_PROVINCIAL_TRIAL_2025_COLLECTION"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0096",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0302",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_PROVINCIAL_TRIAL_2025_COLLECTION"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0097",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0307",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_PROVINCIAL_TRIAL_2025_COLLECTION"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0098",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0308",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_PROVINCIAL_TRIAL_2025_COLLECTION"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0099",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0313",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_PROVINCIAL_TRIAL_2025_COLLECTION"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0100",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0314",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_PROVINCIAL_TRIAL_2025_COLLECTION"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0101",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0318",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_PROVINCIAL_TRIAL_2025_COLLECTION"
+    ]
+  },
+  {
+    "cluster_id": "M12_OXYZ_CAND_DUP_0102",
+    "canonical_candidate_id": "M12_OXYZ_CAND_0319",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_PROVINCIAL_TRIAL_2025_COLLECTION"
+    ]
+  }
+]

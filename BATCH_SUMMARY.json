@@ -1,0 +1,34 @@
+{
+  "batch_code": "MATH12-BATCH-024-026",
+  "datasets": [
+    {
+      "dataset_code": "DATA-MATH12-024",
+      "scope": "Oxyz / coordinate geometry in space",
+      "verified": 132,
+      "hold": 192,
+      "duplicate_clusters": 102,
+      "aggregate": "a62426fd798e4b20b5b130bc72903304f3f88f0d26840bed661d2eed9b1521ce"
+    },
+    {
+      "dataset_code": "DATA-MATH12-025",
+      "scope": "Conditional probability / total probability / Bayes / tree",
+      "verified": 17,
+      "hold": 56,
+      "duplicate_clusters": 14,
+      "aggregate": "18d5d2fa9a9f8b7876e3af4283b890728279c77cf5e4e16901a6d87caacce680"
+    },
+    {
+      "dataset_code": "DATA-MATH12-026",
+      "scope": "Integral direct-definite-integral gap supplement + grouped-dispersion gap scan",
+      "verified_gap_candidates": 2,
+      "aggregate": "56de89cf49bea7cfcb4ba1b3ec5b3b8daac6ca8d7da4a2397076f835f335cd5f"
+    }
+  ],
+  "global_policy": {
+    "real_source_only": true,
+    "no_synthetic_gap_fill": true,
+    "rights_status": "REVIEW_REQUIRED",
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  }
+}

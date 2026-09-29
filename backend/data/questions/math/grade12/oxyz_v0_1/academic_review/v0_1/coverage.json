@@ -1,0 +1,62 @@
+[
+  {
+    "problem_type_code": "PLANE_EQUATION_NORMAL_VECTOR",
+    "verified_candidates": 40,
+    "status": "COVERED"
+  },
+  {
+    "problem_type_code": "POINT_PLANE_OR_PLANE_DISTANCE",
+    "verified_candidates": 2,
+    "status": "COVERED"
+  },
+  {
+    "problem_type_code": "PLANE_RELATION",
+    "verified_candidates": 7,
+    "status": "COVERED"
+  },
+  {
+    "problem_type_code": "LINE_EQUATION_DIRECTION_VECTOR",
+    "verified_candidates": 33,
+    "status": "COVERED"
+  },
+  {
+    "problem_type_code": "LINE_PLANE_INTERSECTION",
+    "verified_candidates": 1,
+    "status": "COVERED"
+  },
+  {
+    "problem_type_code": "LINE_RELATION",
+    "verified_candidates": 2,
+    "status": "COVERED"
+  },
+  {
+    "problem_type_code": "LINE_DISTANCE_IN_OXYZ",
+    "verified_candidates": 1,
+    "status": "COVERED"
+  },
+  {
+    "problem_type_code": "ANGLE_IN_OXYZ",
+    "verified_candidates": 18,
+    "status": "COVERED"
+  },
+  {
+    "problem_type_code": "SPHERE_EQUATION_CENTER_RADIUS",
+    "verified_candidates": 7,
+    "status": "COVERED"
+  },
+  {
+    "problem_type_code": "PLANE_SPHERE_RELATION",
+    "verified_candidates": 0,
+    "status": "GAP"
+  },
+  {
+    "problem_type_code": "COORDINATE_DISTANCE_PROJECTION",
+    "verified_candidates": 5,
+    "status": "COVERED"
+  },
+  {
+    "problem_type_code": "COORDINATE_GEOMETRY_APPLICATION",
+    "verified_candidates": 16,
+    "status": "COVERED"
+  }
+]

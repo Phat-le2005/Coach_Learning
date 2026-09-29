@@ -1,0 +1,10 @@
+{
+  "dataset_code": "DATA-MATH12-024",
+  "policy": "TEXT_LAYER_ONLY_NO_OCR_IN_THIS_BATCH",
+  "notes": [
+    "Only questions explicitly tied to Oxyz/coordinate-space wording were included.",
+    "Plane, line, sphere, angle/distance and coordinate applications are included; pure non-coordinate spatial geometry is excluded.",
+    "HOLD preserves source-linked candidates with no explicit parsed source answer."
+  ],
+  "hold_policy": "No answer is inferred for HOLD candidates. HOLD candidates are not importable."
+}

@@ -1,0 +1,121 @@
+{
+  "dataset_code": "DATA-MATH12-025",
+  "subject_code": "MATH_G12",
+  "chapter_code": "PROBABILITY_CHAPTER",
+  "topic_code": "PROBABILITY_TOPIC",
+  "official_scope_binding": {
+    "official_scope_code": "M12_CORE_PROBABILITY_CONDITIONAL",
+    "official_content_title": "Xác suất có điều kiện và các quy tắc tính xác suất",
+    "normalized_coverage": [
+      "xác suất có điều kiện",
+      "xác suất toàn phần",
+      "công thức Bayes",
+      "sơ đồ hình cây và ứng dụng thực tiễn"
+    ],
+    "provenance_type": "OFFICIAL_SCOPE_BINDING"
+  },
+  "classification_policy": {
+    "problem_types_concepts_and_weights_are": "COACH_LEARNING_DERIVED",
+    "synthetic_question_fill_allowed": false
+  },
+  "problem_types": [
+    {
+      "code": "CONDITIONAL_PROBABILITY_DIRECT",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    },
+    {
+      "code": "TOTAL_PROBABILITY",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    },
+    {
+      "code": "BAYES_POSTERIOR",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    },
+    {
+      "code": "TREE_OR_TOTAL_PROBABILITY",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    }
+  ],
+  "concepts": [
+    {
+      "code": "BAYES_FORMULA",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    },
+    {
+      "code": "CONDITIONAL_PROBABILITY",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    },
+    {
+      "code": "PROBABILITY_TREE",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    },
+    {
+      "code": "TOTAL_PROBABILITY",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    }
+  ],
+  "learning_outcomes": [
+    {
+      "code": "LO_M12_BAYES",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    },
+    {
+      "code": "LO_M12_CONDITIONAL_PROBABILITY",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    },
+    {
+      "code": "LO_M12_PROBABILITY_TREE",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    },
+    {
+      "code": "LO_M12_TOTAL_PROBABILITY",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    }
+  ],
+  "mappings": {
+    "CONDITIONAL_PROBABILITY_DIRECT": [
+      {
+        "concept_code": "CONDITIONAL_PROBABILITY",
+        "weight": 1.0,
+        "is_primary": true
+      }
+    ],
+    "TOTAL_PROBABILITY": [
+      {
+        "concept_code": "TOTAL_PROBABILITY",
+        "weight": 1.0,
+        "is_primary": true
+      }
+    ],
+    "BAYES_POSTERIOR": [
+      {
+        "concept_code": "BAYES_FORMULA",
+        "weight": 0.5,
+        "is_primary": true
+      },
+      {
+        "concept_code": "CONDITIONAL_PROBABILITY",
+        "weight": 0.5,
+        "is_primary": false
+      }
+    ],
+    "TREE_OR_TOTAL_PROBABILITY": [
+      {
+        "concept_code": "PROBABILITY_TREE",
+        "weight": 0.5,
+        "is_primary": true
+      },
+      {
+        "concept_code": "TOTAL_PROBABILITY",
+        "weight": 0.5,
+        "is_primary": false
+      }
+    ]
+  },
+  "problem_type_learning_outcome": {
+    "CONDITIONAL_PROBABILITY_DIRECT": "LO_M12_CONDITIONAL_PROBABILITY",
+    "TOTAL_PROBABILITY": "LO_M12_TOTAL_PROBABILITY",
+    "BAYES_POSTERIOR": "LO_M12_BAYES",
+    "TREE_OR_TOTAL_PROBABILITY": "LO_M12_PROBABILITY_TREE"
+  }
+}

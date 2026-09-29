@@ -1,0 +1,45 @@
+{
+  "contract_code": "DATA_MATH12_025_CONTRACT_V0_1",
+  "dataset_code": "DATA-MATH12-025",
+  "semantic_files_order": [
+    "source_registry.json",
+    "taxonomy_candidate.json",
+    "verified_questions.json",
+    "hold_candidates.json",
+    "source_evidence.json",
+    "duplicate_clusters.json",
+    "coverage.json",
+    "review_stats.json",
+    "extraction_limitations.json"
+  ],
+  "semantic_sha256": {
+    "source_registry.json": "ede5e28bcb4b736bfcba9c07b3dba4521b677436fdad9d0a8bc294345c1a0c0f",
+    "taxonomy_candidate.json": "190e07d5fa8ff37d9d441d49d5c67774b3d6e7cbc80d187e8144eaf93bdc63f0",
+    "verified_questions.json": "39e052b5ed74f9a0c3091fac432a19c4637b9f0fbe9ba2c871128969e28d8fbd",
+    "hold_candidates.json": "8454c3737b63b87b86e79a4d1311d3a43c293ec8c520ac5ff9952a9d1dda2c27",
+    "source_evidence.json": "a3b9960439d5905f0fe29698ba4525095ab9d8295eaa6368ba16a195a287c7c1",
+    "duplicate_clusters.json": "b84c57a224f240cf5fb008ae0664f3678cb748a40fd3e5ff93b84b1239f374ac",
+    "coverage.json": "904c8ddc09333f62f58c65059b573e5e7a208be730458e0bb386661f118ec2c0",
+    "review_stats.json": "2aba3e55066457efe22a46905650f5bececf51a33a8314c5706de61f8614db56",
+    "extraction_limitations.json": "0a80849c7cbfab291e247614c568e807cc14670dc6fb261cd7ee8962f6580625"
+  },
+  "aggregate_semantic_sha256": "18d5d2fa9a9f8b7876e3af4283b890728279c77cf5e4e16901a6d87caacce680",
+  "required_invariants": {
+    "sources_scanned": 4,
+    "unique_candidates_after_exact_dedupe": 73,
+    "verified_candidates": 17,
+    "hold_candidates": 56,
+    "duplicate_clusters": 14,
+    "visual_asset_required_verified": 0,
+    "production_release_eligible": 0,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  "policy": {
+    "no_synthetic_gap_fill": true,
+    "source_answer_required_for_verified": true,
+    "hold_is_not_importable": true,
+    "rights_review_required": true,
+    "codex_must_not_rewrite_curated_data": true
+  }
+}

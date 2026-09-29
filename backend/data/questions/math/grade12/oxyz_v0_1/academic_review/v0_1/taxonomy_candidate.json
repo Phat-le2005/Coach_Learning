@@ -1,0 +1,285 @@
+{
+  "dataset_code": "DATA-MATH12-024",
+  "subject_code": "MATH_G12",
+  "chapter_code": "OXYZ_CHAPTER",
+  "topic_code": "OXYZ_TOPIC",
+  "official_scope_binding": {
+    "official_scope_code": "M12_CORE_GEOMETRY_COORDINATE_3D",
+    "official_content_title": "Phương pháp tọa độ trong không gian",
+    "normalized_coverage": [
+      "vectơ và tọa độ trong không gian",
+      "phương trình mặt phẳng",
+      "phương trình đường thẳng trong không gian",
+      "góc và khoảng cách bằng phương pháp tọa độ",
+      "phương trình mặt cầu",
+      "vận dụng vào thực tiễn"
+    ],
+    "provenance_type": "OFFICIAL_SCOPE_BINDING"
+  },
+  "classification_policy": {
+    "problem_types_concepts_and_weights_are": "COACH_LEARNING_DERIVED",
+    "synthetic_question_fill_allowed": false
+  },
+  "problem_types": [
+    {
+      "code": "PLANE_EQUATION_NORMAL_VECTOR",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    },
+    {
+      "code": "POINT_PLANE_OR_PLANE_DISTANCE",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    },
+    {
+      "code": "PLANE_RELATION",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    },
+    {
+      "code": "LINE_EQUATION_DIRECTION_VECTOR",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    },
+    {
+      "code": "LINE_PLANE_INTERSECTION",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    },
+    {
+      "code": "LINE_RELATION",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    },
+    {
+      "code": "LINE_DISTANCE_IN_OXYZ",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    },
+    {
+      "code": "ANGLE_IN_OXYZ",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    },
+    {
+      "code": "SPHERE_EQUATION_CENTER_RADIUS",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    },
+    {
+      "code": "PLANE_SPHERE_RELATION",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    },
+    {
+      "code": "COORDINATE_DISTANCE_PROJECTION",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    },
+    {
+      "code": "COORDINATE_GEOMETRY_APPLICATION",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    }
+  ],
+  "concepts": [
+    {
+      "code": "ANGLE_OXYZ",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    },
+    {
+      "code": "COORDINATE_GEOMETRY",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    },
+    {
+      "code": "DIRECTION_VECTOR",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    },
+    {
+      "code": "DISTANCE_OXYZ",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    },
+    {
+      "code": "INTERSECTION_OXYZ",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    },
+    {
+      "code": "LINE_EQUATION",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    },
+    {
+      "code": "LINE_RELATION",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    },
+    {
+      "code": "NORMAL_VECTOR",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    },
+    {
+      "code": "PLANE_EQUATION",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    },
+    {
+      "code": "PLANE_RELATION",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    },
+    {
+      "code": "PROJECTION_OXYZ",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    },
+    {
+      "code": "SPHERE_EQUATION",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    }
+  ],
+  "learning_outcomes": [
+    {
+      "code": "LO_M12_OXYZ_ANGLE_DISTANCE",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    },
+    {
+      "code": "LO_M12_OXYZ_APPLICATION",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    },
+    {
+      "code": "LO_M12_OXYZ_LINE",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    },
+    {
+      "code": "LO_M12_OXYZ_PLANE",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    },
+    {
+      "code": "LO_M12_OXYZ_SPHERE",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    }
+  ],
+  "mappings": {
+    "PLANE_EQUATION_NORMAL_VECTOR": [
+      {
+        "concept_code": "PLANE_EQUATION",
+        "weight": 0.5,
+        "is_primary": true
+      },
+      {
+        "concept_code": "NORMAL_VECTOR",
+        "weight": 0.5,
+        "is_primary": false
+      }
+    ],
+    "POINT_PLANE_OR_PLANE_DISTANCE": [
+      {
+        "concept_code": "DISTANCE_OXYZ",
+        "weight": 0.5,
+        "is_primary": true
+      },
+      {
+        "concept_code": "PLANE_EQUATION",
+        "weight": 0.5,
+        "is_primary": false
+      }
+    ],
+    "PLANE_RELATION": [
+      {
+        "concept_code": "PLANE_RELATION",
+        "weight": 1.0,
+        "is_primary": true
+      }
+    ],
+    "LINE_EQUATION_DIRECTION_VECTOR": [
+      {
+        "concept_code": "LINE_EQUATION",
+        "weight": 0.5,
+        "is_primary": true
+      },
+      {
+        "concept_code": "DIRECTION_VECTOR",
+        "weight": 0.5,
+        "is_primary": false
+      }
+    ],
+    "LINE_PLANE_INTERSECTION": [
+      {
+        "concept_code": "LINE_EQUATION",
+        "weight": 0.3333,
+        "is_primary": true
+      },
+      {
+        "concept_code": "PLANE_EQUATION",
+        "weight": 0.3333,
+        "is_primary": false
+      },
+      {
+        "concept_code": "INTERSECTION_OXYZ",
+        "weight": 0.3333,
+        "is_primary": false
+      }
+    ],
+    "LINE_RELATION": [
+      {
+        "concept_code": "LINE_RELATION",
+        "weight": 1.0,
+        "is_primary": true
+      }
+    ],
+    "LINE_DISTANCE_IN_OXYZ": [
+      {
+        "concept_code": "DISTANCE_OXYZ",
+        "weight": 0.5,
+        "is_primary": true
+      },
+      {
+        "concept_code": "LINE_EQUATION",
+        "weight": 0.5,
+        "is_primary": false
+      }
+    ],
+    "ANGLE_IN_OXYZ": [
+      {
+        "concept_code": "ANGLE_OXYZ",
+        "weight": 1.0,
+        "is_primary": true
+      }
+    ],
+    "SPHERE_EQUATION_CENTER_RADIUS": [
+      {
+        "concept_code": "SPHERE_EQUATION",
+        "weight": 1.0,
+        "is_primary": true
+      }
+    ],
+    "PLANE_SPHERE_RELATION": [
+      {
+        "concept_code": "SPHERE_EQUATION",
+        "weight": 0.5,
+        "is_primary": true
+      },
+      {
+        "concept_code": "PLANE_EQUATION",
+        "weight": 0.5,
+        "is_primary": false
+      }
+    ],
+    "COORDINATE_DISTANCE_PROJECTION": [
+      {
+        "concept_code": "COORDINATE_GEOMETRY",
+        "weight": 0.5,
+        "is_primary": true
+      },
+      {
+        "concept_code": "PROJECTION_OXYZ",
+        "weight": 0.5,
+        "is_primary": false
+      }
+    ],
+    "COORDINATE_GEOMETRY_APPLICATION": [
+      {
+        "concept_code": "COORDINATE_GEOMETRY",
+        "weight": 1.0,
+        "is_primary": true
+      }
+    ]
+  },
+  "problem_type_learning_outcome": {
+    "PLANE_EQUATION_NORMAL_VECTOR": "LO_M12_OXYZ_PLANE",
+    "POINT_PLANE_OR_PLANE_DISTANCE": "LO_M12_OXYZ_ANGLE_DISTANCE",
+    "PLANE_RELATION": "LO_M12_OXYZ_PLANE",
+    "LINE_EQUATION_DIRECTION_VECTOR": "LO_M12_OXYZ_LINE",
+    "LINE_PLANE_INTERSECTION": "LO_M12_OXYZ_LINE",
+    "LINE_RELATION": "LO_M12_OXYZ_LINE",
+    "LINE_DISTANCE_IN_OXYZ": "LO_M12_OXYZ_ANGLE_DISTANCE",
+    "ANGLE_IN_OXYZ": "LO_M12_OXYZ_ANGLE_DISTANCE",
+    "SPHERE_EQUATION_CENTER_RADIUS": "LO_M12_OXYZ_SPHERE",
+    "PLANE_SPHERE_RELATION": "LO_M12_OXYZ_SPHERE",
+    "COORDINATE_DISTANCE_PROJECTION": "LO_M12_OXYZ_ANGLE_DISTANCE",
+    "COORDINATE_GEOMETRY_APPLICATION": "LO_M12_OXYZ_APPLICATION"
+  }
+}

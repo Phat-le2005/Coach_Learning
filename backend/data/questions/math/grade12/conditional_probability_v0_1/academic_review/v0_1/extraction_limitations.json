@@ -1,0 +1,10 @@
+{
+  "dataset_code": "DATA-MATH12-025",
+  "policy": "TEXT_LAYER_ONLY_NO_OCR_IN_THIS_BATCH",
+  "notes": [
+    "Conditional/Bayes/total/tree probability candidates are selected from probability questions with conditional or multi-stage evidence.",
+    "Basic probability questions without conditional/total/Bayes/tree structure are excluded.",
+    "HOLD preserves source-linked candidates with no explicit parsed source answer."
+  ],
+  "hold_policy": "No answer is inferred for HOLD candidates. HOLD candidates are not importable."
+}

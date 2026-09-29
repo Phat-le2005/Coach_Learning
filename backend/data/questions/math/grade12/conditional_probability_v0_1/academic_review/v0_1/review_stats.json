@@ -1,0 +1,32 @@
+{
+  "dataset_code": "DATA-MATH12-025",
+  "status": "CURATED_SOURCE_BACKED_WITH_HOLDS",
+  "subject_code": "MATH_G12",
+  "chapter_code": "PROBABILITY_CHAPTER",
+  "official_scope_code": "M12_CORE_PROBABILITY_CONDITIONAL",
+  "sources_scanned": 4,
+  "candidate_occurrences_detected": 99,
+  "unique_candidates_after_exact_dedupe": 73,
+  "verified_candidates": 17,
+  "hold_candidates": 56,
+  "duplicate_clusters": 14,
+  "verified_question_type_counts": {
+    "SHORT_ANSWER": 17
+  },
+  "verified_problem_type_counts": {
+    "BAYES_POSTERIOR": 14,
+    "CONDITIONAL_PROBABILITY_DIRECT": 1,
+    "TREE_OR_TOTAL_PROBABILITY": 2
+  },
+  "visual_asset_required_verified": 0,
+  "problem_types_total": 4,
+  "problem_types_covered": 3,
+  "problem_type_gaps": [
+    "TOTAL_PROBABILITY"
+  ],
+  "rights_status": "REVIEW_REQUIRED",
+  "production_release_eligible": 0,
+  "promotion_ready": 0,
+  "database_import_allowed": false,
+  "canonical_snapshot_allowed": false
+}

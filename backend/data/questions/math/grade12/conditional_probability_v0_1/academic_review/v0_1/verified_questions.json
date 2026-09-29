@@ -1,0 +1,1043 @@
+[
+  {
+    "candidate_id": "M12_PROB_CAND_0003",
+    "subject_code": "MATH_G12",
+    "chapter_code": "PROBABILITY_CHAPTER",
+    "topic_code": "PROBABILITY_TOPIC",
+    "official_scope_code": "M12_CORE_PROBABILITY_CONDITIONAL",
+    "question_type": "SHORT_ANSWER",
+    "raw_question_text": "Câu 6. \nTrong kì thi tốt nghiệp trung học phổ thông, trường THPT A có 60 % học sinh lựa chọn khối D \nđể xét tuyển đại học. Biết rằng, nếu một học sinh lựa chọn khối D thì xác suất để học sinh đó đỗ đại học \nlà 0,7  còn nếu học sinh không lựa chọn khối D thì xác suất để học sinh đó đỗ đại học là 0,8. Chọn ngẫu \nnhiên một học sinh của trường THPT A đã tốt nghiệp trong kì thi trên. Giả sử xác suất để học sinh đó \nchọn khối D biết học sinh này đã đỗ đại học là m\nn  với n  là số nguyên dương và m\nn  là phân số tối giản. \nTính giá trị của m\nn\n\n. \nTrả lời: ………………..",
+    "raw_question_text_sha256": "ad933e3bbe6b4528845d76185f0c299ed0c89d9e2ec85112c7f79768b7c760e0",
+    "problem_type_code": "BAYES_POSTERIOR",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "question_number": "6",
+    "question_start_page": 59,
+    "duplicate_occurrence_count": 2,
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_page": 45,
+        "question_number": "6",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_page": 59,
+        "question_number": "6",
+        "answer_detected": "58"
+      }
+    ],
+    "rights_status": "REVIEW_REQUIRED",
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false,
+    "review_status": "VERIFIED_SOURCE_ANSWER",
+    "correct_answer": "58",
+    "answer_verification": "SOURCE_SOLUTION_EXPLICIT",
+    "solution_answer_page": 59,
+    "visual_asset_required": false,
+    "concepts": [
+      {
+        "concept_code": "BAYES_FORMULA",
+        "weight": 0.5,
+        "is_primary": true
+      },
+      {
+        "concept_code": "CONDITIONAL_PROBABILITY",
+        "weight": 0.5,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "learning_outcome_code": "LO_M12_BAYES",
+        "weight": 1.0
+      }
+    ]
+  },
+  {
+    "candidate_id": "M12_PROB_CAND_0006",
+    "subject_code": "MATH_G12",
+    "chapter_code": "PROBABILITY_CHAPTER",
+    "topic_code": "PROBABILITY_TOPIC",
+    "official_scope_code": "M12_CORE_PROBABILITY_CONDITIONAL",
+    "question_type": "SHORT_ANSWER",
+    "raw_question_text": "Câu 6. \nMột hộp chứa 10 viên bi xanh và 5 viên bi đỏ. Bạn An lấy ra ngẫu nhiên 1 viên bi từ hộp, xem \nmàu, rồi bỏ ra ngoài. Nếu viên bi An lấy ra có màu xanh, bạn Bình sẽ lấy ra ngẫu nhiên 2  viên bi từ hộp; \ncòn nếu viên bi An lấy ra có màu đỏ, bạn Bình sẽ lấy ra ngẫu nhiên 3 viên bi từ hộp. Tính xác suất để An \nlấy được viên bi màu xanh, biết rằng tất cả các viên bi được hai bạn chọn ra đều có đủ cả hai màu. \nTrả lời: ………………..",
+    "raw_question_text_sha256": "cc2190f1f99659e9f08bd6c20735023203f8ea35ad2e4080c7458400af113dee",
+    "problem_type_code": "BAYES_POSTERIOR",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "question_number": "6",
+    "question_start_page": 97,
+    "duplicate_occurrence_count": 2,
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_page": 84,
+        "question_number": "6",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_page": 97,
+        "question_number": "6",
+        "answer_detected": "0,55"
+      }
+    ],
+    "rights_status": "REVIEW_REQUIRED",
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false,
+    "review_status": "VERIFIED_SOURCE_ANSWER",
+    "correct_answer": "0,55",
+    "answer_verification": "SOURCE_SOLUTION_EXPLICIT",
+    "solution_answer_page": 97,
+    "visual_asset_required": false,
+    "concepts": [
+      {
+        "concept_code": "BAYES_FORMULA",
+        "weight": 0.5,
+        "is_primary": true
+      },
+      {
+        "concept_code": "CONDITIONAL_PROBABILITY",
+        "weight": 0.5,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "learning_outcome_code": "LO_M12_BAYES",
+        "weight": 1.0
+      }
+    ]
+  },
+  {
+    "candidate_id": "M12_PROB_CAND_0010",
+    "subject_code": "MATH_G12",
+    "chapter_code": "PROBABILITY_CHAPTER",
+    "topic_code": "PROBABILITY_TOPIC",
+    "official_scope_code": "M12_CORE_PROBABILITY_CONDITIONAL",
+    "question_type": "SHORT_ANSWER",
+    "raw_question_text": "Câu 6. \nMột căn bệnh có 1% dân số mắc phải. Một phương pháp chẩn đoán căn bệnh nói trên có tỉ lệ \nchính xác là 98% ( với cả người bị bệnh và người không bị bệnh). Biết rằng nếu một người được sử dụng \nphương pháp trên để kiểm tra và cho kết quả dương tính (bị bệnh) thì xác suất người đó thực sự bị bệnh \nlà 296\ny , y là số tự nhiên. Hỏi y bằng bao nhiêu? \nTrả lời: ………………..",
+    "raw_question_text_sha256": "3792e238769a295c410dd45e70abf98579cd56f80815b6aea7668673736e522e",
+    "problem_type_code": "BAYES_POSTERIOR",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "question_number": "6",
+    "question_start_page": 136,
+    "duplicate_occurrence_count": 2,
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_page": 124,
+        "question_number": "6",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_page": 136,
+        "question_number": "6",
+        "answer_detected": "98"
+      }
+    ],
+    "rights_status": "REVIEW_REQUIRED",
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false,
+    "review_status": "VERIFIED_SOURCE_ANSWER",
+    "correct_answer": "98",
+    "answer_verification": "SOURCE_SOLUTION_EXPLICIT",
+    "solution_answer_page": 136,
+    "visual_asset_required": false,
+    "concepts": [
+      {
+        "concept_code": "BAYES_FORMULA",
+        "weight": 0.5,
+        "is_primary": true
+      },
+      {
+        "concept_code": "CONDITIONAL_PROBABILITY",
+        "weight": 0.5,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "learning_outcome_code": "LO_M12_BAYES",
+        "weight": 1.0
+      }
+    ]
+  },
+  {
+    "candidate_id": "M12_PROB_CAND_0011",
+    "subject_code": "MATH_G12",
+    "chapter_code": "PROBABILITY_CHAPTER",
+    "topic_code": "PROBABILITY_TOPIC",
+    "official_scope_code": "M12_CORE_PROBABILITY_CONDITIONAL",
+    "question_type": "SHORT_ANSWER",
+    "raw_question_text": "Câu 6. \nMột nhà máy có hai phân xưởng I  và II  tương ứng làm ra 40%  và 60%  sản phẩm của nhà \nmáy. Biết rằng tỷ lệ phế phẩm của hai phân xưởng I  và II  tương ứng là 1%  và 2% . Chọn ngẫu nhiên \nmột sản phẩm của nhà máy thì thấy nó là phế phẩm. Tính xác suất để sản phẩm đó thuộc phân xưởng I . \nTrả lời: ………………..",
+    "raw_question_text_sha256": "b20c168b2034ad2a71c2ea13f79e06f9653c33ff4f4882415ffb6c84f0562ae6",
+    "problem_type_code": "BAYES_POSTERIOR",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "question_number": "6",
+    "question_start_page": 155,
+    "duplicate_occurrence_count": 2,
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_page": 143,
+        "question_number": "6",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_page": 155,
+        "question_number": "6",
+        "answer_detected": "0,25"
+      }
+    ],
+    "rights_status": "REVIEW_REQUIRED",
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false,
+    "review_status": "VERIFIED_SOURCE_ANSWER",
+    "correct_answer": "0,25",
+    "answer_verification": "SOURCE_SOLUTION_EXPLICIT",
+    "solution_answer_page": 155,
+    "visual_asset_required": false,
+    "concepts": [
+      {
+        "concept_code": "BAYES_FORMULA",
+        "weight": 0.5,
+        "is_primary": true
+      },
+      {
+        "concept_code": "CONDITIONAL_PROBABILITY",
+        "weight": 0.5,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "learning_outcome_code": "LO_M12_BAYES",
+        "weight": 1.0
+      }
+    ]
+  },
+  {
+    "candidate_id": "M12_PROB_CAND_0015",
+    "subject_code": "MATH_G12",
+    "chapter_code": "PROBABILITY_CHAPTER",
+    "topic_code": "PROBABILITY_TOPIC",
+    "official_scope_code": "M12_CORE_PROBABILITY_CONDITIONAL",
+    "question_type": "SHORT_ANSWER",
+    "raw_question_text": "Câu 6. \nCó hai chiếc hộp, hộp I  có 5 quả bóng màu trắng và 7  quả bóng màu đỏ, hộp II  có 10 quả \nbóng màu trắng và 15 quả bóng màu đỏ, các quả bóng có cùng kích thước và khối lượng. Lấy ngẫu nhiên \nhai quả bóng từ hộp I  bỏ vào hộp II . Sau đó, lấy ra ngẫu nhiên một quả bóng từ hộp II . Xác suất để \nquả bóng được lấy ra từ hộp II  là quả bóng được chuyển từ hộp I  sang, biết rằng quả bóng đó có màu \ntrắng là a\nb  (là phân số tối giản). Tính a\nb\n\n. \nTrả lời: ………………..",
+    "raw_question_text_sha256": "adc87d5adfef76085cc60570881c2b640a60d00648b139838beb2134844a3dba",
+    "problem_type_code": "BAYES_POSTERIOR",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "question_number": "6",
+    "question_start_page": 195,
+    "duplicate_occurrence_count": 1,
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_page": 195,
+        "question_number": "6",
+        "answer_detected": "14"
+      }
+    ],
+    "rights_status": "REVIEW_REQUIRED",
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false,
+    "review_status": "VERIFIED_SOURCE_ANSWER",
+    "correct_answer": "14",
+    "answer_verification": "SOURCE_SOLUTION_EXPLICIT",
+    "solution_answer_page": 195,
+    "visual_asset_required": false,
+    "concepts": [
+      {
+        "concept_code": "BAYES_FORMULA",
+        "weight": 0.5,
+        "is_primary": true
+      },
+      {
+        "concept_code": "CONDITIONAL_PROBABILITY",
+        "weight": 0.5,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "learning_outcome_code": "LO_M12_BAYES",
+        "weight": 1.0
+      }
+    ]
+  },
+  {
+    "candidate_id": "M12_PROB_CAND_0017",
+    "subject_code": "MATH_G12",
+    "chapter_code": "PROBABILITY_CHAPTER",
+    "topic_code": "PROBABILITY_TOPIC",
+    "official_scope_code": "M12_CORE_PROBABILITY_CONDITIONAL",
+    "question_type": "SHORT_ANSWER",
+    "raw_question_text": "Câu 6. \nCó hai chiếc hộp, hộp I có 5 quả bóng màu trắng và 7 quả bóng màu đỏ, hộp II có 10 quả bóng \nmàu trắng và 15 quả bóng màu đỏ, các quả bóng có cùng kích thước và khối lượng. Lấy ngẫu nhiên hai \nquả bóng từ hộp I bỏ vào hộp II. Sau đó, lấy ra ngẫu nhiên một quả bóng từ hộp II. Xác suất để quả bóng \nđược lấy ra từ hộp II là quả bóng được chuyển từ hộp I sang, biết rằng quả bóng đó có màu trắng là a\nb  ( \nlà phân số tối giản). Tính \n?\na\nb\n\n \nTrả lời: ………………..",
+    "raw_question_text_sha256": "9697f455123f6c992ab3c6e952b1deda5f1fc22232a311ba1c556b77130d6594",
+    "problem_type_code": "BAYES_POSTERIOR",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "question_number": "6",
+    "question_start_page": 214,
+    "duplicate_occurrence_count": 2,
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_page": 201,
+        "question_number": "6",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_page": 214,
+        "question_number": "6",
+        "answer_detected": "14"
+      }
+    ],
+    "rights_status": "REVIEW_REQUIRED",
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false,
+    "review_status": "VERIFIED_SOURCE_ANSWER",
+    "correct_answer": "14",
+    "answer_verification": "SOURCE_SOLUTION_EXPLICIT",
+    "solution_answer_page": 214,
+    "visual_asset_required": false,
+    "concepts": [
+      {
+        "concept_code": "BAYES_FORMULA",
+        "weight": 0.5,
+        "is_primary": true
+      },
+      {
+        "concept_code": "CONDITIONAL_PROBABILITY",
+        "weight": 0.5,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "learning_outcome_code": "LO_M12_BAYES",
+        "weight": 1.0
+      }
+    ]
+  },
+  {
+    "candidate_id": "M12_PROB_CAND_0018",
+    "subject_code": "MATH_G12",
+    "chapter_code": "PROBABILITY_CHAPTER",
+    "topic_code": "PROBABILITY_TOPIC",
+    "official_scope_code": "M12_CORE_PROBABILITY_CONDITIONAL",
+    "question_type": "SHORT_ANSWER",
+    "raw_question_text": "Câu 6. \nMột chiếc hộp có 50 viên bi, trong đó có 30 viên bi màu xanh và 20 viên bi màu đỏ, các viên bi \ncó kích thước và khối lượng giống nhau. Sau khi kiểm tra, người ta thấy có 70%  số viên bi màu xanh \nđược đánh số và 60%  số viên bi màu đỏ được đánh số, những viên bi còn lại không đánh số. Lấy ngẫu \nnhiên một viên bi từ hộp đó. Biết rằng, viên bi lấy ra được đánh số, xác suất để viên bi đó có màu xanh \nbằng bao nhiêu (kết quả làm tròn đến hàng phần trăm)? \nTrả lời: ………………..",
+    "raw_question_text_sha256": "97633b9425992ddff4cbff8a8ced42915237cc32f3e3585f4c4499e36b260ab3",
+    "problem_type_code": "BAYES_POSTERIOR",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "question_number": "6",
+    "question_start_page": 293,
+    "duplicate_occurrence_count": 2,
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_page": 280,
+        "question_number": "6",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_page": 293,
+        "question_number": "6",
+        "answer_detected": "0,64"
+      }
+    ],
+    "rights_status": "REVIEW_REQUIRED",
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false,
+    "review_status": "VERIFIED_SOURCE_ANSWER",
+    "correct_answer": "0,64",
+    "answer_verification": "SOURCE_SOLUTION_EXPLICIT",
+    "solution_answer_page": 293,
+    "visual_asset_required": false,
+    "concepts": [
+      {
+        "concept_code": "BAYES_FORMULA",
+        "weight": 0.5,
+        "is_primary": true
+      },
+      {
+        "concept_code": "CONDITIONAL_PROBABILITY",
+        "weight": 0.5,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "learning_outcome_code": "LO_M12_BAYES",
+        "weight": 1.0
+      }
+    ]
+  },
+  {
+    "candidate_id": "M12_PROB_CAND_0020",
+    "subject_code": "MATH_G12",
+    "chapter_code": "PROBABILITY_CHAPTER",
+    "topic_code": "PROBABILITY_TOPIC",
+    "official_scope_code": "M12_CORE_PROBABILITY_CONDITIONAL",
+    "question_type": "SHORT_ANSWER",
+    "raw_question_text": "Câu 6. \nTrong một đợt kiểm tra sức khỏe tại trường có 200  học sinh được xét nghiệm một loại virus. \nTrong đó, biết rằng có 80 bạn thật sự bị nhiễm virus. Nếu một bạn bị nhiễm, thì xét nghiệm cho kết quả \ndương tính (tức là phát hiện đúng bệnh) với xác suất 90%. Nều một bạn không bị nhiễm, thì xét nghiệm \nvẫn có thể báo nhầm là dương tính (gọi là dương tính giả), với xác suất5%. Giả sử một bạn có kết quả \nxét nghiệm dương tính. Hỏi xác suất để bạn đó thật sự bị nhiêm virus là bao nhiêu (làm tròn kết quả đến \nhàng phần trăm)? \nTrả lời: ………………..",
+    "raw_question_text_sha256": "3582acc0264473e59108863eeef326ff8b1c11ae0e036b58a07e720334ca5143",
+    "problem_type_code": "BAYES_POSTERIOR",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "question_number": "6",
+    "question_start_page": 313,
+    "duplicate_occurrence_count": 3,
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_page": 313,
+        "question_number": "6",
+        "answer_detected": "0,92"
+      },
+      {
+        "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+        "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+        "source_pdf_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+        "question_page": 76,
+        "question_number": "20",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+        "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+        "source_pdf_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+        "question_page": 85,
+        "question_number": "20",
+        "answer_detected": "0,92"
+      }
+    ],
+    "rights_status": "REVIEW_REQUIRED",
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false,
+    "review_status": "VERIFIED_SOURCE_ANSWER",
+    "correct_answer": "0,92",
+    "answer_verification": "SOURCE_SOLUTION_EXPLICIT",
+    "solution_answer_page": 313,
+    "visual_asset_required": false,
+    "concepts": [
+      {
+        "concept_code": "BAYES_FORMULA",
+        "weight": 0.5,
+        "is_primary": true
+      },
+      {
+        "concept_code": "CONDITIONAL_PROBABILITY",
+        "weight": 0.5,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "learning_outcome_code": "LO_M12_BAYES",
+        "weight": 1.0
+      }
+    ]
+  },
+  {
+    "candidate_id": "M12_PROB_CAND_0024",
+    "subject_code": "MATH_G12",
+    "chapter_code": "PROBABILITY_CHAPTER",
+    "topic_code": "PROBABILITY_TOPIC",
+    "official_scope_code": "M12_CORE_PROBABILITY_CONDITIONAL",
+    "question_type": "SHORT_ANSWER",
+    "raw_question_text": "Câu 6. \nCó hai hộp đựng các viên bi: Hộp I  có 6 bi đỏ và 4 bi xanh, hộp II  có 5 bi đỏ và 5 bi xanh \n(các viên bi có cùng kích thước và khối lượng). Bạn Minh lấy ngẫu nhiên một viên bi từ hộp I , bạn Như \nlấy ngẫu nhiên một viên bi từ hộp II . Biết rằng có viên bi đỏ được lấy ra, khi đó xác suất để bạn Như lấy \nđược viên bi đỏ là a\nb (\n*\n,\n, a\na b\nb\n\n tối giản). Tính \n.\na\nb\n\n \nTrả lời: ………………..",
+    "raw_question_text_sha256": "c33160af7a9a80852db90a140456d2d83f42d449c83b94f6307b86638556c3d8",
+    "problem_type_code": "BAYES_POSTERIOR",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "question_number": "6",
+    "question_start_page": 354,
+    "duplicate_occurrence_count": 2,
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_page": 339,
+        "question_number": "6",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_page": 354,
+        "question_number": "6",
+        "answer_detected": "3"
+      }
+    ],
+    "rights_status": "REVIEW_REQUIRED",
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false,
+    "review_status": "VERIFIED_SOURCE_ANSWER",
+    "correct_answer": "3",
+    "answer_verification": "SOURCE_SOLUTION_EXPLICIT",
+    "solution_answer_page": 354,
+    "visual_asset_required": false,
+    "concepts": [
+      {
+        "concept_code": "BAYES_FORMULA",
+        "weight": 0.5,
+        "is_primary": true
+      },
+      {
+        "concept_code": "CONDITIONAL_PROBABILITY",
+        "weight": 0.5,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "learning_outcome_code": "LO_M12_BAYES",
+        "weight": 1.0
+      }
+    ]
+  },
+  {
+    "candidate_id": "M12_PROB_CAND_0026",
+    "subject_code": "MATH_G12",
+    "chapter_code": "PROBABILITY_CHAPTER",
+    "topic_code": "PROBABILITY_TOPIC",
+    "official_scope_code": "M12_CORE_PROBABILITY_CONDITIONAL",
+    "question_type": "SHORT_ANSWER",
+    "raw_question_text": "Câu 6. \nXác suất bé An được mẹ dẫn theo khi đi mua sắm là 2.\n5  Khi bé An được đi theo mẹ thì 70% bé \nsẽ được mua đồ chơi. Khi bé không đi theo mẹ, có thể mẹ vẫn mua đồ chơi cho bé. Xác suất bé được đi \ntheo mẹ biết rằng bé được mẹ mua cho đồ chơi là 14 .\n23  Khi bé không đi theo mẹ, xác suất bé được mẹ \nmua cho đồ chơi là bao nhiêu? \nTrả lời: ………………..",
+    "raw_question_text_sha256": "579998cdfc1e3bd320813697b96e166e77073a8b5029f74aefc5f30b13d7f329",
+    "problem_type_code": "CONDITIONAL_PROBABILITY_DIRECT",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "question_number": "6",
+    "question_start_page": 395,
+    "duplicate_occurrence_count": 1,
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_page": 395,
+        "question_number": "6",
+        "answer_detected": "0,3"
+      }
+    ],
+    "rights_status": "REVIEW_REQUIRED",
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false,
+    "review_status": "VERIFIED_SOURCE_ANSWER",
+    "correct_answer": "0,3",
+    "answer_verification": "SOURCE_SOLUTION_EXPLICIT",
+    "solution_answer_page": 395,
+    "visual_asset_required": false,
+    "concepts": [
+      {
+        "concept_code": "CONDITIONAL_PROBABILITY",
+        "weight": 1.0,
+        "is_primary": true
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "learning_outcome_code": "LO_M12_CONDITIONAL_PROBABILITY",
+        "weight": 1.0
+      }
+    ]
+  },
+  {
+    "candidate_id": "M12_PROB_CAND_0027",
+    "subject_code": "MATH_G12",
+    "chapter_code": "PROBABILITY_CHAPTER",
+    "topic_code": "PROBABILITY_TOPIC",
+    "official_scope_code": "M12_CORE_PROBABILITY_CONDITIONAL",
+    "question_type": "SHORT_ANSWER",
+    "raw_question_text": "Câu 6. \nMột cơ sở sản xuất sữa giả mua các thùng sữa thật giống nhau ( 48  hộp / thùng), rồi thay thế \nmột số hộp sữa thật thành các hộp sữa giả nhằm thu lợi bất chính. Trong quá trình sản xuất, cơ sở phân ra \nlàm hai loại: Loại I để lẫn mỗi thùng 5 hộp sữa giả và loại II để lẫn mỗi thùng 3 hộp sữa giả. Biết rằng \nsố thùng sữa loại I gấp 1,5 lần số thùng sữa loại II. Chọn ngẫu nhiên một thùng sữa từ cơ sở sản xuất và \ntừ thùng đó lấy ngẫu nhiên 10 hộp. Tính xác suất để trong 10 hộp lấy ra có đúng 2  hộp sữa là giả (làm \ntròn kết quả đến hàng phần trăm).  \nTrả lời: ………………..",
+    "raw_question_text_sha256": "f3314387f6ef3140971544bf1b5535bbfc28e9c93f97389ab2ca4cff2ae86453",
+    "problem_type_code": "BAYES_POSTERIOR",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "question_number": "6",
+    "question_start_page": 414,
+    "duplicate_occurrence_count": 2,
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_page": 402,
+        "question_number": "6",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_page": 414,
+        "question_number": "6",
+        "answer_detected": "0,17"
+      }
+    ],
+    "rights_status": "REVIEW_REQUIRED",
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false,
+    "review_status": "VERIFIED_SOURCE_ANSWER",
+    "correct_answer": "0,17",
+    "answer_verification": "SOURCE_SOLUTION_EXPLICIT",
+    "solution_answer_page": 414,
+    "visual_asset_required": false,
+    "concepts": [
+      {
+        "concept_code": "BAYES_FORMULA",
+        "weight": 0.5,
+        "is_primary": true
+      },
+      {
+        "concept_code": "CONDITIONAL_PROBABILITY",
+        "weight": 0.5,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "learning_outcome_code": "LO_M12_BAYES",
+        "weight": 1.0
+      }
+    ]
+  },
+  {
+    "candidate_id": "M12_PROB_CAND_0034",
+    "subject_code": "MATH_G12",
+    "chapter_code": "PROBABILITY_CHAPTER",
+    "topic_code": "PROBABILITY_TOPIC",
+    "official_scope_code": "M12_CORE_PROBABILITY_CONDITIONAL",
+    "question_type": "SHORT_ANSWER",
+    "raw_question_text": "Câu 10. Một loại linh kiện do hai nhà máy I và II cùng sản xuất. Tỉ lệ phế phẩm của các nhà máy I và II \nlần lượt là 2% và 3%. Trong một lô linh kiện để lẫn lộn 100 sản phẩm của nhà máy I và 150 sản phẩm \ncủa nhà máy II. Một nhân viên kiểm tra lấy ngẫu nhiên một linh kiện từ lô hàng đó. Biết rằng linh kiện \nđược lấy ra không là phế phẩm. Tính xác suất để linh kiện đó do nhà máy II sản xuất (kết quả làm tròn \nđến hàng phần trăm)? \nTrả lời: ………………..",
+    "raw_question_text_sha256": "c117dee13de52652eb62c01c2e64c2deb03b888a90963c35c7ccea39deb00c64",
+    "problem_type_code": "BAYES_POSTERIOR",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "question_number": "10",
+    "question_start_page": 493,
+    "duplicate_occurrence_count": 2,
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_page": 480,
+        "question_number": "6",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_page": 493,
+        "question_number": "10",
+        "answer_detected": "0,60"
+      }
+    ],
+    "rights_status": "REVIEW_REQUIRED",
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false,
+    "review_status": "VERIFIED_SOURCE_ANSWER",
+    "correct_answer": "0,60",
+    "answer_verification": "SOURCE_SOLUTION_EXPLICIT",
+    "solution_answer_page": 493,
+    "visual_asset_required": false,
+    "concepts": [
+      {
+        "concept_code": "BAYES_FORMULA",
+        "weight": 0.5,
+        "is_primary": true
+      },
+      {
+        "concept_code": "CONDITIONAL_PROBABILITY",
+        "weight": 0.5,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "learning_outcome_code": "LO_M12_BAYES",
+        "weight": 1.0
+      }
+    ]
+  },
+  {
+    "candidate_id": "M12_PROB_CAND_0036",
+    "subject_code": "MATH_G12",
+    "chapter_code": "PROBABILITY_CHAPTER",
+    "topic_code": "PROBABILITY_TOPIC",
+    "official_scope_code": "M12_CORE_PROBABILITY_CONDITIONAL",
+    "question_type": "SHORT_ANSWER",
+    "raw_question_text": "Câu 6. \nTại địa phương A, người ta tiến hành một đợt kiểm tra diện rộng các con bò để phát hiện một \nloại bệnh X, không có xét nghiệm nào cho kết quả chính xác 100% . Có một loại xét nghiệm, mà ở đây ta \ngọi là xét nghiệm Z cho kết quả như sau: Xét nghiệm có độ nhạy 84%  (Độ nhạy là xác suất chọn được \nmột mẫu dương tính biết rằng mẫu bị nhiễm bệnh); xác suất dương tính giả là 8%  (Dương tính giả là xét \nnghiệm dương tính nhưng thực tế không bị nhiễm bệnh). Biết rằng tỉ lệ bò ở địa phương A bị mắc bệnh X \nlà 25% . Chọn ngẫu nhiên một con bò địa phương A để xét nghiệm, tính xác suất để chọn được con bò bị \nnhiễm bệnh, biết rằng con bò dương tính với xét nghiệm (kết quả làm tròn đến hàng phần trăm). \nTrả lời: ………………..",
+    "raw_question_text_sha256": "cbc5151b2db175cbf44bceb6344121203444ca9202f02a526d2dc0f6118e89f3",
+    "problem_type_code": "BAYES_POSTERIOR",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "question_number": "6",
+    "question_start_page": 512,
+    "duplicate_occurrence_count": 1,
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_page": 512,
+        "question_number": "6",
+        "answer_detected": "0,78"
+      }
+    ],
+    "rights_status": "REVIEW_REQUIRED",
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false,
+    "review_status": "VERIFIED_SOURCE_ANSWER",
+    "correct_answer": "0,78",
+    "answer_verification": "SOURCE_SOLUTION_EXPLICIT",
+    "solution_answer_page": 512,
+    "visual_asset_required": false,
+    "concepts": [
+      {
+        "concept_code": "BAYES_FORMULA",
+        "weight": 0.5,
+        "is_primary": true
+      },
+      {
+        "concept_code": "CONDITIONAL_PROBABILITY",
+        "weight": 0.5,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "learning_outcome_code": "LO_M12_BAYES",
+        "weight": 1.0
+      }
+    ]
+  },
+  {
+    "candidate_id": "M12_PROB_CAND_0038",
+    "subject_code": "MATH_G12",
+    "chapter_code": "PROBABILITY_CHAPTER",
+    "topic_code": "PROBABILITY_TOPIC",
+    "official_scope_code": "M12_CORE_PROBABILITY_CONDITIONAL",
+    "question_type": "SHORT_ANSWER",
+    "raw_question_text": "Câu 6. \nMột người tham gia trò chơi với ba hộp quà đặc biệt: Hộp màu vàng có 2 điện thoại iPhone và 3 \ntai nghe, hộp màu bạc có 4 điện thoại iPhone và 1 tai nghe và hộp màu đồng có 3 điện thoại iPhone và 2 \ntai nghe. Luật chơi được thực hiện qua 2 bước sau: \nBước 1: Người chơi chọn ngẫu nhiên một hộp. \nBước 2: Từ hộp đã chọn, người chơi lấy ngẫu nhiên 1 món quà: \n- Nếu quà là điện thoại iPhone, người chơi được giữ nó và lấy thêm 1 quà nữa từ cùng hộp. \n- Nếu quà là tai nghe, trò chơi kết thúc. \nBiết rằng người chơi lấy được hai điện thoại iPhone, tính xác suất để người đó lấy từ hộp màu bạc (làm \ntròn kết quả đến hàng phần mười) \nTrả lời: ………………..",
+    "raw_question_text_sha256": "59d53b8eed8fb1bd740527133db8af2b2adce24e7b3efeedbee0db8dd75b9754",
+    "problem_type_code": "BAYES_POSTERIOR",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "question_number": "6",
+    "question_start_page": 550,
+    "duplicate_occurrence_count": 3,
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_page": 537,
+        "question_number": "6",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_page": 550,
+        "question_number": "6",
+        "answer_detected": "0,6"
+      },
+      {
+        "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+        "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+        "source_pdf_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+        "question_page": 151,
+        "question_number": "1",
+        "answer_detected": null
+      }
+    ],
+    "rights_status": "REVIEW_REQUIRED",
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false,
+    "review_status": "VERIFIED_SOURCE_ANSWER",
+    "correct_answer": "0,6",
+    "answer_verification": "SOURCE_SOLUTION_EXPLICIT",
+    "solution_answer_page": 550,
+    "visual_asset_required": false,
+    "concepts": [
+      {
+        "concept_code": "BAYES_FORMULA",
+        "weight": 0.5,
+        "is_primary": true
+      },
+      {
+        "concept_code": "CONDITIONAL_PROBABILITY",
+        "weight": 0.5,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "learning_outcome_code": "LO_M12_BAYES",
+        "weight": 1.0
+      }
+    ]
+  },
+  {
+    "candidate_id": "M12_PROB_CAND_0048",
+    "subject_code": "MATH_G12",
+    "chapter_code": "PROBABILITY_CHAPTER",
+    "topic_code": "PROBABILITY_TOPIC",
+    "official_scope_code": "M12_CORE_PROBABILITY_CONDITIONAL",
+    "question_type": "SHORT_ANSWER",
+    "raw_question_text": "Câu 6. \nMột thầy giáo có 16 cuốn sách khác nhau gồm 4 cuốn sách Toán, 5 cuốn sách Lý và 7 cuốn \nsách Hóa. Thầy lấy ra ngẫu nhiên 8 cuốn sách để tặng cho học sinh. Tính xác suất để số sách còn lại của \nthầy có đủ cả ba môn ( làm tròn kết quả đến hàng phần trăm) \nTrả lời: ………………..",
+    "raw_question_text_sha256": "bf7a0e378639b20939f800f7212116f613ec2baaea3b68c910894c2825e296c2",
+    "problem_type_code": "TREE_OR_TOTAL_PROBABILITY",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "question_number": "6",
+    "question_start_page": 678,
+    "duplicate_occurrence_count": 2,
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_page": 665,
+        "question_number": "6",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_page": 678,
+        "question_number": "6",
+        "answer_detected": "0,95"
+      }
+    ],
+    "rights_status": "REVIEW_REQUIRED",
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false,
+    "review_status": "VERIFIED_SOURCE_ANSWER",
+    "correct_answer": "0,95",
+    "answer_verification": "SOURCE_SOLUTION_EXPLICIT",
+    "solution_answer_page": 678,
+    "visual_asset_required": false,
+    "concepts": [
+      {
+        "concept_code": "PROBABILITY_TREE",
+        "weight": 0.5,
+        "is_primary": true
+      },
+      {
+        "concept_code": "TOTAL_PROBABILITY",
+        "weight": 0.5,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "learning_outcome_code": "LO_M12_PROBABILITY_TREE",
+        "weight": 1.0
+      }
+    ]
+  },
+  {
+    "candidate_id": "M12_PROB_CAND_0053",
+    "subject_code": "MATH_G12",
+    "chapter_code": "PROBABILITY_CHAPTER",
+    "topic_code": "PROBABILITY_TOPIC",
+    "official_scope_code": "M12_CORE_PROBABILITY_CONDITIONAL",
+    "question_type": "SHORT_ANSWER",
+    "raw_question_text": "Câu 6. \nMột nhà máy sản xuất sản phẩm A có tỷ lệ sản phẩm bị lỗi là 2%. Nhà máy sử dụng hai hệ \nthống kiểm tra chất lượng độc lập để phát hiện lỗi: \nHệ thống 1: Xác suất phát hiện chính xác sản phẩm lỗi là 95%. Xác suất báo lỗi nhầm trên một sản phẩm \nkhông lỗi là 1%. \nHệ thống 2: Xác suất phát hiện chính xác sản phẩm lỗi là 90%. Xác suất báo lỗi nhầm trên một sản phẩm \nkhông lỗi là 5%. \nChọn ngẫu nhiên một sản phẩm. Biết rằng sản phẩm này bị cả hai hệ thống kiểm tra đều báo lỗi. Tính xác \nsuất để sản phẩm này thực tế không bị lỗi. Kết quả xác suất này sau khi đã làm tròn đến hàng phần nghìn \nlà số có dạng 0,0ab  (ví dụ nếu kết quả là 0,024  thì \n2,\n4\na\nb\n\n\n). Tính giá trị của \n.\na\nb\n\n \nTrả lời: ………………..",
+    "raw_question_text_sha256": "336b2aff0be9fe801a2ec91b178767e1fa187bc795678a6b49f6d3c9eedc8845",
+    "problem_type_code": "BAYES_POSTERIOR",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "question_number": "6",
+    "question_start_page": 736,
+    "duplicate_occurrence_count": 2,
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_page": 723,
+        "question_number": "6",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_page": 736,
+        "question_number": "6",
+        "answer_detected": "10"
+      }
+    ],
+    "rights_status": "REVIEW_REQUIRED",
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false,
+    "review_status": "VERIFIED_SOURCE_ANSWER",
+    "correct_answer": "10",
+    "answer_verification": "SOURCE_SOLUTION_EXPLICIT",
+    "solution_answer_page": 736,
+    "visual_asset_required": false,
+    "concepts": [
+      {
+        "concept_code": "BAYES_FORMULA",
+        "weight": 0.5,
+        "is_primary": true
+      },
+      {
+        "concept_code": "CONDITIONAL_PROBABILITY",
+        "weight": 0.5,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "learning_outcome_code": "LO_M12_BAYES",
+        "weight": 1.0
+      }
+    ]
+  },
+  {
+    "candidate_id": "M12_PROB_CAND_0055",
+    "subject_code": "MATH_G12",
+    "chapter_code": "PROBABILITY_CHAPTER",
+    "topic_code": "PROBABILITY_TOPIC",
+    "official_scope_code": "M12_CORE_PROBABILITY_CONDITIONAL",
+    "question_type": "SHORT_ANSWER",
+    "raw_question_text": "Câu 6. \nHộp thứ nhất chứa 5 viên bi xanh và 1 viên bi đỏ. Hộp thứ hai chứa 4 viên bi đỏ. Lấy ngẫu \nnhiên 3viên bi từ hộp thứ nhất và bỏ vào hộp thứ hai, rồi từ hộp thứ hai lấy ra ngẫu nhiên 2 viên bi. Biết \n2 viên bi lấy ra ở hộp thứ hai có cùng màu. Tính xác suất để 3viên bi lấy ra từ hộp thứ nhất cũng có cùng \nmàu. \nTrả lời: ………………..",
+    "raw_question_text_sha256": "ca9ed2e636b3aba5a52b67b1193fe2ff1be7c9fbc32fcf9682ebf72ca381cdbe",
+    "problem_type_code": "TREE_OR_TOTAL_PROBABILITY",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "question_number": "6",
+    "question_start_page": 757,
+    "duplicate_occurrence_count": 2,
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_page": 744,
+        "question_number": "6",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_page": 757,
+        "question_number": "6",
+        "answer_detected": "0,45"
+      }
+    ],
+    "rights_status": "REVIEW_REQUIRED",
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false,
+    "review_status": "VERIFIED_SOURCE_ANSWER",
+    "correct_answer": "0,45",
+    "answer_verification": "SOURCE_SOLUTION_EXPLICIT",
+    "solution_answer_page": 757,
+    "visual_asset_required": false,
+    "concepts": [
+      {
+        "concept_code": "PROBABILITY_TREE",
+        "weight": 0.5,
+        "is_primary": true
+      },
+      {
+        "concept_code": "TOTAL_PROBABILITY",
+        "weight": 0.5,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "learning_outcome_code": "LO_M12_PROBABILITY_TREE",
+        "weight": 1.0
+      }
+    ]
+  }
+]

@@ -1,0 +1,144 @@
+[
+  {
+    "cluster_id": "M12_PROB_CAND_DUP_0001",
+    "canonical_candidate_id": "M12_PROB_CAND_0003",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_PROB_CAND_DUP_0002",
+    "canonical_candidate_id": "M12_PROB_CAND_0006",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_PROB_CAND_DUP_0003",
+    "canonical_candidate_id": "M12_PROB_CAND_0010",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_PROB_CAND_DUP_0004",
+    "canonical_candidate_id": "M12_PROB_CAND_0011",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_PROB_CAND_DUP_0005",
+    "canonical_candidate_id": "M12_PROB_CAND_0017",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_PROB_CAND_DUP_0006",
+    "canonical_candidate_id": "M12_PROB_CAND_0018",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_PROB_CAND_DUP_0007",
+    "canonical_candidate_id": "M12_PROB_CAND_0020",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 3,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_PROB_CAND_DUP_0008",
+    "canonical_candidate_id": "M12_PROB_CAND_0024",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_PROB_CAND_DUP_0009",
+    "canonical_candidate_id": "M12_PROB_CAND_0027",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_PROB_CAND_DUP_0010",
+    "canonical_candidate_id": "M12_PROB_CAND_0034",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_PROB_CAND_DUP_0011",
+    "canonical_candidate_id": "M12_PROB_CAND_0038",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 3,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_PROB_CAND_DUP_0012",
+    "canonical_candidate_id": "M12_PROB_CAND_0048",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_PROB_CAND_DUP_0013",
+    "canonical_candidate_id": "M12_PROB_CAND_0053",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  },
+  {
+    "cluster_id": "M12_PROB_CAND_DUP_0014",
+    "canonical_candidate_id": "M12_PROB_CAND_0055",
+    "dedupe_basis": "EXACT_NORMALIZED_QUESTION_TEXT",
+    "occurrence_count": 2,
+    "answer_consistency": "CONSISTENT",
+    "source_codes": [
+      "SRC_TRUONG_NGOC_VY_40_2026"
+    ]
+  }
+]

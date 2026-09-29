@@ -1,0 +1,42 @@
+{
+  "dataset_code": "DATA-MATH12-024",
+  "status": "CURATED_SOURCE_BACKED_WITH_HOLDS",
+  "subject_code": "MATH_G12",
+  "chapter_code": "OXYZ_CHAPTER",
+  "official_scope_code": "M12_CORE_GEOMETRY_COORDINATE_3D",
+  "sources_scanned": 12,
+  "candidate_occurrences_detected": 475,
+  "unique_candidates_after_exact_dedupe": 324,
+  "verified_candidates": 132,
+  "hold_candidates": 192,
+  "duplicate_clusters": 102,
+  "verified_question_type_counts": {
+    "TRUE_FALSE_GROUP": 4,
+    "SHORT_ANSWER": 34,
+    "MULTIPLE_CHOICE": 94
+  },
+  "verified_problem_type_counts": {
+    "COORDINATE_GEOMETRY_APPLICATION": 16,
+    "SPHERE_EQUATION_CENTER_RADIUS": 7,
+    "ANGLE_IN_OXYZ": 18,
+    "COORDINATE_DISTANCE_PROJECTION": 5,
+    "PLANE_EQUATION_NORMAL_VECTOR": 40,
+    "LINE_EQUATION_DIRECTION_VECTOR": 33,
+    "PLANE_RELATION": 7,
+    "LINE_RELATION": 2,
+    "LINE_DISTANCE_IN_OXYZ": 1,
+    "POINT_PLANE_OR_PLANE_DISTANCE": 2,
+    "LINE_PLANE_INTERSECTION": 1
+  },
+  "visual_asset_required_verified": 6,
+  "problem_types_total": 12,
+  "problem_types_covered": 11,
+  "problem_type_gaps": [
+    "PLANE_SPHERE_RELATION"
+  ],
+  "rights_status": "REVIEW_REQUIRED",
+  "production_release_eligible": 0,
+  "promotion_ready": 0,
+  "database_import_allowed": false,
+  "canonical_snapshot_allowed": false
+}

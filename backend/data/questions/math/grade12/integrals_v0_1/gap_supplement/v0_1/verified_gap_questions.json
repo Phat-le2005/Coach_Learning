@@ -1,0 +1,82 @@
+[
+  {
+    "candidate_id": "M12_INT_GAP_CAND_0001",
+    "base_dataset": "DATA-MATH12-023",
+    "target_gap": "CALCULATE_DEFINITE_INTEGRAL",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED_SOURCE_ANSWER",
+    "raw_question_text": "Câu 3. \nCho \n\n1\n0\n1\nf\nx dx \n\n, tích phân \n\n\n\n1\n2\n0\n2\n3\nf x\nx\ndx\n\n\n bằng \n \nA. 1. \nB. 0 . \n \nC. 3. \nD. 1\n.",
+    "raw_question_text_sha256": "5e0553eb7f87047f1eefdda4d4dd8c7f32cda68b97586d871ac155a8c4e151c3",
+    "correct_answer": "A",
+    "answer_verification": "SOURCE_SOLUTION_EXPLICIT",
+    "problem_type_code": "CALCULATE_DEFINITE_INTEGRAL",
+    "concepts": [
+      {
+        "concept_code": "DEFINITE_INTEGRAL",
+        "weight": 1.0,
+        "is_primary": true
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "learning_outcome_code": "LO_M12_DEFINITE_INTEGRAL",
+        "weight": 1.0
+      }
+    ],
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "question_number": "3",
+    "question_start_page": 557,
+    "solution_answer_page": 557,
+    "visual_asset_required": false,
+    "rights_status": "REVIEW_REQUIRED",
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "candidate_id": "M12_INT_GAP_CAND_0002",
+    "base_dataset": "DATA-MATH12-023",
+    "target_gap": "CALCULATE_DEFINITE_INTEGRAL",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED_SOURCE_ANSWER",
+    "raw_question_text": "Câu 5. \nCho \n\n5\n0\nd\n2\nf\nx\nx \n\n. Tích phân \n\n5\n2\n0\n4\n3\nd\nf\nx\nx\nx\n\n\n\n\n\n\n bằng \n \nA. 140\n\n. \nB. 130\n\n. \nC. 120\n\n. \nD. 133\n\n.",
+    "raw_question_text_sha256": "7f62bd6d5857b7b0124493f512d3a1da2a4a97958e491de4b4c2384042d934c3",
+    "correct_answer": "D",
+    "answer_verification": "SOURCE_SOLUTION_EXPLICIT",
+    "problem_type_code": "CALCULATE_DEFINITE_INTEGRAL",
+    "concepts": [
+      {
+        "concept_code": "DEFINITE_INTEGRAL",
+        "weight": 1.0,
+        "is_primary": true
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "learning_outcome_code": "LO_M12_DEFINITE_INTEGRAL",
+        "weight": 1.0
+      }
+    ],
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "question_number": "5",
+    "question_start_page": 667,
+    "solution_answer_page": 667,
+    "visual_asset_required": false,
+    "rights_status": "REVIEW_REQUIRED",
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  }
+]

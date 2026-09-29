@@ -1,0 +1,11 @@
+{
+  "grouped_data_dispersion_original_gaps": [
+    "IDENTIFY_MORE_STABLE_GROUPED_DATA",
+    "INTERPRET_GROUPED_DISPERSION_MEASURE",
+    "CONCLUDE_FROM_GROUPED_DISPERSION",
+    "PARAMETER_FROM_GROUPED_VARIANCE_SD",
+    "MULTI_MEASURE_GROUPED_DISPERSION_ANALYSIS"
+  ],
+  "new_source_backed_verified_candidates_found": 0,
+  "decision": "KEEP_EXISTING_GAPS_NO_SYNTHETIC_FILL"
+}

@@ -1,0 +1,30 @@
+{
+  "contract_code": "DATA_MATH12_026_GAP_SUPPLEMENT_V0_1",
+  "dataset_code": "DATA-MATH12-026",
+  "base_dataset": "DATA-MATH12-023",
+  "semantic_files_order": [
+    "verified_gap_questions.json",
+    "source_evidence.json",
+    "gap_resolution.json",
+    "remaining_gap_scan.json"
+  ],
+  "semantic_sha256": {
+    "verified_gap_questions.json": "321b360edce8bc7aeafc7599d08a9f0dd2c79a431f7a1ff08eab4a4cd101371f",
+    "source_evidence.json": "61ed7d8a51c71a2c2b28a4d2bdf0dba6d1210f9478e872a39edf46efdf172680",
+    "gap_resolution.json": "49c251414489bebfbdc81e4d1de581b5f3d1ba656cccc62049dfc9df78ae9db9",
+    "remaining_gap_scan.json": "66641ac9f9fbd6fe3adb8ee883d38cad660431ad6a5fc1e8645a60f874015af4"
+  },
+  "aggregate_semantic_sha256": "56de89cf49bea7cfcb4ba1b3ec5b3b8daac6ca8d7da4a2397076f835f335cd5f",
+  "required_invariants": {
+    "verified_gap_candidates": 2,
+    "resolved_gap": "CALCULATE_DEFINITE_INTEGRAL",
+    "grouped_dispersion_new_gap_candidates": 0,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  "policy": {
+    "overlay_only_do_not_rewrite_base_data": true,
+    "no_synthetic_gap_fill": true,
+    "rights_review_required": true
+  }
+}

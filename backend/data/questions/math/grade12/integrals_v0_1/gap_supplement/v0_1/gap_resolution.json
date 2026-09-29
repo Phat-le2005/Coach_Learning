@@ -1,0 +1,11 @@
+{
+  "dataset_code": "DATA-MATH12-026",
+  "base_dataset": "DATA-MATH12-023",
+  "resolved_gap": "CALCULATE_DEFINITE_INTEGRAL",
+  "verified_gap_candidates": 2,
+  "resolution_status": "SOURCE_BACKED_EVIDENCE_FOUND",
+  "remaining_data_math12_023_gap_after_overlay": [],
+  "rights_status": "REVIEW_REQUIRED",
+  "database_import_allowed": false,
+  "canonical_snapshot_allowed": false
+}

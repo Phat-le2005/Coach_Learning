@@ -1,0 +1,45 @@
+{
+  "contract_code": "DATA_MATH12_024_CONTRACT_V0_1",
+  "dataset_code": "DATA-MATH12-024",
+  "semantic_files_order": [
+    "source_registry.json",
+    "taxonomy_candidate.json",
+    "verified_questions.json",
+    "hold_candidates.json",
+    "source_evidence.json",
+    "duplicate_clusters.json",
+    "coverage.json",
+    "review_stats.json",
+    "extraction_limitations.json"
+  ],
+  "semantic_sha256": {
+    "source_registry.json": "1ef16ebf875b3ff3e53be50471a4fb02549719fa62cd715795d84c97cd538554",
+    "taxonomy_candidate.json": "5ac488ed0159b95c00e79c19a97a43773aad7592c3a2caf0acc318672445fa70",
+    "verified_questions.json": "1915b1d64c48132f44252ea2254fffda5fbc0269b0b35954692905dfb09a05a1",
+    "hold_candidates.json": "7f1720e419e34a79c76e1cf0cf83c85809f0f887d64575b6368d5b6061981799",
+    "source_evidence.json": "238edc504d0734b670ba9c0888815d0e608fb8b5cd65f9821ae167bdff72f4c4",
+    "duplicate_clusters.json": "d165897dd6b79326a7decd732d27d29d920ba2ca2298873817cc39a382f1891d",
+    "coverage.json": "f297fadd01f39d11311eed94b95d3a0f59a6b3849767bf187b5afec3026d2dce",
+    "review_stats.json": "61fa75609844995f2c06cb080f470784d5ffbdd026444982b8d26913f5d53216",
+    "extraction_limitations.json": "231a0d2f60a3d5695501a10e59b954bd04a819636636e24047d3c32985590334"
+  },
+  "aggregate_semantic_sha256": "a62426fd798e4b20b5b130bc72903304f3f88f0d26840bed661d2eed9b1521ce",
+  "required_invariants": {
+    "sources_scanned": 12,
+    "unique_candidates_after_exact_dedupe": 324,
+    "verified_candidates": 132,
+    "hold_candidates": 192,
+    "duplicate_clusters": 102,
+    "visual_asset_required_verified": 6,
+    "production_release_eligible": 0,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  "policy": {
+    "no_synthetic_gap_fill": true,
+    "source_answer_required_for_verified": true,
+    "hold_is_not_importable": true,
+    "rights_review_required": true,
+    "codex_must_not_rewrite_curated_data": true
+  }
+}
