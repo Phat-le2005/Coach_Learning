@@ -1,0 +1,21 @@
+{
+  "contract_code": "DATA_MATH12_021_VALIDATION_V0_1",
+  "required_invariants": {
+    "input_dataset": "DATA-MATH12-020",
+    "input_candidate_count": 41,
+    "standalone_reviews": 39,
+    "group_reviews": 2,
+    "verified": 38,
+    "hold_missing_source_answer": 1,
+    "hold_mixed_scope": 2,
+    "production_release_eligible": 0,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  "review_policy": {
+    "answer_detected_alone_is_not_authority": true,
+    "verified_requires_source_solution_occurrence": true,
+    "mixed_scope_groups_are_not_promotable": true,
+    "synthetic_gap_fill_forbidden": true
+  }
+}
