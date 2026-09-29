@@ -1,0 +1,13 @@
+[
+  {
+    "cluster_id": "DISP_DUP_0001",
+    "canonical_candidate_id": "M12_DISP_CAND_0015",
+    "duplicate_candidate_ids": [
+      "M12_DISP_CAND_0014"
+    ],
+    "reason": "EXACT_NORMALIZED_QUESTION_TEXT_MATCH",
+    "academic_resolution": "KEEP_0015_REJECT_0014",
+    "canonical_answer": "B",
+    "canonical_answer_basis": "SOURCE_SOLUTION_OCCURRENCE_ON_CANONICAL_CANDIDATE"
+  }
+]

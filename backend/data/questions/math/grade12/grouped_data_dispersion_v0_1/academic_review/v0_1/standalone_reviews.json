@@ -1,0 +1,2353 @@
+[
+  {
+    "candidate_id": "M12_DISP_CAND_0001",
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 1,
+    "question_number": "6",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "D",
+    "structural_problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+    "reviewed_problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+    "taxonomy_review": "CONFIRMED",
+    "taxonomy": {
+      "status": "CONFIRMED",
+      "basis": "DATA_MATH12_019_TAXONOMY",
+      "problem_types": [
+        {
+          "code": "CALCULATE_GROUPED_VARIANCE",
+          "weight": 1,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "GROUPED_VARIANCE",
+          "weight": 0.55,
+          "is_primary": true
+        },
+        {
+          "code": "GROUPED_MEAN_FOR_DISPERSION",
+          "weight": 0.2,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+          "weight": 0.15,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_FREQUENCY",
+          "weight": 0.1,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+          "weight": 1
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_DISP_CAND_0002",
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 42,
+    "question_number": "6",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "D",
+    "structural_problem_type_code": "COMPARE_GROUPED_VARIANCE_SD",
+    "reviewed_problem_type_code": "COMPARE_GROUPED_VARIANCE_SD",
+    "taxonomy_review": "CONFIRMED",
+    "taxonomy": {
+      "status": "CONFIRMED",
+      "basis": "DATA_MATH12_019_TAXONOMY",
+      "problem_types": [
+        {
+          "code": "COMPARE_GROUPED_VARIANCE_SD",
+          "weight": 1,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "DISPERSION_COMPARISON",
+          "weight": 0.45,
+          "is_primary": true
+        },
+        {
+          "code": "GROUPED_VARIANCE",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_STANDARD_DEVIATION",
+          "weight": 0.3,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_GROUPED_DISPERSION_CONCLUDE",
+          "weight": 1
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_DISP_CAND_0003",
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 79,
+    "question_number": "6",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "A",
+    "structural_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "reviewed_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "taxonomy_review": "CONFIRMED",
+    "taxonomy": {
+      "status": "CONFIRMED",
+      "basis": "DATA_MATH12_019_TAXONOMY",
+      "problem_types": [
+        {
+          "code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+          "weight": 1,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "GROUPED_STANDARD_DEVIATION",
+          "weight": 0.55,
+          "is_primary": true
+        },
+        {
+          "code": "GROUPED_VARIANCE",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+          "weight": 0.1,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_FREQUENCY",
+          "weight": 0.1,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+          "weight": 1
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_DISP_CAND_0004",
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 99,
+    "question_number": "6",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "A",
+    "structural_problem_type_code": "CALCULATE_GROUPED_IQR",
+    "reviewed_problem_type_code": "CALCULATE_GROUPED_IQR",
+    "taxonomy_review": "CONFIRMED",
+    "taxonomy": {
+      "status": "CONFIRMED",
+      "basis": "DATA_MATH12_019_TAXONOMY",
+      "problem_types": [
+        {
+          "code": "CALCULATE_GROUPED_IQR",
+          "weight": 1,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "GROUPED_IQR",
+          "weight": 0.55,
+          "is_primary": true
+        },
+        {
+          "code": "GROUPED_QUARTILE_INTERPOLATION",
+          "weight": 0.35,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_FREQUENCY",
+          "weight": 0.1,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+          "weight": 1
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_DISP_CAND_0005",
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 119,
+    "question_number": "3",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "B",
+    "structural_problem_type_code": "COMPARE_GROUPED_VARIANCE_SD",
+    "reviewed_problem_type_code": "COMPARE_GROUPED_VARIANCE_SD",
+    "taxonomy_review": "CONFIRMED",
+    "taxonomy": {
+      "status": "CONFIRMED",
+      "basis": "DATA_MATH12_019_TAXONOMY",
+      "problem_types": [
+        {
+          "code": "COMPARE_GROUPED_VARIANCE_SD",
+          "weight": 1,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "DISPERSION_COMPARISON",
+          "weight": 0.45,
+          "is_primary": true
+        },
+        {
+          "code": "GROUPED_VARIANCE",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_STANDARD_DEVIATION",
+          "weight": 0.3,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_GROUPED_DISPERSION_CONCLUDE",
+          "weight": 1
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_DISP_CAND_0006",
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 139,
+    "question_number": "8",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "A",
+    "structural_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "reviewed_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "taxonomy_review": "CONFIRMED",
+    "taxonomy": {
+      "status": "CONFIRMED",
+      "basis": "DATA_MATH12_019_TAXONOMY",
+      "problem_types": [
+        {
+          "code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+          "weight": 1,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "GROUPED_STANDARD_DEVIATION",
+          "weight": 0.55,
+          "is_primary": true
+        },
+        {
+          "code": "GROUPED_VARIANCE",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+          "weight": 0.1,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_FREQUENCY",
+          "weight": 0.1,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+          "weight": 1
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_DISP_CAND_0007",
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 177,
+    "question_number": "6",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "B",
+    "structural_problem_type_code": "CALCULATE_GROUPED_IQR",
+    "reviewed_problem_type_code": "CALCULATE_GROUPED_IQR",
+    "taxonomy_review": "CONFIRMED",
+    "taxonomy": {
+      "status": "CONFIRMED",
+      "basis": "DATA_MATH12_019_TAXONOMY",
+      "problem_types": [
+        {
+          "code": "CALCULATE_GROUPED_IQR",
+          "weight": 1,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "GROUPED_IQR",
+          "weight": 0.55,
+          "is_primary": true
+        },
+        {
+          "code": "GROUPED_QUARTILE_INTERPOLATION",
+          "weight": 0.35,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_FREQUENCY",
+          "weight": 0.1,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+          "weight": 1
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_DISP_CAND_0008",
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 196,
+    "question_number": "6",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "B",
+    "structural_problem_type_code": "CALCULATE_GROUPED_RANGE",
+    "reviewed_problem_type_code": "CALCULATE_GROUPED_RANGE",
+    "taxonomy_review": "CONFIRMED",
+    "taxonomy": {
+      "status": "CONFIRMED",
+      "basis": "DATA_MATH12_019_TAXONOMY",
+      "problem_types": [
+        {
+          "code": "CALCULATE_GROUPED_RANGE",
+          "weight": 1,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "GROUPED_RANGE",
+          "weight": 0.6,
+          "is_primary": true
+        },
+        {
+          "code": "GROUPED_DATA_CLASS_BOUNDARY",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_FREQUENCY",
+          "weight": 0.15,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+          "weight": 1
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_DISP_CAND_0009",
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 217,
+    "question_number": "6",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "A",
+    "structural_problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+    "reviewed_problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+    "taxonomy_review": "CONFIRMED",
+    "taxonomy": {
+      "status": "CONFIRMED",
+      "basis": "DATA_MATH12_019_TAXONOMY",
+      "problem_types": [
+        {
+          "code": "CALCULATE_GROUPED_VARIANCE",
+          "weight": 1,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "GROUPED_VARIANCE",
+          "weight": 0.55,
+          "is_primary": true
+        },
+        {
+          "code": "GROUPED_MEAN_FOR_DISPERSION",
+          "weight": 0.2,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+          "weight": 0.15,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_FREQUENCY",
+          "weight": 0.1,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+          "weight": 1
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_DISP_CAND_0010",
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 275,
+    "question_number": "3",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "C",
+    "structural_problem_type_code": "CALCULATE_GROUPED_RANGE",
+    "reviewed_problem_type_code": "CALCULATE_GROUPED_RANGE",
+    "taxonomy_review": "CONFIRMED",
+    "taxonomy": {
+      "status": "CONFIRMED",
+      "basis": "DATA_MATH12_019_TAXONOMY",
+      "problem_types": [
+        {
+          "code": "CALCULATE_GROUPED_RANGE",
+          "weight": 1,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "GROUPED_RANGE",
+          "weight": 0.6,
+          "is_primary": true
+        },
+        {
+          "code": "GROUPED_DATA_CLASS_BOUNDARY",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_FREQUENCY",
+          "weight": 0.15,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+          "weight": 1
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_DISP_CAND_0011",
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 294,
+    "question_number": "4",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "C",
+    "structural_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "reviewed_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "taxonomy_review": "CONFIRMED",
+    "taxonomy": {
+      "status": "CONFIRMED",
+      "basis": "DATA_MATH12_019_TAXONOMY",
+      "problem_types": [
+        {
+          "code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+          "weight": 1,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "GROUPED_STANDARD_DEVIATION",
+          "weight": 0.55,
+          "is_primary": true
+        },
+        {
+          "code": "GROUPED_VARIANCE",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+          "weight": 0.1,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_FREQUENCY",
+          "weight": 0.1,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+          "weight": 1
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_DISP_CAND_0012",
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 377,
+    "question_number": "4",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "B",
+    "structural_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "reviewed_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "taxonomy_review": "CONFIRMED",
+    "taxonomy": {
+      "status": "CONFIRMED",
+      "basis": "DATA_MATH12_019_TAXONOMY",
+      "problem_types": [
+        {
+          "code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+          "weight": 1,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "GROUPED_STANDARD_DEVIATION",
+          "weight": 0.55,
+          "is_primary": true
+        },
+        {
+          "code": "GROUPED_VARIANCE",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+          "weight": 0.1,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_FREQUENCY",
+          "weight": 0.1,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+          "weight": 1
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_DISP_CAND_0013",
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 417,
+    "question_number": "8",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "B",
+    "structural_problem_type_code": "CALCULATE_GROUPED_IQR",
+    "reviewed_problem_type_code": "CALCULATE_GROUPED_IQR",
+    "taxonomy_review": "CONFIRMED",
+    "taxonomy": {
+      "status": "CONFIRMED",
+      "basis": "DATA_MATH12_019_TAXONOMY",
+      "problem_types": [
+        {
+          "code": "CALCULATE_GROUPED_IQR",
+          "weight": 1,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "GROUPED_IQR",
+          "weight": 0.55,
+          "is_primary": true
+        },
+        {
+          "code": "GROUPED_QUARTILE_INTERPOLATION",
+          "weight": 0.35,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_FREQUENCY",
+          "weight": 0.1,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+          "weight": 1
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_DISP_CAND_0014",
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 457,
+    "question_number": "4",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "REJECTED_DUPLICATE",
+    "duplicate_of": "M12_DISP_CAND_0015",
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "DUPLICATE_CANONICAL_HAS_SOURCE_BACKED_ANSWER",
+    "correct_answer": null,
+    "structural_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "reviewed_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "taxonomy_review": "CONFIRMED",
+    "taxonomy": {
+      "status": "CONFIRMED",
+      "basis": "DATA_MATH12_019_TAXONOMY",
+      "problem_types": [
+        {
+          "code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+          "weight": 1,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "GROUPED_STANDARD_DEVIATION",
+          "weight": 0.55,
+          "is_primary": true
+        },
+        {
+          "code": "GROUPED_VARIANCE",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+          "weight": 0.1,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_FREQUENCY",
+          "weight": 0.1,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+          "weight": 1
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "REJECTED_DUPLICATE"
+    ]
+  },
+  {
+    "candidate_id": "M12_DISP_CAND_0015",
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 464,
+    "question_number": "5",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "B",
+    "structural_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "reviewed_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "taxonomy_review": "CONFIRMED",
+    "taxonomy": {
+      "status": "CONFIRMED",
+      "basis": "DATA_MATH12_019_TAXONOMY",
+      "problem_types": [
+        {
+          "code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+          "weight": 1,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "GROUPED_STANDARD_DEVIATION",
+          "weight": 0.55,
+          "is_primary": true
+        },
+        {
+          "code": "GROUPED_VARIANCE",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+          "weight": 0.1,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_FREQUENCY",
+          "weight": 0.1,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+          "weight": 1
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_DISP_CAND_0016",
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 476,
+    "question_number": "8",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "D",
+    "structural_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "reviewed_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "taxonomy_review": "CONFIRMED",
+    "taxonomy": {
+      "status": "CONFIRMED",
+      "basis": "DATA_MATH12_019_TAXONOMY",
+      "problem_types": [
+        {
+          "code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+          "weight": 1,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "GROUPED_STANDARD_DEVIATION",
+          "weight": 0.55,
+          "is_primary": true
+        },
+        {
+          "code": "GROUPED_VARIANCE",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+          "weight": 0.1,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_FREQUENCY",
+          "weight": 0.1,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+          "weight": 1
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_DISP_CAND_0017",
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 495,
+    "question_number": "6",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "B",
+    "structural_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "reviewed_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "taxonomy_review": "CONFIRMED",
+    "taxonomy": {
+      "status": "CONFIRMED",
+      "basis": "DATA_MATH12_019_TAXONOMY",
+      "problem_types": [
+        {
+          "code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+          "weight": 1,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "GROUPED_STANDARD_DEVIATION",
+          "weight": 0.55,
+          "is_primary": true
+        },
+        {
+          "code": "GROUPED_VARIANCE",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+          "weight": 0.1,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_FREQUENCY",
+          "weight": 0.1,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+          "weight": 1
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_DISP_CAND_0018",
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 514,
+    "question_number": "6",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "A",
+    "structural_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "reviewed_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "taxonomy_review": "CONFIRMED",
+    "taxonomy": {
+      "status": "CONFIRMED",
+      "basis": "DATA_MATH12_019_TAXONOMY",
+      "problem_types": [
+        {
+          "code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+          "weight": 1,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "GROUPED_STANDARD_DEVIATION",
+          "weight": 0.55,
+          "is_primary": true
+        },
+        {
+          "code": "GROUPED_VARIANCE",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+          "weight": 0.1,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_FREQUENCY",
+          "weight": 0.1,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+          "weight": 1
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_DISP_CAND_0019",
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 534,
+    "question_number": "6",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "B",
+    "structural_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "reviewed_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "taxonomy_review": "CONFIRMED",
+    "taxonomy": {
+      "status": "CONFIRMED",
+      "basis": "DATA_MATH12_019_TAXONOMY",
+      "problem_types": [
+        {
+          "code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+          "weight": 1,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "GROUPED_STANDARD_DEVIATION",
+          "weight": 0.55,
+          "is_primary": true
+        },
+        {
+          "code": "GROUPED_VARIANCE",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+          "weight": 0.1,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_FREQUENCY",
+          "weight": 0.1,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+          "weight": 1
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_DISP_CAND_0020",
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 552,
+    "question_number": "4",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "C",
+    "structural_problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+    "reviewed_problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+    "taxonomy_review": "CONFIRMED",
+    "taxonomy": {
+      "status": "CONFIRMED",
+      "basis": "DATA_MATH12_019_TAXONOMY",
+      "problem_types": [
+        {
+          "code": "CALCULATE_GROUPED_VARIANCE",
+          "weight": 1,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "GROUPED_VARIANCE",
+          "weight": 0.55,
+          "is_primary": true
+        },
+        {
+          "code": "GROUPED_MEAN_FOR_DISPERSION",
+          "weight": 0.2,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+          "weight": 0.15,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_FREQUENCY",
+          "weight": 0.1,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+          "weight": 1
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_DISP_CAND_0021",
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 569,
+    "question_number": "6",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "B",
+    "structural_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "reviewed_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "taxonomy_review": "CONFIRMED",
+    "taxonomy": {
+      "status": "CONFIRMED",
+      "basis": "DATA_MATH12_019_TAXONOMY",
+      "problem_types": [
+        {
+          "code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+          "weight": 1,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "GROUPED_STANDARD_DEVIATION",
+          "weight": 0.55,
+          "is_primary": true
+        },
+        {
+          "code": "GROUPED_VARIANCE",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+          "weight": 0.1,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_FREQUENCY",
+          "weight": 0.1,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+          "weight": 1
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_DISP_CAND_0022",
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 587,
+    "question_number": "5",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "D",
+    "structural_problem_type_code": "CALCULATE_GROUPED_IQR",
+    "reviewed_problem_type_code": "CALCULATE_GROUPED_IQR",
+    "taxonomy_review": "CONFIRMED",
+    "taxonomy": {
+      "status": "CONFIRMED",
+      "basis": "DATA_MATH12_019_TAXONOMY",
+      "problem_types": [
+        {
+          "code": "CALCULATE_GROUPED_IQR",
+          "weight": 1,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "GROUPED_IQR",
+          "weight": 0.55,
+          "is_primary": true
+        },
+        {
+          "code": "GROUPED_QUARTILE_INTERPOLATION",
+          "weight": 0.35,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_FREQUENCY",
+          "weight": 0.1,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+          "weight": 1
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_DISP_CAND_0023",
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 606,
+    "question_number": "6",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "B",
+    "structural_problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+    "reviewed_problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+    "taxonomy_review": "CONFIRMED",
+    "taxonomy": {
+      "status": "CONFIRMED",
+      "basis": "DATA_MATH12_019_TAXONOMY",
+      "problem_types": [
+        {
+          "code": "CALCULATE_GROUPED_VARIANCE",
+          "weight": 1,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "GROUPED_VARIANCE",
+          "weight": 0.55,
+          "is_primary": true
+        },
+        {
+          "code": "GROUPED_MEAN_FOR_DISPERSION",
+          "weight": 0.2,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+          "weight": 0.15,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_FREQUENCY",
+          "weight": 0.1,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+          "weight": 1
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_DISP_CAND_0024",
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 624,
+    "question_number": "6",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "B",
+    "structural_problem_type_code": "CALCULATE_GROUPED_IQR",
+    "reviewed_problem_type_code": "CALCULATE_GROUPED_IQR",
+    "taxonomy_review": "CONFIRMED",
+    "taxonomy": {
+      "status": "CONFIRMED",
+      "basis": "DATA_MATH12_019_TAXONOMY",
+      "problem_types": [
+        {
+          "code": "CALCULATE_GROUPED_IQR",
+          "weight": 1,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "GROUPED_IQR",
+          "weight": 0.55,
+          "is_primary": true
+        },
+        {
+          "code": "GROUPED_QUARTILE_INTERPOLATION",
+          "weight": 0.35,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_FREQUENCY",
+          "weight": 0.1,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+          "weight": 1
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_DISP_CAND_0025",
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 643,
+    "question_number": "4",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "D",
+    "structural_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "reviewed_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "taxonomy_review": "CONFIRMED",
+    "taxonomy": {
+      "status": "CONFIRMED",
+      "basis": "DATA_MATH12_019_TAXONOMY",
+      "problem_types": [
+        {
+          "code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+          "weight": 1,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "GROUPED_STANDARD_DEVIATION",
+          "weight": 0.55,
+          "is_primary": true
+        },
+        {
+          "code": "GROUPED_VARIANCE",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+          "weight": 0.1,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_FREQUENCY",
+          "weight": 0.1,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+          "weight": 1
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_DISP_CAND_0026",
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 661,
+    "question_number": "6",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "A",
+    "structural_problem_type_code": "CALCULATE_GROUPED_IQR",
+    "reviewed_problem_type_code": "CALCULATE_GROUPED_IQR",
+    "taxonomy_review": "CONFIRMED",
+    "taxonomy": {
+      "status": "CONFIRMED",
+      "basis": "DATA_MATH12_019_TAXONOMY",
+      "problem_types": [
+        {
+          "code": "CALCULATE_GROUPED_IQR",
+          "weight": 1,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "GROUPED_IQR",
+          "weight": 0.55,
+          "is_primary": true
+        },
+        {
+          "code": "GROUPED_QUARTILE_INTERPOLATION",
+          "weight": 0.35,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_FREQUENCY",
+          "weight": 0.1,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+          "weight": 1
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_DISP_CAND_0027",
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 680,
+    "question_number": "6",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "B",
+    "structural_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "reviewed_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "taxonomy_review": "CONFIRMED",
+    "taxonomy": {
+      "status": "CONFIRMED",
+      "basis": "DATA_MATH12_019_TAXONOMY",
+      "problem_types": [
+        {
+          "code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+          "weight": 1,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "GROUPED_STANDARD_DEVIATION",
+          "weight": 0.55,
+          "is_primary": true
+        },
+        {
+          "code": "GROUPED_VARIANCE",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+          "weight": 0.1,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_FREQUENCY",
+          "weight": 0.1,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+          "weight": 1
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_DISP_CAND_0028",
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 699,
+    "question_number": "5",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "B",
+    "structural_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "reviewed_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "taxonomy_review": "CONFIRMED",
+    "taxonomy": {
+      "status": "CONFIRMED",
+      "basis": "DATA_MATH12_019_TAXONOMY",
+      "problem_types": [
+        {
+          "code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+          "weight": 1,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "GROUPED_STANDARD_DEVIATION",
+          "weight": 0.55,
+          "is_primary": true
+        },
+        {
+          "code": "GROUPED_VARIANCE",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+          "weight": 0.1,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_FREQUENCY",
+          "weight": 0.1,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+          "weight": 1
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_DISP_CAND_0029",
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 718,
+    "question_number": "5",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "B",
+    "structural_problem_type_code": "CALCULATE_GROUPED_IQR",
+    "reviewed_problem_type_code": "CALCULATE_GROUPED_IQR",
+    "taxonomy_review": "CONFIRMED",
+    "taxonomy": {
+      "status": "CONFIRMED",
+      "basis": "DATA_MATH12_019_TAXONOMY",
+      "problem_types": [
+        {
+          "code": "CALCULATE_GROUPED_IQR",
+          "weight": 1,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "GROUPED_IQR",
+          "weight": 0.55,
+          "is_primary": true
+        },
+        {
+          "code": "GROUPED_QUARTILE_INTERPOLATION",
+          "weight": 0.35,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_FREQUENCY",
+          "weight": 0.1,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+          "weight": 1
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_DISP_CAND_0030",
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 738,
+    "question_number": "6",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "C",
+    "structural_problem_type_code": "CALCULATE_GROUPED_IQR",
+    "reviewed_problem_type_code": "CALCULATE_GROUPED_IQR",
+    "taxonomy_review": "CONFIRMED",
+    "taxonomy": {
+      "status": "CONFIRMED",
+      "basis": "DATA_MATH12_019_TAXONOMY",
+      "problem_types": [
+        {
+          "code": "CALCULATE_GROUPED_IQR",
+          "weight": 1,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "GROUPED_IQR",
+          "weight": 0.55,
+          "is_primary": true
+        },
+        {
+          "code": "GROUPED_QUARTILE_INTERPOLATION",
+          "weight": 0.35,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_FREQUENCY",
+          "weight": 0.1,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+          "weight": 1
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_DISP_CAND_0031",
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "candidate_source_page": 758,
+    "question_number": "5",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "B",
+    "structural_problem_type_code": "CALCULATE_GROUPED_IQR",
+    "reviewed_problem_type_code": "CALCULATE_GROUPED_IQR",
+    "taxonomy_review": "CONFIRMED",
+    "taxonomy": {
+      "status": "CONFIRMED",
+      "basis": "DATA_MATH12_019_TAXONOMY",
+      "problem_types": [
+        {
+          "code": "CALCULATE_GROUPED_IQR",
+          "weight": 1,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "GROUPED_IQR",
+          "weight": 0.55,
+          "is_primary": true
+        },
+        {
+          "code": "GROUPED_QUARTILE_INTERPOLATION",
+          "weight": 0.35,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_FREQUENCY",
+          "weight": 0.1,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+          "weight": 1
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_DISP_CAND_0033",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "source_key": "PROVINCIAL_TRIAL_2025",
+    "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+    "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+    "candidate_source_page": 20,
+    "question_number": "11",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "A",
+    "structural_problem_type_code": "CALCULATE_GROUPED_RANGE",
+    "reviewed_problem_type_code": "CALCULATE_GROUPED_RANGE",
+    "taxonomy_review": "CONFIRMED",
+    "taxonomy": {
+      "status": "CONFIRMED",
+      "basis": "DATA_MATH12_019_TAXONOMY",
+      "problem_types": [
+        {
+          "code": "CALCULATE_GROUPED_RANGE",
+          "weight": 1,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "GROUPED_RANGE",
+          "weight": 0.6,
+          "is_primary": true
+        },
+        {
+          "code": "GROUPED_DATA_CLASS_BOUNDARY",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_FREQUENCY",
+          "weight": 0.15,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+          "weight": 1
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_DISP_CAND_0034",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "source_key": "PROVINCIAL_TRIAL_2025",
+    "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+    "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+    "candidate_source_page": 37,
+    "question_number": "5",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "B",
+    "structural_problem_type_code": "COMPARE_GROUPED_IQR",
+    "reviewed_problem_type_code": "COMPARE_GROUPED_IQR",
+    "taxonomy_review": "CONFIRMED",
+    "taxonomy": {
+      "status": "CONFIRMED",
+      "basis": "DATA_MATH12_019_TAXONOMY",
+      "problem_types": [
+        {
+          "code": "COMPARE_GROUPED_IQR",
+          "weight": 1,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "DISPERSION_COMPARISON",
+          "weight": 0.5,
+          "is_primary": true
+        },
+        {
+          "code": "GROUPED_IQR",
+          "weight": 0.4,
+          "is_primary": false
+        },
+        {
+          "code": "IQR_ROBUSTNESS",
+          "weight": 0.1,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_GROUPED_DISPERSION_CONCLUDE",
+          "weight": 1
+        }
+      ]
+    },
+    "visual_asset_required": false,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_DISP_CAND_0036",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "source_key": "PROVINCIAL_TRIAL_2025",
+    "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+    "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+    "candidate_source_page": 55,
+    "question_number": "6",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "D",
+    "structural_problem_type_code": "COMPARE_GROUPED_RANGE",
+    "reviewed_problem_type_code": "COMPARE_GROUPED_RANGE",
+    "taxonomy_review": "CONFIRMED",
+    "taxonomy": {
+      "status": "CONFIRMED",
+      "basis": "DATA_MATH12_019_TAXONOMY",
+      "problem_types": [
+        {
+          "code": "COMPARE_GROUPED_RANGE",
+          "weight": 1,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "DISPERSION_COMPARISON",
+          "weight": 0.55,
+          "is_primary": true
+        },
+        {
+          "code": "GROUPED_RANGE",
+          "weight": 0.45,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_GROUPED_DISPERSION_CONCLUDE",
+          "weight": 1
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_DISP_CAND_0037",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "source_key": "PROVINCIAL_TRIAL_2025",
+    "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+    "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+    "candidate_source_page": 88,
+    "question_number": "3",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "C",
+    "structural_problem_type_code": "CALCULATE_GROUPED_RANGE",
+    "reviewed_problem_type_code": "CALCULATE_GROUPED_RANGE",
+    "taxonomy_review": "CONFIRMED",
+    "taxonomy": {
+      "status": "CONFIRMED",
+      "basis": "DATA_MATH12_019_TAXONOMY",
+      "problem_types": [
+        {
+          "code": "CALCULATE_GROUPED_RANGE",
+          "weight": 1,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "GROUPED_RANGE",
+          "weight": 0.6,
+          "is_primary": true
+        },
+        {
+          "code": "GROUPED_DATA_CLASS_BOUNDARY",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_FREQUENCY",
+          "weight": 0.15,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+          "weight": 1
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_DISP_CAND_0038",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "source_key": "PROVINCIAL_TRIAL_2025",
+    "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+    "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+    "candidate_source_page": 107,
+    "question_number": "5",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "A",
+    "structural_problem_type_code": "CALCULATE_GROUPED_RANGE",
+    "reviewed_problem_type_code": "CALCULATE_GROUPED_RANGE",
+    "taxonomy_review": "CONFIRMED",
+    "taxonomy": {
+      "status": "CONFIRMED",
+      "basis": "DATA_MATH12_019_TAXONOMY",
+      "problem_types": [
+        {
+          "code": "CALCULATE_GROUPED_RANGE",
+          "weight": 1,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "GROUPED_RANGE",
+          "weight": 0.6,
+          "is_primary": true
+        },
+        {
+          "code": "GROUPED_DATA_CLASS_BOUNDARY",
+          "weight": 0.25,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_FREQUENCY",
+          "weight": 0.15,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+          "weight": 1
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_DISP_CAND_0039",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "source_key": "PROVINCIAL_TRIAL_2025",
+    "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+    "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+    "candidate_source_page": 123,
+    "question_number": "12",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "B",
+    "structural_problem_type_code": "CALCULATE_GROUPED_IQR",
+    "reviewed_problem_type_code": "CALCULATE_GROUPED_IQR",
+    "taxonomy_review": "CONFIRMED",
+    "taxonomy": {
+      "status": "CONFIRMED",
+      "basis": "DATA_MATH12_019_TAXONOMY",
+      "problem_types": [
+        {
+          "code": "CALCULATE_GROUPED_IQR",
+          "weight": 1,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "GROUPED_IQR",
+          "weight": 0.55,
+          "is_primary": true
+        },
+        {
+          "code": "GROUPED_QUARTILE_INTERPOLATION",
+          "weight": 0.35,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_FREQUENCY",
+          "weight": 0.1,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+          "weight": 1
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_DISP_CAND_0040",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "source_key": "PROVINCIAL_TRIAL_2025",
+    "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+    "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+    "candidate_source_page": 140,
+    "question_number": "12",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "A",
+    "structural_problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+    "reviewed_problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+    "taxonomy_review": "CONFIRMED",
+    "taxonomy": {
+      "status": "CONFIRMED",
+      "basis": "DATA_MATH12_019_TAXONOMY",
+      "problem_types": [
+        {
+          "code": "CALCULATE_GROUPED_VARIANCE",
+          "weight": 1,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "GROUPED_VARIANCE",
+          "weight": 0.55,
+          "is_primary": true
+        },
+        {
+          "code": "GROUPED_MEAN_FOR_DISPERSION",
+          "weight": 0.2,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+          "weight": 0.15,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_FREQUENCY",
+          "weight": 0.1,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+          "weight": 1
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  },
+  {
+    "candidate_id": "M12_DISP_CAND_0041",
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "source_key": "PROVINCIAL_TRIAL_2025",
+    "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+    "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+    "candidate_source_page": 156,
+    "question_number": "1",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "VERIFIED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
+    "correct_answer": "C",
+    "structural_problem_type_code": "CALCULATE_GROUPED_IQR",
+    "reviewed_problem_type_code": "CALCULATE_GROUPED_IQR",
+    "taxonomy_review": "CONFIRMED",
+    "taxonomy": {
+      "status": "CONFIRMED",
+      "basis": "DATA_MATH12_019_TAXONOMY",
+      "problem_types": [
+        {
+          "code": "CALCULATE_GROUPED_IQR",
+          "weight": 1,
+          "is_primary": true
+        }
+      ],
+      "concepts": [
+        {
+          "code": "GROUPED_IQR",
+          "weight": 0.55,
+          "is_primary": true
+        },
+        {
+          "code": "GROUPED_QUARTILE_INTERPOLATION",
+          "weight": 0.35,
+          "is_primary": false
+        },
+        {
+          "code": "GROUPED_DATA_FREQUENCY",
+          "weight": 0.1,
+          "is_primary": false
+        }
+      ],
+      "learning_outcomes": [
+        {
+          "code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+          "weight": 1
+        }
+      ]
+    },
+    "visual_asset_required": true,
+    "promotion_ready": false,
+    "promotion_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "VISUAL_ASSET_REVIEW_REQUIRED"
+    ]
+  }
+]

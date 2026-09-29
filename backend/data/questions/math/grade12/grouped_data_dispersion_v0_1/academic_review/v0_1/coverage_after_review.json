@@ -1,0 +1,62 @@
+[
+  {
+    "problem_type_code": "CALCULATE_GROUPED_IQR",
+    "verified_standalone_candidates": 11,
+    "status": "COVERED"
+  },
+  {
+    "problem_type_code": "CALCULATE_GROUPED_RANGE",
+    "verified_standalone_candidates": 6,
+    "status": "COVERED"
+  },
+  {
+    "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "verified_standalone_candidates": 13,
+    "status": "COVERED"
+  },
+  {
+    "problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+    "verified_standalone_candidates": 5,
+    "status": "COVERED"
+  },
+  {
+    "problem_type_code": "COMPARE_GROUPED_IQR",
+    "verified_standalone_candidates": 1,
+    "status": "COVERED"
+  },
+  {
+    "problem_type_code": "COMPARE_GROUPED_RANGE",
+    "verified_standalone_candidates": 1,
+    "status": "COVERED"
+  },
+  {
+    "problem_type_code": "COMPARE_GROUPED_VARIANCE_SD",
+    "verified_standalone_candidates": 1,
+    "status": "COVERED"
+  },
+  {
+    "problem_type_code": "IDENTIFY_MORE_STABLE_GROUPED_DATA",
+    "verified_standalone_candidates": 0,
+    "status": "GAP"
+  },
+  {
+    "problem_type_code": "INTERPRET_GROUPED_DISPERSION_MEASURE",
+    "verified_standalone_candidates": 0,
+    "status": "GAP"
+  },
+  {
+    "problem_type_code": "CONCLUDE_FROM_GROUPED_DISPERSION",
+    "verified_standalone_candidates": 0,
+    "status": "GAP"
+  },
+  {
+    "problem_type_code": "PARAMETER_FROM_GROUPED_VARIANCE_SD",
+    "verified_standalone_candidates": 0,
+    "status": "GAP"
+  },
+  {
+    "problem_type_code": "MULTI_MEASURE_GROUPED_DISPERSION_ANALYSIS",
+    "verified_standalone_candidates": 0,
+    "status": "GAP"
+  }
+]
