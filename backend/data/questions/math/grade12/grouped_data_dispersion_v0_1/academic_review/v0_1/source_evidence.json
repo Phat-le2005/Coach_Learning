@@ -274,8 +274,8 @@
     ],
     "solution_pages": [],
     "source_claimed_answer": null,
-    "evidence_type": "SOURCE_QUESTION_ONLY",
-    "review_consistency": "INCOMPLETE"
+    "evidence_type": "DUPLICATE_MATCH",
+    "review_consistency": "DUPLICATE_OF_M12_DISP_CAND_0015"
   },
   {
     "evidence_id": "EVID_DISP_0015",
@@ -792,10 +792,17 @@
       2,
       10
     ],
-    "solution_pages": [],
-    "source_claimed_answer": null,
-    "evidence_type": "SOURCE_GROUP_QUESTION_ONLY",
-    "review_consistency": "MIXED_SCOPE_DEFERRED"
+    "solution_pages": [
+      11
+    ],
+    "source_claimed_answer": [
+      true,
+      false,
+      false,
+      true
+    ],
+    "evidence_type": "SOURCE_GROUP_QUESTION_AND_DETAILED_SOLUTION",
+    "review_consistency": "CONFIRMED"
   },
   {
     "evidence_id": "EVID_DISP_0041",
@@ -812,9 +819,16 @@
       39,
       47
     ],
-    "solution_pages": [],
-    "source_claimed_answer": null,
-    "evidence_type": "SOURCE_GROUP_QUESTION_ONLY",
-    "review_consistency": "MIXED_SCOPE_DEFERRED"
+    "solution_pages": [
+      47
+    ],
+    "source_claimed_answer": [
+      true,
+      false,
+      true,
+      false
+    ],
+    "evidence_type": "SOURCE_GROUP_QUESTION_AND_DETAILED_SOLUTION",
+    "review_consistency": "CONFIRMED"
   }
 ]
