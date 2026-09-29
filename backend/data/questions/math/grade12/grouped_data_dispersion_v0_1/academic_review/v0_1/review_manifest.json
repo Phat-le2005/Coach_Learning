@@ -1,28 +1,31 @@
 {
   "dataset_code": "DATA-MATH12-021",
-  "dataset_name": "MATH12_GROUPED_DISPERSION_ACADEMIC_REVIEW_V0_1",
+  "dataset_name": "MATH12_GROUPED_DISPERSION_ACADEMIC_REVIEW_V0_2",
   "base_commit": "b436e3ee076fefb89dbf58adf64ac0542568479c",
   "input_materialization_dataset": "DATA-MATH12-020",
   "input_candidate_semantic_sha256": "bb88a02a3c982b55a11e250af05432ba999f455f1af54cfb347c5dd277f4c619",
   "input_materialization_aggregate_sha256": "d2d4d73ce06eaa7da40db0ad44904e1fd1f6308bd78ad36f292bf393ef881fd7",
-  "status": "ACADEMIC_REVIEW_PARTIAL",
+  "status": "ACADEMIC_CURATION_COMPLETE_WITH_MIXED_SCOPE_HOLDS",
   "subject_code": "MATH_G12",
   "chapter_code": "GROUPED_DATA_DISPERSION",
   "counts": {
-    "review_code": "DATA-MATH12-021_GROUPED_DISPERSION_ACADEMIC_REVIEW_V0_1",
+    "review_code": "DATA-MATH12-021_GROUPED_DISPERSION_ACADEMIC_REVIEW_V0_2",
     "base_commit": "b436e3ee076fefb89dbf58adf64ac0542568479c",
     "input_dataset": "DATA-MATH12-020",
     "input_candidate_count": 41,
-    "reviewed_units": 41,
     "standalone_reviews": 39,
     "group_reviews": 2,
+    "reviewed_units": 41,
     "review_status_counts": {
       "VERIFIED": 38,
-      "HOLD_MISSING_SOURCE_ANSWER": 1,
+      "REJECTED_DUPLICATE": 1,
       "HOLD_MIXED_SCOPE": 2
     },
-    "verified": 38,
-    "hold": 3,
+    "verified_standalone": 38,
+    "rejected_duplicate": 1,
+    "hold_mixed_scope_groups": 2,
+    "true_false_groups_with_source_verified_answers": 2,
+    "true_false_child_answers_verified": 8,
     "verified_visual_required": 37,
     "problem_types_total": 12,
     "problem_types_with_verified_evidence": 7,
@@ -33,7 +36,7 @@
       "PARAMETER_FROM_GROUPED_VARIANCE_SD",
       "MULTI_MEASURE_GROUPED_DISPERSION_ANALYSIS"
     ],
-    "academic_review_complete": false,
+    "academic_curation_complete": true,
     "production_release_eligible": 0,
     "promotion_ready": 0,
     "rights_status": "REVIEW_REQUIRED",
@@ -42,5 +45,23 @@
   },
   "database_import_allowed": false,
   "canonical_snapshot_allowed": false,
-  "production_release_eligible": 0
+  "production_release_eligible": 0,
+  "codex_boundary": {
+    "data_content_locked": true,
+    "codex_may_edit": [
+      "validators",
+      "schemas",
+      "tests",
+      "importers",
+      "integration code"
+    ],
+    "codex_must_not_edit": [
+      "answers",
+      "review_status",
+      "duplicate decisions",
+      "taxonomy decisions",
+      "source evidence",
+      "coverage gaps"
+    ]
+  }
 }
