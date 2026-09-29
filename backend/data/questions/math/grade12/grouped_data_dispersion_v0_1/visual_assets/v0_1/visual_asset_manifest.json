@@ -1,0 +1,1442 @@
+{
+  "dataset_code": "DATA-MATH12-022",
+  "asset_set_code": "MATH12_GROUPED_DISPERSION_VISUAL_ASSETS_V0_1",
+  "base_commit": "abcde08a72e530d40749e0cbc1a02975da9cef3a",
+  "input_review_dataset": "DATA-MATH12-021",
+  "input_review_aggregate_sha256": "08aae72fa7f615f60e3f0b68845c29d630430321e1013a48cfa7966fb1c25a36",
+  "subject_code": "MATH_G12",
+  "chapter_code": "GROUPED_DATA_DISPERSION",
+  "render_dpi": 200,
+  "coordinate_system": "PDF points, origin top-left as represented by PyMuPDF page coordinates",
+  "asset_policy": {
+    "crop_scope": "DISTINCT_SOURCE_DATA_COMPONENT_ONLY",
+    "no_full_question_crop_for_production": true,
+    "reason": "Source PDFs may expose correct options by color/highlighting; crops must include only the table/chart component.",
+    "fabrication_allowed": false,
+    "redraw_allowed": false,
+    "synthetic_asset_allowed": false,
+    "rights_status": "REVIEW_REQUIRED"
+  },
+  "source_pdfs": {
+    "NGOC_VY_40_DE_2026": {
+      "source_code": "SRC_NGOC_VY_40_DE_2026",
+      "source_key": "NGOC_VY_40_DE_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4"
+    },
+    "PROVINCIAL_TRIAL_2025": {
+      "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+      "source_key": "PROVINCIAL_TRIAL_2025",
+      "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+      "source_pdf_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0"
+    }
+  },
+  "assets": [
+    {
+      "asset_id": "M12_DISP_CAND_0001_VISUAL_V1",
+      "candidate_id": "M12_DISP_CAND_0001",
+      "asset_kind": "SOURCE_DATA_TABLE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DISP_CAND_0001__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "ca007d5b3fec271f0b1b6b5d12fa945d5fab858003224051f6468453add013d4",
+      "width_px": 1380,
+      "height_px": 132,
+      "source_code": "SRC_NGOC_VY_40_DE_2026",
+      "source_key": "NGOC_VY_40_DE_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        1
+      ],
+      "solution_pages": [
+        8
+      ],
+      "question_anchor_page": 1,
+      "asset_source_page": 1,
+      "source_page_role": "QUESTION_PAGE",
+      "crop_box_pdf_points": [
+        63.9,
+        664.2,
+        560.3,
+        711.6
+      ],
+      "component_types": [
+        "TABLE_VECTOR"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_DISP_CAND_0002_VISUAL_V1",
+      "candidate_id": "M12_DISP_CAND_0002",
+      "asset_kind": "SOURCE_DATA_TABLE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DISP_CAND_0002__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "ec930d5bde3d8d5e77f03552eed0d415e83bc4226c423d965254797af84ba1f6",
+      "width_px": 1117,
+      "height_px": 343,
+      "source_code": "SRC_NGOC_VY_40_DE_2026",
+      "source_key": "NGOC_VY_40_DE_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        42
+      ],
+      "solution_pages": [
+        47
+      ],
+      "question_anchor_page": 42,
+      "asset_source_page": 42,
+      "source_page_role": "QUESTION_PAGE",
+      "crop_box_pdf_points": [
+        82.3,
+        74.7,
+        484.1,
+        197.9
+      ],
+      "component_types": [
+        "IMAGE"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_DISP_CAND_0003_VISUAL_V1",
+      "candidate_id": "M12_DISP_CAND_0003",
+      "asset_kind": "SOURCE_DATA_TABLE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DISP_CAND_0003__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "22752b4eea4264a063ecc0e2747c74c3a0711df0ce7ed96d97c83ebfe311658a",
+      "width_px": 1430,
+      "height_px": 134,
+      "source_code": "SRC_NGOC_VY_40_DE_2026",
+      "source_key": "NGOC_VY_40_DE_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        79
+      ],
+      "solution_pages": [
+        86
+      ],
+      "question_anchor_page": 79,
+      "asset_source_page": 80,
+      "source_page_role": "QUESTION_CONTINUATION",
+      "crop_box_pdf_points": [
+        26.2,
+        34.1,
+        540.5,
+        81.9
+      ],
+      "component_types": [
+        "TABLE_VECTOR"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_DISP_CAND_0004_VISUAL_V1",
+      "candidate_id": "M12_DISP_CAND_0004",
+      "asset_kind": "SOURCE_DATA_TABLE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DISP_CAND_0004__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "101bca944b0ce8312714f2f2a7d4cbb3398680047e812b5df582f90fdbca621b",
+      "width_px": 500,
+      "height_px": 426,
+      "source_code": "SRC_NGOC_VY_40_DE_2026",
+      "source_key": "NGOC_VY_40_DE_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        99
+      ],
+      "solution_pages": [
+        105
+      ],
+      "question_anchor_page": 99,
+      "asset_source_page": 99,
+      "source_page_role": "QUESTION_PAGE",
+      "crop_box_pdf_points": [
+        192.5,
+        75.3,
+        372.2,
+        228.4
+      ],
+      "component_types": [
+        "TABLE_VECTOR"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_DISP_CAND_0005_VISUAL_V1",
+      "candidate_id": "M12_DISP_CAND_0005",
+      "asset_kind": "SOURCE_DATA_TABLE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DISP_CAND_0005__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "a4ea1949eeb5a2614a8c0ea0cc9ce4712882ad33db340b99c687d2884b3eb27f",
+      "width_px": 892,
+      "height_px": 304,
+      "source_code": "SRC_NGOC_VY_40_DE_2026",
+      "source_key": "NGOC_VY_40_DE_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        119
+      ],
+      "solution_pages": [
+        125
+      ],
+      "question_anchor_page": 119,
+      "asset_source_page": 119,
+      "source_page_role": "QUESTION_PAGE",
+      "crop_box_pdf_points": [
+        151.6,
+        468.5,
+        472.4,
+        577.8
+      ],
+      "component_types": [
+        "IMAGE"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_DISP_CAND_0006_VISUAL_V1",
+      "candidate_id": "M12_DISP_CAND_0006",
+      "asset_kind": "SOURCE_DATA_TABLE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DISP_CAND_0006__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "3bd7e740048ed8e487dfb5dac0ba0c5a6b5978b6195515fbbac80c32c317f489",
+      "width_px": 1214,
+      "height_px": 133,
+      "source_code": "SRC_NGOC_VY_40_DE_2026",
+      "source_key": "NGOC_VY_40_DE_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        139
+      ],
+      "solution_pages": [
+        146
+      ],
+      "question_anchor_page": 139,
+      "asset_source_page": 139,
+      "source_page_role": "QUESTION_PAGE",
+      "crop_box_pdf_points": [
+        65.1,
+        355.8,
+        501.5,
+        403.5
+      ],
+      "component_types": [
+        "TABLE_VECTOR"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_DISP_CAND_0007_VISUAL_V1",
+      "candidate_id": "M12_DISP_CAND_0007",
+      "asset_kind": "SOURCE_DATA_TABLE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DISP_CAND_0007__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "6dcd5795e356b1d70652570c10de1a2b3b9ff552b9156c6e917b3fe0d0f08e09",
+      "width_px": 1311,
+      "height_px": 134,
+      "source_code": "SRC_NGOC_VY_40_DE_2026",
+      "source_key": "NGOC_VY_40_DE_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        177
+      ],
+      "solution_pages": [
+        184
+      ],
+      "question_anchor_page": 177,
+      "asset_source_page": 177,
+      "source_page_role": "QUESTION_PAGE",
+      "crop_box_pdf_points": [
+        76.4,
+        557.4,
+        548.1,
+        605.5
+      ],
+      "component_types": [
+        "TABLE_VECTOR"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_DISP_CAND_0008_VISUAL_V1",
+      "candidate_id": "M12_DISP_CAND_0008",
+      "asset_kind": "SOURCE_DATA_TABLE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DISP_CAND_0008__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "fe1f9dd031f3f9dfebb0b273992dc355a5770d1bca17ce958b51a9bbb289c866",
+      "width_px": 1201,
+      "height_px": 134,
+      "source_code": "SRC_NGOC_VY_40_DE_2026",
+      "source_key": "NGOC_VY_40_DE_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        196
+      ],
+      "solution_pages": [
+        203
+      ],
+      "question_anchor_page": 196,
+      "asset_source_page": 196,
+      "source_page_role": "QUESTION_PAGE",
+      "crop_box_pdf_points": [
+        96.3,
+        616.6,
+        528.2,
+        664.3
+      ],
+      "component_types": [
+        "TABLE_VECTOR"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_DISP_CAND_0009_VISUAL_V1",
+      "candidate_id": "M12_DISP_CAND_0009",
+      "asset_kind": "SOURCE_DATA_TABLE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DISP_CAND_0009__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "f232c8d288443e0d42283a424a8d4c091789732d2d02d5e27a2a1927e53b5ebb",
+      "width_px": 1380,
+      "height_px": 133,
+      "source_code": "SRC_NGOC_VY_40_DE_2026",
+      "source_key": "NGOC_VY_40_DE_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        217
+      ],
+      "solution_pages": [
+        222
+      ],
+      "question_anchor_page": 217,
+      "asset_source_page": 217,
+      "source_page_role": "QUESTION_PAGE",
+      "crop_box_pdf_points": [
+        35.1,
+        75.7,
+        531.5,
+        123.2
+      ],
+      "component_types": [
+        "TABLE_VECTOR"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_DISP_CAND_0010_VISUAL_V1",
+      "candidate_id": "M12_DISP_CAND_0010",
+      "asset_kind": "SOURCE_DATA_TABLE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DISP_CAND_0010__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "cbf781aa7feefb725e7497255e1547ae057ccd60c0b6250e30868acdb32ce6f0",
+      "width_px": 1176,
+      "height_px": 134,
+      "source_code": "SRC_NGOC_VY_40_DE_2026",
+      "source_key": "NGOC_VY_40_DE_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        275
+      ],
+      "solution_pages": [
+        281
+      ],
+      "question_anchor_page": 275,
+      "asset_source_page": 275,
+      "source_page_role": "QUESTION_PAGE",
+      "crop_box_pdf_points": [
+        100.7,
+        507.9,
+        523.8,
+        555.6
+      ],
+      "component_types": [
+        "TABLE_VECTOR"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_DISP_CAND_0011_VISUAL_V1",
+      "candidate_id": "M12_DISP_CAND_0011",
+      "asset_kind": "SOURCE_DATA_TABLE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DISP_CAND_0011__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "f5fd5265ceb5d7b65377e2f79b95196caded99b4a12c0d71ead06e2a7d001a72",
+      "width_px": 1214,
+      "height_px": 133,
+      "source_code": "SRC_NGOC_VY_40_DE_2026",
+      "source_key": "NGOC_VY_40_DE_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        294
+      ],
+      "solution_pages": [
+        300
+      ],
+      "question_anchor_page": 294,
+      "asset_source_page": 294,
+      "source_page_role": "QUESTION_PAGE",
+      "crop_box_pdf_points": [
+        93.9,
+        383.1,
+        530.3,
+        430.7
+      ],
+      "component_types": [
+        "TABLE_VECTOR"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_DISP_CAND_0012_VISUAL_V1",
+      "candidate_id": "M12_DISP_CAND_0012",
+      "asset_kind": "SOURCE_DATA_TABLE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DISP_CAND_0012__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "8f3c584f68ed8894a924f496efe270539edb4d1131254f8eebbae932221e7e22",
+      "width_px": 1380,
+      "height_px": 133,
+      "source_code": "SRC_NGOC_VY_40_DE_2026",
+      "source_key": "NGOC_VY_40_DE_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        377
+      ],
+      "solution_pages": [
+        383
+      ],
+      "question_anchor_page": 377,
+      "asset_source_page": 377,
+      "source_page_role": "QUESTION_PAGE",
+      "crop_box_pdf_points": [
+        63.9,
+        625.3,
+        560.3,
+        672.8
+      ],
+      "component_types": [
+        "TABLE_VECTOR"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_DISP_CAND_0013_VISUAL_V1",
+      "candidate_id": "M12_DISP_CAND_0013",
+      "asset_kind": "SOURCE_DATA_CHART_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DISP_CAND_0013__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "1eb1ab60c4c41334d95bb7b4ed6930084bdf1346312757f82a996c65e61257f9",
+      "width_px": 805,
+      "height_px": 424,
+      "source_code": "SRC_NGOC_VY_40_DE_2026",
+      "source_key": "NGOC_VY_40_DE_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        417
+      ],
+      "solution_pages": [
+        423
+      ],
+      "question_anchor_page": 417,
+      "asset_source_page": 417,
+      "source_page_role": "QUESTION_PAGE",
+      "crop_box_pdf_points": [
+        138.4,
+        277.5,
+        428.0,
+        429.7
+      ],
+      "component_types": [
+        "IMAGE"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_DISP_CAND_0015_VISUAL_V1",
+      "candidate_id": "M12_DISP_CAND_0015",
+      "asset_kind": "SOURCE_DATA_CHART_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DISP_CAND_0015__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "ef4f2e5651491e160761e031426e7868247088883e92e1655c329600c55bb3a4",
+      "width_px": 642,
+      "height_px": 685,
+      "source_code": "SRC_NGOC_VY_40_DE_2026",
+      "source_key": "NGOC_VY_40_DE_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        464
+      ],
+      "solution_pages": [
+        464
+      ],
+      "question_anchor_page": 464,
+      "asset_source_page": 464,
+      "source_page_role": "QUESTION_PAGE",
+      "crop_box_pdf_points": [
+        167.9,
+        290.7,
+        398.7,
+        537.0
+      ],
+      "component_types": [
+        "IMAGE"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_DISP_CAND_0016_VISUAL_V1",
+      "candidate_id": "M12_DISP_CAND_0016",
+      "asset_kind": "SOURCE_DATA_TABLE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DISP_CAND_0016__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "60936465e89a350e01bd3817702a05fb07d00015dfa371c1277cda6815a6a04c",
+      "width_px": 1329,
+      "height_px": 132,
+      "source_code": "SRC_NGOC_VY_40_DE_2026",
+      "source_key": "NGOC_VY_40_DE_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        476
+      ],
+      "solution_pages": [
+        482
+      ],
+      "question_anchor_page": 476,
+      "asset_source_page": 476,
+      "source_page_role": "QUESTION_PAGE",
+      "crop_box_pdf_points": [
+        73.1,
+        655.6,
+        551.2,
+        703.0
+      ],
+      "component_types": [
+        "TABLE_VECTOR"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_DISP_CAND_0017_VISUAL_V1",
+      "candidate_id": "M12_DISP_CAND_0017",
+      "asset_kind": "SOURCE_DATA_TABLE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DISP_CAND_0017__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "99e4b488d982f99330256717ffc3cb5ad871694746ef88e9e9d98e30c4453197",
+      "width_px": 1156,
+      "height_px": 134,
+      "source_code": "SRC_NGOC_VY_40_DE_2026",
+      "source_key": "NGOC_VY_40_DE_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        495
+      ],
+      "solution_pages": [
+        501
+      ],
+      "question_anchor_page": 495,
+      "asset_source_page": 495,
+      "source_page_role": "QUESTION_PAGE",
+      "crop_box_pdf_points": [
+        75.5,
+        155.4,
+        491.2,
+        203.1
+      ],
+      "component_types": [
+        "TABLE_VECTOR"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_DISP_CAND_0018_VISUAL_V1",
+      "candidate_id": "M12_DISP_CAND_0018",
+      "asset_kind": "SOURCE_DATA_TABLE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DISP_CAND_0018__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "7657aee787b4367b3b2586e50dede20776b83c1e68f7867bafebdd01fec86655",
+      "width_px": 1354,
+      "height_px": 134,
+      "source_code": "SRC_NGOC_VY_40_DE_2026",
+      "source_key": "NGOC_VY_40_DE_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        514
+      ],
+      "solution_pages": [
+        520
+      ],
+      "question_anchor_page": 514,
+      "asset_source_page": 514,
+      "source_page_role": "QUESTION_PAGE",
+      "crop_box_pdf_points": [
+        68.5,
+        567.2,
+        555.7,
+        614.9
+      ],
+      "component_types": [
+        "TABLE_VECTOR"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_DISP_CAND_0019_VISUAL_V1",
+      "candidate_id": "M12_DISP_CAND_0019",
+      "asset_kind": "SOURCE_DATA_TABLE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DISP_CAND_0019__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "a153b38b0dd8effdfe8e1b39624db005d5f09bc1c9676311efbb2297e7d9cd96",
+      "width_px": 1253,
+      "height_px": 135,
+      "source_code": "SRC_NGOC_VY_40_DE_2026",
+      "source_key": "NGOC_VY_40_DE_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        534
+      ],
+      "solution_pages": [
+        539
+      ],
+      "question_anchor_page": 534,
+      "asset_source_page": 534,
+      "source_page_role": "QUESTION_PAGE",
+      "crop_box_pdf_points": [
+        58.2,
+        54.6,
+        508.7,
+        102.7
+      ],
+      "component_types": [
+        "TABLE_VECTOR"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_DISP_CAND_0020_VISUAL_V1",
+      "candidate_id": "M12_DISP_CAND_0020",
+      "asset_kind": "SOURCE_DATA_TABLE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DISP_CAND_0020__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "5a97309662d4177e7e95dcdfcca9f844ef078bac65873d241be03f913e920f4a",
+      "width_px": 1253,
+      "height_px": 135,
+      "source_code": "SRC_NGOC_VY_40_DE_2026",
+      "source_key": "NGOC_VY_40_DE_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        552
+      ],
+      "solution_pages": [
+        557
+      ],
+      "question_anchor_page": 552,
+      "asset_source_page": 552,
+      "source_page_role": "QUESTION_PAGE",
+      "crop_box_pdf_points": [
+        87.0,
+        641.7,
+        537.5,
+        689.8
+      ],
+      "component_types": [
+        "TABLE_VECTOR"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_DISP_CAND_0021_VISUAL_V1",
+      "candidate_id": "M12_DISP_CAND_0021",
+      "asset_kind": "SOURCE_DATA_TABLE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DISP_CAND_0021__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "a7a474deeee289bdf7c630846de621fb8de48420eb81b22d5899398165cd9d80",
+      "width_px": 1058,
+      "height_px": 134,
+      "source_code": "SRC_NGOC_VY_40_DE_2026",
+      "source_key": "NGOC_VY_40_DE_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        569
+      ],
+      "solution_pages": [
+        575
+      ],
+      "question_anchor_page": 569,
+      "asset_source_page": 569,
+      "source_page_role": "QUESTION_PAGE",
+      "crop_box_pdf_points": [
+        122.0,
+        703.1,
+        502.5,
+        751.2
+      ],
+      "component_types": [
+        "TABLE_VECTOR"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_DISP_CAND_0022_VISUAL_V1",
+      "candidate_id": "M12_DISP_CAND_0022",
+      "asset_kind": "SOURCE_DATA_CHART_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DISP_CAND_0022__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "c08631818cd969adc7d967d162b22ee712f253843057906d4bbad384e05f33e4",
+      "width_px": 549,
+      "height_px": 589,
+      "source_code": "SRC_NGOC_VY_40_DE_2026",
+      "source_key": "NGOC_VY_40_DE_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        587
+      ],
+      "solution_pages": [
+        594
+      ],
+      "question_anchor_page": 587,
+      "asset_source_page": 587,
+      "source_page_role": "QUESTION_PAGE",
+      "crop_box_pdf_points": [
+        213.3,
+        571.7,
+        410.7,
+        783.7
+      ],
+      "component_types": [
+        "IMAGE"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_DISP_CAND_0023_VISUAL_V1",
+      "candidate_id": "M12_DISP_CAND_0023",
+      "asset_kind": "SOURCE_DATA_TABLE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DISP_CAND_0023__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "5f752dbf28d94b9100d6b1c72e7e2f880c8ac4718268540cb41db2db19ebb42c",
+      "width_px": 1054,
+      "height_px": 137,
+      "source_code": "SRC_NGOC_VY_40_DE_2026",
+      "source_key": "NGOC_VY_40_DE_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        606
+      ],
+      "solution_pages": [
+        612
+      ],
+      "question_anchor_page": 606,
+      "asset_source_page": 606,
+      "source_page_role": "QUESTION_PAGE",
+      "crop_box_pdf_points": [
+        122.4,
+        688.4,
+        501.8,
+        737.6
+      ],
+      "component_types": [
+        "VECTOR_DRAWING"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_DISP_CAND_0024_VISUAL_V1",
+      "candidate_id": "M12_DISP_CAND_0024",
+      "asset_kind": "SOURCE_DATA_TABLE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DISP_CAND_0024__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "eefea20b5ded403b7ef8cc250933d8109d5f94791f437b8c733812798a00113d",
+      "width_px": 1430,
+      "height_px": 262,
+      "source_code": "SRC_NGOC_VY_40_DE_2026",
+      "source_key": "NGOC_VY_40_DE_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        624
+      ],
+      "solution_pages": [
+        631
+      ],
+      "question_anchor_page": 624,
+      "asset_source_page": 625,
+      "source_page_role": "QUESTION_CONTINUATION",
+      "crop_box_pdf_points": [
+        26.2,
+        33.8,
+        540.5,
+        127.7
+      ],
+      "component_types": [
+        "TABLE_VECTOR"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_DISP_CAND_0025_VISUAL_V1",
+      "candidate_id": "M12_DISP_CAND_0025",
+      "asset_kind": "SOURCE_DATA_TABLE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DISP_CAND_0025__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "71c44651c3ea3bba7f9763912cc9ee098494a00185673ad0f2c3a9d772b4628c",
+      "width_px": 1222,
+      "height_px": 181,
+      "source_code": "SRC_NGOC_VY_40_DE_2026",
+      "source_key": "NGOC_VY_40_DE_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        643
+      ],
+      "solution_pages": [
+        648
+      ],
+      "question_anchor_page": 643,
+      "asset_source_page": 643,
+      "source_page_role": "QUESTION_PAGE",
+      "crop_box_pdf_points": [
+        92.3,
+        371.5,
+        531.9,
+        436.0
+      ],
+      "component_types": [
+        "IMAGE"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_DISP_CAND_0026_VISUAL_V1",
+      "candidate_id": "M12_DISP_CAND_0026",
+      "asset_kind": "SOURCE_DATA_TABLE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DISP_CAND_0026__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "03ebf3e2fbe44226c61594ba288e19eab4d0247eaa4d22353be4ed0bbd8d49d3",
+      "width_px": 1287,
+      "height_px": 132,
+      "source_code": "SRC_NGOC_VY_40_DE_2026",
+      "source_key": "NGOC_VY_40_DE_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        661
+      ],
+      "solution_pages": [
+        667
+      ],
+      "question_anchor_page": 661,
+      "asset_source_page": 661,
+      "source_page_role": "QUESTION_PAGE",
+      "crop_box_pdf_points": [
+        80.7,
+        631.1,
+        543.8,
+        678.5
+      ],
+      "component_types": [
+        "TABLE_VECTOR"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_DISP_CAND_0027_VISUAL_V1",
+      "candidate_id": "M12_DISP_CAND_0027",
+      "asset_kind": "SOURCE_DATA_CHART_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DISP_CAND_0027__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "aa5a964853e62587e943735d8b1c83f53b3ef2e7d25ae109ea13d310109fed2a",
+      "width_px": 776,
+      "height_px": 503,
+      "source_code": "SRC_NGOC_VY_40_DE_2026",
+      "source_key": "NGOC_VY_40_DE_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        680
+      ],
+      "solution_pages": [
+        686
+      ],
+      "question_anchor_page": 680,
+      "asset_source_page": 680,
+      "source_page_role": "QUESTION_PAGE",
+      "crop_box_pdf_points": [
+        143.7,
+        53.8,
+        422.7,
+        234.6
+      ],
+      "component_types": [
+        "IMAGE"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_DISP_CAND_0028_VISUAL_V1",
+      "candidate_id": "M12_DISP_CAND_0028",
+      "asset_kind": "SOURCE_DATA_TABLE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DISP_CAND_0028__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "9a6b2100a632b32f1fa85e5a985c188c2771822076b155c0cf8aade0435696c7",
+      "width_px": 1457,
+      "height_px": 135,
+      "source_code": "SRC_NGOC_VY_40_DE_2026",
+      "source_key": "NGOC_VY_40_DE_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        699
+      ],
+      "solution_pages": [
+        705
+      ],
+      "question_anchor_page": 699,
+      "asset_source_page": 699,
+      "source_page_role": "QUESTION_PAGE",
+      "crop_box_pdf_points": [
+        50.2,
+        596.8,
+        574.3,
+        644.9
+      ],
+      "component_types": [
+        "TABLE_VECTOR"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_DISP_CAND_0029_VISUAL_V1",
+      "candidate_id": "M12_DISP_CAND_0029",
+      "asset_kind": "SOURCE_DATA_TABLE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DISP_CAND_0029__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "08dbafa98557698bb6856648e6d066d0691d4a20bfb7a9f94e876ac6499cb40d",
+      "width_px": 1294,
+      "height_px": 135,
+      "source_code": "SRC_NGOC_VY_40_DE_2026",
+      "source_key": "NGOC_VY_40_DE_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        718
+      ],
+      "solution_pages": [
+        725
+      ],
+      "question_anchor_page": 718,
+      "asset_source_page": 718,
+      "source_page_role": "QUESTION_PAGE",
+      "crop_box_pdf_points": [
+        79.5,
+        682.5,
+        545.0,
+        730.8
+      ],
+      "component_types": [
+        "TABLE_VECTOR"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_DISP_CAND_0030_VISUAL_V1",
+      "candidate_id": "M12_DISP_CAND_0030",
+      "asset_kind": "SOURCE_DATA_TABLE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DISP_CAND_0030__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "195ee5970f1d2b863ce3c525e96e434ec9cc14b2b2ace70111c1df8af3fb78ba",
+      "width_px": 1218,
+      "height_px": 134,
+      "source_code": "SRC_NGOC_VY_40_DE_2026",
+      "source_key": "NGOC_VY_40_DE_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        738
+      ],
+      "solution_pages": [
+        746
+      ],
+      "question_anchor_page": 738,
+      "asset_source_page": 738,
+      "source_page_role": "QUESTION_PAGE",
+      "crop_box_pdf_points": [
+        93.2,
+        625.1,
+        531.3,
+        673.2
+      ],
+      "component_types": [
+        "TABLE_VECTOR"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_DISP_CAND_0031_VISUAL_V1",
+      "candidate_id": "M12_DISP_CAND_0031",
+      "asset_kind": "SOURCE_DATA_TABLE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DISP_CAND_0031__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "6ddd18504a463cb95a3cc9678edd3dba0b4254b94397dc1327952dc616b2f661",
+      "width_px": 1093,
+      "height_px": 135,
+      "source_code": "SRC_NGOC_VY_40_DE_2026",
+      "source_key": "NGOC_VY_40_DE_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "canonical_question_pages": [
+        758
+      ],
+      "solution_pages": [
+        765
+      ],
+      "question_anchor_page": 758,
+      "asset_source_page": 758,
+      "source_page_role": "QUESTION_PAGE",
+      "crop_box_pdf_points": [
+        115.8,
+        529.1,
+        508.7,
+        577.2
+      ],
+      "component_types": [
+        "TABLE_VECTOR"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_DISP_CAND_0033_VISUAL_V1",
+      "candidate_id": "M12_DISP_CAND_0033",
+      "asset_kind": "SOURCE_DATA_TABLE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DISP_CAND_0033__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "3e1f548a19bb0b617bc40038935b0bf5965ed8c53907a71416f3314cf4f75735",
+      "width_px": 1247,
+      "height_px": 215,
+      "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+      "source_key": "PROVINCIAL_TRIAL_2025",
+      "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+      "source_pdf_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+      "canonical_question_pages": [
+        20
+      ],
+      "solution_pages": [
+        26
+      ],
+      "question_anchor_page": 20,
+      "asset_source_page": 20,
+      "source_page_role": "QUESTION_PAGE",
+      "crop_box_pdf_points": [
+        105.3,
+        351.3,
+        553.8,
+        428.4
+      ],
+      "component_types": [
+        "TABLE_VECTOR"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_DISP_CAND_0036_VISUAL_V1",
+      "candidate_id": "M12_DISP_CAND_0036",
+      "asset_kind": "SOURCE_DATA_TABLE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DISP_CAND_0036__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "47eeef850423c903b9cad4c61f60ba7b947bfd774867ed3e47848a15ae451444",
+      "width_px": 1228,
+      "height_px": 159,
+      "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+      "source_key": "PROVINCIAL_TRIAL_2025",
+      "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+      "source_pdf_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+      "canonical_question_pages": [
+        55
+      ],
+      "solution_pages": [
+        61
+      ],
+      "question_anchor_page": 55,
+      "asset_source_page": 55,
+      "source_page_role": "QUESTION_PAGE",
+      "crop_box_pdf_points": [
+        105.1,
+        709.0,
+        546.6,
+        765.8
+      ],
+      "component_types": [
+        "TABLE_VECTOR"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_DISP_CAND_0037_VISUAL_V1",
+      "candidate_id": "M12_DISP_CAND_0037",
+      "asset_kind": "SOURCE_DATA_TABLE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DISP_CAND_0037__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "66d4bd4411036fdb02965a28b19b018a69469c1c4ba9b5b0b8f5ae6b344bcb05",
+      "width_px": 1029,
+      "height_px": 161,
+      "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+      "source_key": "PROVINCIAL_TRIAL_2025",
+      "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+      "source_pdf_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+      "canonical_question_pages": [
+        88
+      ],
+      "solution_pages": [
+        94
+      ],
+      "question_anchor_page": 88,
+      "asset_source_page": 88,
+      "source_page_role": "QUESTION_PAGE",
+      "crop_box_pdf_points": [
+        137.2,
+        573.7,
+        507.5,
+        631.3
+      ],
+      "component_types": [
+        "IMAGE"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_DISP_CAND_0038_VISUAL_V1",
+      "candidate_id": "M12_DISP_CAND_0038",
+      "asset_kind": "SOURCE_DATA_TABLE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DISP_CAND_0038__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "350191b26f37b1739a8dabd2c8e247920d25916d724cf29dac28c82444e9519b",
+      "width_px": 1290,
+      "height_px": 143,
+      "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+      "source_key": "PROVINCIAL_TRIAL_2025",
+      "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+      "source_pdf_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+      "canonical_question_pages": [
+        107
+      ],
+      "solution_pages": [
+        111
+      ],
+      "question_anchor_page": 107,
+      "asset_source_page": 107,
+      "source_page_role": "QUESTION_PAGE",
+      "crop_box_pdf_points": [
+        90.5,
+        538.5,
+        554.6,
+        589.6
+      ],
+      "component_types": [
+        "TABLE_VECTOR"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_DISP_CAND_0039_VISUAL_V1",
+      "candidate_id": "M12_DISP_CAND_0039",
+      "asset_kind": "SOURCE_DATA_TABLE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DISP_CAND_0039__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "ce3306e0806025a75f5d9506af1a05a2b3cd61fd7d1e8958bef7713f864063ea",
+      "width_px": 1170,
+      "height_px": 145,
+      "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+      "source_key": "PROVINCIAL_TRIAL_2025",
+      "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+      "source_pdf_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+      "canonical_question_pages": [
+        123
+      ],
+      "solution_pages": [
+        128
+      ],
+      "question_anchor_page": 123,
+      "asset_source_page": 123,
+      "source_page_role": "QUESTION_PAGE",
+      "crop_box_pdf_points": [
+        87.3,
+        299.1,
+        508.0,
+        350.7
+      ],
+      "component_types": [
+        "TABLE_VECTOR"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_DISP_CAND_0040_VISUAL_V1",
+      "candidate_id": "M12_DISP_CAND_0040",
+      "asset_kind": "SOURCE_DATA_TABLE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DISP_CAND_0040__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "7023bfb8b9a6e680ecea7570d85d81a3f264034844f24abd0bbcb2ba5eb77c8b",
+      "width_px": 1222,
+      "height_px": 115,
+      "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+      "source_key": "PROVINCIAL_TRIAL_2025",
+      "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+      "source_pdf_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+      "canonical_question_pages": [
+        140
+      ],
+      "solution_pages": [
+        147
+      ],
+      "question_anchor_page": 140,
+      "asset_source_page": 140,
+      "source_page_role": "QUESTION_PAGE",
+      "crop_box_pdf_points": [
+        114.3,
+        592.6,
+        553.8,
+        633.9
+      ],
+      "component_types": [
+        "TABLE_VECTOR"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_DISP_CAND_0041_VISUAL_V1",
+      "candidate_id": "M12_DISP_CAND_0041",
+      "asset_kind": "SOURCE_DATA_TABLE_CROP",
+      "asset_status": "READY_SOURCE_CROP",
+      "file_name": "assets/M12_DISP_CAND_0041__source_visual.png",
+      "mime_type": "image/png",
+      "sha256": "e3e6422f8914af952d2282ae6dc8bbc044c404a4a812b0bf0e2cb358b6a2098f",
+      "width_px": 930,
+      "height_px": 114,
+      "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+      "source_key": "PROVINCIAL_TRIAL_2025",
+      "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+      "source_pdf_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+      "canonical_question_pages": [
+        156
+      ],
+      "solution_pages": [
+        161
+      ],
+      "question_anchor_page": 156,
+      "asset_source_page": 156,
+      "source_page_role": "QUESTION_PAGE",
+      "crop_box_pdf_points": [
+        130.5,
+        213.0,
+        464.9,
+        253.7
+      ],
+      "component_types": [
+        "TABLE_VECTOR"
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    }
+  ]
+}

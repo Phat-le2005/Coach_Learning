@@ -1,0 +1,23 @@
+{
+  "dataset_code": "DATA-MATH12-022",
+  "academic_verified_units": 38,
+  "academic_visual_required": 37,
+  "ready_source_crops": 37,
+  "academic_not_required": 1,
+  "not_required_candidate_ids": [
+    "M12_DISP_CAND_0034"
+  ],
+  "unresolved_visual_units": 0,
+  "question_continuation_assets": 2,
+  "question_continuation_candidate_ids": [
+    "M12_DISP_CAND_0003",
+    "M12_DISP_CAND_0024"
+  ],
+  "answer_leakage_safe_assets": 37,
+  "rights_review_required_units": 38,
+  "promotion_eligible_units": 0,
+  "production_release_eligible": 0,
+  "database_import_allowed": false,
+  "canonical_snapshot_allowed": false,
+  "visual_curation_complete": true
+}

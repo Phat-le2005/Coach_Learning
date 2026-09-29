@@ -1,0 +1,88 @@
+{
+  "contract_code": "DATA_MATH12_022_VISUAL_ASSET_CONTRACT_V0_1",
+  "input_review_dataset": "DATA-MATH12-021",
+  "input_review_aggregate_sha256": "08aae72fa7f615f60e3f0b68845c29d630430321e1013a48cfa7966fb1c25a36",
+  "required_invariants": {
+    "academic_verified_units": 38,
+    "academic_visual_required": 37,
+    "ready_source_crops": 37,
+    "academic_not_required": 1,
+    "unresolved_visual_units": 0,
+    "question_continuation_assets": 2,
+    "answer_leakage_safe_assets": 37,
+    "rights_review_required_units": 38,
+    "promotion_eligible_units": 0,
+    "production_release_eligible": 0,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  "not_required_candidate_ids": [
+    "M12_DISP_CAND_0034"
+  ],
+  "question_continuation_asset_pages": {
+    "M12_DISP_CAND_0003": 80,
+    "M12_DISP_CAND_0024": 625
+  },
+  "semantic_files_order": [
+    "visual_review_decisions.json",
+    "visual_asset_manifest.json",
+    "visual_asset_stats.json"
+  ],
+  "semantic_sha256": {
+    "visual_review_decisions.json": "57991c36a74ed74bab4ac30957ce023f06895f0fb0b97556ea1a96de3f75f637",
+    "visual_asset_manifest.json": "e60756bb5a4ec96725f2577d28c366e59a5f56b965d76b046fd8871ba6ffe56b",
+    "visual_asset_stats.json": "716a46db569319597ad5fa5c16aa5cef1de95a0062ed1d693282b674187dc015"
+  },
+  "asset_file_hashes": {
+    "assets/M12_DISP_CAND_0001__source_visual.png": "ca007d5b3fec271f0b1b6b5d12fa945d5fab858003224051f6468453add013d4",
+    "assets/M12_DISP_CAND_0002__source_visual.png": "ec930d5bde3d8d5e77f03552eed0d415e83bc4226c423d965254797af84ba1f6",
+    "assets/M12_DISP_CAND_0003__source_visual.png": "22752b4eea4264a063ecc0e2747c74c3a0711df0ce7ed96d97c83ebfe311658a",
+    "assets/M12_DISP_CAND_0004__source_visual.png": "101bca944b0ce8312714f2f2a7d4cbb3398680047e812b5df582f90fdbca621b",
+    "assets/M12_DISP_CAND_0005__source_visual.png": "a4ea1949eeb5a2614a8c0ea0cc9ce4712882ad33db340b99c687d2884b3eb27f",
+    "assets/M12_DISP_CAND_0006__source_visual.png": "3bd7e740048ed8e487dfb5dac0ba0c5a6b5978b6195515fbbac80c32c317f489",
+    "assets/M12_DISP_CAND_0007__source_visual.png": "6dcd5795e356b1d70652570c10de1a2b3b9ff552b9156c6e917b3fe0d0f08e09",
+    "assets/M12_DISP_CAND_0008__source_visual.png": "fe1f9dd031f3f9dfebb0b273992dc355a5770d1bca17ce958b51a9bbb289c866",
+    "assets/M12_DISP_CAND_0009__source_visual.png": "f232c8d288443e0d42283a424a8d4c091789732d2d02d5e27a2a1927e53b5ebb",
+    "assets/M12_DISP_CAND_0010__source_visual.png": "cbf781aa7feefb725e7497255e1547ae057ccd60c0b6250e30868acdb32ce6f0",
+    "assets/M12_DISP_CAND_0011__source_visual.png": "f5fd5265ceb5d7b65377e2f79b95196caded99b4a12c0d71ead06e2a7d001a72",
+    "assets/M12_DISP_CAND_0012__source_visual.png": "8f3c584f68ed8894a924f496efe270539edb4d1131254f8eebbae932221e7e22",
+    "assets/M12_DISP_CAND_0013__source_visual.png": "1eb1ab60c4c41334d95bb7b4ed6930084bdf1346312757f82a996c65e61257f9",
+    "assets/M12_DISP_CAND_0015__source_visual.png": "ef4f2e5651491e160761e031426e7868247088883e92e1655c329600c55bb3a4",
+    "assets/M12_DISP_CAND_0016__source_visual.png": "60936465e89a350e01bd3817702a05fb07d00015dfa371c1277cda6815a6a04c",
+    "assets/M12_DISP_CAND_0017__source_visual.png": "99e4b488d982f99330256717ffc3cb5ad871694746ef88e9e9d98e30c4453197",
+    "assets/M12_DISP_CAND_0018__source_visual.png": "7657aee787b4367b3b2586e50dede20776b83c1e68f7867bafebdd01fec86655",
+    "assets/M12_DISP_CAND_0019__source_visual.png": "a153b38b0dd8effdfe8e1b39624db005d5f09bc1c9676311efbb2297e7d9cd96",
+    "assets/M12_DISP_CAND_0020__source_visual.png": "5a97309662d4177e7e95dcdfcca9f844ef078bac65873d241be03f913e920f4a",
+    "assets/M12_DISP_CAND_0021__source_visual.png": "a7a474deeee289bdf7c630846de621fb8de48420eb81b22d5899398165cd9d80",
+    "assets/M12_DISP_CAND_0022__source_visual.png": "c08631818cd969adc7d967d162b22ee712f253843057906d4bbad384e05f33e4",
+    "assets/M12_DISP_CAND_0023__source_visual.png": "5f752dbf28d94b9100d6b1c72e7e2f880c8ac4718268540cb41db2db19ebb42c",
+    "assets/M12_DISP_CAND_0024__source_visual.png": "eefea20b5ded403b7ef8cc250933d8109d5f94791f437b8c733812798a00113d",
+    "assets/M12_DISP_CAND_0025__source_visual.png": "71c44651c3ea3bba7f9763912cc9ee098494a00185673ad0f2c3a9d772b4628c",
+    "assets/M12_DISP_CAND_0026__source_visual.png": "03ebf3e2fbe44226c61594ba288e19eab4d0247eaa4d22353be4ed0bbd8d49d3",
+    "assets/M12_DISP_CAND_0027__source_visual.png": "aa5a964853e62587e943735d8b1c83f53b3ef2e7d25ae109ea13d310109fed2a",
+    "assets/M12_DISP_CAND_0028__source_visual.png": "9a6b2100a632b32f1fa85e5a985c188c2771822076b155c0cf8aade0435696c7",
+    "assets/M12_DISP_CAND_0029__source_visual.png": "08dbafa98557698bb6856648e6d066d0691d4a20bfb7a9f94e876ac6499cb40d",
+    "assets/M12_DISP_CAND_0030__source_visual.png": "195ee5970f1d2b863ce3c525e96e434ec9cc14b2b2ace70111c1df8af3fb78ba",
+    "assets/M12_DISP_CAND_0031__source_visual.png": "6ddd18504a463cb95a3cc9678edd3dba0b4254b94397dc1327952dc616b2f661",
+    "assets/M12_DISP_CAND_0033__source_visual.png": "3e1f548a19bb0b617bc40038935b0bf5965ed8c53907a71416f3314cf4f75735",
+    "assets/M12_DISP_CAND_0036__source_visual.png": "47eeef850423c903b9cad4c61f60ba7b947bfd774867ed3e47848a15ae451444",
+    "assets/M12_DISP_CAND_0037__source_visual.png": "66d4bd4411036fdb02965a28b19b018a69469c1c4ba9b5b0b8f5ae6b344bcb05",
+    "assets/M12_DISP_CAND_0038__source_visual.png": "350191b26f37b1739a8dabd2c8e247920d25916d724cf29dac28c82444e9519b",
+    "assets/M12_DISP_CAND_0039__source_visual.png": "ce3306e0806025a75f5d9506af1a05a2b3cd61fd7d1e8958bef7713f864063ea",
+    "assets/M12_DISP_CAND_0040__source_visual.png": "7023bfb8b9a6e680ecea7570d85d81a3f264034844f24abd0bbcb2ba5eb77c8b",
+    "assets/M12_DISP_CAND_0041__source_visual.png": "e3e6422f8914af952d2282ae6dc8bbc044c404a4a812b0bf0e2cb358b6a2098f"
+  },
+  "aggregate_semantic_and_assets_sha256": "72eb48af3ad973391e766ec92c3d969dbb5d8677e912ad5bc45392b66d09b438",
+  "implementation_boundary": {
+    "data_content_locked": true,
+    "code_may_adapt_to_contract": true,
+    "do_not_rewrite": [
+      "visual decisions",
+      "crop coordinates",
+      "asset hashes",
+      "source lineage",
+      "rights status",
+      "academic review data"
+    ]
+  }
+}
