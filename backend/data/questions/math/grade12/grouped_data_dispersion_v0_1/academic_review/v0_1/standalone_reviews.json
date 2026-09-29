@@ -9,14 +9,15 @@
     "question_number": "6",
     "question_type": "MULTIPLE_CHOICE",
     "review_status": "VERIFIED",
-    "content_review": "CONFIRMED_FROM_SOURCE_TEXT",
-    "answer_verification": "SOURCE_SOLUTION_OCCURRENCE_CONFIRMED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
     "correct_answer": "D",
     "structural_problem_type_code": "CALCULATE_GROUPED_VARIANCE",
     "reviewed_problem_type_code": "CALCULATE_GROUPED_VARIANCE",
-    "taxonomy_review": "CONFIRMED_STRUCTURAL_MAPPING",
+    "taxonomy_review": "CONFIRMED",
     "taxonomy": {
-      "status": "CONFIRMED_STRUCTURAL_MAPPING",
+      "status": "CONFIRMED",
       "basis": "DATA_MATH12_019_TAXONOMY",
       "problem_types": [
         {
@@ -71,14 +72,15 @@
     "question_number": "6",
     "question_type": "MULTIPLE_CHOICE",
     "review_status": "VERIFIED",
-    "content_review": "CONFIRMED_FROM_SOURCE_TEXT",
-    "answer_verification": "SOURCE_SOLUTION_OCCURRENCE_CONFIRMED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
     "correct_answer": "D",
     "structural_problem_type_code": "COMPARE_GROUPED_VARIANCE_SD",
     "reviewed_problem_type_code": "COMPARE_GROUPED_VARIANCE_SD",
-    "taxonomy_review": "CONFIRMED_STRUCTURAL_MAPPING",
+    "taxonomy_review": "CONFIRMED",
     "taxonomy": {
-      "status": "CONFIRMED_STRUCTURAL_MAPPING",
+      "status": "CONFIRMED",
       "basis": "DATA_MATH12_019_TAXONOMY",
       "problem_types": [
         {
@@ -128,14 +130,15 @@
     "question_number": "6",
     "question_type": "MULTIPLE_CHOICE",
     "review_status": "VERIFIED",
-    "content_review": "CONFIRMED_FROM_SOURCE_TEXT",
-    "answer_verification": "SOURCE_SOLUTION_OCCURRENCE_CONFIRMED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
     "correct_answer": "A",
     "structural_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
     "reviewed_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
-    "taxonomy_review": "CONFIRMED_STRUCTURAL_MAPPING",
+    "taxonomy_review": "CONFIRMED",
     "taxonomy": {
-      "status": "CONFIRMED_STRUCTURAL_MAPPING",
+      "status": "CONFIRMED",
       "basis": "DATA_MATH12_019_TAXONOMY",
       "problem_types": [
         {
@@ -190,14 +193,15 @@
     "question_number": "6",
     "question_type": "MULTIPLE_CHOICE",
     "review_status": "VERIFIED",
-    "content_review": "CONFIRMED_FROM_SOURCE_TEXT",
-    "answer_verification": "SOURCE_SOLUTION_OCCURRENCE_CONFIRMED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
     "correct_answer": "A",
     "structural_problem_type_code": "CALCULATE_GROUPED_IQR",
     "reviewed_problem_type_code": "CALCULATE_GROUPED_IQR",
-    "taxonomy_review": "CONFIRMED_STRUCTURAL_MAPPING",
+    "taxonomy_review": "CONFIRMED",
     "taxonomy": {
-      "status": "CONFIRMED_STRUCTURAL_MAPPING",
+      "status": "CONFIRMED",
       "basis": "DATA_MATH12_019_TAXONOMY",
       "problem_types": [
         {
@@ -247,14 +251,15 @@
     "question_number": "3",
     "question_type": "MULTIPLE_CHOICE",
     "review_status": "VERIFIED",
-    "content_review": "CONFIRMED_FROM_SOURCE_TEXT",
-    "answer_verification": "SOURCE_SOLUTION_OCCURRENCE_CONFIRMED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
     "correct_answer": "B",
     "structural_problem_type_code": "COMPARE_GROUPED_VARIANCE_SD",
     "reviewed_problem_type_code": "COMPARE_GROUPED_VARIANCE_SD",
-    "taxonomy_review": "CONFIRMED_STRUCTURAL_MAPPING",
+    "taxonomy_review": "CONFIRMED",
     "taxonomy": {
-      "status": "CONFIRMED_STRUCTURAL_MAPPING",
+      "status": "CONFIRMED",
       "basis": "DATA_MATH12_019_TAXONOMY",
       "problem_types": [
         {
@@ -304,14 +309,15 @@
     "question_number": "8",
     "question_type": "MULTIPLE_CHOICE",
     "review_status": "VERIFIED",
-    "content_review": "CONFIRMED_FROM_SOURCE_TEXT",
-    "answer_verification": "SOURCE_SOLUTION_OCCURRENCE_CONFIRMED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
     "correct_answer": "A",
     "structural_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
     "reviewed_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
-    "taxonomy_review": "CONFIRMED_STRUCTURAL_MAPPING",
+    "taxonomy_review": "CONFIRMED",
     "taxonomy": {
-      "status": "CONFIRMED_STRUCTURAL_MAPPING",
+      "status": "CONFIRMED",
       "basis": "DATA_MATH12_019_TAXONOMY",
       "problem_types": [
         {
@@ -366,14 +372,15 @@
     "question_number": "6",
     "question_type": "MULTIPLE_CHOICE",
     "review_status": "VERIFIED",
-    "content_review": "CONFIRMED_FROM_SOURCE_TEXT",
-    "answer_verification": "SOURCE_SOLUTION_OCCURRENCE_CONFIRMED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
     "correct_answer": "B",
     "structural_problem_type_code": "CALCULATE_GROUPED_IQR",
     "reviewed_problem_type_code": "CALCULATE_GROUPED_IQR",
-    "taxonomy_review": "CONFIRMED_STRUCTURAL_MAPPING",
+    "taxonomy_review": "CONFIRMED",
     "taxonomy": {
-      "status": "CONFIRMED_STRUCTURAL_MAPPING",
+      "status": "CONFIRMED",
       "basis": "DATA_MATH12_019_TAXONOMY",
       "problem_types": [
         {
@@ -423,14 +430,15 @@
     "question_number": "6",
     "question_type": "MULTIPLE_CHOICE",
     "review_status": "VERIFIED",
-    "content_review": "CONFIRMED_FROM_SOURCE_TEXT",
-    "answer_verification": "SOURCE_SOLUTION_OCCURRENCE_CONFIRMED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
     "correct_answer": "B",
     "structural_problem_type_code": "CALCULATE_GROUPED_RANGE",
     "reviewed_problem_type_code": "CALCULATE_GROUPED_RANGE",
-    "taxonomy_review": "CONFIRMED_STRUCTURAL_MAPPING",
+    "taxonomy_review": "CONFIRMED",
     "taxonomy": {
-      "status": "CONFIRMED_STRUCTURAL_MAPPING",
+      "status": "CONFIRMED",
       "basis": "DATA_MATH12_019_TAXONOMY",
       "problem_types": [
         {
@@ -480,14 +488,15 @@
     "question_number": "6",
     "question_type": "MULTIPLE_CHOICE",
     "review_status": "VERIFIED",
-    "content_review": "CONFIRMED_FROM_SOURCE_TEXT",
-    "answer_verification": "SOURCE_SOLUTION_OCCURRENCE_CONFIRMED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
     "correct_answer": "A",
     "structural_problem_type_code": "CALCULATE_GROUPED_VARIANCE",
     "reviewed_problem_type_code": "CALCULATE_GROUPED_VARIANCE",
-    "taxonomy_review": "CONFIRMED_STRUCTURAL_MAPPING",
+    "taxonomy_review": "CONFIRMED",
     "taxonomy": {
-      "status": "CONFIRMED_STRUCTURAL_MAPPING",
+      "status": "CONFIRMED",
       "basis": "DATA_MATH12_019_TAXONOMY",
       "problem_types": [
         {
@@ -542,14 +551,15 @@
     "question_number": "3",
     "question_type": "MULTIPLE_CHOICE",
     "review_status": "VERIFIED",
-    "content_review": "CONFIRMED_FROM_SOURCE_TEXT",
-    "answer_verification": "SOURCE_SOLUTION_OCCURRENCE_CONFIRMED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
     "correct_answer": "C",
     "structural_problem_type_code": "CALCULATE_GROUPED_RANGE",
     "reviewed_problem_type_code": "CALCULATE_GROUPED_RANGE",
-    "taxonomy_review": "CONFIRMED_STRUCTURAL_MAPPING",
+    "taxonomy_review": "CONFIRMED",
     "taxonomy": {
-      "status": "CONFIRMED_STRUCTURAL_MAPPING",
+      "status": "CONFIRMED",
       "basis": "DATA_MATH12_019_TAXONOMY",
       "problem_types": [
         {
@@ -599,14 +609,15 @@
     "question_number": "4",
     "question_type": "MULTIPLE_CHOICE",
     "review_status": "VERIFIED",
-    "content_review": "CONFIRMED_FROM_SOURCE_TEXT",
-    "answer_verification": "SOURCE_SOLUTION_OCCURRENCE_CONFIRMED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
     "correct_answer": "C",
     "structural_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
     "reviewed_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
-    "taxonomy_review": "CONFIRMED_STRUCTURAL_MAPPING",
+    "taxonomy_review": "CONFIRMED",
     "taxonomy": {
-      "status": "CONFIRMED_STRUCTURAL_MAPPING",
+      "status": "CONFIRMED",
       "basis": "DATA_MATH12_019_TAXONOMY",
       "problem_types": [
         {
@@ -661,14 +672,15 @@
     "question_number": "4",
     "question_type": "MULTIPLE_CHOICE",
     "review_status": "VERIFIED",
-    "content_review": "CONFIRMED_FROM_SOURCE_TEXT",
-    "answer_verification": "SOURCE_SOLUTION_OCCURRENCE_CONFIRMED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
     "correct_answer": "B",
     "structural_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
     "reviewed_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
-    "taxonomy_review": "CONFIRMED_STRUCTURAL_MAPPING",
+    "taxonomy_review": "CONFIRMED",
     "taxonomy": {
-      "status": "CONFIRMED_STRUCTURAL_MAPPING",
+      "status": "CONFIRMED",
       "basis": "DATA_MATH12_019_TAXONOMY",
       "problem_types": [
         {
@@ -723,14 +735,15 @@
     "question_number": "8",
     "question_type": "MULTIPLE_CHOICE",
     "review_status": "VERIFIED",
-    "content_review": "CONFIRMED_FROM_SOURCE_TEXT",
-    "answer_verification": "SOURCE_SOLUTION_OCCURRENCE_CONFIRMED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
     "correct_answer": "B",
     "structural_problem_type_code": "CALCULATE_GROUPED_IQR",
     "reviewed_problem_type_code": "CALCULATE_GROUPED_IQR",
-    "taxonomy_review": "CONFIRMED_STRUCTURAL_MAPPING",
+    "taxonomy_review": "CONFIRMED",
     "taxonomy": {
-      "status": "CONFIRMED_STRUCTURAL_MAPPING",
+      "status": "CONFIRMED",
       "basis": "DATA_MATH12_019_TAXONOMY",
       "problem_types": [
         {
@@ -779,15 +792,16 @@
     "candidate_source_page": 457,
     "question_number": "4",
     "question_type": "MULTIPLE_CHOICE",
-    "review_status": "HOLD_MISSING_SOURCE_ANSWER",
-    "content_review": "CONFIRMED_FROM_SOURCE_TEXT",
-    "answer_verification": "SOURCE_ANSWER_NOT_AVAILABLE",
+    "review_status": "REJECTED_DUPLICATE",
+    "duplicate_of": "M12_DISP_CAND_0015",
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "DUPLICATE_CANONICAL_HAS_SOURCE_BACKED_ANSWER",
     "correct_answer": null,
     "structural_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
     "reviewed_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
-    "taxonomy_review": "CONFIRMED_STRUCTURAL_MAPPING",
+    "taxonomy_review": "CONFIRMED",
     "taxonomy": {
-      "status": "CONFIRMED_STRUCTURAL_MAPPING",
+      "status": "CONFIRMED",
       "basis": "DATA_MATH12_019_TAXONOMY",
       "problem_types": [
         {
@@ -828,9 +842,7 @@
     "visual_asset_required": true,
     "promotion_ready": false,
     "promotion_blockers": [
-      "ACADEMIC_ANSWER_EVIDENCE_MISSING",
-      "RIGHTS_REVIEW_REQUIRED",
-      "VISUAL_ASSET_REVIEW_REQUIRED"
+      "REJECTED_DUPLICATE"
     ]
   },
   {
@@ -843,14 +855,15 @@
     "question_number": "5",
     "question_type": "MULTIPLE_CHOICE",
     "review_status": "VERIFIED",
-    "content_review": "CONFIRMED_FROM_SOURCE_TEXT",
-    "answer_verification": "SOURCE_SOLUTION_OCCURRENCE_CONFIRMED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
     "correct_answer": "B",
     "structural_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
     "reviewed_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
-    "taxonomy_review": "CONFIRMED_STRUCTURAL_MAPPING",
+    "taxonomy_review": "CONFIRMED",
     "taxonomy": {
-      "status": "CONFIRMED_STRUCTURAL_MAPPING",
+      "status": "CONFIRMED",
       "basis": "DATA_MATH12_019_TAXONOMY",
       "problem_types": [
         {
@@ -905,14 +918,15 @@
     "question_number": "8",
     "question_type": "MULTIPLE_CHOICE",
     "review_status": "VERIFIED",
-    "content_review": "CONFIRMED_FROM_SOURCE_TEXT",
-    "answer_verification": "SOURCE_SOLUTION_OCCURRENCE_CONFIRMED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
     "correct_answer": "D",
     "structural_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
     "reviewed_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
-    "taxonomy_review": "CONFIRMED_STRUCTURAL_MAPPING",
+    "taxonomy_review": "CONFIRMED",
     "taxonomy": {
-      "status": "CONFIRMED_STRUCTURAL_MAPPING",
+      "status": "CONFIRMED",
       "basis": "DATA_MATH12_019_TAXONOMY",
       "problem_types": [
         {
@@ -967,14 +981,15 @@
     "question_number": "6",
     "question_type": "MULTIPLE_CHOICE",
     "review_status": "VERIFIED",
-    "content_review": "CONFIRMED_FROM_SOURCE_TEXT",
-    "answer_verification": "SOURCE_SOLUTION_OCCURRENCE_CONFIRMED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
     "correct_answer": "B",
     "structural_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
     "reviewed_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
-    "taxonomy_review": "CONFIRMED_STRUCTURAL_MAPPING",
+    "taxonomy_review": "CONFIRMED",
     "taxonomy": {
-      "status": "CONFIRMED_STRUCTURAL_MAPPING",
+      "status": "CONFIRMED",
       "basis": "DATA_MATH12_019_TAXONOMY",
       "problem_types": [
         {
@@ -1029,14 +1044,15 @@
     "question_number": "6",
     "question_type": "MULTIPLE_CHOICE",
     "review_status": "VERIFIED",
-    "content_review": "CONFIRMED_FROM_SOURCE_TEXT",
-    "answer_verification": "SOURCE_SOLUTION_OCCURRENCE_CONFIRMED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
     "correct_answer": "A",
     "structural_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
     "reviewed_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
-    "taxonomy_review": "CONFIRMED_STRUCTURAL_MAPPING",
+    "taxonomy_review": "CONFIRMED",
     "taxonomy": {
-      "status": "CONFIRMED_STRUCTURAL_MAPPING",
+      "status": "CONFIRMED",
       "basis": "DATA_MATH12_019_TAXONOMY",
       "problem_types": [
         {
@@ -1091,14 +1107,15 @@
     "question_number": "6",
     "question_type": "MULTIPLE_CHOICE",
     "review_status": "VERIFIED",
-    "content_review": "CONFIRMED_FROM_SOURCE_TEXT",
-    "answer_verification": "SOURCE_SOLUTION_OCCURRENCE_CONFIRMED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
     "correct_answer": "B",
     "structural_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
     "reviewed_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
-    "taxonomy_review": "CONFIRMED_STRUCTURAL_MAPPING",
+    "taxonomy_review": "CONFIRMED",
     "taxonomy": {
-      "status": "CONFIRMED_STRUCTURAL_MAPPING",
+      "status": "CONFIRMED",
       "basis": "DATA_MATH12_019_TAXONOMY",
       "problem_types": [
         {
@@ -1153,14 +1170,15 @@
     "question_number": "4",
     "question_type": "MULTIPLE_CHOICE",
     "review_status": "VERIFIED",
-    "content_review": "CONFIRMED_FROM_SOURCE_TEXT",
-    "answer_verification": "SOURCE_SOLUTION_OCCURRENCE_CONFIRMED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
     "correct_answer": "C",
     "structural_problem_type_code": "CALCULATE_GROUPED_VARIANCE",
     "reviewed_problem_type_code": "CALCULATE_GROUPED_VARIANCE",
-    "taxonomy_review": "CONFIRMED_STRUCTURAL_MAPPING",
+    "taxonomy_review": "CONFIRMED",
     "taxonomy": {
-      "status": "CONFIRMED_STRUCTURAL_MAPPING",
+      "status": "CONFIRMED",
       "basis": "DATA_MATH12_019_TAXONOMY",
       "problem_types": [
         {
@@ -1215,14 +1233,15 @@
     "question_number": "6",
     "question_type": "MULTIPLE_CHOICE",
     "review_status": "VERIFIED",
-    "content_review": "CONFIRMED_FROM_SOURCE_TEXT",
-    "answer_verification": "SOURCE_SOLUTION_OCCURRENCE_CONFIRMED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
     "correct_answer": "B",
     "structural_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
     "reviewed_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
-    "taxonomy_review": "CONFIRMED_STRUCTURAL_MAPPING",
+    "taxonomy_review": "CONFIRMED",
     "taxonomy": {
-      "status": "CONFIRMED_STRUCTURAL_MAPPING",
+      "status": "CONFIRMED",
       "basis": "DATA_MATH12_019_TAXONOMY",
       "problem_types": [
         {
@@ -1277,14 +1296,15 @@
     "question_number": "5",
     "question_type": "MULTIPLE_CHOICE",
     "review_status": "VERIFIED",
-    "content_review": "CONFIRMED_FROM_SOURCE_TEXT",
-    "answer_verification": "SOURCE_SOLUTION_OCCURRENCE_CONFIRMED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
     "correct_answer": "D",
     "structural_problem_type_code": "CALCULATE_GROUPED_IQR",
     "reviewed_problem_type_code": "CALCULATE_GROUPED_IQR",
-    "taxonomy_review": "CONFIRMED_STRUCTURAL_MAPPING",
+    "taxonomy_review": "CONFIRMED",
     "taxonomy": {
-      "status": "CONFIRMED_STRUCTURAL_MAPPING",
+      "status": "CONFIRMED",
       "basis": "DATA_MATH12_019_TAXONOMY",
       "problem_types": [
         {
@@ -1334,14 +1354,15 @@
     "question_number": "6",
     "question_type": "MULTIPLE_CHOICE",
     "review_status": "VERIFIED",
-    "content_review": "CONFIRMED_FROM_SOURCE_TEXT",
-    "answer_verification": "SOURCE_SOLUTION_OCCURRENCE_CONFIRMED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
     "correct_answer": "B",
     "structural_problem_type_code": "CALCULATE_GROUPED_VARIANCE",
     "reviewed_problem_type_code": "CALCULATE_GROUPED_VARIANCE",
-    "taxonomy_review": "CONFIRMED_STRUCTURAL_MAPPING",
+    "taxonomy_review": "CONFIRMED",
     "taxonomy": {
-      "status": "CONFIRMED_STRUCTURAL_MAPPING",
+      "status": "CONFIRMED",
       "basis": "DATA_MATH12_019_TAXONOMY",
       "problem_types": [
         {
@@ -1396,14 +1417,15 @@
     "question_number": "6",
     "question_type": "MULTIPLE_CHOICE",
     "review_status": "VERIFIED",
-    "content_review": "CONFIRMED_FROM_SOURCE_TEXT",
-    "answer_verification": "SOURCE_SOLUTION_OCCURRENCE_CONFIRMED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
     "correct_answer": "B",
     "structural_problem_type_code": "CALCULATE_GROUPED_IQR",
     "reviewed_problem_type_code": "CALCULATE_GROUPED_IQR",
-    "taxonomy_review": "CONFIRMED_STRUCTURAL_MAPPING",
+    "taxonomy_review": "CONFIRMED",
     "taxonomy": {
-      "status": "CONFIRMED_STRUCTURAL_MAPPING",
+      "status": "CONFIRMED",
       "basis": "DATA_MATH12_019_TAXONOMY",
       "problem_types": [
         {
@@ -1453,14 +1475,15 @@
     "question_number": "4",
     "question_type": "MULTIPLE_CHOICE",
     "review_status": "VERIFIED",
-    "content_review": "CONFIRMED_FROM_SOURCE_TEXT",
-    "answer_verification": "SOURCE_SOLUTION_OCCURRENCE_CONFIRMED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
     "correct_answer": "D",
     "structural_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
     "reviewed_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
-    "taxonomy_review": "CONFIRMED_STRUCTURAL_MAPPING",
+    "taxonomy_review": "CONFIRMED",
     "taxonomy": {
-      "status": "CONFIRMED_STRUCTURAL_MAPPING",
+      "status": "CONFIRMED",
       "basis": "DATA_MATH12_019_TAXONOMY",
       "problem_types": [
         {
@@ -1515,14 +1538,15 @@
     "question_number": "6",
     "question_type": "MULTIPLE_CHOICE",
     "review_status": "VERIFIED",
-    "content_review": "CONFIRMED_FROM_SOURCE_TEXT",
-    "answer_verification": "SOURCE_SOLUTION_OCCURRENCE_CONFIRMED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
     "correct_answer": "A",
     "structural_problem_type_code": "CALCULATE_GROUPED_IQR",
     "reviewed_problem_type_code": "CALCULATE_GROUPED_IQR",
-    "taxonomy_review": "CONFIRMED_STRUCTURAL_MAPPING",
+    "taxonomy_review": "CONFIRMED",
     "taxonomy": {
-      "status": "CONFIRMED_STRUCTURAL_MAPPING",
+      "status": "CONFIRMED",
       "basis": "DATA_MATH12_019_TAXONOMY",
       "problem_types": [
         {
@@ -1572,14 +1596,15 @@
     "question_number": "6",
     "question_type": "MULTIPLE_CHOICE",
     "review_status": "VERIFIED",
-    "content_review": "CONFIRMED_FROM_SOURCE_TEXT",
-    "answer_verification": "SOURCE_SOLUTION_OCCURRENCE_CONFIRMED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
     "correct_answer": "B",
     "structural_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
     "reviewed_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
-    "taxonomy_review": "CONFIRMED_STRUCTURAL_MAPPING",
+    "taxonomy_review": "CONFIRMED",
     "taxonomy": {
-      "status": "CONFIRMED_STRUCTURAL_MAPPING",
+      "status": "CONFIRMED",
       "basis": "DATA_MATH12_019_TAXONOMY",
       "problem_types": [
         {
@@ -1634,14 +1659,15 @@
     "question_number": "5",
     "question_type": "MULTIPLE_CHOICE",
     "review_status": "VERIFIED",
-    "content_review": "CONFIRMED_FROM_SOURCE_TEXT",
-    "answer_verification": "SOURCE_SOLUTION_OCCURRENCE_CONFIRMED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
     "correct_answer": "B",
     "structural_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
     "reviewed_problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
-    "taxonomy_review": "CONFIRMED_STRUCTURAL_MAPPING",
+    "taxonomy_review": "CONFIRMED",
     "taxonomy": {
-      "status": "CONFIRMED_STRUCTURAL_MAPPING",
+      "status": "CONFIRMED",
       "basis": "DATA_MATH12_019_TAXONOMY",
       "problem_types": [
         {
@@ -1696,14 +1722,15 @@
     "question_number": "5",
     "question_type": "MULTIPLE_CHOICE",
     "review_status": "VERIFIED",
-    "content_review": "CONFIRMED_FROM_SOURCE_TEXT",
-    "answer_verification": "SOURCE_SOLUTION_OCCURRENCE_CONFIRMED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
     "correct_answer": "B",
     "structural_problem_type_code": "CALCULATE_GROUPED_IQR",
     "reviewed_problem_type_code": "CALCULATE_GROUPED_IQR",
-    "taxonomy_review": "CONFIRMED_STRUCTURAL_MAPPING",
+    "taxonomy_review": "CONFIRMED",
     "taxonomy": {
-      "status": "CONFIRMED_STRUCTURAL_MAPPING",
+      "status": "CONFIRMED",
       "basis": "DATA_MATH12_019_TAXONOMY",
       "problem_types": [
         {
@@ -1753,14 +1780,15 @@
     "question_number": "6",
     "question_type": "MULTIPLE_CHOICE",
     "review_status": "VERIFIED",
-    "content_review": "CONFIRMED_FROM_SOURCE_TEXT",
-    "answer_verification": "SOURCE_SOLUTION_OCCURRENCE_CONFIRMED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
     "correct_answer": "C",
     "structural_problem_type_code": "CALCULATE_GROUPED_IQR",
     "reviewed_problem_type_code": "CALCULATE_GROUPED_IQR",
-    "taxonomy_review": "CONFIRMED_STRUCTURAL_MAPPING",
+    "taxonomy_review": "CONFIRMED",
     "taxonomy": {
-      "status": "CONFIRMED_STRUCTURAL_MAPPING",
+      "status": "CONFIRMED",
       "basis": "DATA_MATH12_019_TAXONOMY",
       "problem_types": [
         {
@@ -1810,14 +1838,15 @@
     "question_number": "5",
     "question_type": "MULTIPLE_CHOICE",
     "review_status": "VERIFIED",
-    "content_review": "CONFIRMED_FROM_SOURCE_TEXT",
-    "answer_verification": "SOURCE_SOLUTION_OCCURRENCE_CONFIRMED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
     "correct_answer": "B",
     "structural_problem_type_code": "CALCULATE_GROUPED_IQR",
     "reviewed_problem_type_code": "CALCULATE_GROUPED_IQR",
-    "taxonomy_review": "CONFIRMED_STRUCTURAL_MAPPING",
+    "taxonomy_review": "CONFIRMED",
     "taxonomy": {
-      "status": "CONFIRMED_STRUCTURAL_MAPPING",
+      "status": "CONFIRMED",
       "basis": "DATA_MATH12_019_TAXONOMY",
       "problem_types": [
         {
@@ -1867,14 +1896,15 @@
     "question_number": "11",
     "question_type": "MULTIPLE_CHOICE",
     "review_status": "VERIFIED",
-    "content_review": "CONFIRMED_FROM_SOURCE_TEXT",
-    "answer_verification": "SOURCE_SOLUTION_OCCURRENCE_CONFIRMED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
     "correct_answer": "A",
     "structural_problem_type_code": "CALCULATE_GROUPED_RANGE",
     "reviewed_problem_type_code": "CALCULATE_GROUPED_RANGE",
-    "taxonomy_review": "CONFIRMED_STRUCTURAL_MAPPING",
+    "taxonomy_review": "CONFIRMED",
     "taxonomy": {
-      "status": "CONFIRMED_STRUCTURAL_MAPPING",
+      "status": "CONFIRMED",
       "basis": "DATA_MATH12_019_TAXONOMY",
       "problem_types": [
         {
@@ -1924,14 +1954,15 @@
     "question_number": "5",
     "question_type": "MULTIPLE_CHOICE",
     "review_status": "VERIFIED",
-    "content_review": "CONFIRMED_FROM_SOURCE_TEXT",
-    "answer_verification": "SOURCE_SOLUTION_OCCURRENCE_CONFIRMED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
     "correct_answer": "B",
     "structural_problem_type_code": "COMPARE_GROUPED_IQR",
     "reviewed_problem_type_code": "COMPARE_GROUPED_IQR",
-    "taxonomy_review": "CONFIRMED_STRUCTURAL_MAPPING",
+    "taxonomy_review": "CONFIRMED",
     "taxonomy": {
-      "status": "CONFIRMED_STRUCTURAL_MAPPING",
+      "status": "CONFIRMED",
       "basis": "DATA_MATH12_019_TAXONOMY",
       "problem_types": [
         {
@@ -1981,14 +2012,15 @@
     "question_number": "6",
     "question_type": "MULTIPLE_CHOICE",
     "review_status": "VERIFIED",
-    "content_review": "CONFIRMED_FROM_SOURCE_TEXT",
-    "answer_verification": "SOURCE_SOLUTION_OCCURRENCE_CONFIRMED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
     "correct_answer": "D",
     "structural_problem_type_code": "COMPARE_GROUPED_RANGE",
     "reviewed_problem_type_code": "COMPARE_GROUPED_RANGE",
-    "taxonomy_review": "CONFIRMED_STRUCTURAL_MAPPING",
+    "taxonomy_review": "CONFIRMED",
     "taxonomy": {
-      "status": "CONFIRMED_STRUCTURAL_MAPPING",
+      "status": "CONFIRMED",
       "basis": "DATA_MATH12_019_TAXONOMY",
       "problem_types": [
         {
@@ -2033,14 +2065,15 @@
     "question_number": "3",
     "question_type": "MULTIPLE_CHOICE",
     "review_status": "VERIFIED",
-    "content_review": "CONFIRMED_FROM_SOURCE_TEXT",
-    "answer_verification": "SOURCE_SOLUTION_OCCURRENCE_CONFIRMED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
     "correct_answer": "C",
     "structural_problem_type_code": "CALCULATE_GROUPED_RANGE",
     "reviewed_problem_type_code": "CALCULATE_GROUPED_RANGE",
-    "taxonomy_review": "CONFIRMED_STRUCTURAL_MAPPING",
+    "taxonomy_review": "CONFIRMED",
     "taxonomy": {
-      "status": "CONFIRMED_STRUCTURAL_MAPPING",
+      "status": "CONFIRMED",
       "basis": "DATA_MATH12_019_TAXONOMY",
       "problem_types": [
         {
@@ -2090,14 +2123,15 @@
     "question_number": "5",
     "question_type": "MULTIPLE_CHOICE",
     "review_status": "VERIFIED",
-    "content_review": "CONFIRMED_FROM_SOURCE_TEXT",
-    "answer_verification": "SOURCE_SOLUTION_OCCURRENCE_CONFIRMED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
     "correct_answer": "A",
     "structural_problem_type_code": "CALCULATE_GROUPED_RANGE",
     "reviewed_problem_type_code": "CALCULATE_GROUPED_RANGE",
-    "taxonomy_review": "CONFIRMED_STRUCTURAL_MAPPING",
+    "taxonomy_review": "CONFIRMED",
     "taxonomy": {
-      "status": "CONFIRMED_STRUCTURAL_MAPPING",
+      "status": "CONFIRMED",
       "basis": "DATA_MATH12_019_TAXONOMY",
       "problem_types": [
         {
@@ -2147,14 +2181,15 @@
     "question_number": "12",
     "question_type": "MULTIPLE_CHOICE",
     "review_status": "VERIFIED",
-    "content_review": "CONFIRMED_FROM_SOURCE_TEXT",
-    "answer_verification": "SOURCE_SOLUTION_OCCURRENCE_CONFIRMED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
     "correct_answer": "B",
     "structural_problem_type_code": "CALCULATE_GROUPED_IQR",
     "reviewed_problem_type_code": "CALCULATE_GROUPED_IQR",
-    "taxonomy_review": "CONFIRMED_STRUCTURAL_MAPPING",
+    "taxonomy_review": "CONFIRMED",
     "taxonomy": {
-      "status": "CONFIRMED_STRUCTURAL_MAPPING",
+      "status": "CONFIRMED",
       "basis": "DATA_MATH12_019_TAXONOMY",
       "problem_types": [
         {
@@ -2204,14 +2239,15 @@
     "question_number": "12",
     "question_type": "MULTIPLE_CHOICE",
     "review_status": "VERIFIED",
-    "content_review": "CONFIRMED_FROM_SOURCE_TEXT",
-    "answer_verification": "SOURCE_SOLUTION_OCCURRENCE_CONFIRMED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
     "correct_answer": "A",
     "structural_problem_type_code": "CALCULATE_GROUPED_VARIANCE",
     "reviewed_problem_type_code": "CALCULATE_GROUPED_VARIANCE",
-    "taxonomy_review": "CONFIRMED_STRUCTURAL_MAPPING",
+    "taxonomy_review": "CONFIRMED",
     "taxonomy": {
-      "status": "CONFIRMED_STRUCTURAL_MAPPING",
+      "status": "CONFIRMED",
       "basis": "DATA_MATH12_019_TAXONOMY",
       "problem_types": [
         {
@@ -2266,14 +2302,15 @@
     "question_number": "1",
     "question_type": "MULTIPLE_CHOICE",
     "review_status": "VERIFIED",
-    "content_review": "CONFIRMED_FROM_SOURCE_TEXT",
-    "answer_verification": "SOURCE_SOLUTION_OCCURRENCE_CONFIRMED",
+    "duplicate_of": null,
+    "content_review": "CONFIRMED_FROM_SOURCE",
+    "answer_verification": "SOURCE_BACKED_AND_REVIEW_CONSISTENT",
     "correct_answer": "C",
     "structural_problem_type_code": "CALCULATE_GROUPED_IQR",
     "reviewed_problem_type_code": "CALCULATE_GROUPED_IQR",
-    "taxonomy_review": "CONFIRMED_STRUCTURAL_MAPPING",
+    "taxonomy_review": "CONFIRMED",
     "taxonomy": {
-      "status": "CONFIRMED_STRUCTURAL_MAPPING",
+      "status": "CONFIRMED",
       "basis": "DATA_MATH12_019_TAXONOMY",
       "problem_types": [
         {
