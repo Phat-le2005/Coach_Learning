@@ -1,0 +1,249 @@
+{
+  "dataset_code": "DATA-MATH12-023",
+  "taxonomy_code": "MATH12_INTEGRALS_DERIVED_TAXONOMY_V0_1",
+  "subject_code": "MATH_G12",
+  "chapter_code": "INTEGRALS",
+  "topic_code": "INTEGRAL_TOPIC",
+  "official_scope_binding": {
+    "dataset_code": "MATH_G12_OFFICIAL_SCOPE_GDPT2018",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "official_content_title": "Nguyên hàm. Tích phân",
+    "document_pages": [
+      107
+    ],
+    "normalized_coverage": [
+      "khái niệm và tính chất nguyên hàm",
+      "nguyên hàm của một số hàm số sơ cấp",
+      "tích phân và tính chất",
+      "diện tích, thể tích và bài toán thực tiễn"
+    ],
+    "provenance_type": "OFFICIAL_SCOPE_BINDING"
+  },
+  "classification_policy": {
+    "problem_types_concepts_and_weights_are": "COACH_LEARNING_DERIVED",
+    "official_scope_is_not_rewritten": true,
+    "synthetic_question_fill_allowed": false
+  },
+  "problem_types": [
+    {
+      "code": "CALCULATE_ANTIDERIVATIVE",
+      "name": "Tính nguyên hàm",
+      "description": "Tìm một nguyên hàm hoặc họ nguyên hàm của hàm số.",
+      "order_index": 10
+    },
+    {
+      "code": "ANTIDERIVATIVE_WITH_CONDITION",
+      "name": "Nguyên hàm có điều kiện",
+      "description": "Xác định nguyên hàm khi biết điều kiện giá trị ban đầu hoặc giá trị hàm.",
+      "order_index": 20
+    },
+    {
+      "code": "INTEGRAL_PROPERTIES",
+      "name": "Tính chất tích phân",
+      "description": "Suy luận giá trị tích phân từ tính tuyến tính, đổi cận và quan hệ giữa các tích phân đã biết.",
+      "order_index": 30
+    },
+    {
+      "code": "CALCULATE_DEFINITE_INTEGRAL",
+      "name": "Tính trực tiếp tích phân xác định",
+      "description": "Tính giá trị tích phân xác định từ hàm dưới dấu tích phân.",
+      "order_index": 40
+    },
+    {
+      "code": "AREA_BY_INTEGRAL",
+      "name": "Diện tích bằng tích phân",
+      "description": "Tính hoặc thiết lập công thức diện tích hình phẳng bằng tích phân.",
+      "order_index": 50
+    },
+    {
+      "code": "VOLUME_BY_INTEGRAL",
+      "name": "Thể tích khối tròn xoay",
+      "description": "Tính hoặc thiết lập công thức thể tích khối tròn xoay bằng tích phân.",
+      "order_index": 60
+    },
+    {
+      "code": "VOLUME_BY_CROSS_SECTION",
+      "name": "Thể tích theo thiết diện",
+      "description": "Tính thể tích vật thể khi biết diện tích thiết diện theo biến.",
+      "order_index": 70
+    },
+    {
+      "code": "PRACTICAL_ACCUMULATION",
+      "name": "Ứng dụng nguyên hàm/tích phân vào đại lượng tích lũy",
+      "description": "Khôi phục đại lượng tích lũy từ tốc độ biến thiên trong bài toán thực tiễn.",
+      "order_index": 80
+    }
+  ],
+  "concepts": [
+    {
+      "code": "ANTIDERIVATIVE",
+      "name": "Nguyên hàm",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    },
+    {
+      "code": "INITIAL_VALUE_CONDITION",
+      "name": "Điều kiện xác định hằng số nguyên hàm",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    },
+    {
+      "code": "DEFINITE_INTEGRAL",
+      "name": "Tích phân xác định",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    },
+    {
+      "code": "INTEGRAL_PROPERTIES",
+      "name": "Tính chất tích phân",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    },
+    {
+      "code": "AREA_BY_INTEGRAL",
+      "name": "Diện tích hình phẳng bằng tích phân",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    },
+    {
+      "code": "VOLUME_OF_REVOLUTION",
+      "name": "Thể tích khối tròn xoay",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    },
+    {
+      "code": "VOLUME_BY_CROSS_SECTION",
+      "name": "Thể tích theo thiết diện",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    },
+    {
+      "code": "PRACTICAL_ACCUMULATION",
+      "name": "Đại lượng tích lũy từ tốc độ biến thiên",
+      "provenance_type": "COACH_LEARNING_DERIVED"
+    }
+  ],
+  "learning_outcomes": [
+    {
+      "code": "LO_M12_ANTIDERIVATIVE_CONCEPT_PROPERTIES",
+      "description": "Nhận biết và vận dụng khái niệm, tính chất nguyên hàm.",
+      "provenance_type": "OFFICIAL_NORMALIZED_DERIVED"
+    },
+    {
+      "code": "LO_M12_ANTIDERIVATIVE_ELEMENTARY",
+      "description": "Tính nguyên hàm của một số hàm số sơ cấp.",
+      "provenance_type": "OFFICIAL_NORMALIZED_DERIVED"
+    },
+    {
+      "code": "LO_M12_DEFINITE_INTEGRAL_PROPERTIES",
+      "description": "Vận dụng định nghĩa và tính chất của tích phân xác định.",
+      "provenance_type": "OFFICIAL_NORMALIZED_DERIVED"
+    },
+    {
+      "code": "LO_M12_DEFINITE_INTEGRAL_CALCULATION",
+      "description": "Tính tích phân xác định trong các trường hợp thuộc phạm vi chương trình.",
+      "provenance_type": "OFFICIAL_NORMALIZED_DERIVED"
+    },
+    {
+      "code": "LO_M12_AREA_VOLUME_APPLICATION",
+      "description": "Vận dụng tích phân để tính diện tích và thể tích.",
+      "provenance_type": "OFFICIAL_NORMALIZED_DERIVED"
+    },
+    {
+      "code": "LO_M12_PRACTICAL_INTEGRAL_APPLICATION",
+      "description": "Vận dụng nguyên hàm, tích phân trong bài toán thực tiễn.",
+      "provenance_type": "OFFICIAL_NORMALIZED_DERIVED"
+    }
+  ],
+  "mappings": {
+    "CALCULATE_ANTIDERIVATIVE": [
+      {
+        "concept_code": "ANTIDERIVATIVE",
+        "weight": 1.0,
+        "is_primary": true
+      }
+    ],
+    "ANTIDERIVATIVE_WITH_CONDITION": [
+      {
+        "concept_code": "ANTIDERIVATIVE",
+        "weight": 0.8,
+        "is_primary": true
+      },
+      {
+        "concept_code": "INITIAL_VALUE_CONDITION",
+        "weight": 0.2,
+        "is_primary": false
+      }
+    ],
+    "INTEGRAL_PROPERTIES": [
+      {
+        "concept_code": "DEFINITE_INTEGRAL",
+        "weight": 0.75,
+        "is_primary": true
+      },
+      {
+        "concept_code": "INTEGRAL_PROPERTIES",
+        "weight": 0.25,
+        "is_primary": false
+      }
+    ],
+    "CALCULATE_DEFINITE_INTEGRAL": [
+      {
+        "concept_code": "DEFINITE_INTEGRAL",
+        "weight": 1.0,
+        "is_primary": true
+      }
+    ],
+    "AREA_BY_INTEGRAL": [
+      {
+        "concept_code": "DEFINITE_INTEGRAL",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "concept_code": "AREA_BY_INTEGRAL",
+        "weight": 0.45,
+        "is_primary": false
+      }
+    ],
+    "VOLUME_BY_INTEGRAL": [
+      {
+        "concept_code": "DEFINITE_INTEGRAL",
+        "weight": 0.5,
+        "is_primary": true
+      },
+      {
+        "concept_code": "VOLUME_OF_REVOLUTION",
+        "weight": 0.5,
+        "is_primary": false
+      }
+    ],
+    "VOLUME_BY_CROSS_SECTION": [
+      {
+        "concept_code": "DEFINITE_INTEGRAL",
+        "weight": 0.5,
+        "is_primary": true
+      },
+      {
+        "concept_code": "VOLUME_BY_CROSS_SECTION",
+        "weight": 0.5,
+        "is_primary": false
+      }
+    ],
+    "PRACTICAL_ACCUMULATION": [
+      {
+        "concept_code": "ANTIDERIVATIVE",
+        "weight": 0.45,
+        "is_primary": true
+      },
+      {
+        "concept_code": "PRACTICAL_ACCUMULATION",
+        "weight": 0.55,
+        "is_primary": false
+      }
+    ]
+  },
+  "problem_type_learning_outcome": {
+    "CALCULATE_ANTIDERIVATIVE": "LO_M12_ANTIDERIVATIVE_ELEMENTARY",
+    "ANTIDERIVATIVE_WITH_CONDITION": "LO_M12_ANTIDERIVATIVE_CONCEPT_PROPERTIES",
+    "INTEGRAL_PROPERTIES": "LO_M12_DEFINITE_INTEGRAL_PROPERTIES",
+    "CALCULATE_DEFINITE_INTEGRAL": "LO_M12_DEFINITE_INTEGRAL_CALCULATION",
+    "AREA_BY_INTEGRAL": "LO_M12_AREA_VOLUME_APPLICATION",
+    "VOLUME_BY_INTEGRAL": "LO_M12_AREA_VOLUME_APPLICATION",
+    "VOLUME_BY_CROSS_SECTION": "LO_M12_AREA_VOLUME_APPLICATION",
+    "PRACTICAL_ACCUMULATION": "LO_M12_PRACTICAL_INTEGRAL_APPLICATION"
+  }
+}

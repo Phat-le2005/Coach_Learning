@@ -1,0 +1,50 @@
+{
+  "contract_code": "DATA_MATH12_023_DATA_CONTRACT_V0_1",
+  "dataset_code": "DATA-MATH12-023",
+  "academic_data_owner": "CURATED_SOURCE_REVIEW",
+  "semantic_files_order": [
+    "source_registry.json",
+    "taxonomy_candidate.json",
+    "verified_questions.json",
+    "hold_candidates.json",
+    "source_evidence.json",
+    "duplicate_clusters.json",
+    "coverage.json",
+    "review_stats.json",
+    "extraction_limitations.json"
+  ],
+  "semantic_sha256": {
+    "source_registry.json": "8d9dd21c6937161ca7ff263a2d3240adb585ec377112f23794d1353693c6f213",
+    "taxonomy_candidate.json": "a75c901d90bc8ccf13efc1783a42b319ab9024f3819b0d085b45100ead089ccb",
+    "verified_questions.json": "c519c7ba97b1299b3cedb2203c7f1c2767a6e02a5a94276f85be0233e08b764c",
+    "hold_candidates.json": "f79420a7bf20c566430204c47e4cef440c75eec1922c9fa3ade997e93ee035da",
+    "source_evidence.json": "6612459ebbed280d5554ad7fa0a490c666ba755568bacd159a24958bb6c70a64",
+    "duplicate_clusters.json": "41dbcb1fe9c11a0b125c092a91d9d7242876f27f9981e9f0b6255e15c4253330",
+    "coverage.json": "edd489d693826ae7aeab5072e4d738047d31d8f72a5fcba6998a9b229a60ad5c",
+    "review_stats.json": "a51fa6e4c42a416c679e9d7f56e93cdc6cb9d405d1fdd9515d914428dafcea3d",
+    "extraction_limitations.json": "e2157db40dc301d97f1e7f575ab193a7abde83b41f0d2108152f261f2a36477f"
+  },
+  "aggregate_semantic_sha256": "f627df2011b5d577b689751a9364b93428317fe2b173dc2d541142c46f790dc4",
+  "required_invariants": {
+    "sources_scanned": 22,
+    "candidate_occurrences_detected": 210,
+    "unique_candidates_after_exact_dedupe": 144,
+    "verified_candidates": 77,
+    "hold_candidates": 67,
+    "duplicate_clusters": 52,
+    "visual_asset_required_verified": 28,
+    "production_release_eligible": 0,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  "locked_problem_type_gaps": [
+    "CALCULATE_DEFINITE_INTEGRAL"
+  ],
+  "policy": {
+    "no_synthetic_gap_fill": true,
+    "source_answer_required_for_verified": true,
+    "hold_is_not_importable": true,
+    "rights_review_required": true,
+    "codex_must_not_rewrite_curated_data": true
+  }
+}

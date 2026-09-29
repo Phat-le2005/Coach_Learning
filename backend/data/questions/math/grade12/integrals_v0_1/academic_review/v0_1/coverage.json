@@ -1,0 +1,42 @@
+[
+  {
+    "problem_type_code": "CALCULATE_ANTIDERIVATIVE",
+    "verified_candidates": 24,
+    "status": "COVERED"
+  },
+  {
+    "problem_type_code": "ANTIDERIVATIVE_WITH_CONDITION",
+    "verified_candidates": 3,
+    "status": "COVERED"
+  },
+  {
+    "problem_type_code": "INTEGRAL_PROPERTIES",
+    "verified_candidates": 11,
+    "status": "COVERED"
+  },
+  {
+    "problem_type_code": "CALCULATE_DEFINITE_INTEGRAL",
+    "verified_candidates": 0,
+    "status": "GAP"
+  },
+  {
+    "problem_type_code": "AREA_BY_INTEGRAL",
+    "verified_candidates": 25,
+    "status": "COVERED"
+  },
+  {
+    "problem_type_code": "VOLUME_BY_INTEGRAL",
+    "verified_candidates": 11,
+    "status": "COVERED"
+  },
+  {
+    "problem_type_code": "VOLUME_BY_CROSS_SECTION",
+    "verified_candidates": 1,
+    "status": "COVERED"
+  },
+  {
+    "problem_type_code": "PRACTICAL_ACCUMULATION",
+    "verified_candidates": 2,
+    "status": "COVERED"
+  }
+]

@@ -1,0 +1,45 @@
+{
+  "dataset_code": "DATA-MATH12-023",
+  "dataset_name": "MATH12_INTEGRALS_CURATED_BATCH_V0_1",
+  "status": "CURATED_SOURCE_BACKED_WITH_HOLDS",
+  "subject_code": "MATH_G12",
+  "chapter_code": "INTEGRALS",
+  "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+  "sources_scanned": 22,
+  "source_pdf_binaries_in_package": false,
+  "candidate_occurrences_detected": 210,
+  "unique_candidates_after_exact_dedupe": 144,
+  "verified_candidates": 77,
+  "hold_candidates": 67,
+  "duplicate_clusters": 52,
+  "verified_question_type_counts": {
+    "MULTIPLE_CHOICE": 74,
+    "TRUE_FALSE_GROUP": 2,
+    "SHORT_ANSWER": 1
+  },
+  "hold_question_type_counts": {
+    "MULTIPLE_CHOICE": 31,
+    "SHORT_ANSWER": 32,
+    "TRUE_FALSE_GROUP": 4
+  },
+  "verified_problem_type_counts": {
+    "AREA_BY_INTEGRAL": 25,
+    "CALCULATE_ANTIDERIVATIVE": 24,
+    "VOLUME_BY_INTEGRAL": 11,
+    "INTEGRAL_PROPERTIES": 11,
+    "ANTIDERIVATIVE_WITH_CONDITION": 3,
+    "VOLUME_BY_CROSS_SECTION": 1,
+    "PRACTICAL_ACCUMULATION": 2
+  },
+  "visual_asset_required_verified": 28,
+  "problem_types_total": 8,
+  "problem_types_covered": 7,
+  "problem_type_gaps": [
+    "CALCULATE_DEFINITE_INTEGRAL"
+  ],
+  "rights_status": "REVIEW_REQUIRED",
+  "production_release_eligible": 0,
+  "promotion_ready": 0,
+  "database_import_allowed": false,
+  "canonical_snapshot_allowed": false
+}

@@ -1,0 +1,2075 @@
+[
+  {
+    "hold_id": "M12_INT_HOLD_0001",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 5. Nguyên hàm của hàm số  2 4 f x x   là A. 2 2 4 x x C   . B. 2 4 x x C   . C. 2x C  . D. 2 2x C  .",
+    "raw_question_text_sha256": "da095e69168eb83c8ea2c11263c2e522e75cd425856dcf52272559604f85ffbd",
+    "detected_problem_type_code": "CALCULATE_ANTIDERIVATIVE",
+    "visual_asset_required": false,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 1,
+        "question_number": "5",
+        "question_pages": [
+          1
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0002",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "SHORT_ANSWER",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 5. Nguyên hàm của hàm số  2 4 f x x   là 40 đề ôn thi tốt nghiệp PTTH môn toán Năm 2026 có",
+    "raw_question_text_sha256": "60a30d0970b41e9c5e243fd1f954c376332073a8ce7ebd42e3a476043e68f00e",
+    "detected_problem_type_code": "CALCULATE_ANTIDERIVATIVE",
+    "visual_asset_required": false,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 7,
+        "question_number": "5",
+        "question_pages": [
+          7,
+          8
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0003",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "SHORT_ANSWER",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 7. Cho   H là hình phẳng được tô đậm trong hình vẽ và được giới hạn bởi các đường 2 1, 0, 1, 0 y x x x y      . Thể tích khối tròn xoay khi cho hình phẳng   H quay quanh trục Ox được tính theo công thức nào sau đây? 40 đề ôn thi tốt nghiệp PTTH môn toán Năm 2026 có",
+    "raw_question_text_sha256": "f9746eaa03914003e2d39613479522aed20a4d0fdeffd8b4df0282d722fc5de9",
+    "detected_problem_type_code": "VOLUME_BY_INTEGRAL",
+    "visual_asset_required": true,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 8,
+        "question_number": "7",
+        "question_pages": [
+          8,
+          9
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0004",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 12. Diện tích hình phẳng giới hạn bởi các đồ thị hàm số 2 y x  và 2 8 y x   là A. 14. B. 28 . C. 64 3 . D. 64 5 . 40 đề ôn thi tốt nghiệp PTTH môn toán Năm 2026 có",
+    "raw_question_text_sha256": "afce0699f30dc1a883f4a57465827737f9177a0f84d582eee78824878e6f7ebc",
+    "detected_problem_type_code": "AREA_BY_INTEGRAL",
+    "visual_asset_required": true,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 23,
+        "question_number": "12",
+        "question_pages": [
+          23,
+          24
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0005",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "SHORT_ANSWER",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 3. Một bình hoa có dạng khối tròn xoay với chiều cao là 25cm (tham khảo hình vẽ). Khi cắt bình hoa theo một mặt phẳng vuông góc với trục của nó thì ta luôn được thiết diện là một hình tròn có bán kính 3 2 4 5 4 25 ( ) 9 3 3 36 R x x x dm     với 5 0; 2 x       là khoảng cách từ mặt cắt tới mặt đáy của bình hoa 40 đề ôn thi tốt nghiệp PTTH môn toán Năm 2026 có",
+    "raw_question_text_sha256": "92c4f193652077a46eb465ccc1f9a5ef9f639a16e9e4793c5b784fd698383216",
+    "detected_problem_type_code": "VOLUME_BY_INTEGRAL",
+    "visual_asset_required": true,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 25,
+        "question_number": "3",
+        "question_pages": [
+          25,
+          26
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0006",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "SHORT_ANSWER",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 3. Một bình hoa có dạng khối tròn xoay với chiều cao là 25cm (tham khảo hình vẽ). Khi cắt bình hoa theo một mặt phẳng vuông góc với trục của nó thì ta luôn được thiết diện là một hình tròn có bán kính 3 2 4 5 4 25 ( ) 9 3 3 36 R x x x dm     với 5 0; 2 x       là khoảng cách từ mặt cắt tới mặt đáy của bình hoa (tính theo đơn vị dm ). Lượng nước cần đổ vào bình để mức nước trong bình cao bằng 2 3 chiều cao của bình chiếm tỉ lệ bao nhiêu phần trăm so với thể tích của bình hoa? (Kết quả làm tròn đến hàng đơn vị). Trả lời: ………………..",
+    "raw_question_text_sha256": "0da7abd1419cbc56c618fe68cb23f9cab8ce5fecde58e783aee55e091b8886f8",
+    "detected_problem_type_code": "VOLUME_BY_INTEGRAL",
+    "visual_asset_required": true,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 37,
+        "question_number": "3",
+        "question_pages": [
+          37
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0007",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 12. Diện tích hình phẳng giới hạn bởi đồ thị hàm số 2 2 y x   và đường thẳng 6 y  bằng A. 32 3 . B. 40 3 . C. 16 3 . D. 8 3 . 40 đề ôn thi tốt nghiệp PTTH môn toán Năm 2026 có",
+    "raw_question_text_sha256": "e0a26882cb4efa470544dbd1329b9599529e96db8fa2ceb953fff3fc102838b3",
+    "detected_problem_type_code": "AREA_BY_INTEGRAL",
+    "visual_asset_required": true,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 62,
+        "question_number": "12",
+        "question_pages": [
+          62,
+          63
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0008",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "SHORT_ANSWER",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 1. Một ly thủy tinh có hình dạng phần chứa nước là một hình parabol tròn xoay. Hình dạng này được tạo ra bằng cách quay một phần của đường parabol quanh trục đối xứng của nó. Biết phần chứa nước của ly có chiều cao tính từ đáy ly lên đến miệng ly là 10 cm, đường kính miệng ly là 8 cm (chỉ tính phần chứa nước, không tính phần thủy tinh). 40 đề ôn thi tốt nghiệp PTTH môn toán Năm 2026 có",
+    "raw_question_text_sha256": "fbb61bc40676d6f89b530d037b6eea163a5bd7fd1a4e3cef4668c6c1e6b8c6e5",
+    "detected_problem_type_code": "VOLUME_BY_INTEGRAL",
+    "visual_asset_required": false,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 82,
+        "question_number": "1",
+        "question_pages": [
+          82,
+          83
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0009",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "SHORT_ANSWER",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 1. Một ly thủy tinh có hình dạng phần chứa nước là một hình parabol tròn xoay. Hình dạng này được tạo ra bằng cách quay một phần của đường parabol quanh trục đối xứng của nó. Biết phần chứa nước của ly có chiều cao tính từ đáy ly lên đến miệng ly là 10 cm, đường kính miệng ly là 8 cm (chỉ tính phần chứa nước, không tính phần thủy tinh). Ban đầu, người ta đổ vào ly một lượng nước có thể tích bằng 1 4 thể tích của ly khi nó chứa đầy nước. Sau đó, người ta đổ thêm vào ly một lượng nước có thể tích bằng với lượng nước đã đổ ban đầu. Hỏi sau khi đổ thêm, chiều cao của mực nước trong ly đã tăng thêm bao nhiêu centimet so với lúc ban đầu (làm tròn đến hàng phần trăm)? Trả lời: ………………..",
+    "raw_question_text_sha256": "48bf0345339120dac17d1faaa03f627d2837d0d95a6c2a03a5f14694709d7c43",
+    "detected_problem_type_code": "VOLUME_BY_INTEGRAL",
+    "visual_asset_required": false,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 93,
+        "question_number": "1",
+        "question_pages": [
+          93
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0010",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 5. Diện tích của hình phẳng giới hạn bởi các đường 2x y  , 0 y  , 0 x  , 2 x  là A. 1 ln 2 B. 3 ln 2 C. ln 2  D. 3 ln 2  40 đề ôn thi tốt nghiệp PTTH môn toán Năm 2026 có",
+    "raw_question_text_sha256": "e17db5ea0217a8f977061ad07e7a19247eccf96b1b476587891ca02636aef33c",
+    "detected_problem_type_code": "AREA_BY_INTEGRAL",
+    "visual_asset_required": false,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 138,
+        "question_number": "5",
+        "question_pages": [
+          138,
+          139
+        ]
+      },
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 699,
+        "question_number": "6",
+        "question_pages": [
+          699,
+          700
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0011",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 12. Diện tích hình phẳng giới hạn bởi đồ thị các hàm số ln , 1 y x y   và hai đường thẳng 1, x x e   bằng A. 2e . B. 2 e  . C. 2e . D. 2 e . 40 đề ôn thi tốt nghiệp PTTH môn toán Năm 2026 có",
+    "raw_question_text_sha256": "6e5f534d388c81c66d48ac0cc20f2ad18fda100388a94e4a8fb580a47121b846",
+    "detected_problem_type_code": "AREA_BY_INTEGRAL",
+    "visual_asset_required": true,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 178,
+        "question_number": "12",
+        "question_pages": [
+          178,
+          179
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0012",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 7. Thể tích khối tròn xoay thu được khi quay hình phẳng giới hạn bởi các đường 2 4 y x   và 0 y  quanh trục Ox bằng A. 32 3 . B. 512 15 . C. 16 3 . D. 256 15 . 40 đề ôn thi tốt nghiệp PTTH môn toán Năm 2026 có",
+    "raw_question_text_sha256": "b5280960d1e8c71eeb375eb7ace90e9f1800449ae39e0bca9e33157682139a98",
+    "detected_problem_type_code": "VOLUME_BY_INTEGRAL",
+    "visual_asset_required": false,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 196,
+        "question_number": "7",
+        "question_pages": [
+          196,
+          197
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0013",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 5. Một nguyên hàm của hàm số  2025x f x  là A.  1 .2025x F x x   . B.  2025.2024x F x  . C.  2025 ln 2025 x F x  . D.  2025 .ln 2025 x F x  . 40 đề ôn thi tốt nghiệp PTTH môn toán Năm 2026 có",
+    "raw_question_text_sha256": "5869532d45179dbf983f24aaafff5484b6b80539598aeb8a6e3c55f14df532a0",
+    "detected_problem_type_code": "CALCULATE_ANTIDERIVATIVE",
+    "visual_asset_required": false,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 216,
+        "question_number": "5",
+        "question_pages": [
+          216,
+          217
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0014",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 9. Gọi   H là hình phẳng giới hạn bởi các đường sin , , 0, y x Ox x x     . Diện tích của hình phẳng   H bằng A. 1. B. 2. C. 2 . D. .",
+    "raw_question_text_sha256": "f0d8d8aa49dc049ea95975c9df52e238b40c35c94aee7ec51cc0594e09c7bffb",
+    "detected_problem_type_code": "AREA_BY_INTEGRAL",
+    "visual_asset_required": false,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 217,
+        "question_number": "9",
+        "question_pages": [
+          217
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0015",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "SHORT_ANSWER",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 9. Gọi   H là hình phẳng giới hạn bởi các đường sin , , 0, y x Ox x x     . Diện tích của hình phẳng   H bằng 40 đề ôn thi tốt nghiệp PTTH môn toán Năm 2026 có",
+    "raw_question_text_sha256": "4514fa4aa8adeb5195d562284d0ea0dd9a497a201e1aad6880a092a8f77256a0",
+    "detected_problem_type_code": "AREA_BY_INTEGRAL",
+    "visual_asset_required": false,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 223,
+        "question_number": "9",
+        "question_pages": [
+          223,
+          224
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0016",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "SHORT_ANSWER",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 1. Chiếc lá là một hình phẳng được giới hạn bởi hai phần parabol giống nhau. Biết một parabol có đỉnh là điểm O và trục đối xứng của hình phẳng này là một đường thẳng tạo với phương ngang góc 60. Với các kích thước được cho như hình vẽ, hãy tính diện tích của chiếc lá (làm tròn kết quả đến hàng đơn vị của cm2). Trả lời: ………………..",
+    "raw_question_text_sha256": "c4421c0bdeb4d9beacd5dc888705f4b275aae2650a18d8702fa54bf53768862b",
+    "detected_problem_type_code": "AREA_BY_INTEGRAL",
+    "visual_asset_required": true,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 260,
+        "question_number": "1",
+        "question_pages": [
+          260
+        ]
+      },
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 269,
+        "question_number": "1",
+        "question_pages": [
+          269
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0017",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "TRUE_FALSE_GROUP",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 2. Một người đang lái xe ô tô thì bất ngờ phát hiện chướng ngại vật trên đường cách đầu xe 25m , ngay lúc đó người lái xe đạp phanh khẩn cấp. Kể từ thời điểm này, ô tô chuyển động chậm dần đều với vận tốc  10 20 v t t     / m s , trong đó t là thời gian tính bằng giây kể từ lúc đạp phanh. Gọi  s t là quãng đường xe ô tô đi được trong t (giây) kể từ lúc đạp phanh. a) Quãng đường  s t mà xe ô tô đi được trong t (giây) là một nguyên hàm của hàm số  v t . b)  2 5 20 s t t   . c) Thời gian kể từ lúc đạp phanh đến khi ô tô dừng hẳn là 20 giây. d) Xe ô tô không va vào chướng ngại vật ở trên đường.",
+    "raw_question_text_sha256": "e7aac754c7b6116d9a6e0f95bbd3bb4f1b6ac4526525f10707521a0b80a35cb1",
+    "detected_problem_type_code": "PRACTICAL_ACCUMULATION",
+    "visual_asset_required": false,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 267,
+        "question_number": "2",
+        "question_pages": [
+          267
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0018",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 4. Tính thể tích của khối tròn xoay khi cho hình phẳng giới hạn bởi đồ thị hàm số 2 y x  , trục hoành và đường thẳng 2 x  , khi quay xung quanh trục Ox bằng A. 32 . 5  B. . 6  C. 5 . 6  D. 4 . 5  40 đề ôn thi tốt nghiệp PTTH môn toán Năm 2026 có",
+    "raw_question_text_sha256": "26c80ee30da9d3f28f3290d80dfb110efe927c4ebd6f111324b9e05ac6bf4f16",
+    "detected_problem_type_code": "VOLUME_BY_INTEGRAL",
+    "visual_asset_required": true,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 275,
+        "question_number": "4",
+        "question_pages": [
+          275,
+          276
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0019",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 7. Cho hình phẳng   H được giới hạn bởi đồ thị của hàm số 2 y x  và đồ thị của hàm số y x  (tham khảo hình vẽ). Thể tích của khối tròn xoay thu được khi quay   H quanh trục Ox bằng A. 9 10 V   . B. 3 10 V   . C. 10 V   . D. 7 10 V   .",
+    "raw_question_text_sha256": "051aba3bab7b4680c54cf872930f3edd33ac21fd0861db1f21e4319b2256b4d6",
+    "detected_problem_type_code": "VOLUME_BY_INTEGRAL",
+    "visual_asset_required": true,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 335,
+        "question_number": "7",
+        "question_pages": [
+          335
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0020",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "SHORT_ANSWER",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 7. Cho hình phẳng   H được giới hạn bởi đồ thị của hàm số 2 y x  và đồ thị của hàm số y x  (tham khảo hình vẽ). Thể tích của khối tròn xoay thu được khi quay   H quanh trục Ox bằng 40 đề ôn thi tốt nghiệp PTTH môn toán Năm 2026 có",
+    "raw_question_text_sha256": "730050f80bf9ccf0506feb52f6d2542761b839c21072f42db285a73c91772ea0",
+    "detected_problem_type_code": "VOLUME_BY_INTEGRAL",
+    "visual_asset_required": true,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 341,
+        "question_number": "7",
+        "question_pages": [
+          341,
+          342
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0021",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 7. Diện tích của hình phẳng được giới hạn bởi đồ thị hàm số  y f x  , trục hoành và hai đường thẳng , x a x b     a b  (phần tô đậm trong hình vẽ) tính theo công thức nào dưới đây ? A.   d d c b a c S f x x f x x     . B. d b a S f x x  . C.   d d c b a c S f x x f x x     . D. d b a S f x x  .",
+    "raw_question_text_sha256": "504d84cfcdb16739e0da0771e036dbab1fb3ebfb46411366800a4f2584268800",
+    "detected_problem_type_code": "AREA_BY_INTEGRAL",
+    "visual_asset_required": true,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 378,
+        "question_number": "7",
+        "question_pages": [
+          378
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0022",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "SHORT_ANSWER",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 1. Từ hình chữ nhật ABCD có chiều dài 8 AB cm  và chiều rộng 4 BC cm  , người ta cắt bỏ miền ( ) R được giới hạn bởi cạnh CD của hình chữ nhật và hai nửa đường thẳng parabol có chung đỉnh là trung điểm cạnh AB , chúng lần lượt đi qua hai đầu mút , C D của hình chữ nhất đó (phằn tô đậm như hình vẽ). Phần còn lại cho quay quanh trục AB để tạo nên một đồ vật làm trang trí, thể tích của vật trang trí đó bằng bao nhiêu 3 cm . Viết kết quả làm tròn đến hàng đơn vị. Trả lời: ………………..",
+    "raw_question_text_sha256": "7421a7d8ef9568a839e93b85e91743ae772bebf079aa49a5673c7ae8c62ecc3a",
+    "detected_problem_type_code": "VOLUME_BY_INTEGRAL",
+    "visual_asset_required": true,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 380,
+        "question_number": "1",
+        "question_pages": [
+          380
+        ]
+      },
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 392,
+        "question_number": "1",
+        "question_pages": [
+          392
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0023",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "SHORT_ANSWER",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 7. Diện tích của hình phẳng được giới hạn bởi đồ thị hàm số  y f x  , trục hoành và hai đường thẳng , x a x b     a b  (phần tô đậm trong hình vẽ) tính theo công thức nào dưới đây ? 40 đề ôn thi tốt nghiệp PTTH môn toán Năm 2026 có",
+    "raw_question_text_sha256": "f4a4630307fd6874dcc198ccfc8a71df082a8f7d860074c7cf4cdc13cce415e1",
+    "detected_problem_type_code": "AREA_BY_INTEGRAL",
+    "visual_asset_required": true,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 384,
+        "question_number": "7",
+        "question_pages": [
+          384,
+          385
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0024",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 7. Thể tích khối tròn xoay giới hạn bởi các đường 2 2 , 0 y x x y    khi quay quanh trục Ox là: A. 4 3 . B. 13 15 . C. 14 15 . D. 16 15 .",
+    "raw_question_text_sha256": "21c4df7cdcc6e0fdcbfeeb4393b010e265d727599886add350daf8bd9446b431",
+    "detected_problem_type_code": "VOLUME_BY_INTEGRAL",
+    "visual_asset_required": false,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 437,
+        "question_number": "7",
+        "question_pages": [
+          437
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0025",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "SHORT_ANSWER",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 1. Để trang trí một bảng gỗ hình chữ nhật ABCD có chiều dài 8dm AB  và chiều rộng 6dm AD  , người ta thiết kế một logo là hình phẳng giới hạn bởi nửa đường tròn đường kính 6dm MN  , tiếp xúc với BC , hai đường cong , IM IN là một phần của các đường parabol có trục đối xứng lần lượt là , AB CD với I là trung điểm của AD (tham khảo hình vẽ). 40 đề ôn thi tốt nghiệp PTTH môn toán Năm 2026 có",
+    "raw_question_text_sha256": "41e4dedee4297016f9dd7bf5282902043095f8d44bc2ef52dac294dedb7c2e55",
+    "detected_problem_type_code": "AREA_BY_INTEGRAL",
+    "visual_asset_required": true,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 439,
+        "question_number": "1",
+        "question_pages": [
+          439,
+          440
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0026",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "SHORT_ANSWER",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 7. Thể tích khối tròn xoay giới hạn bởi các đường 2 2 , 0 y x x y    khi quay quanh trục Ox là: 40 đề ôn thi tốt nghiệp PTTH môn toán Năm 2026 có",
+    "raw_question_text_sha256": "66f52f90dbe00c2a078f6d85ba06c707f209825efe82bc84832cd760f88c73bd",
+    "detected_problem_type_code": "VOLUME_BY_INTEGRAL",
+    "visual_asset_required": false,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 443,
+        "question_number": "7",
+        "question_pages": [
+          443,
+          444
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0027",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "SHORT_ANSWER",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 1. Để trang trí một bảng gỗ hình chữ nhật ABCD có chiều dài 8dm AB  và chiều rộng 6dm AD  , người ta thiết kế một logo là hình phẳng giới hạn bởi nửa đường tròn đường kính 6dm MN  , tiếp xúc với BC , hai đường cong , IM IN là một phần của các đường parabol có trục đối xứng lần lượt là , AB CD với I là trung điểm của AD (tham khảo hình vẽ). Phần logo được sơn màu xanh với chi phí 50000 đồng/ 2 1dm và phần còn lại của bảng gỗ được sơn màu trắng với chi phí 30000 đồng/ 2 1dm . Hỏi cần bỏ ra bao nhiêu nghìn đồng để trang trí bảng gỗ trên (kết quả làm tròn đến hàng đơn vị)? Trả lời: ………………..",
+    "raw_question_text_sha256": "051a828e0d42e93029300a99aedce6c4369275137fd01adf8c0474e42e07bdef",
+    "detected_problem_type_code": "AREA_BY_INTEGRAL",
+    "visual_asset_required": true,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 450,
+        "question_number": "1",
+        "question_pages": [
+          450
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0028",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 5. Trên khoảng   0;, cho hàm số  3 2 f x x  . Mệnh đề nào sau đây đúng? A.  1 2 3 2 f x dx x C    . B.  3 f x dx x dx    . C.  5 2 2 5 f x dx x C    . D.  1 2 2 3 f x dx x C    .",
+    "raw_question_text_sha256": "f9b9cfb05b65950b9b043403258b42b124e997d55cd52776f005a7ca62b042ef",
+    "detected_problem_type_code": "INTEGRAL_PROPERTIES",
+    "visual_asset_required": false,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 501,
+        "question_number": "5",
+        "question_pages": [
+          501
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0029",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "SHORT_ANSWER",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 7. Biết một nguyên hàm của hàm số  2 sin f x x  là  sin 2 2 4 x x F x   . Thể tích của khối tròn xoay giới hạn bởi đồ thị hàm số sin y x  , trục hoành và hai đường thẳng 0, x x    khi quay quanh trục Ox là: 40 đề ôn thi tốt nghiệp PTTH môn toán Năm 2026 có",
+    "raw_question_text_sha256": "356b6dc60bcd915903b9b3c7b21aabb711f76653259f7d7dfd9416ce8d4ba86c",
+    "detected_problem_type_code": "VOLUME_BY_INTEGRAL",
+    "visual_asset_required": true,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 514,
+        "question_number": "7",
+        "question_pages": [
+          514,
+          515
+        ]
+      },
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 520,
+        "question_number": "7",
+        "question_pages": [
+          520,
+          521
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0030",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 5. Nguyên hàm của hàm số  2 2 f x x   là A. d 2 f x x x C    . B.  3 d 2 3 x f x x x C     . C.  2 d 2 f x x x x C     . D.  3 d 2 f x x x x C     . 40 đề ôn thi tốt nghiệp PTTH môn toán Năm 2026 có",
+    "raw_question_text_sha256": "46abfeb284299d2f155de99c36a002958aeeeead26a630f644797f7e8fda5406",
+    "detected_problem_type_code": "CALCULATE_ANTIDERIVATIVE",
+    "visual_asset_required": false,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 533,
+        "question_number": "5",
+        "question_pages": [
+          533,
+          534
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0031",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "SHORT_ANSWER",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 1. Trên một tuyến đường thẳng có một đoạn phải đi xuyên qua một quả núi nhỏ, do đó người ta đã tạo một hằm chui để thuận tiện cho các phương tiện giao thông di chuyển, vòm của hằm chui được đổ bê tông có dạng như hình vẽ dưới đây Cho biết 8( ); 5( ); 0,6( ); 0,5( ); 10( ) BC m IH m IK m AB CD m HT m       . Biết khi cắt vòm của hầm chui bằng mật phẳng vuông góc với trục của tuyến đường ta luôn có thiết diện là một hình phẳng được giới hạn bởi hai parabol và giao tuyến của mặt cắt với mặt đường. Hỏi cần bao nhiêu mét khối bê tông để đổ vòm của hầm chui. (làm tròn kết quả đến hàng phần mười) Trả lời: ………………..",
+    "raw_question_text_sha256": "7d37db5431b83a70a9eba802313ffee85fd52c1a5a7e22f54775348f33f5d90b",
+    "detected_problem_type_code": "AREA_BY_INTEGRAL",
+    "visual_asset_required": true,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 582,
+        "question_number": "1",
+        "question_pages": [
+          582
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0032",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "SHORT_ANSWER",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 1. Nhằm thu hút du khách và khẳng định vị thế dẫn đầu, công viên nước Đầm Sen quyết định đầu tư xây dựng một đường trượt nước độc đáo có mặt cắt được gắn vào hệ trục Oxy (xem trục Ox là mặt đất) với đơn vị mỗi trục là 1m như hình vẽ bên. Đường trượt được thiết kế theo hình dạng của một hàm bậc ba  y g x  , với mục tiêu tối ưu hóa trải nghiệm của người dùng, một phần đường trượt được đặt dưới mặt đất để tận dụng địa hình và tạo hiệu ứng bất ngờ. Điểm đầu của đường trượt là   3; H a  và điểm cuối là   8;0 K và ngay dưới điểm K là một bể bơi. Để tiếp cận đường trượt, một cầu thang cong có dạng Parabol  y f x  có đỉnh là điểm   8;0 M  được xây dựng, đảm bảo độ dốc vừa phải và an toàn cho người sử dụng. Các diện tích hình phẳng được tạo bởi các đồ thị   , , 3 y f x y g x x    và trục hoành như hình vẽ. Để đảm bảo an toàn tuyệt đối cho người chơi và tính ổn định của công trình, các kỹ sư cần đặc biệt chú trọng đến phần đường trượt nằm dưới lòng đất. Hãy xác định độ cao lớn nhất mà đường trượt chìm xuống so với mặt đất (đơn vị: mét) biết rằng 1 3 2 4 109 12 S S S S     (làm tròn kết quả đến hàng phần trăm). Trả lời: ………………..",
+    "raw_question_text_sha256": "8820bb2e68a3146512f2abd3e9cd8fec21cd56cb57f71607098ce51e852a3946",
+    "detected_problem_type_code": "AREA_BY_INTEGRAL",
+    "visual_asset_required": true,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 590,
+        "question_number": "1",
+        "question_pages": [
+          590
+        ]
+      },
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 600,
+        "question_number": "1",
+        "question_pages": [
+          600
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0033",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 7. Cho hình phẳng giới hạn bởi đồ thị hàm số 2 y x  và đường thẳng 4 y  quay quanh trục Ox . Thể tích khối tròn xoay sinh ra bằng: A. 64 5 . B. 128 5 . C. 256 5 . D. 152 5 .",
+    "raw_question_text_sha256": "c115a2a3478dc658a59e61ec45ed9d965559e86968eb0e2de13e7ae665998f4d",
+    "detected_problem_type_code": "VOLUME_BY_INTEGRAL",
+    "visual_asset_required": true,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 607,
+        "question_number": "7",
+        "question_pages": [
+          607
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0034",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "SHORT_ANSWER",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 5. Tìm nguyên hàm  F x của hàm số  2 cos 2 x f x  40 đề ôn thi tốt nghiệp PTTH môn toán Năm 2026 có",
+    "raw_question_text_sha256": "31d588b645a28c80912b3b73f0b44be90229f217fe0a79f67281a0b6968230dd",
+    "detected_problem_type_code": "CALCULATE_ANTIDERIVATIVE",
+    "visual_asset_required": false,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 611,
+        "question_number": "5",
+        "question_pages": [
+          611,
+          612
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0035",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "SHORT_ANSWER",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 7. Cho hình phẳng giới hạn bởi đồ thị hàm số 2 y x  và đường thẳng 4 y  quay quanh trục Ox . Thể tích khối tròn xoay sinh ra bằng: 40 đề ôn thi tốt nghiệp PTTH môn toán Năm 2026 có",
+    "raw_question_text_sha256": "28a4009c035818d6af3691329f91dde26eb7f1beef921ce8017abdebd935806c",
+    "detected_problem_type_code": "VOLUME_BY_INTEGRAL",
+    "visual_asset_required": true,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 612,
+        "question_number": "7",
+        "question_pages": [
+          612,
+          613
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0036",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 12. Cho hai hàm số ( ) f x và ( ) g x liên tục trên   ; a b . Diện tích hình phẳng giới hạn bởi đồ thị của các hàm số ( ) y f x  , ( ) y g x  và các đường thẳng , x a x b   bằng A.   ( ) ( ) d b a f x g x x   . B. ( ) ( ) d b a f x g x x   . C. ( ) ( ) d b a f x g x x   . D.   ( ) ( ) d b a f x g x x   . PHẦN II. Thí sinh trả lời từ câu 1 đến",
+    "raw_question_text_sha256": "0311efec5aa355638f2abfef1d09ab421dc34fc5e35b5a1f06de5cc0dd53bdab",
+    "detected_problem_type_code": "AREA_BY_INTEGRAL",
+    "visual_asset_required": true,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 644,
+        "question_number": "12",
+        "question_pages": [
+          644
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0037",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "SHORT_ANSWER",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 1. Một thùng chứa rượu có dạng hình tròn xoay với đường sinh là một cung của đường tròn, hai đáy là hai hình tròn bằng nhau và có đường kính bằng 20cm , khoảng cách giữa hai đáy bằng 32cm, 40 đề ôn thi tốt nghiệp PTTH môn toán Năm 2026 có",
+    "raw_question_text_sha256": "8749430f189920f11035b651b32644e045ebc96a095698825b5c76d3151e5d44",
+    "detected_problem_type_code": "VOLUME_BY_INTEGRAL",
+    "visual_asset_required": false,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 645,
+        "question_number": "1",
+        "question_pages": [
+          645,
+          646
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0038",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "SHORT_ANSWER",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 1. Một thùng chứa rượu có dạng hình tròn xoay với đường sinh là một cung của đường tròn, hai đáy là hai hình tròn bằng nhau và có đường kính bằng 20cm , khoảng cách giữa hai đáy bằng 32cm, đường kính lớn nhất của thân thùng là 24cm (biết các kích thước đã trừ lớp vỏ thùng, tham khảo hình vẽ). Hỏi phần không gian bên trong thùng chứa rượu đỏ có thể tích bằng bao nhiêu lít? (kết quả lấy đến chữ số hàng phần chục và không làm tròn). Trả lời: ………………..",
+    "raw_question_text_sha256": "7d76164efc2e4a015d6b1d41c59dd1aafea337b81c98ee80f88919e36e8baf9f",
+    "detected_problem_type_code": "VOLUME_BY_INTEGRAL",
+    "visual_asset_required": true,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 655,
+        "question_number": "1",
+        "question_pages": [
+          655
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0039",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "SHORT_ANSWER",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 7. Cho hình phẳng D giới hạn bởi đường cong 2 sin y x   , trục hoành và các đường thẳng 0 x  , x   . Khối tròn xoay tạo thành khi quay D quay quanh trục hoành có thể tích V bằng bao nhiêu? 40 đề ôn thi tốt nghiệp PTTH môn toán Năm 2026 có",
+    "raw_question_text_sha256": "55e877560ff80b6044789d50f5f371b0057f8d57b6c1b5992976be41afaf1ff4",
+    "detected_problem_type_code": "VOLUME_BY_INTEGRAL",
+    "visual_asset_required": false,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 661,
+        "question_number": "7",
+        "question_pages": [
+          661,
+          662
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0040",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "SHORT_ANSWER",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 1. Cho hàm số 3 2 ( ) f x ax bx cx d     và 3 2 ( ) g x mx nx px q     ( , , , , , , , ) a b c d m n p q. Biết rằng đồ thị của hai hàm số ( ) f x và ( ) g x cắt nhau tại ba điểm có hoành độ lần lượt là 4; 1; 4   và (2) 2; ( ) 3 f g x   (tham khảo hình vẽ bên dưới). Gọi 1S là diện tích hình phẳng giới hạn bởi hai đồ thị hàm số ( ); ( ) y f x y g x   và hai đường thẳng 4; 1 x x  . Gọi 2 S là diện tích hình phẳng giới hạn bởi hai đồ thị hàm số ( ); ( ) y f x y g x   và hai đường thẳng 1; 4 x x   . Biết 1 2 S m S n  , với m n là phân số tối giản và , m n, tính m n  . . Trả lời: ………………..",
+    "raw_question_text_sha256": "1b95614f3706b0ee5df177024df83a20260381bbf82b8109198b0c2deac42f53",
+    "detected_problem_type_code": "AREA_BY_INTEGRAL",
+    "visual_asset_required": true,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 664,
+        "question_number": "1",
+        "question_pages": [
+          664
+        ]
+      },
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 673,
+        "question_number": "1",
+        "question_pages": [
+          673
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0041",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 5. Cho  2 1 4 2 1 f x x dx        . Khi đó  2 1 f x dx  bằng: A. 1. B. 3 . C. 3. D. 1 . 40 đề ôn thi tốt nghiệp PTTH môn toán Năm 2026 có",
+    "raw_question_text_sha256": "325a61d5bbaa1722d90208d5ebd54b14f7947d13fccae7dd32e709aea25321cc",
+    "detected_problem_type_code": "INTEGRAL_PROPERTIES",
+    "visual_asset_required": false,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 679,
+        "question_number": "5",
+        "question_pages": [
+          679,
+          680
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0042",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "SHORT_ANSWER",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 6. Diện tích của hình phẳng giới hạn bởi các đường 2x y  , 0 y  , 0 x  , 2 x  là 40 đề ôn thi tốt nghiệp PTTH môn toán Năm 2026 có",
+    "raw_question_text_sha256": "204e9b5b422bec3ee596d7929c0b9c9c1ece8ed2ffcd60f5847106c55b119d3c",
+    "detected_problem_type_code": "AREA_BY_INTEGRAL",
+    "visual_asset_required": false,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 705,
+        "question_number": "6",
+        "question_pages": [
+          705,
+          706
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0043",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 6. Gọi S là diện tích hình phẳng giới hạn bởi các đường  y f x  , trục hoành và hai đường thẳng 3 x , 2 x  (như hình vẽ bên). Đặt  1 3 d a f x x   ,  2 1 d b f x x  . Mệnh đề nào sau đây là đúng. A. S a b   . B. S a b   . C. S a b  . D. S b a   .",
+    "raw_question_text_sha256": "7257ea38c02fbacf45e2e72e692ee27f33ec5a99bae2a5e1342f9d115b3ef9bc",
+    "detected_problem_type_code": "AREA_BY_INTEGRAL",
+    "visual_asset_required": true,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 719,
+        "question_number": "6",
+        "question_pages": [
+          719
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0044",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "SHORT_ANSWER",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 6. Gọi S là diện tích hình phẳng giới hạn bởi các đường  y f x  , trục hoành và hai đường thẳng 3 x , 2 x  (như hình vẽ bên). Đặt  1 3 d a f x x   ,  2 1 d b f x x  . Mệnh đề nào sau đây là đúng. 40 đề ôn thi tốt nghiệp PTTH môn toán Năm 2026 có",
+    "raw_question_text_sha256": "f31b8bb852d7bb238925ddfe67eea46c94257e6b2bfa6afb7768d5a4f46f3abf",
+    "detected_problem_type_code": "AREA_BY_INTEGRAL",
+    "visual_asset_required": true,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 725,
+        "question_number": "6",
+        "question_pages": [
+          725,
+          726
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0045",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 7. Diện tích phần hình phẳng được tô đậm trong hình vẽ bên được tính theo công thức nào dưới đây? A.   1 2 1 2 d x x x     . B.   1 2 1 2 d x x x     . C.   1 2 1 2 d x x x      . D.   1 2 1 2 d x x x      .",
+    "raw_question_text_sha256": "f626b447a8bf034ca87ec088659c80de88df5bb96383496a380d32572842a8e5",
+    "detected_problem_type_code": "AREA_BY_INTEGRAL",
+    "visual_asset_required": true,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 739,
+        "question_number": "7",
+        "question_pages": [
+          739
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0046",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "SHORT_ANSWER",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 1. Một vật trang trí có dạng một khối tròn xoay được tạo thành khi quay miền ( ) R (phần gạch chéo trong hình vẽ) quanh trục . MN Biết rằng ABCD là hình chữ nhật với 6 , 10 AB cm AD cm   và , M N lần lượt là trung điểm của , . AB CD Hai đường cong là đường Elip có hình chữ nhật cơ sở là ABCD và đường tròn tiếp xúc với hai cạnh AD và BC (tham khảo hình vẽ). Tính thể tích của vật trang trí đó (kết quả làm tròn đến hàng phần chục theo đơn vị 3 cm ). Trả lời: ………………..",
+    "raw_question_text_sha256": "12d9b38b44e6bc4c682b1ca039106a5912167d30fffd3de0f8844db33fae59cd",
+    "detected_problem_type_code": "VOLUME_BY_INTEGRAL",
+    "visual_asset_required": true,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 741,
+        "question_number": "1",
+        "question_pages": [
+          741
+        ]
+      },
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 753,
+        "question_number": "1",
+        "question_pages": [
+          753
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0047",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "SHORT_ANSWER",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 3. Chiếc lá là một hình phẳng được giới hạn bởi hai phần parabol giống nhau. Biết một parabol có đỉnh là điểm O và trục đối xứng của hình phẳng này là một đường thẳng tạo với phương ngang góc 60. 40 đề ôn thi tốt nghiệp PTTH môn toán Năm 2026 có",
+    "raw_question_text_sha256": "f8b79ec60efc3056e9f993713d9644bc751c5da6301cc24b85b22c71f023265c",
+    "detected_problem_type_code": "AREA_BY_INTEGRAL",
+    "visual_asset_required": false,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 761,
+        "question_number": "3",
+        "question_pages": [
+          761,
+          762
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0048",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "SHORT_ANSWER",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 3. Chiếc lá là một hình phẳng được giới hạn bởi hai phần parabol giống nhau. Biết một parabol có đỉnh là điểm O và trục đối xứng của hình phẳng này là một đường thẳng tạo với phương ngang góc 60. Với các kích thước được cho như hình vẽ, hãy tính diện tích của chiếc lá (làm tròn kết quả đến hàng đơn vị của cm2). Trả lời: ……………….. 40 đề ôn thi tốt nghiệp PTTH môn toán Năm 2026 có",
+    "raw_question_text_sha256": "c2c373b6b03b56e6e32fb6a18f8f3832fcfc5020dfb287ae73bac72f8ac115a1",
+    "detected_problem_type_code": "AREA_BY_INTEGRAL",
+    "visual_asset_required": true,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "question_start_page": 774,
+        "question_number": "3",
+        "question_pages": [
+          774,
+          775
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0049",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 5. Họ nguyên hàm của hàm số  2  f x x là A. 3 1 3  x C . B. 3 2  x C . C. 3 3  x C . D. 3 1 2  x C . »",
+    "raw_question_text_sha256": "869f529028c524d5f512f7f85b60ba20a0c2b8238bca8e718539c2fd2c5f16fc",
+    "detected_problem_type_code": "CALCULATE_ANTIDERIVATIVE",
+    "visual_asset_required": false,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_OFFICIAL_EXAM_2025_SOLUTION",
+        "source_file_id": "1jGjnJ3Wq2ynISxB4P1g9mk2CXibl-YXy",
+        "source_pdf_sha256": "90d5cb68a6f91418287c6643548f4f40ea9bb1598705a177b41bce07b09df11f",
+        "question_start_page": 4,
+        "question_number": "5",
+        "question_pages": [
+          4
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0050",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 8. Trong mặt phẳng với hệ tọa độ Oxy , diện tích S của hình phẳng giới hạn bởi đồ thị của hàm số 2 3   y x , trục hoành và hai đường thẳng 1  x , 2  x được xác định bằng công thức A. 2 1 2 3    d S x x . B. 2 1 2 3    d S x x . C.   2 2 1 2 3    d S x x. D.   2 1 2 3    d S x x . »",
+    "raw_question_text_sha256": "832a270ffaae5659b9af6d2887720aeef3ad432d221bc80a1d415333cd9bc6b6",
+    "detected_problem_type_code": "AREA_BY_INTEGRAL",
+    "visual_asset_required": true,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_OFFICIAL_EXAM_2025_SOLUTION",
+        "source_file_id": "1jGjnJ3Wq2ynISxB4P1g9mk2CXibl-YXy",
+        "source_pdf_sha256": "90d5cb68a6f91418287c6643548f4f40ea9bb1598705a177b41bce07b09df11f",
+        "question_start_page": 5,
+        "question_number": "8",
+        "question_pages": [
+          5
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0051",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 1. Trong mặt phẳng với hệ tọa độ Oxy , diện tích S của hình phẳng giới hạn bởi đồ thị hàm số 2 1   y x , trục hoành và hai đường thẳng 1  x , 2  x được xác định bằng công thức A.   2 1 2 1    d S x x . B.   2 2 1 2 1    d S x x . C.   2 2 1 2 1    d S x x . D.   2 1 2 1    d S x x . »",
+    "raw_question_text_sha256": "2dbbdd266254ed5f3be04cd228186af537aae4ddd7999ad1921a4d291bccff13",
+    "detected_problem_type_code": "AREA_BY_INTEGRAL",
+    "visual_asset_required": true,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_OFFICIAL_EXAM_2025_SOLUTION",
+        "source_file_id": "1jGjnJ3Wq2ynISxB4P1g9mk2CXibl-YXy",
+        "source_pdf_sha256": "90d5cb68a6f91418287c6643548f4f40ea9bb1598705a177b41bce07b09df11f",
+        "question_start_page": 9,
+        "question_number": "1",
+        "question_pages": [
+          9
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0052",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 4. Họ nguyên hàm của hàm số   sin cos f x x x là A.   cos sin x x C . B.   cos sin x x C . C.    cos sin x x C . D.    cos sin x x C . »",
+    "raw_question_text_sha256": "daefbceffdd811b65cbcc9694be1c258204e960ecb9e945841f0b2a3b59f7415",
+    "detected_problem_type_code": "CALCULATE_ANTIDERIVATIVE",
+    "visual_asset_required": false,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_OFFICIAL_EXAM_2025_SOLUTION",
+        "source_file_id": "1jGjnJ3Wq2ynISxB4P1g9mk2CXibl-YXy",
+        "source_pdf_sha256": "90d5cb68a6f91418287c6643548f4f40ea9bb1598705a177b41bce07b09df11f",
+        "question_start_page": 9,
+        "question_number": "4",
+        "question_pages": [
+          9
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0053",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 10. Họ nguyên hàm của hàm số  2  f x x là A. 2 3  x C. B. 3 2  x C . C. 3 1 3  x C . D. 3 1 2  x C . »",
+    "raw_question_text_sha256": "72088f3d52733dc490d41cb1818a57b4e22247ca0e7bb03ce68aba40a6fd703b",
+    "detected_problem_type_code": "CALCULATE_ANTIDERIVATIVE",
+    "visual_asset_required": false,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_OFFICIAL_EXAM_2025_SOLUTION",
+        "source_file_id": "1jGjnJ3Wq2ynISxB4P1g9mk2CXibl-YXy",
+        "source_pdf_sha256": "90d5cb68a6f91418287c6643548f4f40ea9bb1598705a177b41bce07b09df11f",
+        "question_start_page": 15,
+        "question_number": "10",
+        "question_pages": [
+          15
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0054",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 12. Trong mặt phẳng với hệ tọa độ Oxy , diện tích S của hình phẳng giới hạn bởi đồ thị của hàm số 2 3   y x , trục hoành và hai đường thẳng 1 2   , x x được xác định bằng công thức A.   2 1 2 3    d S x x . B. 2 1 2 3    d S x x . C. 2 1 2 3    d S x x . D.   2 2 1 2 3    d S x x. B. Câu hỏi – Trả lời đúng/sai »",
+    "raw_question_text_sha256": "cd3f562a984b47b6de9e33eb7cd08a0f6674bdf20e261390cef5a2f54c822a63",
+    "detected_problem_type_code": "AREA_BY_INTEGRAL",
+    "visual_asset_required": true,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_OFFICIAL_EXAM_2025_SOLUTION",
+        "source_file_id": "1jGjnJ3Wq2ynISxB4P1g9mk2CXibl-YXy",
+        "source_pdf_sha256": "90d5cb68a6f91418287c6643548f4f40ea9bb1598705a177b41bce07b09df11f",
+        "question_start_page": 15,
+        "question_number": "12",
+        "question_pages": [
+          15
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0055",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 2. Trong mặt phẳng với hệ tọa độ Oxy , diện tích S của hình phẳng giới hạn bởi đồ thị hàm số 2 1   y x , trục hoành và hai đường thẳng 1 2   , x x được xác định bằng công thức A.   2 2 1 2 1    d S x x . B.   2 2 1 2 1    d S x x . C.   2 1 2 1    d S x x . D.   2 1 2 1    d S x x . »",
+    "raw_question_text_sha256": "f4ac382c0b1f347f12a0df2bb9587517fda83cbceee8f8cfcad00e059bb761f8",
+    "detected_problem_type_code": "AREA_BY_INTEGRAL",
+    "visual_asset_required": true,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_OFFICIAL_EXAM_2025_SOLUTION",
+        "source_file_id": "1jGjnJ3Wq2ynISxB4P1g9mk2CXibl-YXy",
+        "source_pdf_sha256": "90d5cb68a6f91418287c6643548f4f40ea9bb1598705a177b41bce07b09df11f",
+        "question_start_page": 19,
+        "question_number": "2",
+        "question_pages": [
+          19
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0056",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 12. Họ nguyên hàm của hàm số   sin cos f x x x là A.   cos sin x x C . B.   cos sin x x C . C.    cos sin x x C . D.    cos sin x x C . B. Câu hỏi – Trả lời đúng/sai »",
+    "raw_question_text_sha256": "f3c1c17414fbd7c42de5b8b708fd6ecb81f394072bef3b5c25675262e505df5b",
+    "detected_problem_type_code": "CALCULATE_ANTIDERIVATIVE",
+    "visual_asset_required": false,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_OFFICIAL_EXAM_2025_SOLUTION",
+        "source_file_id": "1jGjnJ3Wq2ynISxB4P1g9mk2CXibl-YXy",
+        "source_pdf_sha256": "90d5cb68a6f91418287c6643548f4f40ea9bb1598705a177b41bce07b09df11f",
+        "question_start_page": 20,
+        "question_number": "12",
+        "question_pages": [
+          20
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0057",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 12. Diện tích S của hình phẳng được giới hạn bởi đồ thị hàm số ( ) y f x = , trục Ox và các đường thẳng ( ) , x a x b a b = = < là A. ( ) . b a S f x dx π = ∫ B. ( ) . b a S f x dx = ∫ C. ( ) 2 . b a S f x dx π = ∫ D. ( ) . b a S f x dx = ∫ PHẦN II. Thí sinh trả lời từ câu 1 đến",
+    "raw_question_text_sha256": "4a895066b125ec189f7e330bf57b9c73f18b990199dfe878b68a7b98796e82cd",
+    "detected_problem_type_code": "AREA_BY_INTEGRAL",
+    "visual_asset_required": true,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+        "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+        "source_pdf_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+        "question_start_page": 2,
+        "question_number": "12",
+        "question_pages": [
+          2
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0058",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "TRUE_FALSE_GROUP",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 4. Một người đang lái xe ô tô thì bất ngờ phát hiện chường ngại vật trên đường cách đầu xe 25 m , ngay lúc đó người lái xe đạp phanh khẩn cấp. Kể từ thời điểm này, ô tô chuyển động chậm dần đều với vận tốc ( ) ( ) 10 20 / v t t m s = − + , trong đó t là thời gian tính bằng giây kể từ lúc đạp phanh. Gọi ( ) s t là quãng đường xe ô tô đi được trong t (giây) kể từ lúc đạp phanh. a) Quãng đường ( ) s t mà xe ô tô đi được trong t (giây) là một nguyên hàm của hàm số ( ) v t . b) ( ) 2 5 20 s t t = − + . c) Thời gian kể từ lúc đạp phanh đến khi xe ô tô dừng hẳn là 20 giây. d) Xe ô tô đó không va vào chướng ngại vật ở trên đường. PHẦN III. Thí sinh trả lời từ câu 1 đến",
+    "raw_question_text_sha256": "88441889ed6e2c332f7841b44d817d9cced603f65657d6acb2c275511169f3a4",
+    "detected_problem_type_code": "PRACTICAL_ACCUMULATION",
+    "visual_asset_required": false,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+        "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+        "source_pdf_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+        "question_start_page": 3,
+        "question_number": "4",
+        "question_pages": [
+          3
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0059",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "TRUE_FALSE_GROUP",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 6. Lớp vỏ của một lò phản ứng hạt nhân bằng kim loại và được tạo bởi hình phẳng ( 𝑆𝑆) giới hạn bởi nhánh bên phải trục tung cùa các đường hypebol (𝐻𝐻1), (𝐻𝐻2) và hai đường thẳng 𝑦𝑦= −12, 𝑦𝑦= 6 khi quay quanh trục 𝑂𝑂𝑂𝑂 (tham khảo hình vẽ). Biết ( ) 1 H đi qua điểm ( ) 30;0 có tiêu cự bằng ( ) 2 10 6, H đi qua điểm ( ) 5;0 có tiêu cự bằng 10 5 và đơn vị trên các trục tọa độ đo bằng mét. Thể tích khối kim loại cần sử dụng để làm vỏ lò phản ứng hạt nhân bằng bao nhiêu mét khối? (Kết quả làm tròn đến hàng đơn vị) NĂM HỌC 2024 – 2025 https:/  SỞ GIÁO DỤC VÀ ĐÀO TẠO VĨNH PHÚC ĐỀ THI THỬ TỐT NGHIỆP THPT NĂM HỌC 2024 - 2025 Môn: Toán 12 - THPT Thời gian: 90 phút (Không kể thời gian phát đề) BẢNG ĐÁP ÁN 1 2 3 4 5 6 7 8 9 10 C A B D A D A A C A 11 12 13 14 15 16 17 18 19 20 A B SSÐÐ SSÐS ÐSSÐ ÐÐÐS 3,75 24 1200 71,6 21 22 324 283 PHẦN I: Trắc nghiệm nhiều lựa chọn - Mỗi câu đúng được 0,25 điểm. Mã đề 1 2 3 4 5 6 7 8 9 10 11 12 C A B D A D A A C A A B PHẦN II: Trắc nghiệm đúng sai - Điểm tối đa mỗi câu là 1 điểm. - Đúng 1 câu được 0,1 điểm; đúng 2 câu được 0,25 điểm; đúng 3 câu được 0,5 điểm; đúng 4 câu được 1 điểm. Mã đề Câu 1 Câu 2 Câu 3 Câu 4 a)S - b)S - c)Ð - d)Ð a)S - b)S - c)Ð - d)S a)Ð - b)S - c)S - d)Ð a)Ð - b)Ð - c)Ð - d)S PHẦN III: Trắc nghiệm trả lời ngắn - Mỗi câu đúng được 0,5 điểm. Mã đề Câu 1 Câu 2 Câu 3 Câu 4 Câu 5 Câu 6 3,75 24 1200 71,6 324 283 PHẦN I. Câu trắc nghiệm nhiều phương án lựa chọn. Học sinh trả lời từ câu 1 đến",
+    "raw_question_text_sha256": "55dc29a31523e085d35a95da282463bd3613aef4834f0863cba10c17b4c5e3b2",
+    "detected_problem_type_code": "VOLUME_BY_INTEGRAL",
+    "visual_asset_required": true,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+        "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+        "source_pdf_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+        "question_start_page": 22,
+        "question_number": "6",
+        "question_pages": [
+          22,
+          23
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0060",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "SHORT_ANSWER",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 6. Lớp vỏ của một lò phản ứng hạt nhân bằng kim loại và được tạo bởi hình phẳng ( 𝑆𝑆) giới hạn bởi nhánh bên phải trục tung cùa các đường hypebol (𝐻𝐻1), (𝐻𝐻2) và hai đường thẳng 𝑦𝑦= −12, 𝑦𝑦= 6 khi quay quanh trục 𝑂𝑂𝑂𝑂 (tham khảo hình vẽ). Biết ( ) 1 H đi qua điểm ( ) 30;0 có tiêu cự bằng ( ) 2 10 6, H đi qua điểm ( ) 5;0 có tiêu cự bằng 10 5 và đơn vị trên các trục tọa độ đo bằng mét. Thể tích khối kim loại cần sử dụng để làm vỏ lò phản ứng hạt nhân bằng bao nhiêu mét khối? (Kết quả làm tròn đến hàng đơn vị) <Key=283>",
+    "raw_question_text_sha256": "7609adf9873d2c7f321fac0eb808127033f20a4af7997dc1b72d44bb378244c5",
+    "detected_problem_type_code": "VOLUME_BY_INTEGRAL",
+    "visual_asset_required": true,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+        "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+        "source_pdf_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+        "question_start_page": 35,
+        "question_number": "6",
+        "question_pages": [
+          35
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0061",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 4. Tính ( ) 1 1 d f x x −∫ biết rằng ( ) 1 1 - 3 f x x dx − =     ∫ . A. 2 . B. 1. C. 4 . D. 3.",
+    "raw_question_text_sha256": "590bf00b63e63d592ca399fa7edd9eeba4c893ef191155668bffe294df5c12cb",
+    "detected_problem_type_code": "INTEGRAL_PROPERTIES",
+    "visual_asset_required": false,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+        "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+        "source_pdf_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+        "question_start_page": 37,
+        "question_number": "4",
+        "question_pages": [
+          37
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0062",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 7. Họ nguyên hàm của hàm số 3 y x = là A. 4 4 x C + . B. 4x C + . C. 2 2 x C + . D. 2 3x C + .",
+    "raw_question_text_sha256": "afa2cae6800dd0e22a003f69689ccd0fb6c5926d3796ebe8c6b3902b965d707a",
+    "detected_problem_type_code": "CALCULATE_ANTIDERIVATIVE",
+    "visual_asset_required": false,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+        "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+        "source_pdf_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+        "question_start_page": 56,
+        "question_number": "7",
+        "question_pages": [
+          56
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0063",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "TRUE_FALSE_GROUP",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 16: Một bể chứa dầu ban đầu có 50.000 lít dầu. Gọi V(t) là thể tích dầu (lít) trong bể tại thời điểm t, trong đó t tính theo giờ ( ) ≤≤ t 0 24 . Trong quá trình bơm dầu vào bể, thể tích dầu tăng theo tốc độ được biểu diễn bởi hàm số '( ) . = V t k t , với k là hằng số dương. Sau 4 giờ bơm liên tục, thể tích dầu trong bể đạt 58.000 lít. a) Hàm số ( ) V t là một nguyên hàm của hàm số ( ) . = f t k t . b) ( ) . = + k V t t t C 2 3 với ≤≤ t 0 24 và ,k C là các hằng số. c) Sau 16 giờ bơm liên tục, thể tích dầu trong bể đạt được 148.000 lít. d) Trong quá trình bơm dầu, nếu sau mỗi giờ lượng dầu bị rò rỉ đều đặn với tốc độ 500 lít/giờ, thì tại thời điểm t bằng 9 giờ, thể tích dầu trong bể là 72.500 lít. PHẦN III. Câu trắc nghiệm trả lời ngắn. Thí sinh trả lời từ câu 17 đến 22",
+    "raw_question_text_sha256": "613bd00c16fabd0185537b4612a888fdbaec429a07e728dd8d87628e7a0b25e2",
+    "detected_problem_type_code": "PRACTICAL_ACCUMULATION",
+    "visual_asset_required": false,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+        "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+        "source_pdf_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+        "question_start_page": 75,
+        "question_number": "16",
+        "question_pages": [
+          75
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0064",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "SHORT_ANSWER",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 2: Một kiến trúc sư chịu trách nhiệm thiết kế một tòa nhà cao 40 m. Mặt cắt ngang tại mọi độ cao, vuông góc với trục thẳng đứng, luôn là một hình vuông. Mặt đáy tòa nhà là hình vuông có cạnh 0 18 L = m, mặt đỉnh là hình vuông có cạnh 40 18 L = m. Mặt cắt ngang tại vị trí hẹp nhất của tòa nhà: Hình vuông có cạnh min 13 L = m. Mặt cắt của tòa nhà theo mặt phẳng đứng chứa đường chéo đáy có dạng là hình phẳng giới hạn bởi hai đường cong parabol đối xứng nhau qua trục thẳng đứng đi qua tâm đáy của tòa nhà. Tính thể tích của tòa nhà đó (làm tròn đến hàng đơn vị, đơn vị tính: mét khối).",
+    "raw_question_text_sha256": "b6172d00d22bc9321b480df6f71b765df6cebf58dcd4379d47782c02c627a15e",
+    "detected_problem_type_code": "AREA_BY_INTEGRAL",
+    "visual_asset_required": false,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+        "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+        "source_pdf_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+        "question_start_page": 92,
+        "question_number": "2",
+        "question_pages": [
+          92
+        ]
+      },
+      {
+        "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+        "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+        "source_pdf_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+        "question_start_page": 103,
+        "question_number": "2",
+        "question_pages": [
+          103
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0065",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "SHORT_ANSWER",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 1: Trên cánh cửa được trang trí các núm có dạng một khối tròn xoay được đúc bằng chất liệu đồng, khuôn đúc của nó được tạo thành khi quay miền ( ) H (phần tô màu trong hình vẽ bên) quanh trục AB . Miền ( ) H được giới hạn bởi các cạnh AB , AD của hình vuông ABCD và các cung phần tư của các đường tròn bán kính bằng 1 cm với tâm lần lượt là trung điểm của các cạnh AD , AB . Biết công thức tính khối lượng của một vật là P V D = ⋅ , trong đó P là khối lượng của vật (đơn vị g), V là thể tích của vật (đơn vị 3 cm ) và D là khối lượng riêng của vật (đơn vị 3 g/cm ), khối lượng riêng của động là 3 8,96g/cm D = . Giá đồng trên thị trường là 200000 đồng/kg. Giá tiền vật liệu để đúc một núm đồng trên là bao nhiêu nghìn đồng? (Kết quả làm tròn đến hàng đơn vị).",
+    "raw_question_text_sha256": "03a9d522d2e704c2d3d9080b27c6aec9a573617c2b57a88b5233b7c1384ac2eb",
+    "detected_problem_type_code": "VOLUME_BY_INTEGRAL",
+    "visual_asset_required": true,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+        "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+        "source_pdf_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+        "question_start_page": 176,
+        "question_number": "1",
+        "question_pages": [
+          176
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0066",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "MULTIPLE_CHOICE",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 10: Cho là hàm số liên tục trên đoạn , là một nguyên hàm của hàm số trên đoạn . Khi đó, hiệu số bằng? A. . B. . C. . D. .",
+    "raw_question_text_sha256": "7d604292ea88b4a314f748016d89a1a41f7f5c84d3a6c6357ca4051df7efd7dd",
+    "detected_problem_type_code": "CALCULATE_ANTIDERIVATIVE",
+    "visual_asset_required": false,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRIAL_2026_13",
+        "source_file_id": "1K_OEdAD8af_MQcW_kchCUeQ7-fkxSs-u",
+        "source_pdf_sha256": "6ab24e60dd44ed7bff543eb4c5b60a96e6650242c5709a1aca641b9ea59be396",
+        "question_start_page": 1,
+        "question_number": "10",
+        "question_pages": [
+          1
+        ]
+      },
+      {
+        "source_code": "SRC_TRIAL_2026_13",
+        "source_file_id": "1K_OEdAD8af_MQcW_kchCUeQ7-fkxSs-u",
+        "source_pdf_sha256": "6ab24e60dd44ed7bff543eb4c5b60a96e6650242c5709a1aca641b9ea59be396",
+        "question_start_page": 8,
+        "question_number": "10",
+        "question_pages": [
+          8
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  {
+    "hold_id": "M12_INT_HOLD_0067",
+    "subject_code": "MATH_G12",
+    "chapter_code": "INTEGRALS",
+    "topic_code": "INTEGRAL_TOPIC",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "question_type": "SHORT_ANSWER",
+    "review_status": "HOLD_SOURCE_ANSWER_UNPARSED",
+    "raw_question_text": "Câu 4. Cho là hình phẳng (phần gạch sọc của hình vẽ). Gọi là thể tích vật thể tròn xoay thu được khi quay hình phẳng xung quanh trục hoành. Tính thể tích của vật thể. (Làm tròn đến hàng phần chục)",
+    "raw_question_text_sha256": "716bbcb7c29e593df919f966710ae32071f28f059ec19627cb0a80a085b78195",
+    "detected_problem_type_code": "VOLUME_BY_INTEGRAL",
+    "visual_asset_required": true,
+    "detected_answers": [],
+    "occurrences": [
+      {
+        "source_code": "SRC_TRIAL_2026_13",
+        "source_file_id": "1K_OEdAD8af_MQcW_kchCUeQ7-fkxSs-u",
+        "source_pdf_sha256": "6ab24e60dd44ed7bff543eb4c5b60a96e6650242c5709a1aca641b9ea59be396",
+        "question_start_page": 5,
+        "question_number": "4",
+        "question_pages": [
+          5
+        ]
+      },
+      {
+        "source_code": "SRC_TRIAL_2026_13",
+        "source_file_id": "1K_OEdAD8af_MQcW_kchCUeQ7-fkxSs-u",
+        "source_pdf_sha256": "6ab24e60dd44ed7bff543eb4c5b60a96e6650242c5709a1aca641b9ea59be396",
+        "question_start_page": 18,
+        "question_number": "4",
+        "question_pages": [
+          18
+        ]
+      }
+    ],
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  }
+]

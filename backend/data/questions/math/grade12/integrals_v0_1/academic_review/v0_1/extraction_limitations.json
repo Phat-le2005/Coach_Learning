@@ -1,0 +1,30 @@
+{
+  "policy": "NO_OCR_IN_THIS_BATCH",
+  "notes": [
+    "Only PDF text-layer extraction and direct source-solution answer markers were used for promotion.",
+    "Candidates without an explicit parseable source answer remain HOLD; no answer was inferred from option content.",
+    "Several standalone 2026 school-trial PDFs use font encodings that make formula text unreliable in text extraction. They remain registered as scanned sources but are not promoted merely to increase counts.",
+    "Visual assets are not produced in DATA-MATH12-023; visual review is a later data step."
+  ],
+  "sources_requiring_manual_or_visual_followup": [
+    "SRC_TRIAL_2026_01",
+    "SRC_TRIAL_2026_02",
+    "SRC_TRIAL_2026_03",
+    "SRC_TRIAL_2026_04",
+    "SRC_TRIAL_2026_05",
+    "SRC_TRIAL_2026_06",
+    "SRC_TRIAL_2026_07",
+    "SRC_TRIAL_2026_08",
+    "SRC_TRIAL_2026_09",
+    "SRC_TRIAL_2026_10",
+    "SRC_TRIAL_2026_11",
+    "SRC_TRIAL_2026_12",
+    "SRC_TRIAL_2026_13",
+    "SRC_TRIAL_2026_14",
+    "SRC_TRIAL_2026_15",
+    "SRC_TRIAL_2026_16",
+    "SRC_TRIAL_2026_17",
+    "SRC_TRIAL_2026_18",
+    "SRC_TRIAL_2026_19"
+  ]
+}
