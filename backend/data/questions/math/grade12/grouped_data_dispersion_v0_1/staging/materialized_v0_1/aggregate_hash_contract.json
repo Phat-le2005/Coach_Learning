@@ -1,0 +1,15 @@
+{
+  "contract_code": "MATH12_GROUPED_DISPERSION_AGGREGATE_HASH_V0_1",
+  "semantic_files_order": [
+    "candidate_questions.json",
+    "standalone_candidates.json",
+    "question_group_candidates.json",
+    "structural_holds.json",
+    "coverage_report.json",
+    "extraction_stats.json",
+    "source_hash_verification.json",
+    "materialization_policy.json"
+  ],
+  "canonicalization": "JSON parse -> json.dumps(ensure_ascii=False, sort_keys=True, separators=(',', ':'))",
+  "aggregate_encoding": "For each file in exact listed order: UTF-8 filename + NUL + canonical JSON bytes + NUL; SHA-256 over concatenation."
+}

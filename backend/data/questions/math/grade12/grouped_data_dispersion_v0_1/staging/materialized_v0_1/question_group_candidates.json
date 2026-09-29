@@ -1,0 +1,92 @@
+[
+  {
+    "group_candidate_id": "M12_DISP_GROUP_0032",
+    "source_candidate_id": "M12_DISP_CAND_0032",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 1. Thống kê điểm thi đánh giá năng lực của 120 học sinh ở một trường THPT ở địa bàn thành phố Huế với thang điểm 100 được cho ở bảng sau:",
+    "scoring_policy": "MOET_2025_TRUE_FALSE",
+    "mixed_scope": true,
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Khoảng biến thiên của mẫu số liệu ghép nhóm trên là 100.",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "NOT_REVIEWED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Số học sinh đạt điểm 60 trở lên là 38 học sinh. C B S A",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "NOT_REVIEWED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Số điểm trung bình của học sinh đạt được từ bảng số liệu trên là 54 điểm.",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "NOT_REVIEWED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Chọn ngẫu nhiên một học sinh từ 120 học sinh trên, xác suất chọn được học sinh có điểm thuộc nhóm chứa trung vị là 1 8 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "NOT_REVIEWED"
+      }
+    ],
+    "status": "STRUCTURAL_CANDIDATE",
+    "academic_review_status": "NOT_REVIEWED",
+    "promotion_eligible": false
+  },
+  {
+    "group_candidate_id": "M12_DISP_GROUP_0035",
+    "source_candidate_id": "M12_DISP_CAND_0035",
+    "group_type": "TRUE_FALSE_FOUR",
+    "group_context": "Câu 3. Chiều cao (cm) của các em học sinh lớp 12A1 được thống kê theo bảng tần số ghép nhóm như sau: Nhóm [ ) 140;150 [ ) 150;160 [ ) 160;170 [ ) 170;180 [ ) 180;190 Tần số 1 8 18 10 1",
+    "scoring_policy": "MOET_2025_TRUE_FALSE",
+    "mixed_scope": true,
+    "items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Lớp có ít nhất 11 học sinh có chiêu cao lớn hơn chiều cao trung bình của lớp.",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "NOT_REVIEWED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Chiều cao trung bình của lớp 12A1 là 164 (cm).",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "NOT_REVIEWED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Khoảng biến thiên mẫu số liệu trên là 50.",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "NOT_REVIEWED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Chọn ngầu nhiên 5 học sinh của lớp tham gia đội tình nguyện. Xác suất để chọn được \"5 học sinh có chiều cao lớn hơn hoặc bằng 170 (cm)\" là 11 38 NHÓM GIÁO VIÊN TOÁN VIỆT NHÓM GIÁO VIÊN TOÁN VIỆT NAM",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "NOT_REVIEWED"
+      }
+    ],
+    "status": "STRUCTURAL_CANDIDATE",
+    "academic_review_status": "NOT_REVIEWED",
+    "promotion_eligible": false
+  }
+]

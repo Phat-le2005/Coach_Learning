@@ -1,0 +1,36 @@
+{
+  "policy_code": "MATH12_GROUPED_DISPERSION_MATERIALIZATION_POLICY_V0_1",
+  "base_commit": "2de36e8b5c4e49c807b03c3c2b1ea7f00cfab976",
+  "chapter_code": "GROUPED_DATA_DISPERSION",
+  "status": "STRUCTURAL_REVIEW_REQUIRED",
+  "rights_status": "REVIEW_REQUIRED",
+  "database_import_allowed": false,
+  "canonical_snapshot_allowed": false,
+  "production_release_eligible": false,
+  "scope": {
+    "include": "Grade-12 grouped-data dispersion only",
+    "exclude_standalone": [
+      "grouped mean only",
+      "median only",
+      "mode only",
+      "Q1/Q2/Q3 only",
+      "median-group only",
+      "probability-only"
+    ],
+    "prerequisite_note": "Mean/quartile interpolation may remain inside a dispersion solution."
+  },
+  "groups": {
+    "TRUE_FALSE_FOUR_atomic": true,
+    "mixed_scope_allowed": true,
+    "split_children_forbidden": true
+  },
+  "answers": {
+    "detected_answers_are_authority": false,
+    "true_false_children_remain_unreviewed": true
+  },
+  "dedupe": {
+    "question_solution_pairing": "same source + same question number + nearby page + normalized similarity >= 0.72",
+    "cross_exam_semantic_duplicates": "defer to academic review"
+  },
+  "no_synthetic_gap_fill": true
+}

@@ -1,0 +1,74 @@
+[
+  {
+    "problem_type_code": "CALCULATE_GROUPED_RANGE",
+    "problem_type_name": "Tính khoảng biến thiên của mẫu ghép nhóm",
+    "candidate_count": 7,
+    "coverage_status": "HAS_STRUCTURAL_CANDIDATES"
+  },
+  {
+    "problem_type_code": "CALCULATE_GROUPED_IQR",
+    "problem_type_name": "Tính khoảng tứ phân vị của mẫu ghép nhóm",
+    "candidate_count": 11,
+    "coverage_status": "HAS_STRUCTURAL_CANDIDATES"
+  },
+  {
+    "problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+    "problem_type_name": "Tính phương sai của mẫu ghép nhóm",
+    "candidate_count": 5,
+    "coverage_status": "HAS_STRUCTURAL_CANDIDATES"
+  },
+  {
+    "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "problem_type_name": "Tính độ lệch chuẩn của mẫu ghép nhóm",
+    "candidate_count": 14,
+    "coverage_status": "HAS_STRUCTURAL_CANDIDATES"
+  },
+  {
+    "problem_type_code": "COMPARE_GROUPED_RANGE",
+    "problem_type_name": "So sánh mẫu bằng khoảng biến thiên",
+    "candidate_count": 1,
+    "coverage_status": "HAS_STRUCTURAL_CANDIDATES"
+  },
+  {
+    "problem_type_code": "COMPARE_GROUPED_IQR",
+    "problem_type_name": "So sánh mẫu bằng khoảng tứ phân vị",
+    "candidate_count": 1,
+    "coverage_status": "HAS_STRUCTURAL_CANDIDATES"
+  },
+  {
+    "problem_type_code": "COMPARE_GROUPED_VARIANCE_SD",
+    "problem_type_name": "So sánh mẫu bằng phương sai hoặc độ lệch chuẩn",
+    "candidate_count": 2,
+    "coverage_status": "HAS_STRUCTURAL_CANDIDATES"
+  },
+  {
+    "problem_type_code": "IDENTIFY_MORE_STABLE_GROUPED_DATA",
+    "problem_type_name": "Nhận biết mẫu ổn định hơn",
+    "candidate_count": 0,
+    "coverage_status": "GAP"
+  },
+  {
+    "problem_type_code": "INTERPRET_GROUPED_DISPERSION_MEASURE",
+    "problem_type_name": "Giải thích ý nghĩa số đo phân tán",
+    "candidate_count": 0,
+    "coverage_status": "GAP"
+  },
+  {
+    "problem_type_code": "CONCLUDE_FROM_GROUPED_DISPERSION",
+    "problem_type_name": "Rút ra kết luận từ độ phân tán",
+    "candidate_count": 0,
+    "coverage_status": "GAP"
+  },
+  {
+    "problem_type_code": "PARAMETER_FROM_GROUPED_VARIANCE_SD",
+    "problem_type_name": "Tìm tham số từ phương sai/độ lệch chuẩn",
+    "candidate_count": 0,
+    "coverage_status": "GAP"
+  },
+  {
+    "problem_type_code": "MULTI_MEASURE_GROUPED_DISPERSION_ANALYSIS",
+    "problem_type_name": "Phân tích kết hợp nhiều số đo phân tán",
+    "candidate_count": 0,
+    "coverage_status": "GAP"
+  }
+]

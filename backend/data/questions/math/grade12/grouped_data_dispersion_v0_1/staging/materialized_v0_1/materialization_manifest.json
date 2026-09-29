@@ -1,0 +1,67 @@
+{
+  "dataset_code": "DATA-MATH12-020",
+  "dataset_name": "MATH12_GROUPED_DISPERSION_MATERIALIZATION_V0_1",
+  "base_commit": "2de36e8b5c4e49c807b03c3c2b1ea7f00cfab976",
+  "status": "STRUCTURAL_REVIEW_REQUIRED",
+  "subject_code": "MATH_G12",
+  "chapter_code": "GROUPED_DATA_DISPERSION",
+  "counts": {
+    "raw_dispersion_occurrences": 80,
+    "materialized_unique_candidates": 41,
+    "standalone_candidates": 39,
+    "true_false_four_groups": 2,
+    "structural_holds": 0,
+    "question_type_counts": {
+      "MULTIPLE_CHOICE": 39,
+      "TRUE_FALSE_GROUP": 2
+    },
+    "selected_source_counts": {
+      "NGOC_VY_40_DE_2026": 31,
+      "PROVINCIAL_TRIAL_2025": 10
+    },
+    "all_provenance_occurrence_counts": {
+      "NGOC_VY_40_DE_2026": 60,
+      "PROVINCIAL_TRIAL_2025": 20
+    },
+    "visual_required": 40,
+    "answer_detected": 38,
+    "mixed_scope_groups": 2,
+    "problem_types_total": 12,
+    "problem_types_with_candidates": 7,
+    "problem_type_gaps": [
+      "IDENTIFY_MORE_STABLE_GROUPED_DATA",
+      "INTERPRET_GROUPED_DISPERSION_MEASURE",
+      "CONCLUDE_FROM_GROUPED_DISPERSION",
+      "PARAMETER_FROM_GROUPED_VARIANCE_SD",
+      "MULTI_MEASURE_GROUPED_DISPERSION_ANALYSIS"
+    ],
+    "production_release_eligible": 0
+  },
+  "semantic_files_order": [
+    "candidate_questions.json",
+    "standalone_candidates.json",
+    "question_group_candidates.json",
+    "structural_holds.json",
+    "coverage_report.json",
+    "extraction_stats.json",
+    "source_hash_verification.json",
+    "materialization_policy.json"
+  ],
+  "semantic_file_hashes": {
+    "candidate_questions.json": "bb88a02a3c982b55a11e250af05432ba999f455f1af54cfb347c5dd277f4c619",
+    "standalone_candidates.json": "1991ef35d59ba27ca23258066b79bbb87489b7697253a8e10d3b1463863981a4",
+    "question_group_candidates.json": "501d646b7a67a8690f50a8d1b2a08705d8e897f01766b22dc2a86a7771e69d9a",
+    "structural_holds.json": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "coverage_report.json": "ad9f8770f15070e252d20b6d08f2e0449519b5b3b3aa466cd27517e779d17a63",
+    "extraction_stats.json": "5530eb9706b958a1e7d70c80dd28d49b7906f70b32ebcb43790d8e1c9d0adedf",
+    "source_hash_verification.json": "6abd88bbc4d834861b33f1881cbd311df602c2498de29e163761ff4c127b748b",
+    "materialization_policy.json": "6e64badf087d482911837bbaf850f63c399ec469f654007329596162abb57c75"
+  },
+  "aggregate_semantic_sha256": "d2d4d73ce06eaa7da40db0ad44904e1fd1f6308bd78ad36f292bf393ef881fd7",
+  "source_pdf_binaries_in_repo": false,
+  "db_migration_required": false,
+  "canonical_curriculum_modified": false,
+  "database_import_allowed": false,
+  "canonical_snapshot_allowed": false,
+  "production_release_eligible": 0
+}

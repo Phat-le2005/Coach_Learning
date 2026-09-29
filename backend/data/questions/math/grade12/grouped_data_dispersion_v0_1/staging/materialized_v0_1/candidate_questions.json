@@ -1,0 +1,3640 @@
+[
+  {
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "source_page": 1,
+    "question_number": "6",
+    "subsource_code": null,
+    "section_detected": "MULTIPLE_CHOICE",
+    "question_type_detected": "MULTIPLE_CHOICE",
+    "raw_question_text": "Câu 6. Tuổi thọ của một số linh kiện điện tử (đơn vị: năm) được sản xuất bởi phân xưởng A cho như sau: Tuổi thọ (năm) [1,5;2) [2;2,5) [2,5;3) [3;3,5) [3,5;4) Số linh kiện của phân xưởng A 4 9 13 8 6 Tính phương sai của mẫu số liệu ghép nhóm trên A. 0,145. B. 0,245 . C. 0,445 . D. 0,355.",
+    "problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+    "classification_confidence": 0.75,
+    "visual_required": true,
+    "mixed_scope": false,
+    "tf_items": [],
+    "answer_detected": "D",
+    "answer_evidence": "CONSISTENT_SOURCE_SOLUTION_OCCURRENCE",
+    "answer_confidence": 0.8,
+    "fingerprint": "fcfebbeaf10e1b5fc5f1",
+    "candidate_id": "M12_DISP_CAND_0001",
+    "status": "STRUCTURAL_CANDIDATE",
+    "classification_method": "RULE_BASED_INITIAL_FROM_SOURCE_TEXT",
+    "review_reasons": [
+      "HUMAN_TAXONOMY_REVIEW",
+      "ANSWER_REVIEW_REQUIRED",
+      "VISUAL_SOURCE_REVIEW_REQUIRED"
+    ],
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 1,
+        "subsource_code": null,
+        "question_number": "6",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 8,
+        "subsource_code": null,
+        "question_number": "6",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": "D"
+      }
+    ],
+    "problem_type_name": "Tính phương sai của mẫu ghép nhóm",
+    "concepts": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+        "concept_code": "GROUPED_VARIANCE",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+        "concept_code": "GROUPED_MEAN_FOR_DISPERSION",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+        "concept_code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+        "weight": 0.15,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+        "concept_code": "GROUPED_DATA_FREQUENCY",
+        "weight": 0.1,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+        "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+        "weight": 1.0
+      }
+    ],
+    "dedupe_hash": "83743c5242c30f6c99acd376a9e0bdf0581f7e500ffea23ee4a1d0e47f64ca5f",
+    "academic_review_status": "NOT_REVIEWED",
+    "promotion_eligible": false,
+    "requires_question_group_model": false
+  },
+  {
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "source_page": 42,
+    "question_number": "6",
+    "subsource_code": null,
+    "section_detected": "MULTIPLE_CHOICE",
+    "question_type_detected": "MULTIPLE_CHOICE",
+    "raw_question_text": "Câu 6. Trong 30 ngày, một nhà đầu tư đã theo dõi giá cổ phiếu của hai công ty G và H vào phiên mở cửa mỗi ngày. Thông tin được ghi lại ở hai bảng dưới đây: Gọi 1 2 ; s s lần lượt là độ lệch chuẩn (làm tròn đến hàng phần chục) của hai mẫu số liệu ghép nhóm ở số liệu của công ty G và công ty H . Khẳng định nào sau đây là đúng? A. 1 2 s s  . B. 1 2 1 s s  . C. 1 2 s s  . D. 1 2 s s  .",
+    "problem_type_code": "COMPARE_GROUPED_VARIANCE_SD",
+    "classification_confidence": 0.68,
+    "visual_required": true,
+    "mixed_scope": false,
+    "tf_items": [],
+    "answer_detected": "D",
+    "answer_evidence": "CONSISTENT_SOURCE_SOLUTION_OCCURRENCE",
+    "answer_confidence": 0.8,
+    "fingerprint": "425b35ef723aa985537c",
+    "candidate_id": "M12_DISP_CAND_0002",
+    "status": "STRUCTURAL_CANDIDATE",
+    "classification_method": "RULE_BASED_INITIAL_FROM_SOURCE_TEXT",
+    "review_reasons": [
+      "HUMAN_TAXONOMY_REVIEW",
+      "ANSWER_REVIEW_REQUIRED",
+      "VISUAL_SOURCE_REVIEW_REQUIRED"
+    ],
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 42,
+        "subsource_code": null,
+        "question_number": "6",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 47,
+        "subsource_code": null,
+        "question_number": "6",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": "D"
+      }
+    ],
+    "problem_type_name": "So sánh mẫu bằng phương sai hoặc độ lệch chuẩn",
+    "concepts": [
+      {
+        "problem_type_code": "COMPARE_GROUPED_VARIANCE_SD",
+        "concept_code": "DISPERSION_COMPARISON",
+        "weight": 0.45,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "COMPARE_GROUPED_VARIANCE_SD",
+        "concept_code": "GROUPED_VARIANCE",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "COMPARE_GROUPED_VARIANCE_SD",
+        "concept_code": "GROUPED_STANDARD_DEVIATION",
+        "weight": 0.3,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "COMPARE_GROUPED_VARIANCE_SD",
+        "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CONCLUDE",
+        "weight": 1.0
+      }
+    ],
+    "dedupe_hash": "600d0198e8f7a4f7c7012017907020dcfa1620f498b7738e477fc75ff5fffd70",
+    "academic_review_status": "NOT_REVIEWED",
+    "promotion_eligible": false,
+    "requires_question_group_model": false
+  },
+  {
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "source_page": 79,
+    "question_number": "6",
+    "subsource_code": null,
+    "section_detected": "MULTIPLE_CHOICE",
+    "question_type_detected": "MULTIPLE_CHOICE",
+    "raw_question_text": "Câu 6. Cô Thúy đầu tư số tiền vào lĩnh vực kinh doanh B . Cô Thúy thống kê số tiền thu được mỗi tháng trong vòng 60 tháng theo mỗi lĩnh vực cho kết quả như sau: Số tiền (triệu đồng) [5;10) [10;15) [15;20) [20;25) [25;30) Số tháng đầu tư vào lĩnh vực B 20 5 10 5 20 Độ lệch chuẩn của số tiền thu được hàng tháng khi Cô Thúy đầu tư vào lĩnh vực B là: A. 8,42. B. 9,22 . C. 7,42 . D. 7,22 .",
+    "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "classification_confidence": 0.75,
+    "visual_required": true,
+    "mixed_scope": false,
+    "tf_items": [],
+    "answer_detected": "A",
+    "answer_evidence": "CONSISTENT_SOURCE_SOLUTION_OCCURRENCE",
+    "answer_confidence": 0.8,
+    "fingerprint": "cdc85830cd4c618f466b",
+    "candidate_id": "M12_DISP_CAND_0003",
+    "status": "STRUCTURAL_CANDIDATE",
+    "classification_method": "RULE_BASED_INITIAL_FROM_SOURCE_TEXT",
+    "review_reasons": [
+      "HUMAN_TAXONOMY_REVIEW",
+      "ANSWER_REVIEW_REQUIRED",
+      "VISUAL_SOURCE_REVIEW_REQUIRED"
+    ],
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 79,
+        "subsource_code": null,
+        "question_number": "6",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 86,
+        "subsource_code": null,
+        "question_number": "6",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": "A"
+      }
+    ],
+    "problem_type_name": "Tính độ lệch chuẩn của mẫu ghép nhóm",
+    "concepts": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_STANDARD_DEVIATION",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_VARIANCE",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+        "weight": 0.1,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_DATA_FREQUENCY",
+        "weight": 0.1,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+        "weight": 1.0
+      }
+    ],
+    "dedupe_hash": "3692e28bd0633ddaddbb335745dbb5fe8c695334aef1b4176ab24cc5c23bee71",
+    "academic_review_status": "NOT_REVIEWED",
+    "promotion_eligible": false,
+    "requires_question_group_model": false
+  },
+  {
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "source_page": 99,
+    "question_number": "6",
+    "subsource_code": null,
+    "section_detected": "MULTIPLE_CHOICE",
+    "question_type_detected": "MULTIPLE_CHOICE",
+    "raw_question_text": "Câu 6. Ghi lại tốc độ bóng trong 200 lần giao bóng của một vận động viên môn quần vợt cho kết quả như bảng bên. Tốc độ ( / ) v km h Số lần 150 155 v   18 155 160 v   28 160 165 v   35 165 170 v   43 170 175 v   41 175 180 v   35 Khoảng tứ phân vị của mẫu số liệu ghép nhóm là A. 12,6. B. 11,5. C. 14,3. D. 16,8.",
+    "problem_type_code": "CALCULATE_GROUPED_IQR",
+    "classification_confidence": 0.8,
+    "visual_required": true,
+    "mixed_scope": false,
+    "tf_items": [],
+    "answer_detected": "A",
+    "answer_evidence": "CONSISTENT_SOURCE_SOLUTION_OCCURRENCE",
+    "answer_confidence": 0.8,
+    "fingerprint": "4a9fd952b349c19673ef",
+    "candidate_id": "M12_DISP_CAND_0004",
+    "status": "STRUCTURAL_CANDIDATE",
+    "classification_method": "RULE_BASED_INITIAL_FROM_SOURCE_TEXT",
+    "review_reasons": [
+      "HUMAN_TAXONOMY_REVIEW",
+      "ANSWER_REVIEW_REQUIRED",
+      "VISUAL_SOURCE_REVIEW_REQUIRED"
+    ],
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 99,
+        "subsource_code": null,
+        "question_number": "6",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 105,
+        "subsource_code": null,
+        "question_number": "6",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": "A"
+      }
+    ],
+    "problem_type_name": "Tính khoảng tứ phân vị của mẫu ghép nhóm",
+    "concepts": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_IQR",
+        "concept_code": "GROUPED_IQR",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_IQR",
+        "concept_code": "GROUPED_QUARTILE_INTERPOLATION",
+        "weight": 0.35,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_IQR",
+        "concept_code": "GROUPED_DATA_FREQUENCY",
+        "weight": 0.1,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_IQR",
+        "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+        "weight": 1.0
+      }
+    ],
+    "dedupe_hash": "ef84134bee23f79ee85ee222fb9f256f22d7393f8a7c121229ac7609b74b64f6",
+    "academic_review_status": "NOT_REVIEWED",
+    "promotion_eligible": false,
+    "requires_question_group_model": false
+  },
+  {
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "source_page": 119,
+    "question_number": "3",
+    "subsource_code": null,
+    "section_detected": "MULTIPLE_CHOICE",
+    "question_type_detected": "MULTIPLE_CHOICE",
+    "raw_question_text": "Câu 3. Hai mẫu số liệu ghép nhóm 1 M , 2 M có bảng tần số ghép nhóm như sau: Gọi 1s , 2s lần lượt là độ lệch chuẩn của mẫu số liệu ghép nhóm 1 M , 2 M . Phát biểu nào sau đây là đúng? A. 1 2 2 s s  . B. 1 2 s s  . C. 2 1 3 2 s s  . D. 1 2 3 2 s s  .",
+    "problem_type_code": "COMPARE_GROUPED_VARIANCE_SD",
+    "classification_confidence": 0.68,
+    "visual_required": true,
+    "mixed_scope": false,
+    "tf_items": [],
+    "answer_detected": "B",
+    "answer_evidence": "CONSISTENT_SOURCE_SOLUTION_OCCURRENCE",
+    "answer_confidence": 0.8,
+    "fingerprint": "4bc11a9a6b3b8003b826",
+    "candidate_id": "M12_DISP_CAND_0005",
+    "status": "STRUCTURAL_CANDIDATE",
+    "classification_method": "RULE_BASED_INITIAL_FROM_SOURCE_TEXT",
+    "review_reasons": [
+      "HUMAN_TAXONOMY_REVIEW",
+      "ANSWER_REVIEW_REQUIRED",
+      "VISUAL_SOURCE_REVIEW_REQUIRED"
+    ],
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 119,
+        "subsource_code": null,
+        "question_number": "3",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 125,
+        "subsource_code": null,
+        "question_number": "3",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": "B"
+      }
+    ],
+    "problem_type_name": "So sánh mẫu bằng phương sai hoặc độ lệch chuẩn",
+    "concepts": [
+      {
+        "problem_type_code": "COMPARE_GROUPED_VARIANCE_SD",
+        "concept_code": "DISPERSION_COMPARISON",
+        "weight": 0.45,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "COMPARE_GROUPED_VARIANCE_SD",
+        "concept_code": "GROUPED_VARIANCE",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "COMPARE_GROUPED_VARIANCE_SD",
+        "concept_code": "GROUPED_STANDARD_DEVIATION",
+        "weight": 0.3,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "COMPARE_GROUPED_VARIANCE_SD",
+        "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CONCLUDE",
+        "weight": 1.0
+      }
+    ],
+    "dedupe_hash": "32d2c32649bc31b444316d7dc45a7ba458943efe500522175e9afee96a45cc4c",
+    "academic_review_status": "NOT_REVIEWED",
+    "promotion_eligible": false,
+    "requires_question_group_model": false
+  },
+  {
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "source_page": 139,
+    "question_number": "8",
+    "subsource_code": null,
+    "section_detected": "MULTIPLE_CHOICE",
+    "question_type_detected": "MULTIPLE_CHOICE",
+    "raw_question_text": "Câu 8. Trong bài thực hành Vật lí đo hiệu điện thế của mạch điện, bạn Minh Hiền đã dùng hai vôn kế khác nhau để đo và cho kết quả như sau: Hiệu điện thế đo được (Vôn) [3,85;3,90) [3,90;3,95) [3,95;4,00) [4,00;4,05) Số lần Minh Hiền đo 1 6 2 1 Tính độ lệch chuẩn của mẫu số liệu ghép nhóm cho kết quả đo của bạn Minh Hiền. A. 0,039 . B. 0,0015. C. 0,024 . D. 0,0025.",
+    "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "classification_confidence": 0.75,
+    "visual_required": true,
+    "mixed_scope": false,
+    "tf_items": [],
+    "answer_detected": "A",
+    "answer_evidence": "CONSISTENT_SOURCE_SOLUTION_OCCURRENCE",
+    "answer_confidence": 0.8,
+    "fingerprint": "60bc853fbe4be64bedd1",
+    "candidate_id": "M12_DISP_CAND_0006",
+    "status": "STRUCTURAL_CANDIDATE",
+    "classification_method": "RULE_BASED_INITIAL_FROM_SOURCE_TEXT",
+    "review_reasons": [
+      "HUMAN_TAXONOMY_REVIEW",
+      "ANSWER_REVIEW_REQUIRED",
+      "VISUAL_SOURCE_REVIEW_REQUIRED"
+    ],
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 139,
+        "subsource_code": null,
+        "question_number": "8",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 146,
+        "subsource_code": null,
+        "question_number": "8",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": "A"
+      }
+    ],
+    "problem_type_name": "Tính độ lệch chuẩn của mẫu ghép nhóm",
+    "concepts": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_STANDARD_DEVIATION",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_VARIANCE",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+        "weight": 0.1,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_DATA_FREQUENCY",
+        "weight": 0.1,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+        "weight": 1.0
+      }
+    ],
+    "dedupe_hash": "da2ee13826d8a8a55bf83cb5b7c46b5e8ec7ab972145217691766df605b42ac2",
+    "academic_review_status": "NOT_REVIEWED",
+    "promotion_eligible": false,
+    "requires_question_group_model": false
+  },
+  {
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "source_page": 177,
+    "question_number": "6",
+    "subsource_code": null,
+    "section_detected": "MULTIPLE_CHOICE",
+    "question_type_detected": "MULTIPLE_CHOICE",
+    "raw_question_text": "Câu 6. Thời gian (phút) truy cập Internet mỗi buổi tối của một số học sinh được cho trong bảng sau: Thời gian (phút) [9,5;12,5) [12,5;15,5) [15,5;18,5) [18,5;21,5) [21,5;24,5) Số học sinh 3 12 15 24 2 Khoảng tứ phân vị của mẫu số liệu ghép nhóm là A. 10,75. B. 4,75. C. 4,63. D. 4,38.",
+    "problem_type_code": "CALCULATE_GROUPED_IQR",
+    "classification_confidence": 0.8,
+    "visual_required": true,
+    "mixed_scope": false,
+    "tf_items": [],
+    "answer_detected": "B",
+    "answer_evidence": "CONSISTENT_SOURCE_SOLUTION_OCCURRENCE",
+    "answer_confidence": 0.8,
+    "fingerprint": "2a2b9996946b96dffaa6",
+    "candidate_id": "M12_DISP_CAND_0007",
+    "status": "STRUCTURAL_CANDIDATE",
+    "classification_method": "RULE_BASED_INITIAL_FROM_SOURCE_TEXT",
+    "review_reasons": [
+      "HUMAN_TAXONOMY_REVIEW",
+      "ANSWER_REVIEW_REQUIRED",
+      "VISUAL_SOURCE_REVIEW_REQUIRED"
+    ],
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 177,
+        "subsource_code": null,
+        "question_number": "6",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 184,
+        "subsource_code": null,
+        "question_number": "6",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": "B"
+      }
+    ],
+    "problem_type_name": "Tính khoảng tứ phân vị của mẫu ghép nhóm",
+    "concepts": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_IQR",
+        "concept_code": "GROUPED_IQR",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_IQR",
+        "concept_code": "GROUPED_QUARTILE_INTERPOLATION",
+        "weight": 0.35,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_IQR",
+        "concept_code": "GROUPED_DATA_FREQUENCY",
+        "weight": 0.1,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_IQR",
+        "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+        "weight": 1.0
+      }
+    ],
+    "dedupe_hash": "886a3bea9fd3a5c4d1fb905f2095802ebdb53993d4ce7e6b76e670df4d2ee2ca",
+    "academic_review_status": "NOT_REVIEWED",
+    "promotion_eligible": false,
+    "requires_question_group_model": false
+  },
+  {
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "source_page": 196,
+    "question_number": "6",
+    "subsource_code": null,
+    "section_detected": "MULTIPLE_CHOICE",
+    "question_type_detected": "MULTIPLE_CHOICE",
+    "raw_question_text": "Câu 6. Mức thưởng tết (triệu đồng) cho các nhân viên của một công ty được thống kê trong bảng sau: Mức thưởng tết [5;10) [10;15) [15;20) [20;25) [25;30) Số nhân viên 10 5 6 4 5 Khoảng biến thiên của mẫu số liệu ghép nhóm này là A. 20. B. 25. C. 47. D. 23",
+    "problem_type_code": "CALCULATE_GROUPED_RANGE",
+    "classification_confidence": 0.82,
+    "visual_required": true,
+    "mixed_scope": false,
+    "tf_items": [],
+    "answer_detected": "B",
+    "answer_evidence": "CONSISTENT_SOURCE_SOLUTION_OCCURRENCE",
+    "answer_confidence": 0.8,
+    "fingerprint": "6e0d72db74b3114bd006",
+    "candidate_id": "M12_DISP_CAND_0008",
+    "status": "STRUCTURAL_CANDIDATE",
+    "classification_method": "RULE_BASED_INITIAL_FROM_SOURCE_TEXT",
+    "review_reasons": [
+      "HUMAN_TAXONOMY_REVIEW",
+      "ANSWER_REVIEW_REQUIRED",
+      "VISUAL_SOURCE_REVIEW_REQUIRED"
+    ],
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 196,
+        "subsource_code": null,
+        "question_number": "6",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 203,
+        "subsource_code": null,
+        "question_number": "6",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": "B"
+      }
+    ],
+    "problem_type_name": "Tính khoảng biến thiên của mẫu ghép nhóm",
+    "concepts": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_RANGE",
+        "concept_code": "GROUPED_RANGE",
+        "weight": 0.6,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_RANGE",
+        "concept_code": "GROUPED_DATA_CLASS_BOUNDARY",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_RANGE",
+        "concept_code": "GROUPED_DATA_FREQUENCY",
+        "weight": 0.15,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_RANGE",
+        "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+        "weight": 1.0
+      }
+    ],
+    "dedupe_hash": "4752182d149d8ea4913207be98ac00119d57142adeedb11ccfe4e73380ba9db2",
+    "academic_review_status": "NOT_REVIEWED",
+    "promotion_eligible": false,
+    "requires_question_group_model": false
+  },
+  {
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "source_page": 217,
+    "question_number": "6",
+    "subsource_code": null,
+    "section_detected": "MULTIPLE_CHOICE",
+    "question_type_detected": "MULTIPLE_CHOICE",
+    "raw_question_text": "Câu 6. Tuổi thọ của một số linh kiện điện tử (đơn vị: năm) được sản xuất bởi phân xưởng B cho như sau: Tuổi thọ (năm) [1,5;2) [2;2,5) [2,5;3) [3;3,5) [3,5;4) Số linh kiện của phân xưởng B 2 8 20 7 3 Tính phương sai của mẫu số liệu ghép nhóm trên A. 0,219 . B. 0,329. C. 0,119 . D. 0,129 .",
+    "problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+    "classification_confidence": 0.75,
+    "visual_required": true,
+    "mixed_scope": false,
+    "tf_items": [],
+    "answer_detected": "A",
+    "answer_evidence": "CONSISTENT_SOURCE_SOLUTION_OCCURRENCE",
+    "answer_confidence": 0.8,
+    "fingerprint": "2f80f5a7d579e738629a",
+    "candidate_id": "M12_DISP_CAND_0009",
+    "status": "STRUCTURAL_CANDIDATE",
+    "classification_method": "RULE_BASED_INITIAL_FROM_SOURCE_TEXT",
+    "review_reasons": [
+      "HUMAN_TAXONOMY_REVIEW",
+      "ANSWER_REVIEW_REQUIRED",
+      "VISUAL_SOURCE_REVIEW_REQUIRED"
+    ],
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 217,
+        "subsource_code": null,
+        "question_number": "6",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 222,
+        "subsource_code": null,
+        "question_number": "6",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": "A"
+      }
+    ],
+    "problem_type_name": "Tính phương sai của mẫu ghép nhóm",
+    "concepts": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+        "concept_code": "GROUPED_VARIANCE",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+        "concept_code": "GROUPED_MEAN_FOR_DISPERSION",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+        "concept_code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+        "weight": 0.15,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+        "concept_code": "GROUPED_DATA_FREQUENCY",
+        "weight": 0.1,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+        "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+        "weight": 1.0
+      }
+    ],
+    "dedupe_hash": "4b64fe4c9ab4f8112ff457b122ba281994a859a4f4eac6d6033332a1b676cb71",
+    "academic_review_status": "NOT_REVIEWED",
+    "promotion_eligible": false,
+    "requires_question_group_model": false
+  },
+  {
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "source_page": 275,
+    "question_number": "3",
+    "subsource_code": null,
+    "section_detected": "MULTIPLE_CHOICE",
+    "question_type_detected": "MULTIPLE_CHOICE",
+    "raw_question_text": "Câu 3. Bảng dưới biểu diễn mẫu số liệu ghép nhóm về số tiền (đơn vị: nghìn đồng) mà 120 khách hàng mua sách ở một cửa hàng trong một ngày. Nhóm [40;50) [50;60) [60;70) [70;80) [80;90) Tần số 6 12 38 46 18 Khoảng biến thiên của mẫu số liệu ghép nhóm trên là: A. 30. B. 40. C. 50. D. 60.",
+    "problem_type_code": "CALCULATE_GROUPED_RANGE",
+    "classification_confidence": 0.82,
+    "visual_required": true,
+    "mixed_scope": false,
+    "tf_items": [],
+    "answer_detected": "C",
+    "answer_evidence": "CONSISTENT_SOURCE_SOLUTION_OCCURRENCE",
+    "answer_confidence": 0.8,
+    "fingerprint": "af19ab219571db81f777",
+    "candidate_id": "M12_DISP_CAND_0010",
+    "status": "STRUCTURAL_CANDIDATE",
+    "classification_method": "RULE_BASED_INITIAL_FROM_SOURCE_TEXT",
+    "review_reasons": [
+      "HUMAN_TAXONOMY_REVIEW",
+      "ANSWER_REVIEW_REQUIRED",
+      "VISUAL_SOURCE_REVIEW_REQUIRED"
+    ],
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 275,
+        "subsource_code": null,
+        "question_number": "3",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 281,
+        "subsource_code": null,
+        "question_number": "3",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": "C"
+      }
+    ],
+    "problem_type_name": "Tính khoảng biến thiên của mẫu ghép nhóm",
+    "concepts": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_RANGE",
+        "concept_code": "GROUPED_RANGE",
+        "weight": 0.6,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_RANGE",
+        "concept_code": "GROUPED_DATA_CLASS_BOUNDARY",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_RANGE",
+        "concept_code": "GROUPED_DATA_FREQUENCY",
+        "weight": 0.15,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_RANGE",
+        "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+        "weight": 1.0
+      }
+    ],
+    "dedupe_hash": "c426aae7fd7b498b421b0dacefd7d73a86483ef83fdeea5c031dc73fb920369f",
+    "academic_review_status": "NOT_REVIEWED",
+    "promotion_eligible": false,
+    "requires_question_group_model": false
+  },
+  {
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "source_page": 294,
+    "question_number": "4",
+    "subsource_code": null,
+    "section_detected": "MULTIPLE_CHOICE",
+    "question_type_detected": "MULTIPLE_CHOICE",
+    "raw_question_text": "Câu 4. Trong bài thực hành Vật lí đo hiệu điện thế của mạch điện, bạn Trúc Linh đã dùng hai vôn kế khác nhau để đo và cho kết quả như sau: Hiệu điện thế đo được (Vôn) [3,85;3,90) [3,90;3,95) [3,95;4,00) [4,00;4,05) Số lần Trúc Linh đo 1 3 4 2 Tính độ lệch chuẩn của mẫu số liệu ghép nhóm cho kết quả đo của bạn Trúc Linh A. 0,002 . B. 0,012 . C. 0,045. D. 0,055.",
+    "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "classification_confidence": 0.75,
+    "visual_required": true,
+    "mixed_scope": false,
+    "tf_items": [],
+    "answer_detected": "C",
+    "answer_evidence": "CONSISTENT_SOURCE_SOLUTION_OCCURRENCE",
+    "answer_confidence": 0.8,
+    "fingerprint": "4a951a5d998b30ddb91f",
+    "candidate_id": "M12_DISP_CAND_0011",
+    "status": "STRUCTURAL_CANDIDATE",
+    "classification_method": "RULE_BASED_INITIAL_FROM_SOURCE_TEXT",
+    "review_reasons": [
+      "HUMAN_TAXONOMY_REVIEW",
+      "ANSWER_REVIEW_REQUIRED",
+      "VISUAL_SOURCE_REVIEW_REQUIRED"
+    ],
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 294,
+        "subsource_code": null,
+        "question_number": "4",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 300,
+        "subsource_code": null,
+        "question_number": "4",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": "C"
+      }
+    ],
+    "problem_type_name": "Tính độ lệch chuẩn của mẫu ghép nhóm",
+    "concepts": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_STANDARD_DEVIATION",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_VARIANCE",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+        "weight": 0.1,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_DATA_FREQUENCY",
+        "weight": 0.1,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+        "weight": 1.0
+      }
+    ],
+    "dedupe_hash": "504608cdea63932dc179703a3744d28c15b3cec32751cc54bdb349e111d3b258",
+    "academic_review_status": "NOT_REVIEWED",
+    "promotion_eligible": false,
+    "requires_question_group_model": false
+  },
+  {
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "source_page": 377,
+    "question_number": "4",
+    "subsource_code": null,
+    "section_detected": "MULTIPLE_CHOICE",
+    "question_type_detected": "MULTIPLE_CHOICE",
+    "raw_question_text": "Câu 4. Anh Bảo Toàn đầu tư số tiền vào lĩnh vực kinh doanh A. Anh Bảo Toàn thống kê số tiền thu được mỗi tháng trong vòng 60 tháng theo mỗi lĩnh vực cho kết quả như sau: Số tiền (triệu đồng) [5;10) [10;15) [15;20) [20;25) [25;30) Số tháng đầu tư vào lĩnh vực A 5 10 30 10 5 Độ lệch chuẩn của số tiền thu được hàng tháng khi anh Bảo Toàn đầu tư vào lĩnh vực A là: A. 4,5. B. 5. C. 5,5. D. 6 .",
+    "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "classification_confidence": 0.75,
+    "visual_required": true,
+    "mixed_scope": false,
+    "tf_items": [],
+    "answer_detected": "B",
+    "answer_evidence": "CONSISTENT_SOURCE_SOLUTION_OCCURRENCE",
+    "answer_confidence": 0.8,
+    "fingerprint": "3fd2683e95d18d102aab",
+    "candidate_id": "M12_DISP_CAND_0012",
+    "status": "STRUCTURAL_CANDIDATE",
+    "classification_method": "RULE_BASED_INITIAL_FROM_SOURCE_TEXT",
+    "review_reasons": [
+      "HUMAN_TAXONOMY_REVIEW",
+      "ANSWER_REVIEW_REQUIRED",
+      "VISUAL_SOURCE_REVIEW_REQUIRED"
+    ],
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 377,
+        "subsource_code": null,
+        "question_number": "4",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 383,
+        "subsource_code": null,
+        "question_number": "4",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": "B"
+      }
+    ],
+    "problem_type_name": "Tính độ lệch chuẩn của mẫu ghép nhóm",
+    "concepts": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_STANDARD_DEVIATION",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_VARIANCE",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+        "weight": 0.1,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_DATA_FREQUENCY",
+        "weight": 0.1,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+        "weight": 1.0
+      }
+    ],
+    "dedupe_hash": "6596c262879994cd620a0cd2e6e20e414ffa0cdf97754df50c5846226b3037f7",
+    "academic_review_status": "NOT_REVIEWED",
+    "promotion_eligible": false,
+    "requires_question_group_model": false
+  },
+  {
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "source_page": 417,
+    "question_number": "8",
+    "subsource_code": null,
+    "section_detected": "MULTIPLE_CHOICE",
+    "question_type_detected": "MULTIPLE_CHOICE",
+    "raw_question_text": "Câu 8. Biểu đồ dưới đây biểu diễn số lượng khách hàng đặt bàn qua hình thức trực tuyến mỗi ngày trong quý III năm 2022 của một nhà hàng. Cột thứ nhất biểu diễn số ngày có từ 1 đến 6 lượt đặt bàn, cột thứ hai biễu diễn số ngày có từ 6 đến 11 lượt đặt bàn;… Khoảng tứ phân vị của mẫu số liệu ghép nhóm cho bởi biểu đồ trên A. 9,5. B. 8,5. C. 10,5. D. 7,5.",
+    "problem_type_code": "CALCULATE_GROUPED_IQR",
+    "classification_confidence": 0.8,
+    "visual_required": true,
+    "mixed_scope": false,
+    "tf_items": [],
+    "answer_detected": "B",
+    "answer_evidence": "CONSISTENT_SOURCE_SOLUTION_OCCURRENCE",
+    "answer_confidence": 0.8,
+    "fingerprint": "47fa2b7baf040a9af1da",
+    "candidate_id": "M12_DISP_CAND_0013",
+    "status": "STRUCTURAL_CANDIDATE",
+    "classification_method": "RULE_BASED_INITIAL_FROM_SOURCE_TEXT",
+    "review_reasons": [
+      "HUMAN_TAXONOMY_REVIEW",
+      "ANSWER_REVIEW_REQUIRED",
+      "VISUAL_SOURCE_REVIEW_REQUIRED"
+    ],
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 417,
+        "subsource_code": null,
+        "question_number": "8",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 423,
+        "subsource_code": null,
+        "question_number": "8",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": "B"
+      }
+    ],
+    "problem_type_name": "Tính khoảng tứ phân vị của mẫu ghép nhóm",
+    "concepts": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_IQR",
+        "concept_code": "GROUPED_IQR",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_IQR",
+        "concept_code": "GROUPED_QUARTILE_INTERPOLATION",
+        "weight": 0.35,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_IQR",
+        "concept_code": "GROUPED_DATA_FREQUENCY",
+        "weight": 0.1,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_IQR",
+        "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+        "weight": 1.0
+      }
+    ],
+    "dedupe_hash": "99b67e07006815e701e28b249c483d3502b60c5b36ff0d9d5b9108a5f9d02e48",
+    "academic_review_status": "NOT_REVIEWED",
+    "promotion_eligible": false,
+    "requires_question_group_model": false
+  },
+  {
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "source_page": 457,
+    "question_number": "4",
+    "subsource_code": null,
+    "section_detected": "MULTIPLE_CHOICE",
+    "question_type_detected": "MULTIPLE_CHOICE",
+    "raw_question_text": "Câu 4. Kết quả khảo sát thời gian sử dụng liên tục (đơn vị: giờ) từ lúc sạc đầy cho đến khi hết của pin một số máy vi tính cùng loại được mô tả bằng biểu đồ bên. Tính độ lệch chuẩn của mẫu số liệu ghép nhóm trên (kết quả các phép tính làm tròn đến hàng phần trăm). A. 0,03. B. 0,18. C. 0,12 . D. 0,21.",
+    "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "classification_confidence": 0.75,
+    "visual_required": true,
+    "mixed_scope": false,
+    "tf_items": [],
+    "answer_detected": null,
+    "answer_evidence": "NOT_DETECTED",
+    "answer_confidence": 0.0,
+    "fingerprint": "181b8a29e621b4ff054d",
+    "candidate_id": "M12_DISP_CAND_0014",
+    "status": "STRUCTURAL_CANDIDATE",
+    "classification_method": "RULE_BASED_INITIAL_FROM_SOURCE_TEXT",
+    "review_reasons": [
+      "HUMAN_TAXONOMY_REVIEW",
+      "ANSWER_REVIEW_REQUIRED",
+      "VISUAL_SOURCE_REVIEW_REQUIRED"
+    ],
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 457,
+        "subsource_code": null,
+        "question_number": "4",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": null
+      }
+    ],
+    "problem_type_name": "Tính độ lệch chuẩn của mẫu ghép nhóm",
+    "concepts": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_STANDARD_DEVIATION",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_VARIANCE",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+        "weight": 0.1,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_DATA_FREQUENCY",
+        "weight": 0.1,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+        "weight": 1.0
+      }
+    ],
+    "dedupe_hash": "d060303037fc44b2ffaad9680f5c2adfe240c1cd82fbacdc5a7db85a11d9c0d1",
+    "academic_review_status": "NOT_REVIEWED",
+    "promotion_eligible": false,
+    "requires_question_group_model": false
+  },
+  {
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "source_page": 464,
+    "question_number": "5",
+    "subsource_code": null,
+    "section_detected": "MULTIPLE_CHOICE",
+    "question_type_detected": "MULTIPLE_CHOICE",
+    "raw_question_text": "Câu 5. Kết quả khảo sát thời gian sử dụng liên tục (đơn vị: giờ) từ lúc sạc đầy cho đến khi hết của pin một số máy vi tính cùng loại được mô tả bằng biểu đồ bên. Tính độ lệch chuẩn của mẫu số liệu ghép nhóm trên (kết quả các phép tính làm tròn đến hàng phần trăm). A. 0,03. B. 0,18. C. 0,12 . D. 0,21.",
+    "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "classification_confidence": 0.75,
+    "visual_required": true,
+    "mixed_scope": false,
+    "tf_items": [],
+    "answer_detected": "B",
+    "answer_evidence": "SOURCE_SOLUTION_OCCURRENCE_ONLY",
+    "answer_confidence": 0.65,
+    "fingerprint": "a3ce3b83e04f56e83121",
+    "candidate_id": "M12_DISP_CAND_0015",
+    "status": "STRUCTURAL_CANDIDATE",
+    "classification_method": "RULE_BASED_INITIAL_FROM_SOURCE_TEXT",
+    "review_reasons": [
+      "HUMAN_TAXONOMY_REVIEW",
+      "ANSWER_REVIEW_REQUIRED",
+      "VISUAL_SOURCE_REVIEW_REQUIRED"
+    ],
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 464,
+        "subsource_code": null,
+        "question_number": "5",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": "B"
+      }
+    ],
+    "problem_type_name": "Tính độ lệch chuẩn của mẫu ghép nhóm",
+    "concepts": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_STANDARD_DEVIATION",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_VARIANCE",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+        "weight": 0.1,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_DATA_FREQUENCY",
+        "weight": 0.1,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+        "weight": 1.0
+      }
+    ],
+    "dedupe_hash": "d4cb638ebee00a1b54c1ad65dc6cc529443fcb01f641f525bc6ea1b604133c31",
+    "academic_review_status": "NOT_REVIEWED",
+    "promotion_eligible": false,
+    "requires_question_group_model": false
+  },
+  {
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "source_page": 476,
+    "question_number": "8",
+    "subsource_code": null,
+    "section_detected": "MULTIPLE_CHOICE",
+    "question_type_detected": "MULTIPLE_CHOICE",
+    "raw_question_text": "Câu 8. Thống kê lợi nhuận hàng tháng (đơn vị: triệu đồng) trong 20 tháng của một nhà đầu tư được cho như sau: Lợi nhuận (đơn vị: triệu đồng) [10;20) [20;30) [30;40) [40;50) [50;60) Số tháng 2 4 8 4 2 Tính độ lệch chuẩn của mẫu số liệu ghép nhóm trên. A. 8,9 . B. 12,1. C. 10,2 . D. 11",
+    "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "classification_confidence": 0.75,
+    "visual_required": true,
+    "mixed_scope": false,
+    "tf_items": [],
+    "answer_detected": "D",
+    "answer_evidence": "CONSISTENT_SOURCE_SOLUTION_OCCURRENCE",
+    "answer_confidence": 0.8,
+    "fingerprint": "3b42d7ed45b1cf192431",
+    "candidate_id": "M12_DISP_CAND_0016",
+    "status": "STRUCTURAL_CANDIDATE",
+    "classification_method": "RULE_BASED_INITIAL_FROM_SOURCE_TEXT",
+    "review_reasons": [
+      "HUMAN_TAXONOMY_REVIEW",
+      "ANSWER_REVIEW_REQUIRED",
+      "VISUAL_SOURCE_REVIEW_REQUIRED"
+    ],
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 476,
+        "subsource_code": null,
+        "question_number": "8",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 482,
+        "subsource_code": null,
+        "question_number": "8",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": "D"
+      }
+    ],
+    "problem_type_name": "Tính độ lệch chuẩn của mẫu ghép nhóm",
+    "concepts": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_STANDARD_DEVIATION",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_VARIANCE",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+        "weight": 0.1,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_DATA_FREQUENCY",
+        "weight": 0.1,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+        "weight": 1.0
+      }
+    ],
+    "dedupe_hash": "ebb88b8de3cbcd4d6218562cb3edf2b0e6e8e66967ef9a0fb5be22cba27d3dd0",
+    "academic_review_status": "NOT_REVIEWED",
+    "promotion_eligible": false,
+    "requires_question_group_model": false
+  },
+  {
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "source_page": 495,
+    "question_number": "6",
+    "subsource_code": null,
+    "section_detected": "MULTIPLE_CHOICE",
+    "question_type_detected": "MULTIPLE_CHOICE",
+    "raw_question_text": "Câu 6. Trong buổi thực hành, một nhóm 20 học sinh dùng một thiết bị đo đường kính của một nhân tế bào cho kết quả như sau: Kết quả đo ( ) m  [4,5;5) [5;5,5) [5,5;6) [6;6,5) Số học sinh 3 8 7 2 Tính độ lệch chuẩn của mẫu số liệu ghép nhóm trên (kết quả các phép tính làm tròn đến hàng phần trăm). A. 0,40 . B. 0,43. C. 0,47 . D. 0,49.",
+    "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "classification_confidence": 0.75,
+    "visual_required": true,
+    "mixed_scope": false,
+    "tf_items": [],
+    "answer_detected": "B",
+    "answer_evidence": "CONSISTENT_SOURCE_SOLUTION_OCCURRENCE",
+    "answer_confidence": 0.8,
+    "fingerprint": "0d570f1b5cbb93cdf23a",
+    "candidate_id": "M12_DISP_CAND_0017",
+    "status": "STRUCTURAL_CANDIDATE",
+    "classification_method": "RULE_BASED_INITIAL_FROM_SOURCE_TEXT",
+    "review_reasons": [
+      "HUMAN_TAXONOMY_REVIEW",
+      "ANSWER_REVIEW_REQUIRED",
+      "VISUAL_SOURCE_REVIEW_REQUIRED"
+    ],
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 495,
+        "subsource_code": null,
+        "question_number": "6",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 501,
+        "subsource_code": null,
+        "question_number": "6",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": "B"
+      }
+    ],
+    "problem_type_name": "Tính độ lệch chuẩn của mẫu ghép nhóm",
+    "concepts": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_STANDARD_DEVIATION",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_VARIANCE",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+        "weight": 0.1,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_DATA_FREQUENCY",
+        "weight": 0.1,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+        "weight": 1.0
+      }
+    ],
+    "dedupe_hash": "8e1f28d2cb787de520a86349353643065677029fbc18175962998812e5c6d2c1",
+    "academic_review_status": "NOT_REVIEWED",
+    "promotion_eligible": false,
+    "requires_question_group_model": false
+  },
+  {
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "source_page": 514,
+    "question_number": "6",
+    "subsource_code": null,
+    "section_detected": "MULTIPLE_CHOICE",
+    "question_type_detected": "MULTIPLE_CHOICE",
+    "raw_question_text": "Câu 6. Thống kê lợi nhuận hàng tháng (đơn vị: triệu đồng) trong 20 tháng của một nhà đầu tư được cho như sau: Lợi nhuận (đơn vị: triệu đồng) [510;520) [520;530) [530;540) [540;550) [550;560) Số tháng 4 3 6 3 4 Tính độ lệch chuẩn của mẫu số liệu ghép nhóm trên (kết quả các phép tính làm tròn đến hàng phần mười). A. 13,8 . B. 13,1. C. 14,2 . D. 15,2 .",
+    "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "classification_confidence": 0.75,
+    "visual_required": true,
+    "mixed_scope": false,
+    "tf_items": [],
+    "answer_detected": "A",
+    "answer_evidence": "CONSISTENT_SOURCE_SOLUTION_OCCURRENCE",
+    "answer_confidence": 0.8,
+    "fingerprint": "52f97b72e618211b2f75",
+    "candidate_id": "M12_DISP_CAND_0018",
+    "status": "STRUCTURAL_CANDIDATE",
+    "classification_method": "RULE_BASED_INITIAL_FROM_SOURCE_TEXT",
+    "review_reasons": [
+      "HUMAN_TAXONOMY_REVIEW",
+      "ANSWER_REVIEW_REQUIRED",
+      "VISUAL_SOURCE_REVIEW_REQUIRED"
+    ],
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 514,
+        "subsource_code": null,
+        "question_number": "6",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 520,
+        "subsource_code": null,
+        "question_number": "6",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": "A"
+      }
+    ],
+    "problem_type_name": "Tính độ lệch chuẩn của mẫu ghép nhóm",
+    "concepts": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_STANDARD_DEVIATION",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_VARIANCE",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+        "weight": 0.1,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_DATA_FREQUENCY",
+        "weight": 0.1,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+        "weight": 1.0
+      }
+    ],
+    "dedupe_hash": "63591ea29a12647b6936b4e40c1dc6216ad346033d3352a9bae1895edbebda22",
+    "academic_review_status": "NOT_REVIEWED",
+    "promotion_eligible": false,
+    "requires_question_group_model": false
+  },
+  {
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "source_page": 534,
+    "question_number": "6",
+    "subsource_code": null,
+    "section_detected": "MULTIPLE_CHOICE",
+    "question_type_detected": "MULTIPLE_CHOICE",
+    "raw_question_text": "Câu 6. Bảng dưới đây thống kê cự li ném tạ của một vận động viên. Cự li (m) [19;19,5) [19,5;20) [20;20,5) [20,5;21) [21;21,5) Tần số 13 45 24 12 6 Hãy tính độ lệch chuẩn của mẫu số liệu ghép nhóm trên (kết quả được làm tròn đến hàng phần trăm) A. 0,43. B. 0,53. C. 0,47 . D. 0,57 .",
+    "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "classification_confidence": 0.75,
+    "visual_required": true,
+    "mixed_scope": false,
+    "tf_items": [],
+    "answer_detected": "B",
+    "answer_evidence": "CONSISTENT_SOURCE_SOLUTION_OCCURRENCE",
+    "answer_confidence": 0.8,
+    "fingerprint": "b535f894b3d72e03e923",
+    "candidate_id": "M12_DISP_CAND_0019",
+    "status": "STRUCTURAL_CANDIDATE",
+    "classification_method": "RULE_BASED_INITIAL_FROM_SOURCE_TEXT",
+    "review_reasons": [
+      "HUMAN_TAXONOMY_REVIEW",
+      "ANSWER_REVIEW_REQUIRED",
+      "VISUAL_SOURCE_REVIEW_REQUIRED"
+    ],
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 534,
+        "subsource_code": null,
+        "question_number": "6",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 539,
+        "subsource_code": null,
+        "question_number": "6",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": "B"
+      }
+    ],
+    "problem_type_name": "Tính độ lệch chuẩn của mẫu ghép nhóm",
+    "concepts": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_STANDARD_DEVIATION",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_VARIANCE",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+        "weight": 0.1,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_DATA_FREQUENCY",
+        "weight": 0.1,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+        "weight": 1.0
+      }
+    ],
+    "dedupe_hash": "5de597e915496449e81eecbb218c20394892d694782b05f1c3f1f4afdce7d85d",
+    "academic_review_status": "NOT_REVIEWED",
+    "promotion_eligible": false,
+    "requires_question_group_model": false
+  },
+  {
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "source_page": 552,
+    "question_number": "4",
+    "subsource_code": null,
+    "section_detected": "MULTIPLE_CHOICE",
+    "question_type_detected": "MULTIPLE_CHOICE",
+    "raw_question_text": "Câu 4. Cân nặng của một số quả mít trong một khu vườn được thống kê ở bảng sau: Cân nặng ( ) kg [4;6) [6;8) [8;10) [10;12) [12;14) Số quả mít 6 12 19 9 4 Hãy tính phương sai của mẫu số liệu ghép nhóm trên (kết quả các phép tính làm tròn đến hàng phần trăm). A. 3,2. B. 5,6. C. 4,8. D. 3,4.",
+    "problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+    "classification_confidence": 0.75,
+    "visual_required": true,
+    "mixed_scope": false,
+    "tf_items": [],
+    "answer_detected": "C",
+    "answer_evidence": "CONSISTENT_SOURCE_SOLUTION_OCCURRENCE",
+    "answer_confidence": 0.8,
+    "fingerprint": "c4fe95f17ac03eff148f",
+    "candidate_id": "M12_DISP_CAND_0020",
+    "status": "STRUCTURAL_CANDIDATE",
+    "classification_method": "RULE_BASED_INITIAL_FROM_SOURCE_TEXT",
+    "review_reasons": [
+      "HUMAN_TAXONOMY_REVIEW",
+      "ANSWER_REVIEW_REQUIRED",
+      "VISUAL_SOURCE_REVIEW_REQUIRED"
+    ],
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 552,
+        "subsource_code": null,
+        "question_number": "4",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 557,
+        "subsource_code": null,
+        "question_number": "4",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": "C"
+      }
+    ],
+    "problem_type_name": "Tính phương sai của mẫu ghép nhóm",
+    "concepts": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+        "concept_code": "GROUPED_VARIANCE",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+        "concept_code": "GROUPED_MEAN_FOR_DISPERSION",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+        "concept_code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+        "weight": 0.15,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+        "concept_code": "GROUPED_DATA_FREQUENCY",
+        "weight": 0.1,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+        "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+        "weight": 1.0
+      }
+    ],
+    "dedupe_hash": "4393370daa1248141c2d485063910b13a84c83c03b848364f4fa0fa75ea33b08",
+    "academic_review_status": "NOT_REVIEWED",
+    "promotion_eligible": false,
+    "requires_question_group_model": false
+  },
+  {
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "source_page": 569,
+    "question_number": "6",
+    "subsource_code": null,
+    "section_detected": "MULTIPLE_CHOICE",
+    "question_type_detected": "MULTIPLE_CHOICE",
+    "raw_question_text": "Câu 6. Thành tích môn nhảy cao của các vận động viên tại một giải điền kinh dành cho học sinh trung học phổ thông như sau: Mức xà ( ) cm [170;172) [172;174) [174;176) [176;180) Số vận động viên 3 10 6 1 Hãy xác định độ lệch chuẩn của mẫu số liệu ghép nhóm trên (kết quả được làm tròn đến hàng phần trăm) A. 1,24 . B. 1,53. C. 1,62 . D. 1,43.",
+    "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "classification_confidence": 0.75,
+    "visual_required": true,
+    "mixed_scope": false,
+    "tf_items": [],
+    "answer_detected": "B",
+    "answer_evidence": "CONSISTENT_SOURCE_SOLUTION_OCCURRENCE",
+    "answer_confidence": 0.8,
+    "fingerprint": "13146e353211f6538942",
+    "candidate_id": "M12_DISP_CAND_0021",
+    "status": "STRUCTURAL_CANDIDATE",
+    "classification_method": "RULE_BASED_INITIAL_FROM_SOURCE_TEXT",
+    "review_reasons": [
+      "HUMAN_TAXONOMY_REVIEW",
+      "ANSWER_REVIEW_REQUIRED",
+      "VISUAL_SOURCE_REVIEW_REQUIRED"
+    ],
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 569,
+        "subsource_code": null,
+        "question_number": "6",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 575,
+        "subsource_code": null,
+        "question_number": "6",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": "B"
+      }
+    ],
+    "problem_type_name": "Tính độ lệch chuẩn của mẫu ghép nhóm",
+    "concepts": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_STANDARD_DEVIATION",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_VARIANCE",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+        "weight": 0.1,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_DATA_FREQUENCY",
+        "weight": 0.1,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+        "weight": 1.0
+      }
+    ],
+    "dedupe_hash": "a4fc4dadf6889f8cb9705bb01da9a8216b20f4b116270c0b1f67157d7220d692",
+    "academic_review_status": "NOT_REVIEWED",
+    "promotion_eligible": false,
+    "requires_question_group_model": false
+  },
+  {
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "source_page": 587,
+    "question_number": "5",
+    "subsource_code": null,
+    "section_detected": "MULTIPLE_CHOICE",
+    "question_type_detected": "MULTIPLE_CHOICE",
+    "raw_question_text": "Câu 5. Kết quả điều tra về số giờ làm thêm trong một tuần của 100 sinh viên được cho ở biểu đồ bên. Tìm khoảng tứ phân vị của số liệu đó. A. 4,24 . B. 3,47. C. 4,35. D. 3,27.",
+    "problem_type_code": "CALCULATE_GROUPED_IQR",
+    "classification_confidence": 0.8,
+    "visual_required": true,
+    "mixed_scope": false,
+    "tf_items": [],
+    "answer_detected": "D",
+    "answer_evidence": "CONSISTENT_SOURCE_SOLUTION_OCCURRENCE",
+    "answer_confidence": 0.8,
+    "fingerprint": "183530cc709f0c0dc16a",
+    "candidate_id": "M12_DISP_CAND_0022",
+    "status": "STRUCTURAL_CANDIDATE",
+    "classification_method": "RULE_BASED_INITIAL_FROM_SOURCE_TEXT",
+    "review_reasons": [
+      "HUMAN_TAXONOMY_REVIEW",
+      "ANSWER_REVIEW_REQUIRED",
+      "VISUAL_SOURCE_REVIEW_REQUIRED"
+    ],
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 587,
+        "subsource_code": null,
+        "question_number": "5",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 594,
+        "subsource_code": null,
+        "question_number": "5",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": "D"
+      }
+    ],
+    "problem_type_name": "Tính khoảng tứ phân vị của mẫu ghép nhóm",
+    "concepts": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_IQR",
+        "concept_code": "GROUPED_IQR",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_IQR",
+        "concept_code": "GROUPED_QUARTILE_INTERPOLATION",
+        "weight": 0.35,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_IQR",
+        "concept_code": "GROUPED_DATA_FREQUENCY",
+        "weight": 0.1,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_IQR",
+        "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+        "weight": 1.0
+      }
+    ],
+    "dedupe_hash": "f99ac8efd4d5f8da25f498be688a1250c7be0a3eba9438641d630abf942c1140",
+    "academic_review_status": "NOT_REVIEWED",
+    "promotion_eligible": false,
+    "requires_question_group_model": false
+  },
+  {
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "source_page": 606,
+    "question_number": "6",
+    "subsource_code": null,
+    "section_detected": "MULTIPLE_CHOICE",
+    "question_type_detected": "MULTIPLE_CHOICE",
+    "raw_question_text": "Câu 6. Một vận động viên luyện tập chạy cự li 100 m đã ghi lại kết quả luyện tập như sau: Thời gian (giây) [10,2;10,4) [10,4;10,6) [10,6;10,8) [10,8;11) Số vận động viên 3 7 8 2 Hãy xác định phương sai của mẫu số liệu trên (làm tròn kết quả đến hàng phần trăm). A. 0,01. B. 0,03. C. 0,06 . D. 0,07 .",
+    "problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+    "classification_confidence": 0.75,
+    "visual_required": true,
+    "mixed_scope": false,
+    "tf_items": [],
+    "answer_detected": "B",
+    "answer_evidence": "CONSISTENT_SOURCE_SOLUTION_OCCURRENCE",
+    "answer_confidence": 0.8,
+    "fingerprint": "bb6da4420a076541d0db",
+    "candidate_id": "M12_DISP_CAND_0023",
+    "status": "STRUCTURAL_CANDIDATE",
+    "classification_method": "RULE_BASED_INITIAL_FROM_SOURCE_TEXT",
+    "review_reasons": [
+      "HUMAN_TAXONOMY_REVIEW",
+      "ANSWER_REVIEW_REQUIRED",
+      "VISUAL_SOURCE_REVIEW_REQUIRED"
+    ],
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 606,
+        "subsource_code": null,
+        "question_number": "6",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 612,
+        "subsource_code": null,
+        "question_number": "6",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": "B"
+      }
+    ],
+    "problem_type_name": "Tính phương sai của mẫu ghép nhóm",
+    "concepts": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+        "concept_code": "GROUPED_VARIANCE",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+        "concept_code": "GROUPED_MEAN_FOR_DISPERSION",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+        "concept_code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+        "weight": 0.15,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+        "concept_code": "GROUPED_DATA_FREQUENCY",
+        "weight": 0.1,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+        "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+        "weight": 1.0
+      }
+    ],
+    "dedupe_hash": "e10d889ed159aba90fb541a36efc9b7299e5910fecfb44d330db5c5074b7338f",
+    "academic_review_status": "NOT_REVIEWED",
+    "promotion_eligible": false,
+    "requires_question_group_model": false
+  },
+  {
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "source_page": 624,
+    "question_number": "6",
+    "subsource_code": null,
+    "section_detected": "MULTIPLE_CHOICE",
+    "question_type_detected": "MULTIPLE_CHOICE",
+    "raw_question_text": "Câu 6. Điểm thi môn Toán (thang điểm 100, điểm được làm tròn đến 1) của 60 thí sinh được cho mẫu số liệu ghép nhóm như sau: Điểm [0;9,5) [9,5;19,5) [19,5;29,5) [29,5;39,5) [39,5;49,5) Số thí sinh 1 2 4 6 15 Điểm [49,5;59,5) [59,5;69,5) [69,5;79,5) [79,5;89,5) [89,5;99,5) Số thí sinh 12 10 6 3 1 Tính khoảng tứ phân vị của mẫu số liệu ghép nhóm (kết quả làm tròn đến phần mười). A. 25,6 . B. 23,7 . C. 22,5. D. 20,8.",
+    "problem_type_code": "CALCULATE_GROUPED_IQR",
+    "classification_confidence": 0.8,
+    "visual_required": true,
+    "mixed_scope": false,
+    "tf_items": [],
+    "answer_detected": "B",
+    "answer_evidence": "CONSISTENT_SOURCE_SOLUTION_OCCURRENCE",
+    "answer_confidence": 0.8,
+    "fingerprint": "4c58b17eae44659c42b4",
+    "candidate_id": "M12_DISP_CAND_0024",
+    "status": "STRUCTURAL_CANDIDATE",
+    "classification_method": "RULE_BASED_INITIAL_FROM_SOURCE_TEXT",
+    "review_reasons": [
+      "HUMAN_TAXONOMY_REVIEW",
+      "ANSWER_REVIEW_REQUIRED",
+      "VISUAL_SOURCE_REVIEW_REQUIRED"
+    ],
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 624,
+        "subsource_code": null,
+        "question_number": "6",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 631,
+        "subsource_code": null,
+        "question_number": "6",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": "B"
+      }
+    ],
+    "problem_type_name": "Tính khoảng tứ phân vị của mẫu ghép nhóm",
+    "concepts": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_IQR",
+        "concept_code": "GROUPED_IQR",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_IQR",
+        "concept_code": "GROUPED_QUARTILE_INTERPOLATION",
+        "weight": 0.35,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_IQR",
+        "concept_code": "GROUPED_DATA_FREQUENCY",
+        "weight": 0.1,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_IQR",
+        "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+        "weight": 1.0
+      }
+    ],
+    "dedupe_hash": "b2698d87aba92a308ae61ff3e63028c2f6b2c4df3852890da22395523090b750",
+    "academic_review_status": "NOT_REVIEWED",
+    "promotion_eligible": false,
+    "requires_question_group_model": false
+  },
+  {
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "source_page": 643,
+    "question_number": "4",
+    "subsource_code": null,
+    "section_detected": "MULTIPLE_CHOICE",
+    "question_type_detected": "MULTIPLE_CHOICE",
+    "raw_question_text": "Câu 4. Để đánh giá chất lượng một loại pin điện thoại mới, người ta ghi lại thời gian nghe nhạc liên tục của điện thoại được sạc đầy pin cho đến khi hết pin cho kết quả như sau: Tính độ lệch chuẩn của mẫu số liệu ghép nhóm trên (kết quả được làm tròn đến hàng phần trăm) A. 0,63. B. 0,43. C. 0,73. D. 0,53.",
+    "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "classification_confidence": 0.75,
+    "visual_required": true,
+    "mixed_scope": false,
+    "tf_items": [],
+    "answer_detected": "D",
+    "answer_evidence": "CONSISTENT_SOURCE_SOLUTION_OCCURRENCE",
+    "answer_confidence": 0.8,
+    "fingerprint": "4aa760d159dd47069ca0",
+    "candidate_id": "M12_DISP_CAND_0025",
+    "status": "STRUCTURAL_CANDIDATE",
+    "classification_method": "RULE_BASED_INITIAL_FROM_SOURCE_TEXT",
+    "review_reasons": [
+      "HUMAN_TAXONOMY_REVIEW",
+      "ANSWER_REVIEW_REQUIRED",
+      "VISUAL_SOURCE_REVIEW_REQUIRED"
+    ],
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 643,
+        "subsource_code": null,
+        "question_number": "4",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 648,
+        "subsource_code": null,
+        "question_number": "4",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": "D"
+      }
+    ],
+    "problem_type_name": "Tính độ lệch chuẩn của mẫu ghép nhóm",
+    "concepts": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_STANDARD_DEVIATION",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_VARIANCE",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+        "weight": 0.1,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_DATA_FREQUENCY",
+        "weight": 0.1,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+        "weight": 1.0
+      }
+    ],
+    "dedupe_hash": "61ade7d306be6083f6383ec43cdf04f55a6a9e248e5e8c3f4e133d20b980c243",
+    "academic_review_status": "NOT_REVIEWED",
+    "promotion_eligible": false,
+    "requires_question_group_model": false
+  },
+  {
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "source_page": 661,
+    "question_number": "6",
+    "subsource_code": null,
+    "section_detected": "MULTIPLE_CHOICE",
+    "question_type_detected": "MULTIPLE_CHOICE",
+    "raw_question_text": "Câu 6. Thời gian sử dụng điện thoại trong một ngày của 30 sinh viên được ghi lại ở bảng sau (đơn vị: phút). Thời gian (phút) [0;60) [60;120) [120;180) [180;240) [240;300) Số sinh viên 2 7 7 10 4 Hãy tìm khoảng tứ phân vị của mẫu số liệu ghép nhóm trên (kết quả làm tròn đến hàng đơn vị). A. 112. B. 117 . C. 122. D. 127 .",
+    "problem_type_code": "CALCULATE_GROUPED_IQR",
+    "classification_confidence": 0.8,
+    "visual_required": true,
+    "mixed_scope": false,
+    "tf_items": [],
+    "answer_detected": "A",
+    "answer_evidence": "CONSISTENT_SOURCE_SOLUTION_OCCURRENCE",
+    "answer_confidence": 0.8,
+    "fingerprint": "d56ac7ac22fcf4a04a40",
+    "candidate_id": "M12_DISP_CAND_0026",
+    "status": "STRUCTURAL_CANDIDATE",
+    "classification_method": "RULE_BASED_INITIAL_FROM_SOURCE_TEXT",
+    "review_reasons": [
+      "HUMAN_TAXONOMY_REVIEW",
+      "ANSWER_REVIEW_REQUIRED",
+      "VISUAL_SOURCE_REVIEW_REQUIRED"
+    ],
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 661,
+        "subsource_code": null,
+        "question_number": "6",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 667,
+        "subsource_code": null,
+        "question_number": "6",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": "A"
+      }
+    ],
+    "problem_type_name": "Tính khoảng tứ phân vị của mẫu ghép nhóm",
+    "concepts": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_IQR",
+        "concept_code": "GROUPED_IQR",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_IQR",
+        "concept_code": "GROUPED_QUARTILE_INTERPOLATION",
+        "weight": 0.35,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_IQR",
+        "concept_code": "GROUPED_DATA_FREQUENCY",
+        "weight": 0.1,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_IQR",
+        "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+        "weight": 1.0
+      }
+    ],
+    "dedupe_hash": "23ac5d68bb97ced456ec754e522e1fde85f06c0f6a6a5e8b8b4c057e3fc1ef9a",
+    "academic_review_status": "NOT_REVIEWED",
+    "promotion_eligible": false,
+    "requires_question_group_model": false
+  },
+  {
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "source_page": 680,
+    "question_number": "6",
+    "subsource_code": null,
+    "section_detected": "MULTIPLE_CHOICE",
+    "question_type_detected": "MULTIPLE_CHOICE",
+    "raw_question_text": "Câu 6. Kết quả khảo sát năng suất (đơn vị: tấn/ha) của một số thửa ruộng được minh hoạ ở biểu đồ sau. Hãy xác định độ lệch chuẩn của mẫu số liệu trên (làm tròn kết quả đến hàng phần trăm). A. 039 . B. 0,29 . C. 0,22 . D. 0,31.",
+    "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "classification_confidence": 0.75,
+    "visual_required": true,
+    "mixed_scope": false,
+    "tf_items": [],
+    "answer_detected": "B",
+    "answer_evidence": "CONSISTENT_SOURCE_SOLUTION_OCCURRENCE",
+    "answer_confidence": 0.8,
+    "fingerprint": "df190c5cd712fdab82f3",
+    "candidate_id": "M12_DISP_CAND_0027",
+    "status": "STRUCTURAL_CANDIDATE",
+    "classification_method": "RULE_BASED_INITIAL_FROM_SOURCE_TEXT",
+    "review_reasons": [
+      "HUMAN_TAXONOMY_REVIEW",
+      "ANSWER_REVIEW_REQUIRED",
+      "VISUAL_SOURCE_REVIEW_REQUIRED"
+    ],
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 680,
+        "subsource_code": null,
+        "question_number": "6",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 686,
+        "subsource_code": null,
+        "question_number": "6",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": "B"
+      }
+    ],
+    "problem_type_name": "Tính độ lệch chuẩn của mẫu ghép nhóm",
+    "concepts": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_STANDARD_DEVIATION",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_VARIANCE",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+        "weight": 0.1,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_DATA_FREQUENCY",
+        "weight": 0.1,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+        "weight": 1.0
+      }
+    ],
+    "dedupe_hash": "8375d17a1776a3df04388246e8fed07329be52e37d7a0f410dd4b7d2494c5993",
+    "academic_review_status": "NOT_REVIEWED",
+    "promotion_eligible": false,
+    "requires_question_group_model": false
+  },
+  {
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "source_page": 699,
+    "question_number": "5",
+    "subsource_code": null,
+    "section_detected": "MULTIPLE_CHOICE",
+    "question_type_detected": "MULTIPLE_CHOICE",
+    "raw_question_text": "Câu 5. Chiều dài của 40 bé trai sơ sinh 12 ngày tuổi chọn ngẫu nhiên ở một bệnh viện được nhà nghiên cứu thống kê trong Bảng dưới đây: Chiều dài ( ) cm [44;46) [46;48) [48;50) [50;52) [52;54) [54;56) Số trẻ 3 3 10 15 7 2 Tính độ lệch chuẩn của chiều dài nhóm 40 bé trai sơ sinh (làm tròn kết quả đến hàng phần nghìn). A. 2,58. B. 2,43 . C. 2,23 . D. 2,78 .",
+    "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "classification_confidence": 0.75,
+    "visual_required": true,
+    "mixed_scope": false,
+    "tf_items": [],
+    "answer_detected": "B",
+    "answer_evidence": "CONSISTENT_SOURCE_SOLUTION_OCCURRENCE",
+    "answer_confidence": 0.8,
+    "fingerprint": "205fcf6c3d4e6b808c33",
+    "candidate_id": "M12_DISP_CAND_0028",
+    "status": "STRUCTURAL_CANDIDATE",
+    "classification_method": "RULE_BASED_INITIAL_FROM_SOURCE_TEXT",
+    "review_reasons": [
+      "HUMAN_TAXONOMY_REVIEW",
+      "ANSWER_REVIEW_REQUIRED",
+      "VISUAL_SOURCE_REVIEW_REQUIRED"
+    ],
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 699,
+        "subsource_code": null,
+        "question_number": "5",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 705,
+        "subsource_code": null,
+        "question_number": "5",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": "B"
+      }
+    ],
+    "problem_type_name": "Tính độ lệch chuẩn của mẫu ghép nhóm",
+    "concepts": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_STANDARD_DEVIATION",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_VARIANCE",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+        "weight": 0.1,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "concept_code": "GROUPED_DATA_FREQUENCY",
+        "weight": 0.1,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+        "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+        "weight": 1.0
+      }
+    ],
+    "dedupe_hash": "039d199d7bf27ef2c02eab88e6782908a5fe1fa5567badae19c58843e7b5cc0a",
+    "academic_review_status": "NOT_REVIEWED",
+    "promotion_eligible": false,
+    "requires_question_group_model": false
+  },
+  {
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "source_page": 718,
+    "question_number": "5",
+    "subsource_code": null,
+    "section_detected": "MULTIPLE_CHOICE",
+    "question_type_detected": "MULTIPLE_CHOICE",
+    "raw_question_text": "Câu 5. Thời gian luyện tập trong một ngày (tính theo giờ) của một số vận động viên được ghi lại ở bảng sau: Thời gian luyện tập (giờ) [0;2) [2;4) [4;6) [6;8) [8;10) Số vận động viên 3 8 12 12 4 Hãy tìm khoảng tứ phân vị của mẫu số liệu ghép nhóm trên (kết quả làm tròn đến phần trăm). A. 1,23. B. 1,63. C. 1,83. D. 1,93.",
+    "problem_type_code": "CALCULATE_GROUPED_IQR",
+    "classification_confidence": 0.8,
+    "visual_required": true,
+    "mixed_scope": false,
+    "tf_items": [],
+    "answer_detected": "B",
+    "answer_evidence": "CONSISTENT_SOURCE_SOLUTION_OCCURRENCE",
+    "answer_confidence": 0.8,
+    "fingerprint": "351387f062f3bb4f99f3",
+    "candidate_id": "M12_DISP_CAND_0029",
+    "status": "STRUCTURAL_CANDIDATE",
+    "classification_method": "RULE_BASED_INITIAL_FROM_SOURCE_TEXT",
+    "review_reasons": [
+      "HUMAN_TAXONOMY_REVIEW",
+      "ANSWER_REVIEW_REQUIRED",
+      "VISUAL_SOURCE_REVIEW_REQUIRED"
+    ],
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 718,
+        "subsource_code": null,
+        "question_number": "5",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 725,
+        "subsource_code": null,
+        "question_number": "5",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": "B"
+      }
+    ],
+    "problem_type_name": "Tính khoảng tứ phân vị của mẫu ghép nhóm",
+    "concepts": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_IQR",
+        "concept_code": "GROUPED_IQR",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_IQR",
+        "concept_code": "GROUPED_QUARTILE_INTERPOLATION",
+        "weight": 0.35,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_IQR",
+        "concept_code": "GROUPED_DATA_FREQUENCY",
+        "weight": 0.1,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_IQR",
+        "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+        "weight": 1.0
+      }
+    ],
+    "dedupe_hash": "bcfd5c08d5a21e820c5c783e42490fadf608d36f51cc1ab905720f101a5b4bd0",
+    "academic_review_status": "NOT_REVIEWED",
+    "promotion_eligible": false,
+    "requires_question_group_model": false
+  },
+  {
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "source_page": 738,
+    "question_number": "6",
+    "subsource_code": null,
+    "section_detected": "MULTIPLE_CHOICE",
+    "question_type_detected": "MULTIPLE_CHOICE",
+    "raw_question_text": "Câu 6. Bảng sau thống kê cân nặng của 50 quả xoài Úc được lựa chọn ngẫu nhiên sau khi thu hoạch ở một nông trường. Cân nặng ( ) g [250;290) [290;330) [330;370) [370;410) [410;450) Số quả xoài 3 13 18 11 5 Hãy tìm khoảng tứ phân vị của mẫu số liệu ghép nhóm đó (kết quả làm tròn đến phần mười). A. 55,7. B. 53,6. C. 63,5. D. 67,4 .",
+    "problem_type_code": "CALCULATE_GROUPED_IQR",
+    "classification_confidence": 0.8,
+    "visual_required": true,
+    "mixed_scope": false,
+    "tf_items": [],
+    "answer_detected": "C",
+    "answer_evidence": "CONSISTENT_SOURCE_SOLUTION_OCCURRENCE",
+    "answer_confidence": 0.8,
+    "fingerprint": "4010939e013c9b78f9e9",
+    "candidate_id": "M12_DISP_CAND_0030",
+    "status": "STRUCTURAL_CANDIDATE",
+    "classification_method": "RULE_BASED_INITIAL_FROM_SOURCE_TEXT",
+    "review_reasons": [
+      "HUMAN_TAXONOMY_REVIEW",
+      "ANSWER_REVIEW_REQUIRED",
+      "VISUAL_SOURCE_REVIEW_REQUIRED"
+    ],
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 738,
+        "subsource_code": null,
+        "question_number": "6",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 746,
+        "subsource_code": null,
+        "question_number": "6",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": "C"
+      }
+    ],
+    "problem_type_name": "Tính khoảng tứ phân vị của mẫu ghép nhóm",
+    "concepts": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_IQR",
+        "concept_code": "GROUPED_IQR",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_IQR",
+        "concept_code": "GROUPED_QUARTILE_INTERPOLATION",
+        "weight": 0.35,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_IQR",
+        "concept_code": "GROUPED_DATA_FREQUENCY",
+        "weight": 0.1,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_IQR",
+        "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+        "weight": 1.0
+      }
+    ],
+    "dedupe_hash": "b755774c4fc699928df1ce931b57482c4260d6cdb108b7d763205cfce0fbf84c",
+    "academic_review_status": "NOT_REVIEWED",
+    "promotion_eligible": false,
+    "requires_question_group_model": false
+  },
+  {
+    "source_code": "SRC_NGOC_VY_40_DE_2026",
+    "source_key": "NGOC_VY_40_DE_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "source_page": 758,
+    "question_number": "5",
+    "subsource_code": null,
+    "section_detected": "MULTIPLE_CHOICE",
+    "question_type_detected": "MULTIPLE_CHOICE",
+    "raw_question_text": "Câu 5. Số điểm một cầu thủ bóng rổ ghi được trong 20 trận đấu được cho ở bảng sau: Điểm số [5,5;10,5) [10,5;15,5) [15,5;20,5) [20,5;25,5) Số trận 3 9 2 6 Hãy tìm khoảng tứ phân vị của mẫu số liệu ghép nhóm trên. A. 8,6. B. 9,7 . C. 8,9 . D. 9,3.",
+    "problem_type_code": "CALCULATE_GROUPED_IQR",
+    "classification_confidence": 0.8,
+    "visual_required": true,
+    "mixed_scope": false,
+    "tf_items": [],
+    "answer_detected": "B",
+    "answer_evidence": "CONSISTENT_SOURCE_SOLUTION_OCCURRENCE",
+    "answer_confidence": 0.8,
+    "fingerprint": "4add50577b166037e78f",
+    "candidate_id": "M12_DISP_CAND_0031",
+    "status": "STRUCTURAL_CANDIDATE",
+    "classification_method": "RULE_BASED_INITIAL_FROM_SOURCE_TEXT",
+    "review_reasons": [
+      "HUMAN_TAXONOMY_REVIEW",
+      "ANSWER_REVIEW_REQUIRED",
+      "VISUAL_SOURCE_REVIEW_REQUIRED"
+    ],
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 758,
+        "subsource_code": null,
+        "question_number": "5",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_NGOC_VY_40_DE_2026",
+        "source_key": "NGOC_VY_40_DE_2026",
+        "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+        "source_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+        "source_page": 765,
+        "subsource_code": null,
+        "question_number": "5",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": "B"
+      }
+    ],
+    "problem_type_name": "Tính khoảng tứ phân vị của mẫu ghép nhóm",
+    "concepts": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_IQR",
+        "concept_code": "GROUPED_IQR",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_IQR",
+        "concept_code": "GROUPED_QUARTILE_INTERPOLATION",
+        "weight": 0.35,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_IQR",
+        "concept_code": "GROUPED_DATA_FREQUENCY",
+        "weight": 0.1,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_IQR",
+        "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+        "weight": 1.0
+      }
+    ],
+    "dedupe_hash": "35f8d31629d799eeff8e0bb564d90498b60e77e8543bbdd0a374a8f045d47665",
+    "academic_review_status": "NOT_REVIEWED",
+    "promotion_eligible": false,
+    "requires_question_group_model": false
+  },
+  {
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "source_key": "PROVINCIAL_TRIAL_2025",
+    "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+    "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+    "source_page": 2,
+    "question_number": "1",
+    "subsource_code": null,
+    "section_detected": "TRUE_FALSE",
+    "question_type_detected": "TRUE_FALSE_GROUP",
+    "raw_question_text": "Câu 1. Thống kê điểm thi đánh giá năng lực của 120 học sinh ở một trường THPT ở địa bàn thành phố Huế với thang điểm 100 được cho ở bảng sau: a) Khoảng biến thiên của mẫu số liệu ghép nhóm trên là 100. b) Số học sinh đạt điểm 60 trở lên là 38 học sinh. C B S A c) Số điểm trung bình của học sinh đạt được từ bảng số liệu trên là 54 điểm. d) Chọn ngẫu nhiên một học sinh từ 120 học sinh trên, xác suất chọn được học sinh có điểm thuộc nhóm chứa trung vị là 1 8 .",
+    "problem_type_code": "CALCULATE_GROUPED_RANGE",
+    "classification_confidence": 0.82,
+    "visual_required": true,
+    "mixed_scope": true,
+    "tf_items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Khoảng biến thiên của mẫu số liệu ghép nhóm trên là 100.",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "NOT_REVIEWED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Số học sinh đạt điểm 60 trở lên là 38 học sinh. C B S A",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "NOT_REVIEWED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Số điểm trung bình của học sinh đạt được từ bảng số liệu trên là 54 điểm.",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "NOT_REVIEWED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Chọn ngẫu nhiên một học sinh từ 120 học sinh trên, xác suất chọn được học sinh có điểm thuộc nhóm chứa trung vị là 1 8 .",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "NOT_REVIEWED"
+      }
+    ],
+    "answer_detected": null,
+    "answer_evidence": "NOT_DETECTED",
+    "answer_confidence": 0.0,
+    "fingerprint": "f59e595310939deff027",
+    "candidate_id": "M12_DISP_CAND_0032",
+    "status": "STRUCTURAL_CANDIDATE",
+    "classification_method": "RULE_BASED_INITIAL_FROM_SOURCE_TEXT",
+    "review_reasons": [
+      "HUMAN_TAXONOMY_REVIEW",
+      "ANSWER_REVIEW_REQUIRED",
+      "VISUAL_SOURCE_REVIEW_REQUIRED",
+      "MIXED_SCOPE_REVIEW_REQUIRED"
+    ],
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+        "source_key": "PROVINCIAL_TRIAL_2025",
+        "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+        "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+        "source_page": 2,
+        "subsource_code": null,
+        "question_number": "1",
+        "question_type": "TRUE_FALSE_GROUP",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+        "source_key": "PROVINCIAL_TRIAL_2025",
+        "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+        "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+        "source_page": 10,
+        "subsource_code": null,
+        "question_number": "1",
+        "question_type": "TRUE_FALSE_GROUP",
+        "answer_detected": null
+      }
+    ],
+    "problem_type_name": "Tính khoảng biến thiên của mẫu ghép nhóm",
+    "concepts": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_RANGE",
+        "concept_code": "GROUPED_RANGE",
+        "weight": 0.6,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_RANGE",
+        "concept_code": "GROUPED_DATA_CLASS_BOUNDARY",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_RANGE",
+        "concept_code": "GROUPED_DATA_FREQUENCY",
+        "weight": 0.15,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_RANGE",
+        "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+        "weight": 1.0
+      }
+    ],
+    "dedupe_hash": "a6e9214c77d92f37fed77bb6590ba741f75d76557ef123fe4bc9ddf47c2dfe37",
+    "academic_review_status": "NOT_REVIEWED",
+    "promotion_eligible": false,
+    "requires_question_group_model": true
+  },
+  {
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "source_key": "PROVINCIAL_TRIAL_2025",
+    "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+    "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+    "source_page": 20,
+    "question_number": "11",
+    "subsource_code": null,
+    "section_detected": "MULTIPLE_CHOICE",
+    "question_type_detected": "MULTIPLE_CHOICE",
+    "raw_question_text": "Câu 11. Lâm trường Tam Đảo thống kê đường kính thân gỗ của một số cây xoan đào 6 năm tuổi cho ở bảng sau: Đường kính (cm) [ ) 40;45 [ ) 45;50 [ ) 50;55 [ ) 55;60 [ ) 60;65 Tần số 5 20 18 7 3 Khoảng biến thiên của mẫu số liệu ghép nhóm trên là: A. 25 . B.15. C.60 . D. 20 .",
+    "problem_type_code": "CALCULATE_GROUPED_RANGE",
+    "classification_confidence": 0.82,
+    "visual_required": true,
+    "mixed_scope": false,
+    "tf_items": [],
+    "answer_detected": "A",
+    "answer_evidence": "CONSISTENT_SOURCE_SOLUTION_OCCURRENCE",
+    "answer_confidence": 0.8,
+    "fingerprint": "a90d9106b29dbf98eafb",
+    "candidate_id": "M12_DISP_CAND_0033",
+    "status": "STRUCTURAL_CANDIDATE",
+    "classification_method": "RULE_BASED_INITIAL_FROM_SOURCE_TEXT",
+    "review_reasons": [
+      "HUMAN_TAXONOMY_REVIEW",
+      "ANSWER_REVIEW_REQUIRED",
+      "VISUAL_SOURCE_REVIEW_REQUIRED"
+    ],
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+        "source_key": "PROVINCIAL_TRIAL_2025",
+        "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+        "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+        "source_page": 20,
+        "subsource_code": null,
+        "question_number": "11",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+        "source_key": "PROVINCIAL_TRIAL_2025",
+        "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+        "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+        "source_page": 26,
+        "subsource_code": null,
+        "question_number": "11",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": "A"
+      }
+    ],
+    "problem_type_name": "Tính khoảng biến thiên của mẫu ghép nhóm",
+    "concepts": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_RANGE",
+        "concept_code": "GROUPED_RANGE",
+        "weight": 0.6,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_RANGE",
+        "concept_code": "GROUPED_DATA_CLASS_BOUNDARY",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_RANGE",
+        "concept_code": "GROUPED_DATA_FREQUENCY",
+        "weight": 0.15,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_RANGE",
+        "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+        "weight": 1.0
+      }
+    ],
+    "dedupe_hash": "ec763c0f253a187951ec3b241985e4d3a2bb58171bc187ceaa91fa0820aa969c",
+    "academic_review_status": "NOT_REVIEWED",
+    "promotion_eligible": false,
+    "requires_question_group_model": false
+  },
+  {
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "source_key": "PROVINCIAL_TRIAL_2025",
+    "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+    "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+    "source_page": 37,
+    "question_number": "5",
+    "subsource_code": null,
+    "section_detected": "MULTIPLE_CHOICE",
+    "question_type_detected": "MULTIPLE_CHOICE",
+    "raw_question_text": "Câu 5. Cho mẫu số liệu ghép nhóm có tứ phân vị thứ nhất, thứ hai, thứ ba lần lượt là 1 2 3 , , Q Q Q . Khoảng tứ phân vị của mẫu số liệu ghép nhóm đó bằng A. 1 2 Q Q Q ∆= − . B. 3 1 Q Q Q ∆ = − . C. 2 1 Q Q Q ∆= − . D. 1 3 Q Q Q ∆ = − .",
+    "problem_type_code": "COMPARE_GROUPED_IQR",
+    "classification_confidence": 0.65,
+    "visual_required": false,
+    "mixed_scope": false,
+    "tf_items": [],
+    "answer_detected": "B",
+    "answer_evidence": "CONSISTENT_SOURCE_SOLUTION_OCCURRENCE",
+    "answer_confidence": 0.8,
+    "fingerprint": "a6730e5e6e6b7a12e7d3",
+    "candidate_id": "M12_DISP_CAND_0034",
+    "status": "STRUCTURAL_CANDIDATE",
+    "classification_method": "RULE_BASED_INITIAL_FROM_SOURCE_TEXT",
+    "review_reasons": [
+      "HUMAN_TAXONOMY_REVIEW",
+      "ANSWER_REVIEW_REQUIRED"
+    ],
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+        "source_key": "PROVINCIAL_TRIAL_2025",
+        "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+        "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+        "source_page": 37,
+        "subsource_code": null,
+        "question_number": "5",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+        "source_key": "PROVINCIAL_TRIAL_2025",
+        "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+        "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+        "source_page": 44,
+        "subsource_code": null,
+        "question_number": "5",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": "B"
+      }
+    ],
+    "problem_type_name": "So sánh mẫu bằng khoảng tứ phân vị",
+    "concepts": [
+      {
+        "problem_type_code": "COMPARE_GROUPED_IQR",
+        "concept_code": "DISPERSION_COMPARISON",
+        "weight": 0.5,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "COMPARE_GROUPED_IQR",
+        "concept_code": "GROUPED_IQR",
+        "weight": 0.4,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "COMPARE_GROUPED_IQR",
+        "concept_code": "IQR_ROBUSTNESS",
+        "weight": 0.1,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "COMPARE_GROUPED_IQR",
+        "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CONCLUDE",
+        "weight": 1.0
+      }
+    ],
+    "dedupe_hash": "f02eb6a62aeecddc56694fa86987f26e77f80d87f5deb7e86593e0fd1f4158fb",
+    "academic_review_status": "NOT_REVIEWED",
+    "promotion_eligible": false,
+    "requires_question_group_model": false
+  },
+  {
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "source_key": "PROVINCIAL_TRIAL_2025",
+    "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+    "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+    "source_page": 39,
+    "question_number": "3",
+    "subsource_code": null,
+    "section_detected": "TRUE_FALSE",
+    "question_type_detected": "TRUE_FALSE_GROUP",
+    "raw_question_text": "Câu 3. Chiều cao (cm) của các em học sinh lớp 12A1 được thống kê theo bảng tần số ghép nhóm như sau: Nhóm [ ) 140;150 [ ) 150;160 [ ) 160;170 [ ) 170;180 [ ) 180;190 Tần số 1 8 18 10 1 a) Lớp có ít nhất 11 học sinh có chiêu cao lớn hơn chiều cao trung bình của lớp. b) Chiều cao trung bình của lớp 12A1 là 164 (cm). c) Khoảng biến thiên mẫu số liệu trên là 50. d) Chọn ngầu nhiên 5 học sinh của lớp tham gia đội tình nguyện. Xác suất để chọn được \"5 học sinh có chiều cao lớn hơn hoặc bằng 170 (cm)\" là 11 38 NHÓM GIÁO VIÊN TOÁN VIỆT NHÓM GIÁO VIÊN TOÁN VIỆT NAM",
+    "problem_type_code": "CALCULATE_GROUPED_RANGE",
+    "classification_confidence": 0.82,
+    "visual_required": true,
+    "mixed_scope": true,
+    "tf_items": [
+      {
+        "label": "a",
+        "order_index": 0,
+        "content": "Lớp có ít nhất 11 học sinh có chiêu cao lớn hơn chiều cao trung bình của lớp.",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "NOT_REVIEWED"
+      },
+      {
+        "label": "b",
+        "order_index": 1,
+        "content": "Chiều cao trung bình của lớp 12A1 là 164 (cm).",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "NOT_REVIEWED"
+      },
+      {
+        "label": "c",
+        "order_index": 2,
+        "content": "Khoảng biến thiên mẫu số liệu trên là 50.",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "NOT_REVIEWED"
+      },
+      {
+        "label": "d",
+        "order_index": 3,
+        "content": "Chọn ngầu nhiên 5 học sinh của lớp tham gia đội tình nguyện. Xác suất để chọn được \"5 học sinh có chiều cao lớn hơn hoặc bằng 170 (cm)\" là 11 38 NHÓM GIÁO VIÊN TOÁN VIỆT NHÓM GIÁO VIÊN TOÁN VIỆT NAM",
+        "correct_answer": null,
+        "answer_status": "UNREVIEWED",
+        "taxonomy_status": "NOT_REVIEWED"
+      }
+    ],
+    "answer_detected": null,
+    "answer_evidence": "NOT_DETECTED",
+    "answer_confidence": 0.0,
+    "fingerprint": "49c5fa610e71160e7f69",
+    "candidate_id": "M12_DISP_CAND_0035",
+    "status": "STRUCTURAL_CANDIDATE",
+    "classification_method": "RULE_BASED_INITIAL_FROM_SOURCE_TEXT",
+    "review_reasons": [
+      "HUMAN_TAXONOMY_REVIEW",
+      "ANSWER_REVIEW_REQUIRED",
+      "VISUAL_SOURCE_REVIEW_REQUIRED",
+      "MIXED_SCOPE_REVIEW_REQUIRED"
+    ],
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+        "source_key": "PROVINCIAL_TRIAL_2025",
+        "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+        "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+        "source_page": 39,
+        "subsource_code": null,
+        "question_number": "3",
+        "question_type": "TRUE_FALSE_GROUP",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+        "source_key": "PROVINCIAL_TRIAL_2025",
+        "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+        "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+        "source_page": 47,
+        "subsource_code": null,
+        "question_number": "3",
+        "question_type": "TRUE_FALSE_GROUP",
+        "answer_detected": null
+      }
+    ],
+    "problem_type_name": "Tính khoảng biến thiên của mẫu ghép nhóm",
+    "concepts": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_RANGE",
+        "concept_code": "GROUPED_RANGE",
+        "weight": 0.6,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_RANGE",
+        "concept_code": "GROUPED_DATA_CLASS_BOUNDARY",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_RANGE",
+        "concept_code": "GROUPED_DATA_FREQUENCY",
+        "weight": 0.15,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_RANGE",
+        "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+        "weight": 1.0
+      }
+    ],
+    "dedupe_hash": "bbb64be13bdbf8f68b8a3000b8c96ddb9c55f0d41c6674dc72a1bada207e5cb2",
+    "academic_review_status": "NOT_REVIEWED",
+    "promotion_eligible": false,
+    "requires_question_group_model": true
+  },
+  {
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "source_key": "PROVINCIAL_TRIAL_2025",
+    "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+    "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+    "source_page": 55,
+    "question_number": "6",
+    "subsource_code": null,
+    "section_detected": "MULTIPLE_CHOICE",
+    "question_type_detected": "MULTIPLE_CHOICE",
+    "raw_question_text": "Câu 6. Bảng sau thống kê thời gian tập thể dục mỗi ngày trong tháng 3/2025 của hai bạn Hưng và Bình. Thời gian(phút) [ ) 10;15 [ ) 15;20 [ ) 20;25 [ ) 25;30 [ ) 30;35 Số ngày tập của Hưng 2 14 8 3 3 Số ngày tập của Bình 12 8 7 3 0 Khoảng biến thiên của mẫu số liệu ghép nhóm về thời gian tập thể dục của Hưng và Bình lần lượt là A.20 phút và 25 phút B.25 phút và 20 phút. C.20 phút và 20 phút. D.25 phút và 25 phút.",
+    "problem_type_code": "COMPARE_GROUPED_RANGE",
+    "classification_confidence": 0.82,
+    "visual_required": true,
+    "mixed_scope": false,
+    "tf_items": [],
+    "answer_detected": "D",
+    "answer_evidence": "CONSISTENT_SOURCE_SOLUTION_OCCURRENCE",
+    "answer_confidence": 0.8,
+    "fingerprint": "11c34c4cb699fd72659b",
+    "candidate_id": "M12_DISP_CAND_0036",
+    "status": "STRUCTURAL_CANDIDATE",
+    "classification_method": "RULE_BASED_INITIAL_FROM_SOURCE_TEXT",
+    "review_reasons": [
+      "HUMAN_TAXONOMY_REVIEW",
+      "ANSWER_REVIEW_REQUIRED",
+      "VISUAL_SOURCE_REVIEW_REQUIRED"
+    ],
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+        "source_key": "PROVINCIAL_TRIAL_2025",
+        "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+        "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+        "source_page": 55,
+        "subsource_code": null,
+        "question_number": "6",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+        "source_key": "PROVINCIAL_TRIAL_2025",
+        "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+        "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+        "source_page": 61,
+        "subsource_code": null,
+        "question_number": "6",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": "D"
+      }
+    ],
+    "problem_type_name": "So sánh mẫu bằng khoảng biến thiên",
+    "concepts": [
+      {
+        "problem_type_code": "COMPARE_GROUPED_RANGE",
+        "concept_code": "DISPERSION_COMPARISON",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "COMPARE_GROUPED_RANGE",
+        "concept_code": "GROUPED_RANGE",
+        "weight": 0.45,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "COMPARE_GROUPED_RANGE",
+        "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CONCLUDE",
+        "weight": 1.0
+      }
+    ],
+    "dedupe_hash": "5cba4fac759802c52d019d65f7fe1209d796757a5bcdd623036b751fdc936704",
+    "academic_review_status": "NOT_REVIEWED",
+    "promotion_eligible": false,
+    "requires_question_group_model": false
+  },
+  {
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "source_key": "PROVINCIAL_TRIAL_2025",
+    "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+    "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+    "source_page": 88,
+    "question_number": "3",
+    "subsource_code": null,
+    "section_detected": "MULTIPLE_CHOICE",
+    "question_type_detected": "MULTIPLE_CHOICE",
+    "raw_question_text": "Câu 3: Kết quả điều tra tổng thu nhập trong năm 2024 của một số hộ gia đình ở thành phố Vinh được ghi lại ở bảng sau: Khoảng biến thiên của mẫu số liệu là A. 260 . B. 200. C. 250. D. 150.",
+    "problem_type_code": "CALCULATE_GROUPED_RANGE",
+    "classification_confidence": 0.82,
+    "visual_required": true,
+    "mixed_scope": false,
+    "tf_items": [],
+    "answer_detected": "C",
+    "answer_evidence": "CONSISTENT_SOURCE_SOLUTION_OCCURRENCE",
+    "answer_confidence": 0.8,
+    "fingerprint": "6143467ab41d7fe15708",
+    "candidate_id": "M12_DISP_CAND_0037",
+    "status": "STRUCTURAL_CANDIDATE",
+    "classification_method": "RULE_BASED_INITIAL_FROM_SOURCE_TEXT",
+    "review_reasons": [
+      "HUMAN_TAXONOMY_REVIEW",
+      "ANSWER_REVIEW_REQUIRED",
+      "VISUAL_SOURCE_REVIEW_REQUIRED"
+    ],
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+        "source_key": "PROVINCIAL_TRIAL_2025",
+        "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+        "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+        "source_page": 88,
+        "subsource_code": null,
+        "question_number": "3",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+        "source_key": "PROVINCIAL_TRIAL_2025",
+        "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+        "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+        "source_page": 94,
+        "subsource_code": null,
+        "question_number": "3",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": "C"
+      }
+    ],
+    "problem_type_name": "Tính khoảng biến thiên của mẫu ghép nhóm",
+    "concepts": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_RANGE",
+        "concept_code": "GROUPED_RANGE",
+        "weight": 0.6,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_RANGE",
+        "concept_code": "GROUPED_DATA_CLASS_BOUNDARY",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_RANGE",
+        "concept_code": "GROUPED_DATA_FREQUENCY",
+        "weight": 0.15,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_RANGE",
+        "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+        "weight": 1.0
+      }
+    ],
+    "dedupe_hash": "276afeea6a3d9f3c04a1c858ee084f1d066d6def217c70601d49fa3c9b5646de",
+    "academic_review_status": "NOT_REVIEWED",
+    "promotion_eligible": false,
+    "requires_question_group_model": false
+  },
+  {
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "source_key": "PROVINCIAL_TRIAL_2025",
+    "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+    "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+    "source_page": 107,
+    "question_number": "5",
+    "subsource_code": null,
+    "section_detected": "MULTIPLE_CHOICE",
+    "question_type_detected": "MULTIPLE_CHOICE",
+    "raw_question_text": "Câu 5: Thời gian hoàn thành bài kiểm tra cuối học kỳ II môn Toán của các bạn học sinh lớp 12A được cho trong bảng sau: Thời gian (phút) [ ) 65;70 [ ) 70;75 [ ) 75;80 [ ) 80;85 [ ) 85;90 Số học sinh 2 3 15 20 5 Khoảng biến thiên của mẫu số liệu ghép nhóm trên là A. 25 . B. 20 . C. 30. D. 15.",
+    "problem_type_code": "CALCULATE_GROUPED_RANGE",
+    "classification_confidence": 0.82,
+    "visual_required": true,
+    "mixed_scope": false,
+    "tf_items": [],
+    "answer_detected": "A",
+    "answer_evidence": "CONSISTENT_SOURCE_SOLUTION_OCCURRENCE",
+    "answer_confidence": 0.8,
+    "fingerprint": "6112855cb58c2f58ab86",
+    "candidate_id": "M12_DISP_CAND_0038",
+    "status": "STRUCTURAL_CANDIDATE",
+    "classification_method": "RULE_BASED_INITIAL_FROM_SOURCE_TEXT",
+    "review_reasons": [
+      "HUMAN_TAXONOMY_REVIEW",
+      "ANSWER_REVIEW_REQUIRED",
+      "VISUAL_SOURCE_REVIEW_REQUIRED"
+    ],
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+        "source_key": "PROVINCIAL_TRIAL_2025",
+        "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+        "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+        "source_page": 107,
+        "subsource_code": null,
+        "question_number": "5",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+        "source_key": "PROVINCIAL_TRIAL_2025",
+        "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+        "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+        "source_page": 111,
+        "subsource_code": null,
+        "question_number": "5",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": "A"
+      }
+    ],
+    "problem_type_name": "Tính khoảng biến thiên của mẫu ghép nhóm",
+    "concepts": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_RANGE",
+        "concept_code": "GROUPED_RANGE",
+        "weight": 0.6,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_RANGE",
+        "concept_code": "GROUPED_DATA_CLASS_BOUNDARY",
+        "weight": 0.25,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_RANGE",
+        "concept_code": "GROUPED_DATA_FREQUENCY",
+        "weight": 0.15,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_RANGE",
+        "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+        "weight": 1.0
+      }
+    ],
+    "dedupe_hash": "03c87e1778385687ab1d3afe564da1cf77252cd9db4f43ef0105c58f1b3b5140",
+    "academic_review_status": "NOT_REVIEWED",
+    "promotion_eligible": false,
+    "requires_question_group_model": false
+  },
+  {
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "source_key": "PROVINCIAL_TRIAL_2025",
+    "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+    "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+    "source_page": 123,
+    "question_number": "12",
+    "subsource_code": null,
+    "section_detected": "MULTIPLE_CHOICE",
+    "question_type_detected": "MULTIPLE_CHOICE",
+    "raw_question_text": "Câu 12: Mỗi ngày bác Hoa đều đi bộ để rèn luyện sức khỏe. Quãng đường đi bộ mỗi ngày (đơn vị: km) của bác Hoa trong 20 ngày được thống kê lại ở bảng sau: Quãng đường (km) [2,5;3,0) [3,0;3,5) [3,5;4,0) [4,0;4,5) [4,5;5,0) Số ngày 3 6 5 4 2 3 9 14 18 20 Khoảng tứ phân vị của mẫu số liệu ghép nhóm (kết quả làm tròn đến hàng phần trăm ) là A. 0,9. B. 0,96. C. 0,97. D. 0,8.",
+    "problem_type_code": "CALCULATE_GROUPED_IQR",
+    "classification_confidence": 0.8,
+    "visual_required": true,
+    "mixed_scope": false,
+    "tf_items": [],
+    "answer_detected": "B",
+    "answer_evidence": "CONSISTENT_SOURCE_SOLUTION_OCCURRENCE",
+    "answer_confidence": 0.8,
+    "fingerprint": "ac9c83e422f451d272c3",
+    "candidate_id": "M12_DISP_CAND_0039",
+    "status": "STRUCTURAL_CANDIDATE",
+    "classification_method": "RULE_BASED_INITIAL_FROM_SOURCE_TEXT",
+    "review_reasons": [
+      "HUMAN_TAXONOMY_REVIEW",
+      "ANSWER_REVIEW_REQUIRED",
+      "VISUAL_SOURCE_REVIEW_REQUIRED"
+    ],
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+        "source_key": "PROVINCIAL_TRIAL_2025",
+        "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+        "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+        "source_page": 123,
+        "subsource_code": null,
+        "question_number": "12",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+        "source_key": "PROVINCIAL_TRIAL_2025",
+        "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+        "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+        "source_page": 128,
+        "subsource_code": null,
+        "question_number": "12",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": "B"
+      }
+    ],
+    "problem_type_name": "Tính khoảng tứ phân vị của mẫu ghép nhóm",
+    "concepts": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_IQR",
+        "concept_code": "GROUPED_IQR",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_IQR",
+        "concept_code": "GROUPED_QUARTILE_INTERPOLATION",
+        "weight": 0.35,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_IQR",
+        "concept_code": "GROUPED_DATA_FREQUENCY",
+        "weight": 0.1,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_IQR",
+        "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+        "weight": 1.0
+      }
+    ],
+    "dedupe_hash": "be02ec4fb573c2909da129c2954ce0e96670e123751a6b99aa2ac05a203fbd8d",
+    "academic_review_status": "NOT_REVIEWED",
+    "promotion_eligible": false,
+    "requires_question_group_model": false
+  },
+  {
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "source_key": "PROVINCIAL_TRIAL_2025",
+    "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+    "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+    "source_page": 140,
+    "question_number": "12",
+    "subsource_code": null,
+    "section_detected": "MULTIPLE_CHOICE",
+    "question_type_detected": "MULTIPLE_CHOICE",
+    "raw_question_text": "Câu 12: Khảo sát thời gian tự học bài ở nhà của học sinh khối 12 ở trường X, ta thu được bảng sau: Thời gian (phút) [ ) 0;30 [ ) 30;60 [ ) 60;90 [ ) 90;120 [ ) 120;150 Số học sinh 75 125 250 82 18 Phương sai của mẫu số liệu ghép nhóm (làm tròn kết quả đến hàng đơn vị) là A. 874. B. 875. C. 873. D. 872.",
+    "problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+    "classification_confidence": 0.75,
+    "visual_required": true,
+    "mixed_scope": false,
+    "tf_items": [],
+    "answer_detected": "A",
+    "answer_evidence": "CONSISTENT_SOURCE_SOLUTION_OCCURRENCE",
+    "answer_confidence": 0.8,
+    "fingerprint": "916390c9e16de5df6003",
+    "candidate_id": "M12_DISP_CAND_0040",
+    "status": "STRUCTURAL_CANDIDATE",
+    "classification_method": "RULE_BASED_INITIAL_FROM_SOURCE_TEXT",
+    "review_reasons": [
+      "HUMAN_TAXONOMY_REVIEW",
+      "ANSWER_REVIEW_REQUIRED",
+      "VISUAL_SOURCE_REVIEW_REQUIRED"
+    ],
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+        "source_key": "PROVINCIAL_TRIAL_2025",
+        "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+        "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+        "source_page": 140,
+        "subsource_code": null,
+        "question_number": "12",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+        "source_key": "PROVINCIAL_TRIAL_2025",
+        "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+        "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+        "source_page": 147,
+        "subsource_code": null,
+        "question_number": "12",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": "A"
+      }
+    ],
+    "problem_type_name": "Tính phương sai của mẫu ghép nhóm",
+    "concepts": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+        "concept_code": "GROUPED_VARIANCE",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+        "concept_code": "GROUPED_MEAN_FOR_DISPERSION",
+        "weight": 0.2,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+        "concept_code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+        "weight": 0.15,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+        "concept_code": "GROUPED_DATA_FREQUENCY",
+        "weight": 0.1,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+        "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+        "weight": 1.0
+      }
+    ],
+    "dedupe_hash": "5b85faf8e182813e974753733837efb924c2fb253a850c52bb9c876c86b9880f",
+    "academic_review_status": "NOT_REVIEWED",
+    "promotion_eligible": false,
+    "requires_question_group_model": false
+  },
+  {
+    "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+    "source_key": "PROVINCIAL_TRIAL_2025",
+    "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+    "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+    "source_page": 156,
+    "question_number": "1",
+    "subsource_code": null,
+    "section_detected": "MULTIPLE_CHOICE",
+    "question_type_detected": "MULTIPLE_CHOICE",
+    "raw_question_text": "Câu 1: Trọng lượng của 20 củ sắn trong một lô củ sắn được thu hoạch sau sáu năm trồng tại một cơ sở trồng sắn Lai Châu có bảng tần số ghép nhóm sau (đơn vị: gam): Nhóm [ ) 40; 45 [ ) 45; 50 [ ) 50; 55 [ ) 55; 60 Tần số 3 7 8 2 Khoảng tứ phân vị của mẫu số liệu ghép nhóm trên (làm tròn kết quả đến hàng phần mười) là: A. 3,3 . B. 9,5. C. 6,7 . D. 8,6 .",
+    "problem_type_code": "CALCULATE_GROUPED_IQR",
+    "classification_confidence": 0.8,
+    "visual_required": true,
+    "mixed_scope": false,
+    "tf_items": [],
+    "answer_detected": "C",
+    "answer_evidence": "CONSISTENT_SOURCE_SOLUTION_OCCURRENCE",
+    "answer_confidence": 0.8,
+    "fingerprint": "f664324e85a5ae036b40",
+    "candidate_id": "M12_DISP_CAND_0041",
+    "status": "STRUCTURAL_CANDIDATE",
+    "classification_method": "RULE_BASED_INITIAL_FROM_SOURCE_TEXT",
+    "review_reasons": [
+      "HUMAN_TAXONOMY_REVIEW",
+      "ANSWER_REVIEW_REQUIRED",
+      "VISUAL_SOURCE_REVIEW_REQUIRED"
+    ],
+    "duplicate_occurrences": [
+      {
+        "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+        "source_key": "PROVINCIAL_TRIAL_2025",
+        "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+        "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+        "source_page": 156,
+        "subsource_code": null,
+        "question_number": "1",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": null
+      },
+      {
+        "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+        "source_key": "PROVINCIAL_TRIAL_2025",
+        "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+        "source_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+        "source_page": 161,
+        "subsource_code": null,
+        "question_number": "1",
+        "question_type": "MULTIPLE_CHOICE",
+        "answer_detected": "C"
+      }
+    ],
+    "problem_type_name": "Tính khoảng tứ phân vị của mẫu ghép nhóm",
+    "concepts": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_IQR",
+        "concept_code": "GROUPED_IQR",
+        "weight": 0.55,
+        "is_primary": true
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_IQR",
+        "concept_code": "GROUPED_QUARTILE_INTERPOLATION",
+        "weight": 0.35,
+        "is_primary": false
+      },
+      {
+        "problem_type_code": "CALCULATE_GROUPED_IQR",
+        "concept_code": "GROUPED_DATA_FREQUENCY",
+        "weight": 0.1,
+        "is_primary": false
+      }
+    ],
+    "learning_outcomes": [
+      {
+        "problem_type_code": "CALCULATE_GROUPED_IQR",
+        "learning_outcome_code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+        "weight": 1.0
+      }
+    ],
+    "dedupe_hash": "4b1cd5c33776fccbc291e0dfdc542b0fc064d6bc375b0759f5ddfc52610e2d33",
+    "academic_review_status": "NOT_REVIEWED",
+    "promotion_eligible": false,
+    "requires_question_group_model": false
+  }
+]

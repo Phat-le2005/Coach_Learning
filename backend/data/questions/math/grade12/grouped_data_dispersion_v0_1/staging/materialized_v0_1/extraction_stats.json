@@ -1,0 +1,32 @@
+{
+  "raw_dispersion_occurrences": 80,
+  "materialized_unique_candidates": 41,
+  "standalone_candidates": 39,
+  "true_false_four_groups": 2,
+  "structural_holds": 0,
+  "question_type_counts": {
+    "MULTIPLE_CHOICE": 39,
+    "TRUE_FALSE_GROUP": 2
+  },
+  "selected_source_counts": {
+    "NGOC_VY_40_DE_2026": 31,
+    "PROVINCIAL_TRIAL_2025": 10
+  },
+  "all_provenance_occurrence_counts": {
+    "NGOC_VY_40_DE_2026": 60,
+    "PROVINCIAL_TRIAL_2025": 20
+  },
+  "visual_required": 40,
+  "answer_detected": 38,
+  "mixed_scope_groups": 2,
+  "problem_types_total": 12,
+  "problem_types_with_candidates": 7,
+  "problem_type_gaps": [
+    "IDENTIFY_MORE_STABLE_GROUPED_DATA",
+    "INTERPRET_GROUPED_DISPERSION_MEASURE",
+    "CONCLUDE_FROM_GROUPED_DISPERSION",
+    "PARAMETER_FROM_GROUPED_VARIANCE_SD",
+    "MULTI_MEASURE_GROUPED_DISPERSION_ANALYSIS"
+  ],
+  "production_release_eligible": 0
+}

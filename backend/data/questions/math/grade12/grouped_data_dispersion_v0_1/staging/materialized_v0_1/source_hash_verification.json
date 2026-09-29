@@ -1,0 +1,30 @@
+{
+  "verification_code": "MATH12_GROUPED_DISPERSION_SOURCE_HASH_VERIFICATION_V0_1",
+  "verified": true,
+  "sources": [
+    {
+      "source_key": "NGOC_VY_40_DE_2026",
+      "drive_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "expected_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "actual_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "page_count": 778,
+      "status": "MATCH"
+    },
+    {
+      "source_key": "PROVINCIAL_TRIAL_2025",
+      "drive_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+      "expected_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+      "actual_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+      "page_count": 191,
+      "status": "MATCH"
+    },
+    {
+      "source_key": "OFFICIAL_EXAM_SOLUTIONS_2025",
+      "drive_file_id": "1jGjnJ3Wq2ynISxB4P1g9mk2CXibl-YXy",
+      "expected_sha256": "90d5cb68a6f91418287c6643548f4f40ea9bb1598705a177b41bce07b09df11f",
+      "actual_sha256": "90d5cb68a6f91418287c6643548f4f40ea9bb1598705a177b41bce07b09df11f",
+      "page_count": 71,
+      "status": "MATCH"
+    }
+  ]
+}
