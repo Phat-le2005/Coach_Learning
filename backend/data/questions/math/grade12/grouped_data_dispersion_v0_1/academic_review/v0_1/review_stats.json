@@ -1,0 +1,35 @@
+{
+  "review_code": "DATA-MATH12-021_GROUPED_DISPERSION_ACADEMIC_REVIEW_V0_2",
+  "base_commit": "b436e3ee076fefb89dbf58adf64ac0542568479c",
+  "input_dataset": "DATA-MATH12-020",
+  "input_candidate_count": 41,
+  "standalone_reviews": 39,
+  "group_reviews": 2,
+  "reviewed_units": 41,
+  "review_status_counts": {
+    "VERIFIED": 38,
+    "REJECTED_DUPLICATE": 1,
+    "HOLD_MIXED_SCOPE": 2
+  },
+  "verified_standalone": 38,
+  "rejected_duplicate": 1,
+  "hold_mixed_scope_groups": 2,
+  "true_false_groups_with_source_verified_answers": 2,
+  "true_false_child_answers_verified": 8,
+  "verified_visual_required": 37,
+  "problem_types_total": 12,
+  "problem_types_with_verified_evidence": 7,
+  "problem_type_gaps": [
+    "IDENTIFY_MORE_STABLE_GROUPED_DATA",
+    "INTERPRET_GROUPED_DISPERSION_MEASURE",
+    "CONCLUDE_FROM_GROUPED_DISPERSION",
+    "PARAMETER_FROM_GROUPED_VARIANCE_SD",
+    "MULTI_MEASURE_GROUPED_DISPERSION_ANALYSIS"
+  ],
+  "academic_curation_complete": true,
+  "production_release_eligible": 0,
+  "promotion_ready": 0,
+  "rights_status": "REVIEW_REQUIRED",
+  "database_import_allowed": false,
+  "canonical_snapshot_allowed": false
+}
