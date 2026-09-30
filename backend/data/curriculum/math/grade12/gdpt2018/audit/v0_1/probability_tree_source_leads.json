@@ -1,0 +1,53 @@
+{
+  "dataset_code": "DATA-MATH12-032",
+  "status": "SOURCE_LEADS_NOT_CURATED_DATA",
+  "policy": "These pages are real-source leads for the next curation step. They do not count as VERIFIED coverage until candidate/question lineage and source answer are curated.",
+  "leads": [
+    {
+      "source_title": "40 đề ôn thi tốt nghiệp THPT 2026 môn Toán có lời giải chi tiết - Trương Ngọc Vỹ",
+      "source_file_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "pdf_pages_with_tree_solution_text": [
+        255,
+        475,
+        507,
+        544,
+        642
+      ],
+      "matched_text": [
+        "Lập sơ đồ hình cây",
+        "Ta có sơ đồ hình cây",
+        "Ta có sơ đồ cây",
+        "Sơ đồ hình cây"
+      ]
+    },
+    {
+      "source_title": "Hướng dẫn giải đề chính thức tốt nghiệp THPT 2025 môn Toán",
+      "source_file_sha256": "90d5cb68a6f91418287c6643548f4f40ea9bb1598705a177b41bce07b09df11f",
+      "pdf_pages_with_tree_solution_text": [
+        54
+      ],
+      "matched_text": [
+        "Ta có sơ đồ hình cây"
+      ]
+    },
+    {
+      "source_title": "Lời giải chi tiết đề thi thử tốt nghiệp THPT 2025 môn Toán của các Sở GDĐT",
+      "source_file_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+      "pdf_pages_with_tree_solution_text": [
+        149
+      ],
+      "matched_text": [
+        "Ta có sơ đồ hình cây"
+      ]
+    },
+    {
+      "source_title": "13. KSCL THPT Nguyễn Khuyến - LTT - TPHCM - Thi thử TN THPT 2026 môn Toán",
+      "pdf_pages_with_tree_solution_text": [
+        18
+      ],
+      "matched_text": [
+        "Ta có sơ đồ cây như sau"
+      ]
+    }
+  ]
+}

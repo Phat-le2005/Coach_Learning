@@ -1,0 +1,51 @@
+{
+  "contract_code": "DATA_MATH12_032_FULL_SCOPE_AUDIT_CONTRACT_V0_1",
+  "dataset_code": "DATA-MATH12-032",
+  "repo_head_commit": "bc0b9c1c44be804450033d7d6d7371327e3b382c",
+  "semantic_files_order": [
+    "official_scope_snapshot.json",
+    "core_coverage_audit.json",
+    "probability_tree_source_leads.json",
+    "cross_cutting_optional_audit.json",
+    "curriculum_taxonomy_drift.json",
+    "dataset_lineage.json",
+    "remaining_work.json",
+    "audit_stats.json",
+    "release_readiness.json",
+    "curriculum_alignment_candidate.json"
+  ],
+  "semantic_sha256": {
+    "official_scope_snapshot.json": "99cd2099eb585e2ea1ed463e123591155f25a08fff0bcbb0b5fa1211c83f53ca",
+    "core_coverage_audit.json": "782543cf982c919c87a39a5789a2f09261c5cecccf105a125f6ecce37e8d97b3",
+    "probability_tree_source_leads.json": "45c023fe22fe149c1bc756c0563af5fbcc3cb544934b732c0ca62056dcbb7fe1",
+    "cross_cutting_optional_audit.json": "97ac954d863b4f5a52e63d06b260b665c29deb15f67c3a49f688b0863fe60a28",
+    "curriculum_taxonomy_drift.json": "a8893905fbe3c8e4e6c63c7a39ad4998ac87cfc533811b2f384080588e2113b7",
+    "dataset_lineage.json": "4d2aa8ecb1a9b411de46574a2baa674d6d430591f95c797833d4b2cebb1bfe13",
+    "remaining_work.json": "08240c3143f9c9e7766df5e435bb7e100ed8c46c97143710379f8dffffd5d184",
+    "audit_stats.json": "865b6e7d0a50755d06abd1377c9427bf0c5ee4c177e56b792335b8079818a6b8",
+    "release_readiness.json": "cee626c1ee9d9492c24b18feb3c4d99316d45c892c5e7100a161ff9f9468eb43",
+    "curriculum_alignment_candidate.json": "4eb047a5544c554530fbc0fbe775d7315b1bf420b99a38e74792d2350ecc5a69"
+  },
+  "aggregate_semantic_sha256": "ea64fd6dd257d80f4d19477a7708f21229643d87ad7793b22504bb680c7a22e5",
+  "required_invariants": {
+    "official_core_scopes": 5,
+    "official_core_scopes_fully_evidenced": 3,
+    "official_core_scopes_partially_evidenced": 2,
+    "official_core_scopes_missing_entirely": 0,
+    "official_normalized_requirements_total": 20,
+    "official_normalized_requirements_covered": 18,
+    "official_normalized_requirements_partial": 2,
+    "cross_cutting_items_materialized": 0,
+    "optional_special_topics_materialized_as_dedicated_datasets": 0,
+    "production_release_ready_core_scopes": 0
+  },
+  "policy": {
+    "official_scope_is_source_of_truth": true,
+    "derived_taxonomy_must_be_labeled_coach_learning_derived": true,
+    "no_synthetic_gap_fill": true,
+    "legacy_vector_data_must_not_be_double_counted": true,
+    "external_or_raw_source_leads_are_not_verified_data": true,
+    "audit_must_not_activate_curriculum": true,
+    "audit_must_not_enable_database_import": true
+  }
+}

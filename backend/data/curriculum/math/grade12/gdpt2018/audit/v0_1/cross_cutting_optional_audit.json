@@ -1,0 +1,35 @@
+{
+  "dataset_code": "DATA-MATH12-032",
+  "core_exam_question_bank_blocking": false,
+  "full_grade12_curriculum_blocking": true,
+  "cross_cutting": [
+    {
+      "official_scope_code": "M12_CORE_SOFTWARE_PRACTICE",
+      "status": "NOT_MATERIALIZED_AS_DEDICATED_LEARNING_DATA",
+      "note": "No dedicated Grade 12 dataset or learning-activity data found outside the official scope declaration."
+    },
+    {
+      "official_scope_code": "M12_CORE_EXPERIENTIAL_ACTIVITIES",
+      "status": "NOT_MATERIALIZED_AS_DEDICATED_LEARNING_DATA",
+      "note": "No dedicated Grade 12 experiential-activity dataset found."
+    }
+  ],
+  "optional_study_topics": [
+    {
+      "official_scope_code": "M12_SPECIAL_TOPIC_12_1",
+      "status": "NOT_MATERIALIZED",
+      "blocking_for_core_question_bank": false
+    },
+    {
+      "official_scope_code": "M12_SPECIAL_TOPIC_12_2",
+      "status": "NO_DEDICATED_SPECIAL_TOPIC_DATASET",
+      "content_overlap_note": "Derivative real-world optimization data overlaps conceptually but is not curated as the official optional special-topic dataset.",
+      "blocking_for_core_question_bank": false
+    },
+    {
+      "official_scope_code": "M12_SPECIAL_TOPIC_12_3",
+      "status": "NOT_MATERIALIZED",
+      "blocking_for_core_question_bank": false
+    }
+  ]
+}

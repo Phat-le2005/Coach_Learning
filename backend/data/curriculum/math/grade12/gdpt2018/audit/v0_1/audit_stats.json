@@ -1,0 +1,20 @@
+{
+  "dataset_code": "DATA-MATH12-032",
+  "audit_status": "COMPLETE",
+  "official_core_scopes": 5,
+  "official_core_scopes_fully_evidenced": 3,
+  "official_core_scopes_partially_evidenced": 2,
+  "official_core_scopes_missing_entirely": 0,
+  "official_normalized_requirements_total": 20,
+  "official_normalized_requirements_covered": 18,
+  "official_normalized_requirements_partial": 2,
+  "cross_cutting_items_total": 2,
+  "cross_cutting_items_materialized": 0,
+  "optional_special_topics_total": 3,
+  "optional_special_topics_materialized_as_dedicated_datasets": 0,
+  "canonical_taxonomy_blocking_findings": 5,
+  "production_release_ready_core_scopes": 0,
+  "overall_core_question_data_status": "NEAR_COMPLETE_NOT_FULL",
+  "overall_full_grade12_curriculum_status": "INCOMPLETE",
+  "production_readiness_status": "BLOCKED"
+}

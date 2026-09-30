@@ -1,0 +1,55 @@
+{
+  "dataset_code": "DATA-MATH12-032",
+  "canonical_curriculum_dataset": "MATH_G12_GDPT2018_CORE",
+  "canonical_manifest_version": "1.1.0",
+  "canonical_manifest_verified_at": null,
+  "repo_bindings": {
+    "manifest_git_blob_sha1": "e5186833d4a748a3bdacad10d557d9163c231363",
+    "chapters_git_blob_sha1": "d8366fd2d3c447ec0a697bc1ae26f9c3797308b7",
+    "topics_git_blob_sha1": "68036cea060dcf5bf6cd15c154e681a92095bb50",
+    "problem_types_git_blob_sha1": "5708f3bd9c5d07993ef558aae9b9b4c7b46b6b1f",
+    "concepts_git_blob_sha1": "1a116d90d9a86cd4c982dd35c50edcf49cdd27cf",
+    "learning_outcomes_git_blob_sha1": "66976051cce575db84ba5a395d089b05480bee29"
+  },
+  "findings": [
+    {
+      "code": "EXTRA_CHAPTER_NOT_IN_G12_OFFICIAL_CORE",
+      "current_entity": "EXPONENTIAL_LOGARITHM",
+      "decision": "DO_NOT_TREAT_AS_GRADE12_OFFICIAL_CORE",
+      "severity": "BLOCKING_FOR_CANONICAL_ALIGNMENT"
+    },
+    {
+      "code": "VECTOR_SCOPE_SPLIT_FROM_OXYZ",
+      "current_entity": "VECTORS_GEOMETRY",
+      "decision": "TREAT_AS_LEGACY_OR_SUBSCOPE_OF_M12_CORE_GEOMETRY_COORDINATE_3D_NOT_A_SEPARATE_OFFICIAL_CORE_CHAPTER",
+      "severity": "BLOCKING_FOR_CANONICAL_ALIGNMENT"
+    },
+    {
+      "code": "OFFICIAL_GROUPED_STATISTICS_CHAPTER_MISSING",
+      "current_entity": null,
+      "required_official_scope_code": "M12_CORE_STATISTICS_GROUPED_DATA",
+      "decision": "ADD_DERIVED_CANONICAL_CHAPTER_TOPIC_MAPPING_IN_A_FUTURE_ALIGNMENT_CANDIDATE",
+      "severity": "BLOCKING_FOR_CANONICAL_ALIGNMENT"
+    },
+    {
+      "code": "PROTOTYPE_TAXONOMY_TOO_GENERIC",
+      "decision": "CURRENT topics/problem_types/concepts/learning_outcomes MUST NOT BE PRESENTED AS MINISTRY-ISSUED; REBUILD AS COACH_LEARNING_DERIVED ALIGNED TO OFFICIAL_SCOPE",
+      "severity": "BLOCKING_FOR_KNOWLEDGE_GRAPH_QUALITY"
+    },
+    {
+      "code": "CANONICAL_VERSION_VS_DERIVATIVE_STAGING_CANDIDATE_DRIFT",
+      "current_canonical_version": "1.1.0",
+      "derivative_activation_candidate_version": "1.2.0",
+      "decision": "DO_NOT_ACTIVATE EITHER AS FINAL GRADE12 CANONICAL GRAPH UNTIL FULL-SCOPE ALIGNMENT CANDIDATE IS REVIEWED",
+      "severity": "BLOCKING_FOR_DB_IMPORT"
+    }
+  ],
+  "recommended_future_chapter_alignment": [
+    "DERIVATIVE_APPLICATIONS",
+    "INTEGRALS",
+    "OXYZ_CHAPTER",
+    "GROUPED_DATA_STATISTICS",
+    "PROBABILITY_CHAPTER"
+  ],
+  "activation_allowed": false
+}

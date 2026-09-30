@@ -1,0 +1,38 @@
+{
+  "dataset_code": "DATA-MATH12-032",
+  "core_lineage": {
+    "derivative_applications": [
+      "DATA-MATH12-005",
+      "DATA-MATH12-011",
+      "DATA-MATH12-012",
+      "DATA-MATH12-013"
+    ],
+    "vector_legacy_subset": [
+      "DATA-MATH12-017",
+      "DATA-MATH12-018"
+    ],
+    "grouped_data_dispersion": [
+      "DATA-MATH12-021",
+      "DATA-MATH12-022",
+      "DATA-MATH12-031"
+    ],
+    "integrals": [
+      "DATA-MATH12-023",
+      "DATA-MATH12-026",
+      "DATA-MATH12-027"
+    ],
+    "oxyz": [
+      "DATA-MATH12-024",
+      "DATA-MATH12-028",
+      "DATA-MATH12-029"
+    ],
+    "conditional_probability": [
+      "DATA-MATH12-025",
+      "DATA-MATH12-030"
+    ]
+  },
+  "double_counting_policy": {
+    "vector_coordinates_v0_1": "DO_NOT_DOUBLE_COUNT_AGAINST_OXYZ_CORE_COVERAGE",
+    "gap_supplements": "COUNT_AS_OVERLAY_EVIDENCE_NOT_AS_REPLACEMENT_OF_BASE_DATASET"
+  }
+}

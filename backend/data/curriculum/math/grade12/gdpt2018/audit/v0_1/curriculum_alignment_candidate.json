@@ -1,0 +1,46 @@
+{
+  "dataset_code": "DATA-MATH12-032",
+  "candidate_code": "MATH_G12_GDPT2018_FULL_SCOPE_ALIGNMENT_CANDIDATE",
+  "status": "PROPOSAL_NOT_CANONICAL",
+  "activation_allowed": false,
+  "basis": "Official Grade 12 scope snapshot plus current reviewed question-data lineages.",
+  "chapter_scope_mapping": [
+    {
+      "chapter_code": "DERIVATIVE_APPLICATIONS",
+      "official_scope_code": "M12_CORE_CALCULUS_DERIVATIVE_APPLICATIONS",
+      "action": "KEEP_AND_REALIGN_DERIVED_TOPICS"
+    },
+    {
+      "chapter_code": "INTEGRALS",
+      "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+      "action": "KEEP_AND_REALIGN_DERIVED_TOPICS"
+    },
+    {
+      "chapter_code": "OXYZ_CHAPTER",
+      "official_scope_code": "M12_CORE_GEOMETRY_COORDINATE_3D",
+      "action": "KEEP; ABSORB VECTOR_COORDINATE SUBSCOPE"
+    },
+    {
+      "chapter_code": "GROUPED_DATA_STATISTICS",
+      "official_scope_code": "M12_CORE_STATISTICS_GROUPED_DATA",
+      "action": "ADD_AS_DERIVED_CANONICAL_CHAPTER"
+    },
+    {
+      "chapter_code": "PROBABILITY_CHAPTER",
+      "official_scope_code": "M12_CORE_PROBABILITY_CONDITIONAL",
+      "action": "KEEP; REPLACE_GENERIC ELEMENTARY-PROBABILITY FRAMING WITH GRADE12 CONDITIONAL-PROBABILITY SCOPE"
+    }
+  ],
+  "legacy_or_quarantine": [
+    {
+      "chapter_code": "EXPONENTIAL_LOGARITHM",
+      "reason": "Not present in the bound Grade 12 official core scope snapshot."
+    },
+    {
+      "chapter_code": "VECTORS_GEOMETRY",
+      "reason": "Vector/coordinate content belongs under the official Oxyz Grade 12 scope for this canonical graph."
+    }
+  ],
+  "problem_types_concepts_learning_outcomes_policy": "COACH_LEARNING_DERIVED_ONLY",
+  "next_step": "Build a separately reviewed curriculum candidate with exact nodes, mappings, prerequisites and stable identifiers before activation."
+}

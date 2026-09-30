@@ -1,0 +1,153 @@
+[
+  {
+    "official_scope_code": "M12_CORE_CALCULUS_DERIVATIVE_APPLICATIONS",
+    "status": "FULLY_EVIDENCED_NOT_RELEASE_READY",
+    "question_data": {
+      "verified_standalone_questions": 29,
+      "verified_true_false_groups": 39,
+      "verified_true_false_child_statements": 156,
+      "canonical_snapshot_ready_groups": 38,
+      "unresolved_visual_groups": [
+        "M12_DERIV_GROUP_0012"
+      ]
+    },
+    "normalized_coverage_status": {
+      "tính đơn điệu và cực trị": "COVERED",
+      "giá trị lớn nhất và giá trị nhỏ nhất": "COVERED",
+      "tiệm cận và khảo sát đồ thị": "COVERED",
+      "ứng dụng đạo hàm và khảo sát hàm số vào thực tiễn": "COVERED"
+    },
+    "evidence_notes": [
+      "Verified group children include monotonicity, extrema, global extrema, asymptotes, complete function analysis and real-world optimization.",
+      "One verified group still lacks its required source visual, but the official normalized scope itself has other source-backed evidence."
+    ],
+    "release_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "CURRICULUM_TAXONOMY_ALIGNMENT_NOT_FINAL",
+      "M12_DERIV_GROUP_0012_SOURCE_VISUAL_MISSING"
+    ]
+  },
+  {
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "status": "FULLY_EVIDENCED_NOT_RELEASE_READY",
+    "question_data": {
+      "verified_base_candidates": 77,
+      "verified_gap_overlay_candidates": 2,
+      "effective_source_backed_units": 79,
+      "ready_visual_assets": 8,
+      "visual_not_required_after_review": 20,
+      "unresolved_visual_units": 0
+    },
+    "normalized_coverage_status": {
+      "khái niệm và tính chất nguyên hàm": "COVERED",
+      "nguyên hàm của một số hàm số sơ cấp": "COVERED",
+      "tích phân và tính chất": "COVERED",
+      "diện tích, thể tích và bài toán thực tiễn": "COVERED"
+    },
+    "lineage": [
+      "DATA-MATH12-023",
+      "DATA-MATH12-026",
+      "DATA-MATH12-027"
+    ],
+    "release_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "CURRICULUM_TAXONOMY_ALIGNMENT_NOT_FINAL"
+    ]
+  },
+  {
+    "official_scope_code": "M12_CORE_GEOMETRY_COORDINATE_3D",
+    "status": "FULLY_EVIDENCED_NOT_RELEASE_READY",
+    "question_data": {
+      "verified_base_candidates": 132,
+      "verified_gap_overlay_candidates": 1,
+      "effective_source_backed_units": 133,
+      "ready_visual_assets": 5,
+      "unresolved_visual_units": 0,
+      "legacy_vector_verified_units_not_double_counted": 48
+    },
+    "normalized_coverage_status": {
+      "vectơ và tọa độ trong không gian": "COVERED",
+      "phương trình mặt phẳng": "COVERED",
+      "phương trình đường thẳng trong không gian": "COVERED",
+      "góc và khoảng cách bằng phương pháp tọa độ": "COVERED",
+      "phương trình mặt cầu": "COVERED",
+      "vận dụng vào thực tiễn": "COVERED"
+    },
+    "lineage": [
+      "DATA-MATH12-024",
+      "DATA-MATH12-028",
+      "DATA-MATH12-029"
+    ],
+    "legacy_overlap": {
+      "dataset": "vector_coordinates_v0_1 / DATA-MATH12-017/018",
+      "decision": "SUPPLEMENTARY_LEGACY_SUBSET_OF_OXYZ_DO_NOT_COUNT_AS_SEPARATE_OFFICIAL_CHAPTER"
+    },
+    "release_blockers": [
+      "RIGHTS_REVIEW_REQUIRED",
+      "CURRICULUM_TAXONOMY_ALIGNMENT_NOT_FINAL"
+    ]
+  },
+  {
+    "official_scope_code": "M12_CORE_STATISTICS_GROUPED_DATA",
+    "status": "PARTIAL_EVIDENCE_CORE_GAP_REMAINS",
+    "question_data": {
+      "verified_standalone": 38,
+      "mixed_scope_true_false_groups": 2,
+      "source_verified_true_false_child_answers": 8,
+      "ready_visual_assets": 37,
+      "unresolved_visual_units": 0,
+      "remaining_derived_gaps": [
+        "IDENTIFY_MORE_STABLE_GROUPED_DATA",
+        "INTERPRET_GROUPED_DISPERSION_MEASURE",
+        "CONCLUDE_FROM_GROUPED_DISPERSION",
+        "PARAMETER_FROM_GROUPED_VARIANCE_SD",
+        "MULTI_MEASURE_GROUPED_DISPERSION_ANALYSIS"
+      ]
+    },
+    "normalized_coverage_status": {
+      "các số đo mức độ phân tán của mẫu số liệu ghép nhóm": "COVERED",
+      "ý nghĩa và diễn giải các số đặc trưng trong thực tiễn": "PARTIAL"
+    },
+    "official_gap_mapping": [
+      "IDENTIFY_MORE_STABLE_GROUPED_DATA",
+      "INTERPRET_GROUPED_DISPERSION_MEASURE",
+      "CONCLUDE_FROM_GROUPED_DISPERSION"
+    ],
+    "lineage": [
+      "DATA-MATH12-021",
+      "DATA-MATH12-022",
+      "DATA-MATH12-031"
+    ],
+    "release_blockers": [
+      "OFFICIAL_INTERPRETATION_EVIDENCE_INCOMPLETE",
+      "RIGHTS_REVIEW_REQUIRED",
+      "CURRICULUM_TAXONOMY_ALIGNMENT_NOT_FINAL"
+    ]
+  },
+  {
+    "official_scope_code": "M12_CORE_PROBABILITY_CONDITIONAL",
+    "status": "PARTIAL_EVIDENCE_TREE_REPRESENTATION_NOT_MATERIALIZED",
+    "question_data": {
+      "verified_base_candidates": 17,
+      "verified_total_probability_child_evidence_units": 1,
+      "canonical_candidate_created_from_gap_evidence": false,
+      "unresolved_visual_units": 0
+    },
+    "normalized_coverage_status": {
+      "xác suất có điều kiện": "COVERED",
+      "xác suất toàn phần": "COVERED_BY_SOURCE_BACKED_CHILD_EVIDENCE",
+      "công thức Bayes": "COVERED",
+      "sơ đồ hình cây và ứng dụng thực tiễn": "PARTIAL_TREE_REPRESENTATION_NOT_MATERIALIZED"
+    },
+    "tree_evidence_note": "Real source PDFs contain explicit tree-diagram solutions, but the current curated probability dataset does not yet materialize an explicit tree representation as reviewed evidence.",
+    "lineage": [
+      "DATA-MATH12-025",
+      "DATA-MATH12-030"
+    ],
+    "release_blockers": [
+      "TREE_REPRESENTATION_EVIDENCE_NOT_MATERIALIZED",
+      "RIGHTS_REVIEW_REQUIRED",
+      "CURRICULUM_TAXONOMY_ALIGNMENT_NOT_FINAL"
+    ]
+  }
+]

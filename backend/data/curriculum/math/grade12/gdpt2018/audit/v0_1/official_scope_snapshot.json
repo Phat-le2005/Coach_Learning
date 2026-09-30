@@ -1,0 +1,95 @@
+{
+  "dataset_code": "DATA-MATH12-032",
+  "audit_code": "MATH12_GDPT2018_FULL_SCOPE_AUDIT_V0_1",
+  "audit_date": "2026-09-30",
+  "repo_head_commit": "bc0b9c1c44be804450033d7d6d7371327e3b382c",
+  "subject_code": "MATH_G12",
+  "grade_level": 12,
+  "curriculum_code": "GDPT2018",
+  "source_binding": {
+    "repo_official_scope_path": "backend/data/curriculum/math/grade12/gdpt2018/official_scope.json",
+    "repo_official_scope_git_blob_sha1": "ac699ebee7ebab1758e0e4d047ca866a72c2bf11",
+    "primary_source_code": "BGDDT_MATH_PROGRAM_2018",
+    "currentness_check_code": "BGDDT_AMENDMENT_17_2025",
+    "currentness_verified_on": "2026-09-30",
+    "currentness_note": "Thong tu 17/2025/TT-BGDDT amends History-Geography, History, Geography and Civic Education content; no Mathematics amendment is listed.",
+    "government_source_url": "https://vanban.chinhphu.vn/?docid=215347&pageid=27160",
+    "exam_2026_note": "MOET quality-management reporting states the 2026 graduation exam continues to follow GDPT 2018."
+  },
+  "core_program": [
+    {
+      "official_scope_code": "M12_CORE_CALCULUS_DERIVATIVE_APPLICATIONS",
+      "official_content_title": "Ứng dụng đạo hàm để khảo sát và vẽ đồ thị của hàm số",
+      "normalized_coverage": [
+        "tính đơn điệu và cực trị",
+        "giá trị lớn nhất và giá trị nhỏ nhất",
+        "tiệm cận và khảo sát đồ thị",
+        "ứng dụng đạo hàm và khảo sát hàm số vào thực tiễn"
+      ]
+    },
+    {
+      "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+      "official_content_title": "Nguyên hàm. Tích phân",
+      "normalized_coverage": [
+        "khái niệm và tính chất nguyên hàm",
+        "nguyên hàm của một số hàm số sơ cấp",
+        "tích phân và tính chất",
+        "diện tích, thể tích và bài toán thực tiễn"
+      ]
+    },
+    {
+      "official_scope_code": "M12_CORE_GEOMETRY_COORDINATE_3D",
+      "official_content_title": "Phương pháp tọa độ trong không gian",
+      "normalized_coverage": [
+        "vectơ và tọa độ trong không gian",
+        "phương trình mặt phẳng",
+        "phương trình đường thẳng trong không gian",
+        "góc và khoảng cách bằng phương pháp tọa độ",
+        "phương trình mặt cầu",
+        "vận dụng vào thực tiễn"
+      ]
+    },
+    {
+      "official_scope_code": "M12_CORE_STATISTICS_GROUPED_DATA",
+      "official_content_title": "Các số đặc trưng của mẫu số liệu ghép nhóm",
+      "normalized_coverage": [
+        "các số đo mức độ phân tán của mẫu số liệu ghép nhóm",
+        "ý nghĩa và diễn giải các số đặc trưng trong thực tiễn"
+      ]
+    },
+    {
+      "official_scope_code": "M12_CORE_PROBABILITY_CONDITIONAL",
+      "official_content_title": "Xác suất có điều kiện và các quy tắc tính xác suất",
+      "normalized_coverage": [
+        "xác suất có điều kiện",
+        "xác suất toàn phần",
+        "công thức Bayes",
+        "sơ đồ hình cây và ứng dụng thực tiễn"
+      ]
+    }
+  ],
+  "cross_cutting": [
+    {
+      "official_scope_code": "M12_CORE_SOFTWARE_PRACTICE",
+      "official_content_title": "Thực hành trong phòng máy tính với phần mềm toán học"
+    },
+    {
+      "official_scope_code": "M12_CORE_EXPERIENTIAL_ACTIVITIES",
+      "official_content_title": "Hoạt động thực hành và trải nghiệm"
+    }
+  ],
+  "optional_study_topics": [
+    {
+      "official_scope_code": "M12_SPECIAL_TOPIC_12_1",
+      "official_content_title": "Biến ngẫu nhiên rời rạc. Các số đặc trưng của biến ngẫu nhiên rời rạc"
+    },
+    {
+      "official_scope_code": "M12_SPECIAL_TOPIC_12_2",
+      "official_content_title": "Ứng dụng toán học để giải quyết một số bài toán tối ưu"
+    },
+    {
+      "official_scope_code": "M12_SPECIAL_TOPIC_12_3",
+      "official_content_title": "Ứng dụng toán học trong một số vấn đề liên quan đến tài chính"
+    }
+  ]
+}

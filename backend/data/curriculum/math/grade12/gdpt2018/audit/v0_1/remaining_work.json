@@ -1,0 +1,50 @@
+{
+  "dataset_code": "DATA-MATH12-032",
+  "priority_order": [
+    {
+      "priority": 1,
+      "work_code": "CURRICULUM_ALIGNMENT_CANDIDATE",
+      "reason": "Canonical chapters/topics/problem-types currently do not align to the five official Grade 12 core scopes.",
+      "output_should_be": "A new derived curriculum candidate; do not mutate official_scope.json and do not activate DB automatically."
+    },
+    {
+      "priority": 2,
+      "work_code": "GROUPED_STATISTICS_INTERPRETATION_CURATION",
+      "reason": "Official requirement 'ý nghĩa và diễn giải các số đặc trưng trong thực tiễn' remains only partially evidenced.",
+      "target_gaps": [
+        "IDENTIFY_MORE_STABLE_GROUPED_DATA",
+        "INTERPRET_GROUPED_DISPERSION_MEASURE",
+        "CONCLUDE_FROM_GROUPED_DISPERSION"
+      ]
+    },
+    {
+      "priority": 3,
+      "work_code": "PROBABILITY_TREE_REPRESENTATION_CURATION",
+      "reason": "Real PDFs contain tree-diagram solutions but explicit tree evidence is not yet materialized in DATA-MATH12-025/030.",
+      "use_source_leads_file": "probability_tree_source_leads.json"
+    },
+    {
+      "priority": 4,
+      "work_code": "DERIVATIVE_VISUAL_COMPLETION",
+      "reason": "M12_DERIV_GROUP_0012 remains the only verified derivative group blocked by a missing source visual.",
+      "target_id": "M12_DERIV_GROUP_0012"
+    },
+    {
+      "priority": 5,
+      "work_code": "CROSS_CUTTING_AND_OPTIONAL_CURRICULUM_DATA",
+      "reason": "Required only if product goal is full Grade 12 curriculum support, not only the core exam-oriented question bank.",
+      "targets": [
+        "M12_CORE_SOFTWARE_PRACTICE",
+        "M12_CORE_EXPERIENTIAL_ACTIVITIES",
+        "M12_SPECIAL_TOPIC_12_1",
+        "M12_SPECIAL_TOPIC_12_2",
+        "M12_SPECIAL_TOPIC_12_3"
+      ]
+    },
+    {
+      "priority": 6,
+      "work_code": "RIGHTS_AND_RELEASE_REVIEW",
+      "reason": "All major curated question datasets remain rights-review blocked; evidence coverage is not production release readiness."
+    }
+  ]
+}
