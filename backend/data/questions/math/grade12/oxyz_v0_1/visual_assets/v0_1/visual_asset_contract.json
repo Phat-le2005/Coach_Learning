@@ -1,0 +1,46 @@
+{
+  "contract_code": "DATA_MATH12_028_VISUAL_CONTRACT_V0_1",
+  "dataset_code": "DATA-MATH12-028",
+  "input_review_dataset": "DATA-MATH12-024",
+  "input_review_aggregate_sha256": "a62426fd798e4b20b5b130bc72903304f3f88f0d26840bed661d2eed9b1521ce",
+  "semantic_files_order": [
+    "visual_review_decisions.json",
+    "visual_asset_manifest.json",
+    "visual_asset_stats.json"
+  ],
+  "semantic_sha256": {
+    "visual_review_decisions.json": "e1183cb085050ad8219ccab3ecb36edb5accd4d375d131374b935296d8e05b7a",
+    "visual_asset_manifest.json": "f110d187fb1e08f1c4a2e663b64c1736999abbd305d23acee5227873b121d387",
+    "visual_asset_stats.json": "da67e9d6596ce5a6a426bed2043fcd841f0851513aae70c8424556df28fe151d"
+  },
+  "asset_file_hashes": {
+    "assets/M12_OXYZ_CAND_0027__source_visual.png": "e1496e38290069adc352b3582480dd14bade3b3006179eeb1b1ee9ee400272b1",
+    "assets/M12_OXYZ_CAND_0056__source_visual.png": "1d181e36145855ace96f5e75f59fa736efa2613fedef051a99066144ec96ce0f",
+    "assets/M12_OXYZ_CAND_0076__source_visual.png": "0c6245c53dcc4b6d933183e3a6efc887038b579b30148014ad2b0f1f57fa3438",
+    "assets/M12_OXYZ_CAND_0092__source_visual.png": "ab696620029394241f575915aab7d3e81600c990c890189de0e009b5667695a4",
+    "assets/M12_OXYZ_CAND_0199__source_visual.png": "7c5fc62d2ac925aaf1ef2af09b0b1a71213405228ce949e261630dac3a85a773"
+  },
+  "aggregate_semantic_and_assets_sha256": "e86db0b1c288e47fa278b9b1b22f8294785157664f984490112bacf9d584aa5b",
+  "required_invariants": {
+    "academic_verified_units": 132,
+    "academic_visual_required_units": 6,
+    "visual_decisions": 132,
+    "ready_source_crops": 5,
+    "not_required_after_visual_review": 1,
+    "not_required_from_academic_review": 126,
+    "png_files": 5,
+    "unresolved_visual_units": 0,
+    "rights_review_required_units": 132,
+    "promotion_eligible_units": 0,
+    "production_release_eligible": 0,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  "policy": {
+    "curated_data_read_only": true,
+    "no_full_question_crop": true,
+    "no_synthetic_visual": true,
+    "rights_review_required": true,
+    "codex_must_not_rewrite_curated_data": true
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "dataset_code": "DATA-MATH12-027",
+  "scope": "Math 12 - Nguyên hàm & Tích phân visual assets",
+  "academic_verified_units": 77,
+  "academic_visual_required_units": 28,
+  "visual_decisions": 77,
+  "ready_source_crops": 8,
+  "not_required_after_visual_review": 20,
+  "not_required_from_academic_review": 49,
+  "png_files": 8,
+  "unresolved_visual_units": 0,
+  "rights_review_required_units": 77,
+  "promotion_eligible_units": 0,
+  "production_release_eligible": 0,
+  "database_import_allowed": false,
+  "canonical_snapshot_allowed": false,
+  "rights_status": "REVIEW_REQUIRED"
+}

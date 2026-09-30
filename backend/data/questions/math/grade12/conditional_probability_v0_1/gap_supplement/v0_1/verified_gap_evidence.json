@@ -1,0 +1,30 @@
+[
+  {
+    "evidence_unit_id": "M12_PROB_GAP_0001",
+    "source_parent_candidate_id": "M12_PROB_CAND_0012",
+    "source_parent_question_type": "TRUE_FALSE_GROUP",
+    "source_child_label": "c",
+    "subject_code": "MATH_G12",
+    "chapter_code": "PROBABILITY_CHAPTER",
+    "topic_code": "PROBABILITY_TOPIC",
+    "official_scope_code": "M12_CORE_PROBABILITY_CONDITIONAL",
+    "target_gap": "TOTAL_PROBABILITY",
+    "problem_type_code": "TOTAL_PROBABILITY",
+    "evidence_unit_type": "TRUE_FALSE_CHILD_SOURCE_EVIDENCE",
+    "source_stem_text": "Một nhà máy có hai phân xưởng A và B tương ứng làm ra 60% và 40% sản phẩm của nhà máy. Tỉ lệ phế phẩm của hai phân xưởng A và B lần lượt là 1% và 2%. Chọn ngẫu nhiên một sản phẩm của nhà máy.",
+    "source_child_statement_text": "Xác suất để sản phẩm chọn ra là phế phẩm là 0,014.",
+    "correct_answer": true,
+    "answer_verification": "SOURCE_SOLUTION_EXPLICIT",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "question_start_page": 159,
+    "solution_answer_page": 169,
+    "source_solution_formula": "P(P)=P(A)P(P|A)+P(B)P(P|B)=0,6×0,01+0,4×0,02=0,014",
+    "canonical_candidate_created": false,
+    "rights_status": "REVIEW_REQUIRED",
+    "promotion_ready": false,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  }
+]

@@ -1,0 +1,14 @@
+{
+  "dataset_code": "DATA-MATH12-030",
+  "base_dataset": "DATA-MATH12-025",
+  "base_aggregate_semantic_sha256": "18d5d2fa9a9f8b7876e3af4283b890728279c77cf5e4e16901a6d87caacce680",
+  "resolved_gap": "TOTAL_PROBABILITY",
+  "verified_gap_evidence_units": 1,
+  "resolution_basis": "SOURCE_BACKED_CHILD_EVIDENCE_FROM_TRUE_FALSE_GROUP",
+  "canonical_candidate_created": false,
+  "remaining_data_math12_025_gap_after_overlay": [],
+  "rights_status": "REVIEW_REQUIRED",
+  "production_release_eligible": 0,
+  "database_import_allowed": false,
+  "canonical_snapshot_allowed": false
+}

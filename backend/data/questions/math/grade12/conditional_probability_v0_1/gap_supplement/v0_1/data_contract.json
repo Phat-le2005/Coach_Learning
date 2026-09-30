@@ -1,0 +1,32 @@
+{
+  "contract_code": "DATA_MATH12_030_PROBABILITY_GAP_SUPPLEMENT_V0_1",
+  "dataset_code": "DATA-MATH12-030",
+  "base_dataset": "DATA-MATH12-025",
+  "base_aggregate_semantic_sha256": "18d5d2fa9a9f8b7876e3af4283b890728279c77cf5e4e16901a6d87caacce680",
+  "semantic_files_order": [
+    "verified_gap_evidence.json",
+    "source_evidence.json",
+    "gap_resolution.json"
+  ],
+  "semantic_sha256": {
+    "verified_gap_evidence.json": "120f42641e6163a34f4b33eef87f0e96ec44b29064ad97cbbf8c003f151cbae5",
+    "source_evidence.json": "f409ee9f7f3bda9e804c5f28e7b00178a8ce528c45e2a943750c1ac33b99863e",
+    "gap_resolution.json": "ffd6b859fec46683ac639bda8a11a258d77a44bcd48602b5689dfcc9a7e6b868"
+  },
+  "aggregate_semantic_sha256": "0d8c45073eb9a666447d5e93f53bcfa9858298e5760fb010dbf7aa8e4bbcc690",
+  "required_invariants": {
+    "verified_gap_evidence_units": 1,
+    "resolved_gap": "TOTAL_PROBABILITY",
+    "canonical_candidate_created": false,
+    "production_release_eligible": 0,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  "policy": {
+    "overlay_only_do_not_rewrite_base_data": true,
+    "source_answer_required": true,
+    "true_false_child_must_preserve_parent_lineage": true,
+    "rights_review_required": true,
+    "no_synthetic_gap_fill": true
+  }
+}

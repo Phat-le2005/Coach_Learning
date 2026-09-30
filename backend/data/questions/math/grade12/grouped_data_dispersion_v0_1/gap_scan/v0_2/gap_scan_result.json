@@ -1,0 +1,31 @@
+{
+  "dataset_code": "DATA-MATH12-031",
+  "base_dataset": "DATA-MATH12-021",
+  "base_review_aggregate_sha256": "08aae72fa7f615f60e3f0b68845c29d630430321e1013a48cfa7966fb1c25a36",
+  "scan_scope": {
+    "local_real_pdf_sources_scanned": 22,
+    "targeted_external_source_leads_recorded": 4,
+    "ocr_used": false,
+    "synthetic_question_generation_used": false
+  },
+  "original_gaps": [
+    "IDENTIFY_MORE_STABLE_GROUPED_DATA",
+    "INTERPRET_GROUPED_DISPERSION_MEASURE",
+    "CONCLUDE_FROM_GROUPED_DISPERSION",
+    "PARAMETER_FROM_GROUPED_VARIANCE_SD",
+    "MULTI_MEASURE_GROUPED_DISPERSION_ANALYSIS"
+  ],
+  "new_local_source_backed_verified_candidates_found": 0,
+  "resolved_gaps": [],
+  "remaining_gaps": [
+    "IDENTIFY_MORE_STABLE_GROUPED_DATA",
+    "INTERPRET_GROUPED_DISPERSION_MEASURE",
+    "CONCLUDE_FROM_GROUPED_DISPERSION",
+    "PARAMETER_FROM_GROUPED_VARIANCE_SD",
+    "MULTI_MEASURE_GROUPED_DISPERSION_ANALYSIS"
+  ],
+  "decision": "KEEP_REAL_GAPS_UNTIL_RAW_EXTERNAL_SOURCE_IS_INGESTED_AND_ANSWER_VERIFIED",
+  "rights_status": "REVIEW_REQUIRED",
+  "database_import_allowed": false,
+  "canonical_snapshot_allowed": false
+}

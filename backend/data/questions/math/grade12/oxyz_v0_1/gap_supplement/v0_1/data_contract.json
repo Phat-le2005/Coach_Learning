@@ -1,0 +1,30 @@
+{
+  "contract_code": "DATA_MATH12_029_OXYZ_GAP_SUPPLEMENT_V0_1",
+  "dataset_code": "DATA-MATH12-029",
+  "base_dataset": "DATA-MATH12-024",
+  "base_aggregate_semantic_sha256": "a62426fd798e4b20b5b130bc72903304f3f88f0d26840bed661d2eed9b1521ce",
+  "semantic_files_order": [
+    "verified_gap_questions.json",
+    "source_evidence.json",
+    "gap_resolution.json"
+  ],
+  "semantic_sha256": {
+    "verified_gap_questions.json": "73abe09d9ef3a81a409a46b15e9cab02219c7c246096fd9a9da94cc7fd0658fb",
+    "source_evidence.json": "b806e5eee87d7496768929398cbdb36495c487803cff79b9b0aad0f40802e787",
+    "gap_resolution.json": "14dcf1de354c345951bab9d475f5a252c8543840ab51026b3f1a3b0be3bd4e4f"
+  },
+  "aggregate_semantic_sha256": "339507d1bcb67a7c667e1d22d18f51829bc1ef3adc2169f91114387421d21839",
+  "required_invariants": {
+    "verified_gap_candidates": 1,
+    "resolved_gap": "PLANE_SPHERE_RELATION",
+    "production_release_eligible": 0,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  "policy": {
+    "overlay_only_do_not_rewrite_base_data": true,
+    "source_answer_required": true,
+    "rights_review_required": true,
+    "no_synthetic_gap_fill": true
+  }
+}

@@ -1,0 +1,17 @@
+[
+  {
+    "evidence_id": "M12_PROB_GAP_EVID_0001",
+    "evidence_unit_id": "M12_PROB_GAP_0001",
+    "source_parent_candidate_id": "M12_PROB_CAND_0012",
+    "source_child_label": "c",
+    "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+    "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+    "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+    "question_page": 159,
+    "solution_answer_page": 169,
+    "source_claimed_answer": true,
+    "source_solution_key_text": "c) ĐÚNG",
+    "evidence_type": "SOURCE_TRUE_FALSE_CHILD_AND_EXPLICIT_SOLUTION",
+    "review_consistency": "CONFIRMED"
+  }
+]

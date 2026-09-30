@@ -1,0 +1,50 @@
+[
+  {
+    "lead_id": "EXT_GROUPED_001",
+    "url": "https://toanmath.com/2024/08/chuyen-de-cac-so-dac-trung-do-muc-do-phan-tan-cho-mau-so-lieu-ghep-nhom-toan-12.html",
+    "title": "Chuyên đề các số đặc trưng đo mức độ phân tán cho mẫu số liệu ghép nhóm Toán 12",
+    "reported_pages": 46,
+    "potential_gap_relevance": [
+      "INTERPRET_GROUPED_DISPERSION_MEASURE",
+      "CONCLUDE_FROM_GROUPED_DISPERSION",
+      "IDENTIFY_MORE_STABLE_GROUPED_DATA"
+    ],
+    "status": "DISCOVERY_ONLY_RAW_PDF_NOT_INGESTED"
+  },
+  {
+    "lead_id": "EXT_GROUPED_002",
+    "url": "https://toanmath.com/2025/08/de-kiem-tra-theo-bai-hoc-cac-so-dac-trung-do-muc-do-phan-tan-mau-so-lieu-ghep-nhom.html",
+    "title": "Đề kiểm tra theo bài học các số đặc trưng đo mức độ phân tán mẫu số liệu ghép nhóm",
+    "reported_pages": 116,
+    "potential_gap_relevance": [
+      "INTERPRET_GROUPED_DISPERSION_MEASURE",
+      "CONCLUDE_FROM_GROUPED_DISPERSION",
+      "IDENTIFY_MORE_STABLE_GROUPED_DATA",
+      "MULTI_MEASURE_GROUPED_DISPERSION_ANALYSIS"
+    ],
+    "status": "DISCOVERY_ONLY_RAW_PDF_NOT_INGESTED"
+  },
+  {
+    "lead_id": "EXT_GROUPED_003",
+    "url": "https://file.montoan.com.vn/file-pdf/cac-dang-bai-tap-cac-so-dac-trung-do-muc-do-phan-tan-cua-mau-so-lieu-ghep-nhom-toan-12-knttvcs.pdf",
+    "title": "Các dạng bài tập các số đặc trưng đo mức độ phân tán của mẫu số liệu ghép nhóm Toán 12 KNTTVCS",
+    "reported_pages": 57,
+    "potential_gap_relevance": [
+      "INTERPRET_GROUPED_DISPERSION_MEASURE",
+      "CONCLUDE_FROM_GROUPED_DISPERSION",
+      "IDENTIFY_MORE_STABLE_GROUPED_DATA"
+    ],
+    "status": "DISCOVERY_ONLY_RAW_PDF_FETCH_UNAVAILABLE_IN_CURRENT_RUNTIME"
+  },
+  {
+    "lead_id": "EXT_GROUPED_004",
+    "url": "https://lhpdl.edu.vn/wp-content/uploads/TAI-LIEU-ON-TOT-NGHIEP-MON-TOAN_2025.pdf",
+    "title": "Tài liệu ôn tốt nghiệp môn Toán 2025",
+    "reported_pages": null,
+    "potential_gap_relevance": [
+      "INTERPRET_GROUPED_DISPERSION_MEASURE",
+      "CONCLUDE_FROM_GROUPED_DISPERSION"
+    ],
+    "status": "DISCOVERY_ONLY_NOT_INGESTED"
+  }
+]

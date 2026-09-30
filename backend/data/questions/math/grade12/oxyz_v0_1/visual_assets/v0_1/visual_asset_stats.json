@@ -1,0 +1,18 @@
+{
+  "dataset_code": "DATA-MATH12-028",
+  "scope": "Math 12 - Oxyz visual assets",
+  "academic_verified_units": 132,
+  "academic_visual_required_units": 6,
+  "visual_decisions": 132,
+  "ready_source_crops": 5,
+  "not_required_after_visual_review": 1,
+  "not_required_from_academic_review": 126,
+  "png_files": 5,
+  "unresolved_visual_units": 0,
+  "rights_review_required_units": 132,
+  "promotion_eligible_units": 0,
+  "production_release_eligible": 0,
+  "database_import_allowed": false,
+  "canonical_snapshot_allowed": false,
+  "rights_status": "REVIEW_REQUIRED"
+}

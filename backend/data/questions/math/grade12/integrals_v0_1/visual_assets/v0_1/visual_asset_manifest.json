@@ -1,0 +1,255 @@
+{
+  "dataset_code": "DATA-MATH12-027",
+  "scope": "Math 12 - Nguyên hàm & Tích phân visual assets",
+  "input_review_dataset": "DATA-MATH12-023",
+  "input_review_aggregate_sha256": "f627df2011b5d577b689751a9364b93428317fe2b173dc2d541142c46f790dc4",
+  "asset_policy": {
+    "crop_scope": "DISTINCT_SOURCE_VISUAL_COMPONENT_ONLY",
+    "no_full_question_crop_for_production": true,
+    "no_redraw_or_synthetic_visual": true,
+    "render_dpi": 200,
+    "rights_status": "REVIEW_REQUIRED"
+  },
+  "assets": [
+    {
+      "asset_id": "M12_INT_CAND_0009__source_visual",
+      "candidate_id": "M12_INT_CAND_0009",
+      "asset_status": "READY_SOURCE_CROP",
+      "asset_kind": "SOURCE_VISUAL_COMPONENT_CROP",
+      "file_name": "assets/M12_INT_CAND_0009__source_visual.png",
+      "sha256": "26ed38b33aded6b0e320e6ee75198a1d40a383cf6a22698a4daedbf8dcd9ba1e",
+      "width_px": 394,
+      "height_px": 187,
+      "render_dpi": 200,
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "question_anchor_page": 127,
+      "asset_source_page": 127,
+      "source_page_role": "QUESTION_PAGE",
+      "source_component_boxes_pdf_points": [
+        [
+          241.2,
+          249.44,
+          383.04,
+          316.16
+        ]
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_INT_CAND_0012__source_visual",
+      "candidate_id": "M12_INT_CAND_0012",
+      "asset_status": "READY_SOURCE_CROP",
+      "asset_kind": "SOURCE_VISUAL_COMPONENT_CROP",
+      "file_name": "assets/M12_INT_CAND_0012__source_visual.png",
+      "sha256": "452f1f9367fc5aa5905d9c7f1b731a7c086387d0455c214db9e13eb365310cbc",
+      "width_px": 412,
+      "height_px": 321,
+      "render_dpi": 200,
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "question_anchor_page": 164,
+      "asset_source_page": 164,
+      "source_page_role": "QUESTION_PAGE",
+      "source_component_boxes_pdf_points": [
+        [
+          238.08,
+          257.12,
+          386.16,
+          372.56
+        ]
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_INT_CAND_0018__source_visual",
+      "candidate_id": "M12_INT_CAND_0018",
+      "asset_status": "READY_SOURCE_CROP",
+      "asset_kind": "SOURCE_VISUAL_COMPONENT_CROP",
+      "file_name": "assets/M12_INT_CAND_0018__source_visual.png",
+      "sha256": "924112fa82ddae26d4191066bea91f05beff7c610e24b303177577a1ed0aae89",
+      "width_px": 526,
+      "height_px": 492,
+      "render_dpi": 200,
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "question_anchor_page": 243,
+      "asset_source_page": 243,
+      "source_page_role": "QUESTION_PAGE",
+      "source_component_boxes_pdf_points": [
+        [
+          217.68,
+          212.72,
+          406.56,
+          389.36
+        ]
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_INT_CAND_0023__source_visual",
+      "candidate_id": "M12_INT_CAND_0023",
+      "asset_status": "READY_SOURCE_CROP",
+      "asset_kind": "SOURCE_VISUAL_COMPONENT_CROP",
+      "file_name": "assets/M12_INT_CAND_0023__source_visual.png",
+      "sha256": "12b1ca0b1058579adf38ad5c15ed67121af70a6b8feccfa267222ead4c87a3d3",
+      "width_px": 402,
+      "height_px": 313,
+      "render_dpi": 200,
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "question_anchor_page": 322,
+      "asset_source_page": 322,
+      "source_page_role": "QUESTION_PAGE",
+      "source_component_boxes_pdf_points": [
+        [
+          240.0,
+          209.12,
+          384.24,
+          321.2
+        ]
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_INT_CAND_0032__source_visual",
+      "candidate_id": "M12_INT_CAND_0032",
+      "asset_status": "READY_SOURCE_CROP",
+      "asset_kind": "SOURCE_VISUAL_COMPONENT_CROP",
+      "file_name": "assets/M12_INT_CAND_0032__source_visual.png",
+      "sha256": "3e0fa2b3f9cf83e170d8f68d5ae4bc7b6bb36622f30f2c80631de8829375e0b1",
+      "width_px": 501,
+      "height_px": 329,
+      "render_dpi": 200,
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "question_anchor_page": 483,
+      "asset_source_page": 483,
+      "source_page_role": "QUESTION_PAGE",
+      "source_component_boxes_pdf_points": [
+        [
+          193.2,
+          392.72,
+          373.2,
+          510.56
+        ]
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_INT_CAND_0036__source_visual",
+      "candidate_id": "M12_INT_CAND_0036",
+      "asset_status": "READY_SOURCE_CROP",
+      "asset_kind": "SOURCE_VISUAL_COMPONENT_CROP",
+      "file_name": "assets/M12_INT_CAND_0036__source_visual.png",
+      "sha256": "01637a831260ab550078c82b20b94de33a3168d1f027c069fcc7138aa98ac840",
+      "width_px": 580,
+      "height_px": 365,
+      "render_dpi": 200,
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "question_anchor_page": 540,
+      "asset_source_page": 540,
+      "source_page_role": "QUESTION_PAGE",
+      "source_component_boxes_pdf_points": [
+        [
+          179.04,
+          303.2,
+          387.6,
+          434.48
+        ]
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_INT_CAND_0042__source_visual",
+      "candidate_id": "M12_INT_CAND_0042",
+      "asset_status": "READY_SOURCE_CROP",
+      "asset_kind": "SOURCE_VISUAL_COMPONENT_CROP",
+      "file_name": "assets/M12_INT_CAND_0042__source_visual.png",
+      "sha256": "48e861489f5f4a9f027ff23c3951f8cead0ff4941b62f98f450d2241d16cdce7",
+      "width_px": 380,
+      "height_px": 334,
+      "render_dpi": 200,
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "question_anchor_page": 632,
+      "asset_source_page": 632,
+      "source_page_role": "QUESTION_PAGE",
+      "source_component_boxes_pdf_points": [
+        [
+          243.84,
+          474.32,
+          380.4,
+          594.32
+        ]
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_INT_CAND_0077__source_visual",
+      "candidate_id": "M12_INT_CAND_0077",
+      "asset_status": "READY_SOURCE_CROP",
+      "asset_kind": "SOURCE_VISUAL_COMPONENT_CROP",
+      "file_name": "assets/M12_INT_CAND_0077__source_visual.png",
+      "sha256": "55069a0906842a198d3aafb79f3e4d40e9903f0a8f4b5bd36dcc05eb3b3b134a",
+      "width_px": 498,
+      "height_px": 375,
+      "render_dpi": 200,
+      "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+      "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+      "source_pdf_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+      "question_anchor_page": 186,
+      "asset_source_page": 186,
+      "source_page_role": "QUESTION_PAGE",
+      "source_component_boxes_pdf_points": [
+        [
+          208.125,
+          348.721,
+          387.145,
+          483.271
+        ]
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    }
+  ]
+}

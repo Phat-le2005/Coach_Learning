@@ -1,0 +1,35 @@
+{
+  "contract_code": "DATA_MATH12_031_GROUPED_GAP_SCAN_V0_2",
+  "dataset_code": "DATA-MATH12-031",
+  "semantic_files_order": [
+    "local_source_scan_registry.json",
+    "external_gap_leads.json",
+    "gap_scan_result.json"
+  ],
+  "semantic_sha256": {
+    "local_source_scan_registry.json": "875cf919c7be9799228a68d154d2e09e4780efda63866007d4254a056e2fa36f",
+    "external_gap_leads.json": "4b630cdc192a8c5d50ed9de803a71b4180c7ed622ecc81fad4b12b62bd639d71",
+    "gap_scan_result.json": "df689659b1b4a0fd0f8b40b9fe7004827402306323e7760eb20951a714b0a17c"
+  },
+  "aggregate_semantic_sha256": "cae9d0c8a8970bbb19f43ab3de33927e348498f406f37a8938038692a9be8435",
+  "required_invariants": {
+    "local_real_pdf_sources_scanned": 22,
+    "new_local_source_backed_verified_candidates_found": 0,
+    "remaining_gap_count": 5,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  "locked_remaining_gaps": [
+    "IDENTIFY_MORE_STABLE_GROUPED_DATA",
+    "INTERPRET_GROUPED_DISPERSION_MEASURE",
+    "CONCLUDE_FROM_GROUPED_DISPERSION",
+    "PARAMETER_FROM_GROUPED_VARIANCE_SD",
+    "MULTI_MEASURE_GROUPED_DISPERSION_ANALYSIS"
+  ],
+  "policy": {
+    "external_lead_is_not_verified_data": true,
+    "raw_source_required_before_verification": true,
+    "no_synthetic_gap_fill": true,
+    "rights_review_required": true
+  }
+}

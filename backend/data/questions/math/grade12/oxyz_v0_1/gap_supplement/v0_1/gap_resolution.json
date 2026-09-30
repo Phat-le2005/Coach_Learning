@@ -1,0 +1,13 @@
+{
+  "dataset_code": "DATA-MATH12-029",
+  "base_dataset": "DATA-MATH12-024",
+  "base_aggregate_semantic_sha256": "a62426fd798e4b20b5b130bc72903304f3f88f0d26840bed661d2eed9b1521ce",
+  "resolved_gap": "PLANE_SPHERE_RELATION",
+  "verified_gap_candidates": 1,
+  "resolution_status": "SOURCE_BACKED_EVIDENCE_FOUND",
+  "remaining_data_math12_024_gap_after_overlay": [],
+  "rights_status": "REVIEW_REQUIRED",
+  "production_release_eligible": 0,
+  "database_import_allowed": false,
+  "canonical_snapshot_allowed": false
+}

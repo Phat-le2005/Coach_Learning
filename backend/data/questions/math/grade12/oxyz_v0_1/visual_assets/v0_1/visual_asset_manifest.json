@@ -1,0 +1,171 @@
+{
+  "dataset_code": "DATA-MATH12-028",
+  "scope": "Math 12 - Oxyz visual assets",
+  "input_review_dataset": "DATA-MATH12-024",
+  "input_review_aggregate_sha256": "a62426fd798e4b20b5b130bc72903304f3f88f0d26840bed661d2eed9b1521ce",
+  "asset_policy": {
+    "crop_scope": "DISTINCT_SOURCE_VISUAL_COMPONENT_ONLY",
+    "no_full_question_crop_for_production": true,
+    "no_redraw_or_synthetic_visual": true,
+    "render_dpi": 200,
+    "rights_status": "REVIEW_REQUIRED"
+  },
+  "assets": [
+    {
+      "asset_id": "M12_OXYZ_CAND_0027__source_visual",
+      "candidate_id": "M12_OXYZ_CAND_0027",
+      "asset_status": "READY_SOURCE_CROP",
+      "asset_kind": "SOURCE_VISUAL_COMPONENT_CROP",
+      "file_name": "assets/M12_OXYZ_CAND_0027__source_visual.png",
+      "sha256": "e1496e38290069adc352b3582480dd14bade3b3006179eeb1b1ee9ee400272b1",
+      "width_px": 457,
+      "height_px": 257,
+      "render_dpi": 200,
+      "source_code": "SRC_TRIAL_2026_14",
+      "source_file_id": "1TkOM8P-QcouZYV8Q9Tp7HT3toZjVnfe1",
+      "source_pdf_sha256": "7330415051643b8ded8b26e29f1cb4cfe3dc85fc025e3ed8a5294205b60e9e8d",
+      "question_anchor_page": 15,
+      "asset_source_page": 15,
+      "source_page_role": "QUESTION_PAGE",
+      "source_component_boxes_pdf_points": [
+        [
+          388.35,
+          51.52,
+          552.45,
+          143.92
+        ]
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_OXYZ_CAND_0056__source_visual",
+      "candidate_id": "M12_OXYZ_CAND_0056",
+      "asset_status": "READY_SOURCE_CROP",
+      "asset_kind": "SOURCE_VISUAL_COMPONENT_CROP",
+      "file_name": "assets/M12_OXYZ_CAND_0056__source_visual.png",
+      "sha256": "1d181e36145855ace96f5e75f59fa736efa2613fedef051a99066144ec96ce0f",
+      "width_px": 794,
+      "height_px": 486,
+      "render_dpi": 200,
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "question_anchor_page": 95,
+      "asset_source_page": 95,
+      "source_page_role": "QUESTION_PAGE",
+      "source_component_boxes_pdf_points": [
+        [
+          169.44,
+          229.52,
+          454.8,
+          404.0
+        ]
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_OXYZ_CAND_0076__source_visual",
+      "candidate_id": "M12_OXYZ_CAND_0076",
+      "asset_status": "READY_SOURCE_CROP",
+      "asset_kind": "SOURCE_VISUAL_COMPONENT_CROP",
+      "file_name": "assets/M12_OXYZ_CAND_0076__source_visual.png",
+      "sha256": "0c6245c53dcc4b6d933183e3a6efc887038b579b30148014ad2b0f1f57fa3438",
+      "width_px": 1074,
+      "height_px": 628,
+      "render_dpi": 200,
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "question_anchor_page": 171,
+      "asset_source_page": 171,
+      "source_page_role": "QUESTION_PAGE",
+      "source_component_boxes_pdf_points": [
+        [
+          158.64,
+          209.12,
+          407.76,
+          291.44
+        ],
+        [
+          90.24,
+          404.96,
+          476.4,
+          542.0
+        ]
+      ],
+      "component_count": 2,
+      "extraction_method": "SOURCE_VISUAL_COMPONENTS_REGION_CROP_VERTICAL_STITCH_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_OXYZ_CAND_0092__source_visual",
+      "candidate_id": "M12_OXYZ_CAND_0092",
+      "asset_status": "READY_SOURCE_CROP",
+      "asset_kind": "SOURCE_VISUAL_COMPONENT_CROP",
+      "file_name": "assets/M12_OXYZ_CAND_0092__source_visual.png",
+      "sha256": "ab696620029394241f575915aab7d3e81600c990c890189de0e009b5667695a4",
+      "width_px": 1206,
+      "height_px": 393,
+      "render_dpi": 200,
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "question_anchor_page": 232,
+      "asset_source_page": 232,
+      "source_page_role": "QUESTION_PAGE",
+      "source_component_boxes_pdf_points": [
+        [
+          95.04,
+          209.12,
+          528.96,
+          350.24
+        ]
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    },
+    {
+      "asset_id": "M12_OXYZ_CAND_0199__source_visual",
+      "candidate_id": "M12_OXYZ_CAND_0199",
+      "asset_status": "READY_SOURCE_CROP",
+      "asset_kind": "SOURCE_VISUAL_COMPONENT_CROP",
+      "file_name": "assets/M12_OXYZ_CAND_0199__source_visual.png",
+      "sha256": "7c5fc62d2ac925aaf1ef2af09b0b1a71213405228ce949e261630dac3a85a773",
+      "width_px": 442,
+      "height_px": 425,
+      "render_dpi": 200,
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_file_id": "1kVuA8ZIb402-_TM_fqI_tj1WuS0CBwg1",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "question_anchor_page": 638,
+      "asset_source_page": 638,
+      "source_page_role": "QUESTION_PAGE",
+      "source_component_boxes_pdf_points": [
+        [
+          232.8,
+          343.52,
+          391.44,
+          496.16
+        ]
+      ],
+      "component_count": 1,
+      "extraction_method": "SOURCE_VISUAL_COMPONENT_REGION_CROP_RENDER_200_DPI",
+      "answer_leakage_check": "PASS_DISTINCT_COMPONENT_ONLY",
+      "rights_status": "REVIEW_REQUIRED",
+      "promotion_eligible": false
+    }
+  ]
+}

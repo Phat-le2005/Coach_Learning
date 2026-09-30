@@ -1,27 +1,43 @@
 {
-  "batch_code": "MATH12-BATCH-024-026",
+  "batch_code": "MATH12-FINALIZATION-027-031",
   "datasets": [
     {
-      "dataset_code": "DATA-MATH12-024",
-      "scope": "Oxyz / coordinate geometry in space",
-      "verified": 132,
-      "hold": 192,
-      "duplicate_clusters": 102,
-      "aggregate": "a62426fd798e4b20b5b130bc72903304f3f88f0d26840bed661d2eed9b1521ce"
+      "dataset_code": "DATA-MATH12-027",
+      "scope": "Integrals visual review",
+      "aggregate": "9c49693ab16cbea357c7b2f0c5256cd53d2eaa5ba43d3bfa385bd0acf6ed4981",
+      "ready_assets": 8,
+      "not_required_after_review": 20
     },
     {
-      "dataset_code": "DATA-MATH12-025",
-      "scope": "Conditional probability / total probability / Bayes / tree",
-      "verified": 17,
-      "hold": 56,
-      "duplicate_clusters": 14,
-      "aggregate": "18d5d2fa9a9f8b7876e3af4283b890728279c77cf5e4e16901a6d87caacce680"
+      "dataset_code": "DATA-MATH12-028",
+      "scope": "Oxyz visual review",
+      "aggregate": "e86db0b1c288e47fa278b9b1b22f8294785157664f984490112bacf9d584aa5b",
+      "ready_assets": 5,
+      "not_required_after_review": 1
     },
     {
-      "dataset_code": "DATA-MATH12-026",
-      "scope": "Integral direct-definite-integral gap supplement + grouped-dispersion gap scan",
-      "verified_gap_candidates": 2,
-      "aggregate": "56de89cf49bea7cfcb4ba1b3ec5b3b8daac6ca8d7da4a2397076f835f335cd5f"
+      "dataset_code": "DATA-MATH12-029",
+      "scope": "Oxyz PLANE_SPHERE_RELATION gap supplement",
+      "aggregate": "339507d1bcb67a7c667e1d22d18f51829bc1ef3adc2169f91114387421d21839",
+      "verified_gap_candidates": 1
+    },
+    {
+      "dataset_code": "DATA-MATH12-030",
+      "scope": "Probability TOTAL_PROBABILITY gap evidence supplement",
+      "aggregate": "0d8c45073eb9a666447d5e93f53bcfa9858298e5760fb010dbf7aa8e4bbcc690",
+      "verified_gap_evidence_units": 1
+    },
+    {
+      "dataset_code": "DATA-MATH12-031",
+      "scope": "Grouped-data dispersion remaining-gap rescan",
+      "aggregate": "cae9d0c8a8970bbb19f43ab3de33927e348498f406f37a8938038692a9be8435",
+      "remaining_gaps": [
+        "IDENTIFY_MORE_STABLE_GROUPED_DATA",
+        "INTERPRET_GROUPED_DISPERSION_MEASURE",
+        "CONCLUDE_FROM_GROUPED_DISPERSION",
+        "PARAMETER_FROM_GROUPED_VARIANCE_SD",
+        "MULTI_MEASURE_GROUPED_DISPERSION_ANALYSIS"
+      ]
     }
   ],
   "global_policy": {
@@ -29,6 +45,7 @@
     "no_synthetic_gap_fill": true,
     "rights_status": "REVIEW_REQUIRED",
     "database_import_allowed": false,
-    "canonical_snapshot_allowed": false
+    "canonical_snapshot_allowed": false,
+    "production_release_eligible": 0
   }
 }

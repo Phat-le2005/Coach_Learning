@@ -1,0 +1,49 @@
+{
+  "contract_code": "DATA_MATH12_027_VISUAL_CONTRACT_V0_1",
+  "dataset_code": "DATA-MATH12-027",
+  "input_review_dataset": "DATA-MATH12-023",
+  "input_review_aggregate_sha256": "f627df2011b5d577b689751a9364b93428317fe2b173dc2d541142c46f790dc4",
+  "semantic_files_order": [
+    "visual_review_decisions.json",
+    "visual_asset_manifest.json",
+    "visual_asset_stats.json"
+  ],
+  "semantic_sha256": {
+    "visual_review_decisions.json": "983e8ac36d1f11ec3d5085f2bcd8277245a5e18800c33968542899d4080bd10c",
+    "visual_asset_manifest.json": "6478a0f6d084caf8548f402ff9147ed8b2b3d30f753c8122205678ba0a89e220",
+    "visual_asset_stats.json": "5077d082d8f0494e1a0e27c87f6696e955067f691556a6136998aee77a3f55fa"
+  },
+  "asset_file_hashes": {
+    "assets/M12_INT_CAND_0009__source_visual.png": "26ed38b33aded6b0e320e6ee75198a1d40a383cf6a22698a4daedbf8dcd9ba1e",
+    "assets/M12_INT_CAND_0012__source_visual.png": "452f1f9367fc5aa5905d9c7f1b731a7c086387d0455c214db9e13eb365310cbc",
+    "assets/M12_INT_CAND_0018__source_visual.png": "924112fa82ddae26d4191066bea91f05beff7c610e24b303177577a1ed0aae89",
+    "assets/M12_INT_CAND_0023__source_visual.png": "12b1ca0b1058579adf38ad5c15ed67121af70a6b8feccfa267222ead4c87a3d3",
+    "assets/M12_INT_CAND_0032__source_visual.png": "3e0fa2b3f9cf83e170d8f68d5ae4bc7b6bb36622f30f2c80631de8829375e0b1",
+    "assets/M12_INT_CAND_0036__source_visual.png": "01637a831260ab550078c82b20b94de33a3168d1f027c069fcc7138aa98ac840",
+    "assets/M12_INT_CAND_0042__source_visual.png": "48e861489f5f4a9f027ff23c3951f8cead0ff4941b62f98f450d2241d16cdce7",
+    "assets/M12_INT_CAND_0077__source_visual.png": "55069a0906842a198d3aafb79f3e4d40e9903f0a8f4b5bd36dcc05eb3b3b134a"
+  },
+  "aggregate_semantic_and_assets_sha256": "9c49693ab16cbea357c7b2f0c5256cd53d2eaa5ba43d3bfa385bd0acf6ed4981",
+  "required_invariants": {
+    "academic_verified_units": 77,
+    "academic_visual_required_units": 28,
+    "visual_decisions": 77,
+    "ready_source_crops": 8,
+    "not_required_after_visual_review": 20,
+    "not_required_from_academic_review": 49,
+    "png_files": 8,
+    "unresolved_visual_units": 0,
+    "rights_review_required_units": 77,
+    "promotion_eligible_units": 0,
+    "production_release_eligible": 0,
+    "database_import_allowed": false,
+    "canonical_snapshot_allowed": false
+  },
+  "policy": {
+    "curated_data_read_only": true,
+    "no_full_question_crop": true,
+    "no_synthetic_visual": true,
+    "rights_review_required": true,
+    "codex_must_not_rewrite_curated_data": true
+  }
+}
