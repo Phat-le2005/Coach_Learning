@@ -1,0 +1,68 @@
+[
+  {
+    "source_code": "DERIVATIVE_RULES",
+    "target_code": "ANTIDERIVATIVE",
+    "relation_type": "PREREQUISITE",
+    "basis": "COACH_LEARNING_DERIVED_PEDAGOGICAL"
+  },
+  {
+    "source_code": "ANTIDERIVATIVE",
+    "target_code": "DEFINITE_INTEGRAL",
+    "relation_type": "PREREQUISITE",
+    "basis": "COACH_LEARNING_DERIVED_PEDAGOGICAL"
+  },
+  {
+    "source_code": "VECTOR_COORDINATES_3D",
+    "target_code": "NORMAL_VECTOR",
+    "relation_type": "PREREQUISITE",
+    "basis": "COACH_LEARNING_DERIVED_PEDAGOGICAL"
+  },
+  {
+    "source_code": "VECTOR_COORDINATES_3D",
+    "target_code": "DIRECTION_VECTOR",
+    "relation_type": "PREREQUISITE",
+    "basis": "COACH_LEARNING_DERIVED_PEDAGOGICAL"
+  },
+  {
+    "source_code": "NORMAL_VECTOR",
+    "target_code": "PLANE_EQUATION",
+    "relation_type": "PREREQUISITE",
+    "basis": "COACH_LEARNING_DERIVED_PEDAGOGICAL"
+  },
+  {
+    "source_code": "DIRECTION_VECTOR",
+    "target_code": "LINE_EQUATION",
+    "relation_type": "PREREQUISITE",
+    "basis": "COACH_LEARNING_DERIVED_PEDAGOGICAL"
+  },
+  {
+    "source_code": "PLANE_EQUATION",
+    "target_code": "DISTANCE_OXYZ",
+    "relation_type": "PREREQUISITE",
+    "basis": "COACH_LEARNING_DERIVED_PEDAGOGICAL"
+  },
+  {
+    "source_code": "LINE_EQUATION",
+    "target_code": "INTERSECTION_OXYZ",
+    "relation_type": "PREREQUISITE",
+    "basis": "COACH_LEARNING_DERIVED_PEDAGOGICAL"
+  },
+  {
+    "source_code": "CONDITIONAL_PROBABILITY",
+    "target_code": "TOTAL_PROBABILITY",
+    "relation_type": "PREREQUISITE",
+    "basis": "COACH_LEARNING_DERIVED_PEDAGOGICAL"
+  },
+  {
+    "source_code": "TOTAL_PROBABILITY",
+    "target_code": "BAYES_FORMULA",
+    "relation_type": "PREREQUISITE",
+    "basis": "COACH_LEARNING_DERIVED_PEDAGOGICAL"
+  },
+  {
+    "source_code": "CONDITIONAL_PROBABILITY",
+    "target_code": "PROBABILITY_TREE",
+    "relation_type": "PREREQUISITE",
+    "basis": "COACH_LEARNING_DERIVED_PEDAGOGICAL"
+  }
+]

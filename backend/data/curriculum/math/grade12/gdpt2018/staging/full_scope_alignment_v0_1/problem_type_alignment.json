@@ -1,0 +1,527 @@
+[
+  {
+    "problem_type_code": "MONOTONICITY_FROM_DERIVATIVE_SIGN",
+    "target_topic_code": "MONOTONICITY_TOPIC",
+    "record_source": "DERIVATIVE_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "MONOTONICITY_FROM_VARIATION_TABLE",
+    "target_topic_code": "MONOTONICITY_TOPIC",
+    "record_source": "DERIVATIVE_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "MONOTONICITY_FROM_GRAPH",
+    "target_topic_code": "MONOTONICITY_TOPIC",
+    "record_source": "DERIVATIVE_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+    "target_topic_code": "MONOTONICITY_TOPIC",
+    "record_source": "DERIVATIVE_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "PARAMETER_MONOTONICITY",
+    "target_topic_code": "MONOTONICITY_TOPIC",
+    "record_source": "DERIVATIVE_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "EXTREMA_FROM_DERIVATIVE_SIGN",
+    "target_topic_code": "EXTREMA_TOPIC",
+    "record_source": "DERIVATIVE_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "EXTREMA_FROM_VARIATION_TABLE",
+    "target_topic_code": "EXTREMA_TOPIC",
+    "record_source": "DERIVATIVE_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "EXTREMA_FROM_GRAPH",
+    "target_topic_code": "EXTREMA_TOPIC",
+    "record_source": "DERIVATIVE_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "FIND_FUNCTION_EXTREMA",
+    "target_topic_code": "EXTREMA_TOPIC",
+    "record_source": "DERIVATIVE_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "PARAMETER_EXTREMA_COUNT",
+    "target_topic_code": "EXTREMA_TOPIC",
+    "record_source": "DERIVATIVE_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "GLOBAL_EXTREMA_RECOGNITION",
+    "target_topic_code": "GLOBAL_EXTREMA_TOPIC",
+    "record_source": "DERIVATIVE_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+    "target_topic_code": "GLOBAL_EXTREMA_TOPIC",
+    "record_source": "DERIVATIVE_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "GLOBAL_EXTREMA_SIMPLE_DOMAIN",
+    "target_topic_code": "GLOBAL_EXTREMA_TOPIC",
+    "record_source": "DERIVATIVE_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "ASYMPTOTE_FROM_GRAPH",
+    "target_topic_code": "FUNCTION_ANALYSIS_TOPIC",
+    "record_source": "DERIVATIVE_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "VERTICAL_ASYMPTOTE_RATIONAL",
+    "target_topic_code": "FUNCTION_ANALYSIS_TOPIC",
+    "record_source": "DERIVATIVE_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "HORIZONTAL_ASYMPTOTE_RATIONAL",
+    "target_topic_code": "FUNCTION_ANALYSIS_TOPIC",
+    "record_source": "DERIVATIVE_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+    "target_topic_code": "FUNCTION_ANALYSIS_TOPIC",
+    "record_source": "DERIVATIVE_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "COMPLETE_FUNCTION_ANALYSIS_CUBIC",
+    "target_topic_code": "FUNCTION_ANALYSIS_TOPIC",
+    "record_source": "DERIVATIVE_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "COMPLETE_FUNCTION_ANALYSIS_LINEAR_FRACTION",
+    "target_topic_code": "FUNCTION_ANALYSIS_TOPIC",
+    "record_source": "DERIVATIVE_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "COMPLETE_FUNCTION_ANALYSIS_QUADRATIC_OVER_LINEAR",
+    "target_topic_code": "FUNCTION_ANALYSIS_TOPIC",
+    "record_source": "DERIVATIVE_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "GRAPH_IDENTIFICATION_FROM_FEATURES",
+    "target_topic_code": "FUNCTION_ANALYSIS_TOPIC",
+    "record_source": "DERIVATIVE_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "GRAPH_SYMMETRY_IDENTIFICATION",
+    "target_topic_code": "FUNCTION_ANALYSIS_TOPIC",
+    "record_source": "DERIVATIVE_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+    "target_topic_code": "DERIVATIVE_APPLICATION_TOPIC",
+    "record_source": "DERIVATIVE_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "REAL_WORLD_MONOTONICITY_INTERPRETATION",
+    "target_topic_code": "DERIVATIVE_APPLICATION_TOPIC",
+    "record_source": "DERIVATIVE_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "CALCULATE_ANTIDERIVATIVE",
+    "target_topic_code": "ANTIDERIVATIVE_TOPIC",
+    "record_source": "INTEGRALS_ACADEMIC_TAXONOMY",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "ANTIDERIVATIVE_WITH_CONDITION",
+    "target_topic_code": "ANTIDERIVATIVE_TOPIC",
+    "record_source": "INTEGRALS_ACADEMIC_TAXONOMY",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "INTEGRAL_PROPERTIES",
+    "target_topic_code": "DEFINITE_INTEGRAL_TOPIC",
+    "record_source": "INTEGRALS_ACADEMIC_TAXONOMY",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "CALCULATE_DEFINITE_INTEGRAL",
+    "target_topic_code": "DEFINITE_INTEGRAL_TOPIC",
+    "record_source": "INTEGRALS_ACADEMIC_TAXONOMY",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "AREA_BY_INTEGRAL",
+    "target_topic_code": "INTEGRAL_GEOMETRIC_APPLICATION_TOPIC",
+    "record_source": "INTEGRALS_ACADEMIC_TAXONOMY",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "VOLUME_BY_INTEGRAL",
+    "target_topic_code": "INTEGRAL_GEOMETRIC_APPLICATION_TOPIC",
+    "record_source": "INTEGRALS_ACADEMIC_TAXONOMY",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "VOLUME_BY_CROSS_SECTION",
+    "target_topic_code": "INTEGRAL_GEOMETRIC_APPLICATION_TOPIC",
+    "record_source": "INTEGRALS_ACADEMIC_TAXONOMY",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "PRACTICAL_ACCUMULATION",
+    "target_topic_code": "INTEGRAL_PRACTICAL_APPLICATION_TOPIC",
+    "record_source": "INTEGRALS_ACADEMIC_TAXONOMY",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "VECTOR_RELATION_IDENTIFICATION_3D",
+    "target_topic_code": "SPACE_VECTOR_OPERATIONS_TOPIC",
+    "record_source": "VECTOR_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "VECTOR_SUM_DIFFERENCE_3D",
+    "target_topic_code": "SPACE_VECTOR_OPERATIONS_TOPIC",
+    "record_source": "VECTOR_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+    "target_topic_code": "SPACE_VECTOR_OPERATIONS_TOPIC",
+    "record_source": "VECTOR_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "VECTOR_DOT_PRODUCT_3D",
+    "target_topic_code": "SPACE_VECTOR_OPERATIONS_TOPIC",
+    "record_source": "VECTOR_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "VECTOR_ANGLE_3D",
+    "target_topic_code": "SPACE_VECTOR_OPERATIONS_TOPIC",
+    "record_source": "VECTOR_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "target_topic_code": "SPACE_VECTOR_OPERATIONS_TOPIC",
+    "record_source": "VECTOR_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "POINT_COORDINATES_3D",
+    "target_topic_code": "OXYZ_VECTOR_COORDINATES_TOPIC",
+    "record_source": "VECTOR_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "VECTOR_COORDINATES_FROM_POINTS_3D",
+    "target_topic_code": "OXYZ_VECTOR_COORDINATES_TOPIC",
+    "record_source": "VECTOR_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "VECTOR_LENGTH_DISTANCE_3D",
+    "target_topic_code": "VECTOR_COORDINATE_OPERATIONS_TOPIC",
+    "record_source": "VECTOR_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "VECTOR_COORDINATE_LINEAR_OPERATIONS_3D",
+    "target_topic_code": "VECTOR_COORDINATE_OPERATIONS_TOPIC",
+    "record_source": "VECTOR_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "VECTOR_COORDINATE_DOT_PRODUCT_3D",
+    "target_topic_code": "VECTOR_COORDINATE_OPERATIONS_TOPIC",
+    "record_source": "VECTOR_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "VECTOR_COORDINATE_ANGLE_3D",
+    "target_topic_code": "VECTOR_COORDINATE_OPERATIONS_TOPIC",
+    "record_source": "VECTOR_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "MIDPOINT_CENTROID_COORDINATES_3D",
+    "target_topic_code": "VECTOR_COORDINATE_OPERATIONS_TOPIC",
+    "record_source": "VECTOR_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "PARAMETER_VECTOR_COORDINATE_CONDITION_3D",
+    "target_topic_code": "OXYZ_APPLICATION_TOPIC",
+    "record_source": "VECTOR_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "REAL_WORLD_VECTOR_COORDINATE_MODELING_3D",
+    "target_topic_code": "OXYZ_APPLICATION_TOPIC",
+    "record_source": "VECTOR_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "PLANE_EQUATION_NORMAL_VECTOR",
+    "target_topic_code": "OXYZ_PLANE_TOPIC",
+    "record_source": "OXYZ_ACADEMIC_TAXONOMY",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "POINT_PLANE_OR_PLANE_DISTANCE",
+    "target_topic_code": "OXYZ_ANGLE_DISTANCE_TOPIC",
+    "record_source": "OXYZ_ACADEMIC_TAXONOMY",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "PLANE_RELATION",
+    "target_topic_code": "OXYZ_PLANE_TOPIC",
+    "record_source": "OXYZ_ACADEMIC_TAXONOMY",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "LINE_EQUATION_DIRECTION_VECTOR",
+    "target_topic_code": "OXYZ_LINE_TOPIC",
+    "record_source": "OXYZ_ACADEMIC_TAXONOMY",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "LINE_PLANE_INTERSECTION",
+    "target_topic_code": "OXYZ_LINE_TOPIC",
+    "record_source": "OXYZ_ACADEMIC_TAXONOMY",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "LINE_RELATION",
+    "target_topic_code": "OXYZ_LINE_TOPIC",
+    "record_source": "OXYZ_ACADEMIC_TAXONOMY",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "LINE_DISTANCE_IN_OXYZ",
+    "target_topic_code": "OXYZ_ANGLE_DISTANCE_TOPIC",
+    "record_source": "OXYZ_ACADEMIC_TAXONOMY",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "ANGLE_IN_OXYZ",
+    "target_topic_code": "OXYZ_ANGLE_DISTANCE_TOPIC",
+    "record_source": "OXYZ_ACADEMIC_TAXONOMY",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "SPHERE_EQUATION_CENTER_RADIUS",
+    "target_topic_code": "OXYZ_SPHERE_TOPIC",
+    "record_source": "OXYZ_ACADEMIC_TAXONOMY",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "PLANE_SPHERE_RELATION",
+    "target_topic_code": "OXYZ_SPHERE_TOPIC",
+    "record_source": "OXYZ_ACADEMIC_TAXONOMY",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "COORDINATE_DISTANCE_PROJECTION",
+    "target_topic_code": "OXYZ_ANGLE_DISTANCE_TOPIC",
+    "record_source": "OXYZ_ACADEMIC_TAXONOMY",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "COORDINATE_GEOMETRY_APPLICATION",
+    "target_topic_code": "OXYZ_APPLICATION_TOPIC",
+    "record_source": "OXYZ_ACADEMIC_TAXONOMY",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "CALCULATE_GROUPED_RANGE",
+    "target_topic_code": "GROUPED_RANGE_IQR_TOPIC",
+    "record_source": "GROUPED_DISPERSION_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "CALCULATE_GROUPED_IQR",
+    "target_topic_code": "GROUPED_RANGE_IQR_TOPIC",
+    "record_source": "GROUPED_DISPERSION_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+    "target_topic_code": "GROUPED_VARIANCE_SD_TOPIC",
+    "record_source": "GROUPED_DISPERSION_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "target_topic_code": "GROUPED_VARIANCE_SD_TOPIC",
+    "record_source": "GROUPED_DISPERSION_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "COMPARE_GROUPED_RANGE",
+    "target_topic_code": "GROUPED_DISPERSION_COMPARISON_TOPIC",
+    "record_source": "GROUPED_DISPERSION_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "COMPARE_GROUPED_IQR",
+    "target_topic_code": "GROUPED_DISPERSION_COMPARISON_TOPIC",
+    "record_source": "GROUPED_DISPERSION_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "COMPARE_GROUPED_VARIANCE_SD",
+    "target_topic_code": "GROUPED_DISPERSION_COMPARISON_TOPIC",
+    "record_source": "GROUPED_DISPERSION_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "IDENTIFY_MORE_STABLE_GROUPED_DATA",
+    "target_topic_code": "GROUPED_DISPERSION_COMPARISON_TOPIC",
+    "record_source": "GROUPED_DISPERSION_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "INTERPRET_GROUPED_DISPERSION_MEASURE",
+    "target_topic_code": "GROUPED_DISPERSION_APPLICATION_TOPIC",
+    "record_source": "GROUPED_DISPERSION_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "CONCLUDE_FROM_GROUPED_DISPERSION",
+    "target_topic_code": "GROUPED_DISPERSION_APPLICATION_TOPIC",
+    "record_source": "GROUPED_DISPERSION_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "PARAMETER_FROM_GROUPED_VARIANCE_SD",
+    "target_topic_code": "GROUPED_DISPERSION_APPLICATION_TOPIC",
+    "record_source": "GROUPED_DISPERSION_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "MULTI_MEASURE_GROUPED_DISPERSION_ANALYSIS",
+    "target_topic_code": "GROUPED_DISPERSION_APPLICATION_TOPIC",
+    "record_source": "GROUPED_DISPERSION_STAGING",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "CONDITIONAL_PROBABILITY_DIRECT",
+    "target_topic_code": "CONDITIONAL_PROBABILITY_TOPIC",
+    "record_source": "PROBABILITY_ACADEMIC_TAXONOMY",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "TOTAL_PROBABILITY",
+    "target_topic_code": "TOTAL_PROBABILITY_BAYES_TOPIC",
+    "record_source": "PROBABILITY_ACADEMIC_TAXONOMY",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "BAYES_POSTERIOR",
+    "target_topic_code": "TOTAL_PROBABILITY_BAYES_TOPIC",
+    "record_source": "PROBABILITY_ACADEMIC_TAXONOMY",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "problem_type_code": "TREE_OR_TOTAL_PROBABILITY",
+    "target_topic_code": "PROBABILITY_TREE_TOPIC",
+    "record_source": "PROBABILITY_ACADEMIC_TAXONOMY",
+    "record_policy": "PRESERVE_SOURCE_RECORD_FIELDS_EXCEPT_TOPIC_CODE_REALIGNMENT",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  }
+]

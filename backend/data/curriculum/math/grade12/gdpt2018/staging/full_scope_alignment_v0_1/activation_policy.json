@@ -1,0 +1,29 @@
+{
+  "dataset_code": "DATA-MATH12-033",
+  "activation_allowed": false,
+  "database_import_allowed": false,
+  "canonical_write_allowed": false,
+  "curriculum_import_service_allowed": false,
+  "allowed_operations": [
+    "READ_ONLY_VALIDATE",
+    "BUILD_IN_MEMORY_PREVIEW",
+    "COMPARE_WITH_CURRENT_CANONICAL",
+    "GENERATE_DETERMINISTIC_FINGERPRINT"
+  ],
+  "blocked_operations": [
+    "WRITE_CANONICAL_MANIFEST",
+    "REPLACE_CANONICAL_CHAPTERS",
+    "IMPORT_TO_DATABASE",
+    "SET_VERIFIED_AT",
+    "DELETE_LEGACY_ROWS",
+    "PROMOTE_QUESTION_DATA"
+  ],
+  "future_activation_requirements": [
+    "DATA-MATH12-033 validator passes",
+    "two partial DATA-MATH12-032 official evidence requirements are resolved or explicitly waived by domain review",
+    "M12_DERIV_GROUP_0012 visual blocker is resolved or explicitly excluded",
+    "rights/release review completes for the promoted question set",
+    "full regression passes",
+    "a separately reviewed promotion snapshot binds exact candidate fingerprint"
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "dataset_code": "DATA-MATH12-033",
+  "candidate_code": "MATH_G12_GDPT2018_FULL_SCOPE_ALIGNMENT_V0_1",
+  "status": "REVIEW_CANDIDATE_NOT_CANONICAL",
+  "base_repo_commit": "de2f935bc88308aaffcb6eef43d4ee9cfd4c67bb",
+  "input_audit_dataset": "DATA-MATH12-032",
+  "input_audit_aggregate_sha256": "ea64fd6dd257d80f4d19477a7708f21229643d87ad7793b22504bb680c7a22e5",
+  "subject_code": "MATH_G12",
+  "curriculum_code": "GDPT2018",
+  "curriculum_version_code": "GDPT2018_2018",
+  "official_scope_dataset": "MATH_G12_OFFICIAL_SCOPE_GDPT2018",
+  "candidate_graph_counts": {
+    "chapters": 5,
+    "topics": 24,
+    "problem_types": 75,
+    "official_core_scopes": 5,
+    "official_normalized_requirements": 20,
+    "learning_outcome_requirement_bindings": 34,
+    "cross_scope_relations": 11
+  },
+  "classification_policy": {
+    "official_scope_bindings": "OFFICIAL",
+    "chapters_topics_problem_types_concepts_relations": "COACH_LEARNING_DERIVED",
+    "learning_outcomes": "OFFICIAL_NORMALIZED_OR_COACH_LEARNING_DERIVED_AS_DECLARED_BY_SOURCE_COMPONENT",
+    "weights_and_difficulty": "COACH_LEARNING_DERIVED"
+  },
+  "activation_allowed": false,
+  "database_import_allowed": false,
+  "canonical_write_allowed": false,
+  "materialized_preview_allowed": true
+}

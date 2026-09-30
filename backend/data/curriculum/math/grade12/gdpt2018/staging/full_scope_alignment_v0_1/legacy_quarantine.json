@@ -1,0 +1,27 @@
+{
+  "dataset_code": "DATA-MATH12-033",
+  "policy": "NON_DESTRUCTIVE",
+  "entries": [
+    {
+      "code": "EXPONENTIAL_LOGARITHM",
+      "current_location": "canonical Grade 12 prototype",
+      "candidate_action": "EXCLUDE_FROM_GRADE12_CORE_GRAPH_KEEP_LEGACY_ROW",
+      "reason": "Not present in bound Grade 12 official core scope.",
+      "destructive_delete_allowed": false
+    },
+    {
+      "code": "VECTORS_GEOMETRY",
+      "current_location": "legacy/staging Grade 12 taxonomy",
+      "candidate_action": "DO_NOT_CREATE_AS_SEPARATE_CORE_CHAPTER; REMAP ITS TOPICS/PROBLEM_TYPES TO OXYZ_CHAPTER",
+      "reason": "Vector and coordinate content is a subscope of M12_CORE_GEOMETRY_COORDINATE_3D for this aligned graph.",
+      "destructive_delete_allowed": false
+    },
+    {
+      "code": "GROUPED_DATA_DISPERSION",
+      "current_location": "statistics staging chapter code",
+      "candidate_action": "REMAP_TO_GROUPED_DATA_STATISTICS",
+      "reason": "Use a chapter identity aligned to the full official content title rather than only dispersion.",
+      "destructive_delete_allowed": false
+    }
+  ]
+}

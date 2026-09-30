@@ -1,0 +1,70 @@
+{
+  "dataset_code": "DATA-MATH12-033",
+  "base_repo_commit": "de2f935bc88308aaffcb6eef43d4ee9cfd4c67bb",
+  "components": {
+    "DERIVATIVE_STAGING": {
+      "base_path": "backend/data/curriculum/math/grade12/gdpt2018/staging/derivative_applications_v0_1",
+      "files": {
+        "chapters.json": "4864bfaf67d04e93787d008869e00344950772d0",
+        "topics.json": "d3d91bc3dd7c820da4d2a1f15c6f2a031d172d43",
+        "problem_types.json": "d0f607617ddabe74c2262c8e9ebce2574a01dfe6",
+        "concepts.json": "c82954762666c5ee19a1a0214204f0b99b11dd72",
+        "learning_outcomes.json": "cfc36ea2079f82ee2816aa0ab52f3df5fad727a0",
+        "concept_relations.json": "a71bbcb0d2627466d8faedff887c44f1c890fedf",
+        "problem_type_concepts.json": "3cca5874f078d859bb211498aa4ec4156c0dd1ee",
+        "problem_type_learning_outcomes.json": "5e937a9ed4d02bce20fd16d7776fa68e4a359947"
+      },
+      "composition": "PRESERVE_RECORDS_AND_MAPPINGS"
+    },
+    "VECTOR_STAGING": {
+      "base_path": "backend/data/curriculum/math/grade12/gdpt2018/staging/vector_coordinates_v0_1",
+      "files": {
+        "topics.json": "2f592d2d98085fd53791c64cb3711cd3bd874a37",
+        "problem_types.json": "69329fb645a4bd429fa7a08f24196a14046a3597",
+        "concepts.json": "6bb24829f3804560ef77037e4d60c36a6864af95",
+        "learning_outcomes.json": "408be4093af51d036a57eed9434cfd5b5fadf470",
+        "concept_relations.json": "0b05df30349a45a4e837a8158a19e233efd5b821",
+        "problem_type_concepts.json": "8bd58cb8c6ca10ef846fccc8495aa3778ca7a7da",
+        "problem_type_learning_outcomes.json": "d5237d7a5316389cf8bb99c9e9d274414e64e754"
+      },
+      "composition": "PRESERVE_RECORDS; REMAP_TOPICS_TO_OXYZ_CHAPTER; DO_NOT_CREATE_VECTOR_CHAPTER"
+    },
+    "GROUPED_DISPERSION_STAGING": {
+      "base_path": "backend/data/curriculum/math/grade12/gdpt2018/staging/grouped_data_dispersion_v0_1",
+      "files": {
+        "topics.json": "47baed789a28ad447027e03edcd71f2d9e54631e",
+        "problem_types.json": "1f46b5d1abb7c8ea267e027ae60cece9233a3c8c",
+        "concepts.json": "5e8c24b881ac4fbf49e3d87ee2266a34921eaaed",
+        "learning_outcomes.json": "49aa55091cedfb46348e345b594f1ce39d7af1ad",
+        "concept_relations.json": "960cd21b0520be1f7b4d4bea1643e1d8d937d74d",
+        "problem_type_concepts.json": "55c11c4dde8e6b41abd4dfcd87fa83b6f454b2a0",
+        "problem_type_learning_outcomes.json": "9a156e43a803af9afd858bb4fa046aa555ed2646"
+      },
+      "composition": "PRESERVE_RECORDS_AND_MAPPINGS; REMAP_CHAPTER_TO_GROUPED_DATA_STATISTICS"
+    },
+    "INTEGRALS_ACADEMIC_TAXONOMY": {
+      "path": "backend/data/questions/math/grade12/integrals_v0_1/academic_review/v0_1/taxonomy_candidate.json",
+      "git_blob_sha1": "8abd5637103159fb32463b028fd12ef106973ebb",
+      "composition": "MATERIALIZE_RECORDS_FROM_TAXONOMY; TARGET_TOPICS_FROM_PROBLEM_TYPE_ALIGNMENT"
+    },
+    "OXYZ_ACADEMIC_TAXONOMY": {
+      "path": "backend/data/questions/math/grade12/oxyz_v0_1/academic_review/v0_1/taxonomy_candidate.json",
+      "git_blob_sha1": "92062a3b38c59ee6e8ed94a8dea267d4e07d9f83",
+      "composition": "MATERIALIZE_RECORDS_FROM_TAXONOMY; TARGET_TOPICS_FROM_PROBLEM_TYPE_ALIGNMENT"
+    },
+    "PROBABILITY_ACADEMIC_TAXONOMY": {
+      "path": "backend/data/questions/math/grade12/conditional_probability_v0_1/academic_review/v0_1/taxonomy_candidate.json",
+      "git_blob_sha1": "412cefe848223e8541f858c425e912ab66098327",
+      "composition": "MATERIALIZE_RECORDS_FROM_TAXONOMY; TARGET_TOPICS_FROM_PROBLEM_TYPE_ALIGNMENT"
+    }
+  },
+  "composition_rules": [
+    "Never reinterpret official scope from component taxonomies.",
+    "Preserve source problem-type/concept/learning-outcome records unless an explicit alignment file changes only their parent topic/chapter.",
+    "Do not invent missing source academic evidence while composing the curriculum graph.",
+    "Deduplicate concepts and learning outcomes by exact code only; any cross-component code collision with different semantics is a validation error.",
+    "Vector staging contributes nodes under OXYZ_CHAPTER and is not counted as a separate official core chapter.",
+    "Grouped dispersion staging contributes nodes under GROUPED_DATA_STATISTICS.",
+    "For academic taxonomy components without import-schema display fields, the materialized preview must use deterministic candidate-owned labels and descriptions only if declared in a later reviewed enrichment file; DATA-033 itself does not authorize free-form Codex invention."
+  ]
+}

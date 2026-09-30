@@ -1,0 +1,56 @@
+{
+  "contract_code": "DATA_MATH12_033_FULL_SCOPE_ALIGNMENT_CONTRACT_V0_1",
+  "dataset_code": "DATA-MATH12-033",
+  "base_repo_commit": "de2f935bc88308aaffcb6eef43d4ee9cfd4c67bb",
+  "input_audit_aggregate_sha256": "ea64fd6dd257d80f4d19477a7708f21229643d87ad7793b22504bb680c7a22e5",
+  "semantic_files_order": [
+    "candidate_manifest.json",
+    "chapters.json",
+    "topics.json",
+    "problem_type_alignment.json",
+    "official_scope_bindings.json",
+    "learning_outcome_requirement_bindings.json",
+    "component_bindings.json",
+    "cross_scope_relations.json",
+    "legacy_quarantine.json",
+    "coverage_gate.json",
+    "activation_policy.json",
+    "materialization_plan.json"
+  ],
+  "semantic_sha256": {
+    "candidate_manifest.json": "ff05f3abbbe46fdded8763e89300339ba987fa46e84da5e3cd31a2f82c58d95b",
+    "chapters.json": "c5534f182827afcdb82164776926f8074b3668578508cb272a523db8edee102c",
+    "topics.json": "e0e2e2465921b6650a3c0cec7d3e78e5f92710d498a84539845acdeb974f1e28",
+    "problem_type_alignment.json": "7223c58d813e7f00121c69a3b9f27d9893e1cf532e2732af1a3e39a8069dea28",
+    "official_scope_bindings.json": "31120a4943170fd6d3d017f005467d43428e69d541e734e957ae30af0b23e5e8",
+    "learning_outcome_requirement_bindings.json": "f8e913fd9af910011f345c5fcaf0e795487435332a239efb4041da293dbf782d",
+    "component_bindings.json": "8d4ff8879c81f4e4a1c7f613af60c1608b9c95e3c5c9e46fac455e6ddaf206f4",
+    "cross_scope_relations.json": "accf6657097c2649e7a6dc814bd88a6529421b77434b3d9d466d54bdafce8a42",
+    "legacy_quarantine.json": "7e1ae5211104d431cc15ce5e81ffcf817d33331f2edf27223b49ac0ccd5e365e",
+    "coverage_gate.json": "75748191f4dad914f9e6175e9fa010f3d6410fec8e6218b07aacb7a9c03466b9",
+    "activation_policy.json": "24368fb400976dfe1e71c0720b5cc82639e96012f0465d1cef9fae37e6605993",
+    "materialization_plan.json": "4338494938efe83f57b5c1a02374ec89ed5c804d6f7eb0fde1214c845d673715"
+  },
+  "aggregate_semantic_sha256": "2f4c17a62008895e4d003e22f872f5710dd265d13fe6ee38c2120040bcc4fdde",
+  "required_invariants": {
+    "chapters": 5,
+    "topics": 24,
+    "problem_types": 75,
+    "official_core_scopes": 5,
+    "official_normalized_requirements": 20,
+    "learning_outcome_requirement_bindings": 34,
+    "cross_scope_relations": 11,
+    "legacy_quarantine_entries": 3,
+    "activation_allowed": false,
+    "database_import_allowed": false,
+    "canonical_write_allowed": false
+  },
+  "policy": {
+    "official_scope_is_authoritative": true,
+    "derived_graph_never_claimed_as_ministry_taxonomy": true,
+    "component_git_blob_hashes_must_match": true,
+    "non_destructive_legacy_policy": true,
+    "no_synthetic_academic_gap_fill": true,
+    "preview_only": true
+  }
+}

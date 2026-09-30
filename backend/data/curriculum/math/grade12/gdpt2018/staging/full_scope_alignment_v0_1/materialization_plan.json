@@ -1,0 +1,24 @@
+{
+  "dataset_code": "DATA-MATH12-033",
+  "output_mode": "IN_MEMORY_PREVIEW_ONLY",
+  "materialization_steps": [
+    "Load and hash-check every component file against component_bindings.json.",
+    "Create exactly the five candidate chapters from chapters.json.",
+    "Create exactly the 24 candidate topics from topics.json.",
+    "Load problem type records from source components and replace only topic_code according to problem_type_alignment.json.",
+    "Load concept, concept-relation and mapping records from derivative/vector/grouped staging components unchanged.",
+    "Load concepts/mappings/learning outcomes from integral/Oxyz/probability academic taxonomy components.",
+    "For Oxyz/Probability academic taxonomy records that do not satisfy CurriculumImportService display-field schema, report ENRICHMENT_REQUIRED; do not invent production labels in code.",
+    "Bind learning outcomes to official normalized requirements using learning_outcome_requirement_bindings.json.",
+    "Append cross_scope_relations.json only after all referenced concepts exist.",
+    "Reject any duplicate code with conflicting payload.",
+    "Generate a deterministic preview fingerprint without writing canonical files or DB."
+  ],
+  "expected_counts_before_schema_enrichment": {
+    "chapters": 5,
+    "topics": 24,
+    "problem_types": 75
+  },
+  "schema_enrichment_required_for_activation": true,
+  "schema_enrichment_allowed_in_this_task": false
+}

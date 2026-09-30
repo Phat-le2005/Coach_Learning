@@ -1,0 +1,57 @@
+[
+  {
+    "official_scope_code": "M12_CORE_CALCULUS_DERIVATIVE_APPLICATIONS",
+    "chapter_code": "DERIVATIVE_APPLICATIONS",
+    "normalized_requirements": [
+      "tính đơn điệu và cực trị",
+      "giá trị lớn nhất và giá trị nhỏ nhất",
+      "tiệm cận và khảo sát đồ thị",
+      "ứng dụng đạo hàm và khảo sát hàm số vào thực tiễn"
+    ],
+    "evidence_status": "FULLY_EVIDENCED_NOT_RELEASE_READY"
+  },
+  {
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "chapter_code": "INTEGRALS",
+    "normalized_requirements": [
+      "khái niệm và tính chất nguyên hàm",
+      "nguyên hàm của một số hàm số sơ cấp",
+      "tích phân và tính chất",
+      "diện tích, thể tích và bài toán thực tiễn"
+    ],
+    "evidence_status": "FULLY_EVIDENCED_NOT_RELEASE_READY"
+  },
+  {
+    "official_scope_code": "M12_CORE_GEOMETRY_COORDINATE_3D",
+    "chapter_code": "OXYZ_CHAPTER",
+    "normalized_requirements": [
+      "vectơ và tọa độ trong không gian",
+      "phương trình mặt phẳng",
+      "phương trình đường thẳng trong không gian",
+      "góc và khoảng cách bằng phương pháp tọa độ",
+      "phương trình mặt cầu",
+      "vận dụng vào thực tiễn"
+    ],
+    "evidence_status": "FULLY_EVIDENCED_NOT_RELEASE_READY"
+  },
+  {
+    "official_scope_code": "M12_CORE_STATISTICS_GROUPED_DATA",
+    "chapter_code": "GROUPED_DATA_STATISTICS",
+    "normalized_requirements": [
+      "các số đo mức độ phân tán của mẫu số liệu ghép nhóm",
+      "ý nghĩa và diễn giải các số đặc trưng trong thực tiễn"
+    ],
+    "evidence_status": "PARTIAL_EVIDENCE_CORE_GAP_REMAINS"
+  },
+  {
+    "official_scope_code": "M12_CORE_PROBABILITY_CONDITIONAL",
+    "chapter_code": "PROBABILITY_CHAPTER",
+    "normalized_requirements": [
+      "xác suất có điều kiện",
+      "xác suất toàn phần",
+      "công thức Bayes",
+      "sơ đồ hình cây và ứng dụng thực tiễn"
+    ],
+    "evidence_status": "PARTIAL_EVIDENCE_TREE_REPRESENTATION_NOT_MATERIALIZED"
+  }
+]

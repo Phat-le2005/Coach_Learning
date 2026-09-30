@@ -1,0 +1,25 @@
+{
+  "dataset_code": "DATA-MATH12-033",
+  "taxonomy_scope_coverage": {
+    "official_core_scopes": 5,
+    "official_normalized_requirements": 20,
+    "candidate_chapter_bindings": 5,
+    "candidate_requirement_bindings": 20,
+    "taxonomy_alignment_complete": true
+  },
+  "question_evidence_gate": {
+    "fully_evidenced_scopes": 3,
+    "partially_evidenced_scopes": 2,
+    "remaining_partial_requirements": [
+      "ý nghĩa và diễn giải các số đặc trưng trong thực tiễn",
+      "sơ đồ hình cây và ứng dụng thực tiễn"
+    ],
+    "question_evidence_complete": false
+  },
+  "release_gate": {
+    "rights_review_complete": false,
+    "derivative_visual_complete": false,
+    "production_release_ready": false
+  },
+  "rule": "TAXONOMY_ALIGNMENT_COMPLETE_DOES_NOT_IMPLY_QUESTION_EVIDENCE_OR_RELEASE_READINESS"
+}
