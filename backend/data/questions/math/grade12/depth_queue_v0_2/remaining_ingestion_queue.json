@@ -1,0 +1,59 @@
+{
+  "dataset_code": "DATA-MATH12-045",
+  "base_quality_dataset": "DATA-MATH12-041",
+  "base_quality_aggregate_sha256": "3953cb4035ecd4080d2928b46c1108cff4290356d4017dd1c44f088865e17a71",
+  "after_local_supplement_dataset": "DATA-MATH12-043",
+  "zero_evidence_problem_types": {
+    "DERIVATIVE_APPLICATIONS": [
+      "PARAMETER_MONOTONICITY"
+    ],
+    "VECTOR_LEGACY_SUBSCOPE": []
+  },
+  "priority_ingestion": [
+    {
+      "priority": 1,
+      "target_problem_types": [
+        "PARAMETER_MONOTONICITY"
+      ],
+      "source_title": "Tuyển tập 550 bài toán khảo sát hàm số có chứa tham số m",
+      "source_url": "https://toanmath.com/2026/08/tuyen-tap-550-bai-toan-khao-sat-ham-so-co-chua-tham-so-m.html",
+      "reason": "Dedicated parameter-function material is the cleanest candidate for the last zero-evidence derivative type.",
+      "status": "INGESTION_REQUIRED_BINARY_SHA256_UNPINNED",
+      "promotion_allowed": false
+    },
+    {
+      "priority": 1,
+      "target_problem_types": [
+        "TOTAL_PROBABILITY",
+        "TREE_OR_TOTAL_PROBABILITY",
+        "CONDITIONAL_PROBABILITY_DIRECT"
+      ],
+      "source_title": "Bài tập xác suất có điều kiện có đáp án và hướng dẫn giải – Lê Minh Kha",
+      "source_url": "https://toanmath.com/2026/03/bai-tap-xac-suat-co-dieu-kien-co-dap-an-va-huong-dan-giai-le-minh-kha.html",
+      "reason": "Probability remains Bayes-heavy even after DATA-043. Prefer direct conditional, total-probability and tree questions; do not add Bayes until balanced.",
+      "status": "INGESTION_REQUIRED_BINARY_SHA256_UNPINNED",
+      "promotion_allowed": false
+    },
+    {
+      "priority": 2,
+      "target_problem_types": [
+        "COMPARE_GROUPED_RANGE",
+        "COMPARE_GROUPED_IQR",
+        "COMPARE_GROUPED_VARIANCE_SD",
+        "PARAMETER_FROM_GROUPED_VARIANCE_SD",
+        "MULTI_MEASURE_GROUPED_DISPERSION_ANALYSIS"
+      ],
+      "source_title": "Các dạng bài tập các số đặc trưng đo mức độ phân tán của mẫu số liệu ghép nhóm Toán 12",
+      "source_url": "https://toanmath.com/2024/07/cac-dang-bai-tap-cac-so-dac-trung-do-muc-do-phan-tan-cua-mau-so-lieu-ghep-nhom-toan-12-knttvcs.html",
+      "reason": "Statistics official scope is complete but comparison/interpretation/adaptive depth remains thin.",
+      "status": "INGESTION_REQUIRED_BINARY_SHA256_UNPINNED",
+      "promotion_allowed": false
+    }
+  ],
+  "policy": {
+    "new_chapters_allowed": false,
+    "new_real_question_ingestion_only": true,
+    "unhashed_external_source_counts_as_verified": false,
+    "synthetic_gap_fill": false
+  }
+}

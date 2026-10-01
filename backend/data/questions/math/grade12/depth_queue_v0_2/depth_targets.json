@@ -1,0 +1,22 @@
+{
+  "dataset_code": "DATA-MATH12-045",
+  "coach_learning_qa_targets": {
+    "minimum_verified_units_per_problem_type": 5,
+    "minimum_independent_source_families": 3,
+    "maximum_dominant_source_share": 0.7
+  },
+  "current_key_state_after_DATA043": {
+    "derivative_true_zero_evidence": 1,
+    "vector_legacy_true_zero_evidence": 0,
+    "probability_practice_units": 22,
+    "probability_distribution": {
+      "BAYES_POSTERIOR": 14,
+      "CONDITIONAL_PROBABILITY_DIRECT": 5,
+      "TREE_OR_TOTAL_PROBABILITY": 3,
+      "TOTAL_PROBABILITY_STANDALONE": 0
+    },
+    "probability_source_families": 4,
+    "probability_dominant_source_share": 0.77272727
+  },
+  "production_quality_target_met": false
+}

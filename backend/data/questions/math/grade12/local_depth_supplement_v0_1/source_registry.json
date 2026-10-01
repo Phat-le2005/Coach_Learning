@@ -1,0 +1,43 @@
+{
+  "dataset_code": "DATA-MATH12-043",
+  "sources": [
+    {
+      "source_code": "SRC_TRIAL_2026_01",
+      "drive_file_id": "1IprRpTwj1YCHoKZQXmiHwi8EdC8VT9_v",
+      "title": "Đề thi thử Chuyên Bắc Ninh Lần 1 - TN THPT 2026 môn Toán",
+      "sha256": "889adfeb2a8c5e4f2c7b8cb95ca3f8809cd94f81ed2bb9a9ff8a737c5975febb",
+      "local_file_name": "1. Đề thi thử Chuyên Bắc Ninh LẦN 1  [ Thi thử TN THPT 2026 môn Toán ].pdf",
+      "binary_hash_status": "PINNED_LOCAL_AND_DRIVE_LINEAGE"
+    },
+    {
+      "source_code": "SRC_TRIAL_2026_04",
+      "drive_file_id": "1uOkJMPRzAQnhIJw4_wtZs6T2qwzKfQT6",
+      "title": "KSCL THPT Liên cấp Đại học Hồng Đức - TN THPT 2026 môn Toán",
+      "sha256": "89202f9711bafd51c83d41f3a1203da798325be16f25fbd02f80578c48c1719f",
+      "local_file_name": "4. KSCL  THPT -LIÊN CẤP ĐẠI HỌC HỒNG ĐỨC [ Thi thử TN THPT 2026 môn Toán ].pdf",
+      "binary_hash_status": "PINNED_LOCAL_AND_DRIVE_LINEAGE"
+    },
+    {
+      "source_code": "SRC_TRIAL_2026_13",
+      "drive_file_id": "1K_OEdAD8af_MQcW_kchCUeQ7-fkxSs-u",
+      "title": "KSCL THPT Nguyễn Khuyến - LTT - TPHCM - TN THPT 2026 môn Toán",
+      "sha256": "6ab24e60dd44ed7bff543eb4c5b60a96e6650242c5709a1aca641b9ea59be396",
+      "local_file_name": "13. KSCL THPT NGUYỄN KHUYẾN - LTT - TPHCM - [ Thi thử TN THPT 2026 môn Toán ].pdf",
+      "binary_hash_status": "PINNED_LOCAL_AND_DRIVE_LINEAGE"
+    },
+    {
+      "source_code": "SRC_TRIAL_2026_14",
+      "drive_file_id": "1TkOM8P-QcouZYV8Q9Tp7HT3toZjVnfe1",
+      "title": "Sở Ninh Bình Lần 1 - TN THPT 2026 môn Toán",
+      "sha256": "7330415051643b8ded8b26e29f1cb4cfe3dc85fc025e3ed8a5294205b60e9e8d",
+      "local_file_name": "14. SỞ NINH BÌNH-L1 - [ Thi thử TN THPT 2026 môn Toán ].pdf",
+      "binary_hash_status": "PINNED_LOCAL_AND_DRIVE_LINEAGE"
+    }
+  ],
+  "policy": {
+    "real_sources_only": true,
+    "synthetic_question_generation": false,
+    "source_answer_required": true,
+    "rights_status": "REVIEW_REQUIRED"
+  }
+}

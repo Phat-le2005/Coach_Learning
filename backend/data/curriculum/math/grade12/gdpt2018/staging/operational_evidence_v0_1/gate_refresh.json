@@ -1,0 +1,20 @@
+{
+  "dataset_code": "DATA-MATH12-044",
+  "base_quality_dataset": "DATA-MATH12-041",
+  "base_quality_aggregate_sha256": "3953cb4035ecd4080d2928b46c1108cff4290356d4017dd1c44f088865e17a71",
+  "input_depth_supplement_dataset": "DATA-MATH12-043",
+  "gates_after_043_and_green_ci": {
+    "official_core_scope": "PASS_20_OF_20",
+    "canonical_snapshot_candidate": "PASS_READY_FOR_EXPLICIT_REVIEW",
+    "ci_regression": "PASS_749_TESTS",
+    "vector_zero_evidence": "PASS_ZERO",
+    "derivative_zero_evidence": "FAIL_ONE_REMAINING_PARAMETER_MONOTONICITY",
+    "diagnostic_problem_type_density": "FAIL_MORE_REAL_QUESTIONS_REQUIRED",
+    "source_diversity": "FAIL_PROBABILITY_STATS_AND_OTHER_THIN_SETS",
+    "rights_review": "FAIL_PENDING_REVIEW",
+    "canonical_activation": "BLOCKED",
+    "postgres_import": "BLOCKED",
+    "production_release": "BLOCKED"
+  },
+  "note": "CI is no longer a blocker. Data depth/source diversity and rights review remain blockers."
+}

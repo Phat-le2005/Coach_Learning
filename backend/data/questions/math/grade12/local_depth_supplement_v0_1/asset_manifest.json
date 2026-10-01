@@ -1,0 +1,29 @@
+{
+  "dataset_code": "DATA-MATH12-043",
+  "assets": [
+    {
+      "asset_id": "M12_D043_PROB_TREE_ASSET_001",
+      "file_name": "assets/M12_PROB_TREE_TRIAL_2026_13.png",
+      "sha256": "5d28aef2bea0c3acdfa23b920eff7b9f05d6260acc2f02471b0a528c3c4b502e",
+      "width": 820,
+      "height": 580,
+      "source_code": "SRC_TRIAL_2026_13",
+      "source_pdf_sha256": "6ab24e60dd44ed7bff543eb4c5b60a96e6650242c5709a1aca641b9ea59be396",
+      "source_page_1_based": 19,
+      "rendered_source_page_dimensions": [
+        1489,
+        2105
+      ],
+      "crop_box_pixels": [
+        300,
+        40,
+        1120,
+        620
+      ],
+      "extraction_method": "SOURCE_PDF_RENDER_CROP_NO_REDRAW",
+      "asset_role": "SOLUTION_TREE_EVIDENCE",
+      "answer_leakage_check": "PASS_TREE_ONLY_NO_FINAL_ANSWER"
+    }
+  ],
+  "synthetic_visuals": false
+}

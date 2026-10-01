@@ -1,0 +1,124 @@
+{
+  "dataset_code": "DATA-MATH12-043",
+  "overlay_type": "SOURCE_BACKED_DEPTH_SUPPLEMENT_NON_DESTRUCTIVE",
+  "units": [
+    {
+      "unit_id": "M12_D043_DERIV_PARAM_EXTREMA_001",
+      "scope": "DERIVATIVE_APPLICATIONS",
+      "problem_type_code": "PARAMETER_EXTREMA_COUNT",
+      "question_type": "SHORT_ANSWER",
+      "source_code": "SRC_TRIAL_2026_01",
+      "question_page_1_based": 5,
+      "solution_page_1_based": 20,
+      "source_question_text": "Tính tổng tất cả các giá trị nguyên của tham số m để hàm số y=(x^2+(m-1)x+3-2m)/(x+m) đạt cực tiểu tại x=-1.",
+      "correct_answer": "2",
+      "source_solution_evidence": {
+        "condition_result": "m=2",
+        "source_final_answer": "2"
+      },
+      "visual_required": false,
+      "review_status": "VERIFIED_SOURCE_BACKED",
+      "canonical_candidate_created": false
+    },
+    {
+      "unit_id": "M12_D043_DERIV_REALWORLD_MONO_GROUP_001",
+      "scope": "DERIVATIVE_APPLICATIONS",
+      "problem_type_code": "REAL_WORLD_MONOTONICITY_INTERPRETATION",
+      "question_type": "TRUE_FALSE_GROUP",
+      "source_code": "SRC_TRIAL_2026_04",
+      "question_page_1_based": 3,
+      "solution_pages_1_based": [
+        11,
+        12
+      ],
+      "source_context": "Dân số một thị trấn sau t năm kể từ năm 1970 được ước tính bởi f(t)=(26t+10)/(t+5), đơn vị nghìn người.",
+      "source_children": [
+        {
+          "label": "a",
+          "claim": "Dân số đầu năm 1980 là 18 nghìn người.",
+          "correct_answer": true
+        },
+        {
+          "label": "b",
+          "claim": "Dân số đầu năm 1995 là 23 nghìn người.",
+          "correct_answer": false
+        },
+        {
+          "label": "c",
+          "claim": "Trên [0,+∞), hàm số f đồng biến.",
+          "correct_answer": true,
+          "target_problem_type_evidence": "REAL_WORLD_MONOTONICITY_INTERPRETATION"
+        },
+        {
+          "label": "d",
+          "claim": "Năm 1998 tốc độ tăng dân số là 0,125 nghìn người/năm.",
+          "correct_answer": false
+        }
+      ],
+      "source_solution_evidence": {
+        "child_c": "f'(t)=120/(t+5)^2>0 với mọi t thuộc [0,+∞), nên c đúng.",
+        "child_d": "f'(28)≈0,11019 nên d sai."
+      },
+      "atomic_group_policy": true,
+      "visual_required": false,
+      "review_status": "VERIFIED_SOURCE_BACKED_GROUP",
+      "canonical_candidate_created": false
+    },
+    {
+      "unit_id": "M12_D043_VECTOR_LINEAROPS_001",
+      "scope": "OXYZ_CHAPTER",
+      "legacy_subscope": "VECTOR_COORDINATES",
+      "problem_type_code": "VECTOR_COORDINATE_LINEAR_OPERATIONS_3D",
+      "question_type": "MCQ",
+      "source_code": "SRC_TRIAL_2026_14",
+      "question_page_1_based": 2,
+      "solution_page_1_based": 8,
+      "source_question_text": "Trong Oxyz, cho u=(2;3;-1), v=(1;3;2). Tính độ dài của w=2u-3v.",
+      "source_options": [
+        "√290",
+        "290",
+        "74",
+        "√74"
+      ],
+      "correct_answer": "D",
+      "correct_answer_value": "√74",
+      "source_solution_evidence": "2u=(4;6;-2), 3v=(3;9;6), w=(1;-3;-8), |w|=√74.",
+      "visual_required": false,
+      "review_status": "VERIFIED_SOURCE_BACKED",
+      "canonical_candidate_created": false
+    },
+    {
+      "unit_id": "M12_D043_PROB_TREE_001",
+      "scope": "PROBABILITY_CHAPTER",
+      "problem_type_code": "TREE_OR_TOTAL_PROBABILITY",
+      "secondary_problem_type_evidence": [
+        "CONDITIONAL_PROBABILITY_DIRECT",
+        "TOTAL_PROBABILITY"
+      ],
+      "question_type": "SHORT_ANSWER",
+      "source_code": "SRC_TRIAL_2026_13",
+      "question_page_1_based": 5,
+      "solution_pages_1_based": [
+        18,
+        19
+      ],
+      "source_context": "Đài FTV phát A/B với xác suất 0,55/0,45; tín hiệu có thể bị lệch hoặc mất. Tính xác suất chương trình nhận được đúng với tín hiệu ban đầu, với điều kiện người xem đang nhận được chương trình.",
+      "correct_answer": "0.76",
+      "rounding_rule": "hundredth",
+      "source_solution_evidence": {
+        "P_correct_and_received": "0.55*(1-2/9)+0.45*(1-1/5-1/4)≈0.68",
+        "P_received": "1-0.45*(1/4)=0.8875",
+        "conditional": "0.68/0.8875≈0.76"
+      },
+      "solution_tree_asset_id": "M12_D043_PROB_TREE_ASSET_001",
+      "visual_required_for_question": false,
+      "review_status": "VERIFIED_SOURCE_BACKED",
+      "canonical_candidate_created": false
+    }
+  ],
+  "unit_counts": {
+    "standalone_practice_units": 3,
+    "atomic_true_false_groups": 1,
+    "source_backed_units_total": 4
+  }
+}

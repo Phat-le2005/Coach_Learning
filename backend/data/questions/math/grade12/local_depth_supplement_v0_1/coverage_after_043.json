@@ -1,0 +1,26 @@
+{
+  "dataset_code": "DATA-MATH12-043",
+  "base_depth_dataset": "DATA-MATH12-039",
+  "base_depth_aggregate_sha256": "171d43f0895e67c02813cc531d04d757cfb3e0ef7f62841392c5a8b4de0c8026",
+  "effects": {
+    "derivative_zero_evidence_problem_types_before": 3,
+    "derivative_zero_evidence_problem_types_after": 1,
+    "derivative_remaining_zero_evidence": [
+      "PARAMETER_MONOTONICITY"
+    ],
+    "vector_legacy_zero_evidence_before": 1,
+    "vector_legacy_zero_evidence_after": 0,
+    "vector_legacy_remaining_zero_evidence": [],
+    "probability_practice_units_before": 21,
+    "probability_practice_units_after": 22,
+    "probability_tree_or_total_before": 2,
+    "probability_tree_or_total_after": 3,
+    "probability_source_families_before": 3,
+    "probability_source_families_after": 4,
+    "probability_dominant_source_count": 17,
+    "probability_dominant_source_share_after": 0.77272727
+  },
+  "official_scope_coverage": "PASS_20_OF_20_UNCHANGED",
+  "diagnostic_density_target_met": false,
+  "source_diversity_target_met": false
+}

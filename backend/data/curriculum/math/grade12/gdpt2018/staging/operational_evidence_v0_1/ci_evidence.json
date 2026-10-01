@@ -1,0 +1,33 @@
+{
+  "dataset_code": "DATA-MATH12-044",
+  "supersedes_operational_fact_only": {
+    "dataset": "DATA-MATH12-042",
+    "stale_field": "production_gate.gates.ci_evidence",
+    "old_value": "FAIL_NO_WORKFLOW_RUNS",
+    "reason": "DATA-042 was curated before the first workflow run existed; historical DATA-042 must remain immutable."
+  },
+  "github_commit": "30bb2625128fa38a71fbbc8481e8589672027632",
+  "workflow": {
+    "workflow_name": "Backend Data Validation and Preflight Gates",
+    "workflow_path": ".github/workflows/backend-data-validation.yml",
+    "run_id": 36817312571,
+    "job_id": 110225088413,
+    "event": "push",
+    "status": "completed",
+    "conclusion": "success",
+    "python_version": "3.12",
+    "test_command": "pytest tests/curriculum/ tests/questions/ -v --tb=short",
+    "test_result": {
+      "passed": 749,
+      "skipped": 1,
+      "failed": 0,
+      "warnings": 1,
+      "duration_seconds": 92.58
+    }
+  },
+  "ci_evidence_current_state": "PASS_GREEN_RUN_CAPTURED",
+  "rights_review_state": "REVIEW_REQUIRED",
+  "canonical_activation_state": "BLOCKED",
+  "database_import_state": "BLOCKED",
+  "production_release_state": "BLOCKED"
+}

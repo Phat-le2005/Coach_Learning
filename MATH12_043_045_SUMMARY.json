@@ -1,0 +1,44 @@
+{
+  "batch_code": "MATH12_043_045_REAL_SOURCE_DEPTH",
+  "base_repo_commit": "30bb2625128fa38a71fbbc8481e8589672027632",
+  "datasets": {
+    "DATA-MATH12-043": {
+      "aggregate": "b9af124476df49204467fc070c3b72da4c0628656fe151e197db2631a20572c9",
+      "purpose": "local pinned real-source depth supplement"
+    },
+    "DATA-MATH12-044": {
+      "aggregate": "f1722f394dd943f5ed437e29a2e05f67c85886e6d446fe260df963b864524c6a",
+      "purpose": "green CI operational evidence refresh"
+    },
+    "DATA-MATH12-045": {
+      "aggregate": "f266ebb7fb2524dc108a37bfbeade13cfdab8886d0ee907c75531637f4111d7b",
+      "purpose": "remaining depth/source ingestion queue"
+    }
+  },
+  "results": {
+    "official_core_requirements": "20/20",
+    "new_source_backed_units": 4,
+    "new_source_asset_pngs": 1,
+    "derivative_zero_evidence_before": 3,
+    "derivative_zero_evidence_after": 1,
+    "derivative_remaining_zero": [
+      "PARAMETER_MONOTONICITY"
+    ],
+    "vector_zero_evidence_before": 1,
+    "vector_zero_evidence_after": 0,
+    "probability_practice_units_before": 21,
+    "probability_practice_units_after": 22,
+    "probability_tree_or_total_before": 2,
+    "probability_tree_or_total_after": 3,
+    "probability_source_families_after": 4,
+    "ci_regression": "PASS_749_PASSED_1_SKIPPED_0_FAILED",
+    "production_ready": false
+  },
+  "remaining_blockers": [
+    "PARAMETER_MONOTONICITY requires a real source-backed question.",
+    "Many thin ProblemTypes remain below the Coach Learning target of 5 units.",
+    "Probability and statistics source/density balance still need real-source ingestion.",
+    "Rights review remains REVIEW_REQUIRED.",
+    "Canonical activation and PostgreSQL import require explicit future approval/review."
+  ]
+}
