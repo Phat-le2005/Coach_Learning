@@ -8,7 +8,7 @@ on:
 
 jobs:
   validate-data-and-curriculum:
-    name: Curriculum & Question Data Integrity Gates (DATA-032 to DATA-042)
+    name: Curriculum & Question Data Integrity Gates (DATA-032 to DATA-050)
     runs-on: ubuntu-latest
     defaults:
       run:

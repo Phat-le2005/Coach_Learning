@@ -1,0 +1,26 @@
+{
+  "dataset_code": "DATA-MATH12-048",
+  "next_real_data_actions": [
+    {
+      "priority": 1,
+      "action": "PIN_PARAMETER_MONOTONICITY_PDF_BINARY_AND_REVIEW_FULL_FORMULA",
+      "reason": "Converts the last derivative academic-only evidence into a practice-ready pinned unit."
+    },
+    {
+      "priority": 1,
+      "action": "ADD_ONE_NON_NGOC_VY_PROBABILITY_UNIT",
+      "reason": "Moves dominant probability source share from 17/24=70.83% to 17/25=68%, passing the 70% diversity gate."
+    },
+    {
+      "priority": 2,
+      "action": "INGEST_THIN_TYPES_TO_MINIMUM_FIVE",
+      "reason": "Necessary for robust adaptive repetition and diagnosis, not for official curriculum breadth."
+    },
+    {
+      "priority": 3,
+      "action": "PIN_MULTI_MEASURE_STATS_SOURCE_AND_FIND_PARAMETER_VARIANCE_SOURCE",
+      "reason": "Closes remaining Coach-derived statistics practice-depth gaps."
+    }
+  ],
+  "new_chapter_ingestion": "DO_NOT_DO"
+}

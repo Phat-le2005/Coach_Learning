@@ -1,0 +1,374 @@
+{
+  "dataset_code": "DATA-MATH12-047",
+  "units": [
+    {
+      "unit_id": "M12_D047_STATS_RANGE_TRIAL05_001",
+      "scope": "GROUPED_DATA_STATISTICS",
+      "problem_type_code": "CALCULATE_GROUPED_RANGE",
+      "question_type": "MCQ",
+      "source_code": "SRC_TRIAL_2026_05",
+      "question_page_1_based": 2,
+      "solution_page_1_based": 8,
+      "question_number": "9",
+      "structured_table": {
+        "intervals": [
+          "[2.7;3.0)",
+          "[3.0;3.3)",
+          "[3.3;3.6)",
+          "[3.6;3.9)",
+          "[3.9;4.2)"
+        ],
+        "frequencies": [
+          3,
+          6,
+          5,
+          4,
+          2
+        ],
+        "unit": "km"
+      },
+      "options": {
+        "A": "1.2",
+        "B": "0.362",
+        "C": "13.39",
+        "D": "1.5"
+      },
+      "correct_answer": "D",
+      "correct_answer_value": 1.5,
+      "source_solution": "R = 4.2 - 2.7 = 1.5",
+      "visual_required": false,
+      "review_status": "VERIFIED_SOURCE_BACKED"
+    },
+    {
+      "unit_id": "M12_D047_STATS_IQR_GROUP_TRIAL05_001",
+      "scope": "GROUPED_DATA_STATISTICS",
+      "problem_type_code": "CALCULATE_GROUPED_IQR",
+      "question_type": "TRUE_FALSE_GROUP",
+      "source_code": "SRC_TRIAL_2026_05",
+      "question_page_1_based": 3,
+      "solution_page_1_based": 12,
+      "question_number": "4",
+      "context": "Chiều cao 20 học sinh nam lớp 12A.",
+      "structured_table": {
+        "intervals_cm": [
+          "[160;165)",
+          "[165;170)",
+          "[170;175)",
+          "[175;180)",
+          "[180;185)"
+        ],
+        "frequencies": [
+          3,
+          5,
+          7,
+          4,
+          1
+        ]
+      },
+      "answer_pattern": [
+        true,
+        true,
+        false,
+        true
+      ],
+      "source_solution_values": {
+        "Q1": 165.4,
+        "Q3": 175.0,
+        "IQR": 9.6
+      },
+      "atomic_group_policy": true,
+      "visual_required": false,
+      "review_status": "VERIFIED_SOURCE_BACKED_GROUP"
+    },
+    {
+      "unit_id": "M12_D047_STATS_IQR_TRIAL10_001",
+      "scope": "GROUPED_DATA_STATISTICS",
+      "problem_type_code": "CALCULATE_GROUPED_IQR",
+      "question_type": "MCQ",
+      "source_code": "SRC_TRIAL_2026_10",
+      "question_page_1_based": 1,
+      "solution_page_1_based": 6,
+      "question_number": "6",
+      "structured_table": {
+        "intervals_age": [
+          "[22;31)",
+          "[31;40)",
+          "[40;49)",
+          "[49;58)",
+          "[58;67)",
+          "[67;76)"
+        ],
+        "frequencies": [
+          33,
+          23,
+          23,
+          16,
+          16,
+          9
+        ]
+      },
+      "options": {
+        "A": "13.62",
+        "B": "25.01",
+        "C": "11.38",
+        "D": "32.18"
+      },
+      "correct_answer": "B",
+      "correct_answer_value": 25.01,
+      "review_status": "VERIFIED_SOURCE_BACKED",
+      "visual_required": false
+    },
+    {
+      "unit_id": "M12_D047_STATS_RANGE_TRIAL14_001",
+      "scope": "GROUPED_DATA_STATISTICS",
+      "problem_type_code": "CALCULATE_GROUPED_RANGE",
+      "question_type": "MCQ",
+      "source_code": "SRC_TRIAL_2026_14",
+      "question_page_1_based": 2,
+      "solution_page_1_based": 8,
+      "question_number": "10",
+      "structured_table": {
+        "intervals_score": [
+          "[0;2)",
+          "[2;4)",
+          "[4;6)",
+          "[6;8)",
+          "[8;10]"
+        ],
+        "frequencies": [
+          2,
+          11,
+          14,
+          9,
+          3
+        ]
+      },
+      "options": {
+        "A": "10",
+        "B": "8",
+        "C": "12",
+        "D": "14"
+      },
+      "correct_answer": "A",
+      "correct_answer_value": 10,
+      "review_status": "VERIFIED_SOURCE_BACKED",
+      "visual_required": false
+    },
+    {
+      "unit_id": "M12_D047_STATS_VAR_SD_GROUP_TRIAL14_001",
+      "scope": "GROUPED_DATA_STATISTICS",
+      "problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+      "secondary_problem_type_evidence": [
+        "CALCULATE_GROUPED_STANDARD_DEVIATION"
+      ],
+      "question_type": "TRUE_FALSE_GROUP",
+      "source_code": "SRC_TRIAL_2026_14",
+      "question_page_1_based": 3,
+      "solution_pages_1_based": [
+        11,
+        12
+      ],
+      "question_number": "4",
+      "structured_table": {
+        "intervals_minutes": [
+          "[30;60)",
+          "[60;90)",
+          "[90;120)",
+          "[120;150)",
+          "[150;180)"
+        ],
+        "frequencies": [
+          3,
+          5,
+          5,
+          25,
+          2
+        ]
+      },
+      "answer_pattern": [
+        true,
+        true,
+        false,
+        false
+      ],
+      "source_solution_values": {
+        "sample_size": 40,
+        "mean": 118.5,
+        "variance": 942.75,
+        "standard_deviation": "3*sqrt(419)/2"
+      },
+      "atomic_group_policy": true,
+      "review_status": "VERIFIED_SOURCE_BACKED_GROUP",
+      "visual_required": false
+    },
+    {
+      "unit_id": "M12_D047_STATS_IQR_TRIAL14_002",
+      "scope": "GROUPED_DATA_STATISTICS",
+      "problem_type_code": "CALCULATE_GROUPED_IQR",
+      "question_type": "SHORT_ANSWER",
+      "source_code": "SRC_TRIAL_2026_14",
+      "question_page_1_based": 4,
+      "solution_page_1_based": 12,
+      "question_number": "1",
+      "structured_table": {
+        "intervals_age": [
+          "[23;26)",
+          "[26;29)",
+          "[29;32)",
+          "[32;35)",
+          "[35;38)"
+        ],
+        "frequencies": [
+          23,
+          40,
+          56,
+          33,
+          8
+        ]
+      },
+      "correct_answer": "4.8",
+      "rounding_rule": "nearest tenth",
+      "review_status": "VERIFIED_SOURCE_BACKED",
+      "visual_required": false
+    },
+    {
+      "unit_id": "M12_D047_OXYZ_POINT_PLANE_TRIAL11_001",
+      "scope": "OXYZ_CHAPTER",
+      "problem_type_code": "POINT_PLANE_OR_PLANE_DISTANCE",
+      "question_type": "MCQ",
+      "source_code": "SRC_TRIAL_2026_11",
+      "question_page_1_based": 1,
+      "solution_page_1_based": 6,
+      "question_number": "5",
+      "question_data": {
+        "point": "A(-3;-6;2)",
+        "plane": "(Oxz): y=0"
+      },
+      "options": {
+        "A": "3",
+        "B": "6",
+        "C": "2",
+        "D": "7"
+      },
+      "correct_answer": "B",
+      "correct_answer_value": 6,
+      "source_solution": "d(A,(Oxz))=|-6|=6",
+      "review_status": "VERIFIED_SOURCE_BACKED",
+      "visual_required": false
+    },
+    {
+      "unit_id": "M12_D047_OXYZ_LINE_PLANE_TRIAL05_001",
+      "scope": "OXYZ_CHAPTER",
+      "problem_type_code": "LINE_PLANE_INTERSECTION",
+      "question_type": "MCQ",
+      "source_code": "SRC_TRIAL_2026_05",
+      "question_page_1_based": 2,
+      "solution_page_1_based": 9,
+      "question_number": "12",
+      "question_data": {
+        "A": "(-3;1;-4)",
+        "B": "(1;-5;2)",
+        "plane": "(Oxy): z=0"
+      },
+      "options": {
+        "A": "M(-1/3;-3;0)",
+        "B": "N(1/3;3;0)",
+        "C": "P(0;3;1)",
+        "D": "Q(-3;1;0)"
+      },
+      "correct_answer": "A",
+      "correct_answer_value": "M(-1/3;-3;0)",
+      "source_solution": "AB: x=-3+4t, y=1-6t, z=-4+6t; z=0 -> t=2/3 -> (-1/3,-3,0).",
+      "review_status": "VERIFIED_SOURCE_BACKED",
+      "visual_required": false
+    },
+    {
+      "unit_id": "M12_D047_OXYZ_WALL_GROUP_TRIAL13_001",
+      "scope": "OXYZ_CHAPTER",
+      "problem_type_code": "COORDINATE_GEOMETRY_APPLICATION",
+      "question_type": "TRUE_FALSE_GROUP",
+      "source_code": "SRC_TRIAL_2026_13",
+      "question_page_1_based": 2,
+      "solution_page_1_based": 9,
+      "question_number": "1",
+      "context": "Bức tường P: x-2y+2z-3=0; quả táo M(1;-3;4); mũi tên qua B(2;-1;4) theo vector (2;4;0).",
+      "answer_pattern": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "child_problem_type_evidence": {
+        "a": "POINT_PLANE_OR_PLANE_DISTANCE",
+        "c": "LINE_PLANE_INTERSECTION"
+      },
+      "source_solution_values": {
+        "distance_M_to_P": 4,
+        "line_plane_intersection": "C(5;5;4)"
+      },
+      "atomic_group_policy": true,
+      "review_status": "VERIFIED_SOURCE_BACKED_GROUP",
+      "visual_required": false
+    },
+    {
+      "unit_id": "M12_D047_PROB_SEQUENTIAL_DRAW_001",
+      "scope": "PROBABILITY_CHAPTER",
+      "problem_type_code": "TREE_OR_TOTAL_PROBABILITY",
+      "question_type": "SHORT_ANSWER",
+      "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+      "base_candidate_id": "M12_PROB_CAND_0069",
+      "question_page_1_based": 70,
+      "solution_page_1_based": 70,
+      "question_number": "19",
+      "question_data": {
+        "black_balls": 30,
+        "white_balls": 20,
+        "draws_without_replacement": 2,
+        "event": "first black, second white"
+      },
+      "correct_answer": "0.24",
+      "source_solution": "30*20/(50*49)=12/49≈0.24",
+      "review_status": "VERIFIED_SOURCE_BACKED",
+      "visual_required": false
+    },
+    {
+      "unit_id": "M12_D047_PROB_BOX_CONDITIONAL_001",
+      "scope": "PROBABILITY_CHAPTER",
+      "problem_type_code": "TREE_OR_TOTAL_PROBABILITY",
+      "secondary_problem_type_evidence": [
+        "CONDITIONAL_PROBABILITY_DIRECT",
+        "TOTAL_PROBABILITY",
+        "BAYES_POSTERIOR"
+      ],
+      "question_type": "SHORT_ANSWER",
+      "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+      "base_candidate_id": "M12_PROB_CAND_0072",
+      "question_page_1_based": 110,
+      "solution_page_1_based": 118,
+      "question_number": "2",
+      "question_data": {
+        "box1": {
+          "blue": 5,
+          "red": 1
+        },
+        "box2": {
+          "red": 4
+        },
+        "transfer_from_box1_to_box2": 3,
+        "draw_from_box2": 2,
+        "given": "two balls drawn from box2 have the same color",
+        "ask": "probability the three transferred balls from box1 have the same color"
+      },
+      "correct_answer": "0.45",
+      "source_solution_evidence": {
+        "A": "three transferred balls are same color",
+        "P_A": "1/2",
+        "P_B_given_A": "3/7",
+        "P_B_given_not_A": "11/21",
+        "posterior": "0.45"
+      },
+      "review_status": "VERIFIED_SOURCE_BACKED",
+      "visual_required": false
+    }
+  ]
+}

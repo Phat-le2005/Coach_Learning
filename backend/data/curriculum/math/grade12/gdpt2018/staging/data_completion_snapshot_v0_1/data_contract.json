@@ -1,0 +1,17 @@
+{
+  "dataset_code": "DATA-MATH12-050",
+  "base_repo_commit": "446abb9c2fde1fd9b065e0d8b42240c7e738da1f",
+  "semantic_files_order": [
+    "completion_snapshot.json",
+    "definition_of_done.json"
+  ],
+  "semantic_sha256": {
+    "completion_snapshot.json": "1a5a8822cdcdab9053ad5244ad705bc3eaee07b6ef608d4e24956b38fb94550f",
+    "definition_of_done.json": "ea3a42db22fe66123dbbc102025673aebdab246eeac511866a7ea8794aa36f5e"
+  },
+  "aggregate_semantic_sha256": "4aef04ea5711d70a7e47d7511ed213929cacdfee546a54f874ad204e39793310",
+  "rights_status": "REVIEW_REQUIRED",
+  "canonical_write_allowed": false,
+  "database_import_allowed": false,
+  "production_release_allowed": false
+}

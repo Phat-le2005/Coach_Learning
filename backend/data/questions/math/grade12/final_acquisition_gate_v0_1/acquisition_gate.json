@@ -1,0 +1,23 @@
+{
+  "dataset_code": "DATA-MATH12-049",
+  "data_acquisition_mode": "TARGETED_ONLY",
+  "broad_web_scraping_or_new_chapter_expansion": false,
+  "allowed_new_data": [
+    "real source-backed questions for thin ProblemTypes",
+    "a pinned binary for already-reviewed PARAMETER_MONOTONICITY evidence",
+    "one or more non-dominant probability sources",
+    "rights/provenance metadata"
+  ],
+  "blocked": [
+    "synthetic gap fill",
+    "unhashed external source promoted as practice-ready",
+    "duplicate questions counted as depth",
+    "adding Grade 11 exponential-logarithm into Grade 12 core",
+    "new curriculum chapter expansion",
+    "database import before activation/review"
+  ],
+  "rights_status": "REVIEW_REQUIRED",
+  "canonical_activation_allowed": false,
+  "database_import_allowed": false,
+  "production_release_allowed": false
+}

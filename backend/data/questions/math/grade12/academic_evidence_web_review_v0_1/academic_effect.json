@@ -1,0 +1,20 @@
+{
+  "dataset_code": "DATA-MATH12-046",
+  "effects": {
+    "derivative_zero_academic_evidence_before": [
+      "PARAMETER_MONOTONICITY"
+    ],
+    "derivative_zero_academic_evidence_after": [],
+    "derivative_zero_pinned_practice_after": [
+      "PARAMETER_MONOTONICITY"
+    ],
+    "statistics_derived_zero_academic_evidence_before": [
+      "PARAMETER_FROM_GROUPED_VARIANCE_SD",
+      "MULTI_MEASURE_GROUPED_DISPERSION_ANALYSIS"
+    ],
+    "statistics_derived_zero_academic_evidence_after": [
+      "PARAMETER_FROM_GROUPED_VARIANCE_SD"
+    ]
+  },
+  "rule": "UNPINNED_WEB_EVIDENCE_MAY_CLOSE_ACADEMIC_EXISTENCE_GAP_BUT_MUST_NOT_COUNT_AS_PINNED_PRACTICE_OR_PROMOTION"
+}

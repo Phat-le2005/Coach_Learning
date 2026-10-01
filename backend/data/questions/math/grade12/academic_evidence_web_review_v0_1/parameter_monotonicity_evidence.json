@@ -1,0 +1,36 @@
+{
+  "dataset_code": "DATA-MATH12-046",
+  "evidence_id": "M12_D046_PARAMETER_MONOTONICITY_WEB_001",
+  "problem_type_code": "PARAMETER_MONOTONICITY",
+  "scope": "DERIVATIVE_APPLICATIONS",
+  "status": "SOURCE_BACKED_WEB_PDF_REVIEWED_BINARY_UNPINNED",
+  "source": {
+    "title": "Bài giảng tính đơn điệu của hàm số",
+    "url": "https://file.montoan.com.vn/file-pdf/bai-giang-tinh-don-dieu-cua-ham-so.pdf",
+    "pdf_total_pages": 60,
+    "question_pdf_page_1_based": 31,
+    "answer_key_pdf_page_1_based": 60,
+    "section": "Dạng 2. Các bài toán chứa tham số",
+    "verified_on": "2026-10-01",
+    "binary_sha256": null,
+    "binary_pin_required": true
+  },
+  "source_supported_facts": {
+    "question_number_in_section": 1,
+    "stem_semantics": "Hàm số có tham số m; hỏi số giá trị nguyên của m để hàm số nghịch biến trên R.",
+    "options": {
+      "A": 6,
+      "B": 4,
+      "C": 7,
+      "D": 5
+    },
+    "answer_key": "C",
+    "answer_value": 7,
+    "formula_capture_status": "NOT_TRANSCRIBED_BECAUSE_WEB_TEXT_LAYER_FORMULA_IS_NOT_RELIABLE_ENOUGH_FOR_PRACTICE"
+  },
+  "academic_evidence_allowed": true,
+  "practice_ready": false,
+  "promotion_allowed": false,
+  "canonical_candidate_created": false,
+  "synthetic_content_created": false
+}

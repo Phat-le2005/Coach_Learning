@@ -1,0 +1,73 @@
+{
+  "dataset_code": "DATA-MATH12-046",
+  "evidence_id": "M12_D046_MULTI_MEASURE_STATS_WEB_001",
+  "problem_type_code": "MULTI_MEASURE_GROUPED_DISPERSION_ANALYSIS",
+  "scope": "GROUPED_DATA_STATISTICS",
+  "status": "SOURCE_BACKED_WEB_PDF_REVIEWED_BINARY_UNPINNED",
+  "source": {
+    "title": "Đề kiểm tra theo bài học - Các số đặc trưng đo mức độ phân tán mẫu số liệu ghép nhóm",
+    "url": "https://file.toan12.edu.vn/file-pdf/de-kiem-tra-theo-bai-hoc-cac-so-dac-trung-do-muc-do-phan-tan-mau-so-lieu-ghep-nhom.pdf",
+    "pdf_total_pages": 116,
+    "question_pdf_pages_1_based": [
+      54,
+      55
+    ],
+    "solution_pdf_pages_1_based": [
+      55,
+      56
+    ],
+    "verified_on": "2026-10-01",
+    "binary_sha256": null,
+    "binary_pin_required": true
+  },
+  "source_supported_facts": {
+    "context": "So sánh thời gian hoàn thành bài viết chính tả của học sinh hai trường X và Y.",
+    "group_intervals_minutes": [
+      "[6;7)",
+      "[7;8)",
+      "[8;9)",
+      "[9;10)",
+      "[10;11)"
+    ],
+    "school_X_frequencies": [
+      8,
+      10,
+      13,
+      10,
+      9
+    ],
+    "school_Y_frequencies": [
+      4,
+      12,
+      17,
+      14,
+      3
+    ],
+    "statement_answer_pattern": [
+      true,
+      false,
+      false,
+      true
+    ],
+    "measures_used": [
+      "mean",
+      "interquartile_range",
+      "variance",
+      "standard_deviation"
+    ],
+    "solution_conclusions": {
+      "mean": "Y faster by mean",
+      "iqr": "Y more consistent by IQR",
+      "variance_X": 1.7584,
+      "variance_Y": 1.08,
+      "sd_X_approx": 1.33,
+      "sd_Y_approx": 1.04,
+      "sd_consistency": "Y more consistent"
+    }
+  },
+  "academic_evidence_allowed": true,
+  "practice_ready": false,
+  "promotion_allowed": false,
+  "canonical_candidate_created": false,
+  "synthetic_content_created": false
+}

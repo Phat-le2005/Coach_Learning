@@ -1,0 +1,43 @@
+{
+  "batch_code": "MATH12_046_050_FINAL_DEPTH_HARDENING",
+  "base_repo_commit": "446abb9c2fde1fd9b065e0d8b42240c7e738da1f",
+  "datasets": {
+    "DATA-MATH12-046": {
+      "aggregate": "285d79ba1156fe17bb1b18ebc657a9ae362f5a48ee493e134dbd30fdd0e264d1",
+      "purpose": "web-reviewed academic existence evidence"
+    },
+    "DATA-MATH12-047": {
+      "aggregate": "682041d87f2a22f2ddbe11c80b67e91fc5a4e096586e0c8bf03622dd86d0a5ca",
+      "purpose": "11 pinned real-source practice/evidence units"
+    },
+    "DATA-MATH12-048": {
+      "aggregate": "ce982cd5ffc6ae30dd3098bfd59c36752e84894d4c27b6412184f0d92c1610cc",
+      "purpose": "final quality re-audit"
+    },
+    "DATA-MATH12-049": {
+      "aggregate": "e8f614c8d4eda47acb0f68f42b926ac7d0c15682d07fa88ea98625263c1f9a67",
+      "purpose": "targeted acquisition freeze/gate"
+    },
+    "DATA-MATH12-050": {
+      "aggregate": "4aef04ea5711d70a7e47d7511ed213929cacdfee546a54f874ad204e39793310",
+      "purpose": "data completion snapshot"
+    }
+  },
+  "effects": {
+    "official_requirements": "20/20",
+    "new_pinned_units": 11,
+    "derivative_academic_zero_after": 0,
+    "derivative_pinned_practice_zero_after": [
+      "PARAMETER_MONOTONICITY"
+    ],
+    "vector_zero_after": 0,
+    "statistics_practice_units_after": 44,
+    "statistics_dominant_source_share_after": 0.68181818,
+    "statistics_source_diversity_gate": "PASS",
+    "probability_practice_units_after": 24,
+    "probability_tree_or_total_after": 5,
+    "probability_dominant_source_share_after": 0.70833333,
+    "probability_units_needed_to_pass_70pct_diversity": 1,
+    "adaptive_production_complete": false
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "dataset_code": "DATA-MATH12-050",
+  "status": "GRADE12_MATH_DATA_BREADTH_COMPLETE_DEPTH_HARDENING_REMAINS",
+  "base_repo_commit": "446abb9c2fde1fd9b065e0d8b42240c7e738da1f",
+  "curriculum": {
+    "official_core_requirements": "20/20",
+    "canonical_candidate_version": "1.2.0",
+    "canonical_candidate_graph": {
+      "chapters": 5,
+      "topics": 24,
+      "problem_types": 75,
+      "concepts": 89,
+      "learning_outcomes": 34
+    },
+    "root_canonical_activation": "NOT_YET_ACTIVATED"
+  },
+  "validation": {
+    "latest_checked_commit_before_this_batch": "446abb9c2fde1fd9b065e0d8b42240c7e738da1f",
+    "latest_ci_result": "760 passed, 1 skipped, 0 failed",
+    "ci_status": "GREEN"
+  },
+  "data_state_after_046_047": {
+    "derivative_academic_zero": 0,
+    "derivative_pinned_practice_zero": [
+      "PARAMETER_MONOTONICITY"
+    ],
+    "vector_legacy_zero": 0,
+    "statistics_source_diversity": "PASS",
+    "statistics_derived_academic_zero": [
+      "PARAMETER_FROM_GROUPED_VARIANCE_SD"
+    ],
+    "probability_practice_units": 24,
+    "probability_tree_or_total_primary_units": 5,
+    "probability_dominant_source_share": 0.70833333,
+    "probability_source_diversity_70pct_gate": "FAIL_BY_ONE_ADDITIONAL_NON_DOMINANT_UNIT"
+  },
+  "production_gates": {
+    "official_scope": "PASS",
+    "curriculum_snapshot_candidate": "PASS",
+    "ci": "PASS",
+    "academic_breadth": "PASS",
+    "adaptive_density": "FAIL",
+    "source_diversity": "PARTIAL_FAIL_PROBABILITY",
+    "rights": "REVIEW_REQUIRED",
+    "canonical_activation": "BLOCKED",
+    "postgres_import": "BLOCKED",
+    "production_release": "BLOCKED"
+  },
+  "database_policy": "DO_NOT_IMPORT_YET; AFTER_EXPLICIT_CANONICAL_ACTIVATION_AND_RIGHTS/QUALITY_DECISION, IMPORT_ONLY_PROMOTED_VERIFIED_SERVING_SNAPSHOT"
+}

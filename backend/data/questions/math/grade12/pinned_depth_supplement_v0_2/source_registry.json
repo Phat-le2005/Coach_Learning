@@ -1,0 +1,47 @@
+{
+  "dataset_code": "DATA-MATH12-047",
+  "sources": [
+    {
+      "source_code": "SRC_TRIAL_2026_05",
+      "drive_file_id": "1oQC50720HejRq_JmNxY1vPFyJE0HbgR0",
+      "sha256": "c5156c422b7cc2e390369831e32bf02f43dfbfbc6d2a1438a92e3d74ae2614a4",
+      "title": "KSCL THCS THPT Nguyễn Khuyến - HCM - Thi thử TN THPT 2026 môn Toán"
+    },
+    {
+      "source_code": "SRC_TRIAL_2026_10",
+      "drive_file_id": "1YKvcZIP8JklIU2reuT6m4nY9M4iVCgg1",
+      "sha256": "5029733489302ddaa04ae4595a9e622e86030a547bdc989d17a0dfb8d968d6fa",
+      "title": "THPT Nguyễn Khuyến - Lê Thánh Tông - HCM - Thi thử TN THPT 2026 môn Toán"
+    },
+    {
+      "source_code": "SRC_TRIAL_2026_11",
+      "drive_file_id": "1QCrGQm64qsWedpIviERh4__69C3cgQv9",
+      "sha256": "769c6f69a4a6a643ae1bf144840a52e64bd00b5fcedef4565d805a84aeeea1b7",
+      "title": "THPT Nguyễn Khuyến - Bình Dương - Thi thử TN THPT môn Toán"
+    },
+    {
+      "source_code": "SRC_TRIAL_2026_13",
+      "drive_file_id": "1K_OEdAD8af_MQcW_kchCUeQ7-fkxSs-u",
+      "sha256": "6ab24e60dd44ed7bff543eb4c5b60a96e6650242c5709a1aca641b9ea59be396",
+      "title": "KSCL THPT Nguyễn Khuyến - LTT - TPHCM - Thi thử TN THPT 2026 môn Toán"
+    },
+    {
+      "source_code": "SRC_TRIAL_2026_14",
+      "drive_file_id": "1TkOM8P-QcouZYV8Q9Tp7HT3toZjVnfe1",
+      "sha256": "7330415051643b8ded8b26e29f1cb4cfe3dc85fc025e3ed8a5294205b60e9e8d",
+      "title": "Sở Ninh Bình lần 1 - Thi thử TN THPT 2026 môn Toán"
+    },
+    {
+      "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+      "drive_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+      "sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+      "title": "Lời giải chi tiết đề thi thử tốt nghiệp THPT 2025 môn Toán của các Sở GDĐT"
+    }
+  ],
+  "policy": {
+    "all_source_binaries_sha256_pinned": true,
+    "real_sources_only": true,
+    "synthetic_questions": false,
+    "rights_status": "REVIEW_REQUIRED"
+  }
+}

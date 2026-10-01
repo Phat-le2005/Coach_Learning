@@ -1,0 +1,14 @@
+{
+  "dataset_code": "DATA-MATH12-050",
+  "minimum_demo_data_done": true,
+  "official_curriculum_data_done": true,
+  "adaptive_production_data_done": false,
+  "remaining_to_adaptive_production_done": [
+    "pin and promote a real PARAMETER_MONOTONICITY question",
+    "add at least one non-dominant pinned probability unit to pass the 70% source-diversity gate",
+    "increase priority thin ProblemTypes toward >=5 units where feasible",
+    "complete rights review",
+    "explicitly activate reviewed canonical v1.2.0 snapshot",
+    "then perform PostgreSQL serving import"
+  ]
+}

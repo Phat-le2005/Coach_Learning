@@ -1,0 +1,32 @@
+{
+  "dataset_code": "DATA-MATH12-049",
+  "items": [
+    {
+      "target": "PARAMETER_MONOTONICITY",
+      "url": "https://file.montoan.com.vn/file-pdf/bai-giang-tinh-don-dieu-cua-ham-so.pdf",
+      "reviewed_pages_1_based": [
+        31,
+        60
+      ],
+      "status": "WEB_REVIEWED_BINARY_PIN_REQUIRED"
+    },
+    {
+      "target": "MULTI_MEASURE_GROUPED_DISPERSION_ANALYSIS",
+      "url": "https://file.toan12.edu.vn/file-pdf/de-kiem-tra-theo-bai-hoc-cac-so-dac-trung-do-muc-do-phan-tan-mau-so-lieu-ghep-nhom.pdf",
+      "reviewed_pages_1_based": [
+        54,
+        55,
+        56
+      ],
+      "status": "WEB_REVIEWED_BINARY_PIN_REQUIRED"
+    },
+    {
+      "target": "PARAMETER_FROM_GROUPED_VARIANCE_SD",
+      "status": "REAL_SOURCE_STILL_REQUIRED"
+    },
+    {
+      "target": "PROBABILITY_DIVERSITY",
+      "status": "ONE_MORE_NON_DOMINANT_PINNED_UNIT_REQUIRED_TO_PASS_70_PERCENT_GATE"
+    }
+  ]
+}

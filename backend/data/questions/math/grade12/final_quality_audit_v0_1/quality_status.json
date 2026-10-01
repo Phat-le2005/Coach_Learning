@@ -1,0 +1,77 @@
+{
+  "dataset_code": "DATA-MATH12-048",
+  "basis": [
+    "DATA-MATH12-041",
+    "DATA-MATH12-043",
+    "DATA-MATH12-046",
+    "DATA-MATH12-047"
+  ],
+  "official_scope": {
+    "requirements_total": 20,
+    "source_evidenced": 20,
+    "status": "PASS"
+  },
+  "academic_existence": {
+    "derivative_zero_problem_types": [],
+    "vector_legacy_zero_problem_types": [],
+    "statistics_derived_zero_problem_types": [
+      "PARAMETER_FROM_GROUPED_VARIANCE_SD"
+    ],
+    "note": "PARAMETER_MONOTONICITY and MULTI_MEASURE_GROUPED_DISPERSION_ANALYSIS have real web-PDF evidence but remain binary-unpinned and not practice-ready."
+  },
+  "pinned_practice_zero_or_not_practice_ready": {
+    "DERIVATIVE_APPLICATIONS": [
+      "PARAMETER_MONOTONICITY"
+    ],
+    "GROUPED_DATA_STATISTICS": [
+      "PARAMETER_FROM_GROUPED_VARIANCE_SD",
+      "MULTI_MEASURE_GROUPED_DISPERSION_ANALYSIS"
+    ],
+    "PROBABILITY_CHAPTER": [
+      "TOTAL_PROBABILITY_STANDALONE"
+    ],
+    "VECTOR_LEGACY_SUBSCOPE": []
+  },
+  "source_diversity": {
+    "GROUPED_DATA_STATISTICS": {
+      "units": 44,
+      "families": 5,
+      "dominant_share": 0.68181818,
+      "status": "PASS"
+    },
+    "PROBABILITY_CHAPTER": {
+      "units": 24,
+      "families": 4,
+      "dominant_share": 0.70833333,
+      "status": "FAIL_SLIGHTLY_ABOVE_0_70",
+      "delta_to_pass": "one additional non-dominant pinned practice unit"
+    }
+  },
+  "diagnostic_density": {
+    "target_per_problem_type": 5,
+    "status": "FAIL",
+    "reason": "Multiple valid ProblemTypes remain below five source-backed units even though official curriculum coverage is complete.",
+    "priority_thin_types": [
+      "PARAMETER_MONOTONICITY",
+      "PARAMETER_EXTREMA_COUNT",
+      "REAL_WORLD_MONOTONICITY_INTERPRETATION",
+      "ANTIDERIVATIVE_WITH_CONDITION",
+      "CALCULATE_DEFINITE_INTEGRAL",
+      "VOLUME_BY_CROSS_SECTION",
+      "PRACTICAL_ACCUMULATION",
+      "POINT_PLANE_OR_PLANE_DISTANCE",
+      "LINE_PLANE_INTERSECTION",
+      "LINE_RELATION",
+      "LINE_DISTANCE_IN_OXYZ",
+      "PLANE_SPHERE_RELATION",
+      "COMPARE_GROUPED_RANGE",
+      "COMPARE_GROUPED_IQR",
+      "COMPARE_GROUPED_VARIANCE_SD",
+      "IDENTIFY_MORE_STABLE_GROUPED_DATA",
+      "INTERPRET_GROUPED_DISPERSION_MEASURE",
+      "CONCLUDE_FROM_GROUPED_DISPERSION",
+      "TOTAL_PROBABILITY"
+    ]
+  },
+  "overall": "BREADTH_COMPLETE_DEPTH_NOT_YET_AT_SELF_IMPOSED_PRODUCTION_QA_TARGET"
+}

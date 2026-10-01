@@ -1,0 +1,40 @@
+{
+  "dataset_code": "DATA-MATH12-047",
+  "new_pinned_units": 11,
+  "statistics": {
+    "base_practice_units": 38,
+    "new_units": 6,
+    "practice_units_after": 44,
+    "source_distribution_after": {
+      "SRC_NGOC_VY_40_DE_2026": 30,
+      "SRC_PROVINCIAL_TRIAL_2025_COLLECTION": 8,
+      "SRC_TRIAL_2026_05": 2,
+      "SRC_TRIAL_2026_10": 1,
+      "SRC_TRIAL_2026_14": 3
+    },
+    "source_families_after": 5,
+    "dominant_source_share_after": 0.68181818,
+    "source_diversity_target_70pct": "PASS"
+  },
+  "oxyz": {
+    "new_standalone_units": 2,
+    "new_atomic_groups": 1,
+    "point_plane_evidence_count_after": 4,
+    "line_plane_intersection_evidence_count_after": 3
+  },
+  "probability": {
+    "practice_units_before": 22,
+    "new_units": 2,
+    "practice_units_after": 24,
+    "primary_distribution_after": {
+      "BAYES_POSTERIOR": 14,
+      "CONDITIONAL_PROBABILITY_DIRECT": 5,
+      "TREE_OR_TOTAL_PROBABILITY": 5,
+      "TOTAL_PROBABILITY_STANDALONE": 0
+    },
+    "dominant_source_count": 17,
+    "dominant_source_share_after": 0.70833333,
+    "dominant_source_target_70pct": "FAIL_BY_0.00833333",
+    "additional_non_dominant_unit_needed_to_pass_70pct": 1
+  }
+}

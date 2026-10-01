@@ -1,0 +1,19 @@
+{
+  "dataset_code": "DATA-MATH12-047",
+  "base_repo_commit": "446abb9c2fde1fd9b065e0d8b42240c7e738da1f",
+  "semantic_files_order": [
+    "source_registry.json",
+    "verified_units.json",
+    "coverage_after_047.json"
+  ],
+  "semantic_sha256": {
+    "source_registry.json": "f8fe7c77319161819f101db6a15d229e51a97fae690ca9485b867e68aa5e017b",
+    "verified_units.json": "196f698ed6b9de6b06ac291d70d599ed8a305294f3d2c13c204eeaa0d9501564",
+    "coverage_after_047.json": "f64b9d0b96119a977aec6ec7b90cca6a35f2666cefc1cfe37ea3340f0c494e89"
+  },
+  "aggregate_semantic_sha256": "682041d87f2a22f2ddbe11c80b67e91fc5a4e096586e0c8bf03622dd86d0a5ca",
+  "rights_status": "REVIEW_REQUIRED",
+  "canonical_write_allowed": false,
+  "database_import_allowed": false,
+  "production_release_allowed": false
+}
