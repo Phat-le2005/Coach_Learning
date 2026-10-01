@@ -1,0 +1,51 @@
+{
+  "evidence_id": "M12_PROB_TREE_EVID_001",
+  "evidence_status": "SOURCE_BACKED_VERIFIED_TREE_EVIDENCE",
+  "official_scope_code": "M12_CORE_PROBABILITY_CONDITIONAL",
+  "official_requirement": "sơ đồ hình cây và ứng dụng thực tiễn",
+  "source": {
+    "source_code": "SRC_OFFICIAL_EXAM_2025_SOLUTION",
+    "source_file_id": "1jGjnJ3Wq2ynISxB4P1g9mk2CXibl-YXy",
+    "source_pdf_sha256": "90d5cb68a6f91418287c6643548f4f40ea9bb1598705a177b41bce07b09df11f",
+    "question_page_1_based": 53,
+    "solution_visual_page_1_based": 54,
+    "question_number": "3",
+    "context": "Message-classification / advertising-message probability problem.",
+    "source_answer_pattern": [
+      true,
+      false,
+      true,
+      true
+    ]
+  },
+  "tree_asset": {
+    "asset_id": "M12_PROB_TREE_ASSET_OFFICIAL_2025_C3",
+    "file_name": "assets/M12_PROB_TREE_OFFICIAL_2025_C3.png",
+    "sha256": "755211c4d89f251f82c04961a058942b85825d2270c3b8ad4d010d596114b040",
+    "width": 460,
+    "height": 380,
+    "render_dpi": 200,
+    "source_render_size": [
+      1654,
+      2339
+    ],
+    "crop_box_pixels": [
+      650,
+      410,
+      1110,
+      790
+    ],
+    "extraction_method": "SOURCE_PDF_RENDER_CROP_NO_REDRAW",
+    "answer_leakage_check": "PASS_TREE_ONLY_NO_ANSWER_TEXT"
+  },
+  "problem_type_evidence": [
+    "TREE_OR_TOTAL_PROBABILITY"
+  ],
+  "concept_evidence": [
+    "PROBABILITY_TREE",
+    "CONDITIONAL_PROBABILITY",
+    "TOTAL_PROBABILITY"
+  ],
+  "canonical_candidate_created": false,
+  "synthetic_content_created": false
+}

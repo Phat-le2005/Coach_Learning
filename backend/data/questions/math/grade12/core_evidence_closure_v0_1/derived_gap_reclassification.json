@@ -1,0 +1,27 @@
+{
+  "dataset_code": "DATA-MATH12-035",
+  "grouped_data_dispersion": {
+    "previous_real_gaps": [
+      "IDENTIFY_MORE_STABLE_GROUPED_DATA",
+      "INTERPRET_GROUPED_DISPERSION_MEASURE",
+      "CONCLUDE_FROM_GROUPED_DISPERSION",
+      "PARAMETER_FROM_GROUPED_VARIANCE_SD",
+      "MULTI_MEASURE_GROUPED_DISPERSION_ANALYSIS"
+    ],
+    "resolved_by_source_backed_evidence": [
+      "IDENTIFY_MORE_STABLE_GROUPED_DATA",
+      "INTERPRET_GROUPED_DISPERSION_MEASURE",
+      "CONCLUDE_FROM_GROUPED_DISPERSION"
+    ],
+    "remaining_derived_enhancement_gaps": [
+      "PARAMETER_FROM_GROUPED_VARIANCE_SD",
+      "MULTI_MEASURE_GROUPED_DISPERSION_ANALYSIS"
+    ],
+    "remaining_gap_policy": "COACH_DERIVED_COVERAGE_ENHANCEMENT_NONBLOCKING_FOR_OFFICIAL_CORE_COMPLETENESS",
+    "official_interpretation_requirement_status_after_overlay": "COVERED_BY_SOURCE_BACKED_EVIDENCE"
+  },
+  "conditional_probability": {
+    "probability_tree_requirement_status_after_overlay": "COVERED_BY_SOURCE_BACKED_TREE_EVIDENCE",
+    "canonical_standalone_question_required_for_scope_evidence": false
+  }
+}

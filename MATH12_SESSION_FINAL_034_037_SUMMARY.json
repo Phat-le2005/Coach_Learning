@@ -1,0 +1,32 @@
+{
+  "batch_code": "MATH12_SESSION_FINAL_034_037",
+  "base_repo_commit": "453e3817c3d77098ad5d3171ed9b466391ac223b",
+  "datasets": {
+    "DATA-MATH12-034": {
+      "aggregate_semantic_sha256": "25d50a7f4fdb1473c72ff14fa0ee6f7ace5070d02dbe8c4dd304b5a5608d9182",
+      "purpose": "schema enrichment",
+      "blockers_closed": 41
+    },
+    "DATA-MATH12-035": {
+      "aggregate_semantic_sha256": "0a068fec0bb04f2f3ef86b806a9f14c4eef41366b8d43c4201cb8b45939b1c9a",
+      "purpose": "official core evidence closure",
+      "official_requirements_after": "20/20"
+    },
+    "DATA-MATH12-036": {
+      "aggregate_semantic_sha256": "09ce790a7afc6b20b7a63f2a59ade75ef3e0e7d44ced8f0d01e6bb60e4a49a57",
+      "purpose": "derivative visual promotion exclusion",
+      "excluded_group": "M12_DERIV_GROUP_0012"
+    },
+    "DATA-MATH12-037": {
+      "aggregate_semantic_sha256": "8671a74b811ed3f68f44ad45bc9f76228680875f87064d7985785f9b666ab89a",
+      "purpose": "final academic/data readiness + PostgreSQL dry-run contract"
+    }
+  },
+  "academic_data_blockers_remaining": 0,
+  "remaining_external_blockers": [
+    "RIGHTS_REVIEW_REQUIRED",
+    "FULL_CODE_REGRESSION_AND_CI_EVIDENCE_PENDING",
+    "SEPARATELY_REVIEWED_CANONICAL_PROMOTION_SNAPSHOT_NOT_YET_CREATED"
+  ],
+  "database_import_allowed": false
+}

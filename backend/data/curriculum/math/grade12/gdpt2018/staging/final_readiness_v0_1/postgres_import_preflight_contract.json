@@ -1,0 +1,34 @@
+{
+  "dataset_code": "DATA-MATH12-037",
+  "contract_code": "MATH12_POSTGRES_IMPORT_PREFLIGHT_V0_1",
+  "mode": "DRY_RUN_ONLY",
+  "curriculum_candidate_source": "DATA-MATH12-033 + DATA-MATH12-034 overlay",
+  "question_evidence_source": "DATA-MATH12-019..036 reviewed/promotion overlays",
+  "allowed_operations": [
+    "COMPOSE_FINAL_GRAPH_IN_MEMORY",
+    "VALIDATE_IMPORT_SCHEMAS",
+    "GENERATE_DETERMINISTIC_FINAL_FINGERPRINT",
+    "GENERATE_DRY_RUN_COUNTS",
+    "CHECK_FOREIGN_KEYS_AND_DUPLICATES"
+  ],
+  "blocked_operations": [
+    "WRITE_CANONICAL_FILES",
+    "IMPORT_TO_POSTGRESQL",
+    "PUBLISH_QUESTIONS",
+    "MARK_RIGHTS_APPROVED",
+    "INCLUDE_M12_DERIV_GROUP_0012_IN_PROMOTION"
+  ],
+  "record_filter_policy": [
+    "Academic questions must be VERIFIED or explicitly source-backed overlay evidence.",
+    "HOLD and REJECTED records never enter serving import.",
+    "Visual-required promoted records must have READY source assets; explicitly excluded records stay out.",
+    "Source PDFs are not stored as DB blobs; DB stores source identifiers, hashes and page lineage.",
+    "PNG assets are not stored as DB blobs; DB stores asset path/object reference, hash and dimensions."
+  ],
+  "actual_import_requires_explicit_future_promotion": true,
+  "input_overlays": {
+    "DATA-MATH12-034": "25d50a7f4fdb1473c72ff14fa0ee6f7ace5070d02dbe8c4dd304b5a5608d9182",
+    "DATA-MATH12-035": "0a068fec0bb04f2f3ef86b806a9f14c4eef41366b8d43c4201cb8b45939b1c9a",
+    "DATA-MATH12-036": "09ce790a7afc6b20b7a63f2a59ade75ef3e0e7d44ced8f0d01e6bb60e4a49a57"
+  }
+}

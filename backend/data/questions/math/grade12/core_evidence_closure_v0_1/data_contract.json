@@ -1,0 +1,20 @@
+{
+  "dataset_code": "DATA-MATH12-035",
+  "base_repo_commit": "453e3817c3d77098ad5d3171ed9b466391ac223b",
+  "semantic_files_order": [
+    "evidence_manifest.json",
+    "grouped_statistics_interpretation_evidence.json",
+    "probability_tree_evidence.json",
+    "derived_gap_reclassification.json"
+  ],
+  "semantic_sha256": {
+    "evidence_manifest.json": "99bcd70ab44df689085415a7f04c67da896e21372280617735ac69db859e4246",
+    "grouped_statistics_interpretation_evidence.json": "ddda2e1c2d8243580a67e4d110009036ec7328b65d7581fdf07dc4e6fa8881a9",
+    "probability_tree_evidence.json": "01de9a566132e1b7055af01f8e60ad3758bbb3f930811c6ed6fbb8f7b44e2d10",
+    "derived_gap_reclassification.json": "b192f40354771688006c71566bb6d5b8441facef3782d9c6cc236f6306f5684c"
+  },
+  "aggregate_semantic_sha256": "0a068fec0bb04f2f3ef86b806a9f14c4eef41366b8d43c4201cb8b45939b1c9a",
+  "canonical_write_allowed": false,
+  "database_import_allowed": false,
+  "production_release_allowed": false
+}

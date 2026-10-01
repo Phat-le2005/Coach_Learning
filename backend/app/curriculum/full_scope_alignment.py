@@ -33,6 +33,9 @@ EXPECTED_INPUT_AUDIT_AGGREGATE_SHA256 = (
 EXPECTED_PREVIEW_FINGERPRINT = (
     "af15be17e213b90eb70106225b43c8ca352acb6d22ed0cd9115129d0ef475d19"
 )
+EXPECTED_ENRICHED_PREVIEW_FINGERPRINT = (
+    "2cad0c70f89d4d95ba3db2aaac194f0ddd9ad834e1b9014a6bbbe49bc1d7ec93"
+)
 
 EXPECTED_CHAPTER_CODES = (
     "DERIVATIVE_APPLICATIONS",
@@ -256,6 +259,7 @@ class FullScopeAlignmentPreviewComposer:
         cls,
         alignment_path: Path,
         repo_root: Path,
+        enrichment_path: Path | None = None,
     ) -> tuple[FullScopeAlignmentPreview | None, list[FullScopeAlignmentIssue]]:
         issues: list[FullScopeAlignmentIssue] = []
 
@@ -295,6 +299,26 @@ class FullScopeAlignmentPreviewComposer:
             _load_json(alignment_path / "official_scope_bindings.json") or []
         )
 
+        pt_enrich: dict[str, dict[str, Any]] = {}
+        c_enrich: dict[str, dict[str, Any]] = {}
+        lo_enrich: dict[str, dict[str, Any]] = {}
+        if enrichment_path is not None and enrichment_path.is_dir():
+            pt_enrich_file = enrichment_path / "problem_types_enrichment.json"
+            if pt_enrich_file.is_file():
+                for row_data in _load_json(pt_enrich_file) or []:
+                    if isinstance(row_data, dict) and "code" in row_data:
+                        pt_enrich[row_data["code"]] = row_data
+            c_enrich_file = enrichment_path / "concepts_enrichment.json"
+            if c_enrich_file.is_file():
+                for row_data in _load_json(c_enrich_file) or []:
+                    if isinstance(row_data, dict) and "code" in row_data:
+                        c_enrich[row_data["code"]] = row_data
+            lo_enrich_file = enrichment_path / "learning_outcomes_enrichment.json"
+            if lo_enrich_file.is_file():
+                for row_data in _load_json(lo_enrich_file) or []:
+                    if isinstance(row_data, dict) and "code" in row_data:
+                        lo_enrich[row_data["code"]] = row_data
+
         pt_align_map: dict[str, dict[str, Any]] = {
             row["problem_type_code"]: row
             for row in pt_align_data
@@ -316,6 +340,8 @@ class FullScopeAlignmentPreviewComposer:
                         align_entry = pt_align_map[code]
                         row = copy.deepcopy(pt)
                         row["topic_code"] = align_entry.get("target_topic_code")
+                        if code in pt_enrich:
+                            row.update(pt_enrich[code])
                         if code in seen_pt_codes:
                             if seen_pt_codes[code] != row:
                                 issues.append(
@@ -338,6 +364,8 @@ class FullScopeAlignmentPreviewComposer:
                         align_entry = pt_align_map[code]
                         row = copy.deepcopy(pt)
                         row["topic_code"] = align_entry.get("target_topic_code")
+                        if code in pt_enrich:
+                            row.update(pt_enrich[code])
                         if code in seen_pt_codes:
                             if seen_pt_codes[code] != row:
                                 issues.append(
@@ -354,7 +382,7 @@ class FullScopeAlignmentPreviewComposer:
 
                         missing: list[str] = []
                         for f in ["name", "order_index"]:
-                            if f not in pt or pt[f] is None:
+                            if f not in row or row[f] is None:
                                 missing.append(f)
                         if missing:
                             enrichment_blockers.append(
@@ -385,7 +413,10 @@ class FullScopeAlignmentPreviewComposer:
                                 )
                             )
                     else:
-                        concepts_by_code[code] = copy.deepcopy(r)
+                        row = copy.deepcopy(r)
+                        if code in c_enrich:
+                            row.update(c_enrich[code])
+                        concepts_by_code[code] = row
             elif "path" in comp_info:
                 tax_file = repo_root / comp_info["path"]
                 src_data = _load_json(tax_file) or {}
@@ -402,8 +433,11 @@ class FullScopeAlignmentPreviewComposer:
                                 )
                             )
                     else:
-                        concepts_by_code[code] = copy.deepcopy(r)
-                        if "name" not in r or r["name"] is None:
+                        row = copy.deepcopy(r)
+                        if code in c_enrich:
+                            row.update(c_enrich[code])
+                        concepts_by_code[code] = row
+                        if "name" not in row or row["name"] is None:
                             enrichment_blockers.append(
                                 {
                                     "entity_type": "concept",
@@ -435,7 +469,10 @@ class FullScopeAlignmentPreviewComposer:
                                 )
                             )
                     else:
-                        los_by_code[code] = copy.deepcopy(r)
+                        row = copy.deepcopy(r)
+                        if code in lo_enrich:
+                            row.update(lo_enrich[code])
+                        los_by_code[code] = row
             elif "path" in comp_info:
                 tax_file = repo_root / comp_info["path"]
                 src_data = _load_json(tax_file) or {}
@@ -452,8 +489,11 @@ class FullScopeAlignmentPreviewComposer:
                                 )
                             )
                     else:
-                        los_by_code[code] = copy.deepcopy(r)
-                        if "description" not in r or r["description"] is None:
+                        row = copy.deepcopy(r)
+                        if code in lo_enrich:
+                            row.update(lo_enrich[code])
+                        los_by_code[code] = row
+                        if "description" not in row or row["description"] is None:
                             enrichment_blockers.append(
                                 {
                                     "entity_type": "learning_outcome",
@@ -651,6 +691,7 @@ class FullScopeAlignmentValidator:
         alignment_path: Path = DEFAULT_FULL_SCOPE_ALIGNMENT_PATH,
         *,
         repo_root: Path = REPO_ROOT,
+        enrichment_path: Path | None = None,
     ) -> FullScopeAlignmentReport:
         path = alignment_path.resolve()
         repo_root = repo_root.resolve()
@@ -687,7 +728,7 @@ class FullScopeAlignmentValidator:
 
         # Build in-memory preview
         preview, preview_issues = FullScopeAlignmentPreviewComposer.compose(
-            path, repo_root
+            path, repo_root, enrichment_path=enrichment_path
         )
         initial.extend(preview_issues)
 
@@ -806,15 +847,26 @@ class FullScopeAlignmentValidator:
 
         # Schema enrichment reporting check
         enrichment_errors: list[FullScopeAlignmentIssue] = []
-        if preview and not preview.schema_enrichment_required:
-            enrichment_errors.append(
-                self._issue(
-                    "schema_enrichment_reporting",
-                    "SCHEMA_ENRICHMENT_NOT_FLAGGED",
-                    "materialization_plan.json",
-                    "Schema enrichment must be flagged as required for candidate.",
+        if enrichment_path is None:
+            if preview and not preview.schema_enrichment_required:
+                enrichment_errors.append(
+                    self._issue(
+                        "schema_enrichment_reporting",
+                        "SCHEMA_ENRICHMENT_NOT_FLAGGED",
+                        "materialization_plan.json",
+                        "Schema enrichment must be flagged as required for candidate.",
+                    )
                 )
-            )
+        else:
+            if preview and preview.schema_enrichment_required:
+                enrichment_errors.append(
+                    self._issue(
+                        "schema_enrichment_reporting",
+                        "SCHEMA_ENRICHMENT_STILL_REQUIRED",
+                        "full_scope_enrichment_v0_1",
+                        f"Schema enrichment overlay did not resolve all blockers ({len(preview.enrichment_blockers)} remaining).",
+                    )
+                )
         checks_to_errors["schema_enrichment_reporting"] = enrichment_errors
 
         errors = tuple(

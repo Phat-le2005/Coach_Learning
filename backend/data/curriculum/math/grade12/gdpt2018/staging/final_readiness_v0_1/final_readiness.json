@@ -1,0 +1,39 @@
+{
+  "dataset_code": "DATA-MATH12-037",
+  "status": "ACADEMIC_DATA_READY_FOR_CANONICAL_SNAPSHOT_PREFLIGHT",
+  "base_alignment_dataset": "DATA-MATH12-033",
+  "base_alignment_aggregate_sha256": "2f4c17a62008895e4d003e22f872f5710dd265d13fe6ee38c2120040bcc4fdde",
+  "candidate_graph_expected": {
+    "chapters": 5,
+    "topics": 24,
+    "problem_types": 75
+  },
+  "schema_enrichment_blockers_expected_after_034": 0,
+  "official_core_requirements": {
+    "total": 20,
+    "source_evidenced_after_035": 20,
+    "partial": 0
+  },
+  "derivative_visual_policy": {
+    "unresolved_in_promotion_set": 0,
+    "explicitly_excluded_groups": [
+      "M12_DERIV_GROUP_0012"
+    ]
+  },
+  "academic_data_blockers": 0,
+  "canonical_snapshot_candidate_allowed_after_validator_pass": true,
+  "canonical_write_allowed": false,
+  "database_import_allowed": false,
+  "production_release_allowed": false,
+  "reason_database_import_still_blocked": [
+    "RIGHTS_REVIEW_REQUIRED",
+    "CANONICAL_PROMOTION_SNAPSHOT_MUST_BIND_FINAL_COMPOSED_FINGERPRINT",
+    "FULL_REGRESSION_MUST_PASS"
+  ],
+  "recommended_database_role": "SERVING_LAYER_ONLY_AFTER_PROMOTION; CURATED_JSON_AND_ASSETS_REMAIN_SOURCE_OF_TRUTH",
+  "input_overlays": {
+    "DATA-MATH12-034": "25d50a7f4fdb1473c72ff14fa0ee6f7ace5070d02dbe8c4dd304b5a5608d9182",
+    "DATA-MATH12-035": "0a068fec0bb04f2f3ef86b806a9f14c4eef41366b8d43c4201cb8b45939b1c9a",
+    "DATA-MATH12-036": "09ce790a7afc6b20b7a63f2a59ade75ef3e0e7d44ced8f0d01e6bb60e4a49a57"
+  }
+}

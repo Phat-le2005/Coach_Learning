@@ -1,0 +1,20 @@
+{
+  "dataset_code": "DATA-MATH12-034",
+  "base_repo_commit": "453e3817c3d77098ad5d3171ed9b466391ac223b",
+  "semantic_files_order": [
+    "enrichment_manifest.json",
+    "problem_types_enrichment.json",
+    "concepts_enrichment.json",
+    "learning_outcomes_enrichment.json"
+  ],
+  "semantic_sha256": {
+    "enrichment_manifest.json": "856a23ea93521679c2fa7aa4dfcbec1ae9334f4b330c630c3aea3bbe83c374b6",
+    "problem_types_enrichment.json": "e066a9b1432b269910c778992176e8317e2f997d7ed43c45fc629d8da634ff9c",
+    "concepts_enrichment.json": "cee5d0b380cc3eaa7776b2b42a6a30373ef8346e8291d86c11584298899fbe13",
+    "learning_outcomes_enrichment.json": "7c8193454960121314a309bcd501232b3f903a79816ca3ebda3a9d0d4b676155"
+  },
+  "aggregate_semantic_sha256": "25d50a7f4fdb1473c72ff14fa0ee6f7ace5070d02dbe8c4dd304b5a5608d9182",
+  "canonical_write_allowed": false,
+  "database_import_allowed": false,
+  "production_release_allowed": false
+}

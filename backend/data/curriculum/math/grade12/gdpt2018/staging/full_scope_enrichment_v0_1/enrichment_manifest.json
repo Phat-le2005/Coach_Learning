@@ -1,0 +1,20 @@
+{
+  "dataset_code": "DATA-MATH12-034",
+  "dataset_name": "MATH12_FULL_SCOPE_SCHEMA_ENRICHMENT_V0_1",
+  "base_repo_commit": "453e3817c3d77098ad5d3171ed9b466391ac223b",
+  "base_alignment_dataset": "DATA-MATH12-033",
+  "base_alignment_aggregate_sha256": "2f4c17a62008895e4d003e22f872f5710dd265d13fe6ee38c2120040bcc4fdde",
+  "purpose": "Resolve all 41 DATA-033 enrichment blockers and the hidden required grade_level fields for integral learning outcomes before an import-schema preview.",
+  "locked_counts": {
+    "data033_blockers_before": 41,
+    "data033_blockers_after_overlay": 0,
+    "problem_type_enrichment_records": 16,
+    "concept_enrichment_records": 16,
+    "learning_outcome_enrichment_records": 15,
+    "total_enrichment_records": 47
+  },
+  "classification": "COACH_LEARNING_DERIVED_OR_OFFICIAL_NORMALIZED_DERIVED",
+  "canonical_write_allowed": false,
+  "database_import_allowed": false,
+  "activation_allowed": false
+}

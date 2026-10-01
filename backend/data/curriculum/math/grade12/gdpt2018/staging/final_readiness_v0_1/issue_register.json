@@ -1,0 +1,53 @@
+{
+  "dataset_code": "DATA-MATH12-037",
+  "base_repo_commit": "453e3817c3d77098ad5d3171ed9b466391ac223b",
+  "issues": [
+    {
+      "issue": "DATA-033 schema enrichment blockers",
+      "previous_state": 41,
+      "final_state": 0,
+      "resolution": "DATA-MATH12-034_CURATED_ENRICHMENT"
+    },
+    {
+      "issue": "Official grouped-data interpretation requirement",
+      "previous_state": "PARTIAL",
+      "final_state": "COVERED",
+      "resolution": "DATA-MATH12-035_SOURCE_BACKED_STATS_EVIDENCE"
+    },
+    {
+      "issue": "Official probability tree requirement",
+      "previous_state": "PARTIAL",
+      "final_state": "COVERED",
+      "resolution": "DATA-MATH12-035_SOURCE_BACKED_TREE_EVIDENCE"
+    },
+    {
+      "issue": "M12_DERIV_GROUP_0012 missing source visual",
+      "previous_state": "PROMOTION_BLOCKER",
+      "final_state": "EXPLICITLY_EXCLUDED_FROM_PROMOTION",
+      "resolution": "DATA-MATH12-036_NON_DESTRUCTIVE_EXCLUSION"
+    },
+    {
+      "issue": "PARAMETER_FROM_GROUPED_VARIANCE_SD",
+      "previous_state": "DERIVED_GAP",
+      "final_state": "NONBLOCKING_ENHANCEMENT_GAP",
+      "resolution": "CLASSIFIED_NOT_REQUIRED_FOR_OFFICIAL_CORE_COMPLETENESS"
+    },
+    {
+      "issue": "MULTI_MEASURE_GROUPED_DISPERSION_ANALYSIS",
+      "previous_state": "DERIVED_GAP",
+      "final_state": "NONBLOCKING_ENHANCEMENT_GAP",
+      "resolution": "CLASSIFIED_NOT_REQUIRED_FOR_OFFICIAL_CORE_COMPLETENESS"
+    }
+  ],
+  "academic_or_data_blockers_remaining": 0,
+  "external_governance_or_execution_blockers": [
+    "RIGHTS_REVIEW_REQUIRED",
+    "FULL_CODE_REGRESSION_AND_CI_EVIDENCE_PENDING",
+    "SEPARATELY_REVIEWED_CANONICAL_PROMOTION_SNAPSHOT_NOT_YET_CREATED"
+  ],
+  "input_overlays": {
+    "DATA-MATH12-034": "25d50a7f4fdb1473c72ff14fa0ee6f7ace5070d02dbe8c4dd304b5a5608d9182",
+    "DATA-MATH12-035": "0a068fec0bb04f2f3ef86b806a9f14c4eef41366b8d43c4201cb8b45939b1c9a",
+    "DATA-MATH12-036": "09ce790a7afc6b20b7a63f2a59ade75ef3e0e7d44ced8f0d01e6bb60e4a49a57"
+  }
+}

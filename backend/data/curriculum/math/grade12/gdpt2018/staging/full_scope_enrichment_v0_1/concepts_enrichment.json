@@ -1,0 +1,130 @@
+[
+  {
+    "code": "ANGLE_OXYZ",
+    "name": "Góc trong không gian Oxyz",
+    "description": "Khái niệm và biểu diễn góc giữa các đối tượng hình học bằng phương pháp tọa độ.",
+    "grade_level": 12,
+    "order_index": 10,
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT"
+  },
+  {
+    "code": "COORDINATE_GEOMETRY",
+    "name": "Hình học tọa độ trong không gian",
+    "description": "Hệ công cụ tọa độ dùng để biểu diễn và giải bài toán hình học trong không gian.",
+    "grade_level": 12,
+    "order_index": 20,
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT"
+  },
+  {
+    "code": "DIRECTION_VECTOR",
+    "name": "Vectơ chỉ phương",
+    "description": "Vectơ biểu diễn phương của một đường thẳng trong không gian.",
+    "grade_level": 12,
+    "order_index": 30,
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT"
+  },
+  {
+    "code": "DISTANCE_OXYZ",
+    "name": "Khoảng cách trong không gian Oxyz",
+    "description": "Khoảng cách giữa các đối tượng hình học được xác định bằng phương pháp tọa độ.",
+    "grade_level": 12,
+    "order_index": 40,
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT"
+  },
+  {
+    "code": "INTERSECTION_OXYZ",
+    "name": "Giao điểm trong không gian Oxyz",
+    "description": "Điểm đồng thời thuộc các đối tượng hình học được biểu diễn bằng phương trình tọa độ.",
+    "grade_level": 12,
+    "order_index": 50,
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT"
+  },
+  {
+    "code": "LINE_EQUATION",
+    "name": "Phương trình đường thẳng trong không gian",
+    "description": "Các dạng phương trình biểu diễn đường thẳng trong hệ tọa độ Oxyz.",
+    "grade_level": 12,
+    "order_index": 60,
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT"
+  },
+  {
+    "code": "LINE_RELATION",
+    "name": "Quan hệ giữa các đường thẳng",
+    "description": "Quan hệ song song, trùng nhau, cắt nhau hoặc chéo nhau giữa các đường thẳng.",
+    "grade_level": 12,
+    "order_index": 70,
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT"
+  },
+  {
+    "code": "NORMAL_VECTOR",
+    "name": "Vectơ pháp tuyến",
+    "description": "Vectơ vuông góc với mặt phẳng và dùng để biểu diễn phương trình mặt phẳng.",
+    "grade_level": 12,
+    "order_index": 80,
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT"
+  },
+  {
+    "code": "PLANE_EQUATION",
+    "name": "Phương trình mặt phẳng",
+    "description": "Phương trình biểu diễn mặt phẳng trong hệ tọa độ Oxyz.",
+    "grade_level": 12,
+    "order_index": 90,
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT"
+  },
+  {
+    "code": "PLANE_RELATION",
+    "name": "Quan hệ giữa các mặt phẳng",
+    "description": "Quan hệ song song, trùng nhau hoặc cắt nhau giữa các mặt phẳng.",
+    "grade_level": 12,
+    "order_index": 100,
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT"
+  },
+  {
+    "code": "PROJECTION_OXYZ",
+    "name": "Hình chiếu trong không gian Oxyz",
+    "description": "Hình chiếu vuông góc của điểm hoặc đối tượng hình học được xác định bằng tọa độ.",
+    "grade_level": 12,
+    "order_index": 110,
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT"
+  },
+  {
+    "code": "SPHERE_EQUATION",
+    "name": "Phương trình mặt cầu",
+    "description": "Phương trình biểu diễn mặt cầu cùng các tham số tâm và bán kính.",
+    "grade_level": 12,
+    "order_index": 120,
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT"
+  },
+  {
+    "code": "BAYES_FORMULA",
+    "name": "Công thức Bayes",
+    "description": "Công thức liên hệ xác suất hậu nghiệm với xác suất tiên nghiệm và xác suất có điều kiện.",
+    "grade_level": 12,
+    "order_index": 10,
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT"
+  },
+  {
+    "code": "CONDITIONAL_PROBABILITY",
+    "name": "Xác suất có điều kiện",
+    "description": "Xác suất của một biến cố khi biết một biến cố khác đã xảy ra.",
+    "grade_level": 12,
+    "order_index": 20,
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT"
+  },
+  {
+    "code": "PROBABILITY_TREE",
+    "name": "Sơ đồ hình cây xác suất",
+    "description": "Biểu diễn tuần tự các trường hợp và xác suất trên các nhánh của một quá trình.",
+    "grade_level": 12,
+    "order_index": 30,
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT"
+  },
+  {
+    "code": "TOTAL_PROBABILITY",
+    "name": "Công thức xác suất toàn phần",
+    "description": "Công thức tính xác suất của biến cố thông qua một phân hoạch các trường hợp.",
+    "grade_level": 12,
+    "order_index": 40,
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT"
+  }
+]

@@ -1,0 +1,31 @@
+{
+  "dataset_code": "DATA-MATH12-036",
+  "group_candidate_id": "M12_DERIV_GROUP_0012",
+  "academic_review_status": "VERIFIED_RETAINED",
+  "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+  "source_candidate_id": "M12_DERIV_CAND_0012",
+  "existing_visual_status": "BLOCKED_SOURCE_VISUAL_MISSING",
+  "decision": "EXCLUDE_FROM_CANONICAL_PROMOTION_SET",
+  "decision_basis": [
+    "Existing reviewed compilation source does not contain the referenced diagram on the question or solution pages.",
+    "No source image bytes were accepted into the curated asset registry in this session.",
+    "Fabrication, redraw, or reconstruction is prohibited.",
+    "DATA-MATH12-033 activation policy explicitly permits resolving this blocker by explicit exclusion."
+  ],
+  "academic_data_mutated": false,
+  "answer_key_mutated": false,
+  "scope_coverage_impact": "NONE_REDUNDANT_DERIVATIVE_SCOPE_EVIDENCE_REMAINS",
+  "promotion_effect": {
+    "verified_groups_total": 39,
+    "groups_in_candidate_promotion_set": 38,
+    "children_in_candidate_promotion_set": 152,
+    "excluded_visual_groups": [
+      "M12_DERIV_GROUP_0012"
+    ]
+  },
+  "future_recovery_allowed": true,
+  "recovery_requirement": "Only a stable source visual with reproducible provenance/hash may reverse this exclusion.",
+  "rights_status": "REVIEW_REQUIRED",
+  "production_release_eligible": 0,
+  "database_import_allowed": false
+}

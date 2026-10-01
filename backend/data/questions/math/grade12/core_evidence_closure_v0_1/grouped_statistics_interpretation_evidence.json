@@ -1,0 +1,45 @@
+{
+  "evidence_id": "M12_STATS_INTERPRETATION_EVID_001",
+  "evidence_status": "SOURCE_BACKED_VERIFIED_CHILD_EVIDENCE",
+  "official_scope_code": "M12_CORE_STATISTICS_GROUPED_DATA",
+  "official_requirement": "ý nghĩa và diễn giải các số đặc trưng trong thực tiễn",
+  "source": {
+    "source_type": "REAL_GRADE12_PDF_WEB_SOURCE",
+    "title": "Bộ đề khảo sát chất lượng tháng 1 Toán 12 có đáp án và lời giải",
+    "publisher_label_in_pdf": "DIỄN ĐÀN GIÁO VIÊN TOÁN - NHÓM SOẠN ĐỀ KSCL, KT GHK, CHK, ÔN TẬP CHƯƠNG",
+    "url": "https://file.toanlop4.edu.vn/file-pdf/bo-de-khao-sat-chat-luong-thang-1-toan-12-co-dap-an-va-loi-giai.pdf",
+    "pdf_pages_zero_based": {
+      "question": 1,
+      "answer_key": 4,
+      "solution": [
+        7,
+        8
+      ]
+    },
+    "printed_pages": {
+      "question": "2/15",
+      "solution": [
+        "8/15",
+        "9/15"
+      ]
+    },
+    "accessed_on": "2026-09-30"
+  },
+  "source_semantics": {
+    "context": "Compare consistency of 40 long-jump results for athletes Dũng and Huy using grouped-data standard deviation.",
+    "statement_claim": "Dũng is more consistent than Huy.",
+    "source_answer": false,
+    "source_computed_standard_deviation": {
+      "Dung": 0.26,
+      "Huy": 0.24
+    },
+    "source_conclusion": "Huy is more consistent because his grouped-data standard deviation is smaller."
+  },
+  "derived_problem_type_evidence": [
+    "IDENTIFY_MORE_STABLE_GROUPED_DATA",
+    "INTERPRET_GROUPED_DISPERSION_MEASURE",
+    "CONCLUDE_FROM_GROUPED_DISPERSION"
+  ],
+  "canonical_candidate_created": false,
+  "synthetic_content_created": false
+}

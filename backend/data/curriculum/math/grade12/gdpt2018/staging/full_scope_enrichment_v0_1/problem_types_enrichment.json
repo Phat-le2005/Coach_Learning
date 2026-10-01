@@ -1,0 +1,162 @@
+[
+  {
+    "code": "PLANE_EQUATION_NORMAL_VECTOR",
+    "topic_code": "OXYZ_PLANE_TOPIC",
+    "name": "Phương trình mặt phẳng và vectơ pháp tuyến",
+    "description": "Lập hoặc nhận biết phương trình mặt phẳng và vectơ pháp tuyến trong hệ tọa độ Oxyz.",
+    "order_index": 10,
+    "default_difficulty": 0.45,
+    "is_active": true,
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT"
+  },
+  {
+    "code": "PLANE_RELATION",
+    "topic_code": "OXYZ_PLANE_TOPIC",
+    "name": "Quan hệ giữa hai mặt phẳng",
+    "description": "Xác định và vận dụng quan hệ song song, trùng nhau hoặc cắt nhau giữa các mặt phẳng.",
+    "order_index": 20,
+    "default_difficulty": 0.5,
+    "is_active": true,
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT"
+  },
+  {
+    "code": "LINE_EQUATION_DIRECTION_VECTOR",
+    "topic_code": "OXYZ_LINE_TOPIC",
+    "name": "Phương trình đường thẳng và vectơ chỉ phương",
+    "description": "Lập hoặc nhận biết phương trình đường thẳng và vectơ chỉ phương trong không gian Oxyz.",
+    "order_index": 10,
+    "default_difficulty": 0.45,
+    "is_active": true,
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT"
+  },
+  {
+    "code": "LINE_PLANE_INTERSECTION",
+    "topic_code": "OXYZ_LINE_TOPIC",
+    "name": "Giao điểm đường thẳng và mặt phẳng",
+    "description": "Xác định giao điểm giữa đường thẳng và mặt phẳng bằng phương pháp tọa độ.",
+    "order_index": 20,
+    "default_difficulty": 0.55,
+    "is_active": true,
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT"
+  },
+  {
+    "code": "LINE_RELATION",
+    "topic_code": "OXYZ_LINE_TOPIC",
+    "name": "Quan hệ giữa hai đường thẳng trong Oxyz",
+    "description": "Xác định quan hệ giữa hai đường thẳng trong không gian bằng dữ kiện tọa độ.",
+    "order_index": 30,
+    "default_difficulty": 0.55,
+    "is_active": true,
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT"
+  },
+  {
+    "code": "POINT_PLANE_OR_PLANE_DISTANCE",
+    "topic_code": "OXYZ_ANGLE_DISTANCE_TOPIC",
+    "name": "Khoảng cách điểm - mặt phẳng và giữa hai mặt phẳng",
+    "description": "Tính khoảng cách từ điểm đến mặt phẳng hoặc giữa hai mặt phẳng song song.",
+    "order_index": 10,
+    "default_difficulty": 0.5,
+    "is_active": true,
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT"
+  },
+  {
+    "code": "LINE_DISTANCE_IN_OXYZ",
+    "topic_code": "OXYZ_ANGLE_DISTANCE_TOPIC",
+    "name": "Khoảng cách liên quan đến đường thẳng trong Oxyz",
+    "description": "Tính khoảng cách liên quan đến đường thẳng bằng phương pháp tọa độ.",
+    "order_index": 20,
+    "default_difficulty": 0.65,
+    "is_active": true,
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT"
+  },
+  {
+    "code": "ANGLE_IN_OXYZ",
+    "topic_code": "OXYZ_ANGLE_DISTANCE_TOPIC",
+    "name": "Góc trong không gian Oxyz",
+    "description": "Tính góc giữa các đối tượng hình học trong không gian bằng phương pháp tọa độ.",
+    "order_index": 30,
+    "default_difficulty": 0.55,
+    "is_active": true,
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT"
+  },
+  {
+    "code": "COORDINATE_DISTANCE_PROJECTION",
+    "topic_code": "OXYZ_ANGLE_DISTANCE_TOPIC",
+    "name": "Khoảng cách và hình chiếu bằng tọa độ",
+    "description": "Xác định hình chiếu và khoảng cách bằng các công cụ tọa độ trong không gian.",
+    "order_index": 40,
+    "default_difficulty": 0.65,
+    "is_active": true,
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT"
+  },
+  {
+    "code": "SPHERE_EQUATION_CENTER_RADIUS",
+    "topic_code": "OXYZ_SPHERE_TOPIC",
+    "name": "Phương trình mặt cầu, tâm và bán kính",
+    "description": "Lập hoặc nhận biết phương trình mặt cầu; xác định tâm và bán kính.",
+    "order_index": 10,
+    "default_difficulty": 0.45,
+    "is_active": true,
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT"
+  },
+  {
+    "code": "PLANE_SPHERE_RELATION",
+    "topic_code": "OXYZ_SPHERE_TOPIC",
+    "name": "Quan hệ giữa mặt phẳng và mặt cầu",
+    "description": "Phân tích quan hệ giữa mặt phẳng và mặt cầu bằng khoảng cách từ tâm đến mặt phẳng.",
+    "order_index": 20,
+    "default_difficulty": 0.6,
+    "is_active": true,
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT"
+  },
+  {
+    "code": "COORDINATE_GEOMETRY_APPLICATION",
+    "topic_code": "OXYZ_APPLICATION_TOPIC",
+    "name": "Vận dụng phương pháp tọa độ trong không gian",
+    "description": "Vận dụng vectơ và tọa độ Oxyz để giải bài toán hình học hoặc thực tiễn.",
+    "order_index": 10,
+    "default_difficulty": 0.7,
+    "is_active": true,
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT"
+  },
+  {
+    "code": "CONDITIONAL_PROBABILITY_DIRECT",
+    "topic_code": "CONDITIONAL_PROBABILITY_TOPIC",
+    "name": "Tính trực tiếp xác suất có điều kiện",
+    "description": "Tính xác suất có điều kiện từ dữ kiện hoặc định nghĩa phù hợp chương trình lớp 12.",
+    "order_index": 10,
+    "default_difficulty": 0.4,
+    "is_active": true,
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT"
+  },
+  {
+    "code": "TOTAL_PROBABILITY",
+    "topic_code": "TOTAL_PROBABILITY_BAYES_TOPIC",
+    "name": "Vận dụng công thức xác suất toàn phần",
+    "description": "Tính xác suất của biến cố bằng cách phân hoạch không gian trường hợp và dùng công thức xác suất toàn phần.",
+    "order_index": 10,
+    "default_difficulty": 0.55,
+    "is_active": true,
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT"
+  },
+  {
+    "code": "BAYES_POSTERIOR",
+    "topic_code": "TOTAL_PROBABILITY_BAYES_TOPIC",
+    "name": "Vận dụng công thức Bayes",
+    "description": "Tính xác suất hậu nghiệm bằng công thức Bayes từ các xác suất đã biết.",
+    "order_index": 20,
+    "default_difficulty": 0.6,
+    "is_active": true,
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT"
+  },
+  {
+    "code": "TREE_OR_TOTAL_PROBABILITY",
+    "topic_code": "PROBABILITY_TREE_TOPIC",
+    "name": "Sơ đồ hình cây và quy tắc tính xác suất",
+    "description": "Biểu diễn các nhánh xác suất bằng sơ đồ hình cây và dùng quy tắc nhân, cộng hoặc xác suất toàn phần.",
+    "order_index": 10,
+    "default_difficulty": 0.55,
+    "is_active": true,
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT"
+  }
+]

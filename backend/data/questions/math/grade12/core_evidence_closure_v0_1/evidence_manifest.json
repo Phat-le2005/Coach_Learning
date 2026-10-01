@@ -1,0 +1,23 @@
+{
+  "dataset_code": "DATA-MATH12-035",
+  "dataset_name": "MATH12_CORE_EVIDENCE_CLOSURE_V0_1",
+  "base_audit_dataset": "DATA-MATH12-032",
+  "base_audit_aggregate_sha256": "ea64fd6dd257d80f4d19477a7708f21229643d87ad7793b22504bb680c7a22e5",
+  "base_alignment_dataset": "DATA-MATH12-033",
+  "base_alignment_aggregate_sha256": "2f4c17a62008895e4d003e22f872f5710dd265d13fe6ee38c2120040bcc4fdde",
+  "official_requirements_before": {
+    "covered": 18,
+    "partial": 2,
+    "total": 20
+  },
+  "official_requirements_after_overlay": {
+    "covered": 20,
+    "partial": 0,
+    "total": 20
+  },
+  "source_backed_evidence_units_added": 2,
+  "synthetic_questions_added": 0,
+  "rights_status": "REVIEW_REQUIRED",
+  "production_release_eligible": 0,
+  "database_import_allowed": false
+}

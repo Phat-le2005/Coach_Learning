@@ -1,0 +1,122 @@
+[
+  {
+    "code": "LO_M12_OXYZ_PLANE",
+    "description": "Lập, nhận biết và vận dụng phương trình mặt phẳng trong hệ tọa độ Oxyz.",
+    "grade_level": 12,
+    "order_index": 10,
+    "source_reference": "GDPT2018 Grade 12 official scope binding: M12_CORE_GEOMETRY_COORDINATE_3D",
+    "provenance_type": "OFFICIAL_NORMALIZED_DERIVED_ENRICHMENT"
+  },
+  {
+    "code": "LO_M12_OXYZ_LINE",
+    "description": "Lập, nhận biết và vận dụng phương trình đường thẳng trong không gian Oxyz.",
+    "grade_level": 12,
+    "order_index": 20,
+    "source_reference": "GDPT2018 Grade 12 official scope binding: M12_CORE_GEOMETRY_COORDINATE_3D",
+    "provenance_type": "OFFICIAL_NORMALIZED_DERIVED_ENRICHMENT"
+  },
+  {
+    "code": "LO_M12_OXYZ_ANGLE_DISTANCE",
+    "description": "Vận dụng phương pháp tọa độ để xác định góc, khoảng cách và hình chiếu trong không gian.",
+    "grade_level": 12,
+    "order_index": 30,
+    "source_reference": "GDPT2018 Grade 12 official scope binding: M12_CORE_GEOMETRY_COORDINATE_3D",
+    "provenance_type": "OFFICIAL_NORMALIZED_DERIVED_ENRICHMENT"
+  },
+  {
+    "code": "LO_M12_OXYZ_SPHERE",
+    "description": "Lập và vận dụng phương trình mặt cầu; xác định tâm, bán kính và quan hệ cơ bản với mặt phẳng.",
+    "grade_level": 12,
+    "order_index": 40,
+    "source_reference": "GDPT2018 Grade 12 official scope binding: M12_CORE_GEOMETRY_COORDINATE_3D",
+    "provenance_type": "OFFICIAL_NORMALIZED_DERIVED_ENRICHMENT"
+  },
+  {
+    "code": "LO_M12_OXYZ_APPLICATION",
+    "description": "Vận dụng vectơ và phương pháp tọa độ trong không gian để giải bài toán thực tiễn.",
+    "grade_level": 12,
+    "order_index": 50,
+    "source_reference": "GDPT2018 Grade 12 official scope binding: M12_CORE_GEOMETRY_COORDINATE_3D",
+    "provenance_type": "OFFICIAL_NORMALIZED_DERIVED_ENRICHMENT"
+  },
+  {
+    "code": "LO_M12_CONDITIONAL_PROBABILITY",
+    "description": "Tính và vận dụng xác suất có điều kiện trong các tình huống thuộc chương trình lớp 12.",
+    "grade_level": 12,
+    "order_index": 10,
+    "source_reference": "GDPT2018 Grade 12 official scope binding: M12_CORE_PROBABILITY_CONDITIONAL",
+    "provenance_type": "OFFICIAL_NORMALIZED_DERIVED_ENRICHMENT"
+  },
+  {
+    "code": "LO_M12_TOTAL_PROBABILITY",
+    "description": "Vận dụng công thức xác suất toàn phần để tính xác suất của biến cố.",
+    "grade_level": 12,
+    "order_index": 20,
+    "source_reference": "GDPT2018 Grade 12 official scope binding: M12_CORE_PROBABILITY_CONDITIONAL",
+    "provenance_type": "OFFICIAL_NORMALIZED_DERIVED_ENRICHMENT"
+  },
+  {
+    "code": "LO_M12_BAYES",
+    "description": "Vận dụng công thức Bayes để tính xác suất hậu nghiệm.",
+    "grade_level": 12,
+    "order_index": 30,
+    "source_reference": "GDPT2018 Grade 12 official scope binding: M12_CORE_PROBABILITY_CONDITIONAL",
+    "provenance_type": "OFFICIAL_NORMALIZED_DERIVED_ENRICHMENT"
+  },
+  {
+    "code": "LO_M12_PROBABILITY_TREE",
+    "description": "Biểu diễn và giải bài toán xác suất bằng sơ đồ hình cây trong tình huống phù hợp.",
+    "grade_level": 12,
+    "order_index": 40,
+    "source_reference": "GDPT2018 Grade 12 official scope binding: M12_CORE_PROBABILITY_CONDITIONAL",
+    "provenance_type": "OFFICIAL_NORMALIZED_DERIVED_ENRICHMENT"
+  },
+  {
+    "code": "LO_M12_ANTIDERIVATIVE_CONCEPT_PROPERTIES",
+    "description": "Nhận biết và vận dụng khái niệm, tính chất nguyên hàm.",
+    "grade_level": 12,
+    "order_index": 10,
+    "source_reference": "GDPT2018 Grade 12 official scope binding: M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "provenance_type": "OFFICIAL_NORMALIZED_DERIVED_ENRICHMENT"
+  },
+  {
+    "code": "LO_M12_ANTIDERIVATIVE_ELEMENTARY",
+    "description": "Tính nguyên hàm của một số hàm số sơ cấp.",
+    "grade_level": 12,
+    "order_index": 20,
+    "source_reference": "GDPT2018 Grade 12 official scope binding: M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "provenance_type": "OFFICIAL_NORMALIZED_DERIVED_ENRICHMENT"
+  },
+  {
+    "code": "LO_M12_DEFINITE_INTEGRAL_PROPERTIES",
+    "description": "Vận dụng định nghĩa và tính chất của tích phân xác định.",
+    "grade_level": 12,
+    "order_index": 30,
+    "source_reference": "GDPT2018 Grade 12 official scope binding: M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "provenance_type": "OFFICIAL_NORMALIZED_DERIVED_ENRICHMENT"
+  },
+  {
+    "code": "LO_M12_DEFINITE_INTEGRAL_CALCULATION",
+    "description": "Tính tích phân xác định trong các trường hợp thuộc phạm vi chương trình.",
+    "grade_level": 12,
+    "order_index": 40,
+    "source_reference": "GDPT2018 Grade 12 official scope binding: M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "provenance_type": "OFFICIAL_NORMALIZED_DERIVED_ENRICHMENT"
+  },
+  {
+    "code": "LO_M12_AREA_VOLUME_APPLICATION",
+    "description": "Vận dụng tích phân để tính diện tích và thể tích.",
+    "grade_level": 12,
+    "order_index": 50,
+    "source_reference": "GDPT2018 Grade 12 official scope binding: M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "provenance_type": "OFFICIAL_NORMALIZED_DERIVED_ENRICHMENT"
+  },
+  {
+    "code": "LO_M12_PRACTICAL_INTEGRAL_APPLICATION",
+    "description": "Vận dụng nguyên hàm, tích phân trong bài toán thực tiễn.",
+    "grade_level": 12,
+    "order_index": 60,
+    "source_reference": "GDPT2018 Grade 12 official scope binding: M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "provenance_type": "OFFICIAL_NORMALIZED_DERIVED_ENRICHMENT"
+  }
+]

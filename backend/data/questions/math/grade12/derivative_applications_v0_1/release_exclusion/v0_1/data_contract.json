@@ -1,0 +1,14 @@
+{
+  "dataset_code": "DATA-MATH12-036",
+  "base_repo_commit": "453e3817c3d77098ad5d3171ed9b466391ac223b",
+  "semantic_files_order": [
+    "release_exclusion.json"
+  ],
+  "semantic_sha256": {
+    "release_exclusion.json": "30b888e4e4e775b08ec20a018582f0f1eb558f5d6f11cb2c8776b4a707ae213a"
+  },
+  "aggregate_semantic_sha256": "09ce790a7afc6b20b7a63f2a59ade75ef3e0e7d44ced8f0d01e6bb60e4a49a57",
+  "canonical_write_allowed": false,
+  "database_import_allowed": false,
+  "production_release_allowed": false
+}
