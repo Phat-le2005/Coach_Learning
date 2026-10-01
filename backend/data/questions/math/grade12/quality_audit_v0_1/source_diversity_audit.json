@@ -1,0 +1,64 @@
+{
+  "dataset_code": "DATA-MATH12-041",
+  "qa_target": {
+    "minimum_independent_source_families": 3,
+    "maximum_single_source_share": 0.7,
+    "classification": "COACH_LEARNING_DERIVED_QA_TARGET"
+  },
+  "audited_sets": [
+    {
+      "scope": "DERIVATIVE_PROMOTION_GROUPS_BASE",
+      "total": 39,
+      "dominant_source": "SRC_TRUONG_NGOC_VY_40_2026",
+      "dominant_count": 28,
+      "dominant_share": 0.717948717948718,
+      "source_families": 3,
+      "status": "FAIL_DOMINANCE"
+    },
+    {
+      "scope": "INTEGRALS_BASE_VERIFIED",
+      "total": 77,
+      "dominant_source": "SRC_TRUONG_NGOC_VY_40_2026",
+      "dominant_count": 48,
+      "dominant_share": 0.6233766233766234,
+      "source_families": 3,
+      "status": "PASS"
+    },
+    {
+      "scope": "OXYZ_BASE_VERIFIED",
+      "total": 132,
+      "dominant_source": "SRC_TRUONG_NGOC_VY_40_2026",
+      "dominant_count": 88,
+      "dominant_share": 0.6666666666666666,
+      "source_families": 9,
+      "status": "PASS"
+    },
+    {
+      "scope": "PROBABILITY_AFTER_DATA039",
+      "total": 21,
+      "dominant_source": "SRC_TRUONG_NGOC_VY_40_2026",
+      "dominant_count": 17,
+      "dominant_share": 0.8095238095238095,
+      "source_families": 3,
+      "status": "FAIL_DOMINANCE"
+    },
+    {
+      "scope": "GROUPED_STATS_BASE_STANDALONE",
+      "total": 38,
+      "dominant_source": "SRC_NGOC_VY_40_DE_2026",
+      "dominant_count": 30,
+      "dominant_share": 0.7894736842105263,
+      "source_families": 2,
+      "status": "FAIL_DIVERSITY_AND_DOMINANCE"
+    },
+    {
+      "scope": "VECTOR_BASE_VERIFIED",
+      "total": 48,
+      "dominant_source": "SRC_TRUONG_NGOC_VY_40_2026",
+      "dominant_count": 38,
+      "dominant_share": 0.7916666666666666,
+      "source_families": 3,
+      "status": "FAIL_DOMINANCE"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "dataset_code": "DATA-MATH12-038",
+  "candidate_snapshot_gate": {
+    "final_fingerprint_bound": true,
+    "schema_enrichment_blockers": 0,
+    "official_requirements_source_evidenced": "20/20",
+    "academic_data_blockers": 0,
+    "snapshot_candidate_creation": "ALLOWED"
+  },
+  "canonical_activation_gate": {
+    "rights_review_complete": false,
+    "ci_regression_evidence_available": false,
+    "explicit_snapshot_review_complete": false,
+    "canonical_activation": "BLOCKED"
+  },
+  "database_import": "BLOCKED"
+}

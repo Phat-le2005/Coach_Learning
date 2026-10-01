@@ -1,0 +1,27 @@
+{
+  "dataset_code": "DATA-MATH12-042",
+  "gates": {
+    "official_core_scope": "PASS",
+    "schema_and_final_graph_preflight": "PASS",
+    "canonical_snapshot_candidate_spec": "READY_AFTER_DATA038",
+    "diagnostic_root_cause_layer": "READY_AS_STAGING_AFTER_DATA040",
+    "academic_data_blockers": "PASS_ZERO",
+    "diagnostic_problem_type_density": "FAIL",
+    "source_diversity": "FAIL",
+    "rights_review": "FAIL_PENDING_REVIEW",
+    "ci_evidence": "FAIL_NO_WORKFLOW_RUNS",
+    "canonical_activation": "BLOCKED",
+    "postgres_import": "BLOCKED",
+    "production_release": "BLOCKED"
+  },
+  "recommended_sequence": [
+    "Integrate and validate DATA-MATH12-038..042.",
+    "Generate deterministic v1.2.0 snapshot candidate under promotion path only.",
+    "Add and run GitHub Actions data-validation regression.",
+    "Ingest targeted real-source questions from DATA-MATH12-041 until density/diversity gates meet project targets.",
+    "Calibrate DATA-MATH12-040 misconception layer using student-attempt data before automatic diagnosis.",
+    "Complete rights review.",
+    "Perform explicit canonical activation review.",
+    "Only then enable PostgreSQL serving import."
+  ]
+}

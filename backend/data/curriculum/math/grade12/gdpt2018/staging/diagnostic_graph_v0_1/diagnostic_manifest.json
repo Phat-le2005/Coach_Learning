@@ -1,0 +1,19 @@
+{
+  "dataset_code": "DATA-MATH12-040",
+  "status": "COACH_LEARNING_DERIVED_DIAGNOSTIC_STAGING",
+  "base_curriculum_fingerprint": "2cad0c70f89d4d95ba3db2aaac194f0ddd9ad834e1b9014a6bbbe49bc1d7ec93",
+  "misconception_nodes": 26,
+  "problem_type_misconception_links": 39,
+  "inference_policy": {
+    "automatic_student_diagnosis_allowed": false,
+    "reason": "These are expert-designed diagnostic hypotheses and require calibration against attempt data before being treated as definitive student-state labels.",
+    "allowed_initial_use": [
+      "teacher-facing explanation candidates",
+      "remediation routing candidates",
+      "offline evaluation",
+      "diagnostic feature engineering"
+    ]
+  },
+  "canonical_write_allowed": false,
+  "database_import_allowed": false
+}

@@ -1,0 +1,20 @@
+{
+  "dataset_code": "DATA-MATH12-039",
+  "base_repo_commit": "aed14bf213ac9db65e820984f5a6c46ebabbe304",
+  "semantic_files_order": [
+    "probability_hold_promotions.json",
+    "derivative_coverage_correction.json",
+    "vector_secondary_evidence.json",
+    "coverage_effect.json"
+  ],
+  "semantic_sha256": {
+    "probability_hold_promotions.json": "5470e020624cb7b9d11d4ac77bfdf86876e78c9d7c8bf75105c23f0d60831a50",
+    "derivative_coverage_correction.json": "c1e100dda7799f3edfd567981ab4037af27232d35681dbedf3957cb1a44e8022",
+    "vector_secondary_evidence.json": "09c8d8e92f37616cf83642fb2dc1f7ac935e176940f014fb4a91cc361d9866a1",
+    "coverage_effect.json": "918e529b8442d91c9a043b92ca1e95366df1fc2fe36a986e83814e4a7b23afe1"
+  },
+  "aggregate_semantic_sha256": "171d43f0895e67c02813cc531d04d757cfb3e0ef7f62841392c5a8b4de0c8026",
+  "canonical_write_allowed": false,
+  "database_import_allowed": false,
+  "production_release_allowed": false
+}

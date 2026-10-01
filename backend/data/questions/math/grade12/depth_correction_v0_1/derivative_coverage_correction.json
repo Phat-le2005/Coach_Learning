@@ -1,0 +1,66 @@
+{
+  "dataset_code": "DATA-MATH12-039",
+  "status": "POST_ACADEMIC_REVIEW_COVERAGE_CORRECTION",
+  "warning": "backend/.../derivative_applications_v0_1/staging/coverage_report.json is pre-review and must not be used as final verified coverage.",
+  "verified_evidence_counts_before_secondary_group_mapping": {
+    "MONOTONICITY_FROM_DERIVATIVE_SIGN": 4,
+    "MONOTONICITY_FROM_VARIATION_TABLE": 6,
+    "MONOTONICITY_FROM_GRAPH": 5,
+    "MONOTONICITY_FROM_EXPRESSION": 22,
+    "PARAMETER_MONOTONICITY": 0,
+    "EXTREMA_FROM_DERIVATIVE_SIGN": 4,
+    "EXTREMA_FROM_VARIATION_TABLE": 5,
+    "EXTREMA_FROM_GRAPH": 4,
+    "FIND_FUNCTION_EXTREMA": 11,
+    "PARAMETER_EXTREMA_COUNT": 0,
+    "GLOBAL_EXTREMA_RECOGNITION": 5,
+    "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL": 62,
+    "GLOBAL_EXTREMA_SIMPLE_DOMAIN": 14,
+    "ASYMPTOTE_FROM_GRAPH": 6,
+    "VERTICAL_ASYMPTOTE_RATIONAL": 5,
+    "HORIZONTAL_ASYMPTOTE_RATIONAL": 3,
+    "OBLIQUE_ASYMPTOTE_RATIONAL": 6,
+    "COMPLETE_FUNCTION_ANALYSIS_CUBIC": 0,
+    "COMPLETE_FUNCTION_ANALYSIS_LINEAR_FRACTION": 5,
+    "COMPLETE_FUNCTION_ANALYSIS_QUADRATIC_OVER_LINEAR": 3,
+    "GRAPH_IDENTIFICATION_FROM_FEATURES": 3,
+    "GRAPH_SYMMETRY_IDENTIFICATION": 1,
+    "REAL_WORLD_DERIVATIVE_OPTIMIZATION": 11,
+    "REAL_WORLD_MONOTONICITY_INTERPRETATION": 0
+  },
+  "stale_gap_entries_now_source_backed": [
+    {
+      "problem_type_code": "GLOBAL_EXTREMA_SIMPLE_DOMAIN",
+      "verified_evidence_units": 14
+    },
+    {
+      "problem_type_code": "COMPLETE_FUNCTION_ANALYSIS_LINEAR_FRACTION",
+      "verified_evidence_units": 5
+    },
+    {
+      "problem_type_code": "COMPLETE_FUNCTION_ANALYSIS_QUADRATIC_OVER_LINEAR",
+      "verified_evidence_units": 3
+    }
+  ],
+  "secondary_group_level_evidence": [
+    {
+      "problem_type_code": "COMPLETE_FUNCTION_ANALYSIS_CUBIC",
+      "source_group_id": "M12_DERIV_GROUP_0136",
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_page_1_based": 535,
+      "context": "y=-x^3-x^2+5x+4; source-backed T/F group jointly assesses derivative, monotonicity and extrema of a cubic.",
+      "child_answer_pattern": [
+        true,
+        true,
+        true,
+        false
+      ],
+      "mapping_status": "SECONDARY_DIAGNOSTIC_EVIDENCE_DO_NOT_REWRITE_CHILD_PRIMARY_TYPES"
+    }
+  ],
+  "zero_evidence_problem_types_after_secondary_mapping": [
+    "PARAMETER_MONOTONICITY",
+    "PARAMETER_EXTREMA_COUNT",
+    "REAL_WORLD_MONOTONICITY_INTERPRETATION"
+  ]
+}

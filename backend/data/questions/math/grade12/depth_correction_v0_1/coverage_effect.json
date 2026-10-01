@@ -1,0 +1,32 @@
+{
+  "dataset_code": "DATA-MATH12-039",
+  "probability": {
+    "verified_practice_question_units_before": 17,
+    "verified_practice_question_units_after": 21,
+    "conditional_direct_before": 1,
+    "conditional_direct_after": 5,
+    "source_families_before": 1,
+    "source_families_after": 3
+  },
+  "derivative": {
+    "staging_reported_gaps": 6,
+    "post_review_actual_zero_primary_evidence": 4,
+    "post_secondary_zero_evidence": 3,
+    "remaining": [
+      "PARAMETER_MONOTONICITY",
+      "PARAMETER_EXTREMA_COUNT",
+      "REAL_WORLD_MONOTONICITY_INTERPRETATION"
+    ]
+  },
+  "vector_legacy_subscope": {
+    "zero_evidence_before": 4,
+    "secondary_evidence_added": 3,
+    "zero_evidence_after_secondary_mapping": 1,
+    "remaining": [
+      "VECTOR_COORDINATE_LINEAR_OPERATIONS_3D"
+    ]
+  },
+  "rights_status": "REVIEW_REQUIRED",
+  "canonical_snapshot_allowed": false,
+  "database_import_allowed": false
+}

@@ -1,0 +1,8 @@
+{
+  "dataset_code": "DATA-MATH12-041",
+  "official_scope_coverage_gate": "PASS_20_OF_20",
+  "diagnostic_density_gate": "FAIL_MORE_REAL_QUESTIONS_REQUIRED",
+  "source_diversity_gate": "FAIL_IN_PROBABILITY_STATS_VECTOR_AND_DERIVATIVE",
+  "new_chapter_ingestion_recommended": false,
+  "next_data_priority": "DEPTH_AND_DIVERSITY_ONLY"
+}

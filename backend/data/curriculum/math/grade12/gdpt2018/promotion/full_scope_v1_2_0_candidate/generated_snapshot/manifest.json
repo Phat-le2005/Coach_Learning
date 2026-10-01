@@ -1,0 +1,15 @@
+{
+  "dataset_code": "MATH_G12_GDPT2018_CANONICAL_SNAPSHOT_CANDIDATE_1_2_0",
+  "dataset_version": "1.2.0",
+  "curriculum_code": "GDPT2018",
+  "curriculum_name": "Chương trình giáo dục phổ thông 2018",
+  "curriculum_description": "Versioned curriculum container for Grade 12 Mathematics.",
+  "curriculum_version_code": "GDPT2018_2018",
+  "curriculum_version": "2018",
+  "subject_code": "MATH_G12",
+  "grade_level": 12,
+  "source_name": "Bộ Giáo dục và Đào tạo - Chương trình GDPT môn Toán 2018",
+  "source_reference": "Thông tư 32/2018/TT-BGDĐT",
+  "verified_at": null,
+  "legacy_identity_compatible": true
+}

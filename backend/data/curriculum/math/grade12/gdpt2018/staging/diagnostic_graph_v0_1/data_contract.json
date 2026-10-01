@@ -1,0 +1,20 @@
+{
+  "dataset_code": "DATA-MATH12-040",
+  "base_repo_commit": "aed14bf213ac9db65e820984f5a6c46ebabbe304",
+  "semantic_files_order": [
+    "diagnostic_manifest.json",
+    "misconceptions.json",
+    "problem_type_misconceptions.json",
+    "misconception_remediation_concepts.json"
+  ],
+  "semantic_sha256": {
+    "diagnostic_manifest.json": "4a1bee1c1f3a8d36095f797d981103f2df4daf6b39fdd83ff5f6227b7e6990c4",
+    "misconceptions.json": "2caf27066801b75fda2cd0d735ead3a47b154539c4768f3bdfbd9be91c462575",
+    "problem_type_misconceptions.json": "0697310c9396ca08be738c47e608ad1e54d4d6dfb6490835d3323c702c8d30aa",
+    "misconception_remediation_concepts.json": "b1b050f6ae9f716b81d9f8cb385fb477ff0743e587692d0f4dcedf45fbba160a"
+  },
+  "aggregate_semantic_sha256": "1695f2c1740747e52a976dd48acefa87a8ff70fbbf207e68d7c858ab1adc8058",
+  "canonical_write_allowed": false,
+  "database_import_allowed": false,
+  "production_release_allowed": false
+}

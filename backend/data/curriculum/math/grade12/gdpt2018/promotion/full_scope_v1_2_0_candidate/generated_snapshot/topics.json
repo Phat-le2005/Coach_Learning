@@ -1,0 +1,194 @@
+[
+  {
+    "chapter_code": "DERIVATIVE_APPLICATIONS",
+    "code": "MONOTONICITY_TOPIC",
+    "name": "Tính đơn điệu của hàm số",
+    "order_index": 10,
+    "source_component": "DERIVATIVE_STAGING",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "chapter_code": "DERIVATIVE_APPLICATIONS",
+    "code": "EXTREMA_TOPIC",
+    "name": "Cực trị của hàm số",
+    "order_index": 20,
+    "source_component": "DERIVATIVE_STAGING",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "chapter_code": "DERIVATIVE_APPLICATIONS",
+    "code": "GLOBAL_EXTREMA_TOPIC",
+    "name": "Giá trị lớn nhất và giá trị nhỏ nhất",
+    "order_index": 30,
+    "source_component": "DERIVATIVE_STAGING",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "chapter_code": "DERIVATIVE_APPLICATIONS",
+    "code": "FUNCTION_ANALYSIS_TOPIC",
+    "name": "Tiệm cận, khảo sát và vẽ đồ thị hàm số",
+    "order_index": 40,
+    "source_component": "DERIVATIVE_STAGING",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "chapter_code": "DERIVATIVE_APPLICATIONS",
+    "code": "DERIVATIVE_APPLICATION_TOPIC",
+    "name": "Ứng dụng đạo hàm trong bài toán thực tiễn",
+    "order_index": 50,
+    "source_component": "DERIVATIVE_STAGING",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "chapter_code": "GROUPED_DATA_STATISTICS",
+    "code": "GROUPED_RANGE_IQR_TOPIC",
+    "name": "Khoảng biến thiên và khoảng tứ phân vị",
+    "order_index": 10,
+    "source_component": "GROUPED_DISPERSION_STAGING",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "chapter_code": "GROUPED_DATA_STATISTICS",
+    "code": "GROUPED_VARIANCE_SD_TOPIC",
+    "name": "Phương sai và độ lệch chuẩn",
+    "order_index": 20,
+    "source_component": "GROUPED_DISPERSION_STAGING",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "chapter_code": "GROUPED_DATA_STATISTICS",
+    "code": "GROUPED_DISPERSION_COMPARISON_TOPIC",
+    "name": "So sánh và diễn giải mức độ phân tán",
+    "order_index": 30,
+    "source_component": "GROUPED_DISPERSION_STAGING",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "chapter_code": "GROUPED_DATA_STATISTICS",
+    "code": "GROUPED_DISPERSION_APPLICATION_TOPIC",
+    "name": "Vận dụng độ phân tán trong thực tiễn",
+    "order_index": 40,
+    "source_component": "GROUPED_DISPERSION_STAGING",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "chapter_code": "INTEGRALS",
+    "code": "ANTIDERIVATIVE_TOPIC",
+    "name": "Nguyên hàm",
+    "order_index": 10,
+    "source_component": "INTEGRALS_ACADEMIC_TAXONOMY",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "chapter_code": "INTEGRALS",
+    "code": "DEFINITE_INTEGRAL_TOPIC",
+    "name": "Tích phân và tính chất",
+    "order_index": 20,
+    "source_component": "INTEGRALS_ACADEMIC_TAXONOMY",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "chapter_code": "INTEGRALS",
+    "code": "INTEGRAL_GEOMETRIC_APPLICATION_TOPIC",
+    "name": "Ứng dụng tích phân tính diện tích và thể tích",
+    "order_index": 30,
+    "source_component": "INTEGRALS_ACADEMIC_TAXONOMY",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "chapter_code": "INTEGRALS",
+    "code": "INTEGRAL_PRACTICAL_APPLICATION_TOPIC",
+    "name": "Ứng dụng nguyên hàm và tích phân trong thực tiễn",
+    "order_index": 40,
+    "source_component": "INTEGRALS_ACADEMIC_TAXONOMY",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "chapter_code": "OXYZ_CHAPTER",
+    "code": "SPACE_VECTOR_OPERATIONS_TOPIC",
+    "name": "Vectơ và các phép toán vectơ trong không gian",
+    "order_index": 10,
+    "source_component": "VECTOR_STAGING",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "chapter_code": "OXYZ_CHAPTER",
+    "code": "OXYZ_VECTOR_COORDINATES_TOPIC",
+    "name": "Tọa độ điểm và vectơ trong không gian",
+    "order_index": 20,
+    "source_component": "VECTOR_STAGING",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "chapter_code": "OXYZ_CHAPTER",
+    "code": "VECTOR_COORDINATE_OPERATIONS_TOPIC",
+    "name": "Biểu thức tọa độ của các phép toán vectơ",
+    "order_index": 30,
+    "source_component": "VECTOR_STAGING",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "chapter_code": "OXYZ_CHAPTER",
+    "code": "OXYZ_PLANE_TOPIC",
+    "name": "Phương trình mặt phẳng",
+    "order_index": 40,
+    "source_component": "OXYZ_ACADEMIC_TAXONOMY",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "chapter_code": "OXYZ_CHAPTER",
+    "code": "OXYZ_LINE_TOPIC",
+    "name": "Phương trình đường thẳng trong không gian",
+    "order_index": 50,
+    "source_component": "OXYZ_ACADEMIC_TAXONOMY",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "chapter_code": "OXYZ_CHAPTER",
+    "code": "OXYZ_ANGLE_DISTANCE_TOPIC",
+    "name": "Góc và khoảng cách bằng phương pháp tọa độ",
+    "order_index": 60,
+    "source_component": "OXYZ_ACADEMIC_TAXONOMY",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "chapter_code": "OXYZ_CHAPTER",
+    "code": "OXYZ_SPHERE_TOPIC",
+    "name": "Phương trình mặt cầu và quan hệ hình học",
+    "order_index": 70,
+    "source_component": "OXYZ_ACADEMIC_TAXONOMY",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "chapter_code": "OXYZ_CHAPTER",
+    "code": "OXYZ_APPLICATION_TOPIC",
+    "name": "Vận dụng vectơ và tọa độ vào thực tiễn",
+    "order_index": 80,
+    "source_component": "VECTOR_STAGING_AND_OXYZ_ACADEMIC_TAXONOMY",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "chapter_code": "PROBABILITY_CHAPTER",
+    "code": "CONDITIONAL_PROBABILITY_TOPIC",
+    "name": "Xác suất có điều kiện",
+    "order_index": 10,
+    "source_component": "PROBABILITY_ACADEMIC_TAXONOMY",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "chapter_code": "PROBABILITY_CHAPTER",
+    "code": "TOTAL_PROBABILITY_BAYES_TOPIC",
+    "name": "Xác suất toàn phần và công thức Bayes",
+    "order_index": 20,
+    "source_component": "PROBABILITY_ACADEMIC_TAXONOMY",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  },
+  {
+    "chapter_code": "PROBABILITY_CHAPTER",
+    "code": "PROBABILITY_TREE_TOPIC",
+    "name": "Sơ đồ hình cây và ứng dụng",
+    "order_index": 30,
+    "source_component": "PROBABILITY_ACADEMIC_TAXONOMY",
+    "provenance_type": "COACH_LEARNING_DERIVED"
+  }
+]

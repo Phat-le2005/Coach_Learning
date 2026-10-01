@@ -1,0 +1,119 @@
+{
+  "dataset_code": "DATA-MATH12-039",
+  "base_dataset": "DATA-MATH12-025",
+  "overlay_type": "HOLD_TO_VERIFIED_SOURCE_ANSWER_WITHOUT_MUTATING_BASE",
+  "records": [
+    {
+      "candidate_id": "M12_PROB_CAND_0058",
+      "problem_type_code": "CONDITIONAL_PROBABILITY_DIRECT",
+      "source_code": "SRC_OFFICIAL_EXAM_2025_SOLUTION",
+      "source_file_id": "1jGjnJ3Wq2ynISxB4P1g9mk2CXibl-YXy",
+      "source_pdf_sha256": "90d5cb68a6f91418287c6643548f4f40ea9bb1598705a177b41bce07b09df11f",
+      "question_page_1_based": 6,
+      "solution_page_1_based": 30,
+      "question_type": "TRUE_FALSE_GROUP",
+      "correct_answer": [
+        true,
+        true,
+        false,
+        true
+      ],
+      "source_solution_checks": {
+        "a": "P(not flagged)=0.85",
+        "b": "P(non-ad | not flagged)=0.95",
+        "c": "P(non-ad)=0.8225, so claim 0.85 is false",
+        "d": "P(not flagged | non-ad)=323/329≈0.98>0.95"
+      },
+      "review_status_after_overlay": "VERIFIED_SOURCE_ANSWER",
+      "rights_status": "REVIEW_REQUIRED"
+    },
+    {
+      "candidate_id": "M12_PROB_CAND_0060",
+      "problem_type_code": "CONDITIONAL_PROBABILITY_DIRECT",
+      "source_code": "SRC_OFFICIAL_EXAM_2025_SOLUTION",
+      "source_file_id": "1jGjnJ3Wq2ynISxB4P1g9mk2CXibl-YXy",
+      "source_pdf_sha256": "90d5cb68a6f91418287c6643548f4f40ea9bb1598705a177b41bce07b09df11f",
+      "question_page_1_based": 16,
+      "solution_page_1_based": 53,
+      "question_type": "TRUE_FALSE_GROUP",
+      "correct_answer": [
+        true,
+        false,
+        true,
+        true
+      ],
+      "source_solution_checks": {
+        "a": "P(not flagged)=0.9",
+        "b": "P(non-ad | not flagged)=0.9, so claim 0.8 is false",
+        "c": "P(non-ad)=0.82",
+        "d": "P(not flagged | non-ad)=81/82>0.95"
+      },
+      "review_status_after_overlay": "VERIFIED_SOURCE_ANSWER",
+      "rights_status": "REVIEW_REQUIRED"
+    },
+    {
+      "candidate_id": "M12_PROB_CAND_0061",
+      "problem_type_code": "CONDITIONAL_PROBABILITY_DIRECT",
+      "source_code": "SRC_OFFICIAL_EXAM_2025_SOLUTION",
+      "source_file_id": "1jGjnJ3Wq2ynISxB4P1g9mk2CXibl-YXy",
+      "source_pdf_sha256": "90d5cb68a6f91418287c6643548f4f40ea9bb1598705a177b41bce07b09df11f",
+      "question_page_1_based": 21,
+      "solution_page_1_based": 65,
+      "question_type": "TRUE_FALSE_GROUP",
+      "correct_answer": [
+        true,
+        false,
+        false,
+        false
+      ],
+      "source_solution_checks": {
+        "a": "P(not flagged)=0.85",
+        "b": "P(non-ad | not flagged)=0.85, so claim 0.8 is false",
+        "c": "P(non-ad)=0.7375, so claim 0.75 is false",
+        "d": "P(not flagged | non-ad)=289/295>0.95, so '<0.95' is false"
+      },
+      "review_status_after_overlay": "VERIFIED_SOURCE_ANSWER",
+      "rights_status": "REVIEW_REQUIRED"
+    },
+    {
+      "candidate_id": "M12_PROB_CAND_0073",
+      "problem_type_code": "CONDITIONAL_PROBABILITY_DIRECT",
+      "source_code": "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+      "source_file_id": "1RK3hOLaqhf2ZXDo_R1hJu2IwkYzZbvlP",
+      "source_pdf_sha256": "d3f2158ee028431e01b2f30f7e446d66d75e364c27d49c53f3e09c193325b7e0",
+      "question_page_1_based": 141,
+      "solution_page_1_based": 149,
+      "question_type": "TRUE_FALSE_GROUP",
+      "correct_answer": [
+        true,
+        true,
+        false,
+        true
+      ],
+      "source_solution_checks": {
+        "a": "P(B)=0.01*0.98+0.99*0.03=0.0395",
+        "b": "P(A)=0.01 and P(not A)=0.99",
+        "c": "P(A|B)=0.0098/0.0395≈0.25, not 0.7",
+        "d": "0.99*0.03=0.0297 > 0.01*0.98=0.0098"
+      },
+      "review_status_after_overlay": "VERIFIED_SOURCE_ANSWER",
+      "rights_status": "REVIEW_REQUIRED"
+    }
+  ],
+  "base_verified_candidates": 17,
+  "verified_candidates_after_overlay": 21,
+  "verified_problem_type_counts_after_overlay": {
+    "BAYES_POSTERIOR": 14,
+    "CONDITIONAL_PROBABILITY_DIRECT": 5,
+    "TREE_OR_TOTAL_PROBABILITY": 2
+  },
+  "total_probability_practice_ready_questions": 0,
+  "total_probability_source_backed_evidence_units": 1,
+  "source_distribution_after_overlay": {
+    "SRC_TRUONG_NGOC_VY_40_2026": 17,
+    "SRC_OFFICIAL_EXAM_2025_SOLUTION": 3,
+    "SRC_PROVINCIAL_TRIAL_2025_COLLECTION": 1
+  },
+  "dominant_source_share": 0.8095238095238095,
+  "note": "This improves direct conditional-probability depth and source diversity, but probability remains Bayes-heavy and source-concentrated."
+}

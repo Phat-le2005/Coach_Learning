@@ -1,0 +1,274 @@
+[
+  {
+    "code": "MIS_DERIV_SIGN_FUNCTION",
+    "chapter_code": "DERIVATIVE_APPLICATIONS",
+    "name": "Nhầm dấu đạo hàm với dấu của hàm số",
+    "description": "Suy luận chiều biến thiên từ dấu f(x) thay vì dấu f'(x).",
+    "remediation_concepts": [
+      "FIRST_DERIVATIVE",
+      "DERIVATIVE_SIGN",
+      "MONOTONICITY_CRITERION"
+    ]
+  },
+  {
+    "code": "MIS_DERIV_IGNORE_DOMAIN",
+    "chapter_code": "DERIVATIVE_APPLICATIONS",
+    "name": "Bỏ qua tập xác định khi xét biến thiên",
+    "description": "Ghép các khoảng qua điểm hàm không xác định hoặc kết luận đơn điệu trên miền không hợp lệ.",
+    "remediation_concepts": [
+      "FUNCTION_DOMAIN",
+      "SIGN_ANALYSIS",
+      "MONOTONICITY"
+    ]
+  },
+  {
+    "code": "MIS_DERIV_STATIONARY_EQUALS_EXTREMUM",
+    "chapter_code": "DERIVATIVE_APPLICATIONS",
+    "name": "Coi f'(x)=0 luôn là cực trị",
+    "description": "Không kiểm tra sự đổi dấu của đạo hàm quanh điểm tới hạn.",
+    "remediation_concepts": [
+      "CRITICAL_POINT",
+      "DERIVATIVE_SIGN",
+      "EXTREMUM_CRITERION"
+    ]
+  },
+  {
+    "code": "MIS_DERIV_LOCAL_GLOBAL",
+    "chapter_code": "DERIVATIVE_APPLICATIONS",
+    "name": "Nhầm cực trị địa phương với GTLN/GTNN",
+    "description": "Dùng điểm cực trị địa phương thay cho giá trị lớn nhất/nhỏ nhất trên miền xét.",
+    "remediation_concepts": [
+      "LOCAL_EXTREMUM",
+      "GLOBAL_EXTREMA",
+      "ENDPOINT_EVALUATION"
+    ]
+  },
+  {
+    "code": "MIS_DERIV_ASYMPTOTE_DENOM",
+    "chapter_code": "DERIVATIVE_APPLICATIONS",
+    "name": "Coi mọi nghiệm mẫu số là tiệm cận đứng",
+    "description": "Không kiểm tra giới hạn hoặc khả năng khử nhân tử trước khi kết luận tiệm cận đứng.",
+    "remediation_concepts": [
+      "LIMIT_AT_POINT",
+      "VERTICAL_ASYMPTOTE",
+      "POLYNOMIAL_DIVISION"
+    ]
+  },
+  {
+    "code": "MIS_DERIV_MODEL_CONSTRAINT",
+    "chapter_code": "DERIVATIVE_APPLICATIONS",
+    "name": "Tối ưu nhưng bỏ ràng buộc thực tế",
+    "description": "Tìm cực trị của mô hình mà không kiểm tra miền vật lý, đơn vị hoặc điều kiện bài toán.",
+    "remediation_concepts": [
+      "MATHEMATICAL_MODELING",
+      "OPTIMIZATION",
+      "CONTEXT_INTERPRETATION"
+    ]
+  },
+  {
+    "code": "MIS_INT_FORGET_CONSTANT",
+    "chapter_code": "INTEGRALS",
+    "name": "Quên hằng số C của nguyên hàm",
+    "description": "Viết một nguyên hàm tổng quát mà thiếu hằng số tích phân.",
+    "remediation_concepts": [
+      "ANTIDERIVATIVE"
+    ]
+  },
+  {
+    "code": "MIS_INT_INITIAL_VALUE",
+    "chapter_code": "INTEGRALS",
+    "name": "Áp điều kiện ban đầu sai",
+    "description": "Tính được họ nguyên hàm nhưng thay điều kiện hoặc giải hằng số C sai.",
+    "remediation_concepts": [
+      "ANTIDERIVATIVE",
+      "INITIAL_VALUE_CONDITION"
+    ]
+  },
+  {
+    "code": "MIS_INT_DEFINITE_ANTIDERIVATIVE",
+    "chapter_code": "INTEGRALS",
+    "name": "Nhầm tích phân xác định với nguyên hàm",
+    "description": "Giữ hằng số C hoặc không dùng cận đúng khi tính tích phân xác định.",
+    "remediation_concepts": [
+      "ANTIDERIVATIVE",
+      "DEFINITE_INTEGRAL",
+      "INTEGRAL_PROPERTIES"
+    ]
+  },
+  {
+    "code": "MIS_INT_SIGNED_AREA",
+    "chapter_code": "INTEGRALS",
+    "name": "Nhầm tích phân có dấu với diện tích hình học",
+    "description": "Không tách miền hoặc không lấy trị tuyệt đối khi đồ thị đổi vị trí tương đối.",
+    "remediation_concepts": [
+      "DEFINITE_INTEGRAL",
+      "AREA_BY_INTEGRAL"
+    ]
+  },
+  {
+    "code": "MIS_INT_VOLUME_MODEL",
+    "chapter_code": "INTEGRALS",
+    "name": "Chọn sai bán kính hoặc tiết diện khi tính thể tích",
+    "description": "Dùng sai trục quay, bán kính hoặc công thức tiết diện.",
+    "remediation_concepts": [
+      "VOLUME_OF_REVOLUTION",
+      "VOLUME_BY_CROSS_SECTION"
+    ]
+  },
+  {
+    "code": "MIS_OXYZ_NORMAL_DIRECTION",
+    "chapter_code": "OXYZ_CHAPTER",
+    "name": "Nhầm vectơ pháp tuyến và vectơ chỉ phương",
+    "description": "Dùng vectơ chỉ phương như pháp tuyến hoặc ngược lại khi lập phương trình.",
+    "remediation_concepts": [
+      "NORMAL_VECTOR",
+      "DIRECTION_VECTOR",
+      "PLANE_EQUATION",
+      "LINE_EQUATION"
+    ]
+  },
+  {
+    "code": "MIS_OXYZ_RELATION_COEFFICIENTS",
+    "chapter_code": "OXYZ_CHAPTER",
+    "name": "Kết luận quan hệ hình học chỉ từ hệ số từng phần",
+    "description": "Không kiểm tra đầy đủ tỉ lệ hệ số hoặc điều kiện giao khi xét quan hệ đường/mặt phẳng.",
+    "remediation_concepts": [
+      "PLANE_RELATION",
+      "LINE_RELATION",
+      "INTERSECTION_OXYZ"
+    ]
+  },
+  {
+    "code": "MIS_OXYZ_DISTANCE_NORMALIZE",
+    "chapter_code": "OXYZ_CHAPTER",
+    "name": "Quên chuẩn hóa mẫu số công thức khoảng cách",
+    "description": "Bỏ căn tổng bình phương hệ số pháp tuyến khi tính khoảng cách.",
+    "remediation_concepts": [
+      "DISTANCE_OXYZ",
+      "NORMAL_VECTOR"
+    ]
+  },
+  {
+    "code": "MIS_OXYZ_ANGLE_COMPLEMENT",
+    "chapter_code": "OXYZ_CHAPTER",
+    "name": "Nhầm góc với góc phụ",
+    "description": "Nhầm góc đường-thẳng/mặt-phẳng hoặc mặt-phẳng/mặt-phẳng với góc giữa các vectơ tương ứng.",
+    "remediation_concepts": [
+      "ANGLE_OXYZ",
+      "NORMAL_VECTOR",
+      "DIRECTION_VECTOR"
+    ]
+  },
+  {
+    "code": "MIS_OXYZ_SPHERE_SIGNS",
+    "chapter_code": "OXYZ_CHAPTER",
+    "name": "Sai dấu tâm hoặc nhầm bán kính với bình phương bán kính",
+    "description": "Đọc phương trình mặt cầu sai dấu tọa độ tâm hoặc sai r và r².",
+    "remediation_concepts": [
+      "SPHERE_EQUATION"
+    ]
+  },
+  {
+    "code": "MIS_STATS_RANGE_IQR",
+    "chapter_code": "GROUPED_DATA_STATISTICS",
+    "name": "Nhầm khoảng biến thiên với khoảng tứ phân vị",
+    "description": "Dùng cận toàn bộ mẫu thay cho Q3-Q1 hoặc ngược lại.",
+    "remediation_concepts": [
+      "GROUPED_RANGE",
+      "GROUPED_IQR",
+      "GROUPED_QUARTILE_INTERPOLATION"
+    ]
+  },
+  {
+    "code": "MIS_STATS_REP_VALUE",
+    "chapter_code": "GROUPED_DATA_STATISTICS",
+    "name": "Dùng sai giá trị đại diện của lớp",
+    "description": "Không dùng trung điểm lớp hoặc dùng cận lớp trực tiếp khi tính phương sai/độ lệch chuẩn.",
+    "remediation_concepts": [
+      "GROUPED_DATA_REPRESENTATIVE_VALUE",
+      "GROUPED_MEAN_FOR_DISPERSION",
+      "GROUPED_VARIANCE"
+    ]
+  },
+  {
+    "code": "MIS_STATS_VARIANCE_SD_UNIT",
+    "chapter_code": "GROUPED_DATA_STATISTICS",
+    "name": "Nhầm phương sai với độ lệch chuẩn",
+    "description": "Quên căn bậc hai hoặc nhầm đơn vị của phương sai và độ lệch chuẩn.",
+    "remediation_concepts": [
+      "GROUPED_VARIANCE",
+      "GROUPED_STANDARD_DEVIATION"
+    ]
+  },
+  {
+    "code": "MIS_STATS_STABILITY_DIRECTION",
+    "chapter_code": "GROUPED_DATA_STATISTICS",
+    "name": "Đảo chiều kết luận độ ổn định",
+    "description": "Cho rằng độ lệch chuẩn lớn hơn nghĩa là dữ liệu ổn định/đồng đều hơn.",
+    "remediation_concepts": [
+      "DISPERSION_COMPARISON",
+      "DISPERSION_INTERPRETATION",
+      "DATA_STABILITY_CONSISTENCY"
+    ]
+  },
+  {
+    "code": "MIS_STATS_IQR_ROBUSTNESS",
+    "chapter_code": "GROUPED_DATA_STATISTICS",
+    "name": "Không phân biệt độ nhạy với ngoại lệ",
+    "description": "Không nhận ra IQR ít bị ảnh hưởng bởi giá trị bất thường hơn các thước đo dựa trên toàn bộ dữ liệu.",
+    "remediation_concepts": [
+      "GROUPED_IQR",
+      "IQR_ROBUSTNESS",
+      "DISPERSION_INTERPRETATION"
+    ]
+  },
+  {
+    "code": "MIS_PROB_CONDITIONAL_DENOM",
+    "chapter_code": "PROBABILITY_CHAPTER",
+    "name": "Chọn sai không gian điều kiện",
+    "description": "Dùng mẫu số của xác suất không điều kiện thay vì thu hẹp vào biến cố đã biết.",
+    "remediation_concepts": [
+      "CONDITIONAL_PROBABILITY"
+    ]
+  },
+  {
+    "code": "MIS_PROB_INDEPENDENT_EXCLUSIVE",
+    "chapter_code": "PROBABILITY_CHAPTER",
+    "name": "Nhầm độc lập với xung khắc",
+    "description": "Đánh đồng P(A∩B)=0 với độc lập hoặc ngược lại.",
+    "remediation_concepts": [
+      "CONDITIONAL_PROBABILITY"
+    ]
+  },
+  {
+    "code": "MIS_PROB_TOTAL_BRANCH_WEIGHT",
+    "chapter_code": "PROBABILITY_CHAPTER",
+    "name": "Quên trọng số nhánh trong xác suất toàn phần",
+    "description": "Cộng xác suất điều kiện giữa các nhánh mà không nhân xác suất nhánh gốc.",
+    "remediation_concepts": [
+      "TOTAL_PROBABILITY",
+      "PROBABILITY_TREE"
+    ]
+  },
+  {
+    "code": "MIS_PROB_BAYES_REVERSE",
+    "chapter_code": "PROBABILITY_CHAPTER",
+    "name": "Đảo P(A|B) và P(B|A)",
+    "description": "Dùng trực tiếp xác suất thuận làm xác suất hậu nghiệm mà không áp dụng Bayes.",
+    "remediation_concepts": [
+      "CONDITIONAL_PROBABILITY",
+      "BAYES_FORMULA",
+      "TOTAL_PROBABILITY"
+    ]
+  },
+  {
+    "code": "MIS_PROB_TREE_DIRECTION",
+    "chapter_code": "PROBABILITY_CHAPTER",
+    "name": "Gắn xác suất điều kiện sai chiều trên sơ đồ cây",
+    "description": "Đặt P(A|B) lên nhánh B sau A hoặc không nhất quán thứ tự biến cố.",
+    "remediation_concepts": [
+      "PROBABILITY_TREE",
+      "CONDITIONAL_PROBABILITY"
+    ]
+  }
+]

@@ -1,0 +1,32 @@
+{
+  "dataset_code": "DATA-MATH12-042",
+  "audited_repo_commit": "aed14bf213ac9db65e820984f5a6c46ebabbe304",
+  "existing_github_workflow_files": [],
+  "latest_commit_workflow_runs": 0,
+  "latest_commit_status_contexts": 0,
+  "status": "CI_EVIDENCE_MISSING",
+  "required_code_action": {
+    "add_workflow_if_no_equivalent_exists": true,
+    "suggested_path": ".github/workflows/backend-data-validation.yml",
+    "triggers": [
+      "push",
+      "pull_request"
+    ],
+    "working_directory": "backend",
+    "install": "pip install -r requirements.txt",
+    "required_test_groups": [
+      "curriculum/data validators DATA-MATH12-032 through latest",
+      "Derivative academic/group/visual/promotion",
+      "Vector academic review",
+      "Grouped statistics academic/visual/gap",
+      "Integrals academic/gap/visual",
+      "Oxyz academic/gap/visual",
+      "Conditional probability academic/gap",
+      "final canonical snapshot candidate generation",
+      "misconception graph validation",
+      "quality audit validation"
+    ]
+  },
+  "workflow_must_not_require_database_for_read_only_data_validation": true,
+  "separate_db_test_job_allowed": true
+}

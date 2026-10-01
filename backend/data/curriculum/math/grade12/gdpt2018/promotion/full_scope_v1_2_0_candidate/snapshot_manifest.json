@@ -1,0 +1,42 @@
+{
+  "dataset_code": "DATA-MATH12-038",
+  "candidate_code": "MATH_G12_GDPT2018_CANONICAL_SNAPSHOT_CANDIDATE_1_2_0",
+  "status": "SNAPSHOT_CANDIDATE_NOT_ACTIVATED",
+  "base_repo_commit": "aed14bf213ac9db65e820984f5a6c46ebabbe304",
+  "current_canonical_dataset": "MATH_G12_GDPT2018_CORE",
+  "current_canonical_version": "1.1.0",
+  "proposed_candidate_version": "1.2.0",
+  "source_alignment_dataset": "DATA-MATH12-033",
+  "source_alignment_aggregate_sha256": "2f4c17a62008895e4d003e22f872f5710dd265d13fe6ee38c2120040bcc4fdde",
+  "source_enrichment_dataset": "DATA-MATH12-034",
+  "source_enrichment_aggregate_sha256": "25d50a7f4fdb1473c72ff14fa0ee6f7ace5070d02dbe8c4dd304b5a5608d9182",
+  "source_final_readiness_dataset": "DATA-MATH12-037",
+  "source_final_readiness_aggregate_sha256": "8671a74b811ed3f68f44ad45bc9f76228680875f87064d7985785f9b666ab89a",
+  "bound_composed_fingerprint": "2cad0c70f89d4d95ba3db2aaac194f0ddd9ad834e1b9014a6bbbe49bc1d7ec93",
+  "graph_counts": {
+    "chapters": 5,
+    "topics": 24,
+    "problem_types": 75,
+    "concepts": 89,
+    "learning_outcomes": 34,
+    "concept_relations": 93,
+    "problem_type_concepts": 200,
+    "problem_type_learning_outcomes": 82,
+    "cross_scope_relations": 11,
+    "official_scope_bindings": 5,
+    "learning_outcome_requirement_bindings": 34,
+    "enrichment_blockers": 0
+  },
+  "chapter_codes": [
+    "DERIVATIVE_APPLICATIONS",
+    "INTEGRALS",
+    "OXYZ_CHAPTER",
+    "GROUPED_DATA_STATISTICS",
+    "PROBABILITY_CHAPTER"
+  ],
+  "snapshot_generation_allowed": true,
+  "canonical_activation_allowed": false,
+  "canonical_write_allowed": false,
+  "database_import_allowed": false,
+  "production_release_allowed": false
+}

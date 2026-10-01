@@ -1,0 +1,125 @@
+{
+  "dataset_code": "DATA-MATH12-041",
+  "qa_thresholds": {
+    "ZERO": 0,
+    "THIN_MAX": 2,
+    "SHALLOW_MAX": 4,
+    "DIAGNOSTIC_MINIMUM_TARGET": 5,
+    "note": "Threshold 5 is a Coach Learning QA target for adaptive/diagnostic depth, not a Ministry requirement."
+  },
+  "chapters": {
+    "DERIVATIVE_APPLICATIONS": {
+      "counts": {
+        "MONOTONICITY_FROM_DERIVATIVE_SIGN": 4,
+        "MONOTONICITY_FROM_VARIATION_TABLE": 6,
+        "MONOTONICITY_FROM_GRAPH": 5,
+        "MONOTONICITY_FROM_EXPRESSION": 22,
+        "PARAMETER_MONOTONICITY": 0,
+        "EXTREMA_FROM_DERIVATIVE_SIGN": 4,
+        "EXTREMA_FROM_VARIATION_TABLE": 5,
+        "EXTREMA_FROM_GRAPH": 4,
+        "FIND_FUNCTION_EXTREMA": 11,
+        "PARAMETER_EXTREMA_COUNT": 0,
+        "GLOBAL_EXTREMA_RECOGNITION": 5,
+        "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL": 62,
+        "GLOBAL_EXTREMA_SIMPLE_DOMAIN": 14,
+        "ASYMPTOTE_FROM_GRAPH": 6,
+        "VERTICAL_ASYMPTOTE_RATIONAL": 5,
+        "HORIZONTAL_ASYMPTOTE_RATIONAL": 3,
+        "OBLIQUE_ASYMPTOTE_RATIONAL": 6,
+        "COMPLETE_FUNCTION_ANALYSIS_CUBIC": 1,
+        "COMPLETE_FUNCTION_ANALYSIS_LINEAR_FRACTION": 5,
+        "COMPLETE_FUNCTION_ANALYSIS_QUADRATIC_OVER_LINEAR": 3,
+        "GRAPH_IDENTIFICATION_FROM_FEATURES": 3,
+        "GRAPH_SYMMETRY_IDENTIFICATION": 1,
+        "REAL_WORLD_DERIVATIVE_OPTIMIZATION": 11,
+        "REAL_WORLD_MONOTONICITY_INTERPRETATION": 0
+      },
+      "secondary_adjustments": {
+        "COMPLETE_FUNCTION_ANALYSIS_CUBIC": "+1 group-level diagnostic evidence from M12_DERIV_GROUP_0136"
+      },
+      "zero": [
+        "PARAMETER_MONOTONICITY",
+        "PARAMETER_EXTREMA_COUNT",
+        "REAL_WORLD_MONOTONICITY_INTERPRETATION"
+      ]
+    },
+    "INTEGRALS": {
+      "counts": {
+        "CALCULATE_ANTIDERIVATIVE": 24,
+        "ANTIDERIVATIVE_WITH_CONDITION": 3,
+        "INTEGRAL_PROPERTIES": 11,
+        "CALCULATE_DEFINITE_INTEGRAL": 2,
+        "AREA_BY_INTEGRAL": 25,
+        "VOLUME_BY_INTEGRAL": 11,
+        "VOLUME_BY_CROSS_SECTION": 1,
+        "PRACTICAL_ACCUMULATION": 2
+      }
+    },
+    "OXYZ_CHAPTER": {
+      "counts": {
+        "PLANE_EQUATION_NORMAL_VECTOR": 40,
+        "POINT_PLANE_OR_PLANE_DISTANCE": 2,
+        "PLANE_RELATION": 7,
+        "LINE_EQUATION_DIRECTION_VECTOR": 33,
+        "LINE_PLANE_INTERSECTION": 1,
+        "LINE_RELATION": 2,
+        "LINE_DISTANCE_IN_OXYZ": 1,
+        "ANGLE_IN_OXYZ": 18,
+        "SPHERE_EQUATION_CENTER_RADIUS": 7,
+        "PLANE_SPHERE_RELATION": 1,
+        "COORDINATE_DISTANCE_PROJECTION": 5,
+        "COORDINATE_GEOMETRY_APPLICATION": 16
+      }
+    },
+    "GROUPED_DATA_STATISTICS": {
+      "counts": {
+        "CALCULATE_GROUPED_RANGE": 6,
+        "CALCULATE_GROUPED_IQR": 11,
+        "CALCULATE_GROUPED_VARIANCE": 5,
+        "CALCULATE_GROUPED_STANDARD_DEVIATION": 13,
+        "COMPARE_GROUPED_RANGE": 1,
+        "COMPARE_GROUPED_IQR": 1,
+        "COMPARE_GROUPED_VARIANCE_SD": 1,
+        "IDENTIFY_MORE_STABLE_GROUPED_DATA": 1,
+        "INTERPRET_GROUPED_DISPERSION_MEASURE": 1,
+        "CONCLUDE_FROM_GROUPED_DISPERSION": 1,
+        "PARAMETER_FROM_GROUPED_VARIANCE_SD": 0,
+        "MULTI_MEASURE_GROUPED_DISPERSION_ANALYSIS": 0
+      },
+      "note": "The first three interpretation counts include DATA-035 source-backed evidence; the last two are nonblocking derived enhancement gaps."
+    },
+    "PROBABILITY_CHAPTER": {
+      "practice_ready_counts_after_DATA039": {
+        "BAYES_POSTERIOR": 14,
+        "CONDITIONAL_PROBABILITY_DIRECT": 5,
+        "TREE_OR_TOTAL_PROBABILITY": 2,
+        "TOTAL_PROBABILITY": 0
+      },
+      "noncanonical_source_evidence": {
+        "TOTAL_PROBABILITY": 1,
+        "PROBABILITY_TREE": 1
+      }
+    },
+    "VECTOR_LEGACY_SUBSCOPE": {
+      "effective_diagnostic_counts_after_secondary_overlay": {
+        "VECTOR_RELATION_IDENTIFICATION_3D": 5,
+        "VECTOR_SUM_DIFFERENCE_3D": 13,
+        "VECTOR_SCALAR_MULTIPLICATION_3D": 3,
+        "VECTOR_DOT_PRODUCT_3D": 3,
+        "VECTOR_ANGLE_3D": 4,
+        "VECTOR_GEOMETRIC_DECOMPOSITION_3D": 12,
+        "POINT_COORDINATES_3D": 1,
+        "VECTOR_COORDINATES_FROM_POINTS_3D": 1,
+        "VECTOR_LENGTH_DISTANCE_3D": 5,
+        "VECTOR_COORDINATE_LINEAR_OPERATIONS_3D": 0,
+        "VECTOR_COORDINATE_DOT_PRODUCT_3D": 1,
+        "VECTOR_COORDINATE_ANGLE_3D": 1,
+        "MIDPOINT_CENTROID_COORDINATES_3D": 1,
+        "PARAMETER_VECTOR_COORDINATE_CONDITION_3D": 1,
+        "REAL_WORLD_VECTOR_COORDINATE_MODELING_3D": 3
+      },
+      "note": "Vector is a legacy diagnostic subscope of Oxyz, not a separate official Grade 12 core chapter."
+    }
+  }
+}

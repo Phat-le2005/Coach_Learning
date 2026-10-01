@@ -1,0 +1,236 @@
+[
+  {
+    "problem_type_code": "MONOTONICITY_FROM_DERIVATIVE_SIGN",
+    "misconception_code": "MIS_DERIV_SIGN_FUNCTION",
+    "relation_type": "MAY_INDICATE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+    "misconception_code": "MIS_DERIV_IGNORE_DOMAIN",
+    "relation_type": "MAY_INDICATE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "PARAMETER_MONOTONICITY",
+    "misconception_code": "MIS_DERIV_IGNORE_DOMAIN",
+    "relation_type": "MAY_INDICATE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "EXTREMA_FROM_DERIVATIVE_SIGN",
+    "misconception_code": "MIS_DERIV_STATIONARY_EQUALS_EXTREMUM",
+    "relation_type": "MAY_INDICATE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "FIND_FUNCTION_EXTREMA",
+    "misconception_code": "MIS_DERIV_STATIONARY_EQUALS_EXTREMUM",
+    "relation_type": "MAY_INDICATE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "GLOBAL_EXTREMA_RECOGNITION",
+    "misconception_code": "MIS_DERIV_LOCAL_GLOBAL",
+    "relation_type": "MAY_INDICATE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+    "misconception_code": "MIS_DERIV_LOCAL_GLOBAL",
+    "relation_type": "MAY_INDICATE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "VERTICAL_ASYMPTOTE_RATIONAL",
+    "misconception_code": "MIS_DERIV_ASYMPTOTE_DENOM",
+    "relation_type": "MAY_INDICATE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+    "misconception_code": "MIS_DERIV_MODEL_CONSTRAINT",
+    "relation_type": "MAY_INDICATE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "REAL_WORLD_MONOTONICITY_INTERPRETATION",
+    "misconception_code": "MIS_DERIV_MODEL_CONSTRAINT",
+    "relation_type": "MAY_INDICATE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "CALCULATE_ANTIDERIVATIVE",
+    "misconception_code": "MIS_INT_FORGET_CONSTANT",
+    "relation_type": "MAY_INDICATE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "ANTIDERIVATIVE_WITH_CONDITION",
+    "misconception_code": "MIS_INT_INITIAL_VALUE",
+    "relation_type": "MAY_INDICATE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "CALCULATE_DEFINITE_INTEGRAL",
+    "misconception_code": "MIS_INT_DEFINITE_ANTIDERIVATIVE",
+    "relation_type": "MAY_INDICATE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "INTEGRAL_PROPERTIES",
+    "misconception_code": "MIS_INT_DEFINITE_ANTIDERIVATIVE",
+    "relation_type": "MAY_INDICATE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "AREA_BY_INTEGRAL",
+    "misconception_code": "MIS_INT_SIGNED_AREA",
+    "relation_type": "MAY_INDICATE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "VOLUME_BY_INTEGRAL",
+    "misconception_code": "MIS_INT_VOLUME_MODEL",
+    "relation_type": "MAY_INDICATE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "VOLUME_BY_CROSS_SECTION",
+    "misconception_code": "MIS_INT_VOLUME_MODEL",
+    "relation_type": "MAY_INDICATE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "PLANE_EQUATION_NORMAL_VECTOR",
+    "misconception_code": "MIS_OXYZ_NORMAL_DIRECTION",
+    "relation_type": "MAY_INDICATE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "LINE_EQUATION_DIRECTION_VECTOR",
+    "misconception_code": "MIS_OXYZ_NORMAL_DIRECTION",
+    "relation_type": "MAY_INDICATE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "PLANE_RELATION",
+    "misconception_code": "MIS_OXYZ_RELATION_COEFFICIENTS",
+    "relation_type": "MAY_INDICATE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "LINE_RELATION",
+    "misconception_code": "MIS_OXYZ_RELATION_COEFFICIENTS",
+    "relation_type": "MAY_INDICATE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "POINT_PLANE_OR_PLANE_DISTANCE",
+    "misconception_code": "MIS_OXYZ_DISTANCE_NORMALIZE",
+    "relation_type": "MAY_INDICATE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "LINE_DISTANCE_IN_OXYZ",
+    "misconception_code": "MIS_OXYZ_DISTANCE_NORMALIZE",
+    "relation_type": "MAY_INDICATE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "ANGLE_IN_OXYZ",
+    "misconception_code": "MIS_OXYZ_ANGLE_COMPLEMENT",
+    "relation_type": "MAY_INDICATE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "SPHERE_EQUATION_CENTER_RADIUS",
+    "misconception_code": "MIS_OXYZ_SPHERE_SIGNS",
+    "relation_type": "MAY_INDICATE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "PLANE_SPHERE_RELATION",
+    "misconception_code": "MIS_OXYZ_SPHERE_SIGNS",
+    "relation_type": "MAY_INDICATE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "CALCULATE_GROUPED_RANGE",
+    "misconception_code": "MIS_STATS_RANGE_IQR",
+    "relation_type": "MAY_INDICATE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "CALCULATE_GROUPED_IQR",
+    "misconception_code": "MIS_STATS_RANGE_IQR",
+    "relation_type": "MAY_INDICATE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+    "misconception_code": "MIS_STATS_REP_VALUE",
+    "relation_type": "MAY_INDICATE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "misconception_code": "MIS_STATS_VARIANCE_SD_UNIT",
+    "relation_type": "MAY_INDICATE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "COMPARE_GROUPED_VARIANCE_SD",
+    "misconception_code": "MIS_STATS_STABILITY_DIRECTION",
+    "relation_type": "MAY_INDICATE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "IDENTIFY_MORE_STABLE_GROUPED_DATA",
+    "misconception_code": "MIS_STATS_STABILITY_DIRECTION",
+    "relation_type": "MAY_INDICATE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "INTERPRET_GROUPED_DISPERSION_MEASURE",
+    "misconception_code": "MIS_STATS_STABILITY_DIRECTION",
+    "relation_type": "MAY_INDICATE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "MULTI_MEASURE_GROUPED_DISPERSION_ANALYSIS",
+    "misconception_code": "MIS_STATS_IQR_ROBUSTNESS",
+    "relation_type": "MAY_INDICATE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "CONDITIONAL_PROBABILITY_DIRECT",
+    "misconception_code": "MIS_PROB_CONDITIONAL_DENOM",
+    "relation_type": "MAY_INDICATE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "CONDITIONAL_PROBABILITY_DIRECT",
+    "misconception_code": "MIS_PROB_INDEPENDENT_EXCLUSIVE",
+    "relation_type": "MAY_INDICATE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "TOTAL_PROBABILITY",
+    "misconception_code": "MIS_PROB_TOTAL_BRANCH_WEIGHT",
+    "relation_type": "MAY_INDICATE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "BAYES_POSTERIOR",
+    "misconception_code": "MIS_PROB_BAYES_REVERSE",
+    "relation_type": "MAY_INDICATE",
+    "weight": 1.0
+  },
+  {
+    "problem_type_code": "TREE_OR_TOTAL_PROBABILITY",
+    "misconception_code": "MIS_PROB_TREE_DIRECTION",
+    "relation_type": "MAY_INDICATE",
+    "weight": 1.0
+  }
+]

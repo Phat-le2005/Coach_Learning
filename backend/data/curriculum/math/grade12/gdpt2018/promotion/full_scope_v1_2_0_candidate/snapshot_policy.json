@@ -1,0 +1,22 @@
+{
+  "dataset_code": "DATA-MATH12-038",
+  "snapshot_output_location": "backend/data/curriculum/math/grade12/gdpt2018/promotion/full_scope_v1_2_0_candidate/generated_snapshot/",
+  "generation_mode": "DETERMINISTIC_FROM_DATA_033_PLUS_034",
+  "must_bind_fingerprint": "2cad0c70f89d4d95ba3db2aaac194f0ddd9ad834e1b9014a6bbbe49bc1d7ec93",
+  "must_validate_all_import_schemas": true,
+  "must_not_read_from_legacy_canonical_as_source_of_truth": true,
+  "legacy_canonical_is_diff_target_only": true,
+  "generated_snapshot_may_contain": [
+    "manifest.json",
+    "chapters.json",
+    "topics.json",
+    "problem_types.json",
+    "concepts.json",
+    "learning_outcomes.json",
+    "concept_relations.json",
+    "problem_type_concepts.json",
+    "problem_type_learning_outcomes.json"
+  ],
+  "generated_snapshot_must_not_replace_root_canonical_files": true,
+  "activation_requires_separate_explicit_review": true
+}

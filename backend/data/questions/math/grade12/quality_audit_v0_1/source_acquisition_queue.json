@@ -1,0 +1,67 @@
+{
+  "dataset_code": "DATA-MATH12-041",
+  "policy": "EXTERNAL SOURCES ARE DISCOVERY/INGESTION LEADS UNTIL RAW BINARY IS PINNED AND ANSWERS ARE SOURCE-VERIFIED.",
+  "queue": [
+    {
+      "priority": 1,
+      "targets": [
+        "PARAMETER_MONOTONICITY",
+        "PARAMETER_EXTREMA_COUNT"
+      ],
+      "source_title": "Tuyển tập 550 bài toán khảo sát hàm số có chứa tham số m",
+      "source_url": "https://toanmath.com/2026/08/tuyen-tap-550-bai-toan-khao-sat-ham-so-co-chua-tham-so-m.html",
+      "source_characteristics": "313 pages; dedicated parameter-monotonicity sections and parameterized function analysis.",
+      "status": "INGESTION_REQUIRED_BINARY_SHA256_UNPINNED"
+    },
+    {
+      "priority": 1,
+      "targets": [
+        "REAL_WORLD_MONOTONICITY_INTERPRETATION",
+        "COMPLETE_FUNCTION_ANALYSIS_CUBIC"
+      ],
+      "source_title": "Chuyên đề ứng dụng đạo hàm để khảo sát và vẽ đồ thị hàm số – Lê Minh Kha",
+      "source_url": "https://toanmath.com/2026/06/chuyen-de-ung-dung-dao-ham-de-khao-sat-va-ve-do-thi-ham-so-le-minh-kha.html",
+      "source_characteristics": "564 pages; real-world applications plus cubic/rational survey sections and detailed solution sets.",
+      "status": "INGESTION_REQUIRED_BINARY_SHA256_UNPINNED"
+    },
+    {
+      "priority": 1,
+      "targets": [
+        "CONDITIONAL_PROBABILITY_DIRECT",
+        "TOTAL_PROBABILITY",
+        "TREE_OR_TOTAL_PROBABILITY"
+      ],
+      "source_title": "Bài tập xác suất có điều kiện có đáp án và hướng dẫn giải – Lê Minh Kha",
+      "source_url": "https://toanmath.com/2026/03/bai-tap-xac-suat-co-dieu-kien-co-dap-an-va-huong-dan-giai-le-minh-kha.html",
+      "source_characteristics": "135 pages; conditional probability, tree diagrams, total probability and Bayes with answer/solution section.",
+      "status": "INGESTION_REQUIRED_BINARY_SHA256_UNPINNED",
+      "selection_policy": "Prefer direct conditional/total/tree questions; do not add Bayes until distribution is balanced."
+    },
+    {
+      "priority": 1,
+      "targets": [
+        "VECTOR_COORDINATE_LINEAR_OPERATIONS_3D",
+        "VECTOR_COORDINATE_ANGLE_3D",
+        "POINT_COORDINATES_3D"
+      ],
+      "source_title": "Tài liệu học tập môn Toán 12 học kì 1 năm 2025–2026 – Nguyễn Hữu Chung Kiên",
+      "source_url": "https://nghengu.vn/toan/tai-lieu-toan-12-13432.html",
+      "source_characteristics": "528 pages; Grade 12 derivative and vector/coordinate sections with structured exercise types.",
+      "status": "INGESTION_REQUIRED_BINARY_SHA256_UNPINNED"
+    },
+    {
+      "priority": 2,
+      "targets": [
+        "COMPARE_GROUPED_RANGE",
+        "COMPARE_GROUPED_IQR",
+        "COMPARE_GROUPED_VARIANCE_SD",
+        "PARAMETER_FROM_GROUPED_VARIANCE_SD",
+        "MULTI_MEASURE_GROUPED_DISPERSION_ANALYSIS"
+      ],
+      "source_title": "Các dạng bài tập các số đặc trưng đo mức độ phân tán của mẫu số liệu ghép nhóm Toán 12 KNTTVCS",
+      "source_url": "https://file.montoan.com.vn/file-pdf/cac-dang-bai-tap-cac-so-dac-trung-do-muc-do-phan-tan-cua-mau-so-lieu-ghep-nhom-toan-12-knttvcs.pdf",
+      "source_characteristics": "Dedicated Grade 12 grouped-dispersion material including meaning, comparison and interpretation.",
+      "status": "INGESTION_REQUIRED_BINARY_SHA256_UNPINNED"
+    }
+  ]
+}

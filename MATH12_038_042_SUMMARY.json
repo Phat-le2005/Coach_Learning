@@ -1,0 +1,45 @@
+{
+  "batch_code": "MATH12_038_042_SESSION_FIX",
+  "base_repo_commit": "aed14bf213ac9db65e820984f5a6c46ebabbe304",
+  "datasets": {
+    "DATA-MATH12-038": {
+      "aggregate": "827777dcf365a562eb0a5dda1109859f56232d242373291a3f7c6eafb2d0f695",
+      "purpose": "canonical v1.2.0 snapshot candidate spec"
+    },
+    "DATA-MATH12-039": {
+      "aggregate": "171d43f0895e67c02813cc531d04d757cfb3e0ef7f62841392c5a8b4de0c8026",
+      "purpose": "source-backed depth corrections and probability/vector/derivative overlays"
+    },
+    "DATA-MATH12-040": {
+      "aggregate": "1695f2c1740747e52a976dd48acefa87a8ff70fbbf207e68d7c858ab1adc8058",
+      "purpose": "misconception/root-cause diagnostic graph"
+    },
+    "DATA-MATH12-041": {
+      "aggregate": "3953cb4035ecd4080d2928b46c1108cff4290356d4017dd1c44f088865e17a71",
+      "purpose": "density/source diversity audit and targeted acquisition queue"
+    },
+    "DATA-MATH12-042": {
+      "aggregate": "4222f9dd542c5d1e219725a62b14a59e6112d8a1332b3013449f9438fab550a2",
+      "purpose": "CI/rights/production gate"
+    }
+  },
+  "major_results": {
+    "official_core_requirements": "20/20",
+    "canonical_candidate_version": "1.2.0",
+    "probability_verified_practice_units_after_overlay": 21,
+    "probability_conditional_direct_after_overlay": 5,
+    "probability_source_families_after_overlay": 3,
+    "derivative_remaining_zero_evidence_problem_types": 3,
+    "vector_legacy_remaining_zero_evidence_problem_types_after_secondary_mapping": 1,
+    "misconception_nodes": 26,
+    "diagnostic_density_target": 5,
+    "production_ready": false
+  },
+  "remaining_work_that_requires_new_real_source_ingestion_or_external_review": [
+    "Add real questions for low/zero-density ProblemTypes until QA target is met.",
+    "Reduce dominant-source concentration in Probability, Statistics, Vector subscope and Derivative.",
+    "Run CI workflow and capture green evidence.",
+    "Complete rights review.",
+    "Explicitly review/activate the v1.2.0 canonical snapshot."
+  ]
+}

@@ -1,0 +1,37 @@
+[
+  {
+    "code": "DERIVATIVE_APPLICATIONS",
+    "name": "Ứng dụng đạo hàm để khảo sát và vẽ đồ thị của hàm số",
+    "official_scope_code": "M12_CORE_CALCULUS_DERIVATIVE_APPLICATIONS",
+    "order_index": 10,
+    "provenance_type": "COACH_LEARNING_DERIVED_ALIGNED_TO_OFFICIAL_SCOPE"
+  },
+  {
+    "code": "INTEGRALS",
+    "name": "Nguyên hàm. Tích phân",
+    "official_scope_code": "M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL",
+    "order_index": 20,
+    "provenance_type": "COACH_LEARNING_DERIVED_ALIGNED_TO_OFFICIAL_SCOPE"
+  },
+  {
+    "code": "OXYZ_CHAPTER",
+    "name": "Phương pháp tọa độ trong không gian",
+    "official_scope_code": "M12_CORE_GEOMETRY_COORDINATE_3D",
+    "order_index": 30,
+    "provenance_type": "COACH_LEARNING_DERIVED_ALIGNED_TO_OFFICIAL_SCOPE"
+  },
+  {
+    "code": "GROUPED_DATA_STATISTICS",
+    "name": "Các số đặc trưng của mẫu số liệu ghép nhóm",
+    "official_scope_code": "M12_CORE_STATISTICS_GROUPED_DATA",
+    "order_index": 40,
+    "provenance_type": "COACH_LEARNING_DERIVED_ALIGNED_TO_OFFICIAL_SCOPE"
+  },
+  {
+    "code": "PROBABILITY_CHAPTER",
+    "name": "Xác suất có điều kiện và các quy tắc tính xác suất",
+    "official_scope_code": "M12_CORE_PROBABILITY_CONDITIONAL",
+    "order_index": 50,
+    "provenance_type": "COACH_LEARNING_DERIVED_ALIGNED_TO_OFFICIAL_SCOPE"
+  }
+]

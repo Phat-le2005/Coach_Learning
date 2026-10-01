@@ -1,0 +1,386 @@
+[
+  {
+    "misconception_code": "MIS_DERIV_SIGN_FUNCTION",
+    "concept_code": "FIRST_DERIVATIVE",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 1
+  },
+  {
+    "misconception_code": "MIS_DERIV_SIGN_FUNCTION",
+    "concept_code": "DERIVATIVE_SIGN",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 2
+  },
+  {
+    "misconception_code": "MIS_DERIV_SIGN_FUNCTION",
+    "concept_code": "MONOTONICITY_CRITERION",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 3
+  },
+  {
+    "misconception_code": "MIS_DERIV_IGNORE_DOMAIN",
+    "concept_code": "FUNCTION_DOMAIN",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 1
+  },
+  {
+    "misconception_code": "MIS_DERIV_IGNORE_DOMAIN",
+    "concept_code": "SIGN_ANALYSIS",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 2
+  },
+  {
+    "misconception_code": "MIS_DERIV_IGNORE_DOMAIN",
+    "concept_code": "MONOTONICITY",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 3
+  },
+  {
+    "misconception_code": "MIS_DERIV_STATIONARY_EQUALS_EXTREMUM",
+    "concept_code": "CRITICAL_POINT",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 1
+  },
+  {
+    "misconception_code": "MIS_DERIV_STATIONARY_EQUALS_EXTREMUM",
+    "concept_code": "DERIVATIVE_SIGN",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 2
+  },
+  {
+    "misconception_code": "MIS_DERIV_STATIONARY_EQUALS_EXTREMUM",
+    "concept_code": "EXTREMUM_CRITERION",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 3
+  },
+  {
+    "misconception_code": "MIS_DERIV_LOCAL_GLOBAL",
+    "concept_code": "LOCAL_EXTREMUM",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 1
+  },
+  {
+    "misconception_code": "MIS_DERIV_LOCAL_GLOBAL",
+    "concept_code": "GLOBAL_EXTREMA",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 2
+  },
+  {
+    "misconception_code": "MIS_DERIV_LOCAL_GLOBAL",
+    "concept_code": "ENDPOINT_EVALUATION",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 3
+  },
+  {
+    "misconception_code": "MIS_DERIV_ASYMPTOTE_DENOM",
+    "concept_code": "LIMIT_AT_POINT",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 1
+  },
+  {
+    "misconception_code": "MIS_DERIV_ASYMPTOTE_DENOM",
+    "concept_code": "VERTICAL_ASYMPTOTE",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 2
+  },
+  {
+    "misconception_code": "MIS_DERIV_ASYMPTOTE_DENOM",
+    "concept_code": "POLYNOMIAL_DIVISION",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 3
+  },
+  {
+    "misconception_code": "MIS_DERIV_MODEL_CONSTRAINT",
+    "concept_code": "MATHEMATICAL_MODELING",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 1
+  },
+  {
+    "misconception_code": "MIS_DERIV_MODEL_CONSTRAINT",
+    "concept_code": "OPTIMIZATION",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 2
+  },
+  {
+    "misconception_code": "MIS_DERIV_MODEL_CONSTRAINT",
+    "concept_code": "CONTEXT_INTERPRETATION",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 3
+  },
+  {
+    "misconception_code": "MIS_INT_FORGET_CONSTANT",
+    "concept_code": "ANTIDERIVATIVE",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 1
+  },
+  {
+    "misconception_code": "MIS_INT_INITIAL_VALUE",
+    "concept_code": "ANTIDERIVATIVE",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 1
+  },
+  {
+    "misconception_code": "MIS_INT_INITIAL_VALUE",
+    "concept_code": "INITIAL_VALUE_CONDITION",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 2
+  },
+  {
+    "misconception_code": "MIS_INT_DEFINITE_ANTIDERIVATIVE",
+    "concept_code": "ANTIDERIVATIVE",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 1
+  },
+  {
+    "misconception_code": "MIS_INT_DEFINITE_ANTIDERIVATIVE",
+    "concept_code": "DEFINITE_INTEGRAL",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 2
+  },
+  {
+    "misconception_code": "MIS_INT_DEFINITE_ANTIDERIVATIVE",
+    "concept_code": "INTEGRAL_PROPERTIES",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 3
+  },
+  {
+    "misconception_code": "MIS_INT_SIGNED_AREA",
+    "concept_code": "DEFINITE_INTEGRAL",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 1
+  },
+  {
+    "misconception_code": "MIS_INT_SIGNED_AREA",
+    "concept_code": "AREA_BY_INTEGRAL",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 2
+  },
+  {
+    "misconception_code": "MIS_INT_VOLUME_MODEL",
+    "concept_code": "VOLUME_OF_REVOLUTION",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 1
+  },
+  {
+    "misconception_code": "MIS_INT_VOLUME_MODEL",
+    "concept_code": "VOLUME_BY_CROSS_SECTION",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 2
+  },
+  {
+    "misconception_code": "MIS_OXYZ_NORMAL_DIRECTION",
+    "concept_code": "NORMAL_VECTOR",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 1
+  },
+  {
+    "misconception_code": "MIS_OXYZ_NORMAL_DIRECTION",
+    "concept_code": "DIRECTION_VECTOR",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 2
+  },
+  {
+    "misconception_code": "MIS_OXYZ_NORMAL_DIRECTION",
+    "concept_code": "PLANE_EQUATION",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 3
+  },
+  {
+    "misconception_code": "MIS_OXYZ_NORMAL_DIRECTION",
+    "concept_code": "LINE_EQUATION",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 4
+  },
+  {
+    "misconception_code": "MIS_OXYZ_RELATION_COEFFICIENTS",
+    "concept_code": "PLANE_RELATION",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 1
+  },
+  {
+    "misconception_code": "MIS_OXYZ_RELATION_COEFFICIENTS",
+    "concept_code": "LINE_RELATION",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 2
+  },
+  {
+    "misconception_code": "MIS_OXYZ_RELATION_COEFFICIENTS",
+    "concept_code": "INTERSECTION_OXYZ",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 3
+  },
+  {
+    "misconception_code": "MIS_OXYZ_DISTANCE_NORMALIZE",
+    "concept_code": "DISTANCE_OXYZ",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 1
+  },
+  {
+    "misconception_code": "MIS_OXYZ_DISTANCE_NORMALIZE",
+    "concept_code": "NORMAL_VECTOR",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 2
+  },
+  {
+    "misconception_code": "MIS_OXYZ_ANGLE_COMPLEMENT",
+    "concept_code": "ANGLE_OXYZ",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 1
+  },
+  {
+    "misconception_code": "MIS_OXYZ_ANGLE_COMPLEMENT",
+    "concept_code": "NORMAL_VECTOR",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 2
+  },
+  {
+    "misconception_code": "MIS_OXYZ_ANGLE_COMPLEMENT",
+    "concept_code": "DIRECTION_VECTOR",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 3
+  },
+  {
+    "misconception_code": "MIS_OXYZ_SPHERE_SIGNS",
+    "concept_code": "SPHERE_EQUATION",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 1
+  },
+  {
+    "misconception_code": "MIS_STATS_RANGE_IQR",
+    "concept_code": "GROUPED_RANGE",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 1
+  },
+  {
+    "misconception_code": "MIS_STATS_RANGE_IQR",
+    "concept_code": "GROUPED_IQR",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 2
+  },
+  {
+    "misconception_code": "MIS_STATS_RANGE_IQR",
+    "concept_code": "GROUPED_QUARTILE_INTERPOLATION",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 3
+  },
+  {
+    "misconception_code": "MIS_STATS_REP_VALUE",
+    "concept_code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 1
+  },
+  {
+    "misconception_code": "MIS_STATS_REP_VALUE",
+    "concept_code": "GROUPED_MEAN_FOR_DISPERSION",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 2
+  },
+  {
+    "misconception_code": "MIS_STATS_REP_VALUE",
+    "concept_code": "GROUPED_VARIANCE",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 3
+  },
+  {
+    "misconception_code": "MIS_STATS_VARIANCE_SD_UNIT",
+    "concept_code": "GROUPED_VARIANCE",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 1
+  },
+  {
+    "misconception_code": "MIS_STATS_VARIANCE_SD_UNIT",
+    "concept_code": "GROUPED_STANDARD_DEVIATION",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 2
+  },
+  {
+    "misconception_code": "MIS_STATS_STABILITY_DIRECTION",
+    "concept_code": "DISPERSION_COMPARISON",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 1
+  },
+  {
+    "misconception_code": "MIS_STATS_STABILITY_DIRECTION",
+    "concept_code": "DISPERSION_INTERPRETATION",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 2
+  },
+  {
+    "misconception_code": "MIS_STATS_STABILITY_DIRECTION",
+    "concept_code": "DATA_STABILITY_CONSISTENCY",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 3
+  },
+  {
+    "misconception_code": "MIS_STATS_IQR_ROBUSTNESS",
+    "concept_code": "GROUPED_IQR",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 1
+  },
+  {
+    "misconception_code": "MIS_STATS_IQR_ROBUSTNESS",
+    "concept_code": "IQR_ROBUSTNESS",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 2
+  },
+  {
+    "misconception_code": "MIS_STATS_IQR_ROBUSTNESS",
+    "concept_code": "DISPERSION_INTERPRETATION",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 3
+  },
+  {
+    "misconception_code": "MIS_PROB_CONDITIONAL_DENOM",
+    "concept_code": "CONDITIONAL_PROBABILITY",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 1
+  },
+  {
+    "misconception_code": "MIS_PROB_INDEPENDENT_EXCLUSIVE",
+    "concept_code": "CONDITIONAL_PROBABILITY",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 1
+  },
+  {
+    "misconception_code": "MIS_PROB_TOTAL_BRANCH_WEIGHT",
+    "concept_code": "TOTAL_PROBABILITY",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 1
+  },
+  {
+    "misconception_code": "MIS_PROB_TOTAL_BRANCH_WEIGHT",
+    "concept_code": "PROBABILITY_TREE",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 2
+  },
+  {
+    "misconception_code": "MIS_PROB_BAYES_REVERSE",
+    "concept_code": "CONDITIONAL_PROBABILITY",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 1
+  },
+  {
+    "misconception_code": "MIS_PROB_BAYES_REVERSE",
+    "concept_code": "BAYES_FORMULA",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 2
+  },
+  {
+    "misconception_code": "MIS_PROB_BAYES_REVERSE",
+    "concept_code": "TOTAL_PROBABILITY",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 3
+  },
+  {
+    "misconception_code": "MIS_PROB_TREE_DIRECTION",
+    "concept_code": "PROBABILITY_TREE",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 1
+  },
+  {
+    "misconception_code": "MIS_PROB_TREE_DIRECTION",
+    "concept_code": "CONDITIONAL_PROBABILITY",
+    "relation_type": "REMEDIATE_WITH",
+    "priority": 2
+  }
+]

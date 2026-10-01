@@ -1,0 +1,44 @@
+{
+  "dataset_code": "DATA-MATH12-039",
+  "base_dataset": "DATA-MATH12-017",
+  "policy": "SECONDARY_FULL_SCOPE_DIAGNOSTIC_MAPPING_ONLY; DO_NOT MUTATE ORIGINAL PRIMARY TAXONOMY",
+  "records": [
+    {
+      "target_problem_type_code": "POINT_COORDINATES_3D",
+      "source_candidate_id": "M12_OXYZ_CAND_0108",
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "question_page_1_based": 302,
+      "solution_page_1_based": 302,
+      "source_answer": "A",
+      "basis": "Question explicitly asks coordinates of the point symmetric to a given point across Oxy.",
+      "status": "SOURCE_BACKED_SECONDARY_EVIDENCE"
+    },
+    {
+      "target_problem_type_code": "PARAMETER_VECTOR_COORDINATE_CONDITION_3D",
+      "source_candidate_id": "M12_OXYZ_CAND_0150",
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "question_page_1_based": 454,
+      "solution_page_1_based": 454,
+      "source_answer": "2",
+      "basis": "Question asks for parameter m so a moving point with a coordinate velocity vector reaches a parameterized coordinate position.",
+      "status": "SOURCE_BACKED_SECONDARY_EVIDENCE"
+    },
+    {
+      "target_problem_type_code": "VECTOR_COORDINATE_ANGLE_3D",
+      "source_group_id": "M12_VECTOR_GROUP_0040",
+      "source_child_label": "d",
+      "source_code": "SRC_TRUONG_NGOC_VY_40_2026",
+      "source_pdf_sha256": "15579d487c6ad6cdd6386c96ac829c48710c3ca66104acfbd0fc9e9183b586b4",
+      "question_page_1_based": 358,
+      "source_answer": false,
+      "existing_primary_problem_type": "VECTOR_ANGLE_3D",
+      "basis": "Oxyz-coordinate real-house context; reviewed child uses VECTOR_ANGLE_3D + DOT_PRODUCT_3D and is suitable as secondary coordinate-angle diagnostic evidence.",
+      "status": "SOURCE_BACKED_SECONDARY_EVIDENCE"
+    }
+  ],
+  "remaining_zero_evidence_vector_problem_types_after_overlay": [
+    "VECTOR_COORDINATE_LINEAR_OPERATIONS_3D"
+  ]
+}

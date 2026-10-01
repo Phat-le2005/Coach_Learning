@@ -1,0 +1,54 @@
+{
+  "dataset_code": "DATA-MATH12-042",
+  "status": "REVIEW_REQUIRED",
+  "legal_conclusion_made": false,
+  "source_families": [
+    {
+      "source_family": "OFFICIAL_OR_OFFICIAL_SOLUTION_COMPILATION",
+      "examples": [
+        "SRC_OFFICIAL_EXAM_2025_SOLUTION",
+        "SRC_MOET_EXAM_2025_SOLUTION_COMPILATION"
+      ],
+      "required_review": [
+        "confirm permitted storage/reproduction/transformation scope",
+        "record reviewer/date/basis",
+        "decide internal-only vs releasable assets"
+      ]
+    },
+    {
+      "source_family": "PROVINCIAL_OR_SCHOOL_EXAM_COLLECTIONS",
+      "examples": [
+        "SRC_PROVINCIAL_TRIAL_2025_COLLECTION",
+        "SRC_TRIAL_2026_*"
+      ],
+      "required_review": [
+        "identify original issuing organization per subsource",
+        "record redistribution/use basis",
+        "retain provenance and source page"
+      ]
+    },
+    {
+      "source_family": "THIRD_PARTY_COMPILATIONS",
+      "examples": [
+        "SRC_TRUONG_NGOC_VY_40_2026"
+      ],
+      "required_review": [
+        "separate original exam provenance from compilation provenance",
+        "review rights for question text/solutions/visual crops",
+        "avoid public release until cleared"
+      ]
+    },
+    {
+      "source_family": "EXTERNAL_DISCOVERY_LEADS",
+      "examples": [
+        "DATA-MATH12-041 source acquisition queue"
+      ],
+      "required_review": [
+        "pin raw binary and hash first",
+        "verify source attribution",
+        "review rights before promotion"
+      ]
+    }
+  ],
+  "rights_auto_approval_allowed": false
+}

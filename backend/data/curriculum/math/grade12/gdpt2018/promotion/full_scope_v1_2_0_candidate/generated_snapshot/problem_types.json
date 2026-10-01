@@ -1,0 +1,677 @@
+[
+  {
+    "code": "ANTIDERIVATIVE_WITH_CONDITION",
+    "name": "Nguyên hàm có điều kiện",
+    "description": "Xác định nguyên hàm khi biết điều kiện giá trị ban đầu hoặc giá trị hàm.",
+    "order_index": 20,
+    "topic_code": "ANTIDERIVATIVE_TOPIC"
+  },
+  {
+    "code": "CALCULATE_ANTIDERIVATIVE",
+    "name": "Tính nguyên hàm",
+    "description": "Tìm một nguyên hàm hoặc họ nguyên hàm của hàm số.",
+    "order_index": 10,
+    "topic_code": "ANTIDERIVATIVE_TOPIC"
+  },
+  {
+    "code": "CONDITIONAL_PROBABILITY_DIRECT",
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT",
+    "topic_code": "CONDITIONAL_PROBABILITY_TOPIC",
+    "name": "Tính trực tiếp xác suất có điều kiện",
+    "description": "Tính xác suất có điều kiện từ dữ kiện hoặc định nghĩa phù hợp chương trình lớp 12.",
+    "order_index": 10,
+    "default_difficulty": 0.4,
+    "is_active": true
+  },
+  {
+    "code": "CALCULATE_DEFINITE_INTEGRAL",
+    "name": "Tính trực tiếp tích phân xác định",
+    "description": "Tính giá trị tích phân xác định từ hàm dưới dấu tích phân.",
+    "order_index": 40,
+    "topic_code": "DEFINITE_INTEGRAL_TOPIC"
+  },
+  {
+    "code": "INTEGRAL_PROPERTIES",
+    "name": "Tính chất tích phân",
+    "description": "Suy luận giá trị tích phân từ tính tuyến tính, đổi cận và quan hệ giữa các tích phân đã biết.",
+    "order_index": 30,
+    "topic_code": "DEFINITE_INTEGRAL_TOPIC"
+  },
+  {
+    "topic_code": "DERIVATIVE_APPLICATION_TOPIC",
+    "code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+    "name": "Tối ưu hóa bài toán thực tiễn bằng đạo hàm",
+    "description": "Lập hàm mục tiêu, xác định miền và dùng đạo hàm để tìm phương án tối ưu.",
+    "order_index": 10,
+    "default_difficulty": 0.7,
+    "is_active": true
+  },
+  {
+    "topic_code": "DERIVATIVE_APPLICATION_TOPIC",
+    "code": "REAL_WORLD_MONOTONICITY_INTERPRETATION",
+    "name": "Diễn giải biến thiên trong bối cảnh thực tiễn",
+    "description": "Dùng tính đơn điệu/đồ thị để mô tả và giải thích sự thay đổi của đại lượng thực tế.",
+    "order_index": 20,
+    "default_difficulty": 0.6,
+    "is_active": true
+  },
+  {
+    "topic_code": "EXTREMA_TOPIC",
+    "code": "EXTREMA_FROM_DERIVATIVE_SIGN",
+    "name": "Nhận biết cực trị từ dấu đạo hàm",
+    "description": "Xác định cực trị dựa trên sự đổi dấu của đạo hàm.",
+    "order_index": 10,
+    "default_difficulty": 0.35,
+    "is_active": true
+  },
+  {
+    "topic_code": "EXTREMA_TOPIC",
+    "code": "EXTREMA_FROM_GRAPH",
+    "name": "Nhận biết cực trị từ đồ thị",
+    "description": "Đọc điểm cực trị và giá trị cực trị từ hình ảnh đồ thị.",
+    "order_index": 30,
+    "default_difficulty": 0.25,
+    "is_active": true
+  },
+  {
+    "topic_code": "EXTREMA_TOPIC",
+    "code": "EXTREMA_FROM_VARIATION_TABLE",
+    "name": "Nhận biết cực trị từ bảng biến thiên",
+    "description": "Đọc điểm cực trị và giá trị cực trị từ bảng biến thiên.",
+    "order_index": 20,
+    "default_difficulty": 0.25,
+    "is_active": true
+  },
+  {
+    "topic_code": "EXTREMA_TOPIC",
+    "code": "FIND_FUNCTION_EXTREMA",
+    "name": "Tìm cực trị bằng đạo hàm",
+    "description": "Tính đạo hàm và xác định các cực trị của hàm số.",
+    "order_index": 40,
+    "default_difficulty": 0.5,
+    "is_active": true
+  },
+  {
+    "topic_code": "EXTREMA_TOPIC",
+    "code": "PARAMETER_EXTREMA_COUNT",
+    "name": "Tìm tham số theo số lượng cực trị",
+    "description": "Xác định điều kiện tham số để hàm có số lượng hoặc cấu hình cực trị yêu cầu.",
+    "order_index": 50,
+    "default_difficulty": 0.8,
+    "is_active": true
+  },
+  {
+    "topic_code": "FUNCTION_ANALYSIS_TOPIC",
+    "code": "ASYMPTOTE_FROM_GRAPH",
+    "name": "Nhận biết tiệm cận từ đồ thị",
+    "description": "Nhận biết tiệm cận đứng, ngang hoặc xiên từ biểu diễn hình học.",
+    "order_index": 10,
+    "default_difficulty": 0.3,
+    "is_active": true
+  },
+  {
+    "topic_code": "FUNCTION_ANALYSIS_TOPIC",
+    "code": "COMPLETE_FUNCTION_ANALYSIS_CUBIC",
+    "name": "Khảo sát hàm bậc ba",
+    "description": "Thực hiện đầy đủ quy trình khảo sát và vẽ đồ thị hàm bậc ba.",
+    "order_index": 50,
+    "default_difficulty": 0.6,
+    "is_active": true
+  },
+  {
+    "topic_code": "FUNCTION_ANALYSIS_TOPIC",
+    "code": "COMPLETE_FUNCTION_ANALYSIS_LINEAR_FRACTION",
+    "name": "Khảo sát hàm phân thức bậc nhất/bậc nhất",
+    "description": "Thực hiện quy trình khảo sát và vẽ đồ thị hàm phân thức bậc nhất trên bậc nhất.",
+    "order_index": 60,
+    "default_difficulty": 0.65,
+    "is_active": true
+  },
+  {
+    "topic_code": "FUNCTION_ANALYSIS_TOPIC",
+    "code": "COMPLETE_FUNCTION_ANALYSIS_QUADRATIC_OVER_LINEAR",
+    "name": "Khảo sát hàm phân thức bậc hai/bậc nhất",
+    "description": "Thực hiện quy trình khảo sát và vẽ đồ thị hàm phân thức bậc hai trên bậc nhất.",
+    "order_index": 70,
+    "default_difficulty": 0.75,
+    "is_active": true
+  },
+  {
+    "topic_code": "FUNCTION_ANALYSIS_TOPIC",
+    "code": "GRAPH_IDENTIFICATION_FROM_FEATURES",
+    "name": "Nhận dạng đồ thị từ đặc trưng",
+    "description": "Ghép biểu thức/bảng biến thiên với đồ thị dựa trên cực trị, tiệm cận và chiều biến thiên.",
+    "order_index": 80,
+    "default_difficulty": 0.55,
+    "is_active": true
+  },
+  {
+    "topic_code": "FUNCTION_ANALYSIS_TOPIC",
+    "code": "GRAPH_SYMMETRY_IDENTIFICATION",
+    "name": "Nhận biết tính đối xứng của đồ thị",
+    "description": "Nhận biết trục hoặc tâm đối xứng của các họ đồ thị trong phạm vi chương trình.",
+    "order_index": 90,
+    "default_difficulty": 0.55,
+    "is_active": true
+  },
+  {
+    "topic_code": "FUNCTION_ANALYSIS_TOPIC",
+    "code": "HORIZONTAL_ASYMPTOTE_RATIONAL",
+    "name": "Xác định tiệm cận ngang",
+    "description": "Xác định tiệm cận ngang dựa trên hành vi của hàm số khi x tiến ra vô cực.",
+    "order_index": 30,
+    "default_difficulty": 0.45,
+    "is_active": true
+  },
+  {
+    "topic_code": "FUNCTION_ANALYSIS_TOPIC",
+    "code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+    "name": "Xác định tiệm cận xiên",
+    "description": "Xác định tiệm cận xiên của hàm phân thức bậc hai trên bậc nhất.",
+    "order_index": 40,
+    "default_difficulty": 0.6,
+    "is_active": true
+  },
+  {
+    "topic_code": "FUNCTION_ANALYSIS_TOPIC",
+    "code": "VERTICAL_ASYMPTOTE_RATIONAL",
+    "name": "Xác định tiệm cận đứng",
+    "description": "Xác định tiệm cận đứng của hàm phân thức phù hợp phạm vi lớp 12.",
+    "order_index": 20,
+    "default_difficulty": 0.45,
+    "is_active": true
+  },
+  {
+    "topic_code": "GLOBAL_EXTREMA_TOPIC",
+    "code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+    "name": "Tìm GTLN/GTNN trên đoạn bằng đạo hàm",
+    "description": "Tìm điểm tới hạn, kiểm tra đầu mút và so sánh giá trị.",
+    "order_index": 20,
+    "default_difficulty": 0.5,
+    "is_active": true
+  },
+  {
+    "topic_code": "GLOBAL_EXTREMA_TOPIC",
+    "code": "GLOBAL_EXTREMA_RECOGNITION",
+    "name": "Nhận biết giá trị lớn nhất/nhỏ nhất",
+    "description": "Nhận biết GTLN/GTNN từ bảng, đồ thị hoặc thông tin cho trước.",
+    "order_index": 10,
+    "default_difficulty": 0.3,
+    "is_active": true
+  },
+  {
+    "topic_code": "GLOBAL_EXTREMA_TOPIC",
+    "code": "GLOBAL_EXTREMA_SIMPLE_DOMAIN",
+    "name": "Tìm GTLN/GTNN trên miền đơn giản",
+    "description": "Xác định GTLN/GTNN trên miền xác định đơn giản bằng biến thiên/đạo hàm.",
+    "order_index": 30,
+    "default_difficulty": 0.55,
+    "is_active": true
+  },
+  {
+    "topic_code": "GROUPED_DISPERSION_APPLICATION_TOPIC",
+    "code": "CONCLUDE_FROM_GROUPED_DISPERSION",
+    "name": "Rút ra kết luận từ độ phân tán",
+    "description": "Chỉ ra kết luận phù hợp từ một hoặc nhiều số đo phân tán.",
+    "order_index": 20,
+    "default_difficulty": 0.55,
+    "is_active": true
+  },
+  {
+    "topic_code": "GROUPED_DISPERSION_APPLICATION_TOPIC",
+    "code": "INTERPRET_GROUPED_DISPERSION_MEASURE",
+    "name": "Giải thích ý nghĩa số đo phân tán",
+    "description": "Diễn giải ý nghĩa của range, IQR, variance hoặc standard deviation trong ngữ cảnh.",
+    "order_index": 10,
+    "default_difficulty": 0.5,
+    "is_active": true
+  },
+  {
+    "topic_code": "GROUPED_DISPERSION_APPLICATION_TOPIC",
+    "code": "MULTI_MEASURE_GROUPED_DISPERSION_ANALYSIS",
+    "name": "Phân tích kết hợp nhiều số đo phân tán",
+    "description": "Kết hợp range/IQR/variance/standard deviation để so sánh hoặc kết luận.",
+    "order_index": 40,
+    "default_difficulty": 0.65,
+    "is_active": true
+  },
+  {
+    "topic_code": "GROUPED_DISPERSION_APPLICATION_TOPIC",
+    "code": "PARAMETER_FROM_GROUPED_VARIANCE_SD",
+    "name": "Tìm tham số từ phương sai/độ lệch chuẩn",
+    "description": "Thiết lập điều kiện từ variance/standard deviation để tìm tần số, tham số hoặc dữ kiện chưa biết.",
+    "order_index": 30,
+    "default_difficulty": 0.7,
+    "is_active": true
+  },
+  {
+    "topic_code": "GROUPED_DISPERSION_COMPARISON_TOPIC",
+    "code": "COMPARE_GROUPED_IQR",
+    "name": "So sánh mẫu bằng khoảng tứ phân vị",
+    "description": "So sánh độ phân tán/độ ổn định bằng IQR.",
+    "order_index": 20,
+    "default_difficulty": 0.5,
+    "is_active": true
+  },
+  {
+    "topic_code": "GROUPED_DISPERSION_COMPARISON_TOPIC",
+    "code": "COMPARE_GROUPED_RANGE",
+    "name": "So sánh mẫu bằng khoảng biến thiên",
+    "description": "So sánh độ phân tán của hai hay nhiều mẫu ghép nhóm theo khoảng biến thiên.",
+    "order_index": 10,
+    "default_difficulty": 0.35,
+    "is_active": true
+  },
+  {
+    "topic_code": "GROUPED_DISPERSION_COMPARISON_TOPIC",
+    "code": "COMPARE_GROUPED_VARIANCE_SD",
+    "name": "So sánh mẫu bằng phương sai hoặc độ lệch chuẩn",
+    "description": "Tính/đối chiếu variance hoặc standard deviation của nhiều mẫu.",
+    "order_index": 30,
+    "default_difficulty": 0.55,
+    "is_active": true
+  },
+  {
+    "topic_code": "GROUPED_DISPERSION_COMPARISON_TOPIC",
+    "code": "IDENTIFY_MORE_STABLE_GROUPED_DATA",
+    "name": "Nhận biết mẫu ổn định hơn",
+    "description": "Suy luận mẫu ổn định/đồng đều hơn từ các số đo phân tán.",
+    "order_index": 40,
+    "default_difficulty": 0.5,
+    "is_active": true
+  },
+  {
+    "topic_code": "GROUPED_RANGE_IQR_TOPIC",
+    "code": "CALCULATE_GROUPED_IQR",
+    "name": "Tính khoảng tứ phân vị của mẫu ghép nhóm",
+    "description": "Tính Q1, Q3 cần thiết và khoảng tứ phân vị Q3-Q1 cho mẫu ghép nhóm.",
+    "order_index": 20,
+    "default_difficulty": 0.45,
+    "is_active": true
+  },
+  {
+    "topic_code": "GROUPED_RANGE_IQR_TOPIC",
+    "code": "CALCULATE_GROUPED_RANGE",
+    "name": "Tính khoảng biến thiên của mẫu ghép nhóm",
+    "description": "Xác định khoảng biến thiên từ các lớp có tần số khác 0.",
+    "order_index": 10,
+    "default_difficulty": 0.25,
+    "is_active": true
+  },
+  {
+    "topic_code": "GROUPED_VARIANCE_SD_TOPIC",
+    "code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "name": "Tính độ lệch chuẩn của mẫu ghép nhóm",
+    "description": "Tính căn bậc hai của phương sai hoặc tính trực tiếp từ bảng ghép nhóm.",
+    "order_index": 20,
+    "default_difficulty": 0.45,
+    "is_active": true
+  },
+  {
+    "topic_code": "GROUPED_VARIANCE_SD_TOPIC",
+    "code": "CALCULATE_GROUPED_VARIANCE",
+    "name": "Tính phương sai của mẫu ghép nhóm",
+    "description": "Dùng giá trị đại diện và tần số để tính phương sai mẫu ghép nhóm.",
+    "order_index": 10,
+    "default_difficulty": 0.45,
+    "is_active": true
+  },
+  {
+    "code": "AREA_BY_INTEGRAL",
+    "name": "Diện tích bằng tích phân",
+    "description": "Tính hoặc thiết lập công thức diện tích hình phẳng bằng tích phân.",
+    "order_index": 50,
+    "topic_code": "INTEGRAL_GEOMETRIC_APPLICATION_TOPIC"
+  },
+  {
+    "code": "VOLUME_BY_CROSS_SECTION",
+    "name": "Thể tích theo thiết diện",
+    "description": "Tính thể tích vật thể khi biết diện tích thiết diện theo biến.",
+    "order_index": 70,
+    "topic_code": "INTEGRAL_GEOMETRIC_APPLICATION_TOPIC"
+  },
+  {
+    "code": "VOLUME_BY_INTEGRAL",
+    "name": "Thể tích khối tròn xoay",
+    "description": "Tính hoặc thiết lập công thức thể tích khối tròn xoay bằng tích phân.",
+    "order_index": 60,
+    "topic_code": "INTEGRAL_GEOMETRIC_APPLICATION_TOPIC"
+  },
+  {
+    "code": "PRACTICAL_ACCUMULATION",
+    "name": "Ứng dụng nguyên hàm/tích phân vào đại lượng tích lũy",
+    "description": "Khôi phục đại lượng tích lũy từ tốc độ biến thiên trong bài toán thực tiễn.",
+    "order_index": 80,
+    "topic_code": "INTEGRAL_PRACTICAL_APPLICATION_TOPIC"
+  },
+  {
+    "topic_code": "MONOTONICITY_TOPIC",
+    "code": "MONOTONICITY_FROM_DERIVATIVE_SIGN",
+    "name": "Nhận biết tính đơn điệu từ dấu đạo hàm",
+    "description": "Đọc dấu f'(x) đã cho để kết luận khoảng đồng biến/nghịch biến.",
+    "order_index": 10,
+    "default_difficulty": 0.3,
+    "is_active": true
+  },
+  {
+    "topic_code": "MONOTONICITY_TOPIC",
+    "code": "MONOTONICITY_FROM_EXPRESSION",
+    "name": "Xét tính đơn điệu bằng đạo hàm",
+    "description": "Tính đạo hàm, xét dấu và lập khoảng đồng biến/nghịch biến.",
+    "order_index": 40,
+    "default_difficulty": 0.45,
+    "is_active": true
+  },
+  {
+    "topic_code": "MONOTONICITY_TOPIC",
+    "code": "MONOTONICITY_FROM_GRAPH",
+    "name": "Nhận biết tính đơn điệu từ đồ thị",
+    "description": "Đọc đồ thị hàm số để nhận biết chiều biến thiên.",
+    "order_index": 30,
+    "default_difficulty": 0.3,
+    "is_active": true
+  },
+  {
+    "topic_code": "MONOTONICITY_TOPIC",
+    "code": "MONOTONICITY_FROM_VARIATION_TABLE",
+    "name": "Nhận biết tính đơn điệu từ bảng biến thiên",
+    "description": "Đọc bảng biến thiên để xác định khoảng đồng biến/nghịch biến.",
+    "order_index": 20,
+    "default_difficulty": 0.25,
+    "is_active": true
+  },
+  {
+    "topic_code": "MONOTONICITY_TOPIC",
+    "code": "PARAMETER_MONOTONICITY",
+    "name": "Tìm tham số theo điều kiện đơn điệu",
+    "description": "Thiết lập và giải điều kiện tham số để hàm số đồng biến/nghịch biến trên miền cho trước.",
+    "order_index": 50,
+    "default_difficulty": 0.75,
+    "is_active": true
+  },
+  {
+    "code": "ANGLE_IN_OXYZ",
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT",
+    "topic_code": "OXYZ_ANGLE_DISTANCE_TOPIC",
+    "name": "Góc trong không gian Oxyz",
+    "description": "Tính góc giữa các đối tượng hình học trong không gian bằng phương pháp tọa độ.",
+    "order_index": 30,
+    "default_difficulty": 0.55,
+    "is_active": true
+  },
+  {
+    "code": "COORDINATE_DISTANCE_PROJECTION",
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT",
+    "topic_code": "OXYZ_ANGLE_DISTANCE_TOPIC",
+    "name": "Khoảng cách và hình chiếu bằng tọa độ",
+    "description": "Xác định hình chiếu và khoảng cách bằng các công cụ tọa độ trong không gian.",
+    "order_index": 40,
+    "default_difficulty": 0.65,
+    "is_active": true
+  },
+  {
+    "code": "LINE_DISTANCE_IN_OXYZ",
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT",
+    "topic_code": "OXYZ_ANGLE_DISTANCE_TOPIC",
+    "name": "Khoảng cách liên quan đến đường thẳng trong Oxyz",
+    "description": "Tính khoảng cách liên quan đến đường thẳng bằng phương pháp tọa độ.",
+    "order_index": 20,
+    "default_difficulty": 0.65,
+    "is_active": true
+  },
+  {
+    "code": "POINT_PLANE_OR_PLANE_DISTANCE",
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT",
+    "topic_code": "OXYZ_ANGLE_DISTANCE_TOPIC",
+    "name": "Khoảng cách điểm - mặt phẳng và giữa hai mặt phẳng",
+    "description": "Tính khoảng cách từ điểm đến mặt phẳng hoặc giữa hai mặt phẳng song song.",
+    "order_index": 10,
+    "default_difficulty": 0.5,
+    "is_active": true
+  },
+  {
+    "code": "COORDINATE_GEOMETRY_APPLICATION",
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT",
+    "topic_code": "OXYZ_APPLICATION_TOPIC",
+    "name": "Vận dụng phương pháp tọa độ trong không gian",
+    "description": "Vận dụng vectơ và tọa độ Oxyz để giải bài toán hình học hoặc thực tiễn.",
+    "order_index": 10,
+    "default_difficulty": 0.7,
+    "is_active": true
+  },
+  {
+    "topic_code": "OXYZ_APPLICATION_TOPIC",
+    "code": "PARAMETER_VECTOR_COORDINATE_CONDITION_3D",
+    "name": "Tìm tham số từ điều kiện vectơ/tọa độ",
+    "description": "Tìm tham số từ điều kiện vectơ/tọa độ.",
+    "order_index": 20,
+    "default_difficulty": 0.6,
+    "is_active": true
+  },
+  {
+    "topic_code": "OXYZ_APPLICATION_TOPIC",
+    "code": "REAL_WORLD_VECTOR_COORDINATE_MODELING_3D",
+    "name": "Mô hình hóa thực tiễn bằng vectơ và tọa độ",
+    "description": "Mô hình hóa thực tiễn bằng vectơ và tọa độ.",
+    "order_index": 30,
+    "default_difficulty": 0.65,
+    "is_active": true
+  },
+  {
+    "code": "LINE_EQUATION_DIRECTION_VECTOR",
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT",
+    "topic_code": "OXYZ_LINE_TOPIC",
+    "name": "Phương trình đường thẳng và vectơ chỉ phương",
+    "description": "Lập hoặc nhận biết phương trình đường thẳng và vectơ chỉ phương trong không gian Oxyz.",
+    "order_index": 10,
+    "default_difficulty": 0.45,
+    "is_active": true
+  },
+  {
+    "code": "LINE_PLANE_INTERSECTION",
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT",
+    "topic_code": "OXYZ_LINE_TOPIC",
+    "name": "Giao điểm đường thẳng và mặt phẳng",
+    "description": "Xác định giao điểm giữa đường thẳng và mặt phẳng bằng phương pháp tọa độ.",
+    "order_index": 20,
+    "default_difficulty": 0.55,
+    "is_active": true
+  },
+  {
+    "code": "LINE_RELATION",
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT",
+    "topic_code": "OXYZ_LINE_TOPIC",
+    "name": "Quan hệ giữa hai đường thẳng trong Oxyz",
+    "description": "Xác định quan hệ giữa hai đường thẳng trong không gian bằng dữ kiện tọa độ.",
+    "order_index": 30,
+    "default_difficulty": 0.55,
+    "is_active": true
+  },
+  {
+    "code": "PLANE_EQUATION_NORMAL_VECTOR",
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT",
+    "topic_code": "OXYZ_PLANE_TOPIC",
+    "name": "Phương trình mặt phẳng và vectơ pháp tuyến",
+    "description": "Lập hoặc nhận biết phương trình mặt phẳng và vectơ pháp tuyến trong hệ tọa độ Oxyz.",
+    "order_index": 10,
+    "default_difficulty": 0.45,
+    "is_active": true
+  },
+  {
+    "code": "PLANE_RELATION",
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT",
+    "topic_code": "OXYZ_PLANE_TOPIC",
+    "name": "Quan hệ giữa hai mặt phẳng",
+    "description": "Xác định và vận dụng quan hệ song song, trùng nhau hoặc cắt nhau giữa các mặt phẳng.",
+    "order_index": 20,
+    "default_difficulty": 0.5,
+    "is_active": true
+  },
+  {
+    "code": "PLANE_SPHERE_RELATION",
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT",
+    "topic_code": "OXYZ_SPHERE_TOPIC",
+    "name": "Quan hệ giữa mặt phẳng và mặt cầu",
+    "description": "Phân tích quan hệ giữa mặt phẳng và mặt cầu bằng khoảng cách từ tâm đến mặt phẳng.",
+    "order_index": 20,
+    "default_difficulty": 0.6,
+    "is_active": true
+  },
+  {
+    "code": "SPHERE_EQUATION_CENTER_RADIUS",
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT",
+    "topic_code": "OXYZ_SPHERE_TOPIC",
+    "name": "Phương trình mặt cầu, tâm và bán kính",
+    "description": "Lập hoặc nhận biết phương trình mặt cầu; xác định tâm và bán kính.",
+    "order_index": 10,
+    "default_difficulty": 0.45,
+    "is_active": true
+  },
+  {
+    "topic_code": "OXYZ_VECTOR_COORDINATES_TOPIC",
+    "code": "POINT_COORDINATES_3D",
+    "name": "Xác định tọa độ điểm trong Oxyz",
+    "description": "Xác định tọa độ điểm trong Oxyz.",
+    "order_index": 10,
+    "default_difficulty": 0.3,
+    "is_active": true
+  },
+  {
+    "topic_code": "OXYZ_VECTOR_COORDINATES_TOPIC",
+    "code": "VECTOR_COORDINATES_FROM_POINTS_3D",
+    "name": "Xác định tọa độ vectơ từ hai điểm",
+    "description": "Xác định tọa độ vectơ từ hai điểm.",
+    "order_index": 20,
+    "default_difficulty": 0.3,
+    "is_active": true
+  },
+  {
+    "code": "TREE_OR_TOTAL_PROBABILITY",
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT",
+    "topic_code": "PROBABILITY_TREE_TOPIC",
+    "name": "Sơ đồ hình cây và quy tắc tính xác suất",
+    "description": "Biểu diễn các nhánh xác suất bằng sơ đồ hình cây và dùng quy tắc nhân, cộng hoặc xác suất toàn phần.",
+    "order_index": 10,
+    "default_difficulty": 0.55,
+    "is_active": true
+  },
+  {
+    "topic_code": "SPACE_VECTOR_OPERATIONS_TOPIC",
+    "code": "VECTOR_ANGLE_3D",
+    "name": "Xác định góc giữa hai vectơ",
+    "description": "Xác định góc giữa hai vectơ.",
+    "order_index": 50,
+    "default_difficulty": 0.45,
+    "is_active": true
+  },
+  {
+    "topic_code": "SPACE_VECTOR_OPERATIONS_TOPIC",
+    "code": "VECTOR_DOT_PRODUCT_3D",
+    "name": "Tính tích vô hướng của hai vectơ trong không gian",
+    "description": "Tính tích vô hướng của hai vectơ trong không gian.",
+    "order_index": 40,
+    "default_difficulty": 0.45,
+    "is_active": true
+  },
+  {
+    "topic_code": "SPACE_VECTOR_OPERATIONS_TOPIC",
+    "code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "name": "Phân tích vectơ theo các vectơ cơ sở hình học",
+    "description": "Phân tích vectơ theo các vectơ cơ sở hình học.",
+    "order_index": 60,
+    "default_difficulty": 0.55,
+    "is_active": true
+  },
+  {
+    "topic_code": "SPACE_VECTOR_OPERATIONS_TOPIC",
+    "code": "VECTOR_RELATION_IDENTIFICATION_3D",
+    "name": "Nhận biết quan hệ vectơ trong hình không gian",
+    "description": "Nhận biết quan hệ vectơ trong hình không gian.",
+    "order_index": 10,
+    "default_difficulty": 0.25,
+    "is_active": true
+  },
+  {
+    "topic_code": "SPACE_VECTOR_OPERATIONS_TOPIC",
+    "code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+    "name": "Nhân vectơ với số trong không gian",
+    "description": "Nhân vectơ với số trong không gian.",
+    "order_index": 30,
+    "default_difficulty": 0.35,
+    "is_active": true
+  },
+  {
+    "topic_code": "SPACE_VECTOR_OPERATIONS_TOPIC",
+    "code": "VECTOR_SUM_DIFFERENCE_3D",
+    "name": "Tính/biến đổi tổng hiệu vectơ trong không gian",
+    "description": "Tính/biến đổi tổng hiệu vectơ trong không gian.",
+    "order_index": 20,
+    "default_difficulty": 0.35,
+    "is_active": true
+  },
+  {
+    "code": "BAYES_POSTERIOR",
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT",
+    "topic_code": "TOTAL_PROBABILITY_BAYES_TOPIC",
+    "name": "Vận dụng công thức Bayes",
+    "description": "Tính xác suất hậu nghiệm bằng công thức Bayes từ các xác suất đã biết.",
+    "order_index": 20,
+    "default_difficulty": 0.6,
+    "is_active": true
+  },
+  {
+    "code": "TOTAL_PROBABILITY",
+    "provenance_type": "COACH_LEARNING_DERIVED_ENRICHMENT",
+    "topic_code": "TOTAL_PROBABILITY_BAYES_TOPIC",
+    "name": "Vận dụng công thức xác suất toàn phần",
+    "description": "Tính xác suất của biến cố bằng cách phân hoạch không gian trường hợp và dùng công thức xác suất toàn phần.",
+    "order_index": 10,
+    "default_difficulty": 0.55,
+    "is_active": true
+  },
+  {
+    "topic_code": "VECTOR_COORDINATE_OPERATIONS_TOPIC",
+    "code": "MIDPOINT_CENTROID_COORDINATES_3D",
+    "name": "Tìm tọa độ trung điểm/trọng tâm",
+    "description": "Tìm tọa độ trung điểm/trọng tâm.",
+    "order_index": 10,
+    "default_difficulty": 0.4,
+    "is_active": true
+  },
+  {
+    "topic_code": "VECTOR_COORDINATE_OPERATIONS_TOPIC",
+    "code": "VECTOR_COORDINATE_ANGLE_3D",
+    "name": "Tính góc bằng tọa độ vectơ",
+    "description": "Tính góc bằng tọa độ vectơ.",
+    "order_index": 60,
+    "default_difficulty": 0.45,
+    "is_active": true
+  },
+  {
+    "topic_code": "VECTOR_COORDINATE_OPERATIONS_TOPIC",
+    "code": "VECTOR_COORDINATE_DOT_PRODUCT_3D",
+    "name": "Tính tích vô hướng bằng tọa độ",
+    "description": "Tính tích vô hướng bằng tọa độ.",
+    "order_index": 50,
+    "default_difficulty": 0.4,
+    "is_active": true
+  },
+  {
+    "topic_code": "VECTOR_COORDINATE_OPERATIONS_TOPIC",
+    "code": "VECTOR_COORDINATE_LINEAR_OPERATIONS_3D",
+    "name": "Thực hiện phép toán tuyến tính trên tọa độ vectơ",
+    "description": "Thực hiện phép toán tuyến tính trên tọa độ vectơ.",
+    "order_index": 40,
+    "default_difficulty": 0.35,
+    "is_active": true
+  },
+  {
+    "topic_code": "VECTOR_COORDINATE_OPERATIONS_TOPIC",
+    "code": "VECTOR_LENGTH_DISTANCE_3D",
+    "name": "Tính độ dài vectơ và khoảng cách hai điểm",
+    "description": "Tính độ dài vectơ và khoảng cách hai điểm.",
+    "order_index": 30,
+    "default_difficulty": 0.35,
+    "is_active": true
+  }
+]

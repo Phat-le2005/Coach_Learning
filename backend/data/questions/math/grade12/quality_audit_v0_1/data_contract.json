@@ -1,0 +1,20 @@
+{
+  "dataset_code": "DATA-MATH12-041",
+  "base_repo_commit": "aed14bf213ac9db65e820984f5a6c46ebabbe304",
+  "semantic_files_order": [
+    "problem_type_density_audit.json",
+    "source_diversity_audit.json",
+    "source_acquisition_queue.json",
+    "quality_gate.json"
+  ],
+  "semantic_sha256": {
+    "problem_type_density_audit.json": "bf39e218c883131628c015b7e68d85830f53b6d757a1420aa018b77dd2f62922",
+    "source_diversity_audit.json": "17781cad9fcbd9fcee0da7d5c00b0f11fb486f2dd0e82f49db6b14798f3e678b",
+    "source_acquisition_queue.json": "320f11e49502da9d2f8745f3a0af723d10b88d105e791e8a5e1bfe83adc30eda",
+    "quality_gate.json": "7be81cb3111db8fb096a532010bc72000468d5db53398f52c4507cb32d09f149"
+  },
+  "aggregate_semantic_sha256": "3953cb4035ecd4080d2928b46c1108cff4290356d4017dd1c44f088865e17a71",
+  "canonical_write_allowed": false,
+  "database_import_allowed": false,
+  "production_release_allowed": false
+}

@@ -1,0 +1,35 @@
+{
+  "dataset_code": "DATA-MATH12-038",
+  "from_version": "1.1.0",
+  "to_candidate_version": "1.2.0",
+  "active_grade12_core_chapter_changes": [
+    {
+      "code": "EXPONENTIAL_LOGARITHM",
+      "current_state": "ACTIVE_IN_LEGACY_GRADE12_CANONICAL",
+      "candidate_state": "EXCLUDED_FROM_GRADE12_CORE",
+      "legacy_row_action": "PRESERVE_NON_DESTRUCTIVELY",
+      "reason": "Bound official Grade 12 scope classifies this as out of Grade 12 core; staging scope registry records actual_grade_level=11."
+    },
+    {
+      "code": "VECTORS_GEOMETRY",
+      "current_state": "SEPARATE_LEGACY_GRADE12_CHAPTER",
+      "candidate_state": "NOT_A_SEPARATE_CORE_CHAPTER",
+      "legacy_row_action": "PRESERVE_NON_DESTRUCTIVELY",
+      "reason": "Vector/coordinate nodes are composed under OXYZ_CHAPTER in the full-scope candidate."
+    },
+    {
+      "code": "GROUPED_DATA_STATISTICS",
+      "current_state": "MISSING_FROM_CANONICAL",
+      "candidate_state": "ACTIVE_CORE_CHAPTER",
+      "legacy_row_action": "ADD_IN_SNAPSHOT_ONLY",
+      "reason": "Required by M12_CORE_STATISTICS_GROUPED_DATA."
+    }
+  ],
+  "unchanged_or_refined_core_chapters": [
+    "DERIVATIVE_APPLICATIONS",
+    "INTEGRALS",
+    "OXYZ_CHAPTER",
+    "PROBABILITY_CHAPTER"
+  ],
+  "destructive_delete_allowed": false
+}
