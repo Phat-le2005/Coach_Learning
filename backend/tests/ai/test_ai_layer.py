@@ -46,7 +46,7 @@ class SampleEvaluationOutput(BaseModel):
 # 1. Task Types and Routing Tiers Tests
 # --------------------------------------------------------------------------
 
-def test_all_eleven_task_types_defined():
+def test_all_ai_task_types_defined():
     expected_tasks = {
         "TUTOR",
         "HINT",
@@ -60,6 +60,7 @@ def test_all_eleven_task_types_defined():
         "EXAM_ANALYSIS",
         "ADMISSION_ASSISTANT",
         "MEMORY_EXTRACTION",
+        "TEACHER_MATERIAL_MAPPING",
     }
     actual_tasks = {t.value for t in AITaskType}
     assert actual_tasks == expected_tasks
@@ -82,6 +83,7 @@ def test_routing_tier_resolution(ai_settings: Settings):
     assert gateway.resolve_tier(AITaskType.PARENT_SUMMARY) == AIRoutingTier.STANDARD
     assert gateway.resolve_tier(AITaskType.QUESTION_GENERATION) == AIRoutingTier.STANDARD
     assert gateway.resolve_tier(AITaskType.ADMISSION_ASSISTANT) == AIRoutingTier.STANDARD
+    assert gateway.resolve_tier(AITaskType.TEACHER_MATERIAL_MAPPING) == AIRoutingTier.STANDARD
 
     # Reasoning tier tasks
     assert gateway.resolve_tier(AITaskType.EXAM_ANALYSIS) == AIRoutingTier.REASONING
@@ -377,4 +379,3 @@ def test_mastery_engine_immune_to_ai_outage():
         last_practiced_at=None,
     )
     assert state == DerivedMasteryState.MASTERED
-

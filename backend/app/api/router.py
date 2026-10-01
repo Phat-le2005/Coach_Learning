@@ -32,6 +32,7 @@ from app.parents.portal_router import (
     parents_alias_router,
     router as parent_portal_router,
 )
+from app.teacher_materials.router import router as teacher_materials_router
 
 
 api_router = APIRouter()
@@ -63,5 +64,5 @@ api_router.include_router(parent_portal_router)
 api_router.include_router(parents_alias_router)
 api_router.include_router(exams_router)
 api_router.include_router(admission_router)
-
+api_router.include_router(teacher_materials_router)
 

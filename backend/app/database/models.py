@@ -23,7 +23,9 @@ from app.assignments.models import (
     AssignmentLearningObjective,
     AssignmentProblemType,
     AssignmentQuestion,
+    AssignmentMaterialItem,
     AssignmentStudentQuestion,
+    StudentAssignmentMaterialItem,
     StudentAssignment,
 )
 from app.attempts.models import StudentAttempt, StudySession
@@ -110,6 +112,14 @@ from app.tutor.models import (
     TutorSessionSummary,
 )
 from app.users.models import User
+from app.teacher_materials.models import (
+    TeacherMaterial, TeacherMaterialItem, TeacherMaterialItemOption,
+    TeacherMaterialItemProblemType, TeacherMaterialItemConcept,
+    TeacherMaterialItemLearningOutcome,
+)
+from app.learning_evidence.models import (
+    LearningEvidenceEvent, LearningEvidenceConcept, LearningEvidenceProblemType,
+)
 
 __all__ = [
     "AcademicGoal",
@@ -125,7 +135,9 @@ __all__ = [
     "AssignmentLearningObjective",
     "AssignmentProblemType",
     "AssignmentQuestion",
+    "AssignmentMaterialItem",
     "AssignmentStudentQuestion",
+    "StudentAssignmentMaterialItem",
     "AuthSession",
     "Chapter",
     "Classroom",
@@ -210,4 +222,13 @@ __all__ = [
     "LearningMemoryType",
     "University",
     "User",
+    "TeacherMaterial",
+    "TeacherMaterialItem",
+    "TeacherMaterialItemOption",
+    "TeacherMaterialItemProblemType",
+    "TeacherMaterialItemConcept",
+    "TeacherMaterialItemLearningOutcome",
+    "LearningEvidenceEvent",
+    "LearningEvidenceConcept",
+    "LearningEvidenceProblemType",
 ]

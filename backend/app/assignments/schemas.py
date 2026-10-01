@@ -1,7 +1,7 @@
 from datetime import datetime
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from app.assignments.models import AssignmentStatus, AssignmentType, StudentAssignmentStatus
 
@@ -36,6 +36,8 @@ class AssignmentCreate(BaseModel):
     learning_outcomes: list[AssignmentLearningObjectiveConfig] = Field(default_factory=list)
     target_concepts: list[AssignmentConceptConfig] = Field(default_factory=list)
     question_ids: list[UUID] | None = None
+    teaching_plan_id: UUID | None = None
+    teacher_material_item_ids: list[UUID] | None = None
     start_at: datetime | None = None
     due_at: datetime | None = None
 
@@ -96,11 +98,25 @@ class AssignmentQuestionRead(BaseModel):
     options: list[AssignmentQuestionOptionRead] = Field(default_factory=list)
 
 
+class AssignmentMaterialItemRead(BaseModel):
+    id: UUID
+    assignment_id: UUID
+    teacher_material_item_id: UUID
+    order_index: int
+    content: str
+    question_type: str | None
+    difficulty: float | None
+    correct_answer: str | None
+    explanation: str | None
+    options: list[AssignmentQuestionOptionRead] = Field(default_factory=list)
+
+
 class AssignmentSummaryRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: UUID
     classroom_id: UUID
     subject_id: UUID
+    teaching_plan_id: UUID | None = None
     title: str
     description: str | None = None
     assignment_type: AssignmentType
@@ -118,6 +134,7 @@ class AssignmentRead(AssignmentSummaryRead):
     problem_types: list[AssignmentProblemTypeRead] = Field(default_factory=list)
     concepts: list[AssignmentConceptRead] = Field(default_factory=list)
     questions: list[AssignmentQuestionRead] = Field(default_factory=list)
+    material_items: list[AssignmentMaterialItemRead] = Field(default_factory=list)
     total_assigned_students: int = 0
     submitted_count: int = 0
 
@@ -132,11 +149,13 @@ class StudentQuestionOptionRead(BaseModel):
 
 class StudentQuestionItemRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
-    question_id: UUID
+    source_kind: str = "CANONICAL_QUESTION"
+    question_id: UUID | None = None
+    teacher_material_item_id: UUID | None = None
     order_index: int
     content: str
     question_type: str
-    difficulty: float
+    difficulty: float | None
     options: list[StudentQuestionOptionRead] = Field(default_factory=list)
     student_answer: str | None = None
     is_correct: bool | None = None
@@ -165,8 +184,17 @@ class StudentAssignmentRead(BaseModel):
 
 
 class AnswerSubmitItem(BaseModel):
-    question_id: UUID
+    question_id: UUID | None = None
+    teacher_material_item_id: UUID | None = None
     student_answer: str
+    response_time_seconds: float | None = Field(default=None, gt=0)
+    hint_count: int = Field(default=0, ge=0)
+
+    @model_validator(mode="after")
+    def exactly_one_source(self):
+        if (self.question_id is None) == (self.teacher_material_item_id is None):
+            raise ValueError("Exactly one question_id or teacher_material_item_id is required")
+        return self
 
 
 class AssignmentSubmissionRequest(BaseModel):
@@ -174,11 +202,13 @@ class AssignmentSubmissionRequest(BaseModel):
 
 
 class QuestionResultItem(BaseModel):
-    question_id: UUID
+    source_kind: str = "CANONICAL_QUESTION"
+    question_id: UUID | None = None
+    teacher_material_item_id: UUID | None = None
     student_answer: str
     correct_answer: str | None = None
-    is_correct: bool
-    score: float
+    is_correct: bool | None
+    score: float | None
     explanation: str | None = None
 
 

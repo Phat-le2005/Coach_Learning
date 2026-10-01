@@ -22,6 +22,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database.base import Base
+from app.practice.models import EvaluationStatus
 
 if TYPE_CHECKING:
     from app.classes.models import Classroom
@@ -31,6 +32,7 @@ if TYPE_CHECKING:
     from app.students.models import StudentProfile
     from app.subjects.models import Subject
     from app.users.models import User
+    from app.teacher_materials.models import TeacherMaterialItem
 
 
 class AssignmentType(StrEnum):
@@ -67,6 +69,9 @@ class Assignment(Base):
     )
     subject_id: Mapped[UUID] = mapped_column(
         ForeignKey("subjects.id", ondelete="RESTRICT"), nullable=False
+    )
+    teaching_plan_id: Mapped[UUID | None] = mapped_column(
+        ForeignKey("teaching_plans.id", ondelete="SET NULL"), nullable=True
     )
     title: Mapped[str] = mapped_column(String(255), nullable=False)
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
@@ -126,6 +131,10 @@ class Assignment(Base):
         cascade="all, delete-orphan",
         passive_deletes=True,
         order_by="AssignmentQuestion.order_index",
+    )
+    material_items: Mapped[list["AssignmentMaterialItem"]] = relationship(
+        back_populates="assignment", cascade="all, delete-orphan", passive_deletes=True,
+        order_by="AssignmentMaterialItem.order_index",
     )
     student_assignments: Mapped[list["StudentAssignment"]] = relationship(
         back_populates="assignment", cascade="all, delete-orphan", passive_deletes=True
@@ -230,6 +239,20 @@ class AssignmentQuestion(Base):
     question: Mapped["Question"] = relationship()
 
 
+class AssignmentMaterialItem(Base):
+    __tablename__ = "assignment_material_items"
+    __table_args__ = (
+        UniqueConstraint("assignment_id", "teacher_material_item_id", name="uq_assignment_material_item"),
+        UniqueConstraint("assignment_id", "order_index", name="uq_assignment_material_order"),
+    )
+    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, default=uuid4)
+    assignment_id: Mapped[UUID] = mapped_column(ForeignKey("assignments.id", ondelete="CASCADE"), nullable=False)
+    teacher_material_item_id: Mapped[UUID] = mapped_column(ForeignKey("teacher_material_items.id", ondelete="RESTRICT"), nullable=False)
+    order_index: Mapped[int] = mapped_column(Integer, nullable=False)
+    assignment: Mapped[Assignment] = relationship(back_populates="material_items")
+    teacher_material_item: Mapped["TeacherMaterialItem"] = relationship()
+
+
 class StudentAssignment(Base):
     __tablename__ = "student_assignments"
     __table_args__ = (
@@ -275,6 +298,10 @@ class StudentAssignment(Base):
         passive_deletes=True,
         order_by="AssignmentStudentQuestion.order_index",
     )
+    student_material_items: Mapped[list["StudentAssignmentMaterialItem"]] = relationship(
+        back_populates="student_assignment", cascade="all, delete-orphan", passive_deletes=True,
+        order_by="StudentAssignmentMaterialItem.order_index",
+    )
 
 
 class AssignmentStudentQuestion(Base):
@@ -310,3 +337,28 @@ class AssignmentStudentQuestion(Base):
         back_populates="student_questions"
     )
     question: Mapped["Question"] = relationship()
+
+
+class StudentAssignmentMaterialItem(Base):
+    __tablename__ = "student_assignment_material_items"
+    __table_args__ = (
+        UniqueConstraint("student_assignment_id", "teacher_material_item_id", name="uq_student_assignment_material_item"),
+        UniqueConstraint("student_assignment_id", "order_index", name="uq_student_assignment_material_order"),
+        CheckConstraint("score IS NULL OR score BETWEEN 0 AND 1", name="score_range"),
+        CheckConstraint("response_time_seconds IS NULL OR response_time_seconds > 0", name="response_time_positive"),
+        CheckConstraint("hint_count >= 0", name="hint_count_nonnegative"),
+    )
+    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, default=uuid4)
+    student_assignment_id: Mapped[UUID] = mapped_column(ForeignKey("student_assignments.id", ondelete="CASCADE"), nullable=False)
+    teacher_material_item_id: Mapped[UUID] = mapped_column(ForeignKey("teacher_material_items.id", ondelete="RESTRICT"), nullable=False)
+    order_index: Mapped[int] = mapped_column(Integer, nullable=False)
+    student_answer: Mapped[str | None] = mapped_column(Text)
+    is_correct: Mapped[bool | None] = mapped_column(Boolean)
+    score: Mapped[float | None] = mapped_column(Float)
+    response_time_seconds: Mapped[float | None] = mapped_column(Float)
+    hint_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0, server_default="0")
+    evaluation_status: Mapped[EvaluationStatus] = mapped_column(Enum(EvaluationStatus, name="student_material_evaluation_status", native_enum=False), nullable=False)
+    evaluation_details: Mapped[dict | None] = mapped_column(JSON)
+    answered_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    student_assignment: Mapped[StudentAssignment] = relationship(back_populates="student_material_items")
+    teacher_material_item: Mapped["TeacherMaterialItem"] = relationship()

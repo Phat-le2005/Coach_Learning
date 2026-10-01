@@ -65,6 +65,9 @@ ALLOWED_TOOLS: dict[AITaskType, set[str]] = {
     AITaskType.MEMORY_EXTRACTION: {
         "propose_learning_memory_item",
     },
+    AITaskType.TEACHER_MATERIAL_MAPPING: {
+        "propose_teacher_material_mapping",
+    },
 }
 
 ALL_KNOWN_TOOLS: set[str] = {tool for tools in ALLOWED_TOOLS.values() for tool in tools}
@@ -83,6 +86,8 @@ PROHIBITED_MUTATIONS = {
     "ADMISSION_RULE_MODIFY": "AI cannot modify official AdmissionRule records or official admission criteria.",
     "CANONICAL_CURRICULUM_CREATE": "AI cannot create canonical curriculum nodes (Curriculum, Chapter, Topic, ProblemType, Concept).",
     "CANONICAL_PREREQUISITE_CREATE": "AI cannot create canonical prerequisite relations in the knowledge graph automatically.",
+    "TEACHER_MATERIAL_MAPPING_CONFIRM": "AI cannot confirm teacher-material taxonomy mappings.",
+    "TEACHER_MATERIAL_PUBLISH": "AI cannot publish teacher material into assignments or the canonical Question Bank.",
 }
 
 # --------------------------------------------------------------------------

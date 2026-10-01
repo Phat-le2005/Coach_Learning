@@ -12,4 +12,4 @@ PyJWT>=2.10,<3.0
 email-validator>=2.2,<3.0
 python-multipart>=0.0.20,<1.0
 pgvector>=0.3.0,<1.0
-
+pypdf>=6,<7

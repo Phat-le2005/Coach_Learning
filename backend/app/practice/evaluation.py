@@ -20,19 +20,34 @@ class AnswerEvaluationService:
     _WHITESPACE = re.compile(r"\s+")
 
     def evaluate(self, question: Question, student_answer: str) -> AnswerEvaluation:
+        return self.evaluate_values(
+            question.question_type,
+            question.correct_answer,
+            student_answer,
+            option_labels=[option.label for option in question.options],
+        )
+
+    def evaluate_values(
+        self,
+        question_type: QuestionType,
+        correct_answer: str | None,
+        student_answer: str,
+        *,
+        option_labels: list[str] | None = None,
+    ) -> AnswerEvaluation:
         answer = self.normalize(student_answer)
         if not answer:
             raise ApplicationError(422, "ANSWER_REQUIRED", "Student answer cannot be blank.")
 
-        if question.question_type == QuestionType.OPEN_RESPONSE:
+        if question_type == QuestionType.OPEN_RESPONSE:
             return AnswerEvaluation(None, None, EvaluationStatus.NEEDS_EVALUATION)
 
-        expected = self.normalize(question.correct_answer or "")
+        expected = self.normalize(correct_answer or "")
         if not expected:
             return AnswerEvaluation(None, None, EvaluationStatus.NEEDS_TEACHER_REVIEW)
 
-        if question.question_type == QuestionType.MULTIPLE_CHOICE:
-            labels = {self.normalize(option.label) for option in question.options}
+        if question_type == QuestionType.MULTIPLE_CHOICE:
+            labels = {self.normalize(label) for label in (option_labels or [])}
             if expected not in labels:
                 return AnswerEvaluation(None, None, EvaluationStatus.NEEDS_TEACHER_REVIEW)
             if answer not in labels:
@@ -41,7 +56,7 @@ class AnswerEvaluationService:
                     "INVALID_MULTIPLE_CHOICE_ANSWER",
                     "Student answer must match one of the question option labels.",
                 )
-        elif question.question_type == QuestionType.TRUE_FALSE:
+        elif question_type == QuestionType.TRUE_FALSE:
             if expected not in {"true", "false"}:
                 return AnswerEvaluation(None, None, EvaluationStatus.NEEDS_TEACHER_REVIEW)
             if answer not in {"true", "false"}:

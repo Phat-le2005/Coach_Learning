@@ -9,11 +9,13 @@ from app.assignments.models import (
     Assignment,
     AssignmentConcept,
     AssignmentLearningObjective,
+    AssignmentMaterialItem,
     AssignmentProblemType,
     AssignmentQuestion,
     AssignmentStatus,
     AssignmentStudentQuestion,
     AssignmentType,
+    StudentAssignmentMaterialItem,
     StudentAssignment,
     StudentAssignmentStatus,
 )
@@ -22,6 +24,7 @@ from app.assignments.schemas import (
     AssignmentConceptRead,
     AssignmentCreate,
     AssignmentLearningObjectiveRead,
+    AssignmentMaterialItemRead,
     AssignmentProblemTypeRead,
     AssignmentQuestionOptionRead,
     AssignmentQuestionRead,
@@ -42,9 +45,15 @@ from app.concepts.models import Concept
 from app.core.exceptions import ApplicationError
 from app.curriculum.models import LearningOutcome, ProblemType
 from app.mastery.models import StudentProblemTypeMastery
+from app.mastery.evidence import WeightedConceptEvidence, WeightedProblemTypeEvidence
+from app.learning_evidence.models import LearningEvidenceSourceKind
+from app.learning_evidence.publisher import LearningEvidencePayload, LearningEvidencePublisher
+from app.practice.evaluation import AnswerEvaluationService
+from app.practice.models import EvaluationStatus
 from app.questions.eligibility import standalone_question_only
 from app.questions.models import (
     Question,
+    QuestionConcept,
     QuestionLearningOutcome,
     QuestionOption,
     QuestionProblemType,
@@ -53,6 +62,8 @@ from app.questions.models import (
 from app.students.models import StudentProfile
 from app.subjects.models import Subject
 from app.teachers.models import TeacherProfile
+from app.planning.models import TeachingPlan
+from app.teacher_materials.models import MaterialItemExtractionStatus, MaterialMappingStatus, TeacherMaterialItem
 from app.users.models import User
 
 logger = logging.getLogger(__name__)
@@ -61,6 +72,8 @@ logger = logging.getLogger(__name__)
 class AssignmentService:
     def __init__(self, session: Session) -> None:
         self.session = session
+        self.evaluator = AnswerEvaluationService()
+        self.evidence_publisher = LearningEvidencePublisher()
 
     # -------------------------------------------------------------------------
     # Teacher Operations
@@ -73,6 +86,25 @@ class AssignmentService:
         subject = self.session.get(Subject, data.subject_id)
         if subject is None:
             raise ApplicationError(404, "SUBJECT_NOT_FOUND", "Subject was not found.")
+        if data.teaching_plan_id is not None:
+            plan = self.session.get(TeachingPlan, data.teaching_plan_id)
+            if plan is None:
+                raise ApplicationError(404, "TEACHING_PLAN_NOT_FOUND", "Teaching plan was not found.")
+            if plan.classroom_id != data.classroom_id or plan.subject_id != data.subject_id:
+                raise ApplicationError(422, "TEACHING_PLAN_SCOPE_MISMATCH", "Teaching plan must match assignment classroom and subject.")
+        material_ids = list(dict.fromkeys(data.teacher_material_item_ids or []))
+        if material_ids and data.assignment_type != AssignmentType.SAME_SET:
+            raise ApplicationError(422, "MATERIAL_ITEMS_REQUIRE_SAME_SET", "Teacher material items are allowed only in SAME_SET assignments.")
+        material_items = list(self.session.scalars(select(TeacherMaterialItem).options(selectinload(TeacherMaterialItem.material), selectinload(TeacherMaterialItem.problem_type_mappings), selectinload(TeacherMaterialItem.concept_mappings)).where(TeacherMaterialItem.id.in_(material_ids)))) if material_ids else []
+        if {x.id for x in material_items} != set(material_ids):
+            raise ApplicationError(404, "MATERIAL_ITEM_NOT_FOUND", "One or more teacher material items were not found.")
+        for item in material_items:
+            if item.material.classroom_id != data.classroom_id or item.material.subject_id != data.subject_id:
+                raise ApplicationError(422, "MATERIAL_ITEM_SCOPE_MISMATCH", "Material item must match assignment classroom and subject.")
+            if item.extraction_status != MaterialItemExtractionStatus.READY:
+                raise ApplicationError(422, "MATERIAL_ITEM_NOT_READY", "Material item must be READY.")
+            if not any(x.status == MaterialMappingStatus.CONFIRMED for x in item.problem_type_mappings) or not any(x.status == MaterialMappingStatus.CONFIRMED for x in item.concept_mappings):
+                raise ApplicationError(422, "MATERIAL_ITEM_MAPPING_REQUIRED", "Material item requires confirmed mappings.")
 
         # Validate target problem types
         for pt_item in data.target_problem_types:
@@ -104,6 +136,7 @@ class AssignmentService:
         assignment = Assignment(
             classroom_id=data.classroom_id,
             subject_id=data.subject_id,
+            teaching_plan_id=data.teaching_plan_id,
             title=data.title,
             description=data.description,
             assignment_type=data.assignment_type,
@@ -116,6 +149,8 @@ class AssignmentService:
         )
         self.session.add(assignment)
         self.session.flush()
+        for idx, item in enumerate(material_items):
+            self.session.add(AssignmentMaterialItem(assignment_id=assignment.id, teacher_material_item_id=item.id, order_index=idx))
 
         # Link learning outcomes
         for lo_item in data.learning_outcomes:
@@ -185,7 +220,7 @@ class AssignmentService:
                             order_index=idx,
                         )
                     )
-            else:
+            elif not material_items:
                 # Automatically pick approved questions matching targets
                 selected_questions = self._query_approved_candidate_questions(
                     subject_id=data.subject_id,
@@ -201,6 +236,8 @@ class AssignmentService:
                             order_index=idx,
                         )
                     )
+        if data.question_ids or material_items:
+            assignment.question_count = len(data.question_ids or []) + len(material_items)
 
         self.session.commit()
         logger.info("Created assignment %s (type=%s)", assignment.id, assignment.assignment_type)
@@ -221,6 +258,7 @@ class AssignmentService:
                 id=a.id,
                 classroom_id=a.classroom_id,
                 subject_id=a.subject_id,
+                teaching_plan_id=a.teaching_plan_id,
                 title=a.title,
                 description=a.description,
                 assignment_type=a.assignment_type,
@@ -243,6 +281,7 @@ class AssignmentService:
                 selectinload(Assignment.problem_types).selectinload(AssignmentProblemType.problem_type),
                 selectinload(Assignment.concepts).selectinload(AssignmentConcept.concept),
                 selectinload(Assignment.questions).selectinload(AssignmentQuestion.question).selectinload(Question.options),
+                selectinload(Assignment.material_items).selectinload(AssignmentMaterialItem.teacher_material_item).selectinload(TeacherMaterialItem.options),
                 selectinload(Assignment.student_assignments),
             )
             .where(Assignment.id == assignment_id)
@@ -306,6 +345,18 @@ class AssignmentService:
             )
             for q in assignment.questions
         ]
+        material_items = [
+            AssignmentMaterialItemRead(
+                id=link.id, assignment_id=link.assignment_id,
+                teacher_material_item_id=link.teacher_material_item_id,
+                order_index=link.order_index, content=link.teacher_material_item.content,
+                question_type=link.teacher_material_item.question_type.value if link.teacher_material_item.question_type else None,
+                difficulty=link.teacher_material_item.difficulty,
+                correct_answer=link.teacher_material_item.correct_answer,
+                explanation=link.teacher_material_item.explanation,
+                options=[AssignmentQuestionOptionRead(id=x.id,label=x.label,content=x.content,order_index=x.order_index) for x in link.teacher_material_item.options],
+            ) for link in assignment.material_items
+        ]
 
         total_students = len(assignment.student_assignments)
         submitted_count = sum(
@@ -316,6 +367,7 @@ class AssignmentService:
             id=assignment.id,
             classroom_id=assignment.classroom_id,
             subject_id=assignment.subject_id,
+            teaching_plan_id=assignment.teaching_plan_id,
             title=assignment.title,
             description=assignment.description,
             assignment_type=assignment.assignment_type,
@@ -330,6 +382,7 @@ class AssignmentService:
             problem_types=pts,
             concepts=concepts,
             questions=questions,
+            material_items=material_items,
             total_assigned_students=total_students,
             submitted_count=submitted_count,
         )
@@ -357,6 +410,7 @@ class AssignmentService:
             select(Assignment)
             .options(
                 selectinload(Assignment.questions),
+                selectinload(Assignment.material_items),
                 selectinload(Assignment.problem_types),
                 selectinload(Assignment.learning_objectives),
                 selectinload(Assignment.concepts),
@@ -373,7 +427,7 @@ class AssignmentService:
             )
 
         # Ensure SAME_SET has questions
-        if assignment.assignment_type == AssignmentType.SAME_SET and not assignment.questions:
+        if assignment.assignment_type == AssignmentType.SAME_SET and not assignment.questions and not assignment.material_items:
             selected_questions = self._query_approved_candidate_questions(
                 subject_id=assignment.subject_id,
                 target_pt_ids=[pt.problem_type_id for pt in assignment.problem_types],
@@ -424,6 +478,15 @@ class AssignmentService:
                                 student_assignment_id=sa.id,
                                 question_id=q.question_id,
                                 order_index=idx,
+                            )
+                        )
+                    for item_link in assignment.material_items:
+                        self.session.add(
+                            StudentAssignmentMaterialItem(
+                                student_assignment_id=sa.id,
+                                teacher_material_item_id=item_link.teacher_material_item_id,
+                                order_index=item_link.order_index,
+                                evaluation_status=EvaluationStatus.NEEDS_EVALUATION,
                             )
                         )
                 elif assignment.assignment_type == AssignmentType.ADAPTIVE_SET:
@@ -546,6 +609,7 @@ class AssignmentService:
                     assignment_id=a.id,
                     classroom_id=a.classroom_id,
                     subject_id=a.subject_id,
+                    teaching_plan_id=a.teaching_plan_id,
                     title=a.title,
                     description=a.description,
                     assignment_type=a.assignment_type,
@@ -572,6 +636,9 @@ class AssignmentService:
                 selectinload(StudentAssignment.student_questions)
                 .selectinload(AssignmentStudentQuestion.question)
                 .selectinload(Question.options),
+                selectinload(StudentAssignment.student_material_items)
+                .selectinload(StudentAssignmentMaterialItem.teacher_material_item)
+                .selectinload(TeacherMaterialItem.options),
             )
             .where(
                 StudentAssignment.assignment_id == assignment_id,
@@ -592,7 +659,7 @@ class AssignmentService:
             self.session.commit()
 
         # If questions not yet populated, generate them now
-        if not sa.student_questions:
+        if not sa.student_questions and not sa.student_material_items:
             if assignment.assignment_type == AssignmentType.SAME_SET:
                 assign_qs = self.session.scalars(
                     select(AssignmentQuestion)
@@ -607,6 +674,9 @@ class AssignmentService:
                             order_index=idx,
                         )
                     )
+                assign_items = self.session.scalars(select(AssignmentMaterialItem).where(AssignmentMaterialItem.assignment_id == assignment.id).order_by(AssignmentMaterialItem.order_index)).all()
+                for link in assign_items:
+                    self.session.add(StudentAssignmentMaterialItem(student_assignment_id=sa.id, teacher_material_item_id=link.teacher_material_item_id, order_index=link.order_index, evaluation_status=EvaluationStatus.NEEDS_EVALUATION))
             elif assignment.assignment_type == AssignmentType.ADAPTIVE_SET:
                 adaptive_qs = self._select_adaptive_questions_for_student(student.id, assignment)
                 for idx, q in enumerate(adaptive_qs):
@@ -648,12 +718,27 @@ class AssignmentService:
                     explanation=q.explanation if is_submitted else None,
                 )
             )
+        for sm in sa.student_material_items:
+            item = sm.teacher_material_item
+            question_items.append(StudentQuestionItemRead(
+                source_kind="TEACHER_MATERIAL_ITEM", teacher_material_item_id=item.id,
+                order_index=sm.order_index, content=item.content,
+                question_type=item.question_type.value if item.question_type else item.evaluation_mode.value,
+                difficulty=item.difficulty,
+                options=[StudentQuestionOptionRead(id=x.id,label=x.label,content=x.content,order_index=x.order_index) for x in item.options],
+                student_answer=sm.student_answer,
+                is_correct=sm.is_correct if is_submitted else None,
+                correct_answer=item.correct_answer if is_submitted else None,
+                explanation=item.explanation if is_submitted else None,
+            ))
+        question_items.sort(key=lambda x: (x.order_index, x.source_kind))
 
         return StudentAssignmentRead(
             id=sa.id,
             assignment_id=assignment.id,
             classroom_id=assignment.classroom_id,
             subject_id=assignment.subject_id,
+            teaching_plan_id=assignment.teaching_plan_id,
             title=assignment.title,
             description=assignment.description,
             assignment_type=assignment.assignment_type,
@@ -679,9 +764,12 @@ class AssignmentService:
             select(StudentAssignment)
             .options(
                 selectinload(StudentAssignment.assignment),
-                selectinload(StudentAssignment.student_questions).selectinload(
-                    AssignmentStudentQuestion.question
-                ),
+                selectinload(StudentAssignment.student_questions).selectinload(AssignmentStudentQuestion.question).selectinload(Question.options),
+                selectinload(StudentAssignment.student_questions).selectinload(AssignmentStudentQuestion.question).selectinload(Question.concept_links),
+                selectinload(StudentAssignment.student_questions).selectinload(AssignmentStudentQuestion.question).selectinload(Question.problem_type_links),
+                selectinload(StudentAssignment.student_material_items).selectinload(StudentAssignmentMaterialItem.teacher_material_item).selectinload(TeacherMaterialItem.options),
+                selectinload(StudentAssignment.student_material_items).selectinload(StudentAssignmentMaterialItem.teacher_material_item).selectinload(TeacherMaterialItem.concept_mappings),
+                selectinload(StudentAssignment.student_material_items).selectinload(StudentAssignmentMaterialItem.teacher_material_item).selectinload(TeacherMaterialItem.problem_type_mappings),
             )
             .where(
                 StudentAssignment.assignment_id == assignment_id,
@@ -697,25 +785,25 @@ class AssignmentService:
         if sa.status in (StudentAssignmentStatus.SUBMITTED, StudentAssignmentStatus.GRADED):
             raise ApplicationError(409, "ASSIGNMENT_ALREADY_SUBMITTED", "Assignment has already been submitted.")
 
-        # Map answer by question_id
-        answer_map = {ans.question_id: ans.student_answer for ans in submission.answers}
+        canonical_answers = {ans.question_id: ans for ans in submission.answers if ans.question_id is not None}
+        material_answers = {ans.teacher_material_item_id: ans for ans in submission.answers if ans.teacher_material_item_id is not None}
 
         results: list[QuestionResultItem] = []
         correct_count = 0
-        total_questions = len(sa.student_questions)
+        total_questions = len(sa.student_questions) + len(sa.student_material_items)
+        scored_count = 0
+        score_sum = 0.0
 
         now = datetime.now(timezone.utc)
 
         for sq in sa.student_questions:
             q = sq.question
-            user_ans = answer_map.get(q.id, "")
-            is_correct = False
-            if q.correct_answer:
-                is_correct = user_ans.strip().upper() == q.correct_answer.strip().upper()
-
-            item_score = 1.0 if is_correct else 0.0
-            if is_correct:
-                correct_count += 1
+            submitted = canonical_answers.get(q.id)
+            user_ans = submitted.student_answer if submitted else ""
+            evaluation = self.evaluator.evaluate(q, user_ans)
+            is_correct, item_score = evaluation.is_correct, evaluation.score
+            if is_correct is True: correct_count += 1
+            if item_score is not None: scored_count += 1; score_sum += item_score
 
             sq.student_answer = user_ans
             sq.is_correct = is_correct
@@ -732,8 +820,38 @@ class AssignmentService:
                     explanation=q.explanation,
                 )
             )
+            if item_score is not None and is_correct is not None:
+                self.evidence_publisher.publish(LearningEvidencePayload(
+                    student_id=student.id, subject_id=sa.assignment.subject_id,
+                    classroom_id=sa.assignment.classroom_id, teaching_plan_id=sa.assignment.teaching_plan_id,
+                    assignment_id=sa.assignment.id, source_kind=LearningEvidenceSourceKind.ASSIGNMENT_CANONICAL_QUESTION,
+                    source_entity_id=sq.id, is_correct=is_correct, score=item_score, difficulty=q.difficulty,
+                    response_time_seconds=submitted.response_time_seconds if submitted else None,
+                    hint_count=submitted.hint_count if submitted else 0, evaluation_status=evaluation.status, occurred_at=now,
+                    concepts=tuple(WeightedConceptEvidence(x.concept_id,x.weight) for x in q.concept_links),
+                    problem_types=tuple(WeightedProblemTypeEvidence(x.problem_type_id,x.weight or 1.0) for x in q.problem_type_links),
+                    metadata={"question_id":str(q.id)},
+                ),self.session)
 
-        overall_score = round((correct_count / total_questions) * 10.0, 2) if total_questions > 0 else 0.0
+        for sm in sa.student_material_items:
+            item=sm.teacher_material_item; submitted=material_answers.get(item.id); user_ans=submitted.student_answer if submitted else ""
+            if item.evaluation_mode.value == "OBJECTIVE_AUTO" and item.question_type is not None:
+                evaluation=self.evaluator.evaluate_values(item.question_type,item.correct_answer,user_ans,option_labels=[x.label for x in item.options])
+            else:
+                from app.practice.evaluation import AnswerEvaluation
+                evaluation=AnswerEvaluation(None,None,EvaluationStatus.NEEDS_TEACHER_REVIEW if item.evaluation_mode.value=="TEACHER_REVIEW" else EvaluationStatus.NEEDS_EVALUATION)
+            sm.student_answer=user_ans; sm.is_correct=evaluation.is_correct; sm.score=evaluation.score
+            sm.response_time_seconds=submitted.response_time_seconds if submitted else None; sm.hint_count=submitted.hint_count if submitted else 0
+            sm.evaluation_status=evaluation.status; sm.evaluation_details={"evaluation":"deterministic" if evaluation.score is not None else "pending_teacher_or_ai"}; sm.answered_at=now
+            if evaluation.is_correct is True: correct_count+=1
+            if evaluation.score is not None: scored_count+=1; score_sum+=evaluation.score
+            results.append(QuestionResultItem(source_kind="TEACHER_MATERIAL_ITEM",teacher_material_item_id=item.id,student_answer=user_ans,correct_answer=item.correct_answer,is_correct=evaluation.is_correct,score=evaluation.score,explanation=item.explanation))
+            if evaluation.score is not None and evaluation.is_correct is not None:
+                concepts=tuple(WeightedConceptEvidence(x.concept_id,x.weight) for x in item.concept_mappings if x.status==MaterialMappingStatus.CONFIRMED)
+                pts=tuple(WeightedProblemTypeEvidence(x.problem_type_id,x.weight,x.is_primary) for x in item.problem_type_mappings if x.status==MaterialMappingStatus.CONFIRMED)
+                self.evidence_publisher.publish(LearningEvidencePayload(student_id=student.id,subject_id=sa.assignment.subject_id,classroom_id=sa.assignment.classroom_id,teaching_plan_id=sa.assignment.teaching_plan_id,assignment_id=sa.assignment.id,source_kind=LearningEvidenceSourceKind.TEACHER_MATERIAL_ITEM,source_entity_id=sm.id,is_correct=evaluation.is_correct,score=evaluation.score,difficulty=item.difficulty if item.difficulty is not None else .5,response_time_seconds=sm.response_time_seconds,hint_count=sm.hint_count,evaluation_status=evaluation.status,occurred_at=now,concepts=concepts,problem_types=pts,metadata={"teacher_material_item_id":str(item.id),"teacher_material_id":str(item.teacher_material_id)}),self.session)
+
+        overall_score = round((score_sum / scored_count) * 10.0, 2) if scored_count > 0 else 0.0
 
         sa.status = StudentAssignmentStatus.SUBMITTED
         sa.submitted_at = now
