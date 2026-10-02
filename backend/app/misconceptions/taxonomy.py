@@ -89,6 +89,20 @@ class TaxonomyScoper:
                 ).all()
             )
 
+        return self.get_scoped_taxonomy_for_evidence(
+            direct_concept_ids=set(direct_concept_ids),
+            direct_problem_type_ids=set(direct_problem_type_ids),
+            prerequisite_concept_ids=set(prerequisite_concept_ids),
+        )
+
+    def get_scoped_taxonomy_for_evidence(
+        self,
+        *,
+        direct_concept_ids: set[UUID],
+        direct_problem_type_ids: set[UUID],
+        prerequisite_concept_ids: set[UUID],
+    ) -> ScopedTaxonomy:
+        """Resolve a strict whitelist from immutable evidence mappings."""
         all_concept_ids = set(direct_concept_ids) | set(prerequisite_concept_ids)
         all_problem_type_ids = set(direct_problem_type_ids)
         prereq_concept_ids_set = set(prerequisite_concept_ids)

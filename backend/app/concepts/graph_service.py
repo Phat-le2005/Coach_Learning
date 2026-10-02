@@ -55,6 +55,69 @@ class ConceptGraphService:
             relations=[ConceptRelationRead.model_validate(relation) for relation in relations],
         )
 
+    def get_prerequisite_distances(
+        self,
+        concept_ids: set[UUID] | list[UUID] | tuple[UUID, ...],
+        subject_id: UUID,
+        *,
+        max_depth: int = 3,
+    ) -> dict[UUID, int]:
+        """Return shortest reverse-PREREQUISITE distances within one subject.
+
+        Direct concepts are omitted. The bounded breadth-first traversal remains
+        safe when imported data contains a cycle and has deterministic output.
+        """
+        if max_depth < 1:
+            return {}
+        direct_ids = set(concept_ids)
+        if not direct_ids:
+            return {}
+        resolved = set(
+            self.session.scalars(
+                select(Concept.id).where(
+                    Concept.id.in_(direct_ids), Concept.subject_id == subject_id
+                )
+            )
+        )
+        if resolved != direct_ids:
+            raise ApplicationError(
+                409,
+                "EVIDENCE_CONCEPT_SUBJECT_MISMATCH",
+                "Diagnostic evidence contains a concept outside its subject.",
+            )
+
+        distances: dict[UUID, int] = {}
+        visited = set(direct_ids)
+        frontier = set(direct_ids)
+        for depth in range(1, max_depth + 1):
+            if not frontier:
+                break
+            rows = self.session.execute(
+                select(
+                    ConceptRelation.source_concept_id,
+                    ConceptRelation.target_concept_id,
+                )
+                .join(Concept, Concept.id == ConceptRelation.source_concept_id)
+                .where(
+                    ConceptRelation.target_concept_id.in_(frontier),
+                    ConceptRelation.relation_type == RelationType.PREREQUISITE,
+                    Concept.subject_id == subject_id,
+                )
+                .order_by(
+                    ConceptRelation.source_concept_id,
+                    ConceptRelation.target_concept_id,
+                )
+            ).all()
+            next_frontier: set[UUID] = set()
+            for source_id, _ in rows:
+                if source_id in visited:
+                    continue
+                distances[source_id] = depth
+                visited.add(source_id)
+                next_frontier.add(source_id)
+            frontier = next_frontier
+        return dict(sorted(distances.items(), key=lambda item: (item[1], str(item[0]))))
+
     def create_relation(self, data: ConceptRelationCreate) -> ConceptRelation:
         # One transaction lock keeps cycle checks correct across concurrent graph writes.
         # SQLite exists only in tests; production uses PostgreSQL READ COMMITTED.

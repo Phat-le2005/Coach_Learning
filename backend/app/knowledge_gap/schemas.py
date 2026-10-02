@@ -1,10 +1,14 @@
 from __future__ import annotations
 
+from datetime import datetime
 from enum import StrEnum
 from typing import Any
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
+
+from app.knowledge_gap.models import RootCauseDiagnosisStatus, RootCauseDiagnosisType
+from app.learning_evidence.models import LearningEvidenceSourceKind
 
 
 class KnowledgeGapType(StrEnum):
@@ -93,3 +97,53 @@ class AIGapDiagnosisOutput(BaseModel):
         ...,
         description="Diagnostic summary code (e.g. 'PREREQUISITE_GAP_OBSERVED', 'SYNTHESIS_ERROR').",
     )
+
+class RootCauseCandidateRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    rank: int
+    candidate_type: RootCauseDiagnosisType
+    concept_id: UUID | None
+    problem_type_id: UUID | None
+    misconception_definition_id: UUID | None
+    graph_distance: int | None
+    score: float
+    confidence: float
+    mastery_deficit_signal: float
+    recent_error_signal: float
+    structural_signal: float
+    misconception_signal: float
+    evidence_volume_signal: float
+    supporting_event_count: int
+    conflicting_event_count: int
+    reason_codes: list[str]
+
+
+class RootCauseSourceEventRead(BaseModel):
+    id: UUID
+    source_kind: LearningEvidenceSourceKind
+    source_entity_id: UUID
+    occurred_at: datetime
+
+
+class RootCauseDiagnosisRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    learning_evidence_event_id: UUID
+    student_id: UUID
+    subject_id: UUID
+    classroom_id: UUID | None
+    assignment_id: UUID | None
+    target_problem_type_id: UUID | None
+    diagnosis_type: RootCauseDiagnosisType
+    status: RootCauseDiagnosisStatus
+    root_concept_id: UUID | None
+    misconception_definition_id: UUID | None
+    confidence: float
+    supporting_evidence_count: int
+    reason_code: str
+    explanation: str
+    source_event: RootCauseSourceEventRead
+    candidates: list[RootCauseCandidateRead]
+    created_at: datetime

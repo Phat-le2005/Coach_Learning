@@ -4,6 +4,7 @@ from uuid import UUID, uuid4
 
 import pytest
 from fastapi.testclient import TestClient
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.assignments.models import (
@@ -17,6 +18,8 @@ from app.classes.models import Classroom, EnrollmentStatus, StudentEnrollment, T
 from app.concepts.models import Concept
 from app.curriculum.models import Chapter, LearningOutcome, ProblemType, ProblemTypeConcept, Topic
 from app.mastery.models import StudentProblemTypeMastery
+from app.knowledge_gap.models import RootCauseDiagnosis
+from app.learning_evidence.models import LearningEvidenceEvent, LearningEvidenceSourceKind
 from app.questions.fingerprint import question_content_hash
 from app.questions.models import (
     Question,
@@ -259,6 +262,20 @@ def test_same_set_assignment_lifecycle_and_grading(
     s2_result = s2_sub_res.json()
     assert s2_result["score"] == 5.0
     assert s2_result["correct_count"] == 1
+    canonical_wrong_event = db_session.scalar(
+        select(LearningEvidenceEvent).where(
+            LearningEvidenceEvent.student_id == s2_prof.id,
+            LearningEvidenceEvent.source_kind
+            == LearningEvidenceSourceKind.ASSIGNMENT_CANONICAL_QUESTION,
+            LearningEvidenceEvent.is_correct.is_(False),
+        )
+    )
+    assert canonical_wrong_event is not None
+    assert db_session.scalar(
+        select(RootCauseDiagnosis).where(
+            RootCauseDiagnosis.learning_evidence_event_id == canonical_wrong_event.id
+        )
+    ) is not None
 
     # 7. Student 1 checks detail after submission -> correct answers and explanations are now revealed
     s1_post_detail = db_client.get(f"/students/me/assignments/{assignment_id}", headers=s1_headers)

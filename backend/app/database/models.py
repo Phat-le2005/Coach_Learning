@@ -120,6 +120,7 @@ from app.teacher_materials.models import (
 from app.learning_evidence.models import (
     LearningEvidenceEvent, LearningEvidenceConcept, LearningEvidenceProblemType,
 )
+from app.knowledge_gap.models import RootCauseCandidate, RootCauseDiagnosis
 
 __all__ = [
     "AcademicGoal",
@@ -231,4 +232,6 @@ __all__ = [
     "LearningEvidenceEvent",
     "LearningEvidenceConcept",
     "LearningEvidenceProblemType",
+    "RootCauseCandidate",
+    "RootCauseDiagnosis",
 ]

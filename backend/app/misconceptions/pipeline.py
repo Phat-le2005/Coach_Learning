@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+from types import SimpleNamespace
 from uuid import UUID
 
 from sqlalchemy.orm import Session
@@ -11,6 +12,8 @@ from app.ai.prompt_registry import PromptRegistry, default_prompt_registry
 from app.ai.types import AIMessage, AIRole, AITaskType
 from app.core.config import Settings
 from app.core.exceptions import ApplicationError
+from app.concepts.graph_service import ConceptGraphService
+from app.knowledge_gap.evidence_context import DiagnosticEvidenceContext
 from app.misconceptions.deterministic_rules import DeterministicRuleMatcher, has_reasoning
 from app.misconceptions.models import MisconceptionDefinition
 from app.misconceptions.schemas import (
@@ -19,7 +22,7 @@ from app.misconceptions.schemas import (
 )
 from app.misconceptions.service import MisconceptionPolicy, MisconceptionService
 from app.misconceptions.taxonomy import ScopedTaxonomy, TaxonomyScoper
-from app.practice.models import QuestionAttempt
+from app.practice.models import EvaluationStatus, QuestionAttempt
 from app.questions.models import Question
 
 logger = logging.getLogger(__name__)
@@ -172,6 +175,102 @@ class MisconceptionPipeline:
             commit=commit,
         )
 
+    async def run_for_evidence(
+        self,
+        context: DiagnosticEvidenceContext,
+        *,
+        student_explanation: str | None = None,
+        record_evidence: bool = False,
+        commit: bool = True,
+    ) -> MisconceptionPipelineResult:
+        """Analyze common evidence while preserving the QuestionAttempt adapter.
+
+        The default is advisory-only so reprocessing an event cannot increment a
+        persistent misconception label.
+        """
+        event = context.evidence_event
+        if (
+            event.is_correct is not False
+            or event.score is None
+            or event.evaluation_status
+            not in (EvaluationStatus.AUTO_EVALUATED, EvaluationStatus.EVALUATED)
+        ):
+            return MisconceptionPipelineResult(
+                detected=False,
+                detection_source="NONE",
+                reason="Evidence is not an evaluated wrong response.",
+            )
+        prerequisites = set(
+            ConceptGraphService(self.session).get_prerequisite_distances(
+                set(context.concept_weights), context.subject_id, max_depth=3
+            )
+        )
+        taxonomy = self.taxonomy_scoper.get_scoped_taxonomy_for_evidence(
+            direct_concept_ids=set(context.concept_weights),
+            direct_problem_type_ids=set(context.problem_type_weights),
+            prerequisite_concept_ids=prerequisites,
+        )
+        output: MisconceptionAnalysisOutput | None = None
+        source = "NONE"
+        if context.canonical_question is not None:
+            output = self.deterministic_matcher.evaluate(
+                context.canonical_question,
+                context.student_response or "",
+                taxonomy,
+            )
+            source = "DETERMINISTIC"
+        response_text = f"{context.student_response or ''} {student_explanation or ''}".strip()
+        if (
+            (output is None or output.misconception_code == "UNKNOWN")
+            and has_reasoning(response_text)
+            and taxonomy.definitions
+        ):
+            try:
+                question_like = SimpleNamespace(
+                    content=context.content,
+                    correct_answer=context.expected_answer,
+                    explanation=context.explanation,
+                )
+                output = await self._run_ai_analysis(
+                    question=question_like,  # type: ignore[arg-type]
+                    student_answer=context.student_response or "",
+                    student_explanation=student_explanation or "(None provided)",
+                    taxonomy=taxonomy,
+                )
+                source = "AI"
+            except Exception:
+                logger.warning(
+                    "Misconception advisory failed; deterministic diagnosis remains available",
+                    exc_info=True,
+                )
+                output = None
+        if output is None:
+            return MisconceptionPipelineResult(
+                detected=False,
+                detection_source="NONE",
+                reason="No scoped misconception signal was found.",
+            )
+        output.validate_against_taxonomy(
+            allowed_codes=taxonomy.allowed_codes,
+            allowed_concept_ids=taxonomy.allowed_concept_ids,
+            allowed_problem_type_ids=taxonomy.allowed_problem_type_ids,
+            allowed_prerequisite_concept_ids=taxonomy.allowed_prerequisite_concept_ids,
+        )
+        if output.misconception_code == "UNKNOWN":
+            return MisconceptionPipelineResult(
+                detected=False,
+                detection_source=source,  # type: ignore[arg-type]
+                reason="Signal remained UNKNOWN within the scoped taxonomy.",
+            )
+        return self._finalize_for_student(
+            student_id=context.student_id,
+            output=output,
+            taxonomy=taxonomy,
+            source=source,
+            commit=commit,
+            record_evidence=record_evidence,
+        )
+
     async def _run_ai_analysis(
         self,
         question: Question,
@@ -226,14 +325,30 @@ class MisconceptionPipeline:
         source: str,
         commit: bool,
     ) -> MisconceptionPipelineResult:
-        """Map code to active MisconceptionDefinition and apply backend policy."""
-        # Find active definition matching the diagnosed code
-        definition: MisconceptionDefinition | None = None
-        for d in taxonomy.definitions:
-            if d.code == output.misconception_code:
-                definition = d
-                break
+        """Backward-compatible QuestionAttempt adapter."""
+        return self._finalize_for_student(
+            student_id=attempt.student_id,
+            output=output,
+            taxonomy=taxonomy,
+            source=source,
+            commit=commit,
+            record_evidence=True,
+        )
 
+    def _finalize_for_student(
+        self,
+        *,
+        student_id: UUID,
+        output: MisconceptionAnalysisOutput,
+        taxonomy: ScopedTaxonomy,
+        source: str,
+        commit: bool,
+        record_evidence: bool,
+    ) -> MisconceptionPipelineResult:
+        definition: MisconceptionDefinition | None = next(
+            (row for row in taxonomy.definitions if row.code == output.misconception_code),
+            None,
+        )
         if definition is None:
             return MisconceptionPipelineResult(
                 detected=False,
@@ -247,9 +362,6 @@ class MisconceptionPipeline:
                 requires_prerequisite_check=output.requires_prerequisite_check,
                 reason="Diagnosed misconception code does not map to an active definition.",
             )
-
-        # Policy decision on confidence:
-        # Confidence too low -> skip recording evidence
         if output.confidence < self.min_confidence_to_record:
             return MisconceptionPipelineResult(
                 detected=True,
@@ -269,20 +381,29 @@ class MisconceptionPipeline:
                     f"threshold ({self.min_confidence_to_record:.2f}); evidence skipped per policy."
                 ),
             )
-
-        # Confidence sufficient -> backend records evidence and determines StudentMisconception state
-        increment = round(
-            min(1.0, max(0.05, output.confidence * 0.40)),
-            4,
-        )
-
+        if not record_evidence:
+            return MisconceptionPipelineResult(
+                detected=True,
+                detection_source=source,  # type: ignore[arg-type]
+                misconception_definition_id=definition.id,
+                misconception_code=definition.code,
+                concept_id=output.concept_id,
+                problem_type_id=output.problem_type_id,
+                error_category=output.error_category,
+                first_wrong_step=output.first_wrong_step,
+                confidence=output.confidence,
+                possible_prerequisite_concept_id=output.possible_prerequisite_concept_id,
+                requires_prerequisite_check=output.requires_prerequisite_check,
+                evidence_recorded=False,
+                reason="Scoped misconception hypothesis returned in advisory-only mode.",
+            )
+        increment = round(min(1.0, max(0.05, output.confidence * 0.40)), 4)
         student_misconception = self.misconception_service.record_evidence(
-            student_id=attempt.student_id,
+            student_id=student_id,
             misconception_definition_id=definition.id,
             confidence_increment=increment,
             commit=commit,
         )
-
         return MisconceptionPipelineResult(
             detected=True,
             detection_source=source,  # type: ignore[arg-type]

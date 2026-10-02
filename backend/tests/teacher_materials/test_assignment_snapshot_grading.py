@@ -14,6 +14,8 @@ from app.assignments.schemas import (
 from app.assignments.service import AssignmentService
 from app.core.exceptions import ApplicationError
 from app.learning_evidence.models import LearningEvidenceEvent, LearningEvidenceSourceKind
+from app.knowledge_gap.evidence_context import LearningEvidenceContextResolver
+from app.knowledge_gap.models import RootCauseDiagnosis
 from app.mastery.models import StudentConceptMastery, StudentProblemTypeMastery
 from app.practice.models import EvaluationStatus
 from app.questions.models import Question, QuestionOption, QuestionStatus, QuestionType
@@ -112,6 +114,43 @@ def test_published_snapshot_survives_source_edit_and_drives_evidence(db_session,
     assert immutable.value.code == "MATERIAL_SNAPSHOT_IMMUTABLE"
 
 
+def test_wrong_material_evidence_diagnoses_from_immutable_snapshot(db_session, tmp_path):
+    domain = setup_domain(db_session, tmp_path)
+    _, item = upload_ready(domain, db_session)
+    service, assignment_id = _assignment(domain, db_session, item.id)
+    assigned = service.get_student_assignment(domain.student.id, assignment_id).questions[0]
+    frozen_content = assigned.content
+    domain.service.update_item(
+        domain.teacher.id,
+        item.id,
+        TeacherMaterialItemUpdate(content="Mutable source rewritten after publish"),
+    )
+    service.submit_assignment(
+        domain.student.id,
+        assignment_id,
+        AssignmentSubmissionRequest(
+            answers=[AnswerSubmitItem(teacher_material_item_id=item.id, student_answer="B")]
+        ),
+    )
+    event = db_session.scalar(
+        select(LearningEvidenceEvent).where(
+            LearningEvidenceEvent.source_kind
+            == LearningEvidenceSourceKind.TEACHER_MATERIAL_ITEM
+        )
+    )
+    assert event is not None
+    diagnosis = db_session.scalar(
+        select(RootCauseDiagnosis).where(
+            RootCauseDiagnosis.learning_evidence_event_id == event.id
+        )
+    )
+    assert diagnosis is not None
+    context = LearningEvidenceContextResolver(db_session).resolve(event.id)
+    assert context.content == frozen_content
+    assert context.content != "Mutable source rewritten after publish"
+    assert str(context.assignment_material_snapshot_id) == diagnosis.diagnosis_metadata["snapshot_id"]
+
+
 @pytest.mark.parametrize("mode", [MaterialEvaluationMode.TEACHER_REVIEW, MaterialEvaluationMode.OPEN_RESPONSE])
 def test_teacher_grade_pending_once_and_update_mastery(db_session, tmp_path, mode):
     domain = setup_domain(db_session, tmp_path)
@@ -135,6 +174,7 @@ def test_teacher_grade_pending_once_and_update_mastery(db_session, tmp_path, mod
     assert result.score is None
     assert result.status == StudentAssignmentStatus.SUBMITTED
     assert db_session.scalar(select(LearningEvidenceEvent)) is None
+    assert db_session.scalar(select(RootCauseDiagnosis)) is None
     student_item = db_session.get(StudentAssignmentMaterialItem, student_item_id)
     assert student_item.score is None
     assert student_item.evaluation_status in (
@@ -167,6 +207,43 @@ def test_teacher_grade_pending_once_and_update_mastery(db_session, tmp_path, mod
     assert event.event_metadata["grading_source"] == "TEACHER"
     assert event.response_time_seconds == 32 and event.hint_count == 2
     assert db_session.scalar(select(StudentConceptMastery)).attempt_count == 1
+
+
+def test_pending_material_creates_diagnosis_only_after_wrong_teacher_grade(
+    db_session, tmp_path
+):
+    domain = setup_domain(db_session, tmp_path)
+    _, item = upload_ready(domain, db_session)
+    _review_mode(domain, item, MaterialEvaluationMode.TEACHER_REVIEW)
+    service, assignment_id = _assignment(domain, db_session, item.id)
+    student_item_id = service.get_student_assignment(
+        domain.student.id, assignment_id
+    ).questions[0].student_material_item_id
+    service.submit_assignment(
+        domain.student.id,
+        assignment_id,
+        AssignmentSubmissionRequest(
+            answers=[
+                AnswerSubmitItem(
+                    teacher_material_item_id=item.id,
+                    student_answer="Reasoning pending review",
+                )
+            ]
+        ),
+    )
+    assert db_session.scalar(select(RootCauseDiagnosis)) is None
+    service.grade_material_item(
+        domain.teacher.id,
+        assignment_id,
+        domain.student_profile.id,
+        student_item_id,
+        MaterialItemGradeRequest(score=0.0, is_correct=False),
+    )
+    diagnosis = db_session.scalar(select(RootCauseDiagnosis))
+    assert diagnosis is not None
+    assert diagnosis.learning_evidence_event_id == db_session.scalar(
+        select(LearningEvidenceEvent.id)
+    )
     assert db_session.scalar(select(StudentProblemTypeMastery)).attempt_count == 1
     with pytest.raises(ApplicationError) as duplicate:
         service.grade_material_item(
