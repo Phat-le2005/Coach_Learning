@@ -41,6 +41,18 @@ class MappingRead(BaseModel):
     status: MaterialMappingStatus
     rationale: str | None
 
+class ProblemTypeMappingRead(MappingRead):
+    problem_type_id: UUID
+
+
+class ConceptMappingRead(MappingRead):
+    concept_id: UUID
+
+
+class LearningOutcomeMappingRead(MappingRead):
+    learning_outcome_id: UUID
+
+
 class TeacherMaterialItemRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: UUID
@@ -58,6 +70,9 @@ class TeacherMaterialItemRead(BaseModel):
     evaluation_mode: MaterialEvaluationMode
     raw_metadata: dict
     options: list[MaterialOptionRead] = Field(default_factory=list)
+    problem_type_mappings: list[ProblemTypeMappingRead] = Field(default_factory=list)
+    concept_mappings: list[ConceptMappingRead] = Field(default_factory=list)
+    learning_outcome_mappings: list[LearningOutcomeMappingRead] = Field(default_factory=list)
 
 class TeacherMaterialRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)

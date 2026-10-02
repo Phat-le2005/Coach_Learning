@@ -9,6 +9,8 @@ from app.assignments.schemas import (
     AssignmentRead,
     AssignmentSubmissionRequest,
     AssignmentSubmissionResultRead,
+    MaterialItemGradeRequest,
+    MaterialItemGradeRead,
     AssignmentSummaryRead,
     AssignmentUpdate,
     StudentAssignmentRead,
@@ -142,6 +144,23 @@ def get_assignment_submissions(
     service: Annotated[AssignmentService, Depends(get_assignment_service)],
 ) -> TeacherAssignmentRosterRead:
     return service.get_assignment_roster(user.id, assignment_id)
+
+
+@teacher_router.post(
+    "/assignments/{assignment_id}/students/{student_id}/material-items/{student_material_item_id}/grade",
+    response_model=MaterialItemGradeRead,
+)
+def grade_material_item(
+    assignment_id: UUID,
+    student_id: UUID,
+    student_material_item_id: UUID,
+    data: MaterialItemGradeRequest,
+    user: TeacherUser,
+    service: Annotated[AssignmentService, Depends(get_assignment_service)],
+) -> MaterialItemGradeRead:
+    return service.grade_material_item(
+        user.id, assignment_id, student_id, student_material_item_id, data
+    )
 
 
 # -------------------------------------------------------------------------

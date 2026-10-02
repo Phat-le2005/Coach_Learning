@@ -103,7 +103,10 @@ class AssignmentMaterialItemRead(BaseModel):
     assignment_id: UUID
     teacher_material_item_id: UUID
     order_index: int
-    content: str
+    content: str | None
+    assignment_material_item_id: UUID | None = None
+    source_content_hash: str | None = None
+    snapshotted_at: datetime | None = None
     question_type: str | None
     difficulty: float | None
     correct_answer: str | None
@@ -152,6 +155,8 @@ class StudentQuestionItemRead(BaseModel):
     source_kind: str = "CANONICAL_QUESTION"
     question_id: UUID | None = None
     teacher_material_item_id: UUID | None = None
+    assignment_material_item_id: UUID | None = None
+    student_material_item_id: UUID | None = None
     order_index: int
     content: str
     question_type: str
@@ -216,7 +221,7 @@ class AssignmentSubmissionResultRead(BaseModel):
     student_assignment_id: UUID
     assignment_id: UUID
     status: StudentAssignmentStatus
-    score: float
+    score: float | None
     total_questions: int
     correct_count: int
     submitted_at: datetime
@@ -243,3 +248,20 @@ class TeacherAssignmentRosterRead(BaseModel):
     graded_count: int
     average_score: float | None = None
     roster: list[StudentRosterStatusItem] = Field(default_factory=list)
+
+class MaterialItemGradeRequest(BaseModel):
+    score: float = Field(ge=0, le=1)
+    is_correct: bool
+    feedback: str | None = None
+
+
+class MaterialItemGradeRead(BaseModel):
+    item_id: UUID
+    evaluation_status: str
+    score: float
+    is_correct: bool
+    feedback: str | None
+    graded_at: datetime
+    graded_by: UUID
+    assignment_score: float | None
+    assignment_status: StudentAssignmentStatus

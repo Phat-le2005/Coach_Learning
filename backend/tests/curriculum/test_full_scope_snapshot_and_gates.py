@@ -75,13 +75,14 @@ def _codes(report: Any) -> set[str]:
 # 1. DATA-MATH12-038 Canonical Snapshot Candidate Tests
 # ======================================================================
 
-def test_snapshot_candidate_generator_and_validator() -> None:
-    gen_result = CanonicalSnapshotCandidateGenerator.generate()
+def test_snapshot_candidate_generator_and_validator(tmp_path: Path) -> None:
+    generated_dir = tmp_path / "generated_snapshot"
+    gen_result = CanonicalSnapshotCandidateGenerator.generate(target_dir=generated_dir)
     assert gen_result["status"] == "GENERATED"
     assert gen_result["fingerprint"] == EXPECTED_BOUND_COMPOSED_FINGERPRINT
     assert gen_result["manifest_version"] == "1.2.0"
 
-    report = CanonicalSnapshotCandidateValidator().validate()
+    report = CanonicalSnapshotCandidateValidator().validate(snapshot_dir=generated_dir)
     assert report.is_valid, [e.message for e in report.errors]
     assert report.status == "PASS"
     assert report.aggregate_semantic_sha256 == EXPECTED_SNAPSHOT_CANDIDATE_AGGREGATE_SHA256
@@ -94,7 +95,7 @@ def test_snapshot_candidate_generator_and_validator() -> None:
     assert report.production_release_allowed is False
 
     for fname in GENERATED_SNAPSHOT_FILES:
-        target = DEFAULT_SNAPSHOT_DIR / fname
+        target = generated_dir / fname
         assert target.is_file(), f"Missing snapshot file: {fname}"
 
 

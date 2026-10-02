@@ -93,6 +93,10 @@ def test_ai_overlay_rejects_fake_code_and_stays_suggested(db_session:Session,tmp
     valid=TeacherMaterialMappingAIOutput(problem_types=[ProposedTaxonomyMapping(code=d.pt.code,weight=1,confidence=.8,is_primary=True)],concepts=[ProposedTaxonomyMapping(code=d.concept.code,weight=1,confidence=.8)])
     mapper.persist_suggestions(item,valid,[d.pt],[d.concept],[d.lo]); db_session.commit()
     assert all(x.status==MaterialMappingStatus.SUGGESTED for x in db_session.scalars(select(TeacherMaterialItemProblemType)).all())
+    from app.teacher_materials.schemas import TeacherMaterialItemRead
+    refreshed = TeacherMaterialItemRead.model_validate(d.service.get(d.teacher.id, material.id).items[0])
+    assert refreshed.problem_type_mappings[0].status == MaterialMappingStatus.SUGGESTED
+    assert refreshed.concept_mappings[0].status == MaterialMappingStatus.SUGGESTED
     assert db_session.scalar(select(StudentProblemTypeMastery)) is None
     fake=TeacherMaterialMappingAIOutput(problem_types=[ProposedTaxonomyMapping(code="INVENTED",weight=1,confidence=1)])
     with pytest.raises(ApplicationError): mapper.persist_suggestions(item,fake,[d.pt],[d.concept],[d.lo])
