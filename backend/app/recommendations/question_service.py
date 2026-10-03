@@ -326,11 +326,17 @@ class QuestionRecommendationService:
         *,
         isolation_boost: bool = False,
     ) -> _CandidateScore:
+        problem_type_weight = 0.45 if isolation_boost else 0.35
+        concept_weight = 0.35 if isolation_boost else 0.25
+        difficulty_weight = 0.25 if isolation_boost else 0.30
+        cognitive_weight = 0.05 if isolation_boost else 0.10
+        exam_weight = 0.0 if isolation_boost else 0.10
+
         problem_type_match = 0.0
         if problem_type_id is not None:
             for link in question.problem_type_links:
                 if link.problem_type_id == problem_type_id:
-                    problem_type_match = 0.35 * (
+                    problem_type_match = problem_type_weight * (
                         link.weight if link.weight is not None else 1.0
                     )
                     break
@@ -338,18 +344,20 @@ class QuestionRecommendationService:
         if concept_id is not None:
             for link in question.concept_links:
                 if link.concept_id == concept_id:
-                    concept_match = 0.25 * link.weight
+                    concept_match = concept_weight * link.weight
                     break
-        difficulty_fit = 0.3 * (1.0 - abs(question.difficulty - desired_difficulty))
-        cognitive_fit = 0.1 if question.cognitive_level in _preferred_cognitive_levels(
+        difficulty_fit = difficulty_weight * (
+            1.0 - abs(question.difficulty - desired_difficulty)
+        )
+        cognitive_fit = cognitive_weight if question.cognitive_level in _preferred_cognitive_levels(
             desired_difficulty
         ) else 0.0
-        exam_relevance = 0.1 * question.exam_weight
+        exam_relevance = exam_weight * question.exam_weight
 
         isolation_component = 0.0
         if isolation_boost:
             concept_count = len(question.concept_links) or 1
-            isolation_component = 0.20 * (1.0 / concept_count)
+            isolation_component = 0.35 * (1.0 / concept_count)
 
         return _CandidateScore(
             question=question,

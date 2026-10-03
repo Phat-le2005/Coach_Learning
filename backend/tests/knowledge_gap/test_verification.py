@@ -31,7 +31,13 @@ from app.learning_evidence.models import (
     LearningEvidenceSourceKind,
 )
 from app.mastery.models import StudentConceptMastery
-from app.practice.models import EvaluationStatus
+from app.practice.models import (
+    EvaluationStatus,
+    PracticeSession,
+    PracticeSessionStatus,
+    PracticeSessionType,
+    QuestionAttempt,
+)
 from app.questions.models import (
     CognitiveLevel,
     Question,
@@ -64,17 +70,22 @@ def _create_question(
     correct_answer: str = "A",
     difficulty: float = 0.35,
     status: QuestionStatus = QuestionStatus.APPROVED,
+    question_type: QuestionType = QuestionType.MULTIPLE_CHOICE,
+    concept_weight: float = 1.0,
+    problem_type_weight: float = 1.0,
+    is_primary: bool = True,
+    exam_weight: float = 0.5,
 ) -> Question:
     teacher = session.query(User).filter_by(email="teacher@practice.local").first()
     q = Question(
         subject_id=content.subject.id,
         content=text,
-        question_type=QuestionType.MULTIPLE_CHOICE,
+        question_type=question_type,
         difficulty=difficulty,
         correct_answer=correct_answer,
         explanation="Detailed test explanation",
         source_type="TEST",
-        exam_weight=0.5,
+        exam_weight=exam_weight,
         status=status,
         cognitive_level=CognitiveLevel.UNDERSTAND,
         created_by=teacher.id if teacher else content.mcq.created_by,
@@ -83,9 +94,15 @@ def _create_question(
             QuestionOption(label="B", content="Option B", order_index=1),
         ],
     )
-    q.concept_links = [QuestionConcept(concept_id=concept.id, weight=1.0)]
+    q.concept_links = [
+        QuestionConcept(concept_id=concept.id, weight=concept_weight)
+    ]
     q.problem_type_links = [
-        QuestionProblemType(problem_type_id=problem_type.id, weight=1.0, is_primary=True)
+        QuestionProblemType(
+            problem_type_id=problem_type.id,
+            weight=problem_type_weight,
+            is_primary=is_primary,
+        )
     ]
     q.learning_outcome_links = [
         QuestionLearningOutcome(
@@ -107,13 +124,39 @@ def _create_diagnosis(
     target_problem_type_id: UUID | None = None,
     candidate_concept_id: UUID | None = None,
     candidate_problem_type_id: UUID | None = None,
+    source_question: Question | None = None,
 ) -> RootCauseDiagnosis:
     now = datetime.now(timezone.utc)
+    source_entity_id = uuid4()
+    if source_question is not None:
+        source_session = PracticeSession(
+            student_id=student_id,
+            subject_id=content.subject.id,
+            session_type=PracticeSessionType.PRACTICE,
+            status=PracticeSessionStatus.COMPLETED,
+            completed_at=now,
+        )
+        session.add(source_session)
+        session.flush()
+        source_attempt = QuestionAttempt(
+            practice_session_id=source_session.id,
+            student_id=student_id,
+            question_id=source_question.id,
+            student_answer="B",
+            is_correct=False,
+            score=0.0,
+            attempt_number=1,
+            evaluation_status=EvaluationStatus.AUTO_EVALUATED,
+        )
+        session.add(source_attempt)
+        session.flush()
+        source_entity_id = source_attempt.id
+
     ev = LearningEvidenceEvent(
         student_id=student_id,
         subject_id=content.subject.id,
         source_kind=LearningEvidenceSourceKind.PRACTICE_QUESTION,
-        source_entity_id=uuid4(),
+        source_entity_id=source_entity_id,
         is_correct=False,
         score=0.0,
         difficulty=0.5,

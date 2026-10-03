@@ -16,8 +16,31 @@ from app.knowledge_gap.models import (
     RootCauseVerificationTarget,
     RootCauseVerificationTargetType,
 )
+from app.practice.models import EvaluationStatus, QuestionAttempt
 from app.questions.eligibility import standalone_question_only
-from app.questions.models import CognitiveLevel, Question, QuestionStatus
+from app.questions.models import CognitiveLevel, Question, QuestionStatus, QuestionType
+
+
+VERIFICATION_AUTO_EVALUABLE_TYPES = frozenset(
+    {
+        QuestionType.MULTIPLE_CHOICE,
+        QuestionType.TRUE_FALSE,
+        QuestionType.SHORT_ANSWER,
+    }
+)
+VERIFICATION_COMPLETED_EVALUATION_STATUSES = frozenset(
+    {EvaluationStatus.AUTO_EVALUATED, EvaluationStatus.EVALUATED}
+)
+
+
+def is_completed_verification_attempt(attempt: QuestionAttempt | None) -> bool:
+    """Return whether an attempt is valid deterministic verification evidence."""
+    return bool(
+        attempt is not None
+        and attempt.evaluation_status in VERIFICATION_COMPLETED_EVALUATION_STATUSES
+        and attempt.is_correct is not None
+        and attempt.score is not None
+    )
 
 
 @dataclass(frozen=True, slots=True)
@@ -36,6 +59,8 @@ class TargetResolutionSpec:
 class CandidateQuestionScore:
     question: Question
     selection_score: float
+    target_match: float
+    primary_problem_type_fit: float
     isolation_score: float
     difficulty_fit: float
     cognitive_fit: float
@@ -207,6 +232,7 @@ class RootCauseVerificationPolicy:
             .where(
                 Question.subject_id == subject_id,
                 Question.status == QuestionStatus.APPROVED,
+                Question.question_type.in_(VERIFICATION_AUTO_EVALUABLE_TYPES),
                 standalone_question_only(),
                 Question.concept_links.any(),
                 Question.problem_type_links.any(),
@@ -270,12 +296,61 @@ class RootCauseVerificationPolicy:
     ) -> CandidateQuestionScore:
         """Deterministic probe selection score prioritizing target isolation and difficulty fit.
 
+        target_match: matching taxonomy link weight.
+        primary_problem_type_fit: 1.0 when the target ProblemType is primary.
         isolation_score: 1.0 / len(concept_links) (fewer confounding concepts = higher isolation)
         difficulty_fit: 1.0 - abs(difficulty - target_difficulty)
         cognitive_fit: 1.0 for REMEMBER/UNDERSTAND, 0.7 for APPLY, 0.4 for ANALYZE
         """
         concept_count = len(question.concept_links) or 1
         isolation_score = round(1.0 / concept_count, 4)
+
+        target_match = 0.0
+        primary_problem_type_fit = 0.0
+        if target_spec.target_type == RootCauseVerificationTargetType.CONCEPT:
+            target_match = max(
+                (
+                    float(link.weight)
+                    for link in question.concept_links
+                    if link.concept_id == target_spec.target_concept_id
+                ),
+                default=0.0,
+            )
+        elif target_spec.target_type == RootCauseVerificationTargetType.PROBLEM_TYPE:
+            matching_links = [
+                link
+                for link in question.problem_type_links
+                if link.problem_type_id == target_spec.target_problem_type_id
+            ]
+            target_match = max(
+                (
+                    float(link.weight) if link.weight is not None else 1.0
+                    for link in matching_links
+                ),
+                default=0.0,
+            )
+            primary_problem_type_fit = (
+                1.0 if any(link.is_primary for link in matching_links) else 0.0
+            )
+        else:
+            concept_weights = [
+                float(link.weight)
+                for link in question.concept_links
+                if link.concept_id == target_spec.target_concept_id
+            ]
+            problem_type_links = [
+                link
+                for link in question.problem_type_links
+                if link.problem_type_id == target_spec.target_problem_type_id
+            ]
+            problem_type_weights = [
+                float(link.weight) if link.weight is not None else 1.0
+                for link in problem_type_links
+            ]
+            target_match = max(concept_weights + problem_type_weights, default=0.0)
+            primary_problem_type_fit = (
+                1.0 if any(link.is_primary for link in problem_type_links) else 0.0
+            )
 
         diff = question.difficulty if question.difficulty is not None else 0.5
         difficulty_fit = max(0.0, 1.0 - abs(diff - target_spec.desired_difficulty))
@@ -289,13 +364,19 @@ class RootCauseVerificationPolicy:
             cognitive_fit = 0.4
 
         selection_score = round(
-            0.40 * isolation_score + 0.35 * difficulty_fit + 0.15 * cognitive_fit + 0.10,
+            0.30 * target_match
+            + 0.20 * primary_problem_type_fit
+            + 0.20 * isolation_score
+            + 0.20 * difficulty_fit
+            + 0.10 * cognitive_fit,
             4,
         )
 
         return CandidateQuestionScore(
             question=question,
             selection_score=selection_score,
+            target_match=round(target_match, 4),
+            primary_problem_type_fit=primary_problem_type_fit,
             isolation_score=isolation_score,
             difficulty_fit=round(difficulty_fit, 4),
             cognitive_fit=round(cognitive_fit, 4),
@@ -305,7 +386,7 @@ class RootCauseVerificationPolicy:
     def evaluate_target_outcome(
         cls,
         items: list[RootCauseVerificationItem],
-        attempts_by_id: dict[UUID, any],
+        attempts_by_id: dict[UUID, QuestionAttempt],
     ) -> tuple[RootCauseVerificationOutcome, int, int, float | None]:
         """Evaluate empirical verification outcome for a target based on student attempt evidence.
 
@@ -322,7 +403,11 @@ class RootCauseVerificationPolicy:
         if not items:
             return RootCauseVerificationOutcome.UNAVAILABLE, 0, 0, None
 
-        attempted_items = [item for item in items if item.attempt_id in attempts_by_id]
+        attempted_items = [
+            item
+            for item in items
+            if is_completed_verification_attempt(attempts_by_id.get(item.attempt_id))
+        ]
         probe_count = len(attempted_items)
 
         if probe_count == 0:
@@ -334,8 +419,9 @@ class RootCauseVerificationPolicy:
 
         for item in attempted_items:
             attempt = attempts_by_id[item.attempt_id]
-            is_corr = bool(attempt.is_correct)
-            score = float(attempt.score) if attempt.score is not None else (1.0 if is_corr else 0.0)
+            # Guarded by is_completed_verification_attempt above.
+            is_corr = attempt.is_correct is True
+            score = float(attempt.score)
             if is_corr:
                 correct_count += 1
             else:

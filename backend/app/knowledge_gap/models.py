@@ -203,6 +203,13 @@ class RootCauseVerification(Base):
         CheckConstraint(
             "completed_probe_count >= 0", name="completed_probes_nonnegative"
         ),
+        CheckConstraint(
+            "completed_probe_count <= required_probe_count",
+            name="completed_probes_not_exceed_required",
+        ),
+        UniqueConstraint(
+            "diagnosis_id", name="uq_root_cause_verification_diagnosis"
+        ),
         Index("ix_root_cause_verification_diagnosis", "diagnosis_id"),
         Index("ix_root_cause_verification_practice_session", "practice_session_id"),
         Index("ix_root_cause_verification_diag_status", "diagnosis_id", "status"),
@@ -248,6 +255,10 @@ class RootCauseVerificationTarget(Base):
         CheckConstraint("priority_order >= 0", name="priority_order_nonnegative"),
         CheckConstraint("probe_count >= 0", name="probe_count_nonnegative"),
         CheckConstraint("correct_count >= 0", name="correct_count_nonnegative"),
+        CheckConstraint(
+            "correct_count <= probe_count",
+            name="correct_count_not_exceed_probe_count",
+        ),
         CheckConstraint(
             "average_score IS NULL OR (average_score >= 0 AND average_score <= 1)",
             name="target_average_score_range",
@@ -317,6 +328,11 @@ class RootCauseVerificationItem(Base):
         CheckConstraint("order_index >= 0", name="item_order_index_nonnegative"),
         CheckConstraint(
             "desired_difficulty BETWEEN 0 AND 1", name="desired_difficulty_range"
+        ),
+        UniqueConstraint(
+            "verification_target_id",
+            "question_id",
+            name="uq_root_cause_verification_target_question",
         ),
         Index("ix_root_cause_verification_item_target", "verification_target_id"),
         Index("ix_root_cause_verification_item_question", "question_id"),

@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 from uuid import UUID
 
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session, selectinload
 
 from app.concepts.models import Concept
@@ -28,6 +29,7 @@ from app.knowledge_gap.schemas import (
 from app.knowledge_gap.verification_policy import (
     RootCauseVerificationPolicy,
     TargetResolutionSpec,
+    is_completed_verification_attempt,
 )
 from app.mastery.evidence import MasteryAttemptEvidencePublisher
 from app.practice.evaluation import AnswerEvaluationService
@@ -66,10 +68,10 @@ class RootCauseVerificationService:
     ) -> RootCauseVerificationRead:
         """Start or retrieve an idempotent root cause verification session.
 
-        - Frozen probe selection from canonical APPROVED Question Bank.
-        - Excludes recent exposures, diagnosis source questions, and cross-target duplicates.
-        - If no questions are available in the question bank, marks status UNAVAILABLE.
-        - Creates a dedicated PracticeSession of type ROOT_CAUSE_VERIFICATION.
+        required_probe_count is the frozen number of selected probe items
+        required to complete this session. A target still needs at least
+        MIN_PROBES_PER_TARGET valid evaluated probes before it can be
+        SUPPORTED or NOT_SUPPORTED.
         """
         student = self.session.get(StudentProfile, student_id)
         if student is None:
@@ -81,12 +83,10 @@ class RootCauseVerificationService:
         if diagnosis.student_id != student_id:
             raise ApplicationError(403, "DIAGNOSIS_ACCESS_DENIED", "Access denied to diagnosis.")
 
-        # Idempotency: return existing verification if already created
         existing_verification = self._find_existing_verification(diagnosis_id)
         if existing_verification is not None:
             return self._build_verification_read(existing_verification)
 
-        # Resolve targets from policy
         target_specs = RootCauseVerificationPolicy.resolve_targets(diagnosis)
         if not target_specs:
             raise ApplicationError(
@@ -95,14 +95,12 @@ class RootCauseVerificationService:
                 "Diagnosis cannot be resolved into verification targets.",
             )
 
-        # Build exclusion set: recent exposures + diagnosis source question
         exposure_service = QuestionExposureService(self.session)
         excluded_qids = exposure_service.get_recent_exposed_question_ids(student_id)
         diag_source_qid = exposure_service.get_diagnosis_source_question_id(diagnosis)
         if diag_source_qid is not None:
             excluded_qids.add(diag_source_qid)
 
-        # Select probe questions per target spec
         target_questions_map: dict[int, list[tuple[Question, float]]] = {}
         for spec in target_specs:
             probes = RootCauseVerificationPolicy.select_probe_questions(
@@ -112,87 +110,95 @@ class RootCauseVerificationService:
                 excluded_question_ids=excluded_qids,
             )
             target_questions_map[spec.priority_order] = probes
-            for q, _ in probes:
-                excluded_qids.add(q.id)
+            excluded_qids.update(question.id for question, _ in probes)
 
-        total_probes_count = sum(len(probes) for probes in target_questions_map.values())
-
-        # If 0 questions available in bank across all targets -> UNAVAILABLE
-        if total_probes_count == 0:
-            now = datetime.now(timezone.utc)
-            practice_session = PracticeSession(
-                student_id=student_id,
-                subject_id=diagnosis.subject_id,
-                session_type=PracticeSessionType.ROOT_CAUSE_VERIFICATION,
-                status=PracticeSessionStatus.COMPLETED,
-                completed_at=now,
-            )
-            self.session.add(practice_session)
-            self.session.flush()
-
-            verification = RootCauseVerification(
-                diagnosis_id=diagnosis.id,
-                practice_session_id=practice_session.id,
-                status=RootCauseVerificationStatus.UNAVAILABLE,
-                required_probe_count=0,
-                completed_probe_count=0,
-                completed_at=now,
-            )
-            self.session.add(verification)
-            self.session.flush()
-
-            for spec in target_specs:
-                target_row = RootCauseVerificationTarget(
-                    verification_id=verification.id,
-                    root_cause_candidate_id=spec.candidate_id,
-                    target_type=spec.target_type,
-                    target_concept_id=spec.target_concept_id,
-                    target_problem_type_id=spec.target_problem_type_id,
-                    misconception_definition_id=spec.misconception_definition_id,
-                    priority_order=spec.priority_order,
-                    outcome=RootCauseVerificationOutcome.UNAVAILABLE,
-                    probe_count=0,
-                    correct_count=0,
-                    completed_at=now,
+        try:
+            # The practice session and every verification row share one savepoint.
+            # A concurrent loser rolls back all of them, including the practice
+            # session, before reloading the unique diagnosis winner.
+            with self.session.begin_nested():
+                verification = self._create_verification_rows(
+                    student_id=student_id,
+                    diagnosis=diagnosis,
+                    target_specs=target_specs,
+                    target_questions_map=target_questions_map,
                 )
-                self.session.add(target_row)
+                self.session.flush()
+        except IntegrityError:
+            self.session.expire_all()
+            winner = self._find_existing_verification(diagnosis_id)
+            if winner is None:
+                raise
+            return self._build_verification_read(winner)
 
-            self.session.commit()
-            return self._build_verification_read(verification)
+        self.session.commit()
+        return self._build_verification_read(verification)
 
-        # Create active PracticeSession
+    def _create_verification_rows(
+        self,
+        *,
+        student_id: UUID,
+        diagnosis: RootCauseDiagnosis,
+        target_specs: list[TargetResolutionSpec],
+        target_questions_map: dict[int, list[tuple[Question, float]]],
+    ) -> RootCauseVerification:
+        """Create the complete frozen verification aggregate in the current savepoint."""
+        total_probes_count = sum(len(probes) for probes in target_questions_map.values())
+        now = datetime.now(timezone.utc)
+        unavailable = total_probes_count == 0
+
         practice_session = PracticeSession(
             student_id=student_id,
             subject_id=diagnosis.subject_id,
             session_type=PracticeSessionType.ROOT_CAUSE_VERIFICATION,
-            status=PracticeSessionStatus.ACTIVE,
+            status=(
+                PracticeSessionStatus.COMPLETED
+                if unavailable
+                else PracticeSessionStatus.ACTIVE
+            ),
+            completed_at=now if unavailable else None,
         )
         self.session.add(practice_session)
         self.session.flush()
 
-        # Link practice session targets
-        for spec in target_specs:
-            if spec.target_concept_id is not None:
-                self.session.add(
-                    PracticeSessionConcept(
-                        practice_session_id=practice_session.id,
-                        concept_id=spec.target_concept_id,
+        if not unavailable:
+            linked_concepts: set[UUID] = set()
+            linked_problem_types: set[UUID] = set()
+            for spec in target_specs:
+                if (
+                    spec.target_concept_id is not None
+                    and spec.target_concept_id not in linked_concepts
+                ):
+                    self.session.add(
+                        PracticeSessionConcept(
+                            practice_session_id=practice_session.id,
+                            concept_id=spec.target_concept_id,
+                        )
                     )
-                )
-            if spec.target_problem_type_id is not None:
-                self.session.add(
-                    PracticeSessionProblemType(
-                        practice_session_id=practice_session.id,
-                        problem_type_id=spec.target_problem_type_id,
+                    linked_concepts.add(spec.target_concept_id)
+                if (
+                    spec.target_problem_type_id is not None
+                    and spec.target_problem_type_id not in linked_problem_types
+                ):
+                    self.session.add(
+                        PracticeSessionProblemType(
+                            practice_session_id=practice_session.id,
+                            problem_type_id=spec.target_problem_type_id,
+                        )
                     )
-                )
+                    linked_problem_types.add(spec.target_problem_type_id)
 
         verification = RootCauseVerification(
             diagnosis_id=diagnosis.id,
             practice_session_id=practice_session.id,
-            status=RootCauseVerificationStatus.ACTIVE,
+            status=(
+                RootCauseVerificationStatus.UNAVAILABLE
+                if unavailable
+                else RootCauseVerificationStatus.ACTIVE
+            ),
             required_probe_count=total_probes_count,
             completed_probe_count=0,
+            completed_at=now if unavailable else None,
         )
         self.session.add(verification)
         self.session.flush()
@@ -200,6 +206,7 @@ class RootCauseVerificationService:
         global_order = 1
         for spec in target_specs:
             probes = target_questions_map.get(spec.priority_order, [])
+            target_unavailable = not probes
             target_row = RootCauseVerificationTarget(
                 verification_id=verification.id,
                 root_cause_candidate_id=spec.candidate_id,
@@ -209,29 +216,30 @@ class RootCauseVerificationService:
                 misconception_definition_id=spec.misconception_definition_id,
                 priority_order=spec.priority_order,
                 outcome=(
-                    RootCauseVerificationOutcome.PENDING
-                    if probes
-                    else RootCauseVerificationOutcome.UNAVAILABLE
+                    RootCauseVerificationOutcome.UNAVAILABLE
+                    if target_unavailable
+                    else RootCauseVerificationOutcome.PENDING
                 ),
                 probe_count=0,
                 correct_count=0,
+                completed_at=now if target_unavailable else None,
             )
             self.session.add(target_row)
             self.session.flush()
 
-            for q, sel_score in probes:
-                item = RootCauseVerificationItem(
-                    verification_target_id=target_row.id,
-                    question_id=q.id,
-                    order_index=global_order,
-                    desired_difficulty=spec.desired_difficulty,
-                    selection_score=sel_score,
+            for question, selection_score in probes:
+                self.session.add(
+                    RootCauseVerificationItem(
+                        verification_target_id=target_row.id,
+                        question_id=question.id,
+                        order_index=global_order,
+                        desired_difficulty=spec.desired_difficulty,
+                        selection_score=selection_score,
+                    )
                 )
-                self.session.add(item)
                 global_order += 1
 
-        self.session.commit()
-        return self._build_verification_read(verification)
+        return verification
 
     def get_verification(
         self,
@@ -269,7 +277,7 @@ class RootCauseVerificationService:
         - Records QuestionAttempt.
         - Publishes evidence through AttemptEvidencePublisher -> LearningEvidencePublisher -> Mastery.
         - Recomputes target outcome deterministically.
-        - Automatically completes session when all items are attempted.
+        - Automatically completes the session when all frozen probes have valid evaluated attempts.
         """
         item = self.session.get(RootCauseVerificationItem, item_id)
         if item is None:
@@ -299,7 +307,7 @@ class RootCauseVerificationService:
 
         if verification.status != RootCauseVerificationStatus.ACTIVE:
             raise ApplicationError(
-                400,
+                409,
                 "VERIFICATION_NOT_ACTIVE",
                 f"Verification session is not active (status: {verification.status}).",
             )
@@ -314,8 +322,20 @@ class RootCauseVerificationService:
                 500, "PRACTICE_SESSION_MISSING", "Associated practice session missing."
             )
 
-        # 1. Deterministic evaluation
+        # 1. Deterministic evaluation. Verification never persists pending/manual
+        # grading as evidence, even if invalid bank data bypassed selection.
         evaluation = self.evaluator.evaluate(question, data.student_answer)
+        if (
+            evaluation.status
+            not in {EvaluationStatus.AUTO_EVALUATED, EvaluationStatus.EVALUATED}
+            or evaluation.is_correct is None
+            or evaluation.score is None
+        ):
+            raise ApplicationError(
+                409,
+                "VERIFICATION_QUESTION_NOT_AUTO_EVALUABLE",
+                "Verification questions must produce a deterministic evaluated result.",
+            )
 
         # 2. Record QuestionAttempt
         attempt_number = verification.completed_probe_count + 1
@@ -337,31 +357,25 @@ class RootCauseVerificationService:
 
         item.attempt_id = attempt.id
 
-        # 3. Publish evidence through standard pipeline -> Mastery
-        if (
-            attempt.evaluation_status
-            in {EvaluationStatus.AUTO_EVALUATED, EvaluationStatus.EVALUATED}
-            and attempt.is_correct is not None
-            and attempt.score is not None
-        ):
-            evidence = AttemptEvaluatedEvidence(
-                attempt_id=attempt.id,
-                practice_session_id=practice_session.id,
-                student_id=student_id,
-                question_id=question.id,
-                subject_id=diagnosis.subject_id,
-                is_correct=bool(attempt.is_correct),
-                score=float(attempt.score),
-                problem_type_ids=tuple(
-                    sorted(link.problem_type_id for link in question.problem_type_links)
-                ),
-                concept_ids=tuple(sorted(link.concept_id for link in question.concept_links)),
-                learning_outcome_ids=tuple(
-                    sorted(link.learning_outcome_id for link in question.learning_outcome_links)
-                ),
-                occurred_at=attempt.created_at or now,
-            )
-            self.publisher.publish(evidence, self.session)
+        # 3. Publish valid evaluated evidence through the standard pipeline -> Mastery
+        evidence = AttemptEvaluatedEvidence(
+            attempt_id=attempt.id,
+            practice_session_id=practice_session.id,
+            student_id=student_id,
+            question_id=question.id,
+            subject_id=diagnosis.subject_id,
+            is_correct=bool(attempt.is_correct),
+            score=float(attempt.score),
+            problem_type_ids=tuple(
+                sorted(link.problem_type_id for link in question.problem_type_links)
+            ),
+            concept_ids=tuple(sorted(link.concept_id for link in question.concept_links)),
+            learning_outcome_ids=tuple(
+                sorted(link.learning_outcome_id for link in question.learning_outcome_links)
+            ),
+            occurred_at=attempt.created_at or now,
+        )
+        self.publisher.publish(evidence, self.session)
 
         # 4. Re-evaluate target outcome
         target_items = list(
@@ -405,7 +419,26 @@ class RootCauseVerificationService:
                 .where(RootCauseVerificationTarget.verification_id == verification.id)
             )
         )
-        completed_count = sum(1 for it in all_items if it.attempt_id is not None)
+        all_attempt_ids = [
+            verification_item.attempt_id
+            for verification_item in all_items
+            if verification_item.attempt_id is not None
+        ]
+        all_attempts_by_id: dict[UUID, QuestionAttempt] = {}
+        if all_attempt_ids:
+            all_attempts_by_id = {
+                completed_attempt.id: completed_attempt
+                for completed_attempt in self.session.scalars(
+                    select(QuestionAttempt).where(QuestionAttempt.id.in_(all_attempt_ids))
+                )
+            }
+        completed_count = sum(
+            1
+            for verification_item in all_items
+            if is_completed_verification_attempt(
+                all_attempts_by_id.get(verification_item.attempt_id)
+            )
+        )
         verification.completed_probe_count = completed_count
 
         if completed_count >= verification.required_probe_count:

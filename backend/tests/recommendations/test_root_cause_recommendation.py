@@ -6,6 +6,15 @@ from uuid import UUID, uuid4
 import pytest
 from sqlalchemy.orm import Session
 
+from app.assignments.models import (
+    Assignment,
+    AssignmentStatus,
+    AssignmentStudentQuestion,
+    AssignmentType,
+    StudentAssignment,
+    StudentAssignmentStatus,
+)
+from app.classes.models import Classroom
 from app.concepts.models import Concept
 from app.curriculum.models import ProblemType
 from app.knowledge_gap.models import (
@@ -506,3 +515,211 @@ def test_missing_mastery_uses_neutral_progression_difficulty(
         selected_priority=None,
     )
     assert diff == 0.50
+
+def test_assignment_canonical_recent_exposure_is_excluded(
+    db_session: Session,
+    practice_content: PracticeContent,
+    student_profile: StudentProfile,
+) -> None:
+    concept = Concept(
+        subject_id=practice_content.subject.id,
+        code="MATH.12.REC.ASSIGNMENT.EXPOSURE",
+        name="Assignment exposure target",
+    )
+    db_session.add(concept)
+    db_session.flush()
+    exposed = _make_question(
+        db_session,
+        practice_content,
+        concept_ids=[concept.id],
+        problem_type_id=practice_content.problem_type.id,
+        text="Already assigned canonical question",
+    )
+    fresh = _make_question(
+        db_session,
+        practice_content,
+        concept_ids=[concept.id],
+        problem_type_id=practice_content.problem_type.id,
+        text="Fresh canonical question",
+    )
+    teacher = db_session.get(User, practice_content.mcq.created_by)
+    assert teacher is not None
+    classroom = Classroom(
+        name="Recommendation exposure",
+        academic_year="2026-2027",
+        grade_level=12,
+        created_by=teacher.id,
+    )
+    db_session.add(classroom)
+    db_session.flush()
+    assignment = Assignment(
+        classroom_id=classroom.id,
+        subject_id=practice_content.subject.id,
+        title="Exposure assignment",
+        assignment_type=AssignmentType.SAME_SET,
+        status=AssignmentStatus.PUBLISHED,
+        question_count=1,
+        created_by=teacher.id,
+    )
+    db_session.add(assignment)
+    db_session.flush()
+    student_assignment = StudentAssignment(
+        assignment_id=assignment.id,
+        student_id=student_profile.id,
+        status=StudentAssignmentStatus.SUBMITTED,
+    )
+    db_session.add(student_assignment)
+    db_session.flush()
+    assigned_question = AssignmentStudentQuestion(
+        student_assignment_id=student_assignment.id,
+        question_id=exposed.id,
+        order_index=0,
+        student_answer="A",
+        is_correct=True,
+        score=1.0,
+        answered_at=datetime.now(timezone.utc),
+    )
+    db_session.add(assigned_question)
+    db_session.flush()
+    db_session.add(
+        LearningEvidenceEvent(
+            student_id=student_profile.id,
+            subject_id=practice_content.subject.id,
+            assignment_id=assignment.id,
+            source_kind=LearningEvidenceSourceKind.ASSIGNMENT_CANONICAL_QUESTION,
+            source_entity_id=assigned_question.id,
+            is_correct=True,
+            score=1.0,
+            difficulty=exposed.difficulty,
+            hint_count=0,
+            evaluation_status=EvaluationStatus.AUTO_EVALUATED,
+            occurred_at=datetime.now(timezone.utc),
+        )
+    )
+    db_session.commit()
+
+    recommendation = QuestionRecommendationService(db_session).recommend(
+        student_profile.id,
+        practice_content.subject.id,
+        target_concept_id=concept.id,
+    )
+
+    assert recommendation is not None
+    assert recommendation.question_id == fresh.id
+
+
+def test_root_cause_target_fit_beats_exam_weight(
+    db_session: Session,
+    practice_content: PracticeContent,
+    student_profile: StudentProfile,
+) -> None:
+    target = Concept(
+        subject_id=practice_content.subject.id,
+        code="MATH.12.REC.EXACT",
+        name="Exact repair target",
+    )
+    confounder = Concept(
+        subject_id=practice_content.subject.id,
+        code="MATH.12.REC.CONFOUNDER",
+        name="Confounding concept",
+    )
+    db_session.add_all([target, confounder])
+    db_session.flush()
+
+    probe1 = _make_question(
+        db_session,
+        practice_content,
+        concept_ids=[target.id],
+        problem_type_id=practice_content.problem_type.id,
+        text="Exactness probe 1",
+    )
+    probe2 = _make_question(
+        db_session,
+        practice_content,
+        concept_ids=[target.id],
+        problem_type_id=practice_content.problem_type.id,
+        text="Exactness probe 2",
+    )
+    exact = _make_question(
+        db_session,
+        practice_content,
+        concept_ids=[target.id],
+        problem_type_id=practice_content.problem_type.id,
+        text="Exact isolated repair",
+        difficulty=0.4,
+    )
+    exact.exam_weight = 0.0
+    high_exam_confounder = _make_question(
+        db_session,
+        practice_content,
+        concept_ids=[target.id, confounder.id],
+        problem_type_id=practice_content.problem_type.id,
+        text="High exam but weak target repair",
+        difficulty=0.4,
+    )
+    high_exam_confounder.exam_weight = 1.0
+    next(
+        link
+        for link in high_exam_confounder.concept_links
+        if link.concept_id == target.id
+    ).weight = 0.2
+
+    diagnosis, _ = _create_verified_diagnosis_with_target(
+        db_session,
+        practice_content,
+        student_profile.id,
+        target.id,
+        outcome=RootCauseVerificationOutcome.SUPPORTED,
+        probe_questions=[probe1, probe2],
+    )
+
+    action = VerifiedLearningTargetService(db_session).resolve_next_action(
+        student_profile.id, diagnosis.id
+    )
+
+    assert action.action == NextDiagnosticActionType.PRACTICE_REPAIR
+    assert action.recommended_question is not None
+    assert action.recommended_question.question_id == exact.id
+
+
+def test_verified_target_with_no_question_returns_no_canonical_question(
+    db_session: Session,
+    practice_content: PracticeContent,
+    student_profile: StudentProfile,
+) -> None:
+    target = Concept(
+        subject_id=practice_content.subject.id,
+        code="MATH.12.REC.NO.REPAIR",
+        name="Verified target without repair question",
+    )
+    db_session.add(target)
+    db_session.flush()
+    probe1 = _make_question(
+        db_session,
+        practice_content,
+        concept_ids=[target.id],
+        problem_type_id=practice_content.problem_type.id,
+        text="Only probe 1",
+    )
+    probe2 = _make_question(
+        db_session,
+        practice_content,
+        concept_ids=[target.id],
+        problem_type_id=practice_content.problem_type.id,
+        text="Only probe 2",
+    )
+    diagnosis, _ = _create_verified_diagnosis_with_target(
+        db_session,
+        practice_content,
+        student_profile.id,
+        target.id,
+        outcome=RootCauseVerificationOutcome.SUPPORTED,
+        probe_questions=[probe1, probe2],
+    )
+
+    action = VerifiedLearningTargetService(db_session).resolve_next_action(
+        student_profile.id, diagnosis.id
+    )
+
+    assert action.action == NextDiagnosticActionType.NO_CANONICAL_QUESTION
+    assert action.recommended_question is None
