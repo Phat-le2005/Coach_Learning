@@ -88,6 +88,7 @@ from app.learning.models import (
     QuickCheckSession,
     QuickCheckVerdict,
 )
+from app.learning.feedback_models import LearningFeedbackDecision
 from app.planning.models import (
     StudyPlan,
     StudyPlanStatus,
@@ -176,6 +177,7 @@ __all__ = [
     "ExamSection",
     "ExamStatus",
     "ExamType",
+    "LearningFeedbackDecision",
     "LearningOutcome",
     "Major",
     "MisconceptionDefinition",

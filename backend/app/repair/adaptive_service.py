@@ -442,6 +442,23 @@ class AdaptiveRepairService:
             raise ApplicationError(409, "ADAPTIVE_REPAIR_COLLECT_MORE_EVIDENCE", "Verification has no supported target.")
         return diagnosis, verification, supported[0]
 
+    def find_repair_question(
+        self,
+        student_id: UUID,
+        subject_id: UUID,
+        target: RootCauseVerificationTarget,
+        *,
+        desired_difficulty: float,
+        excluded: set[UUID],
+    ) -> QuestionRecommendationRead | None:
+        return self._recommend(
+            student_id,
+            subject_id,
+            target,
+            desired_difficulty=desired_difficulty,
+            excluded=excluded,
+        )
+
     def _recommend(
         self,
         student_id: UUID,
@@ -527,22 +544,14 @@ class AdaptiveRepairService:
         return excluded
 
     def _all_exclusions(self, adaptive: AdaptiveRepairSession) -> set[UUID]:
-        verification = self.session.scalar(
-            select(RootCauseVerification)
-            .options(selectinload(RootCauseVerification.targets).selectinload(RootCauseVerificationTarget.items))
-            .where(RootCauseVerification.id == adaptive.verification_id)
+        from app.repair.lineage import RepairLineageExposureService
+        lineage_svc = RepairLineageExposureService(self.session)
+        return lineage_svc.get_lineage_excluded_question_ids(
+            verification_target_id=adaptive.verification_target_id,
+            student_id=adaptive.student_id,
+            diagnosis_id=adaptive.diagnosis_id,
+            verification_id=adaptive.verification_id,
         )
-        diagnosis = self.session.get(RootCauseDiagnosis, adaptive.diagnosis_id)
-        excluded = set(
-            self.session.scalars(
-                select(AdaptiveRepairItem.question_id).where(
-                    AdaptiveRepairItem.adaptive_repair_session_id == adaptive.id
-                )
-            )
-        )
-        if verification is not None and diagnosis is not None:
-            excluded |= self._verification_exclusions(diagnosis, verification)
-        return excluded
 
     def _recent_scores(self, adaptive_session_id: UUID) -> list[float]:
         previous = list(
@@ -601,6 +610,146 @@ class AdaptiveRepairService:
             raise RuntimeError("Adaptive repair references a missing practice session")
         practice_session.status = PracticeSessionStatus.COMPLETED
         practice_session.completed_at = completed_at
+
+        self._try_resolve_feedback_isolated(adaptive)
+
+    def _try_resolve_feedback_isolated(self, adaptive: AdaptiveRepairSession) -> None:
+        try:
+            with self.session.begin_nested():
+                from app.learning.feedback_service import LearningFeedbackService
+
+                LearningFeedbackService(self.session).resolve_feedback(adaptive.id)
+        except Exception:
+            # Failure in feedback generation must NEVER rollback repair attempt/mastery/session state
+            pass
+
+    def retry(self, current_user: User, adaptive_session_id: UUID) -> AdaptiveRepairSessionRead:
+        student = self._student_for_user(current_user.id)
+        previous = self._get_session(adaptive_session_id)
+        self._authorize(previous, student.id)
+        if previous.status != AdaptiveRepairStatus.COMPLETED:
+            raise ApplicationError(
+                409,
+                "ADAPTIVE_REPAIR_NOT_COMPLETED",
+                "Previous adaptive repair session must be completed before retrying.",
+            )
+
+        from app.learning.feedback_models import LearningFeedbackAction
+        from app.learning.feedback_policy import LearningFeedbackPolicy
+        from app.learning.feedback_service import LearningFeedbackService
+
+        feedback_svc = LearningFeedbackService(self.session)
+        feedback = feedback_svc.resolve_feedback(previous.id)
+        if feedback.action != LearningFeedbackAction.RETRY_REPAIR or not feedback.retry.allowed:
+            raise ApplicationError(
+                409,
+                "REPAIR_RETRY_NOT_ALLOWED",
+                "Retry is not allowed for this adaptive repair session.",
+            )
+
+        fb_policy = LearningFeedbackPolicy()
+        next_cycle = previous.repair_cycle_index + 1
+        if next_cycle > fb_policy.max_cycles:
+            raise ApplicationError(
+                409,
+                "REPAIR_RETRY_NOT_ALLOWED",
+                "Maximum adaptive repair retry cycles reached.",
+            )
+
+        existing_retry = self.session.scalar(
+            select(AdaptiveRepairSession).where(
+                AdaptiveRepairSession.verification_target_id == previous.verification_target_id,
+                AdaptiveRepairSession.repair_cycle_index == next_cycle,
+            )
+        )
+        if existing_retry is not None:
+            return self._build_read(existing_retry)
+
+        target = self.session.get(RootCauseVerificationTarget, previous.verification_target_id)
+        if target is None:
+            raise ApplicationError(409, "ADAPTIVE_REPAIR_TARGET_MISSING", "Verified target no longer exists.")
+
+        retry_initial = fb_policy.retry_initial_difficulty(previous.current_difficulty)
+        phase = (
+            AdaptiveRepairPhase.TARGET_PRACTICE
+            if retry_initial > 0.40
+            else AdaptiveRepairPhase.FOUNDATION
+        )
+
+        from app.repair.lineage import RepairLineageExposureService
+
+        lineage_svc = RepairLineageExposureService(self.session)
+        excluded = lineage_svc.get_lineage_excluded_question_ids(
+            verification_target_id=previous.verification_target_id,
+            student_id=student.id,
+            diagnosis_id=previous.diagnosis_id,
+            verification_id=previous.verification_id,
+        )
+
+        recommendation = self.find_repair_question(
+            student.id,
+            previous.subject_id,
+            target,
+            desired_difficulty=retry_initial,
+            excluded=excluded,
+        )
+        if recommendation is None:
+            raise ApplicationError(
+                409,
+                "ADAPTIVE_REPAIR_NO_CANONICAL_QUESTION",
+                "No fresh auto-evaluable canonical question is available for retry.",
+            )
+
+        practice_session = PracticeSession(
+            student_id=student.id,
+            subject_id=previous.subject_id,
+            session_type=PracticeSessionType.REPAIR,
+            status=PracticeSessionStatus.ACTIVE,
+        )
+        self.session.add(practice_session)
+        self.session.flush()
+        if target.target_concept_id is not None:
+            self.session.add(
+                PracticeSessionConcept(
+                    practice_session_id=practice_session.id,
+                    concept_id=target.target_concept_id,
+                )
+            )
+        if target.target_problem_type_id is not None:
+            self.session.add(
+                PracticeSessionProblemType(
+                    practice_session_id=practice_session.id,
+                    problem_type_id=target.target_problem_type_id,
+                )
+            )
+
+        adaptive_retry = AdaptiveRepairSession(
+            practice_session_id=practice_session.id,
+            student_id=student.id,
+            subject_id=previous.subject_id,
+            diagnosis_id=previous.diagnosis_id,
+            verification_id=previous.verification_id,
+            verification_target_id=target.id,
+            target_type=target.target_type,
+            target_concept_id=target.target_concept_id,
+            target_problem_type_id=target.target_problem_type_id,
+            misconception_definition_id=target.misconception_definition_id,
+            target_name=previous.target_name,
+            target_code=previous.target_code,
+            repair_cycle_index=next_cycle,
+            previous_adaptive_repair_session_id=previous.id,
+            phase=phase,
+            initial_difficulty=retry_initial,
+            current_difficulty=retry_initial,
+            target_exit_difficulty=self.policy.exit_difficulty(target.target_type),
+            verification_average_score=target.average_score,
+            max_questions=self.policy.max_questions,
+        )
+        self.session.add(adaptive_retry)
+        self.session.flush()
+        self._persist_item(adaptive_retry, recommendation.question_id, phase, retry_initial)
+        self.session.commit()
+        return self._build_read(adaptive_retry)
 
     def _get_session(self, adaptive_session_id: UUID) -> AdaptiveRepairSession:
         adaptive = self.session.get(AdaptiveRepairSession, adaptive_session_id)
@@ -699,6 +848,8 @@ class AdaptiveRepairService:
             diagnosis_id=adaptive.diagnosis_id,
             verification_id=adaptive.verification_id,
             verification_target_id=adaptive.verification_target_id,
+            repair_cycle_index=adaptive.repair_cycle_index,
+            previous_adaptive_repair_session_id=adaptive.previous_adaptive_repair_session_id,
             target=AdaptiveRepairTargetRead(
                 target_type=adaptive.target_type,
                 concept_id=adaptive.target_concept_id,

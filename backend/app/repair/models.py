@@ -1,5 +1,6 @@
 from datetime import datetime
 from enum import StrEnum
+from typing import TYPE_CHECKING
 from uuid import UUID, uuid4
 
 from sqlalchemy import CheckConstraint, DateTime, Enum, Float, ForeignKey, Index, Integer, String, UniqueConstraint, Uuid, func
@@ -7,6 +8,9 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database.base import Base
 from app.knowledge_gap.models import RootCauseVerificationTargetType
+
+if TYPE_CHECKING:
+    from app.learning.feedback_models import LearningFeedbackDecision
 
 
 class AdaptiveRepairStatus(StrEnum):
@@ -52,7 +56,8 @@ class AdaptiveRepairSession(Base):
     __tablename__ = "adaptive_repair_sessions"
     __table_args__ = (
         UniqueConstraint("practice_session_id", name="uq_adaptive_repair_practice_session"),
-        UniqueConstraint("verification_target_id", name="uq_adaptive_repair_verification_target"),
+        UniqueConstraint("verification_target_id", "repair_cycle_index", name="uq_adaptive_repair_target_cycle"),
+        CheckConstraint("repair_cycle_index >= 1", name="ck_adaptive_repair_sessions_repair_cycle_index_positive"),
         CheckConstraint("initial_difficulty BETWEEN 0 AND 1", name="initial_difficulty_range"),
         CheckConstraint("current_difficulty BETWEEN 0 AND 1", name="current_difficulty_range"),
         CheckConstraint("target_exit_difficulty BETWEEN 0 AND 1", name="target_exit_difficulty_range"),
@@ -84,6 +89,8 @@ class AdaptiveRepairSession(Base):
     status: Mapped[AdaptiveRepairStatus] = mapped_column(Enum(AdaptiveRepairStatus, native_enum=False, name="adaptive_repair_status"), nullable=False, default=AdaptiveRepairStatus.ACTIVE)
     phase: Mapped[AdaptiveRepairPhase] = mapped_column(Enum(AdaptiveRepairPhase, native_enum=False, name="adaptive_repair_phase"), nullable=False)
     outcome: Mapped[AdaptiveRepairOutcome] = mapped_column(Enum(AdaptiveRepairOutcome, native_enum=False, name="adaptive_repair_outcome"), nullable=False, default=AdaptiveRepairOutcome.PENDING)
+    repair_cycle_index: Mapped[int] = mapped_column(Integer, nullable=False, default=1, server_default="1")
+    previous_adaptive_repair_session_id: Mapped[UUID | None] = mapped_column(ForeignKey("adaptive_repair_sessions.id", ondelete="SET NULL", name="fk_adaptive_repair_previous_session"))
     initial_difficulty: Mapped[float] = mapped_column(Float, nullable=False)
     current_difficulty: Mapped[float] = mapped_column(Float, nullable=False)
     target_exit_difficulty: Mapped[float] = mapped_column(Float, nullable=False)
@@ -99,6 +106,8 @@ class AdaptiveRepairSession(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now(), onupdate=func.now())
 
     items: Mapped[list["AdaptiveRepairItem"]] = relationship(back_populates="adaptive_session", cascade="all, delete-orphan", passive_deletes=True, order_by="AdaptiveRepairItem.order_index")
+    feedback_decision: Mapped["LearningFeedbackDecision | None"] = relationship(back_populates="adaptive_session", uselist=False, cascade="all, delete-orphan")
+    previous_session: Mapped["AdaptiveRepairSession | None"] = relationship(remote_side=[id])
 
 
 class AdaptiveRepairItem(Base):

@@ -3,6 +3,7 @@ from __future__ import annotations
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.auth.dependencies import require_role
@@ -16,11 +17,15 @@ from app.repair.schemas import (
 )
 from app.repair.service import RepairSessionService
 from app.repair.adaptive_service import AdaptiveRepairService
+from app.core.exceptions import ApplicationError
+from app.learning.feedback_schemas import LearningFeedbackDecisionRead
+from app.learning.feedback_service import LearningFeedbackService
 from app.repair.schemas import (
     AdaptiveRepairAnswerResult,
     AdaptiveRepairAnswerSubmit,
     AdaptiveRepairSessionRead,
 )
+from app.students.models import StudentProfile
 from app.users.models import Role, User
 
 router = APIRouter(prefix="/repair", tags=["Repair Sessions"])
@@ -136,3 +141,48 @@ def answer_adaptive_repair_current_item(
     session: Session = Depends(get_db),
 ) -> AdaptiveRepairAnswerResult:
     return AdaptiveRepairService(session).answer_current(current_user, adaptive_session_id, data)
+
+
+@router.get(
+    "/adaptive/{adaptive_session_id}/next-action",
+    response_model=LearningFeedbackDecisionRead,
+    summary="Get next learning action and feedback decision after adaptive repair",
+)
+def get_adaptive_repair_next_action(
+    adaptive_session_id: UUID,
+    current_user: User = Depends(require_role(Role.STUDENT)),
+    session: Session = Depends(get_db),
+) -> LearningFeedbackDecisionRead:
+    # Ensure current user has permission for this repair session
+    AdaptiveRepairService(session).get(current_user, adaptive_session_id)
+    return LearningFeedbackService(session).resolve_feedback(adaptive_session_id)
+
+
+@router.post(
+    "/adaptive/{adaptive_session_id}/retry",
+    response_model=AdaptiveRepairSessionRead,
+    summary="Retry adaptive repair for a target needing more practice",
+)
+def retry_adaptive_repair(
+    adaptive_session_id: UUID,
+    current_user: User = Depends(require_role(Role.STUDENT)),
+    session: Session = Depends(get_db),
+) -> AdaptiveRepairSessionRead:
+    return AdaptiveRepairService(session).retry(current_user, adaptive_session_id)
+
+
+@student_router.get(
+    "/learning/feedback/latest",
+    response_model=LearningFeedbackDecisionRead | None,
+    summary="Get latest learning feedback decision for student",
+)
+def get_latest_learning_feedback(
+    subject_id: UUID | None = Query(default=None),
+    current_user: User = Depends(require_role(Role.STUDENT)),
+    session: Session = Depends(get_db),
+) -> LearningFeedbackDecisionRead | None:
+    student = session.scalar(select(StudentProfile).where(StudentProfile.user_id == current_user.id))
+    if student is None:
+        raise ApplicationError(404, "STUDENT_PROFILE_NOT_FOUND", "Student profile was not found.")
+    return LearningFeedbackService(session).get_latest_feedback(student.id, subject_id)
+

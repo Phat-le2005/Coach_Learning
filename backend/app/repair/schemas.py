@@ -216,6 +216,8 @@ class AdaptiveRepairSessionRead(BaseModel):
     diagnosis_id: UUID
     verification_id: UUID
     verification_target_id: UUID
+    repair_cycle_index: int = 1
+    previous_adaptive_repair_session_id: UUID | None = None
     target: AdaptiveRepairTargetRead
     status: AdaptiveRepairStatus
     phase: AdaptiveRepairPhase
