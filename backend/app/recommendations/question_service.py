@@ -9,7 +9,7 @@ from app.core.exceptions import ApplicationError
 from app.curriculum.models import Chapter, ProblemType, Topic
 from app.mastery.models import StudentConceptMastery, StudentProblemTypeMastery
 from app.questions.eligibility import standalone_question_only
-from app.questions.models import CognitiveLevel, Question, QuestionStatus
+from app.questions.models import CognitiveLevel, Question, QuestionStatus, QuestionType
 from app.recommendations.mix import LearningMixConfig
 from app.recommendations.priority_service import LearningPriorityService
 from app.recommendations.schemas import (
@@ -54,6 +54,7 @@ class QuestionRecommendationService:
         exclude_question_ids: set[UUID] | None = None,
         reason_code_override: PriorityReasonCode | None = None,
         isolation_boost: bool = False,
+        allowed_question_types: set[QuestionType] | frozenset[QuestionType] | None = None,
     ) -> QuestionRecommendationRead | None:
         if self.session.get(StudentProfile, student_id) is None:
             raise ApplicationError(404, "STUDENT_NOT_FOUND", "Student profile was not found.")
@@ -120,6 +121,10 @@ class QuestionRecommendationService:
                 Question.learning_outcome_links.any(),
             )
         )
+        if allowed_question_types is not None:
+            if not allowed_question_types:
+                return None
+            statement = statement.where(Question.question_type.in_(allowed_question_types))
         if target_problem_type_id is not None:
             statement = statement.where(
                 Question.problem_type_links.any(problem_type_id=target_problem_type_id)

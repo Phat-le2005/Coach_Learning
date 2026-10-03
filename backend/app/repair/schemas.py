@@ -9,6 +9,15 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from app.practice.models import EvaluationStatus, PracticeSessionStatus
 from app.questions.models import QuestionType
+from app.knowledge_gap.models import RootCauseVerificationTargetType
+from app.repair.models import (
+    AdaptiveRepairDecisionReason,
+    AdaptiveRepairItemRole,
+    AdaptiveRepairOutcome,
+    AdaptiveRepairPhase,
+    AdaptiveRepairStatus,
+)
+
 
 
 class RepairTriggerType(StrEnum):
@@ -140,3 +149,110 @@ class RepairEvaluationResult(BaseModel):
     resolution_status: str
     misconception_resolved: bool = False
     summary_message: str
+
+# ---------------------------------------------------------------------------
+# Adaptive verified-root-cause repair
+# ---------------------------------------------------------------------------
+
+
+class AdaptiveRepairTargetRead(BaseModel):
+    target_type: RootCauseVerificationTargetType
+    concept_id: UUID | None = None
+    problem_type_id: UUID | None = None
+    misconception_definition_id: UUID | None = None
+    name: str | None = None
+    code: str | None = None
+
+
+class AdaptiveRepairQuestionOptionRead(BaseModel):
+    id: UUID
+    label: str
+    content: str
+    order_index: int
+
+
+class AdaptiveRepairCurrentItemRead(BaseModel):
+    id: UUID
+    order_index: int
+    role: AdaptiveRepairItemRole
+    question_id: UUID
+    question_content: str
+    question_type: QuestionType
+    question_difficulty: float
+    desired_difficulty: float
+    options: list[AdaptiveRepairQuestionOptionRead] = Field(default_factory=list)
+    hints_allowed: bool
+
+
+class AdaptiveRepairHistoryItemRead(BaseModel):
+    id: UUID
+    order_index: int
+    role: AdaptiveRepairItemRole
+    question_id: UUID
+    question_difficulty: float
+    desired_difficulty: float
+    is_correct: bool
+    score: float
+    hint_count: int
+    difficulty_before: float
+    difficulty_after: float
+    phase_before: AdaptiveRepairPhase
+    phase_after: AdaptiveRepairPhase
+    reason_code: AdaptiveRepairDecisionReason
+    explanation: str | None = None
+
+
+class AdaptiveRepairProgressRead(BaseModel):
+    attempted_count: int
+    correct_count: int
+    consecutive_correct: int
+    consecutive_wrong: int
+    max_questions: int
+
+
+class AdaptiveRepairSessionRead(BaseModel):
+    id: UUID
+    practice_session_id: UUID
+    diagnosis_id: UUID
+    verification_id: UUID
+    verification_target_id: UUID
+    target: AdaptiveRepairTargetRead
+    status: AdaptiveRepairStatus
+    phase: AdaptiveRepairPhase
+    outcome: AdaptiveRepairOutcome
+    initial_difficulty: float
+    current_difficulty: float
+    target_exit_difficulty: float
+    progress: AdaptiveRepairProgressRead
+    current_item: AdaptiveRepairCurrentItemRead | None = None
+    history: list[AdaptiveRepairHistoryItemRead] = Field(default_factory=list)
+    started_at: datetime
+    completed_at: datetime | None = None
+
+
+class AdaptiveRepairAnswerSubmit(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    item_id: UUID
+    student_answer: str = Field(..., min_length=1)
+    response_time_seconds: float | None = Field(default=None, gt=0)
+    hint_count: int = Field(default=0, ge=0)
+
+
+class AdaptiveRepairAttemptRead(BaseModel):
+    id: UUID
+    item_id: UUID
+    question_id: UUID
+    is_correct: bool
+    score: float
+    evaluation_status: EvaluationStatus
+
+
+class AdaptiveRepairAnswerResult(BaseModel):
+    attempt: AdaptiveRepairAttemptRead
+    previous_phase: AdaptiveRepairPhase
+    next_phase: AdaptiveRepairPhase
+    difficulty_before: float
+    difficulty_after: float
+    reason_code: AdaptiveRepairDecisionReason
+    session: AdaptiveRepairSessionRead

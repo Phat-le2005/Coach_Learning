@@ -15,6 +15,12 @@ from app.repair.schemas import (
     RepairSessionRead,
 )
 from app.repair.service import RepairSessionService
+from app.repair.adaptive_service import AdaptiveRepairService
+from app.repair.schemas import (
+    AdaptiveRepairAnswerResult,
+    AdaptiveRepairAnswerSubmit,
+    AdaptiveRepairSessionRead,
+)
 from app.users.models import Role, User
 
 router = APIRouter(prefix="/repair", tags=["Repair Sessions"])
@@ -85,3 +91,48 @@ def complete_repair_session(
         session_id,
         misconception_definition_id=misconception_definition_id,
     )
+
+# Adaptive verified-root-cause repair endpoints are intentionally separate from
+# the legacy five-step API above.
+
+student_router = APIRouter(prefix="/students/me", tags=["Adaptive Repair"])
+
+
+@student_router.post(
+    "/diagnostics/{diagnosis_id}/repair",
+    response_model=AdaptiveRepairSessionRead,
+    summary="Start adaptive repair from a supported root-cause verification",
+)
+def start_adaptive_repair(
+    diagnosis_id: UUID,
+    current_user: User = Depends(require_role(Role.STUDENT)),
+    session: Session = Depends(get_db),
+) -> AdaptiveRepairSessionRead:
+    return AdaptiveRepairService(session).start(current_user, diagnosis_id)
+
+
+@router.get(
+    "/adaptive/{adaptive_session_id}",
+    response_model=AdaptiveRepairSessionRead,
+    summary="Get frozen adaptive repair state",
+)
+def get_adaptive_repair(
+    adaptive_session_id: UUID,
+    current_user: User = Depends(require_role(Role.STUDENT)),
+    session: Session = Depends(get_db),
+) -> AdaptiveRepairSessionRead:
+    return AdaptiveRepairService(session).get(current_user, adaptive_session_id)
+
+
+@router.post(
+    "/adaptive/{adaptive_session_id}/current/answer",
+    response_model=AdaptiveRepairAnswerResult,
+    summary="Answer the frozen current adaptive repair item",
+)
+def answer_adaptive_repair_current_item(
+    adaptive_session_id: UUID,
+    data: AdaptiveRepairAnswerSubmit,
+    current_user: User = Depends(require_role(Role.STUDENT)),
+    session: Session = Depends(get_db),
+) -> AdaptiveRepairAnswerResult:
+    return AdaptiveRepairService(session).answer_current(current_user, adaptive_session_id, data)

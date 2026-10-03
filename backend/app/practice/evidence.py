@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Protocol
 from uuid import UUID
@@ -19,6 +19,7 @@ class AttemptEvaluatedEvidence:
     concept_ids: tuple[UUID, ...]
     learning_outcome_ids: tuple[UUID, ...]
     occurred_at: datetime
+    metadata: dict[str, object] = field(default_factory=dict)
 
 
 class AttemptEvidencePublisher(Protocol):

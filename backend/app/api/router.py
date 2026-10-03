@@ -20,7 +20,7 @@ from app.learning.router import router as learning_router
 from app.ai.admin_router import router as admin_ai_router
 from app.ai.tutor_router import router as tutor_router
 from app.hints.router import router as hints_router
-from app.repair.router import router as repair_router
+from app.repair.router import router as repair_router, student_router as adaptive_repair_student_router
 from app.assignments.router import (
     student_router as student_assignments_router,
     teacher_router as teacher_assignments_router,
@@ -50,6 +50,7 @@ api_router.include_router(student_classes_router)
 api_router.include_router(questions_router)
 api_router.include_router(practice_router)
 api_router.include_router(repair_router)
+api_router.include_router(adaptive_repair_student_router)
 api_router.include_router(hints_router)
 api_router.include_router(mastery_router)
 api_router.include_router(digital_twin_router)

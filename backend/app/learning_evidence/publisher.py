@@ -53,6 +53,8 @@ class LearningEvidencePublisher:
 
     @staticmethod
     def _diagnose_if_needed(event: LearningEvidenceEvent, session: Session) -> None:
+        if event.event_metadata.get("suppress_root_cause_rediagnosis") is True:
+            return
         if (
             event.is_correct is not False
             or event.score is None
