@@ -20,6 +20,7 @@ from app.recommendations.schemas import (
     QuestionRecommendationRead,
 )
 from app.practice.models import QuestionAttempt
+from app.questions.exposure import QuestionExposureService
 from app.students.models import StudentProfile
 from app.subjects.models import Subject
 
@@ -50,6 +51,9 @@ class QuestionRecommendationService:
         target_concept_id: UUID | None = None,
         desired_difficulty: float | None = None,
         active_teaching_plan: ActiveTeachingPlanContext | None = None,
+        exclude_question_ids: set[UUID] | None = None,
+        reason_code_override: PriorityReasonCode | None = None,
+        isolation_boost: bool = False,
     ) -> QuestionRecommendationRead | None:
         if self.session.get(StudentProfile, student_id) is None:
             raise ApplicationError(404, "STUDENT_NOT_FOUND", "Student profile was not found.")
@@ -75,9 +79,13 @@ class QuestionRecommendationService:
             target_problem_type_id = selected_priority.problem_type_id
             target_concept_id = selected_priority.concept_id
         reason = (
-            selected_priority.reason_code
-            if selected_priority is not None
-            else PriorityReasonCode.DIFFICULTY_PROGRESSION
+            reason_code_override
+            if reason_code_override is not None
+            else (
+                selected_priority.reason_code
+                if selected_priority is not None
+                else PriorityReasonCode.DIFFICULTY_PROGRESSION
+            )
         )
         target_difficulty = (
             desired_difficulty
@@ -90,14 +98,12 @@ class QuestionRecommendationService:
             )
         )
 
-        recent_question_ids = set(
-            self.session.scalars(
-                select(QuestionAttempt.question_id)
-                .where(QuestionAttempt.student_id == student_id)
-                .order_by(QuestionAttempt.created_at.desc(), QuestionAttempt.id.desc())
-                .limit(self.RECENT_QUESTION_LIMIT)
-            )
-        )
+        recent_question_ids = QuestionExposureService(
+            self.session
+        ).get_recent_exposed_question_ids(student_id, self.RECENT_QUESTION_LIMIT)
+        if exclude_question_ids:
+            recent_question_ids = recent_question_ids | exclude_question_ids
+
         statement = (
             select(Question)
             .options(
@@ -134,6 +140,7 @@ class QuestionRecommendationService:
                 target_problem_type_id,
                 target_concept_id,
                 target_difficulty,
+                isolation_boost=isolation_boost,
             )
             for question in questions
         ]
@@ -230,6 +237,45 @@ class QuestionRecommendationService:
                     "Concept does not belong to the requested subject.",
                 )
 
+    def recommend_for_verified_root_cause(
+        self,
+        student_id: UUID,
+        subject_id: UUID,
+        *,
+        target_concept_id: UUID | None = None,
+        target_problem_type_id: UUID | None = None,
+        exclude_question_ids: set[UUID] | None = None,
+    ) -> QuestionRecommendationRead | None:
+        """Recommend the optimal canonical repair question for a verified root cause."""
+        desired_diff = None
+        if target_concept_id is not None:
+            c_row = self.session.get(StudentConceptMastery, (student_id, target_concept_id))
+            desired_diff = (
+                LearningPriorityService.difficulty_for_mastery(c_row.mastery_score)
+                if c_row
+                else 0.40
+            )
+        elif target_problem_type_id is not None:
+            pt_row = self.session.get(
+                StudentProblemTypeMastery, (student_id, target_problem_type_id)
+            )
+            desired_diff = (
+                LearningPriorityService.difficulty_for_mastery(pt_row.mastery_score)
+                if pt_row
+                else 0.50
+            )
+
+        return self.recommend(
+            student_id,
+            subject_id,
+            target_problem_type_id=target_problem_type_id,
+            target_concept_id=target_concept_id,
+            desired_difficulty=desired_diff,
+            exclude_question_ids=exclude_question_ids,
+            reason_code_override=PriorityReasonCode.VERIFIED_ROOT_CAUSE,
+            isolation_boost=True,
+        )
+
     def _target_difficulty(
         self,
         student_id: UUID,
@@ -244,11 +290,15 @@ class QuestionRecommendationService:
             row = self.session.get(
                 StudentProblemTypeMastery, (student_id, problem_type_id)
             )
-            mastery_values.append(row.mastery_score if row else 0.0)
+            if row is not None:
+                mastery_values.append(row.mastery_score)
         if concept_id is not None:
             row = self.session.get(StudentConceptMastery, (student_id, concept_id))
-            mastery_values.append(row.mastery_score if row else 0.0)
-        mastery = min(mastery_values) if mastery_values else 0.0
+            if row is not None:
+                mastery_values.append(row.mastery_score)
+        if not mastery_values:
+            return 0.50
+        mastery = min(mastery_values)
         return LearningPriorityService.difficulty_for_mastery(mastery)
 
     @staticmethod
@@ -273,6 +323,8 @@ class QuestionRecommendationService:
         problem_type_id: UUID | None,
         concept_id: UUID | None,
         desired_difficulty: float,
+        *,
+        isolation_boost: bool = False,
     ) -> _CandidateScore:
         problem_type_match = 0.0
         if problem_type_id is not None:
@@ -293,6 +345,12 @@ class QuestionRecommendationService:
             desired_difficulty
         ) else 0.0
         exam_relevance = 0.1 * question.exam_weight
+
+        isolation_component = 0.0
+        if isolation_boost:
+            concept_count = len(question.concept_links) or 1
+            isolation_component = 0.20 * (1.0 / concept_count)
+
         return _CandidateScore(
             question=question,
             total=round(
@@ -300,7 +358,8 @@ class QuestionRecommendationService:
                 + concept_match
                 + difficulty_fit
                 + cognitive_fit
-                + exam_relevance,
+                + exam_relevance
+                + isolation_component,
                 8,
             ),
             problem_type_match=problem_type_match,

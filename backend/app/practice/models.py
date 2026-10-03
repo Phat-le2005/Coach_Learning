@@ -32,6 +32,7 @@ class PracticeSessionType(StrEnum):
     REPAIR = "REPAIR"
     QUICK_CHECK = "QUICK_CHECK"
     EXAM = "EXAM"
+    ROOT_CAUSE_VERIFICATION = "ROOT_CAUSE_VERIFICATION"
 
 
 class PracticeSessionStatus(StrEnum):

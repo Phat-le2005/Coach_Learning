@@ -47,6 +47,7 @@ class LearningPriorityService:
     """Rank deterministic leaf learning targets from current relational evidence."""
 
     _REASON_BASE = {
+        PriorityReasonCode.VERIFIED_ROOT_CAUSE: 110.0,
         PriorityReasonCode.PREREQUISITE_REPAIR: 100.0,
         PriorityReasonCode.CURRENT_LESSON: 95.0,
         PriorityReasonCode.REVIEW_DUE: 90.0,

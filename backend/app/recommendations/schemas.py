@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field
 
 
 class PriorityReasonCode(StrEnum):
+    VERIFIED_ROOT_CAUSE = "VERIFIED_ROOT_CAUSE"
     CURRENT_LESSON = "CURRENT_LESSON"
     WEAK_PROBLEM_TYPE = "WEAK_PROBLEM_TYPE"
     PREREQUISITE_REPAIR = "PREREQUISITE_REPAIR"

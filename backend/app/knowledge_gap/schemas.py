@@ -7,8 +7,15 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from app.knowledge_gap.models import RootCauseDiagnosisStatus, RootCauseDiagnosisType
+from app.knowledge_gap.models import (
+    RootCauseDiagnosisStatus,
+    RootCauseDiagnosisType,
+    RootCauseVerificationOutcome,
+    RootCauseVerificationStatus,
+    RootCauseVerificationTargetType,
+)
 from app.learning_evidence.models import LearningEvidenceSourceKind
+from app.recommendations.schemas import QuestionRecommendationRead
 
 
 class KnowledgeGapType(StrEnum):
@@ -147,3 +154,109 @@ class RootCauseDiagnosisRead(BaseModel):
     source_event: RootCauseSourceEventRead
     candidates: list[RootCauseCandidateRead]
     created_at: datetime
+
+
+class RootCauseVerificationItemOptionRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    label: str
+    content: str
+    order_index: int
+
+
+class RootCauseVerificationItemRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    verification_target_id: UUID
+    question_id: UUID
+    order_index: int
+    desired_difficulty: float
+    selection_score: float
+    attempt_id: UUID | None = None
+    is_attempted: bool = False
+
+    # Question presentation for student
+    content: str
+    question_type: str
+    options: list[RootCauseVerificationItemOptionRead] = Field(default_factory=list)
+
+    # Post-attempt feedback (hidden prior to submission)
+    student_answer: str | None = None
+    is_correct: bool | None = None
+    score: float | None = None
+    explanation: str | None = None
+
+
+class RootCauseVerificationTargetRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    verification_id: UUID
+    root_cause_candidate_id: UUID | None = None
+    target_type: RootCauseVerificationTargetType
+    target_concept_id: UUID | None = None
+    target_problem_type_id: UUID | None = None
+    misconception_definition_id: UUID | None = None
+    priority_order: int
+    outcome: RootCauseVerificationOutcome
+    probe_count: int
+    correct_count: int
+    average_score: float | None = None
+    items: list[RootCauseVerificationItemRead] = Field(default_factory=list)
+
+
+class RootCauseVerificationRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    diagnosis_id: UUID
+    practice_session_id: UUID
+    status: RootCauseVerificationStatus
+    required_probe_count: int
+    completed_probe_count: int
+    created_at: datetime
+    completed_at: datetime | None = None
+    targets: list[RootCauseVerificationTargetRead] = Field(default_factory=list)
+
+
+class RootCauseVerificationAnswerSubmit(BaseModel):
+    student_answer: str = Field(..., min_length=1)
+    response_time_seconds: float | None = Field(default=None, gt=0.0)
+    hint_count: int = Field(default=0, ge=0)
+
+
+class RootCauseVerificationAnswerResult(BaseModel):
+    item_id: UUID
+    question_id: UUID
+    is_correct: bool | None
+    score: float | None
+    explanation: str | None
+    target_outcome: RootCauseVerificationOutcome
+    verification_status: RootCauseVerificationStatus
+
+
+class NextDiagnosticActionType(StrEnum):
+    VERIFY_ROOT_CAUSE = "VERIFY_ROOT_CAUSE"
+    PRACTICE_REPAIR = "PRACTICE_REPAIR"
+    COLLECT_MORE_EVIDENCE = "COLLECT_MORE_EVIDENCE"
+    NO_CANONICAL_QUESTION = "NO_CANONICAL_QUESTION"
+
+
+class VerifiedTargetRead(BaseModel):
+    target_type: RootCauseVerificationTargetType
+    target_concept_id: UUID | None = None
+    target_problem_type_id: UUID | None = None
+    target_name: str | None = None
+    target_code: str | None = None
+    outcome: RootCauseVerificationOutcome
+
+
+class RootCauseNextActionRead(BaseModel):
+    diagnosis_id: UUID
+    action: NextDiagnosticActionType
+    reason: str
+    verified_target: VerifiedTargetRead | None = None
+    recommended_question: QuestionRecommendationRead | None = None
+
