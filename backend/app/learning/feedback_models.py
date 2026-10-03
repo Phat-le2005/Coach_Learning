@@ -18,6 +18,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database.base import Base
 from app.knowledge_gap.models import RootCauseVerificationTargetType
+from app.recommendations.schemas import PriorityReasonCode, PriorityTargetType
 
 
 class LearningFeedbackAction(StrEnum):
@@ -73,6 +74,23 @@ class LearningFeedbackDecision(Base):
     )
     target_concept_id: Mapped[UUID | None] = mapped_column(ForeignKey("concepts.id", ondelete="RESTRICT"))
     target_problem_type_id: Mapped[UUID | None] = mapped_column(ForeignKey("problem_types.id", ondelete="RESTRICT"))
+
+    next_target_type: Mapped[PriorityTargetType | None] = mapped_column(
+        Enum(PriorityTargetType, native_enum=False, name="learning_feedback_next_target_type"),
+        nullable=True,
+    )
+    next_concept_id: Mapped[UUID | None] = mapped_column(
+        ForeignKey("concepts.id", ondelete="RESTRICT", name="fk_learning_feedback_next_concept"),
+        nullable=True,
+    )
+    next_problem_type_id: Mapped[UUID | None] = mapped_column(
+        ForeignKey("problem_types.id", ondelete="RESTRICT", name="fk_learning_feedback_next_problem_type"),
+        nullable=True,
+    )
+    next_reason_code: Mapped[PriorityReasonCode | None] = mapped_column(
+        Enum(PriorityReasonCode, native_enum=False, name="learning_feedback_next_reason_code"),
+        nullable=True,
+    )
 
     recommended_question_id: Mapped[UUID | None] = mapped_column(ForeignKey("questions.id", ondelete="SET NULL"))
     review_schedule_id: Mapped[UUID | None] = mapped_column(ForeignKey("review_schedules.id", ondelete="SET NULL"))

@@ -91,6 +91,7 @@ class AdaptiveRepairService:
             select(AdaptiveRepairSession).where(
                 AdaptiveRepairSession.student_id == student.id,
                 AdaptiveRepairSession.diagnosis_id == diagnosis_id,
+                AdaptiveRepairSession.repair_cycle_index == 1,
             )
         )
         if existing is not None:
@@ -116,7 +117,8 @@ class AdaptiveRepairService:
             raise ApplicationError(409, "ADAPTIVE_REPAIR_TARGET_MISSING", "Verified target no longer exists.")
         concurrent_existing = self.session.scalar(
             select(AdaptiveRepairSession).where(
-                AdaptiveRepairSession.verification_target_id == target.id
+                AdaptiveRepairSession.verification_target_id == target.id,
+                AdaptiveRepairSession.repair_cycle_index == 1,
             )
         )
         if concurrent_existing is not None:
@@ -138,54 +140,69 @@ class AdaptiveRepairService:
                 "No fresh auto-evaluable canonical question is available for the verified target.",
             )
 
-        practice_session = PracticeSession(
-            student_id=student.id,
-            subject_id=diagnosis.subject_id,
-            session_type=PracticeSessionType.REPAIR,
-            status=PracticeSessionStatus.ACTIVE,
-        )
-        self.session.add(practice_session)
-        self.session.flush()
-        if target.target_concept_id is not None:
-            self.session.add(
-                PracticeSessionConcept(
-                    practice_session_id=practice_session.id,
-                    concept_id=target.target_concept_id,
-                )
-            )
-        if target.target_problem_type_id is not None:
-            self.session.add(
-                PracticeSessionProblemType(
-                    practice_session_id=practice_session.id,
-                    problem_type_id=target.target_problem_type_id,
-                )
-            )
+        from sqlalchemy.exc import IntegrityError
 
-        adaptive = AdaptiveRepairSession(
-            practice_session_id=practice_session.id,
-            student_id=student.id,
-            subject_id=diagnosis.subject_id,
-            diagnosis_id=diagnosis.id,
-            verification_id=verification.id,
-            verification_target_id=target.id,
-            target_type=target.target_type,
-            target_concept_id=target.target_concept_id,
-            target_problem_type_id=target.target_problem_type_id,
-            misconception_definition_id=target.misconception_definition_id,
-            target_name=action.verified_target.target_name if action.verified_target else None,
-            target_code=action.verified_target.target_code if action.verified_target else None,
-            phase=phase,
-            initial_difficulty=initial,
-            current_difficulty=initial,
-            target_exit_difficulty=self.policy.exit_difficulty(target.target_type),
-            verification_average_score=target.average_score,
-            max_questions=self.policy.max_questions,
-        )
-        self.session.add(adaptive)
-        self.session.flush()
-        self._persist_item(adaptive, recommendation.question_id, phase, initial)
-        self.session.commit()
-        return self._build_read(adaptive)
+        try:
+            with self.session.begin_nested():
+                practice_session = PracticeSession(
+                    student_id=student.id,
+                    subject_id=diagnosis.subject_id,
+                    session_type=PracticeSessionType.REPAIR,
+                    status=PracticeSessionStatus.ACTIVE,
+                )
+                self.session.add(practice_session)
+                self.session.flush()
+                if target.target_concept_id is not None:
+                    self.session.add(
+                        PracticeSessionConcept(
+                            practice_session_id=practice_session.id,
+                            concept_id=target.target_concept_id,
+                        )
+                    )
+                if target.target_problem_type_id is not None:
+                    self.session.add(
+                        PracticeSessionProblemType(
+                            practice_session_id=practice_session.id,
+                            problem_type_id=target.target_problem_type_id,
+                        )
+                    )
+
+                adaptive = AdaptiveRepairSession(
+                    practice_session_id=practice_session.id,
+                    student_id=student.id,
+                    subject_id=diagnosis.subject_id,
+                    diagnosis_id=diagnosis.id,
+                    verification_id=verification.id,
+                    verification_target_id=target.id,
+                    target_type=target.target_type,
+                    target_concept_id=target.target_concept_id,
+                    target_problem_type_id=target.target_problem_type_id,
+                    misconception_definition_id=target.misconception_definition_id,
+                    target_name=action.verified_target.target_name if action.verified_target else None,
+                    target_code=action.verified_target.target_code if action.verified_target else None,
+                    repair_cycle_index=1,
+                    phase=phase,
+                    initial_difficulty=initial,
+                    current_difficulty=initial,
+                    target_exit_difficulty=self.policy.exit_difficulty(target.target_type),
+                    verification_average_score=target.average_score,
+                    max_questions=self.policy.max_questions,
+                )
+                self.session.add(adaptive)
+                self.session.flush()
+                self._persist_item(adaptive, recommendation.question_id, phase, initial)
+            self.session.commit()
+            return self._build_read(adaptive)
+        except IntegrityError:
+            concurrent_existing = self.session.scalar(
+                select(AdaptiveRepairSession).where(
+                    AdaptiveRepairSession.verification_target_id == target.id,
+                    AdaptiveRepairSession.repair_cycle_index == 1,
+                )
+            )
+            if concurrent_existing is not None:
+                return self._build_read(concurrent_existing)
+            raise
 
     def get(self, current_user: User, adaptive_session_id: UUID) -> AdaptiveRepairSessionRead:
         student = self._student_for_user(current_user.id)
@@ -618,7 +635,7 @@ class AdaptiveRepairService:
             with self.session.begin_nested():
                 from app.learning.feedback_service import LearningFeedbackService
 
-                LearningFeedbackService(self.session).resolve_feedback(adaptive.id)
+                LearningFeedbackService(self.session).resolve_feedback(adaptive.id, commit=False)
         except Exception:
             # Failure in feedback generation must NEVER rollback repair attempt/mastery/session state
             pass
@@ -639,7 +656,7 @@ class AdaptiveRepairService:
         from app.learning.feedback_service import LearningFeedbackService
 
         feedback_svc = LearningFeedbackService(self.session)
-        feedback = feedback_svc.resolve_feedback(previous.id)
+        feedback = feedback_svc.resolve_feedback(previous.id, commit=False)
         if feedback.action != LearningFeedbackAction.RETRY_REPAIR or not feedback.retry.allowed:
             raise ApplicationError(
                 409,
@@ -700,56 +717,70 @@ class AdaptiveRepairService:
                 "No fresh auto-evaluable canonical question is available for retry.",
             )
 
-        practice_session = PracticeSession(
-            student_id=student.id,
-            subject_id=previous.subject_id,
-            session_type=PracticeSessionType.REPAIR,
-            status=PracticeSessionStatus.ACTIVE,
-        )
-        self.session.add(practice_session)
-        self.session.flush()
-        if target.target_concept_id is not None:
-            self.session.add(
-                PracticeSessionConcept(
-                    practice_session_id=practice_session.id,
-                    concept_id=target.target_concept_id,
-                )
-            )
-        if target.target_problem_type_id is not None:
-            self.session.add(
-                PracticeSessionProblemType(
-                    practice_session_id=practice_session.id,
-                    problem_type_id=target.target_problem_type_id,
-                )
-            )
+        from sqlalchemy.exc import IntegrityError
 
-        adaptive_retry = AdaptiveRepairSession(
-            practice_session_id=practice_session.id,
-            student_id=student.id,
-            subject_id=previous.subject_id,
-            diagnosis_id=previous.diagnosis_id,
-            verification_id=previous.verification_id,
-            verification_target_id=target.id,
-            target_type=target.target_type,
-            target_concept_id=target.target_concept_id,
-            target_problem_type_id=target.target_problem_type_id,
-            misconception_definition_id=target.misconception_definition_id,
-            target_name=previous.target_name,
-            target_code=previous.target_code,
-            repair_cycle_index=next_cycle,
-            previous_adaptive_repair_session_id=previous.id,
-            phase=phase,
-            initial_difficulty=retry_initial,
-            current_difficulty=retry_initial,
-            target_exit_difficulty=self.policy.exit_difficulty(target.target_type),
-            verification_average_score=target.average_score,
-            max_questions=self.policy.max_questions,
-        )
-        self.session.add(adaptive_retry)
-        self.session.flush()
-        self._persist_item(adaptive_retry, recommendation.question_id, phase, retry_initial)
-        self.session.commit()
-        return self._build_read(adaptive_retry)
+        try:
+            with self.session.begin_nested():
+                practice_session = PracticeSession(
+                    student_id=student.id,
+                    subject_id=previous.subject_id,
+                    session_type=PracticeSessionType.REPAIR,
+                    status=PracticeSessionStatus.ACTIVE,
+                )
+                self.session.add(practice_session)
+                self.session.flush()
+                if target.target_concept_id is not None:
+                    self.session.add(
+                        PracticeSessionConcept(
+                            practice_session_id=practice_session.id,
+                            concept_id=target.target_concept_id,
+                        )
+                    )
+                if target.target_problem_type_id is not None:
+                    self.session.add(
+                        PracticeSessionProblemType(
+                            practice_session_id=practice_session.id,
+                            problem_type_id=target.target_problem_type_id,
+                        )
+                    )
+
+                adaptive_retry = AdaptiveRepairSession(
+                    practice_session_id=practice_session.id,
+                    student_id=student.id,
+                    subject_id=previous.subject_id,
+                    diagnosis_id=previous.diagnosis_id,
+                    verification_id=previous.verification_id,
+                    verification_target_id=target.id,
+                    target_type=target.target_type,
+                    target_concept_id=target.target_concept_id,
+                    target_problem_type_id=target.target_problem_type_id,
+                    misconception_definition_id=target.misconception_definition_id,
+                    target_name=previous.target_name,
+                    target_code=previous.target_code,
+                    repair_cycle_index=next_cycle,
+                    previous_adaptive_repair_session_id=previous.id,
+                    phase=phase,
+                    initial_difficulty=retry_initial,
+                    current_difficulty=retry_initial,
+                    target_exit_difficulty=self.policy.exit_difficulty(target.target_type),
+                    verification_average_score=target.average_score,
+                    max_questions=self.policy.max_questions,
+                )
+                self.session.add(adaptive_retry)
+                self.session.flush()
+                self._persist_item(adaptive_retry, recommendation.question_id, phase, retry_initial)
+            self.session.commit()
+            return self._build_read(adaptive_retry)
+        except IntegrityError:
+            existing_retry = self.session.scalar(
+                select(AdaptiveRepairSession).where(
+                    AdaptiveRepairSession.verification_target_id == previous.verification_target_id,
+                    AdaptiveRepairSession.repair_cycle_index == next_cycle,
+                )
+            )
+            if existing_retry is not None:
+                return self._build_read(existing_retry)
+            raise
 
     def _get_session(self, adaptive_session_id: UUID) -> AdaptiveRepairSession:
         adaptive = self.session.get(AdaptiveRepairSession, adaptive_session_id)

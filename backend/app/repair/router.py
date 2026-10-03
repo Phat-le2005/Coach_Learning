@@ -155,7 +155,7 @@ def get_adaptive_repair_next_action(
 ) -> LearningFeedbackDecisionRead:
     # Ensure current user has permission for this repair session
     AdaptiveRepairService(session).get(current_user, adaptive_session_id)
-    return LearningFeedbackService(session).resolve_feedback(adaptive_session_id)
+    return LearningFeedbackService(session).resolve_feedback(adaptive_session_id, commit=True)
 
 
 @router.post(

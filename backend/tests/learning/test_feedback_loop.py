@@ -4,7 +4,7 @@ from uuid import UUID, uuid4
 
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import func, select
+from sqlalchemy import Engine, func, select
 from sqlalchemy.orm import Session
 
 from app.classes.models import Classroom, EnrollmentStatus, StudentEnrollment
@@ -651,3 +651,460 @@ def test_api_endpoints_next_action_retry_and_latest(
     retry_data = resp_retry.json()
     assert retry_data["repair_cycle_index"] == 2
     assert retry_data["previous_adaptive_repair_session_id"] == session_id
+
+
+def test_lazy_feedback_persists_across_new_db_session(
+    db_client: TestClient,
+    db_engine: Engine,
+    db_session: Session,
+    practice_students: tuple[User, User],
+    student_profile: StudentProfile,
+    practice_content: PracticeContent,
+    practice_bearer,
+) -> None:
+    _archive_existing_approved_questions(db_session, practice_content)
+    diagnosis, target, _ = _supported_diagnosis(
+        db_session, practice_content, student_profile, average_score=0.75, question_count=6
+    )
+    service = AdaptiveRepairService(db_session)
+    started = service.start(practice_students[0], diagnosis.id)
+
+    # Mock auto-feedback during completion to fail so feedback is not created automatically
+    with patch(
+        "app.learning.feedback_service.LearningFeedbackService.resolve_feedback",
+        side_effect=RuntimeError("Simulated auto-feedback failure"),
+    ):
+        for _ in range(4):
+            _submit_answer(service, practice_students[0], started.id, is_correct=True)
+
+    db_session.commit()
+
+    # Confirm repair is completed but feedback decision does not exist yet
+    assert db_session.scalar(
+        select(LearningFeedbackDecision).where(
+            LearningFeedbackDecision.adaptive_repair_session_id == started.id
+        )
+    ) is None
+
+    # Call GET next-action via API (lazy path with commit=True)
+    headers = practice_bearer(practice_students[0])
+    resp = db_client.get(f"/repair/adaptive/{started.id}/next-action", headers=headers)
+    assert resp.status_code == 200
+    resp_data = resp.json()
+    assert resp_data["id"] is not None
+
+    # Verify durability across a completely fresh DB session
+    with Session(db_engine) as fresh_session:
+        persisted = fresh_session.scalar(
+            select(LearningFeedbackDecision).where(
+                LearningFeedbackDecision.adaptive_repair_session_id == started.id
+            )
+        )
+        assert persisted is not None
+        assert str(persisted.id) == resp_data["id"]
+        assert persisted.action in {
+            LearningFeedbackAction.RETURN_TO_CURRENT_LEARNING,
+            LearningFeedbackAction.NO_ACTIVE_LEARNING,
+        }
+
+
+def test_lazy_resolved_feedback_persists_review_schedule(
+    db_client: TestClient,
+    db_engine: Engine,
+    db_session: Session,
+    practice_students: tuple[User, User],
+    student_profile: StudentProfile,
+    practice_content: PracticeContent,
+    practice_bearer,
+) -> None:
+    _archive_existing_approved_questions(db_session, practice_content)
+    diagnosis, target, _ = _supported_diagnosis(
+        db_session, practice_content, student_profile, average_score=0.75, question_count=6
+    )
+    service = AdaptiveRepairService(db_session)
+    started = service.start(practice_students[0], diagnosis.id)
+
+    # Mock auto-feedback so neither decision nor review schedule is created upon answer completion
+    with patch(
+        "app.learning.feedback_service.LearningFeedbackService.resolve_feedback",
+        side_effect=RuntimeError("Simulated auto-feedback failure"),
+    ):
+        for _ in range(4):
+            _submit_answer(service, practice_students[0], started.id, is_correct=True)
+
+    db_session.commit()
+
+    # Confirm no review schedule exists yet
+    schedules_before = list(
+        db_session.scalars(
+            select(ReviewSchedule).where(ReviewSchedule.student_id == student_profile.id)
+        )
+    )
+    assert len(schedules_before) == 0
+
+    # Call lazy endpoint
+    headers = practice_bearer(practice_students[0])
+    resp = db_client.get(f"/repair/adaptive/{started.id}/next-action", headers=headers)
+    assert resp.status_code == 200
+    resp_data = resp.json()
+    assert resp_data["review"] is not None
+    schedule_id_str = resp_data["review"]["schedule_id"]
+    assert schedule_id_str is not None
+
+    # Open fresh DB session: review schedule and feedback decision must BOTH be durable
+    with Session(db_engine) as fresh_session:
+        sched = fresh_session.get(ReviewSchedule, UUID(schedule_id_str))
+        assert sched is not None
+        assert sched.student_id == student_profile.id
+
+        persisted_dec = fresh_session.scalar(
+            select(LearningFeedbackDecision).where(
+                LearningFeedbackDecision.adaptive_repair_session_id == started.id
+            )
+        )
+        assert persisted_dec is not None
+        assert str(persisted_dec.review_schedule_id) == schedule_id_str
+
+
+def test_feedback_next_learning_target_is_historical_snapshot(
+    db_session: Session,
+    db_client: TestClient,
+    practice_students: tuple[User, User],
+    student_profile: StudentProfile,
+    practice_content: PracticeContent,
+    practice_bearer,
+) -> None:
+    _archive_existing_approved_questions(db_session, practice_content)
+
+    # Create distinct PT_A and PT_B under separate concepts
+    concept_a = Concept(
+        subject_id=practice_content.subject.id,
+        code=f"CONCEPT_A_{uuid4().hex[:6].upper()}",
+        name="Concept A",
+    )
+    concept_b = Concept(
+        subject_id=practice_content.subject.id,
+        code=f"CONCEPT_B_{uuid4().hex[:6].upper()}",
+        name="Concept B",
+    )
+    db_session.add_all([concept_a, concept_b])
+    db_session.flush()
+
+    pt_a = ProblemType(
+        topic_id=practice_content.problem_type.topic_id,
+        code=f"PT_A_{uuid4().hex[:6].upper()}",
+        name="Problem Type A",
+        order_index=97,
+        is_active=True,
+    )
+    pt_b = ProblemType(
+        topic_id=practice_content.problem_type.topic_id,
+        code=f"PT_B_{uuid4().hex[:6].upper()}",
+        name="Problem Type B",
+        order_index=98,
+        is_active=True,
+    )
+    db_session.add_all([pt_a, pt_b])
+    db_session.flush()
+
+    # Create questions for PT_A and PT_B
+    q_a = Question(
+        subject_id=practice_content.subject.id,
+        content=f"Snapshot Question A {uuid4()}",
+        question_type=QuestionType.MULTIPLE_CHOICE,
+        difficulty=0.5,
+        correct_answer="A",
+        explanation="Explain",
+        source_type="TEST",
+        exam_weight=0.5,
+        status=QuestionStatus.APPROVED,
+        cognitive_level=CognitiveLevel.APPLY,
+        created_by=practice_content.mcq.created_by,
+        options=[
+            QuestionOption(label="A", content="Correct", order_index=0),
+            QuestionOption(label="B", content="Wrong", order_index=1),
+        ],
+        problem_type_links=[QuestionProblemType(problem_type_id=pt_a.id, weight=1.0, is_primary=True)],
+        concept_links=[QuestionConcept(concept_id=concept_a.id, weight=1.0)],
+        learning_outcome_links=[QuestionLearningOutcome(learning_outcome_id=practice_content.learning_outcome.id, weight=1.0)],
+    )
+    q_b = Question(
+        subject_id=practice_content.subject.id,
+        content=f"Snapshot Question B {uuid4()}",
+        question_type=QuestionType.MULTIPLE_CHOICE,
+        difficulty=0.5,
+        correct_answer="A",
+        explanation="Explain",
+        source_type="TEST",
+        exam_weight=0.5,
+        status=QuestionStatus.APPROVED,
+        cognitive_level=CognitiveLevel.APPLY,
+        created_by=practice_content.mcq.created_by,
+        options=[
+            QuestionOption(label="A", content="Correct", order_index=0),
+            QuestionOption(label="B", content="Wrong", order_index=1),
+        ],
+        problem_type_links=[QuestionProblemType(problem_type_id=pt_b.id, weight=1.0, is_primary=True)],
+        concept_links=[QuestionConcept(concept_id=concept_b.id, weight=1.0)],
+        learning_outcome_links=[QuestionLearningOutcome(learning_outcome_id=practice_content.learning_outcome.id, weight=1.0)],
+    )
+    db_session.add_all([q_a, q_b])
+    db_session.flush()
+
+    # Create teaching plan pointing to PT_A
+    classroom = Classroom(
+        name="Class A",
+        academic_year="2025-2026",
+        grade_level=12,
+        created_by=practice_content.mcq.created_by,
+    )
+    db_session.add(classroom)
+    db_session.flush()
+    db_session.add(
+        StudentEnrollment(
+            classroom_id=classroom.id,
+            student_id=student_profile.id,
+            status=EnrollmentStatus.ACTIVE,
+        )
+    )
+    db_session.flush()
+
+    item_a = TeachingPlanItem(problem_type_id=pt_a.id, priority=10, order_index=0)
+    plan = TeachingPlan(
+        classroom_id=classroom.id,
+        subject_id=practice_content.subject.id,
+        status=TeachingPlanStatus.ACTIVE,
+        start_date=date.today(),
+        created_by=practice_content.mcq.created_by,
+        items=[item_a],
+    )
+    db_session.add(plan)
+    db_session.commit()
+
+    # Run repair session to completion
+    diagnosis, target, _ = _supported_diagnosis(
+        db_session, practice_content, student_profile, average_score=0.75, question_count=6
+    )
+    service = AdaptiveRepairService(db_session)
+    started = service.start(practice_students[0], diagnosis.id)
+    for _ in range(4):
+        _submit_answer(service, practice_students[0], started.id, is_correct=True)
+
+    # Feedback resolved: should have snapshot pointing to PT_A and q_a
+    feedback_svc = LearningFeedbackService(db_session)
+    dec = feedback_svc.resolve_feedback(started.id)
+    assert dec.action == LearningFeedbackAction.RETURN_TO_CURRENT_LEARNING
+    assert dec.next_learning is not None
+    assert dec.next_learning.problem_type_id == pt_a.id
+    assert dec.next_learning.recommended_question_id == q_a.id
+
+    # Now change TeachingPlan to point to PT_B!
+    item_a.problem_type_id = pt_b.id
+    db_session.commit()
+
+    # Re-read feedback decision via service and via API
+    dec_after = feedback_svc.resolve_feedback(started.id)
+    assert dec_after.next_learning is not None
+    # Must STILL point to snapshot PT_A and q_a, NOT PT_B!
+    assert dec_after.next_learning.problem_type_id == pt_a.id
+    assert dec_after.next_learning.recommended_question_id == q_a.id
+
+    headers = practice_bearer(practice_students[0])
+    resp = db_client.get(f"/repair/adaptive/{started.id}/next-action", headers=headers)
+    assert resp.status_code == 200
+    api_next = resp.json()["next_learning"]
+    assert api_next["problem_type_id"] == str(pt_a.id)
+    assert api_next["recommended_question_id"] == str(q_a.id)
+
+
+def test_feedback_legacy_row_without_next_target_does_not_recompute(
+    db_session: Session,
+    db_client: TestClient,
+    practice_students: tuple[User, User],
+    student_profile: StudentProfile,
+    practice_content: PracticeContent,
+    practice_bearer,
+) -> None:
+    _archive_existing_approved_questions(db_session, practice_content)
+    diagnosis, target, _ = _supported_diagnosis(
+        db_session, practice_content, student_profile, average_score=0.75, question_count=6
+    )
+    service = AdaptiveRepairService(db_session)
+    started = service.start(practice_students[0], diagnosis.id)
+
+    # Complete without automatic feedback
+    with patch(
+        "app.learning.feedback_service.LearningFeedbackService.resolve_feedback",
+        side_effect=RuntimeError("suppressed"),
+    ):
+        for _ in range(4):
+            _submit_answer(service, practice_students[0], started.id, is_correct=True)
+
+    # Manually insert a legacy feedback decision row with NULL snapshot columns
+    legacy_decision = LearningFeedbackDecision(
+        student_id=student_profile.id,
+        subject_id=practice_content.subject.id,
+        adaptive_repair_session_id=started.id,
+        action=LearningFeedbackAction.RETURN_TO_CURRENT_LEARNING,
+        reason_code=LearningFeedbackReasonCode.CURRENT_LESSON_AVAILABLE,
+        target_type=target.target_type,
+        target_concept_id=target.target_concept_id,
+        target_problem_type_id=target.target_problem_type_id,
+        next_target_type=None,
+        next_concept_id=None,
+        next_problem_type_id=None,
+        next_reason_code=None,
+        recommended_question_id=None,
+        review_schedule_id=None,
+        repair_cycle_index=1,
+        retry_allowed=False,
+    )
+    db_session.add(legacy_decision)
+    db_session.commit()
+
+    # Reading the decision must gracefully return next_learning=None without recomputing or crashing
+    with patch(
+        "app.recommendations.priority_service.LearningPriorityService.get_priorities",
+        side_effect=AssertionError("get_priorities should NOT be called for existing decision!"),
+    ):
+        feedback_svc = LearningFeedbackService(db_session)
+        read = feedback_svc.resolve_feedback(started.id)
+        assert read.action == LearningFeedbackAction.RETURN_TO_CURRENT_LEARNING
+        assert read.next_learning is None
+
+        headers = practice_bearer(practice_students[0])
+        resp = db_client.get(f"/repair/adaptive/{started.id}/next-action", headers=headers)
+        assert resp.status_code == 200
+        assert resp.json()["next_learning"] is None
+
+
+def test_initial_start_returns_cycle_one_after_retry_exists(
+    db_session: Session,
+    practice_students: tuple[User, User],
+    student_profile: StudentProfile,
+    practice_content: PracticeContent,
+) -> None:
+    _archive_existing_approved_questions(db_session, practice_content)
+    diagnosis, target, _ = _supported_diagnosis(
+        db_session, practice_content, student_profile, average_score=0.25, question_count=18
+    )
+    service = AdaptiveRepairService(db_session)
+    c1 = service.start(practice_students[0], diagnosis.id)
+    assert c1.repair_cycle_index == 1
+
+    # Complete cycle 1 with NEEDS_MORE_PRACTICE
+    for _ in range(8):
+        _submit_answer(service, practice_students[0], c1.id, is_correct=False)
+
+    # Retry -> creates cycle 2
+    c2 = service.retry(practice_students[0], c1.id)
+    assert c2.repair_cycle_index == 2
+
+    # Now call start() again on original diagnosis -> MUST return cycle 1, never cycle 2!
+    re_started = service.start(practice_students[0], diagnosis.id)
+    assert re_started.id == c1.id
+    assert re_started.repair_cycle_index == 1
+
+
+def test_concurrent_retry_returns_single_cycle_two(
+    db_session: Session,
+    practice_students: tuple[User, User],
+    student_profile: StudentProfile,
+    practice_content: PracticeContent,
+) -> None:
+    _archive_existing_approved_questions(db_session, practice_content)
+    diagnosis, target, _ = _supported_diagnosis(
+        db_session, practice_content, student_profile, average_score=0.25, question_count=18
+    )
+    service = AdaptiveRepairService(db_session)
+    c1 = service.start(practice_students[0], diagnosis.id)
+
+    # Complete cycle 1 with NEEDS_MORE_PRACTICE
+    for _ in range(8):
+        _submit_answer(service, practice_students[0], c1.id, is_correct=False)
+
+    # Call retry twice sequentially (idempotent retry)
+    r1 = service.retry(practice_students[0], c1.id)
+    r2 = service.retry(practice_students[0], c1.id)
+
+    assert r1.id == r2.id
+    assert r1.repair_cycle_index == 2
+    assert r2.repair_cycle_index == 2
+
+    # Verify only 1 cycle 2 session exists in database
+    count_c2 = db_session.scalar(
+        select(func.count())
+        .select_from(AdaptiveRepairSession)
+        .where(
+            AdaptiveRepairSession.verification_target_id == target.id,
+            AdaptiveRepairSession.repair_cycle_index == 2,
+        )
+    )
+    assert count_c2 == 1
+
+
+def test_retry_race_does_not_leave_orphan_practice_session(
+    db_session: Session,
+    practice_students: tuple[User, User],
+    student_profile: StudentProfile,
+    practice_content: PracticeContent,
+) -> None:
+    _archive_existing_approved_questions(db_session, practice_content)
+    diagnosis, target, _ = _supported_diagnosis(
+        db_session, practice_content, student_profile, average_score=0.25, question_count=18
+    )
+    service = AdaptiveRepairService(db_session)
+    c1 = service.start(practice_students[0], diagnosis.id)
+
+    for _ in range(8):
+        _submit_answer(service, practice_students[0], c1.id, is_correct=False)
+
+    # Worker 1 succeeds and creates cycle 2
+    winner_retry = service.retry(practice_students[0], c1.id)
+    assert winner_retry.repair_cycle_index == 2
+
+    ps_count_before = db_session.scalar(
+        select(func.count())
+        .select_from(PracticeSession)
+        .where(PracticeSession.student_id == student_profile.id)
+    )
+
+    # Simulate race loser: existing_retry check returns None on first query to enter creation block,
+    # then during flush inside savepoint, SQLite raises IntegrityError on uq_adaptive_repair_target_cycle.
+    orig_scalar = db_session.scalar
+    call_count = 0
+
+    def scalar_intercept(stmt, *args, **kwargs):
+        nonlocal call_count
+        query_str = str(stmt)
+        if "repair_cycle_index = :repair_cycle_index_1" in query_str and call_count == 0:
+            call_count += 1
+            return None  # Simulate first check missing existing cycle 2
+        return orig_scalar(stmt, *args, **kwargs)
+
+    with patch.object(db_session, "scalar", side_effect=scalar_intercept):
+        loser_result = service.retry(practice_students[0], c1.id)
+
+    # Loser must have safely recovered Winner's session
+    assert loser_result.id == winner_retry.id
+    assert loser_result.repair_cycle_index == 2
+
+    # PracticeSession count must NOT have increased (no orphan PracticeSession created)
+    ps_count_after = db_session.scalar(
+        select(func.count())
+        .select_from(PracticeSession)
+        .where(PracticeSession.student_id == student_profile.id)
+    )
+    assert ps_count_after == ps_count_before
+
+    # Exactly 1 cycle 2 session exists
+    cycle2_count = db_session.scalar(
+        select(func.count())
+        .select_from(AdaptiveRepairSession)
+        .where(
+            AdaptiveRepairSession.verification_target_id == target.id,
+            AdaptiveRepairSession.repair_cycle_index == 2,
+        )
+    )
+    assert cycle2_count == 1
+

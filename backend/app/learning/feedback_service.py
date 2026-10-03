@@ -30,7 +30,7 @@ from app.learning.feedback_schemas import (
 from app.questions.models import Question, QuestionStatus
 from app.recommendations.priority_service import LearningPriorityService
 from app.recommendations.question_service import QuestionRecommendationService
-from app.recommendations.schemas import PriorityReasonCode
+from app.recommendations.schemas import PriorityReasonCode, PriorityTargetType
 from app.repair.lineage import RepairLineageExposureService
 from app.repair.models import AdaptiveRepairOutcome, AdaptiveRepairSession, AdaptiveRepairStatus
 from app.review.models import ReviewSchedule
@@ -59,8 +59,20 @@ class LearningFeedbackService:
         self.recommendations = recommendation_service or QuestionRecommendationService(session)
         self.lineage_service = lineage_service or RepairLineageExposureService(session)
 
-    def resolve_feedback(self, adaptive_session_id: UUID) -> LearningFeedbackDecisionRead:
-        """Resolve or retrieve the idempotent learning feedback decision for a completed repair session."""
+    def resolve_feedback(
+        self,
+        adaptive_session_id: UUID,
+        *,
+        commit: bool = False,
+    ) -> LearningFeedbackDecisionRead:
+        """Resolve or retrieve the idempotent learning feedback decision for a completed repair session.
+
+        Transaction ownership:
+        - commit=False: Caller owns the transaction (used in nested/savepoint contexts such as
+          AdaptiveRepairService._try_resolve_feedback_isolated where outer session handles commit).
+        - commit=True: The service commits the transaction upon creating a new decision and its
+          associated review schedule side effects (used in lazy API endpoints like GET next-action).
+        """
         adaptive = self.session.get(AdaptiveRepairSession, adaptive_session_id)
         if adaptive is None:
             raise ApplicationError(404, "ADAPTIVE_REPAIR_NOT_FOUND", "Adaptive repair session was not found.")
@@ -82,6 +94,10 @@ class LearningFeedbackService:
 
         review_schedule_id: UUID | None = None
         recommended_question_id: UUID | None = None
+        next_target_type: PriorityTargetType | None = None
+        next_concept_id: UUID | None = None
+        next_problem_type_id: UUID | None = None
+        next_reason_code: PriorityReasonCode | None = None
 
         if adaptive.outcome == AdaptiveRepairOutcome.RESOLVED:
             # 1. Schedule spaced review with failure isolation
@@ -114,16 +130,28 @@ class LearningFeedbackService:
 
             chosen_priority = current_lesson_p or (filtered[0] if filtered else None)
             if chosen_priority is not None:
+                next_target_type = chosen_priority.target_type
+                next_concept_id = chosen_priority.concept_id
+                next_problem_type_id = chosen_priority.problem_type_id
+                next_reason_code = chosen_priority.reason_code
+
                 try:
+                    exclusions = self.lineage_service.get_lineage_excluded_question_ids(
+                        verification_target_id=adaptive.verification_target_id,
+                        student_id=adaptive.student_id,
+                        diagnosis_id=adaptive.diagnosis_id,
+                        verification_id=adaptive.verification_id,
+                    )
                     rec = self.recommendations.recommend(
                         adaptive.student_id,
                         adaptive.subject_id,
                         target_problem_type_id=chosen_priority.problem_type_id,
                         target_concept_id=chosen_priority.concept_id,
+                        exclude_question_ids=exclusions,
                     )
                     if rec is not None:
                         recommended_question_id = rec.question_id
-                except Exception as e:
+                except Exception:
                     logger.warning("Optional question recommendation failed for next learning priority")
 
         elif adaptive.outcome == AdaptiveRepairOutcome.NEEDS_MORE_PRACTICE:
@@ -163,13 +191,38 @@ class LearningFeedbackService:
             target_type=adaptive.target_type,
             target_concept_id=adaptive.target_concept_id,
             target_problem_type_id=adaptive.target_problem_type_id,
+            next_target_type=next_target_type,
+            next_concept_id=next_concept_id,
+            next_problem_type_id=next_problem_type_id,
+            next_reason_code=next_reason_code,
             recommended_question_id=recommended_question_id,
             review_schedule_id=review_schedule_id,
             repair_cycle_index=adaptive.repair_cycle_index,
             retry_allowed=retry_allowed,
         )
-        self.session.add(decision)
-        self.session.flush()
+
+        from sqlalchemy.exc import IntegrityError
+
+        try:
+            self.session.add(decision)
+            self.session.flush()
+            if commit:
+                self.session.commit()
+        except IntegrityError:
+            if commit:
+                self.session.rollback()
+                existing = self.session.scalar(
+                    select(LearningFeedbackDecision).where(
+                        LearningFeedbackDecision.adaptive_repair_session_id == adaptive.id
+                    )
+                )
+                if existing is not None:
+                    return self._build_read(existing, adaptive)
+            raise
+        except Exception:
+            if commit:
+                self.session.rollback()
+            raise
 
         return self._build_read(decision, adaptive)
 
@@ -262,54 +315,44 @@ class LearningFeedbackService:
                     next_review_at=sched.next_review_at,
                 )
 
-        # Build next learning info
+        # Build next learning info from persisted snapshot
         next_learning: LearningFeedbackNextLearningInfo | None = None
         if decision.action == LearningFeedbackAction.RETURN_TO_CURRENT_LEARNING:
-            priorities = self.priority_service.get_priorities(adaptive.student_id, adaptive.subject_id)
-            filtered = [
-                p
-                for p in priorities
-                if not (
-                    (adaptive.target_problem_type_id and p.problem_type_id == adaptive.target_problem_type_id)
-                    or (adaptive.target_concept_id and p.concept_id == adaptive.target_concept_id)
-                    or p.reason_code == PriorityReasonCode.VERIFIED_ROOT_CAUSE
-                )
-            ]
-            current_lesson_p = next(
-                (p for p in filtered if p.reason_code == PriorityReasonCode.CURRENT_LESSON), None
-            )
-            chosen_priority = current_lesson_p or (filtered[0] if filtered else None)
-
-            recommended_q_info: LearningFeedbackQuestionInfo | None = None
-            if decision.recommended_question_id is not None:
-                question = self.session.scalar(
-                    select(Question)
-                    .options(selectinload(Question.options))
-                    .where(Question.id == decision.recommended_question_id)
-                )
-                if question is not None:
-                    recommended_q_info = LearningFeedbackQuestionInfo(
-                        id=question.id,
-                        content=question.content,
-                        question_type=question.question_type,
-                        difficulty=question.difficulty,
-                        options=[
-                            LearningFeedbackQuestionOptionInfo(
-                                id=opt.id,
-                                label=opt.label,
-                                content=opt.content,
-                                order_index=opt.order_index,
-                            )
-                            for opt in question.options
-                        ],
+            if (
+                decision.next_target_type is not None
+                or decision.next_concept_id is not None
+                or decision.next_problem_type_id is not None
+                or decision.next_reason_code is not None
+            ):
+                recommended_q_info: LearningFeedbackQuestionInfo | None = None
+                if decision.recommended_question_id is not None:
+                    question = self.session.scalar(
+                        select(Question)
+                        .options(selectinload(Question.options))
+                        .where(Question.id == decision.recommended_question_id)
                     )
+                    if question is not None:
+                        recommended_q_info = LearningFeedbackQuestionInfo(
+                            id=question.id,
+                            content=question.content,
+                            question_type=question.question_type,
+                            difficulty=question.difficulty,
+                            options=[
+                                LearningFeedbackQuestionOptionInfo(
+                                    id=opt.id,
+                                    label=opt.label,
+                                    content=opt.content,
+                                    order_index=opt.order_index,
+                                )
+                                for opt in question.options
+                            ],
+                        )
 
-            if chosen_priority is not None:
                 next_learning = LearningFeedbackNextLearningInfo(
-                    target_type=chosen_priority.target_type,
-                    concept_id=chosen_priority.concept_id,
-                    problem_type_id=chosen_priority.problem_type_id,
-                    reason_code=chosen_priority.reason_code,
+                    target_type=decision.next_target_type,
+                    concept_id=decision.next_concept_id,
+                    problem_type_id=decision.next_problem_type_id,
+                    reason_code=decision.next_reason_code,
                     recommended_question_id=decision.recommended_question_id,
                     recommended_question=recommended_q_info,
                 )
