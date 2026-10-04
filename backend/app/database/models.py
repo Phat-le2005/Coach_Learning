@@ -90,6 +90,14 @@ from app.learning.models import (
 )
 from app.learning.feedback_models import LearningFeedbackDecision
 from app.question_supply.models import QuestionSupplyGap, QuestionSupplyGapObservation
+from app.question_acquisition.models import (
+    QuestionAcquisitionArtifact,
+    QuestionAcquisitionExistingCandidate,
+    QuestionAcquisitionPage,
+    QuestionAcquisitionRequest,
+    QuestionAcquisitionSource,
+    QuestionAcquisitionSourceArtifact,
+)
 from app.planning.models import (
     StudyPlan,
     StudyPlanStatus,
@@ -209,6 +217,12 @@ __all__ = [
     "QuestionProblemType",
     "QuestionSupplyGap",
     "QuestionSupplyGapObservation",
+    "QuestionAcquisitionArtifact",
+    "QuestionAcquisitionExistingCandidate",
+    "QuestionAcquisitionPage",
+    "QuestionAcquisitionRequest",
+    "QuestionAcquisitionSource",
+    "QuestionAcquisitionSourceArtifact",
     "QuickCheckQuestion",
     "QuickCheckQuestionRole",
     "QuickCheckSession",

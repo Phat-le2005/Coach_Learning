@@ -35,6 +35,7 @@ from app.parents.portal_router import (
 from app.teacher_materials.router import router as teacher_materials_router
 from app.knowledge_gap.router import router as root_cause_diagnostics_router
 from app.question_supply.router import router as question_supply_router
+from app.question_acquisition.router import router as question_acquisition_router
 
 
 api_router = APIRouter()
@@ -70,3 +71,4 @@ api_router.include_router(admission_router)
 api_router.include_router(teacher_materials_router)
 api_router.include_router(root_cause_diagnostics_router)
 api_router.include_router(question_supply_router)
+api_router.include_router(question_acquisition_router)

@@ -23,12 +23,14 @@ from app.question_supply.schemas import (
     QuestionSupplyGapDetailRead,
     QuestionSupplyGapRead,
 )
+from app.question_acquisition.schemas import QuestionAcquisitionRequestRead
+from app.question_acquisition.service import QuestionAcquisitionService
 from app.question_supply.service import (
     QuestionBankSufficiencyService,
     QuestionSupplyGapService,
     QuestionSupplyRequirement,
 )
-from app.users.models import Role
+from app.users.models import Role, User
 
 router = APIRouter(
     prefix="/question-supply",
@@ -93,6 +95,20 @@ def reassess_supply_gap(
     if reloaded is None:
         raise ApplicationError(404, "QUESTION_SUPPLY_GAP_NOT_FOUND", "Supply gap was not found.")
     return QuestionSupplyGapDetailRead.model_validate(reloaded)
+
+
+@router.post("/gaps/{gap_id}/acquisition", response_model=QuestionAcquisitionRequestRead)
+def plan_gap_acquisition(
+    gap_id: UUID,
+    response: Response,
+    session: Annotated[Session, Depends(get_db)],
+    current_user: Annotated[User, Depends(require_role(Role.ADMIN))],
+) -> QuestionAcquisitionRequestRead:
+    """Plan or retrieve active acquisition request for a supply gap."""
+    response.headers["Cache-Control"] = "no-store"
+    service = QuestionAcquisitionService(session)
+    req = service.plan_or_get_active_request(gap_id, created_by=current_user.id, commit=True)
+    return QuestionAcquisitionRequestRead.model_validate(req)
 
 
 @router.post("/gaps/reassess-open", response_model=list[QuestionSupplyGapRead])
