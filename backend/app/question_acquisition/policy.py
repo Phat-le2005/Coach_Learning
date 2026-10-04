@@ -164,3 +164,60 @@ class QuestionAcquisitionPolicy:
             existing_candidate_count=total_existing_candidates_count,
             external_candidate_target_count=external_target,
         )
+
+
+class StreamIngestValidator:
+    """Incremental validator for streaming PDF ingestion checking size limits and PDF magic header across arbitrary chunk boundaries."""
+
+    PDF_MAGIC_PREFIX = b"%PDF-"
+    MAGIC_LEN = len(PDF_MAGIC_PREFIX)
+
+    def __init__(self, max_bytes: int) -> None:
+        self.max_bytes = max_bytes
+        self.hasher = hashlib.sha256()
+        self.total_bytes = 0
+        self._magic_header = bytearray()
+        self._magic_checked = False
+
+    def process_chunk(self, chunk: bytes) -> None:
+        if not chunk:
+            return
+
+        self.total_bytes += len(chunk)
+        if self.total_bytes > self.max_bytes:
+            raise ApplicationError(
+                422,
+                "QUESTION_ACQUISITION_FILE_TOO_LARGE",
+                f"File exceeded maximum size limit ({self.max_bytes} bytes).",
+            )
+
+        if not self._magic_checked:
+            needed = self.MAGIC_LEN - len(self._magic_header)
+            self._magic_header.extend(chunk[:needed])
+            if len(self._magic_header) == self.MAGIC_LEN:
+                if not bytes(self._magic_header).startswith(self.PDF_MAGIC_PREFIX):
+                    raise ApplicationError(
+                        422,
+                        "QUESTION_ACQUISITION_NOT_PDF",
+                        "Payload does not begin with valid PDF magic bytes (%PDF-).",
+                    )
+                self._magic_checked = True
+
+        self.hasher.update(chunk)
+
+    def finalize(self) -> tuple[str, int]:
+        """Finalize validation and return (sha256_hex, total_bytes)."""
+        if self.total_bytes == 0:
+            raise ApplicationError(
+                422,
+                "QUESTION_ACQUISITION_NOT_PDF",
+                "Uploaded file or downloaded payload is empty.",
+            )
+        if self.total_bytes < self.MAGIC_LEN or not bytes(self._magic_header).startswith(self.PDF_MAGIC_PREFIX):
+            raise ApplicationError(
+                422,
+                "QUESTION_ACQUISITION_NOT_PDF",
+                "Downloaded file is empty or missing valid PDF magic header.",
+            )
+        return self.hasher.hexdigest(), self.total_bytes
+

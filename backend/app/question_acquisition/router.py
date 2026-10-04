@@ -22,6 +22,7 @@ from app.question_acquisition.models import (
     QuestionAcquisitionRequestStatus,
     QuestionAcquisitionStrategy,
 )
+from app.question_acquisition.policy import StreamIngestValidator
 from app.question_acquisition.schemas import (
     BlockSourceRequest,
     CancelRequestPayload,
@@ -176,11 +177,9 @@ async def stream_upload_to_temp(
     max_bytes: int,
 ) -> tuple[Path, str, int]:
     """Stream incoming upload file directly to temporary disk file with bounded memory and early validation."""
-    hasher = hashlib.sha256()
-    total_bytes = 0
+    validator = StreamIngestValidator(max_bytes)
     temp_dir = Path(tempfile.gettempdir())
     temp_path = temp_dir / f"acq_up_{uuid.uuid4().hex}.tmp"
-    first_chunk = True
 
     try:
         with open(temp_path, "wb") as f:
@@ -188,32 +187,11 @@ async def stream_upload_to_temp(
                 chunk = await upload_file.read(UPLOAD_CHUNK_SIZE)
                 if not chunk:
                     break
-                total_bytes += len(chunk)
-                if total_bytes > max_bytes:
-                    raise ApplicationError(
-                        422,
-                        "QUESTION_ACQUISITION_FILE_TOO_LARGE",
-                        f"Uploaded file exceeds maximum limit ({max_bytes} bytes).",
-                    )
-                if first_chunk:
-                    if not chunk.startswith(b"%PDF-"):
-                        raise ApplicationError(
-                            422,
-                            "QUESTION_ACQUISITION_NOT_PDF",
-                            "Uploaded file is not a valid PDF document.",
-                        )
-                    first_chunk = False
-                hasher.update(chunk)
+                validator.process_chunk(chunk)
                 f.write(chunk)
 
-        if total_bytes == 0:
-            raise ApplicationError(
-                422,
-                "QUESTION_ACQUISITION_NOT_PDF",
-                "Uploaded file is empty.",
-            )
-
-        return temp_path, hasher.hexdigest(), total_bytes
+        sha256_hex, total_bytes = validator.finalize()
+        return temp_path, sha256_hex, total_bytes
     except Exception:
         temp_path.unlink(missing_ok=True)
         raise

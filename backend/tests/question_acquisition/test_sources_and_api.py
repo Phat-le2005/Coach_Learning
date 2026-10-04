@@ -7,6 +7,7 @@ from pathlib import Path
 import socket
 from uuid import UUID, uuid4
 
+import httpcore
 import httpx
 import pytest
 from fastapi.testclient import TestClient
@@ -14,7 +15,12 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.core.exceptions import ApplicationError
-from app.question_acquisition.fetcher import SafePdfFetcher
+from app.question_acquisition.fetcher import (
+    PinnedResponseStream,
+    PinnedSyncBackend,
+    PinnedTransport,
+    SafePdfFetcher,
+)
 from app.question_acquisition.models import (
     QuestionAcquisitionArtifact,
     QuestionAcquisitionDiscoveryMethod,
@@ -29,7 +35,10 @@ from app.question_acquisition.models import (
     QuestionAcquisitionSourceStatus,
     QuestionAcquisitionStrategy,
 )
-from app.question_acquisition.policy import QuestionAcquisitionPolicy
+from app.question_acquisition.policy import (
+    QuestionAcquisitionPolicy,
+    StreamIngestValidator,
+)
 from app.question_acquisition.schemas import RegisterSourceRequest
 from app.question_acquisition.service import QuestionAcquisitionService
 from app.question_supply.models import (
@@ -1156,3 +1165,354 @@ def test_concurrent_artifact_ingest_race(
         assert art2.sha256 == art1.sha256
     finally:
         temp_path.unlink(missing_ok=True)
+
+
+# ==============================================================================
+# SECTION 98: PinnedTransport & HTTPCore Contract Regression Tests
+# ==============================================================================
+
+
+def test_pinned_transport_adapts_httpx_request_to_httpcore() -> None:
+    """PinnedTransport must translate httpx.Request to httpcore.Request with method, url, headers, content, and wrap httpcore.Response."""
+    recorded_requests: list[httpcore.Request] = []
+    pool_closed = False
+
+    class FakePool:
+        def handle_request(self, req: httpcore.Request) -> httpcore.Response:
+            recorded_requests.append(req)
+            assert isinstance(req, httpcore.Request)
+            assert req.method == b"POST"
+            assert req.url.scheme == b"https"
+            assert req.url.host == b"exam.edu.vn"
+            assert req.url.port is None
+            assert req.url.target == b"/api/submit?key=val"
+            headers_dict = {k.lower(): v for k, v in req.headers}
+            assert headers_dict[b"custom-header"] == b"TestValue"
+            body = b"".join(list(req.stream))
+            assert body == b"hello request body"
+            return httpcore.Response(
+                status=201,
+                headers=[(b"custom-response", b"Success")],
+                content=[b"%PDF-1.4\nresponse data"],
+            )
+
+        def close(self) -> None:
+            nonlocal pool_closed
+            pool_closed = True
+
+    fake_pool = FakePool()
+    transport = PinnedTransport(
+        host_to_ip_map={"exam.edu.vn": "93.184.216.34"},
+        pool=fake_pool,
+    )
+
+    with httpx.Client(transport=transport) as client:
+        resp = client.post(
+            "https://exam.edu.vn/api/submit?key=val",
+            headers={"Custom-Header": "TestValue"},
+            content=b"hello request body",
+        )
+        assert resp.status_code == 201
+        assert resp.headers["custom-response"] == "Success"
+        assert resp.content == b"%PDF-1.4\nresponse data"
+
+    assert len(recorded_requests) == 1
+    transport.close()
+    assert pool_closed is True
+
+
+def test_pinned_sync_backend_connect_tcp_pins_ip() -> None:
+    """PinnedSyncBackend.connect_tcp must translate mapped hostname to pinned IP and leave unmapped intact."""
+    backend = PinnedSyncBackend({"exam.edu.vn": "93.184.216.34"})
+    captured_calls: list[tuple[str, int]] = []
+
+    def mock_super_connect(self, host: str, port: int, **kwargs):
+        captured_calls.append((host, port))
+        return "fake_stream"
+
+    orig_connect = httpcore.SyncBackend.connect_tcp
+    httpcore.SyncBackend.connect_tcp = mock_super_connect
+    try:
+        res1 = backend.connect_tcp("exam.edu.vn", 443)
+        assert res1 == "fake_stream"
+        assert captured_calls[-1] == ("93.184.216.34", 443)
+
+        res2 = backend.connect_tcp("unmapped.org", 80)
+        assert res2 == "fake_stream"
+        assert captured_calls[-1] == ("unmapped.org", 80)
+    finally:
+        httpcore.SyncBackend.connect_tcp = orig_connect
+
+
+def test_pinned_response_stream_close_propagates() -> None:
+    """PinnedResponseStream must close the underlying HTTPCore stream upon response close."""
+    stream_closed = False
+
+    class ClosableByteIterable:
+        def __iter__(self):
+            yield b"%PDF-1.4\nchunk"
+
+        def close(self):
+            nonlocal stream_closed
+            stream_closed = True
+
+    class FakePool:
+        def handle_request(self, req: httpcore.Request) -> httpcore.Response:
+            return httpcore.Response(status=200, content=ClosableByteIterable())
+
+        def close(self):
+            pass
+
+    transport = PinnedTransport({"example.com": "1.2.3.4"}, pool=FakePool())
+    with httpx.Client(transport=transport) as client:
+        with client.stream("GET", "https://example.com/doc.pdf") as resp:
+            chunk = next(resp.iter_bytes())
+            assert chunk == b"%PDF-1.4\nchunk"
+            assert stream_closed is False
+
+    assert stream_closed is True
+
+
+# ==============================================================================
+# SECTION 99: Source & Artifact Retry Semantics Regression Tests
+# ==============================================================================
+
+
+def test_failed_extraction_artifact_does_not_short_circuit_retry(
+    db_session: Session,
+    practice_content: PracticeContent,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """When a source has a linked artifact that FAILED extraction, retry must fetch again rather than short-circuiting."""
+    def mock_getaddrinfo(host, port, *args, **kwargs):
+        return [(socket.AF_INET, socket.SOCK_STREAM, 6, "", ("93.184.216.34", port))]
+
+    monkeypatch.setattr(socket, "getaddrinfo", mock_getaddrinfo)
+
+    zero_text_pdf = _build_test_pdf(["", ""])
+    valid_pdf = _build_test_pdf(["Successfully recovered test question 1"])
+
+    fetch_call_count = 0
+
+    def retry_handler(request: httpx.Request) -> httpx.Response:
+        nonlocal fetch_call_count
+        fetch_call_count += 1
+        if fetch_call_count == 1:
+            return httpx.Response(200, headers={"Content-Type": "application/pdf"}, content=zero_text_pdf)
+        return httpx.Response(200, headers={"Content-Type": "application/pdf"}, content=valid_pdf)
+
+    fetcher = SafePdfFetcher(
+        allowed_domains="trusted.edu.vn",
+        transport=httpx.MockTransport(retry_handler),
+    )
+    _, acq_req = _create_test_gap_and_request(db_session, practice_content)
+    acq_svc = QuestionAcquisitionService(db_session, fetcher=fetcher)
+
+    source = acq_svc.register_source(
+        acq_req.id,
+        RegisterSourceRequest(
+            source_kind=QuestionAcquisitionSourceKind.PDF_URL,
+            url="https://trusted.edu.vn/ocr_needed.pdf",
+            provenance_note="Scanned PDF retry verification",
+        ),
+    )
+
+    # 1. First fetch attempt downloads zero-text PDF -> extraction FAILED
+    art1 = acq_svc.fetch_source(source.id, commit=True)
+    assert art1.extraction_status == QuestionAcquisitionExtractionStatus.FAILED
+    assert source.status == QuestionAcquisitionSourceStatus.FAILED
+    assert source.failure_code == "QUESTION_ACQUISITION_PDF_EXTRACTION_FAILED"
+    assert fetch_call_count == 1
+
+    reloaded_req = acq_svc.get_request(acq_req.id)
+    assert reloaded_req is not None
+    assert reloaded_req.status == QuestionAcquisitionRequestStatus.AWAITING_SOURCE
+
+    # 2. Second fetch attempt (retry) MUST NOT short-circuit on the failed artifact!
+    art2 = acq_svc.fetch_source(source.id, commit=True)
+    assert fetch_call_count == 2
+    assert art2.id != art1.id
+    assert art2.extraction_status == QuestionAcquisitionExtractionStatus.COMPLETE
+    assert art2.page_count == 1
+
+    # Reload from DB and verify audit invariants
+    db_session.expire_all()
+    reloaded_source = db_session.get(QuestionAcquisitionSource, source.id)
+    assert reloaded_source is not None
+    assert reloaded_source.status == QuestionAcquisitionSourceStatus.FETCHED
+    assert reloaded_source.failure_code is None
+    assert reloaded_source.failure_detail is None
+
+    # Both artifacts are linked to source for audit trail
+    links = db_session.scalars(
+        select(QuestionAcquisitionSourceArtifact).where(
+            QuestionAcquisitionSourceArtifact.source_id == source.id
+        )
+    ).all()
+    assert len(links) == 2
+    linked_artifact_ids = {lnk.artifact_id for lnk in links}
+    assert art1.id in linked_artifact_ids
+    assert art2.id in linked_artifact_ids
+
+    # Old failed artifact is immutable and preserved
+    old_art = db_session.get(QuestionAcquisitionArtifact, art1.id)
+    assert old_art is not None
+    assert old_art.extraction_status == QuestionAcquisitionExtractionStatus.FAILED
+
+    # Helper get_usable_source_artifact returns the latest usable one
+    usable = acq_svc.get_usable_source_artifact(source.id)
+    assert usable is not None
+    assert usable.id == art2.id
+
+    # Request is now promoted to READY_FOR_REVIEW
+    req_promoted = acq_svc.get_request(acq_req.id)
+    assert req_promoted is not None
+    assert req_promoted.status == QuestionAcquisitionRequestStatus.READY_FOR_REVIEW
+
+
+def test_retry_same_failed_binary_reuses_failed_artifact_and_remains_failed(
+    db_session: Session,
+    practice_content: PracticeContent,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """When retry returns the exact same failing binary (same sha256), the failed artifact is reused and source stays FAILED."""
+    def mock_getaddrinfo(host, port, *args, **kwargs):
+        return [(socket.AF_INET, socket.SOCK_STREAM, 6, "", ("93.184.216.34", port))]
+
+    monkeypatch.setattr(socket, "getaddrinfo", mock_getaddrinfo)
+
+    zero_text_pdf = _build_test_pdf(["", ""])
+    fetch_calls = 0
+
+    def same_failing_handler(request: httpx.Request) -> httpx.Response:
+        nonlocal fetch_calls
+        fetch_calls += 1
+        return httpx.Response(200, headers={"Content-Type": "application/pdf"}, content=zero_text_pdf)
+
+    fetcher = SafePdfFetcher(
+        allowed_domains="trusted.edu.vn",
+        transport=httpx.MockTransport(same_failing_handler),
+    )
+    _, acq_req = _create_test_gap_and_request(db_session, practice_content)
+    acq_svc = QuestionAcquisitionService(db_session, fetcher=fetcher)
+
+    source = acq_svc.register_source(
+        acq_req.id,
+        RegisterSourceRequest(
+            source_kind=QuestionAcquisitionSourceKind.PDF_URL,
+            url="https://trusted.edu.vn/still_broken.pdf",
+            provenance_note="Still broken scan retry test",
+        ),
+    )
+
+    # First fetch attempt
+    art1 = acq_svc.fetch_source(source.id, commit=True)
+    assert art1.extraction_status == QuestionAcquisitionExtractionStatus.FAILED
+    assert fetch_calls == 1
+
+    # Second fetch attempt returns same failing bytes
+    art2 = acq_svc.fetch_source(source.id, commit=True)
+    assert fetch_calls == 2
+    assert art2.id == art1.id  # Reused by sha256 dedupe!
+
+    # No duplicate artifact created in DB
+    total_artifacts = db_session.scalar(
+        select(func.count(QuestionAcquisitionArtifact.id))
+    )
+    assert total_artifacts == 1
+
+    reloaded_source = db_session.get(QuestionAcquisitionSource, source.id)
+    assert reloaded_source is not None
+    assert reloaded_source.status == QuestionAcquisitionSourceStatus.FAILED
+    assert reloaded_source.failure_code == "QUESTION_ACQUISITION_PDF_EXTRACTION_FAILED"
+
+
+def test_fetch_source_success_idempotency_does_not_call_network(
+    db_session: Session,
+    practice_content: PracticeContent,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """When a source is already FETCHED with a usable artifact, fetch_source must short-circuit without calling network."""
+    def mock_getaddrinfo(host, port, *args, **kwargs):
+        return [(socket.AF_INET, socket.SOCK_STREAM, 6, "", ("93.184.216.34", port))]
+
+    monkeypatch.setattr(socket, "getaddrinfo", mock_getaddrinfo)
+
+    valid_pdf = _build_test_pdf(["Algebra Chapter 1 Test"])
+    fetch_calls = 0
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        nonlocal fetch_calls
+        fetch_calls += 1
+        return httpx.Response(200, headers={"Content-Type": "application/pdf"}, content=valid_pdf)
+
+    fetcher = SafePdfFetcher(
+        allowed_domains="trusted.edu.vn",
+        transport=httpx.MockTransport(handler),
+    )
+    _, acq_req = _create_test_gap_and_request(db_session, practice_content)
+    acq_svc = QuestionAcquisitionService(db_session, fetcher=fetcher)
+
+    source = acq_svc.register_source(
+        acq_req.id,
+        RegisterSourceRequest(
+            source_kind=QuestionAcquisitionSourceKind.PDF_URL,
+            url="https://trusted.edu.vn/idempotency_test.pdf",
+            provenance_note="Idempotency verification",
+        ),
+    )
+
+    # First fetch -> calls network
+    art1 = acq_svc.fetch_source(source.id, commit=True)
+    assert art1.extraction_status == QuestionAcquisitionExtractionStatus.COMPLETE
+    assert fetch_calls == 1
+
+    # Second fetch -> short circuits, does NOT call network
+    art2 = acq_svc.fetch_source(source.id, commit=True)
+    assert fetch_calls == 1
+    assert art2.id == art1.id
+
+
+# ==============================================================================
+# SECTION 100: StreamIngestValidator Chunk Split & Boundary Tests
+# ==============================================================================
+
+
+def test_stream_ingest_validator_split_magic_header() -> None:
+    """StreamIngestValidator must correctly accumulate %PDF- across small chunk boundaries."""
+    # 1. Valid split chunks: b"%P" + b"DF-" + b"1.4\ncontent"
+    val = StreamIngestValidator(max_bytes=1024)
+    val.process_chunk(b"%P")
+    val.process_chunk(b"DF-")
+    val.process_chunk(b"1.4\nHello world")
+    sha, total = val.finalize()
+    assert total == 2 + 3 + 15
+    assert len(sha) == 64
+
+    # 2. Invalid split header: b"%P" + b"XX-" -> rejects immediately on chunk 2
+    val_bad = StreamIngestValidator(max_bytes=1024)
+    val_bad.process_chunk(b"%P")
+    with pytest.raises(ApplicationError) as exc_bad:
+        val_bad.process_chunk(b"XX-")
+    assert exc_bad.value.code == "QUESTION_ACQUISITION_NOT_PDF"
+
+    # 3. Empty stream -> rejects on finalize
+    val_empty = StreamIngestValidator(max_bytes=1024)
+    with pytest.raises(ApplicationError) as exc_empty:
+        val_empty.finalize()
+    assert exc_empty.value.code == "QUESTION_ACQUISITION_NOT_PDF"
+
+    # 4. Truncated stream under 5 bytes -> rejects on finalize
+    val_trunc = StreamIngestValidator(max_bytes=1024)
+    val_trunc.process_chunk(b"%PD")
+    with pytest.raises(ApplicationError) as exc_trunc:
+        val_trunc.finalize()
+    assert exc_trunc.value.code == "QUESTION_ACQUISITION_NOT_PDF"
+
+    # 5. Oversized stream -> rejects on boundary
+    val_large = StreamIngestValidator(max_bytes=10)
+    val_large.process_chunk(b"%PDF-")
+    with pytest.raises(ApplicationError) as exc_large:
+        val_large.process_chunk(b"123456")  # 5 + 6 = 11 > 10
+    assert exc_large.value.code == "QUESTION_ACQUISITION_FILE_TOO_LARGE"
+

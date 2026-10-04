@@ -2,21 +2,23 @@
 
 from __future__ import annotations
 
-from collections.abc import Iterable
+from collections.abc import Iterable, Iterator
 from dataclasses import dataclass
 import hashlib
 import ipaddress
 from pathlib import Path
 import socket
 import tempfile
+from typing import Any
 from urllib.parse import urljoin, urlparse
 
 import httpcore
-import httpcore._backends.sync
 import httpx
+from httpx._transports.default import map_httpcore_exceptions
 
 from app.core.config import get_settings
 from app.core.exceptions import ApplicationError
+from app.question_acquisition.policy import StreamIngestValidator
 
 CHUNK_SIZE = 64 * 1024
 
@@ -37,7 +39,7 @@ class ValidatedFetchTarget:
     resolved_public_ips: list[str]
 
 
-class PinnedSyncBackend(httpcore._backends.sync.SyncBackend):
+class PinnedSyncBackend(httpcore.SyncBackend):
     """Network backend that connects directly to a pre-validated IP while preserving hostname for TLS SNI."""
 
     def __init__(self, host_to_ip_map: dict[str, str]) -> None:
@@ -50,8 +52,8 @@ class PinnedSyncBackend(httpcore._backends.sync.SyncBackend):
         port: int,
         timeout: float | None = None,
         local_address: str | None = None,
-        socket_options: Iterable[httpcore._backends.sync.SOCKET_OPTION] | None = None,
-    ) -> httpcore._backends.sync.NetworkStream:
+        socket_options: Iterable[Any] | None = None,
+    ) -> httpcore.NetworkStream:
         target_ip = self.host_to_ip_map.get(host, host)
         return super().connect_tcp(
             target_ip,
@@ -62,19 +64,65 @@ class PinnedSyncBackend(httpcore._backends.sync.SyncBackend):
         )
 
 
+class PinnedResponseStream(httpx.SyncByteStream):
+    """SyncByteStream adapter that wraps an HTTPCore stream and maps exceptions."""
+
+    def __init__(self, httpcore_stream: Iterable[bytes]) -> None:
+        self._httpcore_stream = httpcore_stream
+
+    def __iter__(self) -> Iterator[bytes]:
+        with map_httpcore_exceptions():
+            for part in self._httpcore_stream:
+                yield part
+
+    def close(self) -> None:
+        if hasattr(self._httpcore_stream, "close"):
+            self._httpcore_stream.close()
+
+
 class PinnedTransport(httpx.BaseTransport):
     """Transport that pins TCP connections to specific IP addresses to prevent DNS rebinding TOCTOU."""
 
-    def __init__(self, host_to_ip_map: dict[str, str], verify: bool = True) -> None:
+    def __init__(
+        self,
+        host_to_ip_map: dict[str, str],
+        verify: bool = True,
+        *,
+        pool: httpcore.ConnectionPool | None = None,
+        network_backend: httpcore.SyncBackend | None = None,
+    ) -> None:
         super().__init__()
-        backend = PinnedSyncBackend(host_to_ip_map)
-        self._pool = httpcore.ConnectionPool(
-            network_backend=backend,
+        self._backend = network_backend or PinnedSyncBackend(host_to_ip_map)
+        self._pool = pool or httpcore.ConnectionPool(
+            network_backend=self._backend,
             ssl_context=httpx.create_ssl_context(verify=verify),
         )
 
     def handle_request(self, request: httpx.Request) -> httpx.Response:
-        return self._pool.handle_request(request)
+        assert isinstance(request.stream, httpx.SyncByteStream)
+        req = httpcore.Request(
+            method=request.method,
+            url=httpcore.URL(
+                scheme=request.url.raw_scheme,
+                host=request.url.raw_host,
+                port=request.url.port,
+                target=request.url.raw_path,
+            ),
+            headers=request.headers.raw,
+            content=request.stream,
+            extensions=request.extensions,
+        )
+        with map_httpcore_exceptions():
+            resp = self._pool.handle_request(req)
+
+        assert isinstance(resp.stream, Iterable)
+
+        return httpx.Response(
+            status_code=resp.status,
+            headers=resp.headers,
+            stream=PinnedResponseStream(resp.stream),
+            extensions=resp.extensions,
+        )
 
     def close(self) -> None:
         self._pool.close()
@@ -334,55 +382,35 @@ class SafePdfFetcher:
                                 pass
 
                         # Stream into temp file
+                        validator = StreamIngestValidator(self.max_bytes)
                         temp_file = tempfile.NamedTemporaryFile(
                             prefix="acq_", suffix=".tmp", delete=False
                         )
                         temp_path = Path(temp_file.name)
-                        hasher = hashlib.sha256()
-                        total_bytes = 0
-                        magic_header = bytearray()
 
                         try:
                             for chunk in response.iter_bytes(chunk_size=CHUNK_SIZE):
                                 if not chunk:
                                     continue
-                                if len(magic_header) < 5:
-                                    needed = 5 - len(magic_header)
-                                    magic_header.extend(chunk[:needed])
-                                    if len(magic_header) == 5 and not bytes(magic_header).startswith(
-                                        b"%PDF-"
-                                    ):
-                                        raise ApplicationError(
-                                            422,
-                                            "QUESTION_ACQUISITION_NOT_PDF",
-                                            "Payload does not begin with valid PDF magic bytes (%PDF-).",
-                                        )
-                                total_bytes += len(chunk)
-                                if total_bytes > self.max_bytes:
-                                    raise ApplicationError(
-                                        422,
-                                        "QUESTION_ACQUISITION_FILE_TOO_LARGE",
-                                        f"Downloaded file exceeded maximum size ({self.max_bytes} bytes).",
-                                    )
-                                hasher.update(chunk)
+                                validator.process_chunk(chunk)
                                 temp_file.write(chunk)
 
                             temp_file.flush()
                             temp_file.close()
 
-                            if total_bytes < 5 or not bytes(magic_header).startswith(b"%PDF-"):
-                                raise ApplicationError(
-                                    422,
-                                    "QUESTION_ACQUISITION_NOT_PDF",
-                                    "Downloaded file is empty or missing valid PDF magic header.",
-                                )
+                            sha256_hex, total_bytes = validator.finalize()
 
                             return FetchResult(
                                 temp_file_path=temp_path,
                                 file_size_bytes=total_bytes,
-                                sha256=hasher.hexdigest(),
+                                sha256=sha256_hex,
                                 mime_type="application/pdf",
                             )
+
+                        except Exception:
+                            temp_file.close()
+                            temp_path.unlink(missing_ok=True)
+                            raise
 
                         except Exception:
                             temp_file.close()

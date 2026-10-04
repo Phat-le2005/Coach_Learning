@@ -241,6 +241,33 @@ class QuestionAcquisitionService:
             self.session.commit()
         return req
 
+    def get_usable_source_artifact(
+        self, source_id: UUID
+    ) -> QuestionAcquisitionArtifact | None:
+        """Find the latest usable (COMPLETE or PARTIAL extraction) artifact linked to this source."""
+        stmt = (
+            select(QuestionAcquisitionArtifact)
+            .join(
+                QuestionAcquisitionSourceArtifact,
+                QuestionAcquisitionSourceArtifact.artifact_id == QuestionAcquisitionArtifact.id,
+            )
+            .where(
+                QuestionAcquisitionSourceArtifact.source_id == source_id,
+                QuestionAcquisitionArtifact.extraction_status.in_(
+                    [
+                        QuestionAcquisitionExtractionStatus.COMPLETE,
+                        QuestionAcquisitionExtractionStatus.PARTIAL,
+                    ]
+                ),
+            )
+            .order_by(
+                QuestionAcquisitionArtifact.created_at.desc(),
+                QuestionAcquisitionArtifact.id.desc(),
+            )
+            .limit(1)
+        )
+        return self.session.scalar(stmt)
+
     def refresh_request_staging_status(
         self, request_id: UUID
     ) -> QuestionAcquisitionRequestStatus | None:
@@ -266,7 +293,7 @@ class QuestionAcquisitionService:
         # For MIXED and EXTERNAL_SOURCE_REQUIRED, check for active usable non-blocked sources
         usable_sources_count = (
             self.session.scalar(
-                select(func.count(QuestionAcquisitionSource.id))
+                select(func.count(func.distinct(QuestionAcquisitionSource.id)))
                 .join(QuestionAcquisitionSource.source_artifacts)
                 .join(QuestionAcquisitionSourceArtifact.artifact)
                 .where(
@@ -523,16 +550,11 @@ class QuestionAcquisitionService:
                 "Source is not a fetchable PDF URL.",
             )
 
-        # Check if source already has an artifact linked (idempotency)
-        existing_link = self.session.scalar(
-            select(QuestionAcquisitionSourceArtifact).where(
-                QuestionAcquisitionSourceArtifact.source_id == source.id
-            )
-        )
-        if existing_link is not None:
-            artifact = self.session.get(QuestionAcquisitionArtifact, existing_link.artifact_id)
-            if artifact is not None:
-                return artifact
+        # Idempotency: only short-circuit if source was already successfully FETCHED and has a usable artifact
+        if source.status == QuestionAcquisitionSourceStatus.FETCHED:
+            usable_artifact = self.get_usable_source_artifact(source.id)
+            if usable_artifact is not None:
+                return usable_artifact
 
         # Clear previous failure markers if retrying previously failed source
         now = datetime.now(timezone.utc)
