@@ -60,6 +60,7 @@ def test_migration_chain_matches_models_and_can_downgrade(db_engine: Engine) -> 
             "root_cause_verification_items",
             "adaptive_repair_sessions", "adaptive_repair_items",
             "adaptive_repair_decisions", "learning_feedback_decisions",
+            "question_supply_gaps", "question_supply_gap_observations",
             "exams", "exam_sections", "exam_questions",
             "exam_attempts", "exam_responses",
             "universities", "majors", "admission_methods",

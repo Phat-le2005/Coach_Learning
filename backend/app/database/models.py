@@ -89,6 +89,7 @@ from app.learning.models import (
     QuickCheckVerdict,
 )
 from app.learning.feedback_models import LearningFeedbackDecision
+from app.question_supply.models import QuestionSupplyGap, QuestionSupplyGapObservation
 from app.planning.models import (
     StudyPlan,
     StudyPlanStatus,
@@ -206,6 +207,8 @@ __all__ = [
     "QuestionLearningOutcome",
     "QuestionOption",
     "QuestionProblemType",
+    "QuestionSupplyGap",
+    "QuestionSupplyGapObservation",
     "QuickCheckQuestion",
     "QuickCheckQuestionRole",
     "QuickCheckSession",

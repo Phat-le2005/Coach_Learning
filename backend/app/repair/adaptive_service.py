@@ -1,10 +1,13 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
+import logging
 from uuid import UUID
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
+
+logger = logging.getLogger(__name__)
 
 from app.core.exceptions import ApplicationError
 from app.knowledge_gap.models import (
@@ -13,6 +16,7 @@ from app.knowledge_gap.models import (
     RootCauseVerificationOutcome,
     RootCauseVerificationStatus,
     RootCauseVerificationTarget,
+    RootCauseVerificationTargetType,
 )
 from app.knowledge_gap.schemas import NextDiagnosticActionType
 from app.knowledge_gap.target_resolver import VerifiedLearningTargetService
@@ -28,6 +32,7 @@ from app.practice.models import (
     PracticeSessionType,
     QuestionAttempt,
 )
+from app.questions.evaluation_eligibility import is_deterministically_auto_evaluable
 from app.questions.exposure import QuestionExposureService
 from app.questions.models import Question, QuestionType
 from app.recommendations.question_service import QuestionRecommendationService
@@ -101,6 +106,21 @@ class AdaptiveRepairService:
             student.id, diagnosis_id
         )
         if action.action != NextDiagnosticActionType.PRACTICE_REPAIR:
+            if action.action == NextDiagnosticActionType.NO_CANONICAL_QUESTION:
+                try:
+                    diagnosis, verification, target = self._supported_context(student.id, diagnosis_id)
+                    initial = self.policy.initial_difficulty(target.target_type, target.average_score)
+                    excluded = self._verification_exclusions(diagnosis, verification)
+                    self._record_start_supply_gap(
+                        student_id=student.id,
+                        subject_id=diagnosis.subject_id,
+                        diagnosis_id=diagnosis.id,
+                        target=target,
+                        desired_difficulty=initial,
+                        excluded=excluded,
+                    )
+                except Exception:
+                    logger.warning("Failed to record start supply gap on NO_CANONICAL_QUESTION", exc_info=True)
             raise ApplicationError(
                 409,
                 f"ADAPTIVE_REPAIR_{action.action.value}",
@@ -134,6 +154,14 @@ class AdaptiveRepairService:
             excluded=excluded,
         )
         if recommendation is None:
+            self._record_start_supply_gap(
+                student_id=student.id,
+                subject_id=diagnosis.subject_id,
+                diagnosis_id=diagnosis.id,
+                target=target,
+                desired_difficulty=initial,
+                excluded=excluded,
+            )
             raise ApplicationError(
                 409,
                 "ADAPTIVE_REPAIR_NO_CANONICAL_QUESTION",
@@ -510,15 +538,7 @@ class AdaptiveRepairService:
             effective_exclusions.add(recommendation.question_id)
 
     def _is_auto_evaluable(self, question: Question) -> bool:
-        expected = self.evaluator.normalize(question.correct_answer or "")
-        if not expected or question.question_type not in AUTO_EVALUABLE_REPAIR_TYPES:
-            return False
-        if question.question_type == QuestionType.TRUE_FALSE:
-            return expected in {"true", "false"}
-        if question.question_type == QuestionType.MULTIPLE_CHOICE:
-            labels = {self.evaluator.normalize(option.label) for option in question.options}
-            return expected in labels
-        return True
+        return is_deterministically_auto_evaluable(question)
 
     def _persist_item(
         self,
@@ -559,6 +579,53 @@ class AdaptiveRepairService:
         if source_question is not None:
             excluded.add(source_question)
         return excluded
+
+    def _record_start_supply_gap(
+        self,
+        *,
+        student_id: UUID,
+        subject_id: UUID,
+        diagnosis_id: UUID,
+        target: RootCauseVerificationTarget,
+        desired_difficulty: float,
+        excluded: set[UUID],
+    ) -> None:
+        try:
+            from app.question_supply.models import (
+                QuestionSupplyObservationSourceKind,
+                QuestionSupplyTargetType,
+                QuestionSupplyUseCase,
+            )
+            from app.question_supply.service import (
+                QuestionSupplyGapService,
+                QuestionSupplyRequirement,
+            )
+
+            target_type_map = {
+                RootCauseVerificationTargetType.CONCEPT: QuestionSupplyTargetType.CONCEPT,
+                RootCauseVerificationTargetType.PROBLEM_TYPE: QuestionSupplyTargetType.PROBLEM_TYPE,
+                RootCauseVerificationTargetType.MISCONCEPTION: QuestionSupplyTargetType.MISCONCEPTION,
+            }
+            requirement = QuestionSupplyRequirement(
+                subject_id=subject_id,
+                use_case=QuestionSupplyUseCase.ADAPTIVE_REPAIR,
+                target_type=target_type_map[target.target_type],
+                concept_id=target.target_concept_id,
+                problem_type_id=target.target_problem_type_id,
+                misconception_definition_id=target.misconception_definition_id,
+                desired_difficulty=desired_difficulty,
+            )
+            supply_svc = QuestionSupplyGapService(self.session)
+            supply_svc.assess_and_record(
+                requirement=requirement,
+                source_kind=QuestionSupplyObservationSourceKind.ADAPTIVE_REPAIR_START,
+                source_entity_id=diagnosis_id,
+                student_id=student_id,
+                exclude_question_ids=excluded,
+                commit=True,
+            )
+        except Exception:
+            logger.warning("Failed to record adaptive repair start supply gap", exc_info=True)
 
     def _all_exclusions(self, adaptive: AdaptiveRepairSession) -> set[UUID]:
         from app.repair.lineage import RepairLineageExposureService
@@ -711,6 +778,14 @@ class AdaptiveRepairService:
             excluded=excluded,
         )
         if recommendation is None:
+            self._record_start_supply_gap(
+                student_id=student.id,
+                subject_id=previous.subject_id,
+                diagnosis_id=previous.diagnosis_id,
+                target=target,
+                desired_difficulty=retry_initial,
+                excluded=excluded,
+            )
             raise ApplicationError(
                 409,
                 "ADAPTIVE_REPAIR_NO_CANONICAL_QUESTION",

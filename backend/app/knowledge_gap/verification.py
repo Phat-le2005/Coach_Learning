@@ -1,11 +1,14 @@
 """Root Cause Verification Service: orchestrates frozen probe sessions, deterministic scoring, and evidence publishing."""
 
 from datetime import datetime, timezone
+import logging
 from uuid import UUID
 
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session, selectinload
+
+logger = logging.getLogger(__name__)
 
 from app.concepts.models import Concept
 from app.core.exceptions import ApplicationError
@@ -102,7 +105,9 @@ class RootCauseVerificationService:
             excluded_qids.add(diag_source_qid)
 
         target_questions_map: dict[int, list[tuple[Question, float]]] = {}
+        target_exclusions_map: dict[int, set[UUID]] = {}
         for spec in target_specs:
+            target_exclusions_map[spec.priority_order] = set(excluded_qids)
             probes = RootCauseVerificationPolicy.select_probe_questions(
                 session=self.session,
                 subject_id=diagnosis.subject_id,
@@ -122,6 +127,7 @@ class RootCauseVerificationService:
                     diagnosis=diagnosis,
                     target_specs=target_specs,
                     target_questions_map=target_questions_map,
+                    target_exclusions_map=target_exclusions_map,
                 )
                 self.session.flush()
         except IntegrityError:
@@ -141,6 +147,7 @@ class RootCauseVerificationService:
         diagnosis: RootCauseDiagnosis,
         target_specs: list[TargetResolutionSpec],
         target_questions_map: dict[int, list[tuple[Question, float]]],
+        target_exclusions_map: dict[int, set[UUID]] | None = None,
     ) -> RootCauseVerification:
         """Create the complete frozen verification aggregate in the current savepoint."""
         total_probes_count = sum(len(probes) for probes in target_questions_map.values())
@@ -227,6 +234,19 @@ class RootCauseVerificationService:
             self.session.add(target_row)
             self.session.flush()
 
+            spec_exclusions = (
+                target_exclusions_map.get(spec.priority_order, set())
+                if target_exclusions_map is not None
+                else set()
+            )
+            self._record_verification_target_supply_gap_isolated(
+                student_id=student_id,
+                subject_id=diagnosis.subject_id,
+                spec=spec,
+                target_id=target_row.id,
+                excluded_qids=spec_exclusions,
+            )
+
             for question, selection_score in probes:
                 self.session.add(
                     RootCauseVerificationItem(
@@ -240,6 +260,54 @@ class RootCauseVerificationService:
                 global_order += 1
 
         return verification
+
+    def _record_verification_target_supply_gap_isolated(
+        self,
+        *,
+        student_id: UUID,
+        subject_id: UUID,
+        spec: TargetResolutionSpec,
+        target_id: UUID,
+        excluded_qids: set[UUID],
+    ) -> None:
+        try:
+            with self.session.begin_nested():
+                from app.knowledge_gap.models import RootCauseVerificationTargetType
+                from app.question_supply.models import (
+                    QuestionSupplyObservationSourceKind,
+                    QuestionSupplyTargetType,
+                    QuestionSupplyUseCase,
+                )
+                from app.question_supply.service import (
+                    QuestionSupplyGapService,
+                    QuestionSupplyRequirement,
+                )
+
+                target_type_map = {
+                    RootCauseVerificationTargetType.CONCEPT: QuestionSupplyTargetType.CONCEPT,
+                    RootCauseVerificationTargetType.PROBLEM_TYPE: QuestionSupplyTargetType.PROBLEM_TYPE,
+                    RootCauseVerificationTargetType.MISCONCEPTION: QuestionSupplyTargetType.MISCONCEPTION,
+                }
+                requirement = QuestionSupplyRequirement(
+                    subject_id=subject_id,
+                    use_case=QuestionSupplyUseCase.ROOT_CAUSE_VERIFICATION,
+                    target_type=target_type_map[spec.target_type],
+                    concept_id=spec.target_concept_id,
+                    problem_type_id=spec.target_problem_type_id,
+                    misconception_definition_id=spec.misconception_definition_id,
+                    desired_difficulty=spec.desired_difficulty,
+                )
+                supply_svc = QuestionSupplyGapService(self.session)
+                supply_svc.assess_and_record(
+                    requirement=requirement,
+                    source_kind=QuestionSupplyObservationSourceKind.ROOT_CAUSE_VERIFICATION,
+                    source_entity_id=target_id,
+                    student_id=student_id,
+                    exclude_question_ids=excluded_qids,
+                    commit=False,
+                )
+        except Exception:
+            logger.warning("Failed to record isolated verification supply gap", exc_info=True)
 
     def get_verification(
         self,

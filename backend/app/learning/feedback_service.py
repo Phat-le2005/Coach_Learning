@@ -90,6 +90,10 @@ class LearningFeedbackService:
             )
         )
         if existing is not None:
+            if existing.action == LearningFeedbackAction.QUESTION_SUPPLY_GAP:
+                self._record_supply_gap_isolated(adaptive, existing)
+                if commit:
+                    self.session.commit()
             return self._build_read(existing, adaptive)
 
         review_schedule_id: UUID | None = None
@@ -206,6 +210,8 @@ class LearningFeedbackService:
         try:
             self.session.add(decision)
             self.session.flush()
+            if decision.action == LearningFeedbackAction.QUESTION_SUPPLY_GAP:
+                self._record_supply_gap_isolated(adaptive, decision)
             if commit:
                 self.session.commit()
         except IntegrityError:
@@ -217,6 +223,9 @@ class LearningFeedbackService:
                     )
                 )
                 if existing is not None:
+                    if existing.action == LearningFeedbackAction.QUESTION_SUPPLY_GAP:
+                        self._record_supply_gap_isolated(adaptive, existing)
+                        self.session.commit()
                     return self._build_read(existing, adaptive)
             raise
         except Exception:
@@ -301,6 +310,60 @@ class LearningFeedbackService:
             excluded=exclusions,
         )
         return rec is not None
+
+    def _record_supply_gap_isolated(
+        self, adaptive: AdaptiveRepairSession, decision: LearningFeedbackDecision
+    ) -> None:
+        try:
+            with self.session.begin_nested():
+                from app.knowledge_gap.models import RootCauseVerificationTargetType
+                from app.question_supply.models import (
+                    QuestionSupplyObservationSourceKind,
+                    QuestionSupplyTargetType,
+                    QuestionSupplyUseCase,
+                )
+                from app.question_supply.service import (
+                    QuestionSupplyGapService,
+                    QuestionSupplyRequirement,
+                )
+
+                target_type_map = {
+                    RootCauseVerificationTargetType.CONCEPT: QuestionSupplyTargetType.CONCEPT,
+                    RootCauseVerificationTargetType.PROBLEM_TYPE: QuestionSupplyTargetType.PROBLEM_TYPE,
+                    RootCauseVerificationTargetType.MISCONCEPTION: QuestionSupplyTargetType.MISCONCEPTION,
+                    "CONCEPT": QuestionSupplyTargetType.CONCEPT,
+                    "PROBLEM_TYPE": QuestionSupplyTargetType.PROBLEM_TYPE,
+                    "MISCONCEPTION": QuestionSupplyTargetType.MISCONCEPTION,
+                }
+                mapped_target_type = target_type_map.get(
+                    adaptive.target_type, QuestionSupplyTargetType.CONCEPT
+                )
+                requirement = QuestionSupplyRequirement(
+                    subject_id=adaptive.subject_id,
+                    use_case=QuestionSupplyUseCase.ADAPTIVE_REPAIR,
+                    target_type=mapped_target_type,
+                    concept_id=adaptive.target_concept_id,
+                    problem_type_id=adaptive.target_problem_type_id,
+                    misconception_definition_id=adaptive.misconception_definition_id,
+                    desired_difficulty=adaptive.current_difficulty,
+                )
+                exclusions = self.lineage_service.get_lineage_excluded_question_ids(
+                    verification_target_id=adaptive.verification_target_id,
+                    student_id=adaptive.student_id,
+                    diagnosis_id=adaptive.diagnosis_id,
+                    verification_id=adaptive.verification_id,
+                )
+                supply_svc = QuestionSupplyGapService(self.session)
+                supply_svc.assess_and_record(
+                    requirement=requirement,
+                    source_kind=QuestionSupplyObservationSourceKind.LEARNING_FEEDBACK,
+                    source_entity_id=decision.id,
+                    student_id=adaptive.student_id,
+                    exclude_question_ids=exclusions,
+                    commit=False,
+                )
+        except Exception:
+            logger.warning("Failed to record isolated learning feedback supply gap", exc_info=True)
 
     def _build_read(
         self, decision: LearningFeedbackDecision, adaptive: AdaptiveRepairSession

@@ -18,6 +18,7 @@ from app.knowledge_gap.models import (
 )
 from app.practice.models import EvaluationStatus, QuestionAttempt
 from app.questions.eligibility import standalone_question_only
+from app.questions.evaluation_eligibility import is_deterministically_auto_evaluable
 from app.questions.models import CognitiveLevel, Question, QuestionStatus, QuestionType
 
 
@@ -267,7 +268,7 @@ class RootCauseVerificationPolicy:
         if excluded_question_ids:
             stmt = stmt.where(~Question.id.in_(excluded_question_ids))
 
-        candidates = list(session.scalars(stmt))
+        candidates = [q for q in session.scalars(stmt) if is_deterministically_auto_evaluable(q)]
         if not candidates:
             return []
 
