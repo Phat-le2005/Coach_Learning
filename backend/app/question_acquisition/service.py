@@ -583,6 +583,18 @@ class QuestionAcquisitionService:
         self.session.commit()
         return None, prepared
 
+    def _load_source_for_finalization(
+        self, source_id: UUID
+    ) -> QuestionAcquisitionSource | None:
+        """Load acquisition source with row lock and fresh DB attributes, bypassing stale identity-map caching."""
+        stmt = (
+            select(QuestionAcquisitionSource)
+            .where(QuestionAcquisitionSource.id == source_id)
+            .with_for_update()
+            .execution_options(populate_existing=True)
+        )
+        return self.session.scalar(stmt)
+
     def _finalize_fetch_failure(
         self,
         source_id: UUID,
@@ -591,24 +603,31 @@ class QuestionAcquisitionService:
         failure_detail: str | None = None,
         commit: bool = True,
     ) -> None:
-        """Phase C (Failure): Finalize failed fetch in a short transaction, protecting any concurrent usable state."""
-        source = self.session.get(QuestionAcquisitionSource, source_id)
+        """Phase C (Failure): Finalize failed fetch in a short transaction, protecting any concurrent usable state.
+
+        Concurrency state precedence:
+        1. BLOCKED is authoritative operational override: preserve BLOCKED status and original reason.
+        2. Otherwise, a usable artifact means FETCHED: late failure does not overwrite successful acquisition.
+        3. Otherwise, failed attempt means FAILED: persist failure code and detail.
+        """
+        source = self._load_source_for_finalization(source_id)
         if source is None:
             return
 
-        # If source is already BLOCKED, keep it BLOCKED
+        # Precedence 1: BLOCKED is authoritative operational override
         if (
             source.rights_status == QuestionAcquisitionRightsStatus.BLOCKED
             or source.status == QuestionAcquisitionSourceStatus.BLOCKED
         ):
             source.status = QuestionAcquisitionSourceStatus.BLOCKED
+            # Preserve existing manual block failure_code and failure_detail
             self.refresh_request_staging_status(source.request_id)
             self.session.flush()
             if commit:
                 self.session.commit()
             return
 
-        # Check if a usable artifact is already linked (e.g. concurrent attempt succeeded)
+        # Precedence 2: Usable artifact means FETCHED
         usable_artifact = self.get_usable_source_artifact(source.id)
         if usable_artifact is not None:
             source.status = QuestionAcquisitionSourceStatus.FETCHED
@@ -620,7 +639,7 @@ class QuestionAcquisitionService:
                 self.session.commit()
             return
 
-        # No usable artifact exists: persist failure
+        # Precedence 3: Failed attempt means FAILED
         now_err = datetime.now(timezone.utc)
         source.status = QuestionAcquisitionSourceStatus.FAILED
         source.failure_code = failure_code
@@ -638,8 +657,13 @@ class QuestionAcquisitionService:
         *,
         commit: bool = True,
     ) -> QuestionAcquisitionArtifact:
-        """Phase C (Success): Ingest and link artifact in a short transaction after network I/O."""
-        source = self.session.get(QuestionAcquisitionSource, prepared.source_id)
+        """Phase C (Success): Ingest and link artifact in a short transaction after network I/O.
+
+        Concurrency state precedence:
+        1. BLOCKED is authoritative operational override: preserve BLOCKED status, original failure_code and reason.
+        2. Otherwise, successful ingest and extraction promotes source to FETCHED.
+        """
+        source = self._load_source_for_finalization(prepared.source_id)
         if source is None:
             raise ApplicationError(
                 404,
@@ -664,7 +688,12 @@ class QuestionAcquisitionService:
         *,
         commit: bool = True,
     ) -> QuestionAcquisitionArtifact:
-        """Safely fetch and ingest external PDF artifact with strict three-phase transaction boundaries."""
+        """Safely fetch and ingest external PDF artifact with strict three-phase transaction boundaries.
+
+        Note: fetch_source orchestrates multiple transactions (Phase A prepare commit, Phase B network
+        outside transaction, and Phase C finalize commit). commit=False is deprecated because Phase A
+        must always commit before network I/O.
+        """
         # PHASE A: PREPARE (short DB transaction committed before network I/O)
         usable_artifact, prepared = self._prepare_source_fetch(source_id)
         if usable_artifact is not None:

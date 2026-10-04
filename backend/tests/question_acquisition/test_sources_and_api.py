@@ -1764,7 +1764,6 @@ def test_block_during_fetch(
 
         # CRITICAL ASSERTIONS:
         # - Source remains BLOCKED (NOT resurrected to FETCHED!)
-        db_session.expire_all()
         reloaded_source = db_session.get(QuestionAcquisitionSource, source.id)
         assert reloaded_source is not None
         assert reloaded_source.status == QuestionAcquisitionSourceStatus.BLOCKED
@@ -1845,5 +1844,356 @@ def test_pinned_transport_and_stream_timeout_mapping() -> None:
         with client.stream("GET", "https://stream.edu.vn/doc.pdf") as resp:
             with pytest.raises(httpx.ReadTimeout):
                 list(resp.iter_bytes())
+
+
+# ==============================================================================
+# SECTION 102: Cross-Session Concurrency & Identity-Map Refresh Regression Tests
+# ==============================================================================
+
+
+def test_cross_session_block_wins_over_fetch_success(
+    db_session: Session,
+    practice_content: PracticeContent,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Session A prepares fetch. Session B blocks source mid-download and commits. Session A finalizes success.
+
+    Session A's stale identity map must be refreshed via populate_existing=True:
+    source must remain BLOCKED, manual block failure fields must not be overwritten,
+    artifact is linked for audit, and request must not transition to READY_FOR_REVIEW.
+    """
+    def mock_getaddrinfo(host, port, *args, **kwargs):
+        return [(socket.AF_INET, socket.SOCK_STREAM, 6, "", ("93.184.216.34", port))]
+
+    monkeypatch.setattr(socket, "getaddrinfo", mock_getaddrinfo)
+
+    valid_pdf = _build_test_pdf(["Cross Session Block Success Content"])
+
+    _, acq_req = _create_test_gap_and_request(db_session, practice_content)
+    seed_svc = QuestionAcquisitionService(db_session)
+    source = seed_svc.register_source(
+        acq_req.id,
+        RegisterSourceRequest(
+            source_kind=QuestionAcquisitionSourceKind.PDF_URL,
+            url="https://trusted.edu.vn/cs_block_success.pdf",
+            provenance_note="Cross session block test",
+        ),
+    )
+    db_session.commit()
+
+    SessionFactory = sessionmaker(
+        bind=db_session.get_bind(), autoflush=False, expire_on_commit=False
+    )
+    session_a = SessionFactory()
+    session_b = SessionFactory()
+
+    try:
+        svc_a = QuestionAcquisitionService(session_a)
+        # Phase A in Session A -> source.status = FETCHING committed
+        _, prepared = svc_a._prepare_source_fetch(source.id)
+        assert prepared is not None
+        source_in_a = session_a.get(QuestionAcquisitionSource, source.id)
+        assert source_in_a is not None
+        assert source_in_a.status == QuestionAcquisitionSourceStatus.FETCHING
+
+        # Session B loads the source and blocks it while Session A is in network
+        svc_b = QuestionAcquisitionService(session_b)
+        blocked_source = svc_b.block_source(
+            source.id, reason="Copyright claim received mid-download", commit=True
+        )
+        assert blocked_source.status == QuestionAcquisitionSourceStatus.BLOCKED
+        assert blocked_source.rights_status == QuestionAcquisitionRightsStatus.BLOCKED
+        assert blocked_source.failure_code == "MANUALLY_BLOCKED"
+        assert blocked_source.failure_detail == "Copyright claim received mid-download"
+        session_b.close()
+
+        # Session A completes network download and finalizes success in Phase C
+        import tempfile, hashlib
+        with tempfile.NamedTemporaryFile(prefix="cs_blk_succ_", suffix=".tmp", delete=False) as tf:
+            tf.write(valid_pdf)
+            temp_path = Path(tf.name)
+
+        try:
+            artifact = svc_a._finalize_fetch_success(
+                prepared=prepared,
+                fetch_result=FetchResult(
+                    temp_file_path=temp_path,
+                    file_size_bytes=len(valid_pdf),
+                    sha256=hashlib.sha256(valid_pdf).hexdigest(),
+                    mime_type="application/pdf",
+                ),
+                commit=True,
+            )
+            assert artifact is not None
+
+            # Assertions in Session A:
+            # - source identity map was refreshed via populate_existing=True and remains BLOCKED
+            reloaded_a = session_a.get(QuestionAcquisitionSource, source.id)
+            assert reloaded_a is not None
+            assert reloaded_a.status == QuestionAcquisitionSourceStatus.BLOCKED
+            assert reloaded_a.rights_status == QuestionAcquisitionRightsStatus.BLOCKED
+            assert reloaded_a.failure_code == "MANUALLY_BLOCKED"
+            assert reloaded_a.failure_detail == "Copyright claim received mid-download"
+
+            # Assertions in fresh independent verification session:
+            with SessionFactory() as session_verify:
+                v_source = session_verify.get(QuestionAcquisitionSource, source.id)
+                assert v_source is not None
+                assert v_source.status == QuestionAcquisitionSourceStatus.BLOCKED
+                assert v_source.rights_status == QuestionAcquisitionRightsStatus.BLOCKED
+                assert v_source.failure_code == "MANUALLY_BLOCKED"
+                assert v_source.failure_detail == "Copyright claim received mid-download"
+
+                # Artifact and link retained for audit
+                v_links = session_verify.scalars(
+                    select(QuestionAcquisitionSourceArtifact).where(
+                        QuestionAcquisitionSourceArtifact.source_id == source.id
+                    )
+                ).all()
+                assert len(v_links) == 1
+                assert v_links[0].artifact_id == artifact.id
+
+                # Request must NOT be READY_FOR_REVIEW
+                v_req = session_verify.get(QuestionAcquisitionRequest, acq_req.id)
+                assert v_req is not None
+                assert v_req.status != QuestionAcquisitionRequestStatus.READY_FOR_REVIEW
+                assert v_req.status == QuestionAcquisitionRequestStatus.AWAITING_SOURCE
+        finally:
+            temp_path.unlink(missing_ok=True)
+    finally:
+        session_a.close()
+
+
+def test_cross_session_block_wins_over_fetch_failure(
+    db_session: Session,
+    practice_content: PracticeContent,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Session A prepares fetch. Session B blocks source mid-download and commits. Session A fails network.
+
+    Session A failure finalizer must reload fresh DB state:
+    source must remain BLOCKED (NOT FAILED), and manual block reason must not be overwritten.
+    """
+    def mock_getaddrinfo(host, port, *args, **kwargs):
+        return [(socket.AF_INET, socket.SOCK_STREAM, 6, "", ("93.184.216.34", port))]
+
+    monkeypatch.setattr(socket, "getaddrinfo", mock_getaddrinfo)
+
+    _, acq_req = _create_test_gap_and_request(db_session, practice_content)
+    seed_svc = QuestionAcquisitionService(db_session)
+    source = seed_svc.register_source(
+        acq_req.id,
+        RegisterSourceRequest(
+            source_kind=QuestionAcquisitionSourceKind.PDF_URL,
+            url="https://trusted.edu.vn/cs_block_fail.pdf",
+            provenance_note="Cross session block failure test",
+        ),
+    )
+    db_session.commit()
+
+    SessionFactory = sessionmaker(
+        bind=db_session.get_bind(), autoflush=False, expire_on_commit=False
+    )
+    session_a = SessionFactory()
+    session_b = SessionFactory()
+
+    try:
+        svc_a = QuestionAcquisitionService(session_a)
+        _, prepared = svc_a._prepare_source_fetch(source.id)
+        assert prepared is not None
+
+        # Session B blocks the source while Session A is in flight
+        svc_b = QuestionAcquisitionService(session_b)
+        svc_b.block_source(
+            source.id, reason="Takedown notice received while downloading", commit=True
+        )
+        session_b.close()
+
+        # Session A network call fails and runs Phase C failure finalization
+        svc_a._finalize_fetch_failure(
+            prepared.source_id,
+            failure_code="QUESTION_ACQUISITION_FETCH_FAILED",
+            failure_detail="Connection timeout on attempt A",
+            commit=True,
+        )
+
+        # Assertions:
+        source_in_a = session_a.get(QuestionAcquisitionSource, source.id)
+        assert source_in_a is not None
+        assert source_in_a.status == QuestionAcquisitionSourceStatus.BLOCKED
+        assert source_in_a.rights_status == QuestionAcquisitionRightsStatus.BLOCKED
+        assert source_in_a.failure_code == "MANUALLY_BLOCKED"
+        assert source_in_a.failure_detail == "Takedown notice received while downloading"
+
+        with SessionFactory() as session_verify:
+            v_source = session_verify.get(QuestionAcquisitionSource, source.id)
+            assert v_source is not None
+            assert v_source.status == QuestionAcquisitionSourceStatus.BLOCKED
+            assert v_source.rights_status == QuestionAcquisitionRightsStatus.BLOCKED
+            assert v_source.failure_code == "MANUALLY_BLOCKED"
+            assert v_source.failure_detail == "Takedown notice received while downloading"
+
+            v_req = session_verify.get(QuestionAcquisitionRequest, acq_req.id)
+            assert v_req is not None
+            assert v_req.status == QuestionAcquisitionRequestStatus.AWAITING_SOURCE
+    finally:
+        session_a.close()
+
+
+def test_cross_session_late_failure_after_other_success(
+    db_session: Session,
+    practice_content: PracticeContent,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Session A prepares fetch. Session B fetches and finalizes usable artifact. Session A fails network late.
+
+    Session A failure finalizer must observe Session B's usable artifact:
+    source remains FETCHED (NOT overwritten with FAILED), failure fields stay null.
+    """
+    def mock_getaddrinfo(host, port, *args, **kwargs):
+        return [(socket.AF_INET, socket.SOCK_STREAM, 6, "", ("93.184.216.34", port))]
+
+    monkeypatch.setattr(socket, "getaddrinfo", mock_getaddrinfo)
+
+    valid_pdf = _build_test_pdf(["Cross Session Late Failure Contest Exam"])
+
+    _, acq_req = _create_test_gap_and_request(db_session, practice_content)
+    seed_svc = QuestionAcquisitionService(db_session)
+    source = seed_svc.register_source(
+        acq_req.id,
+        RegisterSourceRequest(
+            source_kind=QuestionAcquisitionSourceKind.PDF_URL,
+            url="https://trusted.edu.vn/cs_late_fail.pdf",
+            provenance_note="Cross session late failure test",
+        ),
+    )
+    db_session.commit()
+
+    SessionFactory = sessionmaker(
+        bind=db_session.get_bind(), autoflush=False, expire_on_commit=False
+    )
+    session_a = SessionFactory()
+    session_b = SessionFactory()
+
+    try:
+        svc_a = QuestionAcquisitionService(session_a)
+        _, prepared_a = svc_a._prepare_source_fetch(source.id)
+        assert prepared_a is not None
+
+        # Session B prepares and finalizes success with a usable artifact
+        svc_b = QuestionAcquisitionService(session_b)
+        _, prepared_b = svc_b._prepare_source_fetch(source.id)
+        assert prepared_b is not None
+
+        import tempfile, hashlib
+        with tempfile.NamedTemporaryFile(prefix="cs_b_succ_", suffix=".tmp", delete=False) as tf:
+            tf.write(valid_pdf)
+            temp_path = Path(tf.name)
+
+        try:
+            art_b = svc_b._finalize_fetch_success(
+                prepared=prepared_b,
+                fetch_result=FetchResult(
+                    temp_file_path=temp_path,
+                    file_size_bytes=len(valid_pdf),
+                    sha256=hashlib.sha256(valid_pdf).hexdigest(),
+                    mime_type="application/pdf",
+                ),
+                commit=True,
+            )
+            assert art_b.extraction_status == QuestionAcquisitionExtractionStatus.COMPLETE
+            session_b.close()
+
+            # Session A network call times out late and runs Phase C failure finalization
+            svc_a._finalize_fetch_failure(
+                prepared_a.source_id,
+                failure_code="QUESTION_ACQUISITION_FETCH_FAILED",
+                failure_detail="Late network timeout on Session A",
+                commit=True,
+            )
+
+            # Assertions: Session A reloads fresh row and sees usable artifact -> FETCHED!
+            source_in_a = session_a.get(QuestionAcquisitionSource, source.id)
+            assert source_in_a is not None
+            assert source_in_a.status == QuestionAcquisitionSourceStatus.FETCHED
+            assert source_in_a.failure_code is None
+            assert source_in_a.failure_detail is None
+
+            with SessionFactory() as session_verify:
+                v_source = session_verify.get(QuestionAcquisitionSource, source.id)
+                assert v_source is not None
+                assert v_source.status == QuestionAcquisitionSourceStatus.FETCHED
+                assert v_source.failure_code is None
+                assert v_source.failure_detail is None
+
+                v_req = session_verify.get(QuestionAcquisitionRequest, acq_req.id)
+                assert v_req is not None
+                assert v_req.status == QuestionAcquisitionRequestStatus.READY_FOR_REVIEW
+        finally:
+            temp_path.unlink(missing_ok=True)
+    finally:
+        session_a.close()
+
+
+def test_load_source_for_finalization_refreshes_stale_identity_map(
+    db_session: Session,
+    practice_content: PracticeContent,
+) -> None:
+    """Directly verifies that _load_source_for_finalization with populate_existing=True refreshes stale identity-map instances."""
+    _, acq_req = _create_test_gap_and_request(db_session, practice_content)
+    seed_svc = QuestionAcquisitionService(db_session)
+    source = seed_svc.register_source(
+        acq_req.id,
+        RegisterSourceRequest(
+            source_kind=QuestionAcquisitionSourceKind.PDF_URL,
+            url="https://trusted.edu.vn/direct_refresh.pdf",
+            provenance_note="Identity map refresh verification",
+        ),
+    )
+    db_session.commit()
+
+    SessionFactory = sessionmaker(
+        bind=db_session.get_bind(), autoflush=False, expire_on_commit=False
+    )
+    session_a = SessionFactory()
+    session_b = SessionFactory()
+
+    try:
+        # Session A loads source into identity map (status == REGISTERED)
+        source_in_a = session_a.get(QuestionAcquisitionSource, source.id)
+        assert source_in_a is not None
+        assert source_in_a.status == QuestionAcquisitionSourceStatus.REGISTERED
+
+        # Session B updates and commits the row to BLOCKED
+        source_in_b = session_b.get(QuestionAcquisitionSource, source.id)
+        assert source_in_b is not None
+        source_in_b.status = QuestionAcquisitionSourceStatus.BLOCKED
+        source_in_b.rights_status = QuestionAcquisitionRightsStatus.BLOCKED
+        source_in_b.failure_code = "MANUALLY_BLOCKED"
+        source_in_b.failure_detail = "Proof of populate_existing"
+        session_b.commit()
+        session_b.close()
+
+        # Regular session_a.get() without populate_existing returns cached stale state from identity map
+        cached_source = session_a.get(QuestionAcquisitionSource, source.id)
+        assert cached_source is not None
+        assert cached_source.status == QuestionAcquisitionSourceStatus.REGISTERED
+
+        # _load_source_for_finalization MUST refresh the in-memory instance via populate_existing=True
+        svc_a = QuestionAcquisitionService(session_a)
+        fresh_source = svc_a._load_source_for_finalization(source.id)
+        assert fresh_source is not None
+        assert fresh_source.status == QuestionAcquisitionSourceStatus.BLOCKED
+        assert fresh_source.rights_status == QuestionAcquisitionRightsStatus.BLOCKED
+        assert fresh_source.failure_code == "MANUALLY_BLOCKED"
+        assert fresh_source.failure_detail == "Proof of populate_existing"
+
+        # Even regular get now reflects refreshed state on the same python instance
+        cached_after = session_a.get(QuestionAcquisitionSource, source.id)
+        assert cached_after is not None
+        assert cached_after.status == QuestionAcquisitionSourceStatus.BLOCKED
+    finally:
+        session_a.close()
+
 
 
