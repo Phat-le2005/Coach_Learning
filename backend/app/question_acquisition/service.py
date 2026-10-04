@@ -505,24 +505,30 @@ class QuestionAcquisitionService:
         except IntegrityError:
             pass
 
-        # Update source status and extraction failure markers
+        # Query aggregate usable artifact state over all linked artifacts for this source
+        usable_artifact = self.get_usable_source_artifact(source.id)
+
+        # Update source status and failure markers based on aggregate precedence:
+        # 1. BLOCKED is authoritative operational override: preserve BLOCKED status and original reason.
+        # 2. Otherwise, ANY usable linked artifact (COMPLETE or PARTIAL) means source is FETCHED.
+        # 3. Otherwise, if no usable artifact exists, source is FAILED with extraction error.
         if (
             source.rights_status == QuestionAcquisitionRightsStatus.BLOCKED
             or source.status == QuestionAcquisitionSourceStatus.BLOCKED
         ):
             source.status = QuestionAcquisitionSourceStatus.BLOCKED
-        elif artifact.extraction_status == QuestionAcquisitionExtractionStatus.FAILED:
+        elif usable_artifact is not None:
+            source.status = QuestionAcquisitionSourceStatus.FETCHED
+            source.failure_code = None
+            source.failure_detail = None
+            source.fetched_at = source.fetched_at or now
+        else:
             source.status = QuestionAcquisitionSourceStatus.FAILED
             source.failure_code = "QUESTION_ACQUISITION_PDF_EXTRACTION_FAILED"
             if extraction is not None and extraction.error_message:
                 source.failure_detail = extraction.error_message[:1000]
             else:
                 source.failure_detail = "PDF contains no extractable text or is invalid."
-        else:
-            source.status = QuestionAcquisitionSourceStatus.FETCHED
-            source.failure_code = None
-            source.failure_detail = None
-            source.fetched_at = now
 
         source.updated_at = now
         self.session.flush()

@@ -2196,4 +2196,177 @@ def test_load_source_for_finalization_refreshes_stale_identity_map(
         session_a.close()
 
 
+def test_late_failed_artifact_does_not_downgrade_usable_source(
+    db_session: Session,
+    practice_content: PracticeContent,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """When a source already has a usable (COMPLETE/PARTIAL) artifact, a concurrent fetch finalizing a FAILED artifact later must not downgrade the source from FETCHED to FAILED or demote request."""
+    def mock_getaddrinfo(host, port, *args, **kwargs):
+        return [(socket.AF_INET, socket.SOCK_STREAM, 6, "", ("93.184.216.34", port))]
+
+    monkeypatch.setattr(socket, "getaddrinfo", mock_getaddrinfo)
+
+    # Invariant: zero Question side effects
+    q_count_before = db_session.scalar(select(func.count(Question.id)))
+
+    _, acq_req = _create_test_gap_and_request(db_session, practice_content)
+    seed_svc = QuestionAcquisitionService(db_session)
+    source = seed_svc.register_source(
+        acq_req.id,
+        RegisterSourceRequest(
+            source_kind=QuestionAcquisitionSourceKind.PDF_URL,
+            url="https://trusted.edu.vn/late_fail_race.pdf",
+            provenance_note="Late failed artifact race test",
+        ),
+    )
+    db_session.commit()
+
+    SessionFactory = sessionmaker(
+        bind=db_session.get_bind(), autoflush=False, expire_on_commit=False
+    )
+    session_a = SessionFactory()
+    session_b = SessionFactory()
+
+    try:
+        svc_a = QuestionAcquisitionService(session_a)
+        _, prepared_a = svc_a._prepare_source_fetch(source.id)
+        assert prepared_a is not None
+
+        # Session B prepares and finalizes valid artifact -> COMPLETE -> source FETCHED
+        svc_b = QuestionAcquisitionService(session_b)
+        _, prepared_b = svc_b._prepare_source_fetch(source.id)
+        assert prepared_b is not None
+
+        valid_pdf = _build_test_pdf(["Attempt B Valid Content"])
+        import tempfile, hashlib
+        with tempfile.NamedTemporaryFile(prefix="cs_b_valid_", suffix=".tmp", delete=False) as tf:
+            tf.write(valid_pdf)
+            temp_b_path = Path(tf.name)
+
+        try:
+            art_b = svc_b._finalize_fetch_success(
+                prepared=prepared_b,
+                fetch_result=FetchResult(
+                    temp_file_path=temp_b_path,
+                    file_size_bytes=len(valid_pdf),
+                    sha256=hashlib.sha256(valid_pdf).hexdigest(),
+                    mime_type="application/pdf",
+                ),
+                commit=True,
+            )
+            assert art_b.extraction_status == QuestionAcquisitionExtractionStatus.COMPLETE
+            session_b.close()
+
+            # Session A finalizes later with a zero-text PDF -> extraction FAILED
+            zero_text_pdf = _build_test_pdf(["", ""])
+            with tempfile.NamedTemporaryFile(prefix="cs_a_zero_", suffix=".tmp", delete=False) as tf:
+                tf.write(zero_text_pdf)
+                temp_a_path = Path(tf.name)
+
+            try:
+                art_a = svc_a._finalize_fetch_success(
+                    prepared=prepared_a,
+                    fetch_result=FetchResult(
+                        temp_file_path=temp_a_path,
+                        file_size_bytes=len(zero_text_pdf),
+                        sha256=hashlib.sha256(zero_text_pdf).hexdigest(),
+                        mime_type="application/pdf",
+                    ),
+                    commit=True,
+                )
+                assert art_a.extraction_status == QuestionAcquisitionExtractionStatus.FAILED
+                session_a.close()
+
+                # Fresh verification session
+                with SessionFactory() as session_verify:
+                    v_source = session_verify.get(QuestionAcquisitionSource, source.id)
+                    assert v_source is not None
+                    # Source remains FETCHED (NOT downgraded to FAILED!)
+                    assert v_source.status == QuestionAcquisitionSourceStatus.FETCHED
+                    # Failure fields are cleared because aggregate state is usable
+                    assert v_source.failure_code is None
+                    assert v_source.failure_detail is None
+
+                    # Exactly 2 artifact links exist for audit history (one COMPLETE, one FAILED)
+                    links = session_verify.scalars(
+                        select(QuestionAcquisitionSourceArtifact).where(
+                            QuestionAcquisitionSourceArtifact.source_id == source.id
+                        )
+                    ).all()
+                    assert len(links) == 2
+                    statuses = {link.artifact.extraction_status for link in links}
+                    assert statuses == {
+                        QuestionAcquisitionExtractionStatus.COMPLETE,
+                        QuestionAcquisitionExtractionStatus.FAILED,
+                    }
+
+                    # Request must remain READY_FOR_REVIEW
+                    v_req = session_verify.get(QuestionAcquisitionRequest, acq_req.id)
+                    assert v_req is not None
+                    assert v_req.status == QuestionAcquisitionRequestStatus.READY_FOR_REVIEW
+
+                    # Invariant: zero Question side effects
+                    q_count_after = session_verify.scalar(select(func.count(Question.id)))
+                    assert q_count_after == q_count_before
+            finally:
+                temp_a_path.unlink(missing_ok=True)
+        finally:
+            temp_b_path.unlink(missing_ok=True)
+    finally:
+        session_a.close()
+
+
+def test_source_state_uses_all_linked_artifacts_not_current_artifact_only(
+    db_session: Session,
+    practice_content: PracticeContent,
+) -> None:
+    """_ingest_artifact_file resolves aggregate source status over all linked artifacts, not just the latest one."""
+    _, acq_req = _create_test_gap_and_request(db_session, practice_content)
+    acq_svc = QuestionAcquisitionService(db_session)
+
+    # 1. Ingest usable artifact first
+    valid_pdf = _build_test_pdf(["Usable Base Question"])
+    source, art1 = acq_svc.upload_artifact(
+        acq_req.id,
+        file_bytes=valid_pdf,
+        provenance_note="Usable base artifact",
+    )
+    assert source.status == QuestionAcquisitionSourceStatus.FETCHED
+    assert art1.extraction_status == QuestionAcquisitionExtractionStatus.COMPLETE
+
+    # 2. Ingest failed artifact into the same source
+    zero_text_pdf = _build_test_pdf(["", ""])
+    import tempfile, hashlib
+    with tempfile.NamedTemporaryFile(prefix="fail_ingest_", suffix=".tmp", delete=False) as tf:
+        tf.write(zero_text_pdf)
+        temp_path = Path(tf.name)
+
+    try:
+        art2 = acq_svc._ingest_artifact_file(
+            source=source,
+            file_path=temp_path,
+            sha256=hashlib.sha256(zero_text_pdf).hexdigest(),
+            file_size_bytes=len(zero_text_pdf),
+            mime_type="application/pdf",
+        )
+        assert art2.extraction_status == QuestionAcquisitionExtractionStatus.FAILED
+
+        # Source remains FETCHED because art1 is usable
+        assert source.status == QuestionAcquisitionSourceStatus.FETCHED
+        assert source.failure_code is None
+        assert source.failure_detail is None
+
+        # Both artifacts remain linked for audit trail
+        links = db_session.scalars(
+            select(QuestionAcquisitionSourceArtifact).where(
+                QuestionAcquisitionSourceArtifact.source_id == source.id
+            )
+        ).all()
+        assert len(links) == 2
+    finally:
+        temp_path.unlink(missing_ok=True)
+
+
+
 
