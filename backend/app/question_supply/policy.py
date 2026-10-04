@@ -93,32 +93,42 @@ class QuestionSupplyPolicy:
 
     @classmethod
     def evaluate_health(
-        cls, effective_count: int, minimum_required: int, preferred: int
+        cls,
+        effective_count: int,
+        effective_in_band_count: int,
+        minimum_required: int,
+        preferred: int,
     ) -> QuestionSupplyHealth:
-        """Evaluate bank health against target thresholds."""
-        if effective_count >= preferred:
-            return QuestionSupplyHealth.SUFFICIENT
-        if effective_count >= minimum_required:
+        """Evaluate bank health against target count and difficulty coverage thresholds."""
+        if effective_count < minimum_required:
+            return QuestionSupplyHealth.INSUFFICIENT
+        if effective_in_band_count < minimum_required:
+            return QuestionSupplyHealth.INSUFFICIENT
+        if effective_count < preferred:
             return QuestionSupplyHealth.THIN
-        return QuestionSupplyHealth.INSUFFICIENT
+        if effective_in_band_count < preferred:
+            return QuestionSupplyHealth.THIN
+        return QuestionSupplyHealth.SUFFICIENT
 
     @classmethod
     def evaluate_severity(
         cls,
         effective_count: int,
+        effective_in_band_count: int,
         minimum_required: int,
         preferred: int,
-        in_band_count: int,
     ) -> QuestionSupplySeverity:
         """Determine gap severity deterministically."""
         if effective_count == 0:
             return QuestionSupplySeverity.CRITICAL
-        if effective_count < minimum_required:
+        if (
+            effective_in_band_count == 0
+            or effective_count < minimum_required
+            or effective_in_band_count < minimum_required
+        ):
             return QuestionSupplySeverity.HIGH
-        if effective_count < preferred:
+        if effective_count < preferred or effective_in_band_count < preferred:
             return QuestionSupplySeverity.MEDIUM
-        if in_band_count < minimum_required:
-            return QuestionSupplySeverity.LOW
         return QuestionSupplySeverity.LOW
 
     @classmethod

@@ -63,6 +63,8 @@ class QuestionSupplyReasonCode(StrEnum):
     INSUFFICIENT_DIFFICULTY_COVERAGE = "INSUFFICIENT_DIFFICULTY_COVERAGE"
     NO_AUTO_EVALUABLE_TARGET_QUESTIONS = "NO_AUTO_EVALUABLE_TARGET_QUESTIONS"
     STUDENT_EXPOSURE_EXHAUSTED = "STUDENT_EXPOSURE_EXHAUSTED"
+    THIN_APPROVED_TARGET_COUNT = "THIN_APPROVED_TARGET_COUNT"
+    THIN_DIFFICULTY_COVERAGE = "THIN_DIFFICULTY_COVERAGE"
 
 
 class QuestionSupplyObservationSourceKind(StrEnum):
@@ -152,6 +154,14 @@ class QuestionSupplyGap(Base):
         nullable=False,
         default=QuestionSupplyStatus.OPEN,
         server_default=QuestionSupplyStatus.OPEN.value,
+    )
+    reason_code: Mapped[QuestionSupplyReasonCode] = mapped_column(
+        Enum(
+            QuestionSupplyReasonCode,
+            native_enum=False,
+            name="question_supply_gap_reason_code",
+        ),
+        nullable=False,
     )
 
     demand_count: Mapped[int] = mapped_column(Integer, nullable=False, default=1, server_default="1")

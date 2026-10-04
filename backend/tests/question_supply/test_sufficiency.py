@@ -529,3 +529,278 @@ def test_subject_mismatch_validation(
             )
         )
     assert exc_misc.value.code == "QUESTION_SUPPLY_MISCONCEPTION_SUBJECT_MISMATCH"
+
+
+def test_out_of_band_inventory_is_not_sufficient(
+    db_session: Session, practice_content: PracticeContent
+) -> None:
+    _archive_questions(db_session)
+    svc = QuestionBankSufficiencyService(db_session)
+
+    # 8 approved questions all with difficulty 0.90 (outside desired 0.50 ± 0.15 band [0.35, 0.65])
+    for i in range(8):
+        _make_question(db_session, practice_content, index=i, difficulty=0.90)
+
+    req = QuestionSupplyRequirement(
+        subject_id=practice_content.subject.id,
+        use_case=QuestionSupplyUseCase.ADAPTIVE_REPAIR,
+        target_type=QuestionSupplyTargetType.CONCEPT,
+        concept_id=practice_content.concept.id,
+        desired_difficulty=0.50,
+    )
+    report = svc.assess(req)
+
+    assert report.approved_eligible_count == 8
+    assert report.approved_in_band_count == 0
+    assert report.health == QuestionSupplyHealth.INSUFFICIENT
+    assert report.reason_code == QuestionSupplyReasonCode.INSUFFICIENT_DIFFICULTY_COVERAGE
+
+
+def test_partial_in_band_inventory_is_thin(
+    db_session: Session, practice_content: PracticeContent
+) -> None:
+    _archive_questions(db_session)
+    svc = QuestionBankSufficiencyService(db_session)
+
+    # 5 in band (0.50), 3 out of band (0.90) -> total 8 meets preferred=8, but in-band=5 < preferred=8
+    for i in range(5):
+        _make_question(db_session, practice_content, index=i, difficulty=0.50)
+    for i in range(5, 8):
+        _make_question(db_session, practice_content, index=i, difficulty=0.90)
+
+    req = QuestionSupplyRequirement(
+        subject_id=practice_content.subject.id,
+        use_case=QuestionSupplyUseCase.ADAPTIVE_REPAIR,
+        target_type=QuestionSupplyTargetType.CONCEPT,
+        concept_id=practice_content.concept.id,
+        desired_difficulty=0.50,
+    )
+    report = svc.assess(req)
+
+    assert report.approved_eligible_count == 8
+    assert report.approved_in_band_count == 5
+    assert report.health == QuestionSupplyHealth.THIN
+    assert report.reason_code == QuestionSupplyReasonCode.THIN_DIFFICULTY_COVERAGE
+
+
+def test_missing_concept_target_is_rejected(
+    db_session: Session, practice_content: PracticeContent
+) -> None:
+    svc = QuestionBankSufficiencyService(db_session)
+    with pytest.raises(ApplicationError) as exc:
+        svc.assess(
+            QuestionSupplyRequirement(
+                subject_id=practice_content.subject.id,
+                use_case=QuestionSupplyUseCase.ROOT_CAUSE_VERIFICATION,
+                target_type=QuestionSupplyTargetType.CONCEPT,
+                concept_id=None,
+            )
+        )
+    assert exc.value.code == "QUESTION_SUPPLY_CONCEPT_REQUIRED"
+
+
+def test_missing_problem_type_target_is_rejected(
+    db_session: Session, practice_content: PracticeContent
+) -> None:
+    svc = QuestionBankSufficiencyService(db_session)
+    with pytest.raises(ApplicationError) as exc:
+        svc.assess(
+            QuestionSupplyRequirement(
+                subject_id=practice_content.subject.id,
+                use_case=QuestionSupplyUseCase.ROOT_CAUSE_VERIFICATION,
+                target_type=QuestionSupplyTargetType.PROBLEM_TYPE,
+                problem_type_id=None,
+            )
+        )
+    assert exc.value.code == "QUESTION_SUPPLY_PROBLEM_TYPE_REQUIRED"
+
+
+def test_missing_misconception_target_is_rejected(
+    db_session: Session, practice_content: PracticeContent
+) -> None:
+    svc = QuestionBankSufficiencyService(db_session)
+    # Missing definition
+    with pytest.raises(ApplicationError) as exc:
+        svc.assess(
+            QuestionSupplyRequirement(
+                subject_id=practice_content.subject.id,
+                use_case=QuestionSupplyUseCase.ROOT_CAUSE_VERIFICATION,
+                target_type=QuestionSupplyTargetType.MISCONCEPTION,
+                misconception_definition_id=None,
+            )
+        )
+    assert exc.value.code == "QUESTION_SUPPLY_MISCONCEPTION_REQUIRED"
+
+    # Definition concept mismatch with supplied concept_id
+    from app.misconceptions.models import MisconceptionCategory, MisconceptionDefinition
+    misc = MisconceptionDefinition(
+        concept_id=practice_content.concept.id,
+        code="M-MISC-VALID",
+        name="Valid Misc",
+        description="Desc",
+        category=MisconceptionCategory.CONCEPTUAL,
+    )
+    db_session.add(misc)
+    other_concept = Concept(
+        subject_id=practice_content.subject.id,
+        code=f"C-OTHER-{uuid4().hex[:6].upper()}",
+        name="Other Concept Same Subject",
+    )
+    db_session.add(other_concept)
+    db_session.flush()
+
+    with pytest.raises(ApplicationError) as exc_mismatch:
+        svc.assess(
+            QuestionSupplyRequirement(
+                subject_id=practice_content.subject.id,
+                use_case=QuestionSupplyUseCase.ROOT_CAUSE_VERIFICATION,
+                target_type=QuestionSupplyTargetType.MISCONCEPTION,
+                misconception_definition_id=misc.id,
+                concept_id=other_concept.id,
+            )
+        )
+    assert exc_mismatch.value.code == "QUESTION_SUPPLY_MISCONCEPTION_CONCEPT_MISMATCH"
+
+
+def test_invalid_desired_difficulty_rejected(
+    db_session: Session, practice_content: PracticeContent
+) -> None:
+    svc = QuestionBankSufficiencyService(db_session)
+    for invalid in [-0.1, 1.5]:
+        with pytest.raises(ApplicationError) as exc:
+            svc.assess(
+                QuestionSupplyRequirement(
+                    subject_id=practice_content.subject.id,
+                    use_case=QuestionSupplyUseCase.ROOT_CAUSE_VERIFICATION,
+                    target_type=QuestionSupplyTargetType.CONCEPT,
+                    concept_id=practice_content.concept.id,
+                    desired_difficulty=invalid,
+                )
+            )
+        assert exc.value.code == "INVALID_QUESTION_SUPPLY_DIFFICULTY"
+
+
+def test_invalid_count_overrides_rejected(
+    db_session: Session, practice_content: PracticeContent
+) -> None:
+    svc = QuestionBankSufficiencyService(db_session)
+    with pytest.raises(ApplicationError) as exc_min:
+        svc.assess(
+            QuestionSupplyRequirement(
+                subject_id=practice_content.subject.id,
+                use_case=QuestionSupplyUseCase.ROOT_CAUSE_VERIFICATION,
+                target_type=QuestionSupplyTargetType.CONCEPT,
+                concept_id=practice_content.concept.id,
+                minimum_required_count=0,
+            )
+        )
+    assert exc_min.value.code == "INVALID_QUESTION_SUPPLY_MINIMUM_COUNT"
+
+    with pytest.raises(ApplicationError) as exc_pref:
+        svc.assess(
+            QuestionSupplyRequirement(
+                subject_id=practice_content.subject.id,
+                use_case=QuestionSupplyUseCase.ROOT_CAUSE_VERIFICATION,
+                target_type=QuestionSupplyTargetType.CONCEPT,
+                concept_id=practice_content.concept.id,
+                preferred_count=0,
+            )
+        )
+    assert exc_pref.value.code == "INVALID_QUESTION_SUPPLY_PREFERRED_COUNT"
+
+    with pytest.raises(ApplicationError) as exc_rel:
+        svc.assess(
+            QuestionSupplyRequirement(
+                subject_id=practice_content.subject.id,
+                use_case=QuestionSupplyUseCase.ROOT_CAUSE_VERIFICATION,
+                target_type=QuestionSupplyTargetType.CONCEPT,
+                concept_id=practice_content.concept.id,
+                minimum_required_count=5,
+                preferred_count=3,
+            )
+        )
+    assert exc_rel.value.code == "INVALID_QUESTION_SUPPLY_PREFERRED_COUNT"
+
+
+def test_open_response_inventory_reports_no_auto_evaluable_reason(
+    db_session: Session, practice_content: PracticeContent
+) -> None:
+    _archive_questions(db_session)
+    svc = QuestionBankSufficiencyService(db_session)
+
+    # 5 APPROVED OPEN_RESPONSE questions targeting concept
+    for i in range(5):
+        _make_question(
+            db_session,
+            practice_content,
+            index=i,
+            question_type=QuestionType.OPEN_RESPONSE,
+        )
+
+    req = QuestionSupplyRequirement(
+        subject_id=practice_content.subject.id,
+        use_case=QuestionSupplyUseCase.ADAPTIVE_REPAIR,
+        target_type=QuestionSupplyTargetType.CONCEPT,
+        concept_id=practice_content.concept.id,
+    )
+    report = svc.assess(req)
+
+    assert report.approved_target_count == 5
+    assert report.approved_eligible_count == 0
+    assert report.health == QuestionSupplyHealth.INSUFFICIENT
+    assert report.reason_code == QuestionSupplyReasonCode.NO_AUTO_EVALUABLE_TARGET_QUESTIONS
+
+
+def test_invalid_objective_inventory_reports_no_auto_evaluable_reason(
+    db_session: Session, practice_content: PracticeContent
+) -> None:
+    _archive_questions(db_session)
+    svc = QuestionBankSufficiencyService(db_session)
+
+    # 3 APPROVED MCQ with invalid correct_answer
+    for i in range(3):
+        _make_question(
+            db_session,
+            practice_content,
+            index=i,
+            question_type=QuestionType.MULTIPLE_CHOICE,
+            correct_answer="NOT_AN_OPTION",
+        )
+
+    req = QuestionSupplyRequirement(
+        subject_id=practice_content.subject.id,
+        use_case=QuestionSupplyUseCase.ADAPTIVE_REPAIR,
+        target_type=QuestionSupplyTargetType.CONCEPT,
+        concept_id=practice_content.concept.id,
+    )
+    report = svc.assess(req)
+
+    assert report.approved_target_count == 3
+    assert report.approved_eligible_count == 0
+    assert report.health == QuestionSupplyHealth.INSUFFICIENT
+    assert report.reason_code == QuestionSupplyReasonCode.NO_AUTO_EVALUABLE_TARGET_QUESTIONS
+
+
+def test_sufficient_report_has_no_reason_code(
+    db_session: Session, practice_content: PracticeContent
+) -> None:
+    _archive_questions(db_session)
+    svc = QuestionBankSufficiencyService(db_session)
+
+    for i in range(8):
+        _make_question(db_session, practice_content, index=i, difficulty=0.50)
+
+    req = QuestionSupplyRequirement(
+        subject_id=practice_content.subject.id,
+        use_case=QuestionSupplyUseCase.ADAPTIVE_REPAIR,
+        target_type=QuestionSupplyTargetType.CONCEPT,
+        concept_id=practice_content.concept.id,
+        desired_difficulty=0.50,
+    )
+    report = svc.assess(req)
+
+    assert report.approved_eligible_count == 8
+    assert report.approved_in_band_count == 8
+    assert report.health == QuestionSupplyHealth.SUFFICIENT
+    assert report.reason_code is None
+

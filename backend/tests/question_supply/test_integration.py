@@ -34,6 +34,7 @@ from app.question_supply.models import (
     QuestionSupplyGapObservation,
     QuestionSupplyHealth,
     QuestionSupplyObservationSourceKind,
+    QuestionSupplyReasonCode,
     QuestionSupplySeverity,
     QuestionSupplyStatus,
     QuestionSupplyUseCase,
@@ -367,3 +368,115 @@ def test_shared_auto_evaluation_eligibility_prevents_selection(
     with pytest.raises(ApplicationError) as exc:
         repair_svc.start(student_user, diag_supp.id)
     assert exc.value.code == "ADAPTIVE_REPAIR_NO_CANONICAL_QUESTION"
+
+
+def test_repair_start_invalid_auto_evaluable_bank_records_correct_gap_reason(
+    db_client: TestClient,
+    db_session: Session,
+    practice_content: PracticeContent,
+    student_profile: StudentProfile,
+    practice_bearer,
+) -> None:
+    _archive_questions(db_session)
+    student_user = db_session.get(User, student_profile.user_id)
+    assert student_user is not None
+    headers = practice_bearer(student_user)
+
+    diagnosis, target, _ = _supported_diagnosis(
+        db_session,
+        practice_content,
+        student_profile,
+        question_count=0,
+    )
+    _archive_existing_approved_questions(db_session, practice_content)
+
+    # Populate bank with 4 APPROVED questions, but ALL are OPEN_RESPONSE (not auto-evaluable)
+    for i in range(4):
+        _make_question(
+            db_session,
+            practice_content,
+            index=i + 1,
+            question_type=QuestionType.OPEN_RESPONSE,
+            difficulty=0.45,
+        )
+    db_session.commit()
+
+    # Attempt to start adaptive repair -> fails with 409
+    response = db_client.post(
+        f"/students/me/diagnostics/{diagnosis.id}/repair",
+        headers=headers,
+    )
+    assert response.status_code == 409
+    assert response.json()["error"]["code"] == "ADAPTIVE_REPAIR_NO_CANONICAL_QUESTION"
+
+    # Verify persisted gap has reason_code == NO_AUTO_EVALUABLE_TARGET_QUESTIONS
+    db_session.expire_all()
+    gap = db_session.scalar(
+        select(QuestionSupplyGap).where(
+            QuestionSupplyGap.use_case == QuestionSupplyUseCase.ADAPTIVE_REPAIR,
+            QuestionSupplyGap.concept_id == target.target_concept_id,
+        )
+    )
+    assert gap is not None
+    assert gap.status == QuestionSupplyStatus.OPEN
+    assert gap.severity == QuestionSupplySeverity.CRITICAL
+    assert gap.reason_code == QuestionSupplyReasonCode.NO_AUTO_EVALUABLE_TARGET_QUESTIONS
+    assert gap.approved_eligible_count == 0
+
+    obs = db_session.scalar(
+        select(QuestionSupplyGapObservation).where(
+            QuestionSupplyGapObservation.gap_id == gap.id
+        )
+    )
+    assert obs is not None
+    assert obs.reason_code == QuestionSupplyReasonCode.NO_AUTO_EVALUABLE_TARGET_QUESTIONS
+
+
+def test_verification_invalid_auto_evaluable_bank_records_correct_gap_reason(
+    db_session: Session,
+    practice_content: PracticeContent,
+    student_profile: StudentProfile,
+) -> None:
+    _archive_questions(db_session)
+    # Populate bank with 3 APPROVED questions, but invalid MCQ (options don't match correct_answer)
+    for i in range(3):
+        _make_question(
+            db_session,
+            practice_content,
+            index=i + 1,
+            question_type=QuestionType.MULTIPLE_CHOICE,
+            correct_answer="NON_EXISTENT_LABEL",
+            difficulty=0.35,
+        )
+    db_session.flush()
+
+    diag = _create_diagnosis(
+        db_session,
+        practice_content,
+        student_profile.id,
+        root_concept_id=practice_content.concept.id,
+        candidate_concept_id=practice_content.concept.id,
+    )
+    svc = RootCauseVerificationService(db_session)
+    read = svc.start_verification(student_id=student_profile.id, diagnosis_id=diag.id)
+    assert read.status == RootCauseVerificationStatus.UNAVAILABLE
+
+    gap = db_session.scalar(
+        select(QuestionSupplyGap).where(
+            QuestionSupplyGap.use_case == QuestionSupplyUseCase.ROOT_CAUSE_VERIFICATION,
+            QuestionSupplyGap.concept_id == practice_content.concept.id,
+        )
+    )
+    assert gap is not None
+    assert gap.status == QuestionSupplyStatus.OPEN
+    assert gap.reason_code == QuestionSupplyReasonCode.NO_AUTO_EVALUABLE_TARGET_QUESTIONS
+    assert gap.approved_eligible_count == 0
+
+    obs = db_session.scalar(
+        select(QuestionSupplyGapObservation).where(
+            QuestionSupplyGapObservation.gap_id == gap.id
+        )
+    )
+    assert obs is not None
+    assert obs.reason_code == QuestionSupplyReasonCode.NO_AUTO_EVALUABLE_TARGET_QUESTIONS
+

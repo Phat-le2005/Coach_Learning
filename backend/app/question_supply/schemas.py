@@ -39,6 +39,8 @@ class QuestionBankSufficiencyReport(BaseModel):
 
     approved_eligible_count: int
     approved_in_band_count: int
+    approved_target_count: int | None = None
+    approved_type_eligible_count: int | None = None
 
     fresh_eligible_count: int | None = None
     fresh_in_band_count: int | None = None
@@ -102,6 +104,7 @@ class QuestionSupplyGapRead(BaseModel):
 
     severity: QuestionSupplySeverity
     status: QuestionSupplyStatus
+    reason_code: QuestionSupplyReasonCode
 
     demand_count: int
 
@@ -129,7 +132,7 @@ class ManualAssessmentRequest(BaseModel):
     concept_id: UUID | None = None
     problem_type_id: UUID | None = None
     misconception_definition_id: UUID | None = None
-    desired_difficulty: float | None = None
+    desired_difficulty: float | None = Field(default=None, ge=0.0, le=1.0)
     student_id: UUID | None = None
-    minimum_required_count: int | None = None
-    preferred_count: int | None = None
+    minimum_required_count: int | None = Field(default=None, gt=0)
+    preferred_count: int | None = Field(default=None, gt=0)
