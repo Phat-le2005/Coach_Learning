@@ -98,7 +98,15 @@ class PdfExtractor:
                     )
                 )
 
-            if empty_page_count == 0:
+            if empty_page_count == page_count:
+                return ExtractedPdfResult(
+                    page_count=page_count,
+                    pages=extracted_pages,
+                    extraction_status=QuestionAcquisitionExtractionStatus.FAILED,
+                    warnings=warnings,
+                    error_message="PDF contains no extractable text; OCR is not enabled.",
+                )
+            elif empty_page_count == 0:
                 status = QuestionAcquisitionExtractionStatus.COMPLETE
             else:
                 status = QuestionAcquisitionExtractionStatus.PARTIAL

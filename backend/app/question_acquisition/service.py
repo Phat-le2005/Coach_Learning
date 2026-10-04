@@ -5,6 +5,8 @@ from __future__ import annotations
 from datetime import datetime, timezone
 import hashlib
 import logging
+from pathlib import Path
+import tempfile
 from uuid import UUID
 
 from sqlalchemy import func, select
@@ -29,7 +31,7 @@ from app.question_acquisition.models import (
     QuestionAcquisitionSourceStatus,
     QuestionAcquisitionStrategy,
 )
-from app.question_acquisition.pdf_extraction import PdfExtractor
+from app.question_acquisition.pdf_extraction import ExtractedPdfResult, PdfExtractor
 from app.question_acquisition.planner import QuestionAcquisitionPlanner
 from app.question_acquisition.policy import QuestionAcquisitionPolicy
 from app.question_acquisition.schemas import RegisterSourceRequest
@@ -239,6 +241,68 @@ class QuestionAcquisitionService:
             self.session.commit()
         return req
 
+    def refresh_request_staging_status(
+        self, request_id: UUID
+    ) -> QuestionAcquisitionRequestStatus | None:
+        """Synchronize request staging status based on acquisition strategy and presence of usable sources."""
+        req = self.session.get(QuestionAcquisitionRequest, request_id)
+        if req is None:
+            return None
+
+        if req.status in {
+            QuestionAcquisitionRequestStatus.CANCELLED,
+            QuestionAcquisitionRequestStatus.FAILED,
+        }:
+            return req.status
+
+        now = datetime.now(timezone.utc)
+        if req.strategy == QuestionAcquisitionStrategy.REVIEW_EXISTING_PIPELINE:
+            if req.status != QuestionAcquisitionRequestStatus.READY_FOR_REVIEW:
+                req.status = QuestionAcquisitionRequestStatus.READY_FOR_REVIEW
+                req.updated_at = now
+                self.session.flush()
+            return req.status
+
+        # For MIXED and EXTERNAL_SOURCE_REQUIRED, check for active usable non-blocked sources
+        usable_sources_count = (
+            self.session.scalar(
+                select(func.count(QuestionAcquisitionSource.id))
+                .join(QuestionAcquisitionSource.source_artifacts)
+                .join(QuestionAcquisitionSourceArtifact.artifact)
+                .where(
+                    QuestionAcquisitionSource.request_id == req.id,
+                    QuestionAcquisitionSource.rights_status
+                    != QuestionAcquisitionRightsStatus.BLOCKED,
+                    QuestionAcquisitionSource.status
+                    == QuestionAcquisitionSourceStatus.FETCHED,
+                    QuestionAcquisitionArtifact.extraction_status.in_(
+                        [
+                            QuestionAcquisitionExtractionStatus.COMPLETE,
+                            QuestionAcquisitionExtractionStatus.PARTIAL,
+                        ]
+                    ),
+                )
+            )
+            or 0
+        )
+
+        if usable_sources_count > 0:
+            if req.status != QuestionAcquisitionRequestStatus.READY_FOR_REVIEW:
+                req.status = QuestionAcquisitionRequestStatus.READY_FOR_REVIEW
+                req.updated_at = now
+                self.session.flush()
+        else:
+            if req.status in {
+                QuestionAcquisitionRequestStatus.READY_FOR_REVIEW,
+                QuestionAcquisitionRequestStatus.STAGED,
+                QuestionAcquisitionRequestStatus.ACQUIRING,
+            }:
+                req.status = QuestionAcquisitionRequestStatus.AWAITING_SOURCE
+                req.updated_at = now
+                self.session.flush()
+
+        return req.status
+
     def register_source(
         self,
         request_id: UUID,
@@ -309,11 +373,123 @@ class QuestionAcquisitionService:
             created_at=now,
             updated_at=now,
         )
-        self.session.add(source)
-        self.session.flush()
+
+        try:
+            with self.session.begin_nested():
+                self.session.add(source)
+                self.session.flush()
+        except IntegrityError:
+            if url_hash:
+                winner = self.session.scalar(
+                    select(QuestionAcquisitionSource).where(
+                        QuestionAcquisitionSource.request_id == request_id,
+                        QuestionAcquisitionSource.url_hash == url_hash,
+                    )
+                )
+                if winner is not None:
+                    return winner
+            raise
+
         if commit:
             self.session.commit()
         return source
+
+    def _ingest_artifact_file(
+        self,
+        source: QuestionAcquisitionSource,
+        file_path: Path,
+        sha256: str,
+        file_size_bytes: int,
+        *,
+        mime_type: str = "application/pdf",
+    ) -> QuestionAcquisitionArtifact:
+        """Internal helper to ingest a file into storage, extract pages, link to source, and update status."""
+        now = datetime.now(timezone.utc)
+        artifact = self.session.scalar(
+            select(QuestionAcquisitionArtifact).where(
+                QuestionAcquisitionArtifact.sha256 == sha256
+            )
+        )
+
+        extraction: ExtractedPdfResult | None = None
+        if artifact is None:
+            storage_key = self.storage.compute_storage_key(sha256)
+            self.storage.save_file(storage_key, file_path)
+
+            extraction = PdfExtractor.extract_from_file(file_path)
+
+            try:
+                with self.session.begin_nested():
+                    artifact = QuestionAcquisitionArtifact(
+                        sha256=sha256,
+                        mime_type=mime_type,
+                        file_size_bytes=file_size_bytes,
+                        page_count=(
+                            extraction.page_count
+                            if extraction.page_count and extraction.page_count > 0
+                            else None
+                        ),
+                        storage_key=storage_key,
+                        extraction_status=extraction.extraction_status,
+                        created_at=now,
+                    )
+                    self.session.add(artifact)
+                    self.session.flush()
+
+                    for p in extraction.pages:
+                        page = QuestionAcquisitionPage(
+                            artifact_id=artifact.id,
+                            page_number=p.page_number,
+                            text=p.text,
+                            text_sha256=p.text_sha256,
+                            char_count=p.char_count,
+                            created_at=now,
+                        )
+                        self.session.add(page)
+                    self.session.flush()
+            except IntegrityError:
+                # Concurrent race: another worker ingested exact same sha256 artifact
+                artifact = self.session.scalar(
+                    select(QuestionAcquisitionArtifact).where(
+                        QuestionAcquisitionArtifact.sha256 == sha256
+                    )
+                )
+                if artifact is None:
+                    raise
+
+        # Concurrency-safe link between source and artifact
+        try:
+            with self.session.begin_nested():
+                link = QuestionAcquisitionSourceArtifact(
+                    source_id=source.id,
+                    artifact_id=artifact.id,
+                    created_at=now,
+                )
+                self.session.add(link)
+                self.session.flush()
+        except IntegrityError:
+            pass
+
+        # Update source status and extraction failure markers
+        if artifact.extraction_status == QuestionAcquisitionExtractionStatus.FAILED:
+            source.status = QuestionAcquisitionSourceStatus.FAILED
+            source.failure_code = "QUESTION_ACQUISITION_PDF_EXTRACTION_FAILED"
+            if extraction is not None and extraction.error_message:
+                source.failure_detail = extraction.error_message[:1000]
+            else:
+                source.failure_detail = "PDF contains no extractable text or is invalid."
+        else:
+            source.status = QuestionAcquisitionSourceStatus.FETCHED
+            source.failure_code = None
+            source.failure_detail = None
+            source.fetched_at = now
+
+        source.updated_at = now
+        self.session.flush()
+
+        self.refresh_request_staging_status(source.request_id)
+        self.session.flush()
+        return artifact
 
     def fetch_source(
         self,
@@ -321,7 +497,7 @@ class QuestionAcquisitionService:
         *,
         commit: bool = True,
     ) -> QuestionAcquisitionArtifact:
-        """Safely fetch and ingest external PDF artifact for a registered source."""
+        """Safely fetch and ingest external PDF artifact for a registered source with retry and failure persistence."""
         source = self.session.get(QuestionAcquisitionSource, source_id)
         if source is None:
             raise ApplicationError(
@@ -358,80 +534,61 @@ class QuestionAcquisitionService:
             if artifact is not None:
                 return artifact
 
-        # Perform download outside long DB hold
-        fetch_result = self.fetcher.fetch_pdf(source.normalized_url)
+        # Clear previous failure markers if retrying previously failed source
+        now = datetime.now(timezone.utc)
+        source.status = QuestionAcquisitionSourceStatus.FETCHING
+        source.failure_code = None
+        source.failure_detail = None
+        source.updated_at = now
+        self.session.flush()
 
+        # Perform download outside DB lock; persist failure on exception before re-raising
         try:
-            now = datetime.now(timezone.utc)
-            # Check global deduplication for existing artifact
-            artifact = self.session.scalar(
-                select(QuestionAcquisitionArtifact).where(
-                    QuestionAcquisitionArtifact.sha256 == fetch_result.sha256
-                )
-            )
-            if artifact is None:
-                storage_key = self.storage.compute_storage_key(fetch_result.sha256)
-                self.storage.save_file(storage_key, fetch_result.temp_file_path)
-
-                extraction = PdfExtractor.extract_from_file(fetch_result.temp_file_path)
-
-                artifact = QuestionAcquisitionArtifact(
-                    sha256=fetch_result.sha256,
-                    mime_type=fetch_result.mime_type,
-                    file_size_bytes=fetch_result.file_size_bytes,
-                    page_count=extraction.page_count if extraction.page_count and extraction.page_count > 0 else None,
-                    storage_key=storage_key,
-                    extraction_status=extraction.extraction_status,
-                    created_at=now,
-                )
-                self.session.add(artifact)
-                self.session.flush()
-
-                for p in extraction.pages:
-                    page = QuestionAcquisitionPage(
-                        artifact_id=artifact.id,
-                        page_number=p.page_number,
-                        text=p.text,
-                        text_sha256=p.text_sha256,
-                        char_count=p.char_count,
-                        created_at=now,
-                    )
-                    self.session.add(page)
-
-            # Link source to artifact
-            link = QuestionAcquisitionSourceArtifact(
-                source_id=source.id,
-                artifact_id=artifact.id,
-                created_at=now,
-            )
-            self.session.add(link)
-
-            source.status = QuestionAcquisitionSourceStatus.FETCHED
-            source.fetched_at = now
-            source.updated_at = now
-
-            # Progress request status if artifact is usable
-            req = self.session.get(QuestionAcquisitionRequest, source.request_id)
-            if req is not None and artifact.extraction_status in {
-                QuestionAcquisitionExtractionStatus.COMPLETE,
-                QuestionAcquisitionExtractionStatus.PARTIAL,
-            }:
-                req.status = QuestionAcquisitionRequestStatus.READY_FOR_REVIEW
-                req.updated_at = now
-
+            fetch_result = self.fetcher.fetch_pdf(source.normalized_url)
+        except ApplicationError as exc:
+            now_err = datetime.now(timezone.utc)
+            source.status = QuestionAcquisitionSourceStatus.FAILED
+            source.failure_code = exc.code
+            source.failure_detail = (exc.message or "")[:1000]
+            source.updated_at = now_err
+            self.refresh_request_staging_status(source.request_id)
             self.session.flush()
             if commit:
                 self.session.commit()
-            return artifact
+            raise
+        except Exception as exc:
+            now_err = datetime.now(timezone.utc)
+            source.status = QuestionAcquisitionSourceStatus.FAILED
+            source.failure_code = "QUESTION_ACQUISITION_FETCH_FAILED"
+            source.failure_detail = str(exc)[:1000]
+            source.updated_at = now_err
+            self.refresh_request_staging_status(source.request_id)
+            self.session.flush()
+            if commit:
+                self.session.commit()
+            raise
 
+        try:
+            artifact = self._ingest_artifact_file(
+                source=source,
+                file_path=fetch_result.temp_file_path,
+                sha256=fetch_result.sha256,
+                file_size_bytes=fetch_result.file_size_bytes,
+                mime_type=fetch_result.mime_type,
+            )
+            if commit:
+                self.session.commit()
+            return artifact
         finally:
             fetch_result.temp_file_path.unlink(missing_ok=True)
 
-    def upload_artifact(
+    def upload_artifact_from_file(
         self,
         request_id: UUID,
         *,
-        file_bytes: bytes,
+        file_path: Path,
+        sha256: str,
+        file_size_bytes: int,
         provenance_note: str,
         title: str | None = None,
         publisher: str | None = None,
@@ -439,7 +596,7 @@ class QuestionAcquisitionService:
         registered_by: UUID | None = None,
         commit: bool = True,
     ) -> tuple[QuestionAcquisitionSource, QuestionAcquisitionArtifact]:
-        """Ingest manually uploaded PDF document into the acquisition request."""
+        """Ingest manually uploaded PDF document from a stream-buffered file into the acquisition request."""
         req = self.session.get(QuestionAcquisitionRequest, request_id)
         if req is None:
             raise ApplicationError(
@@ -463,6 +620,55 @@ class QuestionAcquisitionService:
                 "Provenance note is mandatory for manual PDF uploads.",
             )
 
+        if file_size_bytes > self.max_bytes:
+            raise ApplicationError(
+                422,
+                "QUESTION_ACQUISITION_FILE_TOO_LARGE",
+                f"Uploaded file exceeds maximum limit ({self.max_bytes} bytes).",
+            )
+
+        now = datetime.now(timezone.utc)
+        source = QuestionAcquisitionSource(
+            request_id=req.id,
+            source_kind=QuestionAcquisitionSourceKind.MANUAL_PDF_UPLOAD,
+            discovery_method=QuestionAcquisitionDiscoveryMethod.ADMIN_UPLOAD,
+            title=title,
+            publisher=publisher,
+            source_year=source_year,
+            rights_status=QuestionAcquisitionRightsStatus.REVIEW_REQUIRED,
+            status=QuestionAcquisitionSourceStatus.REGISTERED,
+            provenance_note=provenance,
+            registered_by=registered_by,
+            created_at=now,
+            updated_at=now,
+        )
+        self.session.add(source)
+        self.session.flush()
+
+        artifact = self._ingest_artifact_file(
+            source=source,
+            file_path=file_path,
+            sha256=sha256,
+            file_size_bytes=file_size_bytes,
+        )
+
+        if commit:
+            self.session.commit()
+        return source, artifact
+
+    def upload_artifact(
+        self,
+        request_id: UUID,
+        *,
+        file_bytes: bytes,
+        provenance_note: str,
+        title: str | None = None,
+        publisher: str | None = None,
+        source_year: int | None = None,
+        registered_by: UUID | None = None,
+        commit: bool = True,
+    ) -> tuple[QuestionAcquisitionSource, QuestionAcquisitionArtifact]:
+        """Ingest manual upload from raw bytes (delegates to stream-safe file ingestion)."""
         if len(file_bytes) > self.max_bytes:
             raise ApplicationError(
                 422,
@@ -477,83 +683,26 @@ class QuestionAcquisitionService:
                 "Uploaded file is not a valid PDF document.",
             )
 
-        now = datetime.now(timezone.utc)
         sha256 = hashlib.sha256(file_bytes).hexdigest()
+        with tempfile.NamedTemporaryFile(prefix="acq_up_", suffix=".tmp", delete=False) as tf:
+            tf.write(file_bytes)
+            temp_path = Path(tf.name)
 
-        # Check global artifact deduplication
-        artifact = self.session.scalar(
-            select(QuestionAcquisitionArtifact).where(
-                QuestionAcquisitionArtifact.sha256 == sha256
-            )
-        )
-        if artifact is None:
-            storage_key = self.storage.compute_storage_key(sha256)
-            self.storage.save(storage_key, file_bytes)
-
-            extraction = PdfExtractor.extract_from_bytes(file_bytes)
-
-            artifact = QuestionAcquisitionArtifact(
+        try:
+            return self.upload_artifact_from_file(
+                request_id,
+                file_path=temp_path,
                 sha256=sha256,
-                mime_type="application/pdf",
                 file_size_bytes=len(file_bytes),
-                page_count=extraction.page_count if extraction.page_count and extraction.page_count > 0 else None,
-                storage_key=storage_key,
-                extraction_status=extraction.extraction_status,
-                created_at=now,
+                provenance_note=provenance_note,
+                title=title,
+                publisher=publisher,
+                source_year=source_year,
+                registered_by=registered_by,
+                commit=commit,
             )
-            self.session.add(artifact)
-            self.session.flush()
-
-            for p in extraction.pages:
-                page = QuestionAcquisitionPage(
-                    artifact_id=artifact.id,
-                    page_number=p.page_number,
-                    text=p.text,
-                    text_sha256=p.text_sha256,
-                    char_count=p.char_count,
-                    created_at=now,
-                )
-                self.session.add(page)
-
-        # Create source record for manual upload
-        source = QuestionAcquisitionSource(
-            request_id=req.id,
-            source_kind=QuestionAcquisitionSourceKind.MANUAL_PDF_UPLOAD,
-            discovery_method=QuestionAcquisitionDiscoveryMethod.ADMIN_UPLOAD,
-            title=title,
-            publisher=publisher,
-            source_year=source_year,
-            rights_status=QuestionAcquisitionRightsStatus.REVIEW_REQUIRED,
-            status=QuestionAcquisitionSourceStatus.FETCHED,
-            provenance_note=provenance,
-            registered_by=registered_by,
-            created_at=now,
-            updated_at=now,
-            fetched_at=now,
-        )
-        self.session.add(source)
-        self.session.flush()
-
-        # Link source to artifact
-        link = QuestionAcquisitionSourceArtifact(
-            source_id=source.id,
-            artifact_id=artifact.id,
-            created_at=now,
-        )
-        self.session.add(link)
-
-        # Progress request to READY_FOR_REVIEW if extracted successfully
-        if artifact.extraction_status in {
-            QuestionAcquisitionExtractionStatus.COMPLETE,
-            QuestionAcquisitionExtractionStatus.PARTIAL,
-        }:
-            req.status = QuestionAcquisitionRequestStatus.READY_FOR_REVIEW
-            req.updated_at = now
-
-        self.session.flush()
-        if commit:
-            self.session.commit()
-        return source, artifact
+        finally:
+            temp_path.unlink(missing_ok=True)
 
     def block_source(
         self,
@@ -562,7 +711,7 @@ class QuestionAcquisitionService:
         reason: str,
         commit: bool = True,
     ) -> QuestionAcquisitionSource:
-        """Mark a source as blocked with a recorded reason."""
+        """Mark a source as blocked with a recorded reason and demote request if no usable sources remain."""
         source = self.session.get(QuestionAcquisitionSource, source_id)
         if source is None:
             raise ApplicationError(
@@ -577,6 +726,8 @@ class QuestionAcquisitionService:
         source.failure_code = "MANUALLY_BLOCKED"
         source.failure_detail = reason
         source.updated_at = now
+
+        self.refresh_request_staging_status(source.request_id)
 
         self.session.flush()
         if commit:

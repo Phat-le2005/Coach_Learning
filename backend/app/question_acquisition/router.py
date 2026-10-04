@@ -2,8 +2,12 @@
 
 from __future__ import annotations
 
+import hashlib
+from pathlib import Path
+import tempfile
 from typing import Annotated
 from uuid import UUID
+import uuid
 
 from fastapi import APIRouter, Depends, File, Form, Query, Response, UploadFile
 from sqlalchemy.orm import Session
@@ -164,6 +168,57 @@ def fetch_acquisition_source(
     return QuestionAcquisitionArtifactRead.model_validate(artifact)
 
 
+UPLOAD_CHUNK_SIZE = 64 * 1024
+
+
+async def stream_upload_to_temp(
+    upload_file: UploadFile,
+    max_bytes: int,
+) -> tuple[Path, str, int]:
+    """Stream incoming upload file directly to temporary disk file with bounded memory and early validation."""
+    hasher = hashlib.sha256()
+    total_bytes = 0
+    temp_dir = Path(tempfile.gettempdir())
+    temp_path = temp_dir / f"acq_up_{uuid.uuid4().hex}.tmp"
+    first_chunk = True
+
+    try:
+        with open(temp_path, "wb") as f:
+            while True:
+                chunk = await upload_file.read(UPLOAD_CHUNK_SIZE)
+                if not chunk:
+                    break
+                total_bytes += len(chunk)
+                if total_bytes > max_bytes:
+                    raise ApplicationError(
+                        422,
+                        "QUESTION_ACQUISITION_FILE_TOO_LARGE",
+                        f"Uploaded file exceeds maximum limit ({max_bytes} bytes).",
+                    )
+                if first_chunk:
+                    if not chunk.startswith(b"%PDF-"):
+                        raise ApplicationError(
+                            422,
+                            "QUESTION_ACQUISITION_NOT_PDF",
+                            "Uploaded file is not a valid PDF document.",
+                        )
+                    first_chunk = False
+                hasher.update(chunk)
+                f.write(chunk)
+
+        if total_bytes == 0:
+            raise ApplicationError(
+                422,
+                "QUESTION_ACQUISITION_NOT_PDF",
+                "Uploaded file is empty.",
+            )
+
+        return temp_path, hasher.hexdigest(), total_bytes
+    except Exception:
+        temp_path.unlink(missing_ok=True)
+        raise
+
+
 @router.post(
     "/requests/{request_id}/artifacts/upload",
     response_model=QuestionAcquisitionArtifactRead,
@@ -179,21 +234,26 @@ async def upload_acquisition_artifact(
     publisher: str | None = Form(default=None),
     source_year: int | None = Form(default=None),
 ) -> QuestionAcquisitionArtifactRead:
-    """Upload a local PDF file into the acquisition request."""
+    """Upload a local PDF file into the acquisition request with streamed memory safety."""
     response.headers["Cache-Control"] = "no-store"
-    content = await file.read()
     service = QuestionAcquisitionService(session)
-    _, artifact = service.upload_artifact(
-        request_id,
-        file_bytes=content,
-        provenance_note=provenance_note,
-        title=title,
-        publisher=publisher,
-        source_year=source_year,
-        registered_by=current_user.id,
-        commit=True,
-    )
-    return QuestionAcquisitionArtifactRead.model_validate(artifact)
+    temp_path, sha256, file_size = await stream_upload_to_temp(file, service.max_bytes)
+    try:
+        _, artifact = service.upload_artifact_from_file(
+            request_id,
+            file_path=temp_path,
+            sha256=sha256,
+            file_size_bytes=file_size,
+            provenance_note=provenance_note,
+            title=title,
+            publisher=publisher,
+            source_year=source_year,
+            registered_by=current_user.id,
+            commit=True,
+        )
+        return QuestionAcquisitionArtifactRead.model_validate(artifact)
+    finally:
+        temp_path.unlink(missing_ok=True)
 
 
 @router.post("/sources/{source_id}/block", response_model=QuestionAcquisitionSourceRead)

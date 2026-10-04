@@ -7,6 +7,9 @@ from pathlib import Path
 import shutil
 
 
+from uuid import uuid4
+
+
 class QuestionAcquisitionStorage(ABC):
     @abstractmethod
     def save(self, storage_key: str, data: bytes) -> None:
@@ -58,17 +61,29 @@ class LocalQuestionAcquisitionStorage(QuestionAcquisitionStorage):
 
     def save(self, storage_key: str, data: bytes) -> None:
         target = self.path(storage_key)
+        if target.is_file():
+            return
         target.parent.mkdir(parents=True, exist_ok=True)
-        temp = target.with_suffix(target.suffix + ".tmp")
-        temp.write_bytes(data)
-        temp.replace(target)
+        temp = target.parent / f".{target.stem}.{uuid4().hex}.tmp"
+        try:
+            temp.write_bytes(data)
+            temp.replace(target)
+        except Exception:
+            temp.unlink(missing_ok=True)
+            raise
 
     def save_file(self, storage_key: str, src_path: Path) -> None:
         target = self.path(storage_key)
+        if target.is_file():
+            return
         target.parent.mkdir(parents=True, exist_ok=True)
-        temp = target.with_suffix(target.suffix + ".tmp")
-        shutil.copy2(src_path, temp)
-        temp.replace(target)
+        temp = target.parent / f".{target.stem}.{uuid4().hex}.tmp"
+        try:
+            shutil.copy2(src_path, temp)
+            temp.replace(target)
+        except Exception:
+            temp.unlink(missing_ok=True)
+            raise
 
     def read(self, storage_key: str) -> bytes:
         return self.path(storage_key).read_bytes()

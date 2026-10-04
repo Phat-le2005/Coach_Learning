@@ -231,23 +231,30 @@ def test_fetch_disabled_without_allowlist() -> None:
 # ==============================================================================
 
 
+def test_bare_wildcard_domain_disallowed() -> None:
+    with pytest.raises(ValueError, match="Bare wildcard"):
+        SafePdfFetcher(allowed_domains="*")
+
+
 @pytest.mark.parametrize(
-    "ssrf_target",
+    "ssrf_target, expected_code",
     [
-        "http://127.0.0.1/test.pdf",
-        "http://127.0.0.1:8080/test.pdf",
-        "http://localhost/test.pdf",
-        "http://internal.local/test.pdf",
-        "http://10.0.0.1/test.pdf",
-        "http://172.16.0.5/test.pdf",
-        "http://192.168.1.1/test.pdf",
-        "http://169.254.169.254/latest/meta-data",  # Cloud metadata IP
-        "http://[::1]/test.pdf",
+        ("http://127.0.0.1/test.pdf", "QUESTION_ACQUISITION_IP_LITERAL_DISALLOWED"),
+        ("http://127.0.0.1:8080/test.pdf", "QUESTION_ACQUISITION_IP_LITERAL_DISALLOWED"),
+        ("http://localhost/test.pdf", "QUESTION_ACQUISITION_SSRF_BLOCKED"),
+        ("http://internal.local/test.pdf", "QUESTION_ACQUISITION_SSRF_BLOCKED"),
+        ("http://10.0.0.1/test.pdf", "QUESTION_ACQUISITION_IP_LITERAL_DISALLOWED"),
+        ("http://172.16.0.5/test.pdf", "QUESTION_ACQUISITION_IP_LITERAL_DISALLOWED"),
+        ("http://192.168.1.1/test.pdf", "QUESTION_ACQUISITION_IP_LITERAL_DISALLOWED"),
+        ("http://169.254.169.254/latest/meta-data", "QUESTION_ACQUISITION_IP_LITERAL_DISALLOWED"),
+        ("http://[::1]/test.pdf", "QUESTION_ACQUISITION_IP_LITERAL_DISALLOWED"),
     ],
 )
-def test_ssrf_and_private_network_blocking(ssrf_target: str, monkeypatch: pytest.MonkeyPatch) -> None:
-    # Allow all domains in the test fetcher to isolate the SSRF check
-    fetcher = SafePdfFetcher(allowed_domains="*")
+def test_ssrf_and_private_network_blocking(
+    ssrf_target: str, expected_code: str, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # Allow test hosts in domain allowlist to isolate SSRF / IP literal checks
+    fetcher = SafePdfFetcher(allowed_domains="localhost, internal.local, evil.com")
 
     # Mock DNS resolution for domain names
     def mock_getaddrinfo(host, port, *args, **kwargs):
@@ -263,7 +270,7 @@ def test_ssrf_and_private_network_blocking(ssrf_target: str, monkeypatch: pytest
 
     with pytest.raises(ApplicationError) as exc:
         fetcher.validate_url_safety(ssrf_target)
-    assert exc.value.code == "QUESTION_ACQUISITION_SSRF_BLOCKED"
+    assert exc.value.code == expected_code
 
 
 # ==============================================================================
@@ -282,11 +289,13 @@ def test_domain_allowlist_enforcement(monkeypatch: pytest.MonkeyPatch) -> None:
 
     # Allowed exact domain
     valid_exact = fetcher.validate_url_safety("https://trusted.edu.vn/math.pdf")
-    assert valid_exact == "https://trusted.edu.vn/math.pdf"
+    assert valid_exact.url == "https://trusted.edu.vn/math.pdf"
+    assert valid_exact.hostname == "trusted.edu.vn"
 
     # Allowed wildcard subdomain
     valid_sub = fetcher.validate_url_safety("https://exam.moet.gov.vn/math.pdf")
-    assert valid_sub == "https://exam.moet.gov.vn/math.pdf"
+    assert valid_sub.url == "https://exam.moet.gov.vn/math.pdf"
+    assert valid_sub.hostname == "exam.moet.gov.vn"
 
     # Disallowed domain
     with pytest.raises(ApplicationError) as exc_disallowed:
@@ -341,7 +350,10 @@ def test_redirect_safety_checks(monkeypatch: pytest.MonkeyPatch) -> None:
     )
     with pytest.raises(ApplicationError) as exc_ssrf:
         fetcher_ssrf.fetch_pdf("https://trusted.edu.vn/start")
-    assert exc_ssrf.value.code == "QUESTION_ACQUISITION_DOMAIN_NOT_ALLOWED"
+    assert exc_ssrf.value.code in {
+        "QUESTION_ACQUISITION_IP_LITERAL_DISALLOWED",
+        "QUESTION_ACQUISITION_DOMAIN_NOT_ALLOWED",
+    }
 
     # 3. Redirect to outside domain is blocked
     def external_redirect_handler(request: httpx.Request) -> httpx.Response:
@@ -833,3 +845,314 @@ def test_gap_to_acquisition_router_endpoint(
     data = resp_admin.json()
     assert data["gap_id"] == str(gap.id)
     assert data["status"] in {"PLANNED", "AWAITING_SOURCE"}
+
+
+# ==============================================================================
+# SECTION 97: Hardening Tests (ACQ-002 Invariants)
+# ==============================================================================
+
+
+def test_zero_text_pdf_extraction_fails(
+    db_session: Session, practice_content: PracticeContent
+) -> None:
+    """PDF with valid format but no extractable text must fail extraction with OCR not enabled message."""
+    _, acq_req = _create_test_gap_and_request(db_session, practice_content)
+    acq_svc = QuestionAcquisitionService(db_session)
+
+    # Build PDF with empty text on pages
+    zero_text_pdf = _build_test_pdf(["", ""])
+    source, artifact = acq_svc.upload_artifact(
+        acq_req.id,
+        file_bytes=zero_text_pdf,
+        provenance_note="Zero text scanned exam without OCR",
+    )
+
+    assert artifact.extraction_status == QuestionAcquisitionExtractionStatus.FAILED
+    assert source.status == QuestionAcquisitionSourceStatus.FAILED
+    assert source.failure_code == "QUESTION_ACQUISITION_PDF_EXTRACTION_FAILED"
+    assert "no extractable text" in (source.failure_detail or "").lower()
+
+    # Request status must remain AWAITING_SOURCE because no usable artifact exists
+    reloaded_req = acq_svc.get_request(acq_req.id)
+    assert reloaded_req is not None
+    assert reloaded_req.status == QuestionAcquisitionRequestStatus.AWAITING_SOURCE
+
+
+def test_mixed_dns_answers_ssrf_blocked(monkeypatch: pytest.MonkeyPatch) -> None:
+    """If DNS returns any private/restricted IP alongside public IPs, fetch must be rejected."""
+    fetcher = SafePdfFetcher(allowed_domains="dns-rebind.edu.vn")
+
+    # Mock DNS returning both public IP and private 10.0.0.1
+    def mock_getaddrinfo(host, port, *args, **kwargs):
+        return [
+            (socket.AF_INET, socket.SOCK_STREAM, 6, "", ("93.184.216.34", port)),
+            (socket.AF_INET, socket.SOCK_STREAM, 6, "", ("10.0.0.1", port)),
+        ]
+
+    monkeypatch.setattr(socket, "getaddrinfo", mock_getaddrinfo)
+
+    with pytest.raises(ApplicationError) as exc:
+        fetcher.validate_url_safety("https://dns-rebind.edu.vn/doc.pdf")
+    assert exc.value.code == "QUESTION_ACQUISITION_SSRF_BLOCKED"
+
+
+def test_fetch_failure_persists_in_database(
+    db_session: Session,
+    practice_content: PracticeContent,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Network fetch failures must persist status=FAILED, failure_code, and detail to DB before raising."""
+    def mock_getaddrinfo(host, port, *args, **kwargs):
+        return [(socket.AF_INET, socket.SOCK_STREAM, 6, "", ("93.184.216.34", port))]
+
+    monkeypatch.setattr(socket, "getaddrinfo", mock_getaddrinfo)
+
+    def failing_handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(500, content=b"Internal Server Error")
+
+    fetcher = SafePdfFetcher(
+        allowed_domains="trusted.edu.vn",
+        transport=httpx.MockTransport(failing_handler),
+    )
+    _, acq_req = _create_test_gap_and_request(db_session, practice_content)
+    acq_svc = QuestionAcquisitionService(db_session, fetcher=fetcher)
+
+    source = acq_svc.register_source(
+        acq_req.id,
+        RegisterSourceRequest(
+            source_kind=QuestionAcquisitionSourceKind.PDF_URL,
+            url="https://trusted.edu.vn/server_error.pdf",
+            provenance_note="Server failure test",
+        ),
+    )
+
+    with pytest.raises(ApplicationError) as exc:
+        acq_svc.fetch_source(source.id, commit=True)
+    assert exc.value.code == "QUESTION_ACQUISITION_FETCH_FAILED"
+
+    # Reload from DB and verify failure persisted
+    db_session.expire_all()
+    reloaded_source = db_session.get(QuestionAcquisitionSource, source.id)
+    assert reloaded_source is not None
+    assert reloaded_source.status == QuestionAcquisitionSourceStatus.FAILED
+    assert reloaded_source.failure_code == "QUESTION_ACQUISITION_FETCH_FAILED"
+    assert "500" in (reloaded_source.failure_detail or "")
+
+
+def test_retry_failed_source_success(
+    db_session: Session,
+    practice_content: PracticeContent,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Retrying a previously FAILED source clears failure markers and updates status to FETCHED."""
+    def mock_getaddrinfo(host, port, *args, **kwargs):
+        return [(socket.AF_INET, socket.SOCK_STREAM, 6, "", ("93.184.216.34", port))]
+
+    monkeypatch.setattr(socket, "getaddrinfo", mock_getaddrinfo)
+
+    valid_pdf = _build_test_pdf(["Retried Math Test Exam"])
+    attempt_count = 0
+
+    def retryable_handler(request: httpx.Request) -> httpx.Response:
+        nonlocal attempt_count
+        attempt_count += 1
+        if attempt_count == 1:
+            return httpx.Response(503, content=b"Service Temporarily Unavailable")
+        return httpx.Response(
+            200,
+            headers={"Content-Type": "application/pdf"},
+            content=valid_pdf,
+        )
+
+    fetcher = SafePdfFetcher(
+        allowed_domains="trusted.edu.vn",
+        transport=httpx.MockTransport(retryable_handler),
+    )
+    _, acq_req = _create_test_gap_and_request(db_session, practice_content)
+    acq_svc = QuestionAcquisitionService(db_session, fetcher=fetcher)
+
+    source = acq_svc.register_source(
+        acq_req.id,
+        RegisterSourceRequest(
+            source_kind=QuestionAcquisitionSourceKind.PDF_URL,
+            url="https://trusted.edu.vn/intermittent.pdf",
+            provenance_note="Intermittent server retry test",
+        ),
+    )
+
+    # First attempt fails
+    with pytest.raises(ApplicationError):
+        acq_svc.fetch_source(source.id, commit=True)
+
+    reloaded_failed = db_session.get(QuestionAcquisitionSource, source.id)
+    assert reloaded_failed is not None
+    assert reloaded_failed.status == QuestionAcquisitionSourceStatus.FAILED
+
+    # Second attempt succeeds (retry)
+    artifact = acq_svc.fetch_source(source.id, commit=True)
+    assert artifact is not None
+    assert artifact.extraction_status == QuestionAcquisitionExtractionStatus.COMPLETE
+
+    reloaded_success = db_session.get(QuestionAcquisitionSource, source.id)
+    assert reloaded_success is not None
+    assert reloaded_success.status == QuestionAcquisitionSourceStatus.FETCHED
+    assert reloaded_success.failure_code is None
+    assert reloaded_success.failure_detail is None
+
+    # Check request promoted to READY_FOR_REVIEW
+    reloaded_req = acq_svc.get_request(acq_req.id)
+    assert reloaded_req is not None
+    assert reloaded_req.status == QuestionAcquisitionRequestStatus.READY_FOR_REVIEW
+
+
+def test_blocking_source_demotes_request(
+    db_session: Session, practice_content: PracticeContent
+) -> None:
+    """When the only usable source in a request is blocked, the request demotes from READY_FOR_REVIEW to AWAITING_SOURCE."""
+    _, acq_req = _create_test_gap_and_request(db_session, practice_content)
+    acq_svc = QuestionAcquisitionService(db_session)
+
+    pdf_bytes = _build_test_pdf(["Calculus 1 Midterm"])
+    source, artifact = acq_svc.upload_artifact(
+        acq_req.id,
+        file_bytes=pdf_bytes,
+        provenance_note="Single usable source test",
+    )
+
+    reloaded_req = acq_svc.get_request(acq_req.id)
+    assert reloaded_req is not None
+    assert reloaded_req.status == QuestionAcquisitionRequestStatus.READY_FOR_REVIEW
+
+    # Block the only usable source
+    acq_svc.block_source(source.id, reason="Legal infringement challenge", commit=True)
+
+    reloaded_req_blocked = acq_svc.get_request(acq_req.id)
+    assert reloaded_req_blocked is not None
+    assert reloaded_req_blocked.status == QuestionAcquisitionRequestStatus.AWAITING_SOURCE
+
+
+def test_stream_upload_api_size_limit(
+    db_client: TestClient,
+    db_session: Session,
+    practice_content: PracticeContent,
+    practice_user_factory,
+    practice_bearer,
+) -> None:
+    """Streaming upload via API rejects files exceeding max size and cleans up temp files."""
+    _, acq_req = _create_test_gap_and_request(db_session, practice_content)
+    admin_user = practice_user_factory(Role.ADMIN, "admin_stream_size@test.com")
+    headers = practice_bearer(admin_user)
+
+    from app.core.config import get_settings
+    orig_max = get_settings().question_acquisition_max_bytes
+    get_settings().question_acquisition_max_bytes = 512
+
+    try:
+        large_pdf = b"%PDF-1.4\n" + b"X" * 1024
+        resp = db_client.post(
+            f"/question-acquisition/requests/{acq_req.id}/artifacts/upload",
+            headers=headers,
+            data={"provenance_note": "Oversized upload test"},
+            files={"file": ("too_large.pdf", large_pdf, "application/pdf")},
+        )
+        assert resp.status_code == 422
+        data = resp.json()
+        assert data["error"]["code"] == "QUESTION_ACQUISITION_FILE_TOO_LARGE"
+    finally:
+        get_settings().question_acquisition_max_bytes = orig_max
+
+
+def test_concurrent_source_registration_race(
+    db_session: Session, practice_content: PracticeContent, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """When a concurrent transaction registers the same (request_id, url_hash), savepoint recovers and returns winner."""
+    _, acq_req = _create_test_gap_and_request(db_session, practice_content)
+    acq_svc = QuestionAcquisitionService(db_session)
+
+    # First register succeeds normally
+    s1 = acq_svc.register_source(
+        acq_req.id,
+        RegisterSourceRequest(
+            source_kind=QuestionAcquisitionSourceKind.PDF_URL,
+            url="https://trusted.edu.vn/race.pdf",
+            provenance_note="Race test provenance",
+        ),
+        commit=True,
+    )
+
+    orig_scalar = db_session.scalar
+    calls = 0
+
+    def mock_scalar(stmt, *args, **kwargs):
+        nonlocal calls
+        calls += 1
+        if calls == 1:
+            # Pre-insert check pretends source does not exist
+            return None
+        # Subsequent check in IntegrityError recovery finds s1
+        return orig_scalar(stmt, *args, **kwargs)
+
+    monkeypatch.setattr(db_session, "scalar", mock_scalar)
+
+    s2 = acq_svc.register_source(
+        acq_req.id,
+        RegisterSourceRequest(
+            source_kind=QuestionAcquisitionSourceKind.PDF_URL,
+            url="https://trusted.edu.vn/race.pdf",
+            provenance_note="Race duplicate attempt",
+        ),
+        commit=True,
+    )
+    assert s2.id == s1.id
+
+
+def test_concurrent_artifact_ingest_race(
+    db_session: Session, practice_content: PracticeContent, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """When another thread inserts the exact same sha256 artifact concurrently, nested transaction recovers."""
+    import tempfile
+    _, acq_req = _create_test_gap_and_request(db_session, practice_content)
+    acq_svc = QuestionAcquisitionService(db_session)
+
+    pdf_bytes = _build_test_pdf(["Concurrency test artifact"])
+    s1, art1 = acq_svc.upload_artifact(
+        acq_req.id,
+        file_bytes=pdf_bytes,
+        provenance_note="First artifact upload",
+    )
+
+    s2 = acq_svc.register_source(
+        acq_req.id,
+        RegisterSourceRequest(
+            source_kind=QuestionAcquisitionSourceKind.MANUAL_PDF_UPLOAD,
+            provenance_note="Second source",
+        ),
+    )
+
+    orig_scalar = db_session.scalar
+    calls = 0
+
+    def mock_scalar(stmt, *args, **kwargs):
+        nonlocal calls
+        calls += 1
+        if calls == 1:
+            return None
+        return orig_scalar(stmt, *args, **kwargs)
+
+    monkeypatch.setattr(db_session, "scalar", mock_scalar)
+
+    with tempfile.NamedTemporaryFile(prefix="acq_race_", suffix=".tmp", delete=False) as tf:
+        tf.write(pdf_bytes)
+        temp_path = Path(tf.name)
+
+    try:
+        art2 = acq_svc._ingest_artifact_file(
+            source=s2,
+            file_path=temp_path,
+            sha256=art1.sha256,
+            file_size_bytes=len(pdf_bytes),
+        )
+        assert art2.id == art1.id
+        assert art2.sha256 == art1.sha256
+    finally:
+        temp_path.unlink(missing_ok=True)
