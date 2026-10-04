@@ -137,6 +137,23 @@ class QuestionBankSufficiencyService:
                     "QUESTION_SUPPLY_MISCONCEPTION_CONCEPT_MISMATCH",
                     "Target concept_id does not match misconception definition concept.",
                 )
+            if requirement.problem_type_id is not None:
+                pt_subject_id = self.session.scalar(
+                    select(Chapter.subject_id)
+                    .join(Topic, Topic.chapter_id == Chapter.id)
+                    .join(ProblemType, ProblemType.topic_id == Topic.id)
+                    .where(ProblemType.id == requirement.problem_type_id)
+                )
+                if pt_subject_id is None:
+                    raise ApplicationError(
+                        404, "PROBLEM_TYPE_NOT_FOUND", "ProblemType was not found."
+                    )
+                if pt_subject_id != requirement.subject_id:
+                    raise ApplicationError(
+                        422,
+                        "QUESTION_SUPPLY_PROBLEM_TYPE_SUBJECT_MISMATCH",
+                        "Target problem type does not belong to the requested subject.",
+                    )
 
         # 2. Difficulty validation
         if requirement.desired_difficulty is not None:
@@ -306,13 +323,6 @@ class QuestionBankSufficiencyService:
             if not require_auto_eval or is_deterministically_auto_evaluable(q)
         ]
 
-        eligible_pipeline = [
-            q
-            for q in pipeline_target_candidates
-            if (allowed_types is None or q.question_type in allowed_types)
-            and (not require_auto_eval or is_deterministically_auto_evaluable(q))
-        ]
-
         approved_in_band = [
             q
             for q in eligible_approved
@@ -321,7 +331,18 @@ class QuestionBankSufficiencyService:
 
         approved_eligible_count = len(eligible_approved)
         approved_in_band_count = len(approved_in_band)
-        pipeline_candidate_count = len(eligible_pipeline)
+
+        # Pipeline candidate count: raw DRAFT/REVIEW candidates matching structural & target criteria
+        pipeline_candidate_count = len(pipeline_target_candidates)
+
+        # Pipeline runtime eligible count: subset satisfying runtime allowed types and auto-evaluable
+        eligible_pipeline = [
+            q
+            for q in pipeline_target_candidates
+            if (allowed_types is None or q.question_type in allowed_types)
+            and (not require_auto_eval or is_deterministically_auto_evaluable(q))
+        ]
+        pipeline_runtime_eligible_count = len(eligible_pipeline)
 
         fresh_eligible_count: int | None = None
         fresh_in_band_count: int | None = None
@@ -407,6 +428,7 @@ class QuestionBankSufficiencyService:
             fresh_in_band_count=fresh_in_band_count,
             excluded_exposure_count=excluded_exposure_count,
             pipeline_candidate_count=pipeline_candidate_count,
+            pipeline_runtime_eligible_count=pipeline_runtime_eligible_count,
             health=health,
             severity=severity,
             reason_code=reason_code,
@@ -530,6 +552,7 @@ class QuestionSupplyGapService:
                         approved_eligible_count=report.approved_eligible_count,
                         approved_in_band_count=report.approved_in_band_count,
                         pipeline_candidate_count=report.pipeline_candidate_count,
+                        pipeline_runtime_eligible_count=report.pipeline_runtime_eligible_count,
                         severity=report.severity,
                         status=QuestionSupplyStatus.OPEN,
                         reason_code=report.reason_code or QuestionSupplyReasonCode.INSUFFICIENT_APPROVED_TARGET_COUNT,
@@ -554,6 +577,7 @@ class QuestionSupplyGapService:
             gap.approved_eligible_count = report.approved_eligible_count
             gap.approved_in_band_count = report.approved_in_band_count
             gap.pipeline_candidate_count = report.pipeline_candidate_count
+            gap.pipeline_runtime_eligible_count = report.pipeline_runtime_eligible_count
             gap.severity = report.severity
             if report.reason_code:
                 gap.reason_code = report.reason_code
@@ -640,6 +664,7 @@ class QuestionSupplyGapService:
         gap.approved_eligible_count = report.approved_eligible_count
         gap.approved_in_band_count = report.approved_in_band_count
         gap.pipeline_candidate_count = report.pipeline_candidate_count
+        gap.pipeline_runtime_eligible_count = report.pipeline_runtime_eligible_count
         gap.severity = report.severity
         gap.last_assessed_at = now
         if report.reason_code:

@@ -31,7 +31,7 @@ from app.question_supply.service import (
     QuestionSupplyGapService,
     QuestionSupplyRequirement,
 )
-from app.questions.models import Question, QuestionStatus
+from app.questions.models import Question, QuestionStatus, QuestionType
 from app.students.models import StudentProfile
 from app.users.models import Role, User
 from tests.practice.conftest import (
@@ -625,4 +625,74 @@ def test_demand_count_matches_unique_observations(
         )
     )
     assert len(observations) == 3
+
+
+def test_gap_reassessment_refreshes_pipeline_runtime_eligible_count(
+    db_session: Session, practice_content: PracticeContent
+) -> None:
+    _archive_questions(db_session)
+    svc = QuestionSupplyGapService(db_session)
+
+    # 1 valid MCQ REVIEW, 1 invalid MCQ REVIEW
+    _make_question(
+        db_session,
+        practice_content,
+        index=1,
+        status=QuestionStatus.REVIEW,
+        question_type=QuestionType.MULTIPLE_CHOICE,
+        correct_answer="A",
+    )
+    q2 = _make_question(
+        db_session,
+        practice_content,
+        index=2,
+        status=QuestionStatus.REVIEW,
+        question_type=QuestionType.MULTIPLE_CHOICE,
+        correct_answer="INVALID_LABEL",
+    )
+
+    req = QuestionSupplyRequirement(
+        subject_id=practice_content.subject.id,
+        use_case=QuestionSupplyUseCase.ROOT_CAUSE_VERIFICATION,
+        target_type=QuestionSupplyTargetType.CONCEPT,
+        concept_id=practice_content.concept.id,
+    )
+
+    _, gap = svc.assess_and_record(
+        requirement=req,
+        source_kind=QuestionSupplyObservationSourceKind.ROOT_CAUSE_VERIFICATION,
+        source_entity_id=uuid4(),
+    )
+    assert gap is not None
+    assert gap.pipeline_candidate_count == 2
+    assert gap.pipeline_runtime_eligible_count == 1
+    assert gap.pipeline_runtime_eligible_count <= gap.pipeline_candidate_count
+
+    # Fix question 2 to be runtime-eligible
+    q2.correct_answer = "A"
+    # And add a 3rd DRAFT valid MCQ
+    _make_question(
+        db_session,
+        practice_content,
+        index=3,
+        status=QuestionStatus.DRAFT,
+        question_type=QuestionType.MULTIPLE_CHOICE,
+        correct_answer="A",
+    )
+    db_session.flush()
+
+    reassessed = svc.reassess_gap(gap.id, commit=False)
+    assert reassessed.id == gap.id
+    assert reassessed.pipeline_candidate_count == 3
+    assert reassessed.pipeline_runtime_eligible_count == 3
+    assert reassessed.pipeline_runtime_eligible_count <= reassessed.pipeline_candidate_count
+
+    # Verify DB check constraint enforces pipeline_runtime_eligible_count <= pipeline_candidate_count
+    import pytest
+    from sqlalchemy.exc import IntegrityError
+    reassessed.pipeline_runtime_eligible_count = 999
+    with pytest.raises(IntegrityError):
+        db_session.flush()
+    db_session.rollback()
+
 

@@ -47,6 +47,7 @@ class QuestionBankSufficiencyReport(BaseModel):
     excluded_exposure_count: int = 0
 
     pipeline_candidate_count: int = 0
+    pipeline_runtime_eligible_count: int = 0
 
     health: QuestionSupplyHealth
     severity: QuestionSupplySeverity
@@ -101,6 +102,7 @@ class QuestionSupplyGapRead(BaseModel):
     approved_eligible_count: int
     approved_in_band_count: int
     pipeline_candidate_count: int
+    pipeline_runtime_eligible_count: int = 0
 
     severity: QuestionSupplySeverity
     status: QuestionSupplyStatus

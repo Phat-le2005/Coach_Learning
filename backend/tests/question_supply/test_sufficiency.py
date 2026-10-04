@@ -29,6 +29,7 @@ from app.questions.models import (
     QuestionConcept,
     QuestionGroup,
     QuestionGroupItem,
+    QuestionGroupScoringPolicy,
     QuestionGroupType,
     QuestionLearningOutcome,
     QuestionOption,
@@ -161,6 +162,7 @@ def test_draft_and_review_do_not_satisfy_production_supply(
     report = svc.assess(req)
     assert report.approved_eligible_count == 0
     assert report.pipeline_candidate_count == 2
+    assert report.pipeline_runtime_eligible_count == 2
     assert report.health == QuestionSupplyHealth.INSUFFICIENT
     assert report.reason_code == QuestionSupplyReasonCode.NO_APPROVED_TARGET_QUESTIONS
 
@@ -803,4 +805,383 @@ def test_sufficient_report_has_no_reason_code(
     assert report.approved_in_band_count == 8
     assert report.health == QuestionSupplyHealth.SUFFICIENT
     assert report.reason_code is None
+
+
+def test_pipeline_candidate_count_includes_non_runtime_ready_review_questions(
+    db_session: Session, practice_content: PracticeContent
+) -> None:
+    _archive_questions(db_session)
+    svc = QuestionBankSufficiencyService(db_session)
+
+    # 3 REVIEW questions with invalid correct_answer (not auto-evaluable)
+    for i in range(3):
+        _make_question(
+            db_session,
+            practice_content,
+            index=i,
+            status=QuestionStatus.REVIEW,
+            question_type=QuestionType.MULTIPLE_CHOICE,
+            correct_answer="NOT_A_VALID_OPTION",
+        )
+
+    # 2 REVIEW questions that are OPEN_RESPONSE (not allowed for ROOT_CAUSE_VERIFICATION)
+    for i in range(3, 5):
+        _make_question(
+            db_session,
+            practice_content,
+            index=i,
+            status=QuestionStatus.REVIEW,
+            question_type=QuestionType.OPEN_RESPONSE,
+            correct_answer=None,
+        )
+
+    req = QuestionSupplyRequirement(
+        subject_id=practice_content.subject.id,
+        use_case=QuestionSupplyUseCase.ROOT_CAUSE_VERIFICATION,
+        target_type=QuestionSupplyTargetType.CONCEPT,
+        concept_id=practice_content.concept.id,
+    )
+    report = svc.assess(req)
+
+    assert report.pipeline_candidate_count == 5
+    assert report.pipeline_runtime_eligible_count == 0
+    assert report.approved_eligible_count == 0
+    assert report.health == QuestionSupplyHealth.INSUFFICIENT
+
+
+def test_mixed_pipeline_candidate_and_runtime_counts(
+    db_session: Session, practice_content: PracticeContent
+) -> None:
+    _archive_questions(db_session)
+    svc = QuestionBankSufficiencyService(db_session)
+
+    # 3 runtime-eligible REVIEW MCQ questions
+    for i in range(3):
+        _make_question(
+            db_session,
+            practice_content,
+            index=i,
+            status=QuestionStatus.REVIEW,
+            question_type=QuestionType.MULTIPLE_CHOICE,
+            correct_answer="A",
+        )
+
+    # 2 non-runtime-eligible REVIEW questions
+    for i in range(3, 5):
+        _make_question(
+            db_session,
+            practice_content,
+            index=i,
+            status=QuestionStatus.REVIEW,
+            question_type=QuestionType.MULTIPLE_CHOICE,
+            correct_answer="INVALID_LABEL",
+        )
+
+    req = QuestionSupplyRequirement(
+        subject_id=practice_content.subject.id,
+        use_case=QuestionSupplyUseCase.ROOT_CAUSE_VERIFICATION,
+        target_type=QuestionSupplyTargetType.CONCEPT,
+        concept_id=practice_content.concept.id,
+    )
+    report = svc.assess(req)
+
+    assert report.pipeline_candidate_count == 5
+    assert report.pipeline_runtime_eligible_count == 3
+    assert report.approved_eligible_count == 0
+
+
+def test_draft_and_review_both_count_in_pipeline(
+    db_session: Session, practice_content: PracticeContent
+) -> None:
+    _archive_questions(db_session)
+    svc = QuestionBankSufficiencyService(db_session)
+
+    # 2 DRAFT valid MCQ
+    for i in range(2):
+        _make_question(
+            db_session,
+            practice_content,
+            index=i,
+            status=QuestionStatus.DRAFT,
+            question_type=QuestionType.MULTIPLE_CHOICE,
+            correct_answer="A",
+        )
+
+    # 3 REVIEW valid MCQ
+    for i in range(2, 5):
+        _make_question(
+            db_session,
+            practice_content,
+            index=i,
+            status=QuestionStatus.REVIEW,
+            question_type=QuestionType.MULTIPLE_CHOICE,
+            correct_answer="A",
+        )
+
+    req = QuestionSupplyRequirement(
+        subject_id=practice_content.subject.id,
+        use_case=QuestionSupplyUseCase.ROOT_CAUSE_VERIFICATION,
+        target_type=QuestionSupplyTargetType.CONCEPT,
+        concept_id=practice_content.concept.id,
+    )
+    report = svc.assess(req)
+
+    assert report.pipeline_candidate_count == 5
+    assert report.pipeline_runtime_eligible_count == 5
+    assert report.approved_eligible_count == 0
+
+
+def test_pipeline_wrong_target_excluded(
+    db_session: Session, practice_content: PracticeContent
+) -> None:
+    _archive_questions(db_session)
+    svc = QuestionBankSufficiencyService(db_session)
+
+    other_concept = Concept(
+        subject_id=practice_content.subject.id,
+        code="OTHER_PIPELINE_CONCEPT",
+        name="Other Pipeline Concept",
+    )
+    db_session.add(other_concept)
+    db_session.flush()
+
+    # DRAFT and REVIEW on different concept
+    _make_question(
+        db_session,
+        practice_content,
+        index=1,
+        status=QuestionStatus.REVIEW,
+        concept_id=other_concept.id,
+    )
+    _make_question(
+        db_session,
+        practice_content,
+        index=2,
+        status=QuestionStatus.DRAFT,
+        concept_id=other_concept.id,
+    )
+
+    req = QuestionSupplyRequirement(
+        subject_id=practice_content.subject.id,
+        use_case=QuestionSupplyUseCase.ROOT_CAUSE_VERIFICATION,
+        target_type=QuestionSupplyTargetType.CONCEPT,
+        concept_id=practice_content.concept.id,
+    )
+    report = svc.assess(req)
+
+    assert report.pipeline_candidate_count == 0
+    assert report.pipeline_runtime_eligible_count == 0
+
+
+def test_pipeline_missing_taxonomy_excluded(
+    db_session: Session, practice_content: PracticeContent
+) -> None:
+    _archive_questions(db_session)
+    svc = QuestionBankSufficiencyService(db_session)
+
+    # Missing concept link
+    _make_question(
+        db_session,
+        practice_content,
+        index=1,
+        status=QuestionStatus.REVIEW,
+        has_concept=False,
+    )
+    # Missing problem type link
+    _make_question(
+        db_session,
+        practice_content,
+        index=2,
+        status=QuestionStatus.REVIEW,
+        has_problem_type=False,
+    )
+    # Missing LO link
+    _make_question(
+        db_session,
+        practice_content,
+        index=3,
+        status=QuestionStatus.REVIEW,
+        has_lo=False,
+    )
+    # Inside question group (not standalone)
+    grp = QuestionGroup(
+        subject_id=practice_content.subject.id,
+        content="Pipeline Group stem",
+        difficulty=0.5,
+        source_type="TEST",
+        exam_weight=0.5,
+        created_by=practice_content.mcq.created_by,
+        group_type=QuestionGroupType.TRUE_FALSE_FOUR,
+        scoring_policy=QuestionGroupScoringPolicy.MOET_2025_TRUE_FALSE,
+    )
+    db_session.add(grp)
+    db_session.flush()
+    _make_question(
+        db_session,
+        practice_content,
+        index=4,
+        status=QuestionStatus.REVIEW,
+        group_id=grp.id,
+    )
+
+    req = QuestionSupplyRequirement(
+        subject_id=practice_content.subject.id,
+        use_case=QuestionSupplyUseCase.ROOT_CAUSE_VERIFICATION,
+        target_type=QuestionSupplyTargetType.CONCEPT,
+        concept_id=practice_content.concept.id,
+    )
+    report = svc.assess(req)
+
+    assert report.pipeline_candidate_count == 0
+    assert report.pipeline_runtime_eligible_count == 0
+
+
+def test_pipeline_does_not_affect_health_or_is_startable(
+    db_session: Session, practice_content: PracticeContent
+) -> None:
+    _archive_questions(db_session)
+    svc = QuestionBankSufficiencyService(db_session)
+
+    # 20 REVIEW candidates that are all valid and runtime-eligible
+    for i in range(20):
+        _make_question(
+            db_session,
+            practice_content,
+            index=i,
+            status=QuestionStatus.REVIEW,
+            difficulty=0.50,
+        )
+
+    req = QuestionSupplyRequirement(
+        subject_id=practice_content.subject.id,
+        use_case=QuestionSupplyUseCase.ADAPTIVE_REPAIR,
+        target_type=QuestionSupplyTargetType.CONCEPT,
+        concept_id=practice_content.concept.id,
+        desired_difficulty=0.50,
+    )
+    report = svc.assess(req)
+
+    # Pipeline candidates NEVER satisfy production health or is_startable
+    assert report.pipeline_candidate_count == 20
+    assert report.pipeline_runtime_eligible_count == 20
+    assert report.approved_eligible_count == 0
+    assert report.approved_in_band_count == 0
+    assert report.health == QuestionSupplyHealth.INSUFFICIENT
+    assert report.severity == QuestionSupplySeverity.CRITICAL
+    assert report.is_startable is False
+    assert report.reason_code == QuestionSupplyReasonCode.NO_APPROVED_TARGET_QUESTIONS
+
+
+def test_misconception_foreign_problem_type_rejected(
+    db_session: Session, practice_content: PracticeContent
+) -> None:
+    svc = QuestionBankSufficiencyService(db_session)
+
+    # Misconception on practice_content.concept
+    misc = MisconceptionDefinition(
+        code="TEST_MISC_PT_VAL",
+        concept_id=practice_content.concept.id,
+        name="Test Misc PT Validation",
+        description="Desc",
+        category=MisconceptionCategory.CONCEPTUAL,
+    )
+    db_session.add(misc)
+
+    # Foreign subject + problem type
+    foreign_subj = Subject(code="FOREIGN_SUBJ_PT", name="Foreign Subj")
+    db_session.add(foreign_subj)
+    db_session.flush()
+
+    foreign_ch = Chapter(
+        subject_id=foreign_subj.id,
+        code="FOREIGN_CH_PT",
+        name="Foreign Ch",
+        order_index=1,
+    )
+    db_session.add(foreign_ch)
+    db_session.flush()
+
+    foreign_tp = Topic(
+        chapter_id=foreign_ch.id,
+        code="FOREIGN_TP_PT",
+        name="Foreign Tp",
+        order_index=1,
+    )
+    db_session.add(foreign_tp)
+    db_session.flush()
+
+    foreign_pt = ProblemType(
+        topic_id=foreign_tp.id,
+        code="FOREIGN_PT_MISC",
+        name="Foreign PT Misc",
+        order_index=1,
+    )
+    db_session.add(foreign_pt)
+    db_session.flush()
+
+    # 1. Foreign subject ProblemType -> 422 QUESTION_SUPPLY_PROBLEM_TYPE_SUBJECT_MISMATCH
+    with pytest.raises(ApplicationError) as exc_mismatch:
+        svc.assess(
+            QuestionSupplyRequirement(
+                subject_id=practice_content.subject.id,
+                use_case=QuestionSupplyUseCase.ADAPTIVE_REPAIR,
+                target_type=QuestionSupplyTargetType.MISCONCEPTION,
+                misconception_definition_id=misc.id,
+                problem_type_id=foreign_pt.id,
+            )
+        )
+    assert exc_mismatch.value.status_code == 422
+    assert exc_mismatch.value.code == "QUESTION_SUPPLY_PROBLEM_TYPE_SUBJECT_MISMATCH"
+
+    # 2. Non-existent ProblemType -> 404 PROBLEM_TYPE_NOT_FOUND
+    with pytest.raises(ApplicationError) as exc_not_found:
+        svc.assess(
+            QuestionSupplyRequirement(
+                subject_id=practice_content.subject.id,
+                use_case=QuestionSupplyUseCase.ADAPTIVE_REPAIR,
+                target_type=QuestionSupplyTargetType.MISCONCEPTION,
+                misconception_definition_id=misc.id,
+                problem_type_id=uuid4(),
+            )
+        )
+    assert exc_not_found.value.status_code == 404
+    assert exc_not_found.value.code == "PROBLEM_TYPE_NOT_FOUND"
+
+
+def test_misconception_valid_same_subject_problem_type_accepted(
+    db_session: Session, practice_content: PracticeContent
+) -> None:
+    _archive_questions(db_session)
+    svc = QuestionBankSufficiencyService(db_session)
+
+    misc = MisconceptionDefinition(
+        code="TEST_MISC_PT_OK",
+        concept_id=practice_content.concept.id,
+        name="Test Misc PT OK",
+        description="Desc",
+        category=MisconceptionCategory.CONCEPTUAL,
+    )
+    db_session.add(misc)
+    db_session.flush()
+
+    # Question matching both concept and problem_type
+    _make_question(
+        db_session,
+        practice_content,
+        index=1,
+        concept_id=practice_content.concept.id,
+        problem_type_id=practice_content.problem_type.id,
+    )
+
+    req = QuestionSupplyRequirement(
+        subject_id=practice_content.subject.id,
+        use_case=QuestionSupplyUseCase.ADAPTIVE_REPAIR,
+        target_type=QuestionSupplyTargetType.MISCONCEPTION,
+        misconception_definition_id=misc.id,
+        problem_type_id=practice_content.problem_type.id,
+    )
+    report = svc.assess(req)
+
+    assert report.approved_eligible_count == 1
+    assert report.health == QuestionSupplyHealth.INSUFFICIENT  # min 4
 

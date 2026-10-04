@@ -101,6 +101,10 @@ class QuestionSupplyGap(Base):
             "pipeline_candidate_count >= 0 AND demand_count >= 0",
             name="ck_supply_gaps_pipeline_demand",
         ),
+        CheckConstraint(
+            "pipeline_runtime_eligible_count >= 0 AND pipeline_runtime_eligible_count <= pipeline_candidate_count",
+            name="ck_supply_gaps_pipeline_runtime_eligible",
+        ),
         Index("ix_supply_gaps_status_severity", "status", "severity"),
         Index("ix_supply_gaps_subject_status", "subject_id", "status"),
         Index("ix_supply_gaps_use_case_status", "use_case", "status"),
@@ -143,7 +147,8 @@ class QuestionSupplyGap(Base):
 
     approved_eligible_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     approved_in_band_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
-    pipeline_candidate_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    pipeline_candidate_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0, server_default="0")
+    pipeline_runtime_eligible_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0, server_default="0")
 
     severity: Mapped[QuestionSupplySeverity] = mapped_column(
         Enum(QuestionSupplySeverity, native_enum=False, name="question_supply_severity"),
