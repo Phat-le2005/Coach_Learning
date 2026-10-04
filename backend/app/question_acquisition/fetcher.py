@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Iterable, Iterator
 from dataclasses import dataclass
+import contextlib
 import hashlib
 import ipaddress
 from pathlib import Path
@@ -14,7 +15,6 @@ from urllib.parse import urljoin, urlparse
 
 import httpcore
 import httpx
-from httpx._transports.default import map_httpcore_exceptions
 
 from app.core.config import get_settings
 from app.core.exceptions import ApplicationError
@@ -37,6 +37,40 @@ class ValidatedFetchTarget:
     hostname: str
     port: int
     resolved_public_ips: list[str]
+
+
+HTTPCORE_TO_HTTPX_EXCEPTIONS: list[tuple[type[Exception], type[httpx.RequestError]]] = [
+    (httpcore.ConnectTimeout, httpx.ConnectTimeout),
+    (httpcore.ReadTimeout, httpx.ReadTimeout),
+    (httpcore.WriteTimeout, httpx.WriteTimeout),
+    (httpcore.PoolTimeout, httpx.PoolTimeout),
+    (httpcore.TimeoutException, httpx.TimeoutException),
+    (httpcore.ConnectError, httpx.ConnectError),
+    (httpcore.ReadError, httpx.ReadError),
+    (httpcore.WriteError, httpx.WriteError),
+    (httpcore.ProxyError, httpx.ProxyError),
+    (httpcore.UnsupportedProtocol, httpx.UnsupportedProtocol),
+    (httpcore.LocalProtocolError, httpx.ProtocolError),
+    (httpcore.RemoteProtocolError, httpx.ProtocolError),
+    (httpcore.ProtocolError, httpx.ProtocolError),
+    (httpcore.NetworkError, httpx.NetworkError),
+]
+
+
+@contextlib.contextmanager
+def map_httpcore_transport_exceptions() -> Iterator[None]:
+    """Map public httpcore transport exceptions to public httpx RequestError equivalents without private imports."""
+    try:
+        yield
+    except Exception as exc:
+        mapped_exc_class: type[httpx.RequestError] | None = None
+        for hc_cls, hx_cls in HTTPCORE_TO_HTTPX_EXCEPTIONS:
+            if isinstance(exc, hc_cls):
+                if mapped_exc_class is None or issubclass(hx_cls, mapped_exc_class):
+                    mapped_exc_class = hx_cls
+        if mapped_exc_class is not None:
+            raise mapped_exc_class(str(exc)) from exc
+        raise
 
 
 class PinnedSyncBackend(httpcore.SyncBackend):
@@ -71,7 +105,7 @@ class PinnedResponseStream(httpx.SyncByteStream):
         self._httpcore_stream = httpcore_stream
 
     def __iter__(self) -> Iterator[bytes]:
-        with map_httpcore_exceptions():
+        with map_httpcore_transport_exceptions():
             for part in self._httpcore_stream:
                 yield part
 
@@ -112,7 +146,7 @@ class PinnedTransport(httpx.BaseTransport):
             content=request.stream,
             extensions=request.extensions,
         )
-        with map_httpcore_exceptions():
+        with map_httpcore_transport_exceptions():
             resp = self._pool.handle_request(req)
 
         assert isinstance(resp.stream, Iterable)
@@ -406,11 +440,6 @@ class SafePdfFetcher:
                                 sha256=sha256_hex,
                                 mime_type="application/pdf",
                             )
-
-                        except Exception:
-                            temp_file.close()
-                            temp_path.unlink(missing_ok=True)
-                            raise
 
                         except Exception:
                             temp_file.close()

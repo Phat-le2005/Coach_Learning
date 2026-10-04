@@ -12,10 +12,11 @@ import httpx
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import func, select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, sessionmaker
 
 from app.core.exceptions import ApplicationError
 from app.question_acquisition.fetcher import (
+    FetchResult,
     PinnedResponseStream,
     PinnedSyncBackend,
     PinnedTransport,
@@ -1515,4 +1516,334 @@ def test_stream_ingest_validator_split_magic_header() -> None:
     with pytest.raises(ApplicationError) as exc_large:
         val_large.process_chunk(b"123456")  # 5 + 6 = 11 > 10
     assert exc_large.value.code == "QUESTION_ACQUISITION_FILE_TOO_LARGE"
+
+
+# ==============================================================================
+# SECTION 101: Transaction Boundaries & Concurrency Hardening Regression Tests
+# ==============================================================================
+
+
+def test_network_fetch_runs_without_active_db_transaction(
+    db_session: Session,
+    practice_content: PracticeContent,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Network fetch must execute when the SQLAlchemy session has no active transaction (session.in_transaction() is False)."""
+    def mock_getaddrinfo(host, port, *args, **kwargs):
+        return [(socket.AF_INET, socket.SOCK_STREAM, 6, "", ("93.184.216.34", port))]
+
+    monkeypatch.setattr(socket, "getaddrinfo", mock_getaddrinfo)
+
+    valid_pdf = _build_test_pdf(["Session Invariant Test Exam"])
+    network_called = False
+
+    class AssertingFetcher(SafePdfFetcher):
+        def fetch_pdf(self, start_url: str) -> FetchResult:
+            nonlocal network_called
+            network_called = True
+            # CRITICAL ASSERTION: session must not be inside an active transaction during network call
+            assert db_session.in_transaction() is False
+
+            import tempfile, hashlib
+            tf = tempfile.NamedTemporaryFile(prefix="test_tx_", suffix=".tmp", delete=False)
+            tf.write(valid_pdf)
+            tf.close()
+            return FetchResult(
+                temp_file_path=Path(tf.name),
+                file_size_bytes=len(valid_pdf),
+                sha256=hashlib.sha256(valid_pdf).hexdigest(),
+                mime_type="application/pdf",
+            )
+
+    _, acq_req = _create_test_gap_and_request(db_session, practice_content)
+    fetcher = AssertingFetcher(allowed_domains="trusted.edu.vn")
+    acq_svc = QuestionAcquisitionService(db_session, fetcher=fetcher)
+
+    source = acq_svc.register_source(
+        acq_req.id,
+        RegisterSourceRequest(
+            source_kind=QuestionAcquisitionSourceKind.PDF_URL,
+            url="https://trusted.edu.vn/no_tx_exam.pdf",
+            provenance_note="Transaction boundary verification",
+        ),
+    )
+
+    artifact = acq_svc.fetch_source(source.id, commit=True)
+    assert network_called is True
+    assert artifact.extraction_status == QuestionAcquisitionExtractionStatus.COMPLETE
+    assert source.status == QuestionAcquisitionSourceStatus.FETCHED
+
+
+def test_source_fetching_state_committed_before_network(
+    db_session: Session,
+    practice_content: PracticeContent,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Phase A must commit source.status = FETCHING before network call starts, observable by independent session."""
+    orig_getaddrinfo = socket.getaddrinfo
+
+    def mock_getaddrinfo(host, port, *args, **kwargs):
+        if host in {"localhost", "127.0.0.1"}:
+            return orig_getaddrinfo(host, port, *args, **kwargs)
+        return [(socket.AF_INET, socket.SOCK_STREAM, 6, "", ("93.184.216.34", port))]
+
+    monkeypatch.setattr(socket, "getaddrinfo", mock_getaddrinfo)
+
+    valid_pdf = _build_test_pdf(["Phase A Observability Test Exam"])
+    observed_status_in_second_session = None
+
+    class ObservingFetcher(SafePdfFetcher):
+        def fetch_pdf(self, start_url: str) -> FetchResult:
+            nonlocal observed_status_in_second_session
+            # Open an independent session sharing the test engine to observe committed DB state
+            IndependentSession = sessionmaker(bind=db_session.get_bind(), expire_on_commit=False)
+            with IndependentSession() as other_session:
+                other_source = other_session.get(QuestionAcquisitionSource, source.id)
+                if other_source is not None:
+                    observed_status_in_second_session = other_source.status
+
+            import tempfile, hashlib
+            tf = tempfile.NamedTemporaryFile(prefix="test_obs_", suffix=".tmp", delete=False)
+            tf.write(valid_pdf)
+            tf.close()
+            return FetchResult(
+                temp_file_path=Path(tf.name),
+                file_size_bytes=len(valid_pdf),
+                sha256=hashlib.sha256(valid_pdf).hexdigest(),
+                mime_type="application/pdf",
+            )
+
+    _, acq_req = _create_test_gap_and_request(db_session, practice_content)
+    fetcher = ObservingFetcher(allowed_domains="trusted.edu.vn")
+    acq_svc = QuestionAcquisitionService(db_session, fetcher=fetcher)
+
+    source = acq_svc.register_source(
+        acq_req.id,
+        RegisterSourceRequest(
+            source_kind=QuestionAcquisitionSourceKind.PDF_URL,
+            url="https://trusted.edu.vn/observable_exam.pdf",
+            provenance_note="Phase A commit observability verification",
+        ),
+    )
+
+    artifact = acq_svc.fetch_source(source.id, commit=True)
+    assert observed_status_in_second_session == QuestionAcquisitionSourceStatus.FETCHING
+    assert artifact.extraction_status == QuestionAcquisitionExtractionStatus.COMPLETE
+    assert source.status == QuestionAcquisitionSourceStatus.FETCHED
+
+
+def test_success_wins_over_late_failure(
+    db_session: Session,
+    practice_content: PracticeContent,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """When attempt A succeeds and links a usable artifact, a late failure in attempt B must not overwrite FETCHED with FAILED."""
+    def mock_getaddrinfo(host, port, *args, **kwargs):
+        return [(socket.AF_INET, socket.SOCK_STREAM, 6, "", ("93.184.216.34", port))]
+
+    monkeypatch.setattr(socket, "getaddrinfo", mock_getaddrinfo)
+
+    valid_pdf = _build_test_pdf(["Attempt A Success PDF"])
+
+    _, acq_req = _create_test_gap_and_request(db_session, practice_content)
+    acq_svc = QuestionAcquisitionService(db_session)
+
+    source = acq_svc.register_source(
+        acq_req.id,
+        RegisterSourceRequest(
+            source_kind=QuestionAcquisitionSourceKind.PDF_URL,
+            url="https://trusted.edu.vn/race_race.pdf",
+            provenance_note="Race test provenance",
+        ),
+    )
+
+    # Simulate Attempt B enters Phase A (FETCHING)
+    _, prepared_b = acq_svc._prepare_source_fetch(source.id)
+    assert prepared_b is not None
+    assert source.status == QuestionAcquisitionSourceStatus.FETCHING
+
+    # Now Attempt A executes and completes successfully
+    import tempfile, hashlib
+    with tempfile.NamedTemporaryFile(prefix="acq_a_", suffix=".tmp", delete=False) as tf:
+        tf.write(valid_pdf)
+        temp_a_path = Path(tf.name)
+
+    try:
+        art_a = acq_svc._finalize_fetch_success(
+            prepared=prepared_b,
+            fetch_result=FetchResult(
+                temp_file_path=temp_a_path,
+                file_size_bytes=len(valid_pdf),
+                sha256=hashlib.sha256(valid_pdf).hexdigest(),
+                mime_type="application/pdf",
+            ),
+            commit=True,
+        )
+        assert art_a.extraction_status == QuestionAcquisitionExtractionStatus.COMPLETE
+        assert source.status == QuestionAcquisitionSourceStatus.FETCHED
+
+        # Now Attempt B fails its network call and runs Phase C failure finalization
+        acq_svc._finalize_fetch_failure(
+            prepared_b.source_id,
+            failure_code="QUESTION_ACQUISITION_FETCH_FAILED",
+            failure_detail="Connection reset by peer on attempt B",
+            commit=True,
+        )
+
+        # CRITICAL ASSERTION: source must still be FETCHED, not FAILED!
+        db_session.expire_all()
+        reloaded = db_session.get(QuestionAcquisitionSource, source.id)
+        assert reloaded is not None
+        assert reloaded.status == QuestionAcquisitionSourceStatus.FETCHED
+        assert reloaded.failure_code is None
+        assert reloaded.failure_detail is None
+
+        # Request status remains READY_FOR_REVIEW
+        reloaded_req = acq_svc.get_request(acq_req.id)
+        assert reloaded_req is not None
+        assert reloaded_req.status == QuestionAcquisitionRequestStatus.READY_FOR_REVIEW
+    finally:
+        temp_a_path.unlink(missing_ok=True)
+
+
+def test_block_during_fetch(
+    db_session: Session,
+    practice_content: PracticeContent,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """When an admin blocks a source while network fetch is in flight, the downloaded artifact is linked for audit but source remains BLOCKED and request is not promoted."""
+    def mock_getaddrinfo(host, port, *args, **kwargs):
+        return [(socket.AF_INET, socket.SOCK_STREAM, 6, "", ("93.184.216.34", port))]
+
+    monkeypatch.setattr(socket, "getaddrinfo", mock_getaddrinfo)
+
+    valid_pdf = _build_test_pdf(["Blocked Content In Flight"])
+
+    _, acq_req = _create_test_gap_and_request(db_session, practice_content)
+    acq_svc = QuestionAcquisitionService(db_session)
+
+    source = acq_svc.register_source(
+        acq_req.id,
+        RegisterSourceRequest(
+            source_kind=QuestionAcquisitionSourceKind.PDF_URL,
+            url="https://trusted.edu.vn/takedown.pdf",
+            provenance_note="Takedown test provenance",
+        ),
+    )
+
+    # 1. Prepare fetch (Phase A -> FETCHING)
+    _, prepared = acq_svc._prepare_source_fetch(source.id)
+    assert prepared is not None
+    assert source.status == QuestionAcquisitionSourceStatus.FETCHING
+
+    # 2. While network is in flight, Admin blocks the source
+    blocked_source = acq_svc.block_source(
+        source.id, reason="Copyright claim received mid-download", commit=True
+    )
+    assert blocked_source.status == QuestionAcquisitionSourceStatus.BLOCKED
+    assert blocked_source.rights_status == QuestionAcquisitionRightsStatus.BLOCKED
+
+    # 3. Network fetch completes and finalizes success
+    import tempfile, hashlib
+    with tempfile.NamedTemporaryFile(prefix="acq_block_", suffix=".tmp", delete=False) as tf:
+        tf.write(valid_pdf)
+        temp_path = Path(tf.name)
+
+    try:
+        artifact = acq_svc._finalize_fetch_success(
+            prepared=prepared,
+            fetch_result=FetchResult(
+                temp_file_path=temp_path,
+                file_size_bytes=len(valid_pdf),
+                sha256=hashlib.sha256(valid_pdf).hexdigest(),
+                mime_type="application/pdf",
+            ),
+            commit=True,
+        )
+        assert artifact is not None
+
+        # CRITICAL ASSERTIONS:
+        # - Source remains BLOCKED (NOT resurrected to FETCHED!)
+        db_session.expire_all()
+        reloaded_source = db_session.get(QuestionAcquisitionSource, source.id)
+        assert reloaded_source is not None
+        assert reloaded_source.status == QuestionAcquisitionSourceStatus.BLOCKED
+        assert reloaded_source.rights_status == QuestionAcquisitionRightsStatus.BLOCKED
+
+        # - Artifact and link are retained for audit trail
+        links = db_session.scalars(
+            select(QuestionAcquisitionSourceArtifact).where(
+                QuestionAcquisitionSourceArtifact.source_id == source.id
+            )
+        ).all()
+        assert len(links) == 1
+        assert links[0].artifact_id == artifact.id
+
+        # - Request must NOT become READY_FOR_REVIEW from this blocked source
+        reloaded_req = acq_svc.get_request(acq_req.id)
+        assert reloaded_req is not None
+        assert reloaded_req.status == QuestionAcquisitionRequestStatus.AWAITING_SOURCE
+    finally:
+        temp_path.unlink(missing_ok=True)
+
+
+def test_transport_exception_mapping_coverage() -> None:
+    """map_httpcore_transport_exceptions must cleanly map all public httpcore transport errors to httpx equivalents."""
+    from app.question_acquisition.fetcher import map_httpcore_transport_exceptions
+
+    exception_cases = [
+        (httpcore.ConnectTimeout("conn timeout"), httpx.ConnectTimeout),
+        (httpcore.ReadTimeout("read timeout"), httpx.ReadTimeout),
+        (httpcore.WriteTimeout("write timeout"), httpx.WriteTimeout),
+        (httpcore.PoolTimeout("pool timeout"), httpx.PoolTimeout),
+        (httpcore.ConnectError("conn error"), httpx.ConnectError),
+        (httpcore.ReadError("read error"), httpx.ReadError),
+        (httpcore.WriteError("write error"), httpx.WriteError),
+        (httpcore.ProxyError("proxy error"), httpx.ProxyError),
+        (httpcore.UnsupportedProtocol("unsupported"), httpx.UnsupportedProtocol),
+        (httpcore.LocalProtocolError("local proto"), httpx.ProtocolError),
+        (httpcore.RemoteProtocolError("remote proto"), httpx.ProtocolError),
+        (httpcore.ProtocolError("proto error"), httpx.ProtocolError),
+        (httpcore.NetworkError("network error"), httpx.NetworkError),
+    ]
+
+    for hc_exc, expected_hx_type in exception_cases:
+        with pytest.raises(expected_hx_type) as exc_info:
+            with map_httpcore_transport_exceptions():
+                raise hc_exc
+        assert isinstance(exc_info.value, httpx.RequestError)
+
+
+def test_pinned_transport_and_stream_timeout_mapping() -> None:
+    """PinnedTransport and PinnedResponseStream must raise httpx timeout subtypes when pool or stream times out."""
+    class TimeoutPool:
+        def handle_request(self, req: httpcore.Request) -> httpcore.Response:
+            raise httpcore.ConnectTimeout("Connection timed out")
+
+        def close(self) -> None:
+            pass
+
+    transport = PinnedTransport({"timeout.edu.vn": "93.184.216.34"}, pool=TimeoutPool())
+    with httpx.Client(transport=transport) as client:
+        with pytest.raises(httpx.ConnectTimeout):
+            client.get("https://timeout.edu.vn/doc.pdf")
+
+    class TimeoutStream:
+        def __iter__(self):
+            yield b"%PDF-1.4"
+            raise httpcore.ReadTimeout("Stream read timed out")
+
+    class TimeoutStreamPool:
+        def handle_request(self, req: httpcore.Request) -> httpcore.Response:
+            return httpcore.Response(200, content=TimeoutStream())
+
+        def close(self) -> None:
+            pass
+
+    stream_transport = PinnedTransport({"stream.edu.vn": "93.184.216.34"}, pool=TimeoutStreamPool())
+    with httpx.Client(transport=stream_transport) as client:
+        with client.stream("GET", "https://stream.edu.vn/doc.pdf") as resp:
+            with pytest.raises(httpx.ReadTimeout):
+                list(resp.iter_bytes())
+
 

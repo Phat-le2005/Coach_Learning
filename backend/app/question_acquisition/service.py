@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from datetime import datetime, timezone
 import hashlib
 import logging
@@ -54,6 +55,13 @@ ACTIVE_REQUEST_STATUSES = {
     QuestionAcquisitionRequestStatus.STAGED,
     QuestionAcquisitionRequestStatus.READY_FOR_REVIEW,
 }
+
+
+@dataclass(frozen=True)
+class PreparedSourceFetch:
+    source_id: UUID
+    request_id: UUID
+    normalized_url: str
 
 
 class QuestionAcquisitionService:
@@ -498,7 +506,12 @@ class QuestionAcquisitionService:
             pass
 
         # Update source status and extraction failure markers
-        if artifact.extraction_status == QuestionAcquisitionExtractionStatus.FAILED:
+        if (
+            source.rights_status == QuestionAcquisitionRightsStatus.BLOCKED
+            or source.status == QuestionAcquisitionSourceStatus.BLOCKED
+        ):
+            source.status = QuestionAcquisitionSourceStatus.BLOCKED
+        elif artifact.extraction_status == QuestionAcquisitionExtractionStatus.FAILED:
             source.status = QuestionAcquisitionSourceStatus.FAILED
             source.failure_code = "QUESTION_ACQUISITION_PDF_EXTRACTION_FAILED"
             if extraction is not None and extraction.error_message:
@@ -518,13 +531,10 @@ class QuestionAcquisitionService:
         self.session.flush()
         return artifact
 
-    def fetch_source(
-        self,
-        source_id: UUID,
-        *,
-        commit: bool = True,
-    ) -> QuestionAcquisitionArtifact:
-        """Safely fetch and ingest external PDF artifact for a registered source with retry and failure persistence."""
+    def _prepare_source_fetch(
+        self, source_id: UUID
+    ) -> tuple[QuestionAcquisitionArtifact | None, PreparedSourceFetch | None]:
+        """Phase A: Validate source and commit FETCHING state in a short transaction before network I/O."""
         source = self.session.get(QuestionAcquisitionSource, source_id)
         if source is None:
             raise ApplicationError(
@@ -554,7 +564,7 @@ class QuestionAcquisitionService:
         if source.status == QuestionAcquisitionSourceStatus.FETCHED:
             usable_artifact = self.get_usable_source_artifact(source.id)
             if usable_artifact is not None:
-                return usable_artifact
+                return usable_artifact, None
 
         # Clear previous failure markers if retrying previously failed source
         now = datetime.now(timezone.utc)
@@ -562,47 +572,142 @@ class QuestionAcquisitionService:
         source.failure_code = None
         source.failure_detail = None
         source.updated_at = now
+
+        prepared = PreparedSourceFetch(
+            source_id=source.id,
+            request_id=source.request_id,
+            normalized_url=source.normalized_url,
+        )
+
         self.session.flush()
+        self.session.commit()
+        return None, prepared
 
-        # Perform download outside DB lock; persist failure on exception before re-raising
-        try:
-            fetch_result = self.fetcher.fetch_pdf(source.normalized_url)
-        except ApplicationError as exc:
-            now_err = datetime.now(timezone.utc)
-            source.status = QuestionAcquisitionSourceStatus.FAILED
-            source.failure_code = exc.code
-            source.failure_detail = (exc.message or "")[:1000]
-            source.updated_at = now_err
+    def _finalize_fetch_failure(
+        self,
+        source_id: UUID,
+        *,
+        failure_code: str,
+        failure_detail: str | None = None,
+        commit: bool = True,
+    ) -> None:
+        """Phase C (Failure): Finalize failed fetch in a short transaction, protecting any concurrent usable state."""
+        source = self.session.get(QuestionAcquisitionSource, source_id)
+        if source is None:
+            return
+
+        # If source is already BLOCKED, keep it BLOCKED
+        if (
+            source.rights_status == QuestionAcquisitionRightsStatus.BLOCKED
+            or source.status == QuestionAcquisitionSourceStatus.BLOCKED
+        ):
+            source.status = QuestionAcquisitionSourceStatus.BLOCKED
             self.refresh_request_staging_status(source.request_id)
             self.session.flush()
             if commit:
                 self.session.commit()
-            raise
-        except Exception as exc:
-            now_err = datetime.now(timezone.utc)
-            source.status = QuestionAcquisitionSourceStatus.FAILED
-            source.failure_code = "QUESTION_ACQUISITION_FETCH_FAILED"
-            source.failure_detail = str(exc)[:1000]
-            source.updated_at = now_err
+            return
+
+        # Check if a usable artifact is already linked (e.g. concurrent attempt succeeded)
+        usable_artifact = self.get_usable_source_artifact(source.id)
+        if usable_artifact is not None:
+            source.status = QuestionAcquisitionSourceStatus.FETCHED
+            source.failure_code = None
+            source.failure_detail = None
             self.refresh_request_staging_status(source.request_id)
             self.session.flush()
             if commit:
                 self.session.commit()
-            raise
+            return
 
-        try:
-            artifact = self._ingest_artifact_file(
-                source=source,
-                file_path=fetch_result.temp_file_path,
-                sha256=fetch_result.sha256,
-                file_size_bytes=fetch_result.file_size_bytes,
-                mime_type=fetch_result.mime_type,
+        # No usable artifact exists: persist failure
+        now_err = datetime.now(timezone.utc)
+        source.status = QuestionAcquisitionSourceStatus.FAILED
+        source.failure_code = failure_code
+        source.failure_detail = (failure_detail or "")[:1000]
+        source.updated_at = now_err
+        self.refresh_request_staging_status(source.request_id)
+        self.session.flush()
+        if commit:
+            self.session.commit()
+
+    def _finalize_fetch_success(
+        self,
+        prepared: PreparedSourceFetch,
+        fetch_result: Any,
+        *,
+        commit: bool = True,
+    ) -> QuestionAcquisitionArtifact:
+        """Phase C (Success): Ingest and link artifact in a short transaction after network I/O."""
+        source = self.session.get(QuestionAcquisitionSource, prepared.source_id)
+        if source is None:
+            raise ApplicationError(
+                404,
+                "QUESTION_ACQUISITION_SOURCE_NOT_FOUND",
+                "Acquisition source was not found.",
             )
-            if commit:
-                self.session.commit()
+
+        artifact = self._ingest_artifact_file(
+            source=source,
+            file_path=fetch_result.temp_file_path,
+            sha256=fetch_result.sha256,
+            file_size_bytes=fetch_result.file_size_bytes,
+            mime_type=fetch_result.mime_type,
+        )
+        if commit:
+            self.session.commit()
+        return artifact
+
+    def fetch_source(
+        self,
+        source_id: UUID,
+        *,
+        commit: bool = True,
+    ) -> QuestionAcquisitionArtifact:
+        """Safely fetch and ingest external PDF artifact with strict three-phase transaction boundaries."""
+        # PHASE A: PREPARE (short DB transaction committed before network I/O)
+        usable_artifact, prepared = self._prepare_source_fetch(source_id)
+        if usable_artifact is not None:
+            return usable_artifact
+        assert prepared is not None
+
+        # PHASE B: NETWORK (assert no DB transaction is active)
+        if self.session.in_transaction():
+            raise RuntimeError(
+                "Database transaction must not be active during network fetch."
+            )
+
+        fetch_result = None
+        try:
+            try:
+                fetch_result = self.fetcher.fetch_pdf(prepared.normalized_url)
+            except ApplicationError as exc:
+                self._finalize_fetch_failure(
+                    prepared.source_id,
+                    failure_code=exc.code,
+                    failure_detail=exc.message,
+                    commit=commit,
+                )
+                raise
+            except Exception as exc:
+                self._finalize_fetch_failure(
+                    prepared.source_id,
+                    failure_code="QUESTION_ACQUISITION_FETCH_FAILED",
+                    failure_detail=str(exc),
+                    commit=commit,
+                )
+                raise
+
+            # PHASE C: FINALIZE SUCCESS (short DB transaction)
+            artifact = self._finalize_fetch_success(
+                prepared=prepared,
+                fetch_result=fetch_result,
+                commit=commit,
+            )
             return artifact
         finally:
-            fetch_result.temp_file_path.unlink(missing_ok=True)
+            if fetch_result is not None:
+                fetch_result.temp_file_path.unlink(missing_ok=True)
 
     def upload_artifact_from_file(
         self,
