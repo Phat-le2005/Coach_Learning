@@ -98,6 +98,16 @@ from app.question_acquisition.models import (
     QuestionAcquisitionSource,
     QuestionAcquisitionSourceArtifact,
 )
+from app.question_validation.models import (
+    QuestionValidationBatch,
+    QuestionValidationCandidate,
+    QuestionValidationCandidateConcept,
+    QuestionValidationCandidateLearningOutcome,
+    QuestionValidationCandidateOption,
+    QuestionValidationCandidateProblemType,
+    QuestionValidationCandidateSpan,
+    QuestionValidationCheck,
+)
 from app.planning.models import (
     StudyPlan,
     StudyPlanStatus,
@@ -223,6 +233,14 @@ __all__ = [
     "QuestionAcquisitionRequest",
     "QuestionAcquisitionSource",
     "QuestionAcquisitionSourceArtifact",
+    "QuestionValidationBatch",
+    "QuestionValidationCandidate",
+    "QuestionValidationCandidateConcept",
+    "QuestionValidationCandidateLearningOutcome",
+    "QuestionValidationCandidateOption",
+    "QuestionValidationCandidateProblemType",
+    "QuestionValidationCandidateSpan",
+    "QuestionValidationCheck",
     "QuickCheckQuestion",
     "QuickCheckQuestionRole",
     "QuickCheckSession",
