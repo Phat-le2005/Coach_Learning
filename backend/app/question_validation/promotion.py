@@ -60,11 +60,7 @@ class QuestionValidationPromotionService:
         if candidate.status == QuestionValidationCandidateStatus.REJECTED:
             raise ApplicationError(409, "QUESTION_VALIDATION_CANDIDATE_REJECTED", "Rejected candidates cannot be promoted.")
 
-        source = self.session.get(
-            QuestionAcquisitionSource,
-            candidate.source_id,
-            populate_existing=True,
-        )
+        source = self._load_source_for_promotion(candidate.source_id)
         if source is None or source.status == QuestionAcquisitionSourceStatus.BLOCKED or source.rights_status == QuestionAcquisitionRightsStatus.BLOCKED:
             self._fail_current_check(
                 candidate,
@@ -206,6 +202,18 @@ class QuestionValidationPromotionService:
                     )
                 )
             )
+
+    def _load_source_for_promotion(
+        self, source_id: UUID
+    ) -> QuestionAcquisitionSource | None:
+        # Lock only for the short promotion transaction so concurrent source
+        # blocking is serialized with creation of the draft question.
+        return self.session.scalar(
+            select(QuestionAcquisitionSource)
+            .where(QuestionAcquisitionSource.id == source_id)
+            .with_for_update()
+            .execution_options(populate_existing=True)
+        )
 
     def _fail_current_check(
         self,

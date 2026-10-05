@@ -177,8 +177,9 @@ class SafePdfFetcher:
         max_bytes: int | None = None,
         transport: httpx.BaseTransport | None = None,
     ) -> None:
-        settings = get_settings()
+        settings = None
         if allowed_domains is None:
+            settings = get_settings()
             raw_domains = settings.question_acquisition_allowed_domains
             domain_list = [d.strip().lower() for d in raw_domains.split(",") if d.strip()]
         elif isinstance(allowed_domains, str):
@@ -204,7 +205,10 @@ class SafePdfFetcher:
                 raise ValueError(f"Invalid domain allowlist entry '{entry}'.")
             self.allowed_domains.append(entry)
 
-        self.max_bytes = max_bytes if max_bytes is not None else settings.question_acquisition_max_bytes
+        if max_bytes is None:
+            settings = settings or get_settings()
+            max_bytes = settings.question_acquisition_max_bytes
+        self.max_bytes = max_bytes
         self.transport = transport
 
     def validate_url_safety(self, url: str) -> ValidatedFetchTarget:

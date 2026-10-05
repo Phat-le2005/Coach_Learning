@@ -35,6 +35,10 @@ jobs:
   validate-application:
     name: Teacher Material, Assignment, Evidence and Migration Tests
     runs-on: ubuntu-latest
+    env:
+      APP_ENV: test
+      DATABASE_NAME: edums_test
+      DATABASE_USER: edums_test
     defaults:
       run:
         working-directory: backend

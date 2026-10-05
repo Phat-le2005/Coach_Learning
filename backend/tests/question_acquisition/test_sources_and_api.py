@@ -14,6 +14,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session, sessionmaker
 
+import app.question_acquisition.fetcher as fetcher_module
 from app.core.exceptions import ApplicationError
 from app.question_acquisition.fetcher import (
     FetchResult,
@@ -234,6 +235,44 @@ def test_fetch_disabled_without_allowlist() -> None:
     with pytest.raises(ApplicationError) as exc:
         fetcher.fetch_pdf("https://example.com/math.pdf")
     assert exc.value.code == "QUESTION_ACQUISITION_FETCH_DISABLED"
+
+
+def test_fetcher_with_explicit_config_does_not_require_database_settings(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def fail_if_settings_loaded():
+        raise AssertionError("fully injected fetcher must not load global settings")
+
+    monkeypatch.setattr(fetcher_module, "get_settings", fail_if_settings_loaded)
+    fetcher = SafePdfFetcher(
+        allowed_domains="trusted.edu.vn, *.moet.gov.vn",
+        max_bytes=4096,
+    )
+
+    assert fetcher.allowed_domains == ["trusted.edu.vn", "*.moet.gov.vn"]
+    assert fetcher.max_bytes == 4096
+
+
+def test_default_fetcher_still_reads_acquisition_settings(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class AcquisitionSettings:
+        question_acquisition_allowed_domains = "trusted.edu.vn"
+        question_acquisition_max_bytes = 8192
+
+    calls = 0
+
+    def load_settings() -> AcquisitionSettings:
+        nonlocal calls
+        calls += 1
+        return AcquisitionSettings()
+
+    monkeypatch.setattr(fetcher_module, "get_settings", load_settings)
+    fetcher = SafePdfFetcher()
+
+    assert calls == 1
+    assert fetcher.allowed_domains == ["trusted.edu.vn"]
+    assert fetcher.max_bytes == 8192
 
 
 # ==============================================================================
