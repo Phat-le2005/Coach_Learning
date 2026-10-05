@@ -157,6 +157,77 @@ class ClassAnalyticsService:
             raise ApplicationError(404, "SUBJECT_NOT_FOUND", "Subject not found.")
         return subject
 
+    def _get_classroom_subject_ids(self, classroom_id: UUID) -> set[UUID]:
+        """Classroom subject scope = union of subject IDs explicitly attached to classroom-domain evidence.
+
+        Student mastery/review/misconception state is global per student,
+        so teacher analytics must derive allowed subjects from classroom-scoped records.
+        """
+        tp_subjects = set(
+            self.session.scalars(
+                select(TeachingPlan.subject_id).where(
+                    TeachingPlan.classroom_id == classroom_id,
+                    TeachingPlan.subject_id.is_not(None),
+                )
+            ).all()
+        )
+        asgn_subjects = set(
+            self.session.scalars(
+                select(Assignment.subject_id).where(
+                    Assignment.classroom_id == classroom_id,
+                    Assignment.subject_id.is_not(None),
+                )
+            ).all()
+        )
+        ev_subjects = set(
+            self.session.scalars(
+                select(LearningEvidenceEvent.subject_id).where(
+                    LearningEvidenceEvent.classroom_id == classroom_id,
+                    LearningEvidenceEvent.subject_id.is_not(None),
+                )
+            ).all()
+        )
+        rc_subjects = set(
+            self.session.scalars(
+                select(RootCauseDiagnosis.subject_id).where(
+                    RootCauseDiagnosis.classroom_id == classroom_id,
+                    RootCauseDiagnosis.subject_id.is_not(None),
+                )
+            ).all()
+        )
+        return tp_subjects | asgn_subjects | ev_subjects | rc_subjects
+
+    def require_subject_in_classroom_scope(
+        self,
+        classroom_id: UUID,
+        subject_id: UUID | None,
+    ) -> Subject | None:
+        """Validate that subject exists and belongs to the classroom's authorized scope."""
+        if subject_id is None:
+            return None
+        subject = self.session.get(Subject, subject_id)
+        if subject is None:
+            raise ApplicationError(404, "SUBJECT_NOT_FOUND", "Subject not found.")
+        classroom_subjects = self._get_classroom_subject_ids(classroom_id)
+        if subject_id not in classroom_subjects:
+            raise ApplicationError(
+                409,
+                "ANALYTICS_SUBJECT_NOT_IN_CLASSROOM_SCOPE",
+                "Subject is not within this classroom's authorized scope.",
+            )
+        return subject
+
+    def _resolve_classroom_subject_scope(
+        self,
+        classroom: Classroom,
+        subject_id: UUID | None,
+    ) -> set[UUID]:
+        """Resolve effective subject IDs for classroom analytics."""
+        if subject_id is not None:
+            self.require_subject_in_classroom_scope(classroom.id, subject_id)
+            return {subject_id}
+        return self._get_classroom_subject_ids(classroom.id)
+
     def get_enrolled_students(
         self,
         classroom_id: UUID,
@@ -197,8 +268,7 @@ class ClassAnalyticsService:
     ) -> ClassroomAnalyticsDashboardRead:
         """Calculate comprehensive deterministic metrics for the teacher's classroom dashboard."""
         _, classroom = self.require_teacher_access(teacher_user_id, classroom_id)
-        if subject_id:
-            self.require_subject(subject_id)
+        scoped_subject_ids = self._resolve_classroom_subject_scope(classroom, subject_id)
 
         students_info = self.get_enrolled_students(classroom_id, include_synthetic)
         student_count = len(students_info)
@@ -249,16 +319,16 @@ class ClassAnalyticsService:
         # --------------------------------------------------
         # 1. Subject, Chapter, and Topic Progress
         # --------------------------------------------------
-        if subject_id:
-            subjects = [self.session.get(Subject, subject_id)]
-        else:
+        if scoped_subject_ids:
             subjects = list(
                 self.session.scalars(
-                    select(Subject).where(Subject.grade_level == classroom.grade_level)
+                    select(Subject)
+                    .where(Subject.id.in_(list(scoped_subject_ids)))
+                    .order_by(Subject.name.asc())
                 ).all()
             )
-            if not subjects:
-                subjects = list(self.session.scalars(select(Subject).limit(3)).all())
+        else:
+            subjects = []
 
         subject_progress_list: list[SubjectProgressRead] = []
         chapter_progress_list: list[ChapterProgressRead] = []
@@ -403,29 +473,30 @@ class ClassAnalyticsService:
         # --------------------------------------------------
         # 2. Strong & Weak ProblemTypes
         # --------------------------------------------------
-        pt_mastery_query = (
-            select(
-                ProblemType.id,
-                ProblemType.name,
-                ProblemType.code,
-                func.avg(StudentProblemTypeMastery.mastery_score).label("avg_score"),
-                func.count(StudentProblemTypeMastery.student_id).label("cnt"),
-            )
-            .join(StudentProblemTypeMastery, StudentProblemTypeMastery.problem_type_id == ProblemType.id)
-            .where(StudentProblemTypeMastery.student_id.in_(student_ids))
-        )
-        if subject_id:
+        if scoped_subject_ids:
             pt_mastery_query = (
-                pt_mastery_query
+                select(
+                    ProblemType.id,
+                    ProblemType.name,
+                    ProblemType.code,
+                    func.avg(StudentProblemTypeMastery.mastery_score).label("avg_score"),
+                    func.count(StudentProblemTypeMastery.student_id).label("cnt"),
+                )
+                .join(StudentProblemTypeMastery, StudentProblemTypeMastery.problem_type_id == ProblemType.id)
                 .join(Topic, Topic.id == ProblemType.topic_id)
                 .join(Chapter, Chapter.id == Topic.chapter_id)
-                .where(Chapter.subject_id == subject_id)
+                .where(
+                    StudentProblemTypeMastery.student_id.in_(student_ids),
+                    Chapter.subject_id.in_(list(scoped_subject_ids)),
+                )
             )
-        pt_mastery_rows = list(
-            self.session.execute(
-                pt_mastery_query.group_by(ProblemType.id, ProblemType.name, ProblemType.code)
-            ).all()
-        )
+            pt_mastery_rows = list(
+                self.session.execute(
+                    pt_mastery_query.group_by(ProblemType.id, ProblemType.name, ProblemType.code)
+                ).all()
+            )
+        else:
+            pt_mastery_rows = []
 
         strong_pts: list[MetricItemRead] = []
         weak_pts: list[MetricItemRead] = []
@@ -456,25 +527,28 @@ class ClassAnalyticsService:
         # --------------------------------------------------
         # 3. Strong & Weak Concepts
         # --------------------------------------------------
-        concept_mastery_query = (
-            select(
-                Concept.id,
-                Concept.name,
-                Concept.code,
-                func.avg(StudentConceptMastery.mastery_score).label("avg_score"),
-                func.count(StudentConceptMastery.student_id).label("cnt"),
+        if scoped_subject_ids:
+            concept_mastery_query = (
+                select(
+                    Concept.id,
+                    Concept.name,
+                    Concept.code,
+                    func.avg(StudentConceptMastery.mastery_score).label("avg_score"),
+                    func.count(StudentConceptMastery.student_id).label("cnt"),
+                )
+                .join(StudentConceptMastery, StudentConceptMastery.concept_id == Concept.id)
+                .where(
+                    StudentConceptMastery.student_id.in_(student_ids),
+                    Concept.subject_id.in_(list(scoped_subject_ids)),
+                )
             )
-            .join(StudentConceptMastery, StudentConceptMastery.concept_id == Concept.id)
-            .where(StudentConceptMastery.student_id.in_(student_ids))
-        )
-        if subject_id:
-            concept_mastery_query = concept_mastery_query.where(Concept.subject_id == subject_id)
-
-        concept_mastery_rows = list(
-            self.session.execute(
-                concept_mastery_query.group_by(Concept.id, Concept.name, Concept.code)
-            ).all()
-        )
+            concept_mastery_rows = list(
+                self.session.execute(
+                    concept_mastery_query.group_by(Concept.id, Concept.name, Concept.code)
+                ).all()
+            )
+        else:
+            concept_mastery_rows = []
 
         strong_concepts: list[MetricItemRead] = []
         weak_concepts: list[MetricItemRead] = []
@@ -505,26 +579,29 @@ class ClassAnalyticsService:
         # --------------------------------------------------
         # 4. Common Misconceptions
         # --------------------------------------------------
-        misc_query = (
-            select(StudentMisconception, MisconceptionDefinition)
-            .join(
-                MisconceptionDefinition,
-                MisconceptionDefinition.id == StudentMisconception.misconception_definition_id,
+        if scoped_subject_ids:
+            misc_query = (
+                select(StudentMisconception, MisconceptionDefinition)
+                .join(
+                    MisconceptionDefinition,
+                    MisconceptionDefinition.id == StudentMisconception.misconception_definition_id,
+                )
+                .join(
+                    Concept, Concept.id == MisconceptionDefinition.concept_id
+                )
+                .where(
+                    StudentMisconception.student_id.in_(student_ids),
+                    StudentMisconception.status.in_([
+                        StudentMisconceptionStatus.CONFIRMED,
+                        StudentMisconceptionStatus.SUSPECTED,
+                    ]),
+                    Concept.subject_id.in_(list(scoped_subject_ids)),
+                )
             )
-            .where(
-                StudentMisconception.student_id.in_(student_ids),
-                StudentMisconception.status.in_([
-                    StudentMisconceptionStatus.CONFIRMED,
-                    StudentMisconceptionStatus.SUSPECTED,
-                ]),
-            )
-        )
-        if subject_id:
-            misc_query = misc_query.join(
-                Concept, Concept.id == MisconceptionDefinition.concept_id
-            ).where(Concept.subject_id == subject_id)
+            active_misconceptions = list(self.session.execute(misc_query).all())
+        else:
+            active_misconceptions = []
 
-        active_misconceptions = list(self.session.execute(misc_query).all())
         misc_map: dict[UUID, tuple[MisconceptionDefinition, set[UUID]]] = {}
         for sm, md in active_misconceptions:
             if md.id not in misc_map:
@@ -551,18 +628,20 @@ class ClassAnalyticsService:
         start_7d = now - timedelta(days=7)
         start_14d = now - timedelta(days=14)
 
-        base_ev_query = select(LearningEvidenceEvent).where(
-            LearningEvidenceEvent.classroom_id == classroom.id,
-            LearningEvidenceEvent.student_id.in_(student_ids),
-        )
-        if subject_id:
-            base_ev_query = base_ev_query.where(LearningEvidenceEvent.subject_id == subject_id)
-
-        events_14d = list(
-            self.session.scalars(
-                base_ev_query.where(LearningEvidenceEvent.occurred_at >= start_14d)
-            ).all()
-        )
+        if scoped_subject_ids:
+            base_ev_query = select(LearningEvidenceEvent).where(
+                LearningEvidenceEvent.classroom_id == classroom.id,
+                LearningEvidenceEvent.student_id.in_(student_ids),
+                LearningEvidenceEvent.subject_id.in_(list(scoped_subject_ids)),
+            )
+            events_14d = list(
+                self.session.scalars(
+                    base_ev_query.where(LearningEvidenceEvent.occurred_at >= start_14d)
+                ).all()
+            )
+        else:
+            base_ev_query = None
+            events_14d = []
 
         recent_events = [e for e in events_14d if _ensure_utc(e.occurred_at) is not None and _ensure_utc(e.occurred_at) >= start_7d]
         total_recent_events = len(recent_events)
@@ -625,30 +704,36 @@ class ClassAnalyticsService:
         # --------------------------------------------------
         # 6. Evidence Sources Summary
         # --------------------------------------------------
-        practice_count = self.session.scalar(
-            select(func.count(LearningEvidenceEvent.id)).where(
-                LearningEvidenceEvent.classroom_id == classroom.id,
-                LearningEvidenceEvent.student_id.in_(student_ids),
-                LearningEvidenceEvent.source_kind == LearningEvidenceSourceKind.PRACTICE_QUESTION,
-                *((LearningEvidenceEvent.subject_id == subject_id,) if subject_id else ()),
-            )
-        ) or 0
-        assignment_ev_count = self.session.scalar(
-            select(func.count(LearningEvidenceEvent.id)).where(
-                LearningEvidenceEvent.classroom_id == classroom.id,
-                LearningEvidenceEvent.student_id.in_(student_ids),
-                LearningEvidenceEvent.source_kind == LearningEvidenceSourceKind.ASSIGNMENT_CANONICAL_QUESTION,
-                *((LearningEvidenceEvent.subject_id == subject_id,) if subject_id else ()),
-            )
-        ) or 0
-        material_ev_count = self.session.scalar(
-            select(func.count(LearningEvidenceEvent.id)).where(
-                LearningEvidenceEvent.classroom_id == classroom.id,
-                LearningEvidenceEvent.student_id.in_(student_ids),
-                LearningEvidenceEvent.source_kind == LearningEvidenceSourceKind.TEACHER_MATERIAL_ITEM,
-                *((LearningEvidenceEvent.subject_id == subject_id,) if subject_id else ()),
-            )
-        ) or 0
+        if scoped_subject_ids:
+            practice_count = self.session.scalar(
+                select(func.count(LearningEvidenceEvent.id)).where(
+                    LearningEvidenceEvent.classroom_id == classroom.id,
+                    LearningEvidenceEvent.student_id.in_(student_ids),
+                    LearningEvidenceEvent.source_kind == LearningEvidenceSourceKind.PRACTICE_QUESTION,
+                    LearningEvidenceEvent.subject_id.in_(list(scoped_subject_ids)),
+                )
+            ) or 0
+            assignment_ev_count = self.session.scalar(
+                select(func.count(LearningEvidenceEvent.id)).where(
+                    LearningEvidenceEvent.classroom_id == classroom.id,
+                    LearningEvidenceEvent.student_id.in_(student_ids),
+                    LearningEvidenceEvent.source_kind == LearningEvidenceSourceKind.ASSIGNMENT_CANONICAL_QUESTION,
+                    LearningEvidenceEvent.subject_id.in_(list(scoped_subject_ids)),
+                )
+            ) or 0
+            material_ev_count = self.session.scalar(
+                select(func.count(LearningEvidenceEvent.id)).where(
+                    LearningEvidenceEvent.classroom_id == classroom.id,
+                    LearningEvidenceEvent.student_id.in_(student_ids),
+                    LearningEvidenceEvent.source_kind == LearningEvidenceSourceKind.TEACHER_MATERIAL_ITEM,
+                    LearningEvidenceEvent.subject_id.in_(list(scoped_subject_ids)),
+                )
+            ) or 0
+        else:
+            practice_count = 0
+            assignment_ev_count = 0
+            material_ev_count = 0
+
         evidence_sources = EvidenceSourceSummaryRead(
             practice_count=practice_count,
             assignment_question_count=assignment_ev_count,
@@ -659,9 +744,13 @@ class ClassAnalyticsService:
         # --------------------------------------------------
         # 7. Classroom Evidence Summary
         # --------------------------------------------------
-        all_classroom_events = list(
-            self.session.scalars(base_ev_query).all()
-        )
+        if scoped_subject_ids and base_ev_query is not None:
+            all_classroom_events = list(
+                self.session.scalars(base_ev_query).all()
+            )
+        else:
+            all_classroom_events = []
+
         total_ev = len(all_classroom_events)
         scored_ev_list = [
             e for e in all_classroom_events
@@ -714,13 +803,16 @@ class ClassAnalyticsService:
         # --------------------------------------------------
         # 8. Assignment Completion
         # --------------------------------------------------
-        asgn_query = select(Assignment).where(
-            Assignment.classroom_id == classroom.id,
-            Assignment.status.in_([AssignmentStatus.PUBLISHED, AssignmentStatus.CLOSED]),
-        )
-        if subject_id:
-            asgn_query = asgn_query.where(Assignment.subject_id == subject_id)
-        published_assignments = list(self.session.scalars(asgn_query).all())
+        if scoped_subject_ids:
+            asgn_query = select(Assignment).where(
+                Assignment.classroom_id == classroom.id,
+                Assignment.status.in_([AssignmentStatus.PUBLISHED, AssignmentStatus.CLOSED]),
+                Assignment.subject_id.in_(list(scoped_subject_ids)),
+            )
+            published_assignments = list(self.session.scalars(asgn_query).all())
+        else:
+            published_assignments = []
+
         pub_asgn_ids = [a.id for a in published_assignments]
         pub_asgn_map = {a.id: a for a in published_assignments}
 
@@ -771,20 +863,23 @@ class ClassAnalyticsService:
         # --------------------------------------------------
         # 9. Review Due Summary
         # --------------------------------------------------
-        rs_query = select(ReviewSchedule).where(ReviewSchedule.student_id.in_(student_ids))
-        if subject_id:
-            # Filter schedules belonging to subject
+        if scoped_subject_ids:
             rs_query = (
-                rs_query
+                select(ReviewSchedule)
+                .where(ReviewSchedule.student_id.in_(student_ids))
                 .outerjoin(Concept, Concept.id == ReviewSchedule.concept_id)
                 .outerjoin(ProblemType, ProblemType.id == ReviewSchedule.problem_type_id)
                 .outerjoin(Topic, Topic.id == ProblemType.topic_id)
                 .outerjoin(Chapter, Chapter.id == Topic.chapter_id)
                 .where(
-                    (Concept.subject_id == subject_id) | (Chapter.subject_id == subject_id)
+                    (Concept.subject_id.in_(list(scoped_subject_ids)))
+                    | (Chapter.subject_id.in_(list(scoped_subject_ids)))
                 )
             )
-        all_schedules = list(self.session.scalars(rs_query).all())
+            all_schedules = list(self.session.scalars(rs_query).all())
+        else:
+            all_schedules = []
+
         due_now_schedules = [
             rs for rs in all_schedules
             if rs.next_review_at is not None and _ensure_utc(rs.next_review_at) <= now
@@ -805,13 +900,15 @@ class ClassAnalyticsService:
         # --------------------------------------------------
         # 10. Active Teaching Plan & Current Plan Alignment
         # --------------------------------------------------
-        tp_query = select(TeachingPlan).where(
-            TeachingPlan.classroom_id == classroom.id,
-            TeachingPlan.status == TeachingPlanStatus.ACTIVE,
-        )
-        if subject_id:
-            tp_query = tp_query.where(TeachingPlan.subject_id == subject_id)
-        active_tp = self.session.scalar(tp_query.order_by(TeachingPlan.created_at.desc()).limit(1))
+        if scoped_subject_ids:
+            tp_query = select(TeachingPlan).where(
+                TeachingPlan.classroom_id == classroom.id,
+                TeachingPlan.status == TeachingPlanStatus.ACTIVE,
+                TeachingPlan.subject_id.in_(list(scoped_subject_ids)),
+            )
+            active_tp = self.session.scalar(tp_query.order_by(TeachingPlan.created_at.desc()).limit(1))
+        else:
+            active_tp = None
 
         active_tp_summary: ActiveTeachingPlanSummaryRead | None = None
         current_plan_mastery: CurrentPlanMasteryRead | None = None
@@ -861,26 +958,29 @@ class ClassAnalyticsService:
         # --------------------------------------------------
         # 11. Verified Root Causes (SUPPORTED verifications only)
         # --------------------------------------------------
-        v_target_query = (
-            select(RootCauseVerificationTarget, RootCauseDiagnosis)
-            .join(
-                RootCauseVerification,
-                RootCauseVerification.id == RootCauseVerificationTarget.verification_id,
+        if scoped_subject_ids:
+            v_target_query = (
+                select(RootCauseVerificationTarget, RootCauseDiagnosis)
+                .join(
+                    RootCauseVerification,
+                    RootCauseVerification.id == RootCauseVerificationTarget.verification_id,
+                )
+                .join(
+                    RootCauseDiagnosis,
+                    RootCauseDiagnosis.id == RootCauseVerification.diagnosis_id,
+                )
+                .where(
+                    RootCauseVerificationTarget.outcome == RootCauseVerificationOutcome.SUPPORTED,
+                    RootCauseVerification.status == RootCauseVerificationStatus.COMPLETED,
+                    RootCauseDiagnosis.classroom_id == classroom.id,
+                    RootCauseDiagnosis.student_id.in_(student_ids),
+                    RootCauseDiagnosis.subject_id.in_(list(scoped_subject_ids)),
+                )
             )
-            .join(
-                RootCauseDiagnosis,
-                RootCauseDiagnosis.id == RootCauseVerification.diagnosis_id,
-            )
-            .where(
-                RootCauseVerificationTarget.outcome == RootCauseVerificationOutcome.SUPPORTED,
-                RootCauseVerification.status == RootCauseVerificationStatus.COMPLETED,
-                RootCauseDiagnosis.student_id.in_(student_ids),
-            )
-        )
-        if subject_id:
-            v_target_query = v_target_query.where(RootCauseDiagnosis.subject_id == subject_id)
+            verified_targets_rows = list(self.session.execute(v_target_query).all())
+        else:
+            verified_targets_rows = []
 
-        verified_targets_rows = list(self.session.execute(v_target_query).all())
         verified_by_key: dict[tuple[str, UUID], tuple[str, set[UUID]]] = {}
         for vt, diag in verified_targets_rows:
             target_id = vt.target_concept_id or vt.target_problem_type_id or vt.misconception_definition_id or vt.id
@@ -935,12 +1035,22 @@ class ClassAnalyticsService:
         # --------------------------------------------------
         # 12. Adaptive Repair Summary
         # --------------------------------------------------
-        repair_query = select(AdaptiveRepairSession).where(
-            AdaptiveRepairSession.student_id.in_(student_ids)
-        )
-        if subject_id:
-            repair_query = repair_query.where(AdaptiveRepairSession.subject_id == subject_id)
-        classroom_repairs = list(self.session.scalars(repair_query).all())
+        if scoped_subject_ids:
+            repair_query = (
+                select(AdaptiveRepairSession)
+                .join(
+                    RootCauseDiagnosis,
+                    RootCauseDiagnosis.id == AdaptiveRepairSession.diagnosis_id,
+                )
+                .where(
+                    AdaptiveRepairSession.student_id.in_(student_ids),
+                    RootCauseDiagnosis.classroom_id == classroom.id,
+                    RootCauseDiagnosis.subject_id.in_(list(scoped_subject_ids)),
+                )
+            )
+            classroom_repairs = list(self.session.scalars(repair_query).all())
+        else:
+            classroom_repairs = []
 
         rep_active = sum(1 for s in classroom_repairs if s.status == AdaptiveRepairStatus.ACTIVE)
         rep_completed = sum(1 for s in classroom_repairs if s.status == AdaptiveRepairStatus.COMPLETED)
@@ -1072,8 +1182,7 @@ class ClassAnalyticsService:
     ) -> ClassroomHeatmapRead:
         """Generate a 2D multi-view competency matrix (student x entity)."""
         _, classroom = self.require_teacher_access(teacher_user_id, classroom_id)
-        if subject_id:
-            self.require_subject(subject_id)
+        scoped_subject_ids = self._resolve_classroom_subject_scope(classroom, subject_id)
 
         students_info = self.get_enrolled_students(classroom_id, include_synthetic)
         student_ids = [s.id for s, _ in students_info]
@@ -1082,6 +1191,17 @@ class ClassAnalyticsService:
             HeatmapRowRead(student_id=s.id, student_name=name, is_synthetic=s.is_synthetic)
             for s, name in students_info
         ]
+
+        if not scoped_subject_ids:
+            return ClassroomHeatmapRead(
+                classroom_id=classroom.id,
+                view=view,
+                columns=[],
+                rows=rows,
+                cells=[],
+                column_averages={},
+                row_averages={},
+            )
 
         columns: list[HeatmapColumnRead] = []
         cells: list[HeatmapCellRead] = []
@@ -1095,13 +1215,8 @@ class ClassAnalyticsService:
                 select(ProblemType, Topic.name.label("topic_name"))
                 .join(Topic, Topic.id == ProblemType.topic_id)
                 .join(Chapter, Chapter.id == Topic.chapter_id)
+                .where(Chapter.subject_id.in_(list(scoped_subject_ids)))
             )
-            if subject_id:
-                query = query.where(Chapter.subject_id == subject_id)
-            else:
-                query = query.join(Subject, Subject.id == Chapter.subject_id).where(
-                    Subject.grade_level == classroom.grade_level
-                )
             pt_rows = list(self.session.execute(query.order_by(ProblemType.order_index)).all())
 
             for pt, tname in pt_rows:
@@ -1155,13 +1270,10 @@ class ClassAnalyticsService:
                             row_cnt[row.student_id] = row_cnt.get(row.student_id, 0) + 1
 
         elif view == HeatmapView.CONCEPT:
-            query = select(Concept)
-            if subject_id:
-                query = query.where(Concept.subject_id == subject_id)
-            else:
-                query = query.join(Subject, Subject.id == Concept.subject_id).where(
-                    Subject.grade_level == classroom.grade_level
-                )
+            query = (
+                select(Concept)
+                .where(Concept.subject_id.in_(list(scoped_subject_ids)))
+            )
             concepts = list(self.session.scalars(query.order_by(Concept.order_index)).all())
 
             for c in concepts:
@@ -1215,13 +1327,11 @@ class ClassAnalyticsService:
                             row_cnt[row.student_id] = row_cnt.get(row.student_id, 0) + 1
 
         elif view == HeatmapView.TOPIC:
-            query = select(Topic, Chapter.name.label("chp_name")).join(Chapter, Chapter.id == Topic.chapter_id)
-            if subject_id:
-                query = query.where(Chapter.subject_id == subject_id)
-            else:
-                query = query.join(Subject, Subject.id == Chapter.subject_id).where(
-                    Subject.grade_level == classroom.grade_level
-                )
+            query = (
+                select(Topic, Chapter.name.label("chp_name"))
+                .join(Chapter, Chapter.id == Topic.chapter_id)
+                .where(Chapter.subject_id.in_(list(scoped_subject_ids)))
+            )
             topic_rows = list(self.session.execute(query.order_by(Topic.order_index)).all())
 
             for top, cname in topic_rows:
@@ -1299,11 +1409,11 @@ class ClassAnalyticsService:
                             row_cnt[row.student_id] = row_cnt.get(row.student_id, 0) + 1
 
         elif view == HeatmapView.CHAPTER:
-            query = select(Chapter, Subject.name.label("sub_name")).join(Subject, Subject.id == Chapter.subject_id)
-            if subject_id:
-                query = query.where(Chapter.subject_id == subject_id)
-            else:
-                query = query.where(Subject.grade_level == classroom.grade_level)
+            query = (
+                select(Chapter, Subject.name.label("sub_name"))
+                .join(Subject, Subject.id == Chapter.subject_id)
+                .where(Chapter.subject_id.in_(list(scoped_subject_ids)))
+            )
             chp_rows = list(self.session.execute(query.order_by(Chapter.order_index)).all())
 
             for chp, sname in chp_rows:
@@ -1415,13 +1525,12 @@ class ClassAnalyticsService:
     ) -> ClassroomAlertsRead:
         """Run all 8 deterministic intervention rules against enrolled students."""
         _, classroom = self.require_teacher_access(teacher_user_id, classroom_id)
-        if subject_id:
-            self.require_subject(subject_id)
+        scoped_subject_ids = self._resolve_classroom_subject_scope(classroom, subject_id)
 
         students_info = self.get_enrolled_students(classroom_id, include_synthetic)
         student_count = len(students_info)
 
-        if student_count == 0:
+        if student_count == 0 or not scoped_subject_ids:
             return ClassroomAlertsRead(
                 classroom_id=classroom.id,
                 total_alerts=0,
@@ -1445,20 +1554,16 @@ class ClassAnalyticsService:
         pt_query = (
             select(StudentProblemTypeMastery, ProblemType.name)
             .join(ProblemType, ProblemType.id == StudentProblemTypeMastery.problem_type_id)
+            .join(Topic, Topic.id == ProblemType.topic_id)
+            .join(Chapter, Chapter.id == Topic.chapter_id)
             .where(
                 StudentProblemTypeMastery.student_id.in_(student_ids),
                 StudentProblemTypeMastery.mastery_score < 0.40,
                 StudentProblemTypeMastery.attempt_count >= 3,
                 StudentProblemTypeMastery.confidence >= 0.50,
+                Chapter.subject_id.in_(list(scoped_subject_ids)),
             )
         )
-        if subject_id:
-            pt_query = (
-                pt_query
-                .join(Topic, Topic.id == ProblemType.topic_id)
-                .join(Chapter, Chapter.id == Topic.chapter_id)
-                .where(Chapter.subject_id == subject_id)
-            )
         low_pt_rows = list(self.session.execute(pt_query).all())
 
         for m, pt_name in low_pt_rows:
@@ -1507,15 +1612,14 @@ class ClassAnalyticsService:
                 Concept.id == RootCauseVerificationTarget.target_concept_id,
             )
             .where(
+                RootCauseDiagnosis.classroom_id == classroom.id,
                 RootCauseDiagnosis.student_id.in_(student_ids),
+                RootCauseDiagnosis.subject_id.in_(list(scoped_subject_ids)),
                 RootCauseDiagnosis.diagnosis_type == RootCauseDiagnosisType.PREREQUISITE_CONCEPT_GAP,
                 RootCauseVerification.status == RootCauseVerificationStatus.COMPLETED,
                 RootCauseVerificationTarget.outcome == RootCauseVerificationOutcome.SUPPORTED,
             )
         )
-        if subject_id:
-            prereq_v_query = prereq_v_query.where(RootCauseDiagnosis.subject_id == subject_id)
-
         prereq_targets = list(self.session.execute(prereq_v_query).all())
         for vt, diag, cname in prereq_targets:
             sname = students_by_id.get(diag.student_id, "Học sinh")
@@ -1544,40 +1648,97 @@ class ClassAnalyticsService:
         # Rule 3: PERSISTENT_MISCONCEPTION
         # Only status CONFIRMED or verified misconception target SUPPORTED
         # --------------------------------------------------
-        misc_query = (
+        # Source A: Confirmed student misconceptions
+        misc_source_a_query = (
             select(StudentMisconception, MisconceptionDefinition.name)
             .join(
                 MisconceptionDefinition,
                 MisconceptionDefinition.id == StudentMisconception.misconception_definition_id,
             )
+            .join(
+                Concept, Concept.id == MisconceptionDefinition.concept_id
+            )
             .where(
                 StudentMisconception.student_id.in_(student_ids),
                 StudentMisconception.status == StudentMisconceptionStatus.CONFIRMED,
+                Concept.subject_id.in_(list(scoped_subject_ids)),
             )
         )
-        if subject_id:
-            misc_query = misc_query.join(
-                Concept, Concept.id == MisconceptionDefinition.concept_id
-            ).where(Concept.subject_id == subject_id)
+        confirmed_miscs = list(self.session.execute(misc_source_a_query).all())
 
-        confirmed_miscs = list(self.session.execute(misc_query).all())
+        # Source B: Verified misconception targets from classroom root-cause diagnoses
+        misc_source_b_query = (
+            select(
+                RootCauseVerificationTarget,
+                RootCauseDiagnosis,
+                MisconceptionDefinition.name,
+            )
+            .join(
+                RootCauseVerification,
+                RootCauseVerification.id == RootCauseVerificationTarget.verification_id,
+            )
+            .join(
+                RootCauseDiagnosis,
+                RootCauseDiagnosis.id == RootCauseVerification.diagnosis_id,
+            )
+            .join(
+                MisconceptionDefinition,
+                MisconceptionDefinition.id == RootCauseVerificationTarget.misconception_definition_id,
+            )
+            .where(
+                RootCauseDiagnosis.classroom_id == classroom.id,
+                RootCauseDiagnosis.student_id.in_(student_ids),
+                RootCauseDiagnosis.subject_id.in_(list(scoped_subject_ids)),
+                RootCauseVerificationTarget.target_type == RootCauseVerificationTargetType.MISCONCEPTION,
+                RootCauseVerificationTarget.outcome == RootCauseVerificationOutcome.SUPPORTED,
+                RootCauseVerification.status == RootCauseVerificationStatus.COMPLETED,
+            )
+        )
+        verified_misc_targets = list(self.session.execute(misc_source_b_query).all())
+
+        misc_alerts_map: dict[tuple[UUID, UUID], dict[str, Any]] = {}
         for sm, mname in confirmed_miscs:
-            sname = students_by_id.get(sm.student_id, "Học sinh")
+            key = (sm.student_id, sm.misconception_definition_id)
+            misc_alerts_map[key] = {
+                "student_id": sm.student_id,
+                "definition_id": sm.misconception_definition_id,
+                "name": mname,
+                "confidence": sm.confidence,
+            }
+        for vt, diag, mname in verified_misc_targets:
+            key = (diag.student_id, vt.misconception_definition_id)
+            if key not in misc_alerts_map:
+                misc_alerts_map[key] = {
+                    "student_id": diag.student_id,
+                    "definition_id": vt.misconception_definition_id,
+                    "name": mname,
+                    "confidence": diag.confidence,
+                }
+            else:
+                misc_alerts_map[key]["confidence"] = max(
+                    misc_alerts_map[key]["confidence"],
+                    diag.confidence,
+                )
+
+        for (sid, def_id), info in misc_alerts_map.items():
+            sname = students_by_id.get(sid, "Học sinh")
+            mname = info["name"]
+            conf = info["confidence"]
             alerts.append(
                 InterventionAlertRead(
-                    id=f"persistent_misconception-{sm.student_id}-{sm.misconception_definition_id}",
-                    student_id=sm.student_id,
+                    id=f"persistent_misconception-{sid}-{def_id}",
+                    student_id=sid,
                     student_name=sname,
                     rule_code=AlertRuleCode.PERSISTENT_MISCONCEPTION,
                     severity=AlertSeverity.HIGH,
                     title=f"Lỗi sai hiểu lầm cố định [{mname}]",
                     message=(
                         f"Học sinh {sname} lặp lại lỗi sai hiểu lầm [{mname}] "
-                        f"({sm.occurrence_count} lần ghi nhận, độ tin cậy: {sm.confidence:.2f})."
+                        f"(độ tin cậy: {conf:.2f})."
                     ),
-                    target_id=sm.misconception_definition_id,
+                    target_id=def_id,
                     target_name=mname,
-                    metric_value=round(sm.confidence, 2),
+                    metric_value=round(conf, 2),
                     detected_at=now,
                     suggested_action="Chỉ rõ bẫy sai lầm này trong bài giảng hoặc hướng dẫn học sinh xem tóm tắt lý thuyết.",
                 )
@@ -1587,44 +1748,65 @@ class ClassAnalyticsService:
         # Rule 4: FAILED_REPAIR (AdaptiveRepairSession)
         # >= 3 completed repair cycles for same target without RESOLVED outcome
         # --------------------------------------------------
-        ars_query = select(AdaptiveRepairSession).where(
-            AdaptiveRepairSession.student_id.in_(student_ids),
-            AdaptiveRepairSession.status == AdaptiveRepairStatus.COMPLETED,
+        ars_query = (
+            select(AdaptiveRepairSession)
+            .join(
+                RootCauseDiagnosis,
+                RootCauseDiagnosis.id == AdaptiveRepairSession.diagnosis_id,
+            )
+            .where(
+                AdaptiveRepairSession.student_id.in_(student_ids),
+                AdaptiveRepairSession.status == AdaptiveRepairStatus.COMPLETED,
+                RootCauseDiagnosis.classroom_id == classroom.id,
+                RootCauseDiagnosis.subject_id.in_(list(scoped_subject_ids)),
+            )
         )
-        if subject_id:
-            ars_query = ars_query.where(AdaptiveRepairSession.subject_id == subject_id)
-
         repairs = list(self.session.scalars(ars_query).all())
         repairs_by_target: dict[tuple[UUID, UUID], list[AdaptiveRepairSession]] = {}
         for r in repairs:
-            tid = r.target_problem_type_id or r.target_concept_id or r.verification_target_id
-            repairs_by_target.setdefault((r.student_id, tid), []).append(r)
+            repairs_by_target.setdefault((r.student_id, r.verification_target_id), []).append(r)
 
-        for (sid, tid), sessions in repairs_by_target.items():
-            if len(sessions) >= 3:
-                has_resolved = any(s.outcome == AdaptiveRepairOutcome.RESOLVED for s in sessions)
-                if not has_resolved:
-                    sname = students_by_id.get(sid, "Học sinh")
-                    tname = sessions[-1].target_name or "Nội dung cần sửa"
-                    alerts.append(
-                        InterventionAlertRead(
-                            id=f"failed_repair-{sid}-{tid}",
-                            student_id=sid,
-                            student_name=sname,
-                            rule_code=AlertRuleCode.FAILED_REPAIR,
-                            severity=AlertSeverity.CRITICAL,
-                            title=f"Thất bại liên tiếp sau 3 phiên sửa lỗi ở [{tname}]",
-                            message=(
-                                f"Học sinh {sname} đã hoàn thành {len(sessions)} chu kỳ sửa lỗi thích ứng "
-                                f"ở [{tname}] nhưng chưa đạt kết quả giải quyết (RESOLVED)."
-                            ),
-                            target_id=tid,
-                            target_name=tname,
-                            metric_value=float(len(sessions)),
-                            detected_at=now,
-                            suggested_action="Học sinh không thể tự sửa lỗi, giáo viên cần trực tiếp kèm cặp 1-1.",
-                        )
+        for (sid, vt_id), sessions in repairs_by_target.items():
+            sessions.sort(
+                key=lambda s: (
+                    s.repair_cycle_index,
+                    _ensure_utc(s.completed_at) or datetime.min.replace(tzinfo=timezone.utc),
+                    str(s.id),
+                )
+            )
+            latest_session = sessions[-1]
+            if latest_session.outcome == AdaptiveRepairOutcome.RESOLVED:
+                continue
+
+            trailing_count = 0
+            for s in reversed(sessions):
+                if s.outcome == AdaptiveRepairOutcome.RESOLVED:
+                    break
+                if s.outcome in (AdaptiveRepairOutcome.NEEDS_MORE_PRACTICE, AdaptiveRepairOutcome.BANK_EXHAUSTED):
+                    trailing_count += 1
+
+            if trailing_count >= 3:
+                sname = students_by_id.get(sid, "Học sinh")
+                tname = latest_session.target_name or "Nội dung cần sửa"
+                alerts.append(
+                    InterventionAlertRead(
+                        id=f"failed_repair-{sid}-{vt_id}",
+                        student_id=sid,
+                        student_name=sname,
+                        rule_code=AlertRuleCode.FAILED_REPAIR,
+                        severity=AlertSeverity.CRITICAL,
+                        title=f"Thất bại liên tiếp sau 3 phiên sửa lỗi ở [{tname}]",
+                        message=(
+                            f"Học sinh {sname} đã hoàn thành {trailing_count} chu kỳ sửa lỗi thích ứng "
+                            f"ở [{tname}] nhưng chưa đạt kết quả giải quyết (RESOLVED)."
+                        ),
+                        target_id=vt_id,
+                        target_name=tname,
+                        metric_value=float(trailing_count),
+                        detected_at=now,
+                        suggested_action="Học sinh không thể tự sửa lỗi, giáo viên cần trực tiếp kèm cặp 1-1.",
                     )
+                )
 
         # --------------------------------------------------
         # Rule 5: DECLINING_PERFORMANCE (LearningEvidenceEvent)
@@ -1642,12 +1824,10 @@ class ClassAnalyticsService:
                         EvaluationStatus.EVALUATED,
                     ]),
                     LearningEvidenceEvent.score.is_not(None),
+                    LearningEvidenceEvent.subject_id.in_(list(scoped_subject_ids)),
                 )
                 .order_by(LearningEvidenceEvent.occurred_at.asc())
             )
-            if subject_id:
-                ev_query = ev_query.where(LearningEvidenceEvent.subject_id == subject_id)
-
             scored_events = list(self.session.scalars(ev_query).all())
             if len(scored_events) >= 6:
                 recent_3 = scored_events[-3:]
@@ -1687,13 +1867,11 @@ class ClassAnalyticsService:
                 .where(
                     LearningEvidenceEvent.classroom_id == classroom.id,
                     LearningEvidenceEvent.student_id == sid,
+                    LearningEvidenceEvent.subject_id.in_(list(scoped_subject_ids)),
                 )
                 .order_by(LearningEvidenceEvent.occurred_at.desc())
                 .limit(1)
             )
-            if subject_id:
-                lat_query = lat_query.where(LearningEvidenceEvent.subject_id == subject_id)
-
             latest_event_at = self.session.scalar(lat_query)
             latest_dt = _ensure_utc(latest_event_at)
 
@@ -1718,20 +1896,18 @@ class ClassAnalyticsService:
         # Rule 7: REVIEW_OVERDUE (ReviewSchedule)
         # >= 3 due now -> MEDIUM, >= 5 -> HIGH
         # --------------------------------------------------
-        rs_due_query = select(ReviewSchedule).where(
-            ReviewSchedule.student_id.in_(student_ids),
-        )
-        if subject_id:
-            rs_due_query = (
-                rs_due_query
-                .outerjoin(Concept, Concept.id == ReviewSchedule.concept_id)
-                .outerjoin(ProblemType, ProblemType.id == ReviewSchedule.problem_type_id)
-                .outerjoin(Topic, Topic.id == ProblemType.topic_id)
-                .outerjoin(Chapter, Chapter.id == Topic.chapter_id)
-                .where(
-                    (Concept.subject_id == subject_id) | (Chapter.subject_id == subject_id)
-                )
+        rs_due_query = (
+            select(ReviewSchedule)
+            .where(ReviewSchedule.student_id.in_(student_ids))
+            .outerjoin(Concept, Concept.id == ReviewSchedule.concept_id)
+            .outerjoin(ProblemType, ProblemType.id == ReviewSchedule.problem_type_id)
+            .outerjoin(Topic, Topic.id == ProblemType.topic_id)
+            .outerjoin(Chapter, Chapter.id == Topic.chapter_id)
+            .where(
+                (Concept.subject_id.in_(list(scoped_subject_ids)))
+                | (Chapter.subject_id.in_(list(scoped_subject_ids)))
             )
+        )
         all_due_rs = list(self.session.scalars(rs_due_query).all())
         due_now_all = [
             rs for rs in all_due_rs
@@ -1775,10 +1951,9 @@ class ClassAnalyticsService:
                     StudentAssignmentStatus.NOT_STARTED,
                     StudentAssignmentStatus.IN_PROGRESS,
                 ]),
+                Assignment.subject_id.in_(list(scoped_subject_ids)),
             )
         )
-        if subject_id:
-            sa_overdue_query = sa_overdue_query.where(Assignment.subject_id == subject_id)
 
         overdue_pairs = list(self.session.execute(sa_overdue_query).all())
         overdue_counts: dict[UUID, int] = {}
@@ -1852,8 +2027,7 @@ class ClassAnalyticsService:
     ) -> StudentLearningAnalyticsRead:
         """Detailed academic and behavioural analytics for a single student in a classroom."""
         _, classroom = self.require_teacher_access(teacher_user_id, classroom_id)
-        if subject_id:
-            self.require_subject(subject_id)
+        scoped_subject_ids = self._resolve_classroom_subject_scope(classroom, subject_id)
 
         enrollment = self.session.scalar(
             select(StudentEnrollment).where(
@@ -1877,19 +2051,52 @@ class ClassAnalyticsService:
         )
         now = datetime.now(timezone.utc)
 
+        if not scoped_subject_ids:
+            return StudentLearningAnalyticsRead(
+                student_id=student_id,
+                student_name=student_name,
+                classroom_id=classroom_id,
+                subject_id=subject_id,
+                problem_type_mastery=[],
+                concept_mastery=[],
+                recent_evidence=RecentTrendsRead(
+                    total_attempts_past_7_days=0,
+                    total_evidence_past_7_days=0,
+                    scored_evidence_past_7_days=0,
+                    recent_average_score=0.0,
+                    previous_average_score=None,
+                    correct_rate=None,
+                    score_delta=None,
+                    trend_direction="INSUFFICIENT_DATA",
+                ),
+                evidence_sources=EvidenceSourceSummaryRead(),
+                verified_root_causes=[],
+                repair_summary=RepairSummaryRead(),
+                reviews_due=ReviewDueSummaryRead(),
+                assignment_summary=StudentAssignmentSummaryRead(
+                    total_assigned=0,
+                    not_started_count=0,
+                    in_progress_count=0,
+                    submitted_count=0,
+                    graded_count=0,
+                    overdue_count=0,
+                    completion_rate=100.0,
+                    average_score=None,
+                ),
+                alerts=[],
+            )
+
         # 1. ProblemType Mastery
         pt_m_query = (
             select(StudentProblemTypeMastery, ProblemType)
             .join(ProblemType, ProblemType.id == StudentProblemTypeMastery.problem_type_id)
-            .where(StudentProblemTypeMastery.student_id == student_id)
-        )
-        if subject_id:
-            pt_m_query = (
-                pt_m_query
-                .join(Topic, Topic.id == ProblemType.topic_id)
-                .join(Chapter, Chapter.id == Topic.chapter_id)
-                .where(Chapter.subject_id == subject_id)
+            .join(Topic, Topic.id == ProblemType.topic_id)
+            .join(Chapter, Chapter.id == Topic.chapter_id)
+            .where(
+                StudentProblemTypeMastery.student_id == student_id,
+                Chapter.subject_id.in_(list(scoped_subject_ids)),
             )
+        )
         pt_rows = list(self.session.execute(pt_m_query).all())
         pt_mastery_list = [
             StudentMasteryItemRead(
@@ -1911,10 +2118,11 @@ class ClassAnalyticsService:
         c_m_query = (
             select(StudentConceptMastery, Concept)
             .join(Concept, Concept.id == StudentConceptMastery.concept_id)
-            .where(StudentConceptMastery.student_id == student_id)
+            .where(
+                StudentConceptMastery.student_id == student_id,
+                Concept.subject_id.in_(list(scoped_subject_ids)),
+            )
         )
-        if subject_id:
-            c_m_query = c_m_query.where(Concept.subject_id == subject_id)
         c_rows = list(self.session.execute(c_m_query).all())
         c_mastery_list = [
             StudentMasteryItemRead(
@@ -1938,9 +2146,8 @@ class ClassAnalyticsService:
         st_ev_query = select(LearningEvidenceEvent).where(
             LearningEvidenceEvent.classroom_id == classroom.id,
             LearningEvidenceEvent.student_id == student_id,
+            LearningEvidenceEvent.subject_id.in_(list(scoped_subject_ids)),
         )
-        if subject_id:
-            st_ev_query = st_ev_query.where(LearningEvidenceEvent.subject_id == subject_id)
 
         st_events_14d = list(
             self.session.scalars(
@@ -2007,7 +2214,7 @@ class ClassAnalyticsService:
                 LearningEvidenceEvent.classroom_id == classroom.id,
                 LearningEvidenceEvent.student_id == student_id,
                 LearningEvidenceEvent.source_kind == LearningEvidenceSourceKind.PRACTICE_QUESTION,
-                *((LearningEvidenceEvent.subject_id == subject_id,) if subject_id else ()),
+                LearningEvidenceEvent.subject_id.in_(list(scoped_subject_ids)),
             )
         ) or 0
         asgn_ev_count = self.session.scalar(
@@ -2015,7 +2222,7 @@ class ClassAnalyticsService:
                 LearningEvidenceEvent.classroom_id == classroom.id,
                 LearningEvidenceEvent.student_id == student_id,
                 LearningEvidenceEvent.source_kind == LearningEvidenceSourceKind.ASSIGNMENT_CANONICAL_QUESTION,
-                *((LearningEvidenceEvent.subject_id == subject_id,) if subject_id else ()),
+                LearningEvidenceEvent.subject_id.in_(list(scoped_subject_ids)),
             )
         ) or 0
         mat_ev_count = self.session.scalar(
@@ -2023,7 +2230,7 @@ class ClassAnalyticsService:
                 LearningEvidenceEvent.classroom_id == classroom.id,
                 LearningEvidenceEvent.student_id == student_id,
                 LearningEvidenceEvent.source_kind == LearningEvidenceSourceKind.TEACHER_MATERIAL_ITEM,
-                *((LearningEvidenceEvent.subject_id == subject_id,) if subject_id else ()),
+                LearningEvidenceEvent.subject_id.in_(list(scoped_subject_ids)),
             )
         ) or 0
         evidence_sources = EvidenceSourceSummaryRead(
@@ -2047,11 +2254,11 @@ class ClassAnalyticsService:
             .where(
                 RootCauseVerificationTarget.outcome == RootCauseVerificationOutcome.SUPPORTED,
                 RootCauseVerification.status == RootCauseVerificationStatus.COMPLETED,
+                RootCauseDiagnosis.classroom_id == classroom.id,
                 RootCauseDiagnosis.student_id == student_id,
+                RootCauseDiagnosis.subject_id.in_(list(scoped_subject_ids)),
             )
         )
-        if subject_id:
-            st_v_query = st_v_query.where(RootCauseDiagnosis.subject_id == subject_id)
 
         v_targets = list(self.session.execute(st_v_query).all())
         verified_root_causes: list[VerifiedRootCauseMetricRead] = []
@@ -2082,11 +2289,18 @@ class ClassAnalyticsService:
             )
 
         # 6. Adaptive Repair Summary
-        st_rep_query = select(AdaptiveRepairSession).where(
-            AdaptiveRepairSession.student_id == student_id
+        st_rep_query = (
+            select(AdaptiveRepairSession)
+            .join(
+                RootCauseDiagnosis,
+                RootCauseDiagnosis.id == AdaptiveRepairSession.diagnosis_id,
+            )
+            .where(
+                AdaptiveRepairSession.student_id == student_id,
+                RootCauseDiagnosis.classroom_id == classroom.id,
+                RootCauseDiagnosis.subject_id.in_(list(scoped_subject_ids)),
+            )
         )
-        if subject_id:
-            st_rep_query = st_rep_query.where(AdaptiveRepairSession.subject_id == subject_id)
         st_repairs = list(self.session.scalars(st_rep_query).all())
         rep_active = sum(1 for s in st_repairs if s.status == AdaptiveRepairStatus.ACTIVE)
         rep_completed = sum(1 for s in st_repairs if s.status == AdaptiveRepairStatus.COMPLETED)
@@ -2104,18 +2318,18 @@ class ClassAnalyticsService:
         )
 
         # 7. Reviews Due
-        st_rs_query = select(ReviewSchedule).where(ReviewSchedule.student_id == student_id)
-        if subject_id:
-            st_rs_query = (
-                st_rs_query
-                .outerjoin(Concept, Concept.id == ReviewSchedule.concept_id)
-                .outerjoin(ProblemType, ProblemType.id == ReviewSchedule.problem_type_id)
-                .outerjoin(Topic, Topic.id == ProblemType.topic_id)
-                .outerjoin(Chapter, Chapter.id == Topic.chapter_id)
-                .where(
-                    (Concept.subject_id == subject_id) | (Chapter.subject_id == subject_id)
-                )
+        st_rs_query = (
+            select(ReviewSchedule)
+            .where(ReviewSchedule.student_id == student_id)
+            .outerjoin(Concept, Concept.id == ReviewSchedule.concept_id)
+            .outerjoin(ProblemType, ProblemType.id == ReviewSchedule.problem_type_id)
+            .outerjoin(Topic, Topic.id == ProblemType.topic_id)
+            .outerjoin(Chapter, Chapter.id == Topic.chapter_id)
+            .where(
+                (Concept.subject_id.in_(list(scoped_subject_ids)))
+                | (Chapter.subject_id.in_(list(scoped_subject_ids)))
             )
+        )
         st_schedules = list(self.session.scalars(st_rs_query).all())
         due_now_s = [
             rs for rs in st_schedules
@@ -2141,10 +2355,9 @@ class ClassAnalyticsService:
                 Assignment.classroom_id == classroom.id,
                 Assignment.status.in_([AssignmentStatus.PUBLISHED, AssignmentStatus.CLOSED]),
                 StudentAssignment.student_id == student_id,
+                Assignment.subject_id.in_(list(scoped_subject_ids)),
             )
         )
-        if subject_id:
-            st_sa_query = st_sa_query.where(Assignment.subject_id == subject_id)
         st_asgn_rows = list(self.session.execute(st_sa_query).all())
 
         st_total_assigned = len(st_asgn_rows)
@@ -2396,6 +2609,50 @@ class ClassAnalyticsService:
                     )
                 )
 
+        # LearningOutcome target performance
+        alo_lo_ids = set(
+            self.session.scalars(
+                select(AssignmentLearningObjective.learning_outcome_id).where(
+                    AssignmentLearningObjective.assignment_id == assignment_id
+                )
+            ).all()
+        )
+        amilo_lo_ids = set(
+            self.session.scalars(
+                select(AssignmentMaterialItemLearningOutcome.learning_outcome_id)
+                .join(
+                    AssignmentMaterialItem,
+                    AssignmentMaterialItem.id == AssignmentMaterialItemLearningOutcome.assignment_material_item_id,
+                )
+                .where(AssignmentMaterialItem.assignment_id == assignment_id)
+            ).all()
+        )
+        lo_ids = list(alo_lo_ids | amilo_lo_ids)
+        target_los: list[AssignmentTargetPerformanceRead] = []
+        if lo_ids:
+            los = list(
+                self.session.scalars(
+                    select(LearningOutcome)
+                    .where(LearningOutcome.id.in_(lo_ids))
+                    .order_by(
+                        LearningOutcome.order_index.nulls_last(),
+                        LearningOutcome.code.asc(),
+                        LearningOutcome.id.asc(),
+                    )
+                ).all()
+            )
+            for lo in los:
+                # Direct LearningEvidence currently maps Concept/ProblemType only; LO performance is intentionally not inferred.
+                target_los.append(
+                    AssignmentTargetPerformanceRead(
+                        target_id=lo.id,
+                        target_name=lo.description,
+                        target_code=lo.code,
+                        average_score=None,
+                        evidence_count=0,
+                    )
+                )
+
         return AssignmentAnalyticsRead(
             assignment_id=assignment_id,
             title=assignment.title,
@@ -2411,7 +2668,7 @@ class ClassAnalyticsService:
             average_score=avg_score,
             target_problem_types=target_pts,
             target_concepts=target_concepts,
-            target_learning_outcomes=[],
+            target_learning_outcomes=target_los,
             student_rows=student_rows,
         )
 

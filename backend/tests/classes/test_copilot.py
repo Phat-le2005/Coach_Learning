@@ -10,6 +10,7 @@ from sqlalchemy.orm import Session
 from app.ai.dependencies import get_ai_gateway
 from app.ai.gateway import AIGateway
 from app.ai.mock_provider import MockAIProvider
+from app.assignments.models import Assignment, AssignmentStatus, AssignmentType
 from app.classes.copilot_schemas import (
     TeacherCopilotAIOutput,
     TeacherCopilotRead,
@@ -136,6 +137,17 @@ def test_copilot_query_weak_problem_types_ai_success(
     db_session.flush()
     db_session.add(TeacherClassroom(teacher_id=t_prof.id, classroom_id=classroom.id, role="OWNER"))
     db_session.add(StudentEnrollment(student_id=s_prof.id, classroom_id=classroom.id, status=EnrollmentStatus.ACTIVE))
+    db_session.add(
+        Assignment(
+            classroom_id=classroom.id,
+            subject_id=subject.id,
+            title="Bài tập dạng bài",
+            assignment_type=AssignmentType.SAME_SET,
+            status=AssignmentStatus.DRAFT,
+            question_count=5,
+            created_by=t_user.id,
+        )
+    )
 
     # Student is weak in pt_weak (mastery 0.32 < 0.50 after 4 attempts)
     now = datetime.now(timezone.utc)
@@ -398,6 +410,17 @@ def test_copilot_deterministic_fallback_when_ai_gateway_fails(
     db_session.flush()
     db_session.add(TeacherClassroom(teacher_id=t_prof.id, classroom_id=classroom.id, role="OWNER"))
     db_session.add(StudentEnrollment(student_id=s_prof.id, classroom_id=classroom.id, status=EnrollmentStatus.ACTIVE))
+    db_session.add(
+        Assignment(
+            classroom_id=classroom.id,
+            subject_id=subject.id,
+            title="Bài tập dạng bài",
+            assignment_type=AssignmentType.SAME_SET,
+            status=AssignmentStatus.DRAFT,
+            question_count=5,
+            created_by=t_user.id,
+        )
+    )
 
     # Student weak in pt
     now = datetime.now(timezone.utc)
