@@ -13,17 +13,29 @@ from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.pool import ConnectionPoolEntry, StaticPool
 from sqlalchemy.schema import CreateSchema, DropSchema
 
-from app.core.config import Settings
+from app.core.config import Settings, get_settings
 from app.application import create_app
 from app.database.session import get_db
 from tests.migrations import upgrade_test_schema
 
 
 @pytest.fixture(autouse=True)
-def isolate_environment(monkeypatch: pytest.MonkeyPatch) -> None:
+def isolate_environment(
+    monkeypatch: pytest.MonkeyPatch,
+) -> Iterator[None]:
+    get_settings.cache_clear()
+
     for field_name in Settings.model_fields:
         monkeypatch.delenv(field_name.upper(), raising=False)
         monkeypatch.delenv(field_name, raising=False)
+
+    monkeypatch.setenv("APP_ENV", "test")
+    monkeypatch.setenv("DATABASE_NAME", "edums_test")
+    monkeypatch.setenv("DATABASE_USER", "test_user")
+
+    yield
+
+    get_settings.cache_clear()
 
 
 @pytest.fixture

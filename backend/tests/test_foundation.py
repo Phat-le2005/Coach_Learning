@@ -37,6 +37,24 @@ def test_database_settings_come_from_environment(monkeypatch: pytest.MonkeyPatch
     assert configured.database_url.username == "custom_user"
 
 
+def test_default_test_environment_has_required_database_settings() -> None:
+    configured = Settings(_env_file=None)
+
+    assert configured.app_env == "test"
+    assert configured.database_name == "edums_test"
+    assert configured.database_user == "test_user"
+
+
+def test_database_name_and_user_are_required_without_test_fixture_values(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.delenv("DATABASE_NAME", raising=False)
+    monkeypatch.delenv("DATABASE_USER", raising=False)
+
+    with pytest.raises(ValidationError):
+        Settings(_env_file=None)
+
+
 def test_frontend_url_requires_an_origin() -> None:
     with pytest.raises(ValidationError):
         Settings(
