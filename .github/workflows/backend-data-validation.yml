@@ -59,4 +59,4 @@ jobs:
 
       - name: Run application and migration tests
         run: |
-          pytest tests/teacher_materials/ tests/learning_evidence/ tests/assignments/ tests/mastery/ tests/knowledge_gap/ tests/misconceptions/ tests/diagnostics/ tests/recommendations/ tests/repair/ tests/review/ tests/learning/ tests/practice/ tests/question_supply/ tests/question_acquisition/ tests/question_validation/ tests/auth/test_migration.py -v --tb=short
+          pytest tests/classes/ tests/teacher_materials/ tests/learning_evidence/ tests/assignments/ tests/mastery/ tests/knowledge_gap/ tests/misconceptions/ tests/diagnostics/ tests/recommendations/ tests/repair/ tests/review/ tests/learning/ tests/practice/ tests/question_supply/ tests/question_acquisition/ tests/question_validation/ tests/auth/test_migration.py -v --tb=short

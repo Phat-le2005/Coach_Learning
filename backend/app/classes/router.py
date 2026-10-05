@@ -8,10 +8,12 @@ from app.auth.dependencies import require_role
 from app.ai.dependencies import get_ai_gateway
 from app.ai.gateway import AIGateway
 from app.classes.analytics_schemas import (
+    AssignmentAnalyticsRead,
     ClassroomAlertsRead,
     ClassroomAnalyticsDashboardRead,
     ClassroomHeatmapRead,
     HeatmapView,
+    StudentLearningAnalyticsRead,
 )
 from app.classes.analytics_service import ClassAnalyticsService
 from app.classes.copilot_schemas import TeacherCopilotRead, TeacherCopilotRequest
@@ -112,9 +114,12 @@ def get_classroom_analytics(
     id: UUID,
     user: TeacherUser,
     service: Annotated[ClassAnalyticsService, Depends(get_analytics_service)],
+    subject_id: Annotated[UUID | None, Query()] = None,
     include_synthetic: Annotated[bool, Query()] = False,
 ) -> ClassroomAnalyticsDashboardRead:
-    return service.get_classroom_dashboard(user.id, id, include_synthetic=include_synthetic)
+    return service.get_classroom_dashboard(
+        user.id, id, subject_id=subject_id, include_synthetic=include_synthetic
+    )
 
 
 @teacher_router.get("/{id}/heatmap", response_model=ClassroomHeatmapRead)
@@ -140,9 +145,42 @@ def get_classroom_alerts(
     id: UUID,
     user: TeacherUser,
     service: Annotated[ClassAnalyticsService, Depends(get_analytics_service)],
+    subject_id: Annotated[UUID | None, Query()] = None,
     include_synthetic: Annotated[bool, Query()] = False,
 ) -> ClassroomAlertsRead:
-    return service.get_classroom_alerts(user.id, id, include_synthetic=include_synthetic)
+    return service.get_classroom_alerts(
+        user.id, id, subject_id=subject_id, include_synthetic=include_synthetic
+    )
+
+
+@teacher_router.get("/{id}/students/{student_id}/analytics", response_model=StudentLearningAnalyticsRead)
+def get_student_learning_analytics(
+    id: UUID,
+    student_id: UUID,
+    user: TeacherUser,
+    service: Annotated[ClassAnalyticsService, Depends(get_analytics_service)],
+    subject_id: Annotated[UUID | None, Query()] = None,
+) -> StudentLearningAnalyticsRead:
+    return service.get_student_learning_analytics(
+        teacher_user_id=user.id,
+        classroom_id=id,
+        student_id=student_id,
+        subject_id=subject_id,
+    )
+
+
+@teacher_router.get("/{id}/assignments/{assignment_id}/analytics", response_model=AssignmentAnalyticsRead)
+def get_assignment_analytics(
+    id: UUID,
+    assignment_id: UUID,
+    user: TeacherUser,
+    service: Annotated[ClassAnalyticsService, Depends(get_analytics_service)],
+) -> AssignmentAnalyticsRead:
+    return service.get_assignment_analytics(
+        teacher_user_id=user.id,
+        classroom_id=id,
+        assignment_id=assignment_id,
+    )
 
 
 @teacher_router.post("/{id}/copilot", response_model=TeacherCopilotRead)

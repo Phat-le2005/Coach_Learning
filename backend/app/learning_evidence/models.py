@@ -25,6 +25,8 @@ class LearningEvidenceEvent(Base):
         CheckConstraint("hint_count >= 0", name="hint_count_nonnegative"),
         Index("ix_learning_evidence_student_occurred", "student_id", "occurred_at"),
         Index("ix_learning_evidence_assignment", "assignment_id", "occurred_at"),
+        Index("ix_learning_evidence_classroom_occurred", "classroom_id", "occurred_at"),
+        Index("ix_learning_evidence_classroom_subject_occurred", "classroom_id", "subject_id", "occurred_at"),
     )
     id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, default=uuid4)
     student_id: Mapped[UUID] = mapped_column(ForeignKey("student_profiles.id", ondelete="CASCADE"), nullable=False)

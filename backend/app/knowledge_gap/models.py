@@ -50,6 +50,7 @@ class RootCauseDiagnosis(Base):
         ),
         Index("ix_root_cause_student_created", "student_id", "created_at"),
         Index("ix_root_cause_subject_type", "subject_id", "diagnosis_type"),
+        Index("ix_root_cause_classroom_created", "classroom_id", "created_at"),
     )
 
     id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, default=uuid4)

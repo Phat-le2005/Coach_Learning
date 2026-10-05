@@ -90,12 +90,12 @@ class TeacherCopilotService:
 
         # 3. Class Analytics Dashboard
         dashboard = self.analytics_service.get_classroom_dashboard(
-            teacher_user_id, classroom_id, include_synthetic
+            teacher_user_id, classroom_id, subject_id=subject_id, include_synthetic=include_synthetic
         )
 
         # 4. Intervention Alerts
         alerts_data = self.analytics_service.get_classroom_alerts(
-            teacher_user_id, classroom_id, include_synthetic
+            teacher_user_id, classroom_id, subject_id=subject_id, include_synthetic=include_synthetic
         )
 
         # 5. Subject & Curriculum Context
@@ -152,15 +152,31 @@ class TeacherCopilotService:
         analytics_lines = [
             f"- Sĩ số lớp: {len(students_info)} học sinh",
             (
-                f"- Hoạt động 7 ngày qua: {dashboard.recent_trends.total_attempts_past_7_days} lượt làm bài, "
+                f"- Hoạt động 7 ngày qua: {dashboard.recent_trends.total_evidence_past_7_days} minh chứng học tập, "
                 f"điểm TB: {dashboard.recent_trends.recent_average_score:.2f} "
                 f"(Xu hướng: {dashboard.recent_trends.trend_direction})"
             ),
             (
-                f"- Tỷ lệ hoàn thành nhiệm vụ tự học: {dashboard.study_completion.completion_rate}% "
-                f"({dashboard.study_completion.completed_tasks_count}/{dashboard.study_completion.assigned_tasks_count} nhiệm vụ)"
+                f"- Tỷ lệ hoàn thành bài tập giao: {dashboard.assignment_completion.completion_rate}% "
+                f"({dashboard.assignment_completion.submitted_count + dashboard.assignment_completion.graded_count}/{dashboard.assignment_completion.assigned_student_count} lượt làm bài, quá hạn: {dashboard.assignment_completion.overdue_count})"
+            ),
+            (
+                f"- Ôn tập lặp lại ngắt quãng (Spaced Reviews): {dashboard.review_due.due_now_count} nội dung đến hạn "
+                f"({dashboard.review_due.students_due_count} học sinh cần ôn), {dashboard.review_due.due_next_3_days_count} nội dung đến hạn trong 3 ngày tới"
+            ),
+            (
+                f"- Phiên sửa lỗi thích ứng (Adaptive Repair): {dashboard.repair_summary.completed_count} phiên đã hoàn thành "
+                f"(Tỷ lệ giải quyết triệt để: {dashboard.repair_summary.resolution_rate}%)"
+            ),
+            (
+                f"- Nguồn dữ liệu minh chứng: {dashboard.evidence_sources.practice_count} luyện tập, "
+                f"{dashboard.evidence_sources.assignment_question_count} bài tập chính thức, "
+                f"{dashboard.evidence_sources.teacher_material_count} học liệu giáo viên"
             ),
         ]
+        if dashboard.verified_root_causes:
+            rc_names = [f"{rc.target_name} ({rc.affected_student_count} hs)" for rc in dashboard.verified_root_causes[:3]]
+            analytics_lines.append(f"- Nguyên nhân gốc rễ đã xác minh (Verified Root Causes): {'; '.join(rc_names)}")
         if dashboard.chapter_progress:
             chp_parts = [f"{c.chapter_name}: {c.average_mastery:.2f}" for c in dashboard.chapter_progress[:3]]
             analytics_lines.append(f"- Tiến độ chương: {'; '.join(chp_parts)}")
