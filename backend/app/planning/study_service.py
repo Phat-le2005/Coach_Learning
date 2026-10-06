@@ -134,6 +134,57 @@ class StudyPlanService:
             explanation=explanation,
         )
 
+    def get_today_plan_snapshot(
+        self,
+        student_id: UUID,
+        *,
+        as_of: date | None = None,
+    ) -> StudyDayRead | None:
+        """Strictly read-only query helper for today's study plan snapshot.
+        
+        Zero DB mutations: does not create plan, does not skip past tasks,
+        does not recalculate missing tasks, and does not invoke explanation AI.
+        """
+        current_date = as_of or date.today()
+        plan = self.session.scalar(
+            select(StudyPlan)
+            .where(
+                StudyPlan.student_id == student_id,
+                StudyPlan.status == StudyPlanStatus.ACTIVE,
+            )
+            .order_by(StudyPlan.created_at.desc())
+        )
+        if plan is None:
+            return None
+
+        tasks = self._query_tasks(plan.id, planned_date=current_date)
+        daily_minutes = self._get_daily_budget(plan)
+        total_estimated = sum(t.estimated_duration_minutes for t in tasks)
+        completed_count = sum(1 for t in tasks if t.status == StudyTaskStatus.COMPLETED)
+
+        days_to_exam: int | None = None
+        if plan.target_date:
+            days_to_exam = (plan.target_date - current_date).days
+
+        notice = None
+        if days_to_exam is not None and days_to_exam <= 14:
+            notice = f"Kỳ thi đến gần (còn {days_to_exam} ngày). Tăng cường luyện đề và mini-test!"
+
+        pt_ids = {t.problem_type_id for t in tasks if t.problem_type_id is not None}
+        hierarchy_map = self._get_hierarchy_map(pt_ids)
+
+        return StudyDayRead(
+            date=current_date,
+            available_daily_minutes=daily_minutes,
+            total_estimated_minutes=total_estimated,
+            tasks=[self._to_task_read(t, hierarchy_map) for t in tasks],
+            completed_count=completed_count,
+            total_count=len(tasks),
+            days_to_exam=days_to_exam,
+            notice=notice,
+            explanation=None,
+        )
+
     def get_today_explanation(
         self,
         student_id: UUID,
