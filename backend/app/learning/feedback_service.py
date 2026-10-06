@@ -59,6 +59,31 @@ class LearningFeedbackService:
         self.recommendations = recommendation_service or QuestionRecommendationService(session)
         self.lineage_service = lineage_service or RepairLineageExposureService(session)
 
+    def get_feedback_for_adaptive(
+        self,
+        adaptive_session_id: UUID,
+    ) -> LearningFeedbackDecisionRead | None:
+        """Pure read query for an already persisted feedback decision."""
+        adaptive = self.session.get(AdaptiveRepairSession, adaptive_session_id)
+        if adaptive is None:
+            raise ApplicationError(404, "ADAPTIVE_REPAIR_NOT_FOUND", "Adaptive repair session was not found.")
+
+        if adaptive.status != AdaptiveRepairStatus.COMPLETED or adaptive.outcome == AdaptiveRepairOutcome.PENDING:
+            raise ApplicationError(
+                409,
+                "ADAPTIVE_REPAIR_NOT_COMPLETED",
+                "Learning feedback cannot be resolved for an incomplete adaptive repair session.",
+            )
+
+        existing = self.session.scalar(
+            select(LearningFeedbackDecision).where(
+                LearningFeedbackDecision.adaptive_repair_session_id == adaptive.id
+            )
+        )
+        if existing is None:
+            return None
+        return self._build_read(existing, adaptive)
+
     def resolve_feedback(
         self,
         adaptive_session_id: UUID,

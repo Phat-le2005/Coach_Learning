@@ -349,26 +349,24 @@ def test_parent_ai_summary_api_endpoints(
 
     headers = parent_bearer(p_user)
 
-    # 1. GET /parent/students/{student_id}/ai-summary
+    # 1. GET is rejected (AI generation requires explicit POST)
     res_get = db_client.get(f"/parent/students/{s_prof.id}/ai-summary", headers=headers)
-    assert res_get.status_code == 200
-    data_get = res_get.json()
-    assert data_get["student_id"] == str(s_prof.id)
-    assert "progress" in data_get
-    assert "current_challenge" in data_get
-    assert "next_week" in data_get
-    assert isinstance(data_get["how_parent_can_help"], list)
-    assert len(data_get["how_parent_can_help"]) <= 2
+    assert res_get.status_code == 405
 
     # 2. POST /parent/students/{student_id}/ai-summary
     res_post = db_client.post(f"/parent/students/{s_prof.id}/ai-summary", headers=headers)
     assert res_post.status_code == 200
     data_post = res_post.json()
     assert data_post["student_id"] == str(s_prof.id)
+    assert "progress" in data_post
+    assert "current_challenge" in data_post
+    assert "next_week" in data_post
+    assert isinstance(data_post["how_parent_can_help"], list)
+    assert len(data_post["how_parent_can_help"]) <= 2
 
-    # 3. GET /parents/students/{student_id}/ai-summary (alias)
+    # 3. GET alias is also rejected (405)
     res_alias_get = db_client.get(f"/parents/students/{s_prof.id}/ai-summary", headers=headers)
-    assert res_alias_get.status_code == 200
+    assert res_alias_get.status_code == 405
 
     # 4. POST /parents/students/{student_id}/ai-summary (alias)
     res_alias_post = db_client.post(f"/parents/students/{s_prof.id}/ai-summary", headers=headers)
@@ -423,23 +421,23 @@ def test_parent_ai_summary_authorization_checks(
     teacher_headers = parent_bearer(teacher_user)
 
     # P1 accesses S1 -> 200 OK
-    res_ok = db_client.get(f"/parent/students/{s1_prof.id}/ai-summary", headers=p1_headers)
+    res_ok = db_client.post(f"/parent/students/{s1_prof.id}/ai-summary", headers=p1_headers)
     assert res_ok.status_code == 200
 
     # P1 accesses S2 (inactive) -> 403 Forbidden
-    res_inactive = db_client.get(f"/parent/students/{s2_prof.id}/ai-summary", headers=p1_headers)
+    res_inactive = db_client.post(f"/parent/students/{s2_prof.id}/ai-summary", headers=p1_headers)
     assert res_inactive.status_code == 403
     assert res_inactive.json()["error"]["code"] == "RELATIONSHIP_INACTIVE"
 
     # P2 accesses S1 (unlinked) -> 403 Forbidden
-    res_unlinked = db_client.get(f"/parent/students/{s1_prof.id}/ai-summary", headers=p2_headers)
+    res_unlinked = db_client.post(f"/parent/students/{s1_prof.id}/ai-summary", headers=p2_headers)
     assert res_unlinked.status_code == 403
     assert res_unlinked.json()["error"]["code"] == "NOT_LINKED_TO_STUDENT"
 
     # Teacher accesses parent endpoint -> 403 Forbidden (ROLE_MISMATCH)
-    res_teacher = db_client.get(f"/parent/students/{s1_prof.id}/ai-summary", headers=teacher_headers)
+    res_teacher = db_client.post(f"/parent/students/{s1_prof.id}/ai-summary", headers=teacher_headers)
     assert res_teacher.status_code == 403
 
     # No token -> 401 Unauthorized
-    res_unauth = db_client.get(f"/parent/students/{s1_prof.id}/ai-summary")
+    res_unauth = db_client.post(f"/parent/students/{s1_prof.id}/ai-summary")
     assert res_unauth.status_code == 401

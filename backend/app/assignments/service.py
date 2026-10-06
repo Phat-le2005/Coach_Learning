@@ -250,7 +250,9 @@ class AssignmentService:
         logger.info("Created assignment %s (type=%s)", assignment.id, assignment.assignment_type)
         return self.get_for_teacher(teacher_user_id, assignment.id)
 
-    def list_for_classroom(self, teacher_user_id: UUID, classroom_id: UUID) -> list[AssignmentSummaryRead]:
+    def list_for_classroom(
+        self, teacher_user_id: UUID, classroom_id: UUID, *, offset: int = 0, limit: int = 50
+    ) -> list[AssignmentSummaryRead]:
         teacher = self._teacher_for_user(teacher_user_id)
         self._require_teacher_in_classroom(teacher.id, classroom_id)
 
@@ -258,6 +260,8 @@ class AssignmentService:
             select(Assignment)
             .where(Assignment.classroom_id == classroom_id)
             .order_by(Assignment.created_at.desc(), Assignment.id)
+            .offset(offset)
+            .limit(limit)
         ).all()
 
         return [
@@ -627,7 +631,9 @@ class AssignmentService:
     # Student Operations
     # -------------------------------------------------------------------------
 
-    def list_for_student(self, student_user_id: UUID) -> list[StudentAssignmentRead]:
+    def list_for_student(
+        self, student_user_id: UUID, *, offset: int = 0, limit: int = 50
+    ) -> list[StudentAssignmentRead]:
         student = self._student_for_user(student_user_id)
         records = self.session.scalars(
             select(StudentAssignment)
@@ -638,6 +644,8 @@ class AssignmentService:
                 Assignment.status != AssignmentStatus.DRAFT,
             )
             .order_by(Assignment.start_at.desc(), StudentAssignment.id)
+            .offset(offset)
+            .limit(limit)
         ).all()
 
         results = []

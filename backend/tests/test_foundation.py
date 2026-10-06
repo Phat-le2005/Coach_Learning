@@ -115,7 +115,7 @@ def test_validation_details_are_hidden_in_production(settings: Settings) -> None
 def test_unexpected_error_is_safe_in_production(
     settings: Settings, caplog: pytest.LogCaptureFixture
 ) -> None:
-    production = settings.model_copy(update={"app_env": "production", "debug": True})
+    production = settings.model_copy(update={"app_env": "production", "debug": False})
     application: FastAPI = create_app(production)
 
     @application.get("/test-error")
@@ -185,3 +185,56 @@ def test_debug_logging_preserves_traceback(
     record = caplog.records[-1]
     assert record.exc_info is not None
     assert "development diagnostic" in caplog.text
+
+
+def test_production_rejects_empty_jwt_secret() -> None:
+    with pytest.raises(ValidationError) as exc_info:
+        Settings(
+            _env_file=None,
+            app_env="production",
+            debug=False,
+            database_name="test_db",
+            database_user="test_user",
+            jwt_secret_key="",
+        )
+    assert "JWT_SECRET_KEY must contain at least 32 bytes in production" in str(exc_info.value)
+
+
+def test_production_rejects_short_jwt_secret() -> None:
+    with pytest.raises(ValidationError) as exc_info:
+        Settings(
+            _env_file=None,
+            app_env="production",
+            debug=False,
+            database_name="test_db",
+            database_user="test_user",
+            jwt_secret_key="short-secret",
+        )
+    assert "JWT_SECRET_KEY must contain at least 32 bytes" in str(exc_info.value)
+
+
+def test_production_rejects_debug_true() -> None:
+    with pytest.raises(ValidationError) as exc_info:
+        Settings(
+            _env_file=None,
+            app_env="production",
+            debug=True,
+            database_name="test_db",
+            database_user="test_user",
+            jwt_secret_key="a" * 32,
+        )
+    assert "DEBUG must be false in production" in str(exc_info.value)
+
+
+def test_production_accepts_secure_configuration() -> None:
+    configured = Settings(
+        _env_file=None,
+        app_env="production",
+        debug=False,
+        database_name="prod_db",
+        database_user="prod_user",
+        jwt_secret_key="a" * 32,
+    )
+    assert configured.app_env == "production"
+    assert configured.debug is False
+    assert len(configured.jwt_secret_key.get_secret_value()) == 32

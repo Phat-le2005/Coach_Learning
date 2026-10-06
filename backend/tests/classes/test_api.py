@@ -333,3 +333,30 @@ def test_missing_role_profile_returns_404_without_creating_data(
     db_session.commit()
     response = db_client.get("/students/me/classes", headers=student_headers)
     assert response.status_code == 404 and response.json()["error"]["code"] == "PROFILE_NOT_FOUND"
+
+
+def test_classroom_pagination_bounded(
+    db_client: TestClient,
+    classroom_user_factory: UserFactory,
+    classroom_bearer: BearerFactory,
+) -> None:
+    teacher = classroom_user_factory(Role.TEACHER, "t_pag@example.com")
+    student = classroom_user_factory(Role.STUDENT, "s_pag@example.com")
+    t_headers = classroom_bearer(teacher)
+    s_headers = classroom_bearer(student)
+    classroom = create_classroom(db_client, t_headers)
+
+    # limit > 200 is rejected with 422
+    assert db_client.get("/teacher/classes?limit=201", headers=t_headers).status_code == 422
+    assert db_client.get(f"/teacher/classes/{classroom['id']}/students?limit=201", headers=t_headers).status_code == 422
+    assert db_client.get("/students/me/classes?limit=201", headers=s_headers).status_code == 422
+
+    # offset < 0 is rejected with 422
+    assert db_client.get("/teacher/classes?offset=-1", headers=t_headers).status_code == 422
+    assert db_client.get(f"/teacher/classes/{classroom['id']}/students?offset=-1", headers=t_headers).status_code == 422
+    assert db_client.get("/students/me/classes?offset=-1", headers=s_headers).status_code == 422
+
+    # valid pagination works
+    assert db_client.get("/teacher/classes?limit=10&offset=0", headers=t_headers).status_code == 200
+    assert db_client.get(f"/teacher/classes/{classroom['id']}/students?limit=10&offset=0", headers=t_headers).status_code == 200
+    assert db_client.get("/students/me/classes?limit=10&offset=0", headers=s_headers).status_code == 200

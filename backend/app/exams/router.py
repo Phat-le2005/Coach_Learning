@@ -10,6 +10,7 @@ from app.auth.dependencies import get_current_user, require_any_role, require_ro
 from app.core.errors import ErrorResponse
 from app.core.exceptions import ApplicationError
 from app.database.session import get_db
+from app.exams.access_policy import assert_exam_access
 from app.exams.ai_explanation_service import ExamAIExplanationService
 from app.exams.ai_schemas import ExamAIExplanationRead
 from app.exams.analytics_service import ExamAnalyticsService
@@ -116,6 +117,7 @@ def add_exam_section(
     exam = session.get(Exam, exam_id)
     if exam is None:
         raise ApplicationError(404, "EXAM_NOT_FOUND", "Exam not found.")
+    assert_exam_access(user, exam)
 
     bp_dict = payload.blueprint_config.model_dump(mode="json") if payload.blueprint_config else None
     section = ExamSection(
@@ -145,6 +147,11 @@ def generate_from_blueprint(
     service: Annotated[ExamBlueprintService, Depends(get_blueprint_service)],
     blueprint_override: ExamBlueprintConfig | None = None,
 ) -> ExamDetailRead:
+    exam = session.get(Exam, exam_id)
+    if exam is None:
+        raise ApplicationError(404, "EXAM_NOT_FOUND", "Exam not found.")
+    assert_exam_access(user, exam)
+
     service.assemble_exam_questions(exam_id, blueprint_override)
     session.commit()
 
@@ -164,6 +171,7 @@ def publish_exam(
     exam = session.get(Exam, exam_id)
     if exam is None:
         raise ApplicationError(404, "EXAM_NOT_FOUND", "Exam not found.")
+    assert_exam_access(user, exam)
 
     if exam.total_questions == 0:
         raise ApplicationError(
@@ -190,12 +198,19 @@ def list_exams(
     subject_id: Annotated[UUID | None, Query(description="Filter by subject ID")] = None,
     status_filter: Annotated[ExamStatus | None, Query(alias="status")] = None,
     exam_type: Annotated[ExamType | None, Query(description="Filter by exam type")] = None,
+    offset: Annotated[int, Query(ge=0, description="Pagination offset")] = 0,
+    limit: Annotated[int, Query(ge=1, le=200, description="Pagination limit")] = 50,
 ) -> list[ExamRead]:
-    query = select(Exam).order_by(Exam.created_at.desc())
+    query = select(Exam).order_by(Exam.created_at.desc(), Exam.id.desc())
 
     if user.role == Role.STUDENT:
         # Students can only see published exams
         query = query.where(Exam.status == ExamStatus.PUBLISHED)
+    elif user.role == Role.TEACHER:
+        # Teachers can only see exams they created
+        query = query.where(Exam.created_by == user.id)
+        if status_filter:
+            query = query.where(Exam.status == status_filter)
     elif status_filter:
         query = query.where(Exam.status == status_filter)
 
@@ -204,6 +219,7 @@ def list_exams(
     if exam_type:
         query = query.where(Exam.exam_type == exam_type)
 
+    query = query.offset(offset).limit(limit)
     exams = list(session.scalars(query).all())
     return [ExamRead.model_validate(e) for e in exams]
 
@@ -218,6 +234,10 @@ def get_exam_details(
     user: AuthUser,
     session: Annotated[Session, Depends(get_db)],
 ) -> ExamDetailRead:
+    exam = session.get(Exam, exam_id)
+    if exam is None:
+        raise ApplicationError(404, "EXAM_NOT_FOUND", "Exam not found.")
+    assert_exam_access(user, exam)
     return _get_exam_detail(exam_id, session)
 
 
@@ -267,9 +287,22 @@ def check_attempt(
     attempt_id: UUID,
     user: StudentUser,
     service: Annotated[ExamSimulationService, Depends(get_simulation_service)],
+) -> ExamAttemptStatusRead:
+    return service.get_attempt_status(user.id, attempt_id)
+
+
+@router.post(
+    "/attempts/{attempt_id}/finalize-timeout",
+    response_model=ExamAttemptStatusRead,
+    summary="Finalize and score an expired exam attempt",
+)
+def finalize_timeout(
+    attempt_id: UUID,
+    user: StudentUser,
+    service: Annotated[ExamSimulationService, Depends(get_simulation_service)],
     session: Annotated[Session, Depends(get_db)],
 ) -> ExamAttemptStatusRead:
-    result = service.get_attempt_status(user.id, attempt_id)
+    result = service.finalize_timeout(user.id, attempt_id)
     session.commit()
     return result
 
@@ -327,7 +360,7 @@ def get_attempt_hint(
     user: StudentUser,
     service: Annotated[ExamSimulationService, Depends(get_simulation_service)],
 ) -> None:
-    service.assert_hints_allowed(attempt_id)
+    service.assert_hints_allowed(attempt_id, student_user_id=user.id)
     raise ApplicationError(400, "HINT_NOT_APPLICABLE", "Hints are not applicable during exam attempts.")
 
 
@@ -348,20 +381,6 @@ def generate_attempt_ai_explanation(
     - Authorized Teacher of the classroom the student is actively enrolled in.
     - Admin.
     """
-    return explanation_service.generate_explanation(attempt_id, user.id)
-
-
-@router.get(
-    "/attempts/{attempt_id}/ai-explanation",
-    response_model=ExamAIExplanationRead,
-    summary="Retrieve AI diagnostic explanation for an exam attempt",
-)
-def get_attempt_ai_explanation(
-    attempt_id: UUID,
-    user: AuthUser,
-    explanation_service: Annotated[ExamAIExplanationService, Depends(get_ai_explanation_service)],
-) -> ExamAIExplanationRead:
-    """Retrieve pedagogical AI explanation for an exam attempt."""
     return explanation_service.generate_explanation(attempt_id, user.id)
 
 

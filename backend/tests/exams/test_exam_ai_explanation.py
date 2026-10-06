@@ -593,22 +593,22 @@ def test_teacher_and_student_authorization_rules(
 
     # 1. Student owner -> 200 OK
     h_owner = exam_bearer(s_owner)
-    res1 = db_client.get(f"/exams/attempts/{attempt.id}/ai-explanation", headers=h_owner)
+    res1 = db_client.post(f"/exams/attempts/{attempt.id}/ai-explanation", headers=h_owner)
     assert res1.status_code == 200
 
     # 2. Other student -> 403 Forbidden
     h_s_stranger = exam_bearer(s_stranger)
-    res2 = db_client.get(f"/exams/attempts/{attempt.id}/ai-explanation", headers=h_s_stranger)
+    res2 = db_client.post(f"/exams/attempts/{attempt.id}/ai-explanation", headers=h_s_stranger)
     assert res2.status_code == 403
 
     # 3. Enrolled teacher -> 200 OK
     h_t_enrolled = exam_bearer(t_enrolled)
-    res3 = db_client.get(f"/exams/attempts/{attempt.id}/ai-explanation", headers=h_t_enrolled)
+    res3 = db_client.post(f"/exams/attempts/{attempt.id}/ai-explanation", headers=h_t_enrolled)
     assert res3.status_code == 200
 
     # 4. Stranger teacher (not teaching this student) -> 403 Forbidden
     h_t_stranger = exam_bearer(t_stranger)
-    res4 = db_client.get(f"/exams/attempts/{attempt.id}/ai-explanation", headers=h_t_stranger)
+    res4 = db_client.post(f"/exams/attempts/{attempt.id}/ai-explanation", headers=h_t_stranger)
     assert res4.status_code == 403
 
 

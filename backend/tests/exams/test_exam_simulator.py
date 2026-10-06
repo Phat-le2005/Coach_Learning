@@ -629,8 +629,15 @@ def test_mastery_engine_policy_isolation(
     assert c_m is None
     assert pt_m is None
 
-    # 2. Now submit with explicit policy: update_mastery=True
-    res_explicit = sim_service.submit_exam(student_user.id, attempt_id, update_mastery=True)
+    # 2. Now take exam with explicit policy: update_mastery=True
+    start_info_2 = sim_service.start_exam(student_user.id, exam.id)
+    attempt_id_2 = start_info_2.attempt_id
+    sim_service.record_response(
+        student_user.id,
+        attempt_id_2,
+        ExamResponseSubmitRequest(question_id=q1.id, student_answer="A"),
+    )
+    res_explicit = sim_service.submit_exam(student_user.id, attempt_id_2, update_mastery=True)
     db_session.commit()
 
     assert res_explicit.official_mastery_updated is True
@@ -640,5 +647,14 @@ def test_mastery_engine_policy_isolation(
     pt_m_updated = db_session.scalar(select(StudentProblemTypeMastery).where(StudentProblemTypeMastery.student_id == s_prof.id))
     assert c_m_updated is not None
     assert pt_m_updated is not None
-    assert c_m_updated.attempt_count >= 1
-    assert pt_m_updated.attempt_count >= 1
+    assert c_m_updated.attempt_count == 1
+    assert pt_m_updated.attempt_count == 1
+
+    # 3. Duplicate submit guard: submitting again does not double-apply mastery
+    res_duplicate = sim_service.submit_exam(student_user.id, attempt_id_2, update_mastery=True)
+    db_session.commit()
+    assert res_duplicate.official_mastery_updated is False
+    db_session.refresh(c_m_updated)
+    db_session.refresh(pt_m_updated)
+    assert c_m_updated.attempt_count == 1
+    assert pt_m_updated.attempt_count == 1

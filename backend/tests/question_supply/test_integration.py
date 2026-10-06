@@ -203,13 +203,29 @@ def test_feedback_loop_creates_supply_gap(
     db_session.add(adaptive)
     db_session.commit()
 
-    # Call next-action endpoint
-    resp = db_client.get(
+    # Calling GET before resolution returns 409
+    resp_unresolved = db_client.get(
+        f"/repair/adaptive/{adaptive.id}/next-action",
+        headers=headers,
+    )
+    assert resp_unresolved.status_code == 409
+    assert resp_unresolved.json()["error"]["code"] == "LEARNING_FEEDBACK_NOT_RESOLVED"
+
+    # Call POST next-action endpoint to resolve
+    resp = db_client.post(
         f"/repair/adaptive/{adaptive.id}/next-action",
         headers=headers,
     )
     assert resp.status_code == 200
     assert resp.json()["action"] == "QUESTION_SUPPLY_GAP"
+
+    # Subsequent GET returns the resolved decision
+    resp_get = db_client.get(
+        f"/repair/adaptive/{adaptive.id}/next-action",
+        headers=headers,
+    )
+    assert resp_get.status_code == 200
+    assert resp_get.json()["action"] == "QUESTION_SUPPLY_GAP"
 
     # Verify QuestionSupplyGap exists and observation is linked
     gap = db_session.scalar(

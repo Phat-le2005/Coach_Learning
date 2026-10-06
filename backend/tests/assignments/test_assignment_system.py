@@ -710,3 +710,38 @@ def test_unenrolled_student_cannot_access_assignment(
     assert outsider_res.status_code == 404
     assert "ASSIGNMENT_NOT_FOUND" in outsider_res.text
 
+
+def test_assignment_pagination_bounded(
+    db_client: TestClient,
+    db_session: Session,
+    assignment_user_factory: Callable[[Role, str], User],
+    assignment_bearer: Callable[[User], dict[str, str]],
+    teacher_profile: Callable[[User], TeacherProfile],
+) -> None:
+    teacher_user = assignment_user_factory(Role.TEACHER, "t_asgn_pag@example.com")
+    student_user = assignment_user_factory(Role.STUDENT, "s_asgn_pag@example.com")
+    t_prof = teacher_profile(teacher_user)
+
+    classroom = Classroom(
+        name="12A8 Pagination Class", academic_year="2026-2027", grade_level=12, created_by=teacher_user.id
+    )
+    db_session.add(classroom)
+    db_session.flush()
+    db_session.add(TeacherClassroom(teacher_id=t_prof.id, classroom_id=classroom.id, role="OWNER"))
+    db_session.commit()
+
+    t_headers = assignment_bearer(teacher_user)
+    s_headers = assignment_bearer(student_user)
+
+    # limit > 200 is rejected with 422
+    assert db_client.get(f"/teacher/classes/{classroom.id}/assignments?limit=201", headers=t_headers).status_code == 422
+    assert db_client.get("/students/me/assignments?limit=201", headers=s_headers).status_code == 422
+
+    # offset < 0 is rejected with 422
+    assert db_client.get(f"/teacher/classes/{classroom.id}/assignments?offset=-1", headers=t_headers).status_code == 422
+    assert db_client.get("/students/me/assignments?offset=-1", headers=s_headers).status_code == 422
+
+    # valid pagination works
+    assert db_client.get(f"/teacher/classes/{classroom.id}/assignments?limit=10&offset=0", headers=t_headers).status_code == 200
+    assert db_client.get("/students/me/assignments?limit=10&offset=0", headers=s_headers).status_code == 200
+

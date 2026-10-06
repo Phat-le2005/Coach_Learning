@@ -2,7 +2,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
-from pydantic import AnyHttpUrl, Field, SecretStr, field_validator
+from pydantic import AnyHttpUrl, Field, SecretStr, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy import URL
 
@@ -85,6 +85,16 @@ class Settings(BaseSettings):
         ):
             raise ValueError("FRONTEND_URL must be an HTTP(S) origin without credentials or a path")
         return value
+
+    @model_validator(mode="after")
+    def validate_production_config(self) -> "Settings":
+        if self.app_env == "production":
+            jwt_secret = self.jwt_secret_key.get_secret_value()
+            if not jwt_secret or len(jwt_secret.encode("utf-8")) < 32:
+                raise ValueError("JWT_SECRET_KEY must contain at least 32 bytes in production")
+            if self.debug:
+                raise ValueError("DEBUG must be false in production")
+        return self
 
     @property
     def frontend_origin(self) -> str:

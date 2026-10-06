@@ -4,7 +4,7 @@ from datetime import datetime, timedelta, timezone
 import logging
 from uuid import UUID
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session, selectinload
 
 from app.core.exceptions import ApplicationError
@@ -84,6 +84,11 @@ class ExamSimulationService:
         exam_id: UUID,
     ) -> ExamAttemptStartRead:
         student = self._require_student(student_user_id)
+        if self.session.get_bind().dialect.name == "postgresql":
+            self.session.execute(
+                select(func.pg_advisory_xact_lock(func.hashtext(f"edums:exam-start:{student.id}:{exam_id}")))
+            )
+
         exam = self.session.scalar(
             select(Exam)
             .options(
@@ -159,6 +164,7 @@ class ExamSimulationService:
             select(ExamAttempt)
             .options(selectinload(ExamAttempt.exam))
             .where(ExamAttempt.id == attempt_id, ExamAttempt.student_id == student.id)
+            .with_for_update()
         )
         if attempt is None:
             raise ApplicationError(404, "ATTEMPT_NOT_FOUND", "Exam attempt not found.")
@@ -178,7 +184,7 @@ class ExamSimulationService:
             self.session.flush()
             self.scoring_service.score_attempt(attempt.id)
             raise ApplicationError(
-                400,
+                409,
                 "EXAM_TIMED_OUT",
                 "Exam duration has expired. Attempt has been automatically submitted.",
             )
@@ -239,7 +245,7 @@ class ExamSimulationService:
         return ExamResponseRead.model_validate(response)
 
     # --------------------------------------------------------------------------
-    # 3. Check Attempt Status & Timer
+    # 3. Check Attempt Status & Timer (Read-only Projection)
     # --------------------------------------------------------------------------
 
     def get_attempt_status(
@@ -263,11 +269,10 @@ class ExamSimulationService:
         expires_at = _as_utc(attempt.started_at) + timedelta(minutes=attempt.exam.duration_minutes)
         time_rem = max(0, int((expires_at - now).total_seconds()))
 
-        # If expired and still IN_PROGRESS, auto-submit
+        # Pure read projection: if expired and still IN_PROGRESS, project TIMED_OUT without DB mutation
+        effective_status = attempt.status
         if time_rem == 0 and attempt.status == ExamAttemptStatus.IN_PROGRESS:
-            attempt.status = ExamAttemptStatus.TIMED_OUT
-            self.session.flush()
-            self.scoring_service.score_attempt(attempt.id)
+            effective_status = ExamAttemptStatus.TIMED_OUT
 
         answered_count = sum(
             1 for r in attempt.responses if r.student_answer and r.student_answer.strip()
@@ -276,7 +281,7 @@ class ExamSimulationService:
         return ExamAttemptStatusRead(
             attempt_id=attempt.id,
             exam_id=attempt.exam_id,
-            status=attempt.status,
+            status=effective_status,
             started_at=attempt.started_at,
             submitted_at=attempt.submitted_at,
             duration_seconds=attempt.duration_seconds,
@@ -287,7 +292,49 @@ class ExamSimulationService:
         )
 
     # --------------------------------------------------------------------------
-    # 4. Submit Exam (Scoring, Analytics & Optional Mastery Policy)
+    # 4. Finalize Timeout (Explicit Mutation for Expired Attempt)
+    # --------------------------------------------------------------------------
+
+    def finalize_timeout(
+        self,
+        student_user_id: UUID,
+        attempt_id: UUID,
+    ) -> ExamAttemptStatusRead:
+        student = self._require_student(student_user_id)
+        attempt = self.session.scalar(
+            select(ExamAttempt)
+            .options(
+                selectinload(ExamAttempt.responses),
+                selectinload(ExamAttempt.exam).selectinload(Exam.questions),
+            )
+            .where(ExamAttempt.id == attempt_id, ExamAttempt.student_id == student.id)
+            .with_for_update()
+        )
+        if attempt is None:
+            raise ApplicationError(404, "ATTEMPT_NOT_FOUND", "Exam attempt not found.")
+
+        now = datetime.now(timezone.utc)
+        expires_at = _as_utc(attempt.started_at) + timedelta(minutes=attempt.exam.duration_minutes)
+
+        if attempt.status == ExamAttemptStatus.IN_PROGRESS:
+            if now < expires_at:
+                raise ApplicationError(
+                    400,
+                    "EXAM_NOT_TIMED_OUT",
+                    "Exam duration has not expired yet.",
+                )
+            attempt.status = ExamAttemptStatus.TIMED_OUT
+            if not attempt.submitted_at:
+                attempt.submitted_at = expires_at
+                attempt.duration_seconds = attempt.exam.duration_minutes * 60
+            self.session.flush()
+            self.scoring_service.score_attempt(attempt.id)
+            self.session.refresh(attempt)
+
+        return self.get_attempt_status(student_user_id, attempt.id)
+
+    # --------------------------------------------------------------------------
+    # 5. Submit Exam (Scoring, Analytics & Optional Mastery Policy)
     # --------------------------------------------------------------------------
 
     def submit_exam(
@@ -304,9 +351,27 @@ class ExamSimulationService:
                 selectinload(ExamAttempt.exam).selectinload(Exam.questions),
             )
             .where(ExamAttempt.id == attempt_id, ExamAttempt.student_id == student.id)
+            .with_for_update()
         )
         if attempt is None:
             raise ApplicationError(404, "ATTEMPT_NOT_FOUND", "Exam attempt not found.")
+
+        # Idempotency guard: if already graded or timed out, do not double-score or re-apply mastery
+        if attempt.status in (ExamAttemptStatus.GRADED, ExamAttemptStatus.TIMED_OUT):
+            analytics = self.analytics_service.generate_analytics(attempt.id)
+            return ExamAttemptResultRead(
+                attempt_id=attempt.id,
+                exam_id=attempt.exam_id,
+                student_id=attempt.student_id,
+                status=attempt.status,
+                score=attempt.score or 0.0,
+                score_10=analytics.score_10,
+                total_points=attempt.total_points,
+                accuracy=attempt.accuracy or 0.0,
+                duration_seconds=attempt.duration_seconds,
+                analytics=analytics,
+                official_mastery_updated=False,
+            )
 
         now = datetime.now(timezone.utc)
 
@@ -348,27 +413,41 @@ class ExamSimulationService:
         )
 
     # --------------------------------------------------------------------------
-    # 5. REAL_SIMULATION Guardrails (No Hints, No Tutor)
+    # 6. REAL_SIMULATION Guardrails (No Hints, No Tutor)
     # --------------------------------------------------------------------------
 
-    def assert_hints_allowed(self, attempt_id: UUID) -> None:
+    def assert_hints_allowed(self, attempt_id: UUID, student_user_id: UUID | None = None) -> None:
         """Enforce REAL_SIMULATION guardrail: Hints strictly forbidden."""
         attempt = self.session.scalar(
             select(ExamAttempt).options(selectinload(ExamAttempt.exam)).where(ExamAttempt.id == attempt_id)
         )
-        if attempt and attempt.exam.exam_type == ExamType.REAL_SIMULATION:
+        if attempt is None:
+            raise ApplicationError(404, "ATTEMPT_NOT_FOUND", "Exam attempt not found.")
+        if student_user_id is not None:
+            student = self._require_student(student_user_id)
+            if attempt.student_id != student.id:
+                raise ApplicationError(404, "ATTEMPT_NOT_FOUND", "Exam attempt not found.")
+
+        if attempt.exam.exam_type == ExamType.REAL_SIMULATION:
             raise ApplicationError(
                 403,
                 "HINTS_NOT_ALLOWED_IN_REAL_SIMULATION",
                 "Hints are strictly prohibited during a real exam simulation.",
             )
 
-    def assert_tutor_allowed(self, attempt_id: UUID) -> None:
+    def assert_tutor_allowed(self, attempt_id: UUID, student_user_id: UUID | None = None) -> None:
         """Enforce REAL_SIMULATION guardrail: AI Tutor strictly forbidden."""
         attempt = self.session.scalar(
             select(ExamAttempt).options(selectinload(ExamAttempt.exam)).where(ExamAttempt.id == attempt_id)
         )
-        if attempt and attempt.exam.exam_type == ExamType.REAL_SIMULATION:
+        if attempt is None:
+            raise ApplicationError(404, "ATTEMPT_NOT_FOUND", "Exam attempt not found.")
+        if student_user_id is not None:
+            student = self._require_student(student_user_id)
+            if attempt.student_id != student.id:
+                raise ApplicationError(404, "ATTEMPT_NOT_FOUND", "Exam attempt not found.")
+
+        if attempt.exam.exam_type == ExamType.REAL_SIMULATION:
             raise ApplicationError(
                 403,
                 "TUTOR_NOT_ALLOWED_IN_REAL_SIMULATION",

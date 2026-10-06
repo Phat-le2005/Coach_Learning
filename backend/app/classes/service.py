@@ -38,13 +38,17 @@ class ClassroomService:
         logger.info("Classroom created (classroom_id=%s, teacher_id=%s)", classroom.id, teacher.id)
         return self._teacher_view(classroom, self.CREATOR_ROLE)
 
-    def list_for_teacher(self, user_id: UUID) -> list[TeacherClassroomRead]:
+    def list_for_teacher(
+        self, user_id: UUID, *, offset: int = 0, limit: int = 50
+    ) -> list[TeacherClassroomRead]:
         teacher = self._teacher_for_user(user_id)
         rows = self.session.execute(
             select(Classroom, TeacherClassroom.role)
             .join(TeacherClassroom, TeacherClassroom.classroom_id == Classroom.id)
             .where(TeacherClassroom.teacher_id == teacher.id)
             .order_by(Classroom.created_at.desc(), Classroom.name, Classroom.id)
+            .offset(offset)
+            .limit(limit)
         ).all()
         return [self._teacher_view(classroom, role) for classroom, role in rows]
 
@@ -61,7 +65,9 @@ class ClassroomService:
             raise self._access_denied()
         return self._teacher_view(classroom, assignment.role)
 
-    def list_students_for_teacher(self, user_id: UUID, classroom_id: UUID) -> list[ClassroomStudentRead]:
+    def list_students_for_teacher(
+        self, user_id: UUID, classroom_id: UUID, *, offset: int = 0, limit: int = 50
+    ) -> list[ClassroomStudentRead]:
         self.get_for_teacher(user_id, classroom_id)
         rows = self.session.execute(
             select(StudentProfile, User, StudentEnrollment)
@@ -69,6 +75,8 @@ class ClassroomService:
             .join(User, User.id == StudentProfile.user_id)
             .where(StudentEnrollment.classroom_id == classroom_id)
             .order_by(User.full_name, User.email, StudentProfile.id)
+            .offset(offset)
+            .limit(limit)
         ).all()
         return [
             ClassroomStudentRead(
@@ -136,13 +144,17 @@ class ClassroomService:
             joined_at=enrollment.joined_at,
         )
 
-    def list_for_student(self, user_id: UUID) -> list[StudentClassroomRead]:
+    def list_for_student(
+        self, user_id: UUID, *, offset: int = 0, limit: int = 50
+    ) -> list[StudentClassroomRead]:
         student = self._student_for_user(user_id)
         rows = self.session.execute(
             select(Classroom, StudentEnrollment)
             .join(StudentEnrollment, StudentEnrollment.classroom_id == Classroom.id)
             .where(StudentEnrollment.student_id == student.id)
             .order_by(Classroom.created_at.desc(), Classroom.name, Classroom.id)
+            .offset(offset)
+            .limit(limit)
         ).all()
         return [self._student_view(classroom, enrollment) for classroom, enrollment in rows]
 

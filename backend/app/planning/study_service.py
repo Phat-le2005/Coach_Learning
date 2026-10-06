@@ -238,6 +238,55 @@ class StudyPlanService:
             updated_at=plan.updated_at,
         )
 
+    def get_study_plan_snapshot(
+        self,
+        student_id: UUID,
+        *,
+        as_of: date | None = None,
+    ) -> StudyPlanRead | None:
+        """Strictly read-only query helper for study plan snapshot.
+
+        Zero DB mutations: does not create plan, does not skip past tasks,
+        does not recalculate missing tasks.
+        """
+        current_date = as_of or date.today()
+        plan = self.session.scalar(
+            select(StudyPlan)
+            .where(
+                StudyPlan.student_id == student_id,
+                StudyPlan.status == StudyPlanStatus.ACTIVE,
+            )
+            .order_by(StudyPlan.created_at.desc())
+        )
+        if plan is None:
+            return None
+
+        tasks = self._query_tasks(plan.id)
+        daily_minutes = self._get_daily_budget(plan)
+        days_to_exam: int | None = None
+        if plan.target_date:
+            days_to_exam = (plan.target_date - current_date).days
+
+        completed_tasks = sum(1 for t in tasks if t.status == StudyTaskStatus.COMPLETED)
+        pt_ids = {t.problem_type_id for t in tasks if t.problem_type_id is not None}
+        hierarchy_map = self._get_hierarchy_map(pt_ids)
+
+        return StudyPlanRead(
+            id=plan.id,
+            student_id=student_id,
+            academic_goal_id=plan.academic_goal_id,
+            start_date=plan.start_date,
+            target_date=plan.target_date,
+            status=plan.status,
+            days_to_exam=days_to_exam,
+            available_daily_minutes=daily_minutes,
+            total_tasks=len(tasks),
+            completed_tasks=completed_tasks,
+            tasks=[self._to_task_read(t, hierarchy_map) for t in tasks],
+            created_at=plan.created_at,
+            updated_at=plan.updated_at,
+        )
+
     def recalculate_study_plan(
         self,
         student_id: UUID,

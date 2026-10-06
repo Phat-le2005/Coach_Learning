@@ -441,25 +441,16 @@ def test_study_plan_api_endpoints(db_client: TestClient, db_session: Session, se
 
     headers = _auth_headers(db_session, settings, student_user)
 
-    # 1. GET /students/me/today
-    res_today = db_client.get("/students/me/today", headers=headers)
-    assert res_today.status_code == 200
-    assert res_today.headers.get("Cache-Control") == "no-store"
-    data_today = res_today.json()
-    assert "date" in data_today
-    assert "tasks" in data_today
-    assert data_today["available_daily_minutes"] == 60
+    # 1. GET before plan exists returns 404 without mutating DB
+    res_empty_today = db_client.get("/students/me/today", headers=headers)
+    assert res_empty_today.status_code == 404
+    assert res_empty_today.json()["error"]["code"] == "STUDY_PLAN_NOT_FOUND"
 
-    # 2. GET /students/me/study-plan
-    res_plan = db_client.get("/students/me/study-plan", headers=headers)
-    assert res_plan.status_code == 200
-    assert res_plan.headers.get("Cache-Control") == "no-store"
-    data_plan = res_plan.json()
-    assert data_plan["student_id"] == str(student_profile.id)
-    assert data_plan["status"] == "ACTIVE"
-    assert len(data_plan["tasks"]) > 0
+    res_empty_plan = db_client.get("/students/me/study-plan", headers=headers)
+    assert res_empty_plan.status_code == 404
+    assert res_empty_plan.json()["error"]["code"] == "STUDY_PLAN_NOT_FOUND"
 
-    # 3. POST /students/me/study-plan/recalculate
+    # 2. POST /students/me/study-plan/recalculate generates the active plan
     res_recalc = db_client.post(
         "/students/me/study-plan/recalculate",
         headers=headers,
@@ -470,3 +461,21 @@ def test_study_plan_api_endpoints(db_client: TestClient, db_session: Session, se
     data_recalc = res_recalc.json()
     assert data_recalc["student_id"] == str(student_profile.id)
     assert len(data_recalc["tasks"]) > 0
+
+    # 3. GET /students/me/today now returns read-only snapshot
+    res_today = db_client.get("/students/me/today", headers=headers)
+    assert res_today.status_code == 200
+    assert res_today.headers.get("Cache-Control") == "no-store"
+    data_today = res_today.json()
+    assert "date" in data_today
+    assert "tasks" in data_today
+    assert data_today["available_daily_minutes"] == 60
+
+    # 4. GET /students/me/study-plan now returns active plan snapshot
+    res_plan = db_client.get("/students/me/study-plan", headers=headers)
+    assert res_plan.status_code == 200
+    assert res_plan.headers.get("Cache-Control") == "no-store"
+    data_plan = res_plan.json()
+    assert data_plan["student_id"] == str(student_profile.id)
+    assert data_plan["status"] == "ACTIVE"
+    assert len(data_plan["tasks"]) > 0

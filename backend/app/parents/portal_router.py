@@ -78,20 +78,6 @@ def get_student_weekly_data(
     return service.get_student_weekly_data(user.id, student_id, target_date)
 
 
-@router.get(
-    "/students/{student_id}/ai-summary",
-    response_model=ParentWeeklyAISummaryRead,
-    summary="Get pedagogical AI weekly summary for a linked student",
-)
-def get_student_ai_summary(
-    student_id: UUID,
-    user: ParentUser,
-    service: Annotated[ParentAISummaryService, Depends(get_ai_summary_service)],
-    target_date: Annotated[date | None, Query(description="Target date within the desired week")] = None,
-) -> ParentWeeklyAISummaryRead:
-    return service.generate_weekly_summary(user.id, student_id, target_date)
-
-
 @router.post(
     "/students/{student_id}/ai-summary",
     response_model=ParentWeeklyAISummaryRead,
@@ -154,20 +140,6 @@ def get_student_weekly_data_alias(
     target_date: Annotated[date | None, Query(description="Target date within the desired week")] = None,
 ) -> ParentWeeklyDataRead:
     return service.get_student_weekly_data(user.id, student_id, target_date)
-
-
-@parents_alias_router.get(
-    "/students/{student_id}/ai-summary",
-    response_model=ParentWeeklyAISummaryRead,
-    include_in_schema=False,
-)
-def get_student_ai_summary_alias(
-    student_id: UUID,
-    user: ParentUser,
-    service: Annotated[ParentAISummaryService, Depends(get_ai_summary_service)],
-    target_date: Annotated[date | None, Query(description="Target date within the desired week")] = None,
-) -> ParentWeeklyAISummaryRead:
-    return service.generate_weekly_summary(user.id, student_id, target_date)
 
 
 @parents_alias_router.post(

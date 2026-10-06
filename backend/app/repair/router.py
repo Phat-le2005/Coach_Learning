@@ -146,9 +146,31 @@ def answer_adaptive_repair_current_item(
 @router.get(
     "/adaptive/{adaptive_session_id}/next-action",
     response_model=LearningFeedbackDecisionRead,
-    summary="Get next learning action and feedback decision after adaptive repair",
+    summary="Get existing next learning action and feedback decision after adaptive repair",
 )
 def get_adaptive_repair_next_action(
+    adaptive_session_id: UUID,
+    current_user: User = Depends(require_role(Role.STUDENT)),
+    session: Session = Depends(get_db),
+) -> LearningFeedbackDecisionRead:
+    # Ensure current user has permission for this repair session
+    AdaptiveRepairService(session).get(current_user, adaptive_session_id)
+    decision = LearningFeedbackService(session).get_feedback_for_adaptive(adaptive_session_id)
+    if decision is None:
+        raise ApplicationError(
+            409,
+            "LEARNING_FEEDBACK_NOT_RESOLVED",
+            "Learning feedback decision has not been resolved yet.",
+        )
+    return decision
+
+
+@router.post(
+    "/adaptive/{adaptive_session_id}/next-action",
+    response_model=LearningFeedbackDecisionRead,
+    summary="Resolve and commit next learning action and feedback decision after adaptive repair",
+)
+def resolve_adaptive_repair_next_action(
     adaptive_session_id: UUID,
     current_user: User = Depends(require_role(Role.STUDENT)),
     session: Session = Depends(get_db),

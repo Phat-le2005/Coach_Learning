@@ -33,12 +33,19 @@ class AcademicGoalService:
         self.session = session
 
     def list_goals(
-        self, student_id: UUID, status: AcademicGoalStatus | None = None
+        self,
+        student_id: UUID,
+        status: AcademicGoalStatus | None = None,
+        *,
+        offset: int = 0,
+        limit: int = 50,
     ) -> list[AcademicGoal]:
         stmt = (
             self._goal_statement()
             .where(AcademicGoal.student_id == student_id)
-            .order_by(AcademicGoal.created_at.desc())
+            .order_by(AcademicGoal.created_at.desc(), AcademicGoal.id.desc())
+            .offset(offset)
+            .limit(limit)
         )
         if status is not None:
             stmt = stmt.where(AcademicGoal.status == status)

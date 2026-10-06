@@ -383,19 +383,18 @@ def test_api_today_plan_with_explanation_flag(
 
     headers = _auth_headers(db_session, settings, user)
 
-    # 1. Call without explanation
+    # 1. Call GET /students/me/today: read-only, explanation is None
     res_no_exp = db_client.get("/students/me/today", headers=headers)
     assert res_no_exp.status_code == 200
     assert res_no_exp.json()["explanation"] is None
 
-    # 2. Call with include_explanation=true
-    res_with_exp = db_client.get("/students/me/today?include_explanation=true", headers=headers)
+    # 2. AI generation requires explicit POST
+    res_with_exp = db_client.post("/students/me/today/explanation", headers=headers)
     assert res_with_exp.status_code == 200
     data = res_with_exp.json()
-    assert data["explanation"] is not None
-    assert "concise_daily_overview" in data["explanation"]
-    assert "priority_reasoning" in data["explanation"]
-    assert "getting_started_guide" in data["explanation"]
+    assert "concise_daily_overview" in data
+    assert "priority_reasoning" in data
+    assert "getting_started_guide" in data
 
 
 def test_api_get_today_explanation_endpoint(
@@ -426,7 +425,7 @@ def test_api_get_today_explanation_endpoint(
 
     headers = _auth_headers(db_session, settings, user)
 
-    res = db_client.get("/students/me/today/explanation", headers=headers)
+    res = db_client.post("/students/me/today/explanation", headers=headers)
     assert res.status_code == 200
     data = res.json()
     assert "concise_daily_overview" in data

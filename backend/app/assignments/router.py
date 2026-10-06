@@ -1,7 +1,7 @@
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
 from app.assignments.schemas import (
@@ -81,8 +81,10 @@ def list_classroom_assignments(
     classroom_id: UUID,
     user: TeacherUser,
     service: Annotated[AssignmentService, Depends(get_assignment_service)],
+    offset: Annotated[int, Query(ge=0, description="Pagination offset")] = 0,
+    limit: Annotated[int, Query(ge=1, le=200, description="Pagination limit")] = 50,
 ) -> list[AssignmentSummaryRead]:
-    return service.list_for_classroom(user.id, classroom_id)
+    return service.list_for_classroom(user.id, classroom_id, offset=offset, limit=limit)
 
 
 @teacher_router.get(
@@ -174,8 +176,10 @@ def grade_material_item(
 def list_student_assignments(
     user: StudentUser,
     service: Annotated[AssignmentService, Depends(get_assignment_service)],
+    offset: Annotated[int, Query(ge=0, description="Pagination offset")] = 0,
+    limit: Annotated[int, Query(ge=1, le=200, description="Pagination limit")] = 50,
 ) -> list[StudentAssignmentRead]:
-    return service.list_for_student(user.id)
+    return service.list_for_student(user.id, offset=offset, limit=limit)
 
 
 @student_router.get(

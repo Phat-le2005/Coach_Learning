@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 
 from app.auth.dependencies import require_role
 from app.core.errors import ErrorResponse
+from app.core.exceptions import ApplicationError
 from app.database.session import get_db
 from app.planning.study_explanation_schemas import StudyPlanExplanationRead
 from app.planning.study_schemas import (
@@ -70,10 +71,12 @@ def list_goals(
     student_service: Annotated[StudentProfileService, Depends(get_student_service)],
     goal_service: Annotated[AcademicGoalService, Depends(get_academic_goal_service)],
     status: AcademicGoalStatus | None = None,
+    offset: Annotated[int, Query(ge=0)] = 0,
+    limit: Annotated[int, Query(ge=1, le=200)] = 50,
 ) -> list[AcademicGoal]:
     response.headers["Cache-Control"] = "no-store"
     student = student_service.get_for_user(user.id)
-    return goal_service.list_goals(student.id, status=status)
+    return goal_service.list_goals(student.id, status=status, offset=offset, limit=limit)
 
 
 @router.post("/me/goals", response_model=AcademicGoalRead, status_code=201)
@@ -109,14 +112,20 @@ def get_today_plan(
     response: Response,
     student_service: Annotated[StudentProfileService, Depends(get_student_service)],
     plan_service: Annotated[StudyPlanService, Depends(get_study_plan_service)],
-    include_explanation: Annotated[bool, Query()] = False,
 ) -> StudyDayRead:
     response.headers["Cache-Control"] = "no-store"
     student = student_service.get_for_user(user.id)
-    return plan_service.get_today_plan(student.id, include_explanation=include_explanation)
+    plan = plan_service.get_today_plan_snapshot(student.id)
+    if plan is None:
+        raise ApplicationError(
+            status_code=404,
+            code="STUDY_PLAN_NOT_FOUND",
+            message="No active study plan found.",
+        )
+    return plan
 
 
-@router.get("/me/today/explanation", response_model=StudyPlanExplanationRead)
+@router.post("/me/today/explanation", response_model=StudyPlanExplanationRead)
 def get_today_explanation(
     user: StudentUser,
     response: Response,
@@ -137,7 +146,14 @@ def get_study_plan(
 ) -> StudyPlanRead:
     response.headers["Cache-Control"] = "no-store"
     student = student_service.get_for_user(user.id)
-    return plan_service.get_study_plan(student.id)
+    plan = plan_service.get_study_plan_snapshot(student.id)
+    if plan is None:
+        raise ApplicationError(
+            status_code=404,
+            code="STUDY_PLAN_NOT_FOUND",
+            message="No active study plan found.",
+        )
+    return plan
 
 
 @router.post("/me/study-plan/recalculate", response_model=StudyPlanRead)

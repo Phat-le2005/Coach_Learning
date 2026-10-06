@@ -686,12 +686,22 @@ def test_lazy_feedback_persists_across_new_db_session(
         )
     ) is None
 
-    # Call GET next-action via API (lazy path with commit=True)
+    # GET returns 409 when decision is not resolved yet
     headers = practice_bearer(practice_students[0])
-    resp = db_client.get(f"/repair/adaptive/{started.id}/next-action", headers=headers)
+    resp_unresolved = db_client.get(f"/repair/adaptive/{started.id}/next-action", headers=headers)
+    assert resp_unresolved.status_code == 409
+    assert resp_unresolved.json()["error"]["code"] == "LEARNING_FEEDBACK_NOT_RESOLVED"
+
+    # Call POST next-action to resolve and commit
+    resp = db_client.post(f"/repair/adaptive/{started.id}/next-action", headers=headers)
     assert resp.status_code == 200
     resp_data = resp.json()
     assert resp_data["id"] is not None
+
+    # Subsequent GET returns existing resolved decision
+    resp_get = db_client.get(f"/repair/adaptive/{started.id}/next-action", headers=headers)
+    assert resp_get.status_code == 200
+    assert resp_get.json()["id"] == resp_data["id"]
 
     # Verify durability across a completely fresh DB session
     with Session(db_engine) as fresh_session:
@@ -742,9 +752,14 @@ def test_lazy_resolved_feedback_persists_review_schedule(
     )
     assert len(schedules_before) == 0
 
-    # Call lazy endpoint
+    # GET returns 409 when unresolved
     headers = practice_bearer(practice_students[0])
-    resp = db_client.get(f"/repair/adaptive/{started.id}/next-action", headers=headers)
+    resp_unresolved = db_client.get(f"/repair/adaptive/{started.id}/next-action", headers=headers)
+    assert resp_unresolved.status_code == 409
+    assert resp_unresolved.json()["error"]["code"] == "LEARNING_FEEDBACK_NOT_RESOLVED"
+
+    # Call POST to resolve
+    resp = db_client.post(f"/repair/adaptive/{started.id}/next-action", headers=headers)
     assert resp.status_code == 200
     resp_data = resp.json()
     assert resp_data["review"] is not None

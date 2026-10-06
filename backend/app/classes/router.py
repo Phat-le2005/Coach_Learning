@@ -66,8 +66,10 @@ def create_classroom(
 def list_classrooms(
     user: TeacherUser,
     service: Annotated[ClassroomService, Depends(get_classroom_service)],
+    offset: Annotated[int, Query(ge=0, description="Pagination offset")] = 0,
+    limit: Annotated[int, Query(ge=1, le=200, description="Pagination limit")] = 50,
 ) -> list[TeacherClassroomRead]:
-    return service.list_for_teacher(user.id)
+    return service.list_for_teacher(user.id, offset=offset, limit=limit)
 
 
 @teacher_router.get("/{id}", response_model=TeacherClassroomRead)
@@ -84,8 +86,10 @@ def list_students(
     id: UUID,
     user: TeacherUser,
     service: Annotated[ClassroomService, Depends(get_classroom_service)],
+    offset: Annotated[int, Query(ge=0, description="Pagination offset")] = 0,
+    limit: Annotated[int, Query(ge=1, le=200, description="Pagination limit")] = 50,
 ) -> list[ClassroomStudentRead]:
-    return service.list_students_for_teacher(user.id, id)
+    return service.list_students_for_teacher(user.id, id, offset=offset, limit=limit)
 
 
 @teacher_router.post("/{id}/students", status_code=201, response_model=ClassroomStudentRead)
@@ -197,5 +201,7 @@ def consult_teacher_copilot(
 def list_my_classrooms(
     user: StudentUser,
     service: Annotated[ClassroomService, Depends(get_classroom_service)],
+    offset: Annotated[int, Query(ge=0, description="Pagination offset")] = 0,
+    limit: Annotated[int, Query(ge=1, le=200, description="Pagination limit")] = 50,
 ) -> list[StudentClassroomRead]:
-    return service.list_for_student(user.id)
+    return service.list_for_student(user.id, offset=offset, limit=limit)
