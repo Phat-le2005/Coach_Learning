@@ -3,7 +3,7 @@ from uuid import uuid4
 
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.assignments.models import (
@@ -53,7 +53,7 @@ from app.review.models import ReviewSchedule
 from app.students.models import StudentProfile
 from app.subjects.models import Subject
 from app.users.models import Role, User
-from tests.student_learning_state.conftest import create_curriculum
+from tests.student_learning_state.helpers import create_curriculum
 
 
 def _create_classroom(session: Session, created_by: User, name: str = "Lớp 12A") -> Classroom:
@@ -1231,3 +1231,389 @@ def test_state_transition_integration(
     r4 = db_client.get("/students/me/learning-state", headers=headers)
     assert r4.status_code == 200
     assert r4.json()["current_action"]["action_type"] == "REVIEW_DUE"
+
+
+# -----------------------------------------------------------------------------
+# 18. StudyTask Subject Isolation & Resolution
+# -----------------------------------------------------------------------------
+def test_subjectless_problem_type_task_is_resolved_to_its_real_subject(
+    db_client: TestClient,
+    db_session: Session,
+    user_factory,
+    auth_bearer,
+    student_profile_getter,
+):
+    now = datetime.now(timezone.utc)
+    student_user = user_factory(Role.STUDENT, "sls_pt_leak@example.com")
+    student = student_profile_getter(student_user)
+    headers = auth_bearer(student_user)
+
+    math_sub, _, _, math_pt, _ = create_curriculum(db_session, "MATHLK")
+    phy_sub, _, _, phy_pt, _ = create_curriculum(db_session, "PHYLK")
+
+    # Give student evidence in both subjects so both are available
+    _create_evidence(db_session, student.id, math_sub.id, is_correct=True)
+    _create_evidence(db_session, student.id, phy_sub.id, is_correct=True)
+
+    # Active StudyPlan
+    plan = StudyPlan(student_id=student.id, start_date=now.date(), status=StudyPlanStatus.ACTIVE)
+    db_session.add(plan)
+    db_session.flush()
+
+    # Task with subject_id = NULL, but problem_type_id = Physics PT
+    phy_task = StudyTask(
+        study_plan_id=plan.id,
+        task_type=StudyTaskType.PRACTICE,
+        status=StudyTaskStatus.PENDING,
+        planned_date=now.date(),
+        problem_type_id=phy_pt.id,
+        subject_id=None,  # NULL!
+        estimated_duration_minutes=25,
+        priority=60,
+        order_index=0,
+        reason_code="PHYSICS_WEAKNESS",
+    )
+    db_session.add(phy_task)
+    db_session.commit()
+
+    # GET learning-state focused on Math
+    res = db_client.get(f"/students/me/learning-state?subject_id={math_sub.id}", headers=headers)
+    assert res.status_code == 200
+    data = res.json()
+
+    # Today plan exists, but Physics task is absent from Math today's plan
+    assert data["today_plan"] is not None
+    assert all(t["id"] != str(phy_task.id) for t in data["today_plan"]["tasks"])
+    assert data["today_plan"]["total_count"] == 0
+
+    # Physics task must NEVER become TODAY_TASK for Math
+    assert data["current_action"]["action_type"] != "TODAY_TASK"
+
+
+def test_subjectless_problem_type_task_is_kept_when_target_matches_focus_subject(
+    db_client: TestClient,
+    db_session: Session,
+    user_factory,
+    auth_bearer,
+    student_profile_getter,
+):
+    now = datetime.now(timezone.utc)
+    student_user = user_factory(Role.STUDENT, "sls_pt_match@example.com")
+    student = student_profile_getter(student_user)
+    headers = auth_bearer(student_user)
+
+    math_sub, _, _, math_pt, _ = create_curriculum(db_session, "MATHM")
+    _create_evidence(db_session, student.id, math_sub.id, is_correct=True)
+
+    plan = StudyPlan(student_id=student.id, start_date=now.date(), status=StudyPlanStatus.ACTIVE)
+    db_session.add(plan)
+    db_session.flush()
+
+    # Task with subject_id = NULL, problem_type_id = Math PT
+    math_task = StudyTask(
+        study_plan_id=plan.id,
+        task_type=StudyTaskType.PRACTICE,
+        status=StudyTaskStatus.PENDING,
+        planned_date=now.date(),
+        problem_type_id=math_pt.id,
+        subject_id=None,  # NULL!
+        estimated_duration_minutes=20,
+        priority=75,
+        order_index=0,
+        reason_code="MATH_PRACTICE",
+    )
+    db_session.add(math_task)
+    db_session.commit()
+
+    res = db_client.get(f"/students/me/learning-state?subject_id={math_sub.id}", headers=headers)
+    assert res.status_code == 200
+    data = res.json()
+
+    assert data["today_plan"] is not None
+    assert any(t["id"] == str(math_task.id) for t in data["today_plan"]["tasks"])
+    assert data["today_plan"]["total_count"] == 1
+    assert data["current_action"]["action_type"] == "TODAY_TASK"
+    assert data["current_action"]["study_task_id"] == str(math_task.id)
+
+
+def test_subjectless_concept_task_resolves_subject_from_concept(
+    db_client: TestClient,
+    db_session: Session,
+    user_factory,
+    auth_bearer,
+    student_profile_getter,
+):
+    now = datetime.now(timezone.utc)
+    student_user = user_factory(Role.STUDENT, "sls_concept_iso@example.com")
+    student = student_profile_getter(student_user)
+    headers = auth_bearer(student_user)
+
+    math_sub, _, _, _, math_concept = create_curriculum(db_session, "MCON")
+    phy_sub, _, _, _, _ = create_curriculum(db_session, "PCON")
+
+    _create_evidence(db_session, student.id, math_sub.id, is_correct=True)
+    _create_evidence(db_session, student.id, phy_sub.id, is_correct=True)
+
+    plan = StudyPlan(student_id=student.id, start_date=now.date(), status=StudyPlanStatus.ACTIVE)
+    db_session.add(plan)
+    db_session.flush()
+
+    # Task with subject_id = NULL, concept_id = Math Concept
+    concept_task = StudyTask(
+        study_plan_id=plan.id,
+        task_type=StudyTaskType.LEARN,
+        status=StudyTaskStatus.PENDING,
+        planned_date=now.date(),
+        concept_id=math_concept.id,
+        problem_type_id=None,
+        subject_id=None,  # NULL!
+        estimated_duration_minutes=15,
+        priority=80,
+        order_index=0,
+        reason_code="CONCEPT_REVIEW",
+    )
+    db_session.add(concept_task)
+    db_session.commit()
+
+    # Math focus: included
+    res_math = db_client.get(f"/students/me/learning-state?subject_id={math_sub.id}", headers=headers)
+    assert res_math.status_code == 200
+    data_math = res_math.json()
+    assert any(t["id"] == str(concept_task.id) for t in data_math["today_plan"]["tasks"])
+    assert data_math["current_action"]["action_type"] == "TODAY_TASK"
+
+    # Physics focus: excluded
+    res_phy = db_client.get(f"/students/me/learning-state?subject_id={phy_sub.id}", headers=headers)
+    assert res_phy.status_code == 200
+    data_phy = res_phy.json()
+    assert all(t["id"] != str(concept_task.id) for t in data_phy["today_plan"]["tasks"])
+    assert data_phy["today_plan"]["total_count"] == 0
+    assert data_phy["current_action"]["action_type"] != "TODAY_TASK"
+
+
+def test_subject_specific_state_excludes_unscoped_subjectless_task(
+    db_client: TestClient,
+    db_session: Session,
+    user_factory,
+    auth_bearer,
+    student_profile_getter,
+):
+    now = datetime.now(timezone.utc)
+    student_user = user_factory(Role.STUDENT, "sls_unscoped@example.com")
+    student = student_profile_getter(student_user)
+    headers = auth_bearer(student_user)
+
+    math_sub, _, _, math_pt, _ = create_curriculum(db_session, "UNSC")
+    _create_evidence(db_session, student.id, math_sub.id, is_correct=True)
+
+    plan = StudyPlan(student_id=student.id, start_date=now.date(), status=StudyPlanStatus.ACTIVE)
+    db_session.add(plan)
+    db_session.flush()
+
+    # Completely unresolvable task: subject_id=NULL, problem_type_id=NULL, concept_id=NULL
+    unresolvable_task = StudyTask(
+        study_plan_id=plan.id,
+        task_type=StudyTaskType.PRACTICE,
+        status=StudyTaskStatus.PENDING,
+        planned_date=now.date(),
+        problem_type_id=None,
+        concept_id=None,
+        subject_id=None,
+        estimated_duration_minutes=30,
+        priority=50,
+        order_index=0,
+        reason_code="GENERAL_STUDY",
+    )
+    db_session.add(unresolvable_task)
+    db_session.commit()
+
+    res = db_client.get(f"/students/me/learning-state?subject_id={math_sub.id}", headers=headers)
+    assert res.status_code == 200
+    data = res.json()
+
+    assert data["today_plan"] is not None
+    assert all(t["id"] != str(unresolvable_task.id) for t in data["today_plan"]["tasks"])
+    assert data["today_plan"]["total_count"] == 0
+    assert data["current_action"]["action_type"] != "TODAY_TASK"
+
+
+def test_subjectless_task_with_conflicting_targets_is_excluded(
+    db_client: TestClient,
+    db_session: Session,
+    user_factory,
+    auth_bearer,
+    student_profile_getter,
+):
+    now = datetime.now(timezone.utc)
+    student_user = user_factory(Role.STUDENT, "sls_conflict@example.com")
+    student = student_profile_getter(student_user)
+    headers = auth_bearer(student_user)
+
+    math_sub, _, _, math_pt, _ = create_curriculum(db_session, "CONF_M")
+    phy_sub, _, _, _, phy_concept = create_curriculum(db_session, "CONF_P")
+
+    _create_evidence(db_session, student.id, math_sub.id, is_correct=True)
+    _create_evidence(db_session, student.id, phy_sub.id, is_correct=True)
+
+    plan = StudyPlan(student_id=student.id, start_date=now.date(), status=StudyPlanStatus.ACTIVE)
+    db_session.add(plan)
+    db_session.flush()
+
+    # Conflicting targets: math PT, physics Concept, subject_id=None
+    conflict_task = StudyTask(
+        study_plan_id=plan.id,
+        task_type=StudyTaskType.PRACTICE,
+        status=StudyTaskStatus.PENDING,
+        planned_date=now.date(),
+        problem_type_id=math_pt.id,
+        concept_id=phy_concept.id,
+        subject_id=None,
+        estimated_duration_minutes=20,
+        priority=60,
+        order_index=0,
+        reason_code="CONFLICTING",
+    )
+    db_session.add(conflict_task)
+    db_session.commit()
+
+    # Excluded from both Math and Physics
+    res_m = db_client.get(f"/students/me/learning-state?subject_id={math_sub.id}", headers=headers)
+    assert res_m.status_code == 200
+    assert all(t["id"] != str(conflict_task.id) for t in res_m.json()["today_plan"]["tasks"])
+
+    res_p = db_client.get(f"/students/me/learning-state?subject_id={phy_sub.id}", headers=headers)
+    assert res_p.status_code == 200
+    assert all(t["id"] != str(conflict_task.id) for t in res_p.json()["today_plan"]["tasks"])
+
+
+# -----------------------------------------------------------------------------
+# 19. Explicit Read-Only Invariant Tests
+# -----------------------------------------------------------------------------
+def test_learning_state_does_not_create_study_plan(
+    db_client: TestClient,
+    db_session: Session,
+    user_factory,
+    auth_bearer,
+    student_profile_getter,
+):
+    student_user = user_factory(Role.STUDENT, "sls_no_plan@example.com")
+    student = student_profile_getter(student_user)
+    headers = auth_bearer(student_user)
+
+    subject, _, _, pt, _ = create_curriculum(db_session, "NOPLAN")
+    _create_evidence(db_session, student.id, subject.id, is_correct=True)
+    db_session.commit()
+
+    plans_before = db_session.scalar(
+        select(func.count(StudyPlan.id)).where(StudyPlan.student_id == student.id)
+    )
+    tasks_before = db_session.scalar(select(func.count(StudyTask.id)))
+    assert plans_before == 0
+
+    res = db_client.get("/students/me/learning-state", headers=headers)
+    assert res.status_code == 200
+    assert res.json()["today_plan"] is None
+
+    plans_after = db_session.scalar(
+        select(func.count(StudyPlan.id)).where(StudyPlan.student_id == student.id)
+    )
+    tasks_after = db_session.scalar(select(func.count(StudyTask.id)))
+    assert plans_after == 0
+    assert tasks_after == tasks_before
+
+
+def test_learning_state_does_not_mark_past_task_skipped(
+    db_client: TestClient,
+    db_session: Session,
+    user_factory,
+    auth_bearer,
+    student_profile_getter,
+):
+    now = datetime.now(timezone.utc)
+    student_user = user_factory(Role.STUDENT, "sls_no_skip@example.com")
+    student = student_profile_getter(student_user)
+    headers = auth_bearer(student_user)
+
+    subject, _, _, pt, _ = create_curriculum(db_session, "NOSKIP")
+    _create_evidence(db_session, student.id, subject.id, is_correct=True)
+
+    plan = StudyPlan(student_id=student.id, start_date=now.date() - timedelta(days=3), status=StudyPlanStatus.ACTIVE)
+    db_session.add(plan)
+    db_session.flush()
+
+    past_task = StudyTask(
+        study_plan_id=plan.id,
+        task_type=StudyTaskType.PRACTICE,
+        status=StudyTaskStatus.PENDING,
+        planned_date=now.date() - timedelta(days=2),
+        problem_type_id=pt.id,
+        subject_id=subject.id,
+        estimated_duration_minutes=20,
+        priority=70,
+        order_index=0,
+        reason_code="PAST_PENDING",
+    )
+    db_session.add(past_task)
+    db_session.commit()
+
+    res = db_client.get("/students/me/learning-state", headers=headers)
+    assert res.status_code == 200
+
+    db_session.refresh(past_task)
+    # Must NOT be marked SKIPPED by GET endpoint
+    assert past_task.status == StudyTaskStatus.PENDING
+
+
+def test_learning_state_does_not_recalculate_empty_today(
+    db_client: TestClient,
+    db_session: Session,
+    user_factory,
+    auth_bearer,
+    student_profile_getter,
+):
+    now = datetime.now(timezone.utc)
+    student_user = user_factory(Role.STUDENT, "sls_empty_today@example.com")
+    student = student_profile_getter(student_user)
+    headers = auth_bearer(student_user)
+
+    subject, _, _, pt, _ = create_curriculum(db_session, "EMPTYTD")
+    _create_evidence(db_session, student.id, subject.id, is_correct=True)
+
+    plan = StudyPlan(student_id=student.id, start_date=now.date(), status=StudyPlanStatus.ACTIVE)
+    db_session.add(plan)
+    db_session.flush()
+
+    # Tomorrow's task only (today has NO tasks)
+    tomorrow_task = StudyTask(
+        study_plan_id=plan.id,
+        task_type=StudyTaskType.PRACTICE,
+        status=StudyTaskStatus.PENDING,
+        planned_date=now.date() + timedelta(days=1),
+        problem_type_id=pt.id,
+        subject_id=subject.id,
+        estimated_duration_minutes=20,
+        priority=70,
+        order_index=0,
+        reason_code="TOMORROW",
+    )
+    db_session.add(tomorrow_task)
+    db_session.commit()
+
+    task_count_before = db_session.scalar(
+        select(func.count(StudyTask.id)).where(StudyTask.study_plan_id == plan.id)
+    )
+
+    res = db_client.get("/students/me/learning-state", headers=headers)
+    assert res.status_code == 200
+    data = res.json()
+
+    assert data["today_plan"] is not None
+    assert data["today_plan"]["total_count"] == 0
+    assert len(data["today_plan"]["tasks"]) == 0
+
+    task_count_after = db_session.scalar(
+        select(func.count(StudyTask.id)).where(StudyTask.study_plan_id == plan.id)
+    )
+    # No tasks generated or recalculated
+    assert task_count_after == task_count_before
+

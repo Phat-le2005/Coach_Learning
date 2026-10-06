@@ -31,7 +31,7 @@ from app.mastery.models import StudentConceptMastery, StudentProblemTypeMastery
 from app.mastery.state import DerivedMasteryState, derive_mastery_state
 from app.planning.models import TeachingPlan, TeachingPlanStatus
 from app.planning.study_models import StudyPlan, StudyTask, StudyTaskStatus
-from app.planning.study_schemas import StudyDayRead
+from app.planning.study_schemas import StudyDayRead, StudyTaskRead
 from app.planning.study_service import StudyPlanService
 from app.practice.models import PracticeSession, PracticeSessionStatus, PracticeSessionType
 from app.recommendations.priority_service import LearningPriorityService
@@ -695,6 +695,79 @@ class StudentLearningStateService:
             due_targets=due_targets,
         )
 
+    def _filter_today_tasks_for_subject(
+        self, tasks: list[StudyTaskRead], focus_subject_id: UUID
+    ) -> list[StudyTaskRead]:
+        """Filter today's tasks strictly for focus_subject_id, resolving subjects for null-subject tasks without N+1.
+        
+        Priority:
+        1. task.subject_id if present (stored explicit subject wins)
+        2. if subject_id is None:
+           - problem_type_id -> ProblemType -> Topic -> Chapter -> Chapter.subject_id
+           - concept_id -> Concept.subject_id
+           - if both present and resolve to different subjects: exclude task (no guessing)
+           - if neither resolves or both targets null: UNKNOWN -> exclude task
+        3. Include task only if resolved_subject_id == focus_subject_id
+        """
+        # 1. Collect targets for batch querying to avoid N+1
+        null_sub_pt_ids: set[UUID] = set()
+        null_sub_concept_ids: set[UUID] = set()
+        for t in tasks:
+            if t.subject_id is None:
+                if t.problem_type_id is not None:
+                    null_sub_pt_ids.add(t.problem_type_id)
+                if t.concept_id is not None:
+                    null_sub_concept_ids.add(t.concept_id)
+
+        pt_subject_map: dict[UUID, UUID] = {}
+        if null_sub_pt_ids:
+            pt_rows = self.session.execute(
+                select(ProblemType.id, Chapter.subject_id)
+                .join(Topic, Topic.id == ProblemType.topic_id)
+                .join(Chapter, Chapter.id == Topic.chapter_id)
+                .where(ProblemType.id.in_(null_sub_pt_ids))
+            ).all()
+            pt_subject_map = {row[0]: row[1] for row in pt_rows}
+
+        concept_subject_map: dict[UUID, UUID] = {}
+        if null_sub_concept_ids:
+            c_rows = self.session.execute(
+                select(Concept.id, Concept.subject_id)
+                .where(Concept.id.in_(null_sub_concept_ids))
+            ).all()
+            concept_subject_map = {row[0]: row[1] for row in c_rows}
+
+        filtered: list[StudyTaskRead] = []
+        for t in tasks:
+            if t.subject_id is not None:
+                resolved_subject_id = t.subject_id
+            else:
+                pt_sub = pt_subject_map.get(t.problem_type_id) if t.problem_type_id else None
+                c_sub = concept_subject_map.get(t.concept_id) if t.concept_id else None
+
+                if pt_sub is not None and c_sub is not None:
+                    if pt_sub != c_sub:
+                        logger.warning(
+                            "StudyTask %s has conflicting target subjects (pt=%s, concept=%s); excluding",
+                            t.id,
+                            pt_sub,
+                            c_sub,
+                        )
+                        resolved_subject_id = None
+                    else:
+                        resolved_subject_id = pt_sub
+                elif pt_sub is not None:
+                    resolved_subject_id = pt_sub
+                elif c_sub is not None:
+                    resolved_subject_id = c_sub
+                else:
+                    resolved_subject_id = None
+
+            if resolved_subject_id == focus_subject_id:
+                filtered.append(t)
+
+        return filtered
+
     def _resolve_today_plan_snapshot(
         self, student_id: UUID, focus_subject_id: UUID | None, *, now: datetime
     ) -> StudyDayRead | None:
@@ -704,11 +777,9 @@ class StudentLearningStateService:
             return None
 
         if focus_subject_id is not None:
-            filtered_tasks = [
-                t
-                for t in snapshot.tasks
-                if t.subject_id is None or t.subject_id == focus_subject_id
-            ]
+            filtered_tasks = self._filter_today_tasks_for_subject(
+                snapshot.tasks, focus_subject_id
+            )
             total_estimated = sum(t.estimated_duration_minutes for t in filtered_tasks)
             completed_count = sum(
                 1 for t in filtered_tasks if t.status == StudyTaskStatus.COMPLETED
