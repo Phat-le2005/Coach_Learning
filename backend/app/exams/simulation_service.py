@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
 import logging
+import math
 from uuid import UUID
 
 from sqlalchemy import func, select
@@ -51,6 +52,40 @@ def _as_utc(dt: datetime | None) -> datetime:
     if dt.tzinfo is None:
         return dt.replace(tzinfo=timezone.utc)
     return dt.astimezone(timezone.utc)
+
+
+def _exam_expires_at(
+    started_at: datetime,
+    duration_minutes: int,
+) -> datetime:
+    """Calculate exact UTC expiration timestamp of an exam attempt."""
+    return _as_utc(started_at) + timedelta(minutes=duration_minutes)
+
+
+def _is_exam_expired(
+    *,
+    now: datetime,
+    expires_at: datetime,
+) -> bool:
+    """Single authority for exam expiration: deadline reached or passed."""
+    return now >= expires_at
+
+
+def _remaining_exam_seconds(
+    *,
+    now: datetime,
+    expires_at: datetime,
+) -> int:
+    """Calculate remaining seconds countdown using ceil for sub-second precision.
+
+    Semantics:
+    - remaining > 0 (e.g. 0.7s) -> math.ceil(remaining) -> 1
+    - deadline reached (remaining <= 0) -> 0
+    """
+    remaining = (expires_at - now).total_seconds()
+    if remaining <= 0:
+        return 0
+    return math.ceil(remaining)
 
 
 class ExamSimulationService:
@@ -129,8 +164,8 @@ class ExamSimulationService:
 
         if existing_attempt:
             # Check if expired
-            expires_at = _as_utc(existing_attempt.started_at) + timedelta(minutes=exam.duration_minutes)
-            if now >= expires_at:
+            expires_at = _exam_expires_at(existing_attempt.started_at, exam.duration_minutes)
+            if _is_exam_expired(now=now, expires_at=expires_at):
                 # Auto-submit expired attempt as TIMED_OUT (no mastery update)
                 self.submit_exam(student_user_id, existing_attempt.id, update_mastery=False)
             else:
@@ -178,8 +213,8 @@ class ExamSimulationService:
 
         # Check timer: strictly reject expired answer without mutate-then-raise side-effects
         now = datetime.now(timezone.utc)
-        expires_at = _as_utc(attempt.started_at) + timedelta(minutes=attempt.exam.duration_minutes)
-        if now >= expires_at:
+        expires_at = _exam_expires_at(attempt.started_at, attempt.exam.duration_minutes)
+        if _is_exam_expired(now=now, expires_at=expires_at):
             raise ApplicationError(
                 409,
                 "EXAM_TIMED_OUT",
@@ -263,12 +298,13 @@ class ExamSimulationService:
             raise ApplicationError(404, "ATTEMPT_NOT_FOUND", "Exam attempt not found.")
 
         now = datetime.now(timezone.utc)
-        expires_at = _as_utc(attempt.started_at) + timedelta(minutes=attempt.exam.duration_minutes)
-        time_rem = max(0, int((expires_at - now).total_seconds()))
+        expires_at = _exam_expires_at(attempt.started_at, attempt.exam.duration_minutes)
+        is_expired = _is_exam_expired(now=now, expires_at=expires_at)
+        time_rem = _remaining_exam_seconds(now=now, expires_at=expires_at)
 
         # Pure read projection: if expired and still IN_PROGRESS, project TIMED_OUT without DB mutation
         effective_status = attempt.status
-        if time_rem == 0 and attempt.status == ExamAttemptStatus.IN_PROGRESS:
+        if is_expired and attempt.status == ExamAttemptStatus.IN_PROGRESS:
             effective_status = ExamAttemptStatus.TIMED_OUT
 
         answered_count = sum(
@@ -311,10 +347,10 @@ class ExamSimulationService:
             raise ApplicationError(404, "ATTEMPT_NOT_FOUND", "Exam attempt not found.")
 
         now = datetime.now(timezone.utc)
-        expires_at = _as_utc(attempt.started_at) + timedelta(minutes=attempt.exam.duration_minutes)
+        expires_at = _exam_expires_at(attempt.started_at, attempt.exam.duration_minutes)
 
         if attempt.status == ExamAttemptStatus.IN_PROGRESS:
-            if now < expires_at:
+            if not _is_exam_expired(now=now, expires_at=expires_at):
                 raise ApplicationError(
                     400,
                     "EXAM_NOT_TIMED_OUT",
@@ -371,8 +407,8 @@ class ExamSimulationService:
             )
 
         now = datetime.now(timezone.utc)
-        expires_at = _as_utc(attempt.started_at) + timedelta(minutes=attempt.exam.duration_minutes)
-        is_timed_out = now >= expires_at
+        expires_at = _exam_expires_at(attempt.started_at, attempt.exam.duration_minutes)
+        is_timed_out = _is_exam_expired(now=now, expires_at=expires_at)
 
         # Calculate duration and status
         if is_timed_out:
@@ -478,8 +514,8 @@ class ExamSimulationService:
         exam: Exam,
         now: datetime,
     ) -> ExamAttemptStartRead:
-        expires_at = _as_utc(attempt.started_at) + timedelta(minutes=exam.duration_minutes)
-        time_rem = max(0, int((expires_at - now).total_seconds()))
+        expires_at = _exam_expires_at(attempt.started_at, exam.duration_minutes)
+        time_rem = _remaining_exam_seconds(now=now, expires_at=expires_at)
 
         # Sanitize questions (no correct answers / explanations)
         sanitized_questions: list[ExamQuestionSanitizedRead] = []

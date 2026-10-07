@@ -545,3 +545,113 @@ def test_exam_analytics_access_policy_matrix(
     assert res_get_inact.status_code == 403
     assert res_get_inact.json()["error"]["code"] == "EXAM_ATTEMPT_ACCESS_DENIED"
 
+
+def test_exam_timer_subsecond_pure_helpers() -> None:
+    from app.exams.simulation_service import (
+        _exam_expires_at,
+        _is_exam_expired,
+        _remaining_exam_seconds,
+    )
+
+    base = datetime(2026, 10, 7, 12, 0, 0, tzinfo=timezone.utc)
+    expires = _exam_expires_at(base, 30)
+    assert expires == datetime(2026, 10, 7, 12, 30, 0, tzinfo=timezone.utc)
+
+    # 1. Sub-second remaining: 0.7 seconds left
+    now_07 = expires - timedelta(milliseconds=700)
+    assert _is_exam_expired(now=now_07, expires_at=expires) is False
+    assert _remaining_exam_seconds(now=now_07, expires_at=expires) == 1
+
+    # 2. Sub-second remaining: 0.01 seconds left
+    now_001 = expires - timedelta(milliseconds=10)
+    assert _is_exam_expired(now=now_001, expires_at=expires) is False
+    assert _remaining_exam_seconds(now=now_001, expires_at=expires) == 1
+
+    # 3. Exact deadline reached
+    assert _is_exam_expired(now=expires, expires_at=expires) is True
+    assert _remaining_exam_seconds(now=expires, expires_at=expires) == 0
+
+    # 4. Past deadline
+    now_past = expires + timedelta(milliseconds=100)
+    assert _is_exam_expired(now=now_past, expires_at=expires) is True
+    assert _remaining_exam_seconds(now=now_past, expires_at=expires) == 0
+
+
+def test_exam_timer_just_before_deadline_is_still_active(
+    db_client: TestClient,
+    db_session: Session,
+    exam_user_factory: Callable[[Role, str], User],
+    exam_bearer: Callable[[User], dict[str, str]],
+) -> None:
+    teacher = exam_user_factory(Role.TEACHER, "t_justbefore@example.com")
+    student = exam_user_factory(Role.STUDENT, "s_justbefore@example.com")
+    exam, q = _create_simple_exam(db_session, teacher, title="Just Before Deadline Exam")
+
+    headers = exam_bearer(student)
+
+    # Start attempt
+    res_start = db_client.post(f"/exams/{exam.id}/start", headers=headers)
+    attempt_id = res_start.json()["attempt_id"]
+
+    # Set started_at so that there is 400 milliseconds remaining (expires_at - now = 0.4s)
+    now = datetime.now(timezone.utc)
+    att_row = db_session.get(ExamAttempt, UUID(attempt_id))
+    assert att_row is not None
+    att_row.started_at = now - timedelta(minutes=exam.duration_minutes) + timedelta(milliseconds=400)
+    db_session.commit()
+
+    # GET /attempts/{attempt_id}: status must be IN_PROGRESS, remaining seconds ceil to 1
+    res_check = db_client.get(f"/exams/attempts/{attempt_id}", headers=headers)
+    assert res_check.status_code == 200
+    data = res_check.json()
+    assert data["status"] == "IN_PROGRESS"
+    assert data["time_remaining_seconds"] == 1
+
+    # POST answer is still allowed before deadline
+    res_ans = db_client.post(
+        f"/exams/attempts/{attempt_id}/answer",
+        json={"question_id": str(q.id), "student_answer": "4"},
+        headers=headers,
+    )
+    assert res_ans.status_code == 200
+
+
+def test_exam_timer_at_deadline_is_timed_out(
+    db_client: TestClient,
+    db_session: Session,
+    exam_user_factory: Callable[[Role, str], User],
+    exam_bearer: Callable[[User], dict[str, str]],
+) -> None:
+    teacher = exam_user_factory(Role.TEACHER, "t_atdead@example.com")
+    student = exam_user_factory(Role.STUDENT, "s_atdead@example.com")
+    exam, q = _create_simple_exam(db_session, teacher, title="At Deadline Exam")
+
+    headers = exam_bearer(student)
+
+    res_start = db_client.post(f"/exams/{exam.id}/start", headers=headers)
+    attempt_id = res_start.json()["attempt_id"]
+
+    # Set started_at so that deadline is reached or passed
+    now = datetime.now(timezone.utc)
+    att_row = db_session.get(ExamAttempt, UUID(attempt_id))
+    assert att_row is not None
+    att_row.started_at = now - timedelta(minutes=exam.duration_minutes) - timedelta(milliseconds=50)
+    db_session.commit()
+
+    # GET /attempts/{attempt_id}: status is TIMED_OUT, remaining seconds is 0
+    res_check = db_client.get(f"/exams/attempts/{attempt_id}", headers=headers)
+    assert res_check.status_code == 200
+    data = res_check.json()
+    assert data["status"] == "TIMED_OUT"
+    assert data["time_remaining_seconds"] == 0
+
+    # POST answer is rejected with 409 EXAM_TIMED_OUT
+    res_ans = db_client.post(
+        f"/exams/attempts/{attempt_id}/answer",
+        json={"question_id": str(q.id), "student_answer": "4"},
+        headers=headers,
+    )
+    assert res_ans.status_code == 409
+    assert res_ans.json()["error"]["code"] == "EXAM_TIMED_OUT"
+
+
