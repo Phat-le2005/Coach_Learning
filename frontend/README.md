@@ -32,3 +32,8 @@ npm run check
 ```
 
 Đọc `AGENTS.md` và tài liệu tương ứng trong `node_modules/next/dist/docs/` trước khi thay đổi convention của Next.js 16.
+
+cd D:\CoachLearning\frontend
+npm.cmd install
+Set-Content .env.local "NEXT_PUBLIC_UI_PREVIEW_MODE=true"
+npm.cmd run dev

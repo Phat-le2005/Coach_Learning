@@ -14,10 +14,16 @@ OPENAPI_SHA256_PATH = CONTRACTS_DIR / "openapi-v1.sha256"
 
 def get_deterministic_schema() -> dict[str, Any]:
     settings = Settings(
+        _env_file=None,
+        app_name="EduMS",
         app_env="test",
-        database_name="edums_test",
-        database_user="edums_test",
+        debug=False,
+        database_name="contract",
+        database_user="contract",
+        database_password="",
         jwt_secret_key="01234567890123456789012345678901",
+        frontend_url="http://localhost:3000",
+        ai_provider="mock",
     )
     app = create_app(settings)
     return app.openapi()
