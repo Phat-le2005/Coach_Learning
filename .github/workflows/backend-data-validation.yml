@@ -33,7 +33,7 @@ jobs:
           pytest tests/curriculum/ tests/questions/ -v --tb=short
 
   validate-application:
-    name: Teacher Material, Assignment, Evidence and Migration Tests
+    name: Backend Full Application Regression
     runs-on: ubuntu-latest
     env:
       APP_ENV: test
@@ -57,31 +57,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run application and migration tests
+      - name: Run full backend regression tests
         run: |
-          pytest \
-            tests/test_foundation.py \
-            tests/test_health.py \
-            tests/classes/ \
-            tests/teacher_materials/ \
-            tests/learning_evidence/ \
-            tests/assignments/ \
-            tests/mastery/ \
-            tests/knowledge_gap/ \
-            tests/misconceptions/ \
-            tests/diagnostics/ \
-            tests/recommendations/ \
-            tests/repair/ \
-            tests/review/ \
-            tests/learning/ \
-            tests/practice/ \
-            tests/planning/ \
-            tests/student_learning_state/ \
-            tests/exams/ \
-            tests/parents/ \
-            tests/students/ \
-            tests/question_supply/ \
-            tests/question_acquisition/ \
-            tests/question_validation/ \
-            tests/auth/test_migration.py \
-            -v --tb=short
+          pytest tests/ -v --tb=short

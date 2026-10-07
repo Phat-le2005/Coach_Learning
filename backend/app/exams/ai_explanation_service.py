@@ -20,6 +20,7 @@ from app.concepts.models import Concept
 from app.core.config import get_settings
 from app.core.exceptions import ApplicationError
 from app.curriculum.models import Chapter, ProblemType, Topic
+from app.exams.access_policy import assert_exam_attempt_access
 from app.exams.ai_schemas import (
     ExamAIExplanationRead,
     ExamAIInputContext,
@@ -100,54 +101,8 @@ class ExamAIExplanationService:
         if attempt is None:
             raise ApplicationError(404, "ATTEMPT_NOT_FOUND", "Exam attempt not found.")
 
-        # Admin access
-        if user.role == Role.ADMIN:
-            return user, attempt
-
-        # Student access
-        if user.role == Role.STUDENT:
-            student_prof = self.session.scalar(
-                select(StudentProfile).where(StudentProfile.user_id == user.id)
-            )
-            if student_prof is None or student_prof.id != attempt.student_id:
-                raise ApplicationError(
-                    403,
-                    "FORBIDDEN",
-                    "You do not have permission to access another student's exam attempt.",
-                )
-            return user, attempt
-
-        # Teacher access
-        if user.role == Role.TEACHER:
-            teacher_prof = self.session.scalar(
-                select(TeacherProfile).where(TeacherProfile.user_id == user.id)
-            )
-            if teacher_prof is None:
-                raise ApplicationError(403, "FORBIDDEN", "Teacher profile not found.")
-
-            has_classroom_access = self.session.scalar(
-                select(StudentEnrollment.classroom_id)
-                .join(Classroom, StudentEnrollment.classroom_id == Classroom.id)
-                .outerjoin(TeacherClassroom, Classroom.id == TeacherClassroom.classroom_id)
-                .where(
-                    StudentEnrollment.student_id == attempt.student_id,
-                    StudentEnrollment.status == EnrollmentStatus.ACTIVE,
-                    or_(
-                        TeacherClassroom.teacher_id == teacher_prof.id,
-                        Classroom.created_by == user.id,
-                    ),
-                )
-                .limit(1)
-            )
-            if has_classroom_access is None:
-                raise ApplicationError(
-                    403,
-                    "FORBIDDEN",
-                    "Teacher does not have permission to view this student's exam attempt.",
-                )
-            return user, attempt
-
-        raise ApplicationError(403, "FORBIDDEN", "Access denied.")
+        assert_exam_attempt_access(self.session, user, attempt)
+        return user, attempt
 
     # --------------------------------------------------------------------------
     # 2. Context Assembly (6 Deterministic Data Sources)

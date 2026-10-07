@@ -130,9 +130,9 @@ class ExamSimulationService:
         if existing_attempt:
             # Check if expired
             expires_at = _as_utc(existing_attempt.started_at) + timedelta(minutes=exam.duration_minutes)
-            if now > expires_at:
-                # Auto-submit expired attempt
-                self.submit_exam(student_user_id, existing_attempt.id)
+            if now >= expires_at:
+                # Auto-submit expired attempt as TIMED_OUT (no mastery update)
+                self.submit_exam(student_user_id, existing_attempt.id, update_mastery=False)
             else:
                 return self._build_start_read(existing_attempt, exam, now)
 
@@ -176,17 +176,14 @@ class ExamSimulationService:
                 f"Cannot submit response to an attempt with status {attempt.status}.",
             )
 
-        # Check timer with 60s grace period
+        # Check timer: strictly reject expired answer without mutate-then-raise side-effects
         now = datetime.now(timezone.utc)
         expires_at = _as_utc(attempt.started_at) + timedelta(minutes=attempt.exam.duration_minutes)
-        if now > expires_at + timedelta(seconds=60):
-            attempt.status = ExamAttemptStatus.TIMED_OUT
-            self.session.flush()
-            self.scoring_service.score_attempt(attempt.id)
+        if now >= expires_at:
             raise ApplicationError(
                 409,
                 "EXAM_TIMED_OUT",
-                "Exam duration has expired. Attempt has been automatically submitted.",
+                "Exam time has expired. Finalize the attempt before continuing.",
             )
 
         # Verify question belongs to this exam
@@ -374,13 +371,22 @@ class ExamSimulationService:
             )
 
         now = datetime.now(timezone.utc)
+        expires_at = _as_utc(attempt.started_at) + timedelta(minutes=attempt.exam.duration_minutes)
+        is_timed_out = now >= expires_at
 
-        # Calculate duration
-        if not attempt.submitted_at:
-            attempt.submitted_at = now
-            elapsed = int((now - _as_utc(attempt.started_at)).total_seconds())
-            max_allowed = attempt.exam.duration_minutes * 60
-            attempt.duration_seconds = min(elapsed, max_allowed)
+        # Calculate duration and status
+        if is_timed_out:
+            attempt.status = ExamAttemptStatus.TIMED_OUT
+            if not attempt.submitted_at:
+                attempt.submitted_at = expires_at
+            attempt.duration_seconds = attempt.exam.duration_minutes * 60
+            update_mastery = False
+        else:
+            if not attempt.submitted_at:
+                attempt.submitted_at = now
+                elapsed = int((now - _as_utc(attempt.started_at)).total_seconds())
+                max_allowed = attempt.exam.duration_minutes * 60
+                attempt.duration_seconds = min(elapsed, max_allowed)
 
         # 1. Deterministic scoring (No LLM)
         self.scoring_service.score_attempt(attempt.id)

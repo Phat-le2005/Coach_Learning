@@ -983,6 +983,15 @@ def test_synthetic_data_isolation(db_session: Session) -> None:
     db_session.add(
         TeacherClassroom(teacher_id=teacher_prof.id, classroom_id=classroom.id, role="OWNER")
     )
+    db_session.add(
+        TeachingPlan(
+            classroom_id=classroom.id,
+            subject_id=subject.id,
+            status=TeachingPlanStatus.ACTIVE,
+            start_date=date.today() - timedelta(days=7),
+            created_by=teacher.id,
+        )
+    )
     db_session.add_all([
         StudentEnrollment(
             student_id=real_student_prof.id,

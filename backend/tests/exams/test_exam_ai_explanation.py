@@ -596,10 +596,10 @@ def test_teacher_and_student_authorization_rules(
     res1 = db_client.post(f"/exams/attempts/{attempt.id}/ai-explanation", headers=h_owner)
     assert res1.status_code == 200
 
-    # 2. Other student -> 403 Forbidden
+    # 2. Other student -> 404 Not Found (privacy guard: hide attempt existence)
     h_s_stranger = exam_bearer(s_stranger)
     res2 = db_client.post(f"/exams/attempts/{attempt.id}/ai-explanation", headers=h_s_stranger)
-    assert res2.status_code == 403
+    assert res2.status_code == 404
 
     # 3. Enrolled teacher -> 200 OK
     h_t_enrolled = exam_bearer(t_enrolled)

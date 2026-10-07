@@ -7,18 +7,22 @@ from fastapi.testclient import TestClient
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.classes.models import Classroom, EnrollmentStatus, StudentEnrollment, TeacherClassroom
 from app.curriculum.models import Chapter, ProblemType, Topic
 from app.exams.models import (
     Exam,
     ExamAttempt,
     ExamAttemptStatus,
     ExamQuestion,
+    ExamResponse,
     ExamStatus,
     ExamType,
 )
+from app.parents.models import ParentProfile
 from app.questions.models import Question, QuestionStatus, QuestionType
 from app.students.models import StudentProfile
 from app.subjects.models import Subject
+from app.teachers.models import TeacherProfile
 from app.users.models import Role, User
 
 
@@ -240,20 +244,152 @@ def test_record_response_expired_raises_409(
     res_start = db_client.post(f"/exams/{exam.id}/start", headers=headers)
     attempt_id = res_start.json()["attempt_id"]
 
-    # Fast forward beyond 30 min + 60s grace
+    # Fast forward beyond 30 min (strictly expired, no grace period)
     att_row = db_session.get(ExamAttempt, UUID(attempt_id))
     assert att_row is not None
-    att_row.started_at = datetime.now(timezone.utc) - timedelta(minutes=35)
+    att_row.started_at = datetime.now(timezone.utc) - timedelta(minutes=30, seconds=5)
     db_session.commit()
 
-    # Answer after grace period -> 409 EXAM_TIMED_OUT
+    # Answer after expiration -> 409 EXAM_TIMED_OUT without mutation
     res_ans = db_client.post(
         f"/exams/attempts/{attempt_id}/answer",
         json={"question_id": str(q.id), "student_answer": "4"},
         headers=headers,
     )
     assert res_ans.status_code == 409
-    assert res_ans.json()["error"]["code"] == "EXAM_TIMED_OUT"
+    err = res_ans.json()["error"]
+    assert err["code"] == "EXAM_TIMED_OUT"
+    assert err["message"] == "Exam time has expired. Finalize the attempt before continuing."
+
+    # Verify attempt is NOT mutated in DB (remains IN_PROGRESS, no responses saved)
+    db_session.expire_all()
+    att_check = db_session.get(ExamAttempt, UUID(attempt_id))
+    assert att_check is not None
+    assert att_check.status == ExamAttemptStatus.IN_PROGRESS
+    resps = list(
+        db_session.scalars(
+            select(ExamResponse).where(ExamResponse.attempt_id == UUID(attempt_id))
+        ).all()
+    )
+    assert len(resps) == 0
+
+
+def test_expired_attempt_submit_results_in_timed_out(
+    db_client: TestClient,
+    db_session: Session,
+    exam_user_factory: Callable[[Role, str], User],
+    exam_bearer: Callable[[User], dict[str, str]],
+) -> None:
+    teacher = exam_user_factory(Role.TEACHER, "t_subexp@example.com")
+    student = exam_user_factory(Role.STUDENT, "s_subexp@example.com")
+    exam, q = _create_simple_exam(db_session, teacher, title="Submit Expired Exam")
+
+    headers = exam_bearer(student)
+
+    # 1. Start and answer
+    res_start = db_client.post(f"/exams/{exam.id}/start", headers=headers)
+    attempt_id = res_start.json()["attempt_id"]
+    db_client.post(
+        f"/exams/attempts/{attempt_id}/answer",
+        json={"question_id": str(q.id), "student_answer": "4"},
+        headers=headers,
+    )
+
+    # 2. Fast forward beyond 30 min duration
+    att_row = db_session.get(ExamAttempt, UUID(attempt_id))
+    assert att_row is not None
+    att_row.started_at = datetime.now(timezone.utc) - timedelta(minutes=32)
+    db_session.commit()
+
+    # 3. Submit expired attempt (even with update_mastery=true)
+    res_sub = db_client.post(
+        f"/exams/attempts/{attempt_id}/submit?update_mastery=true",
+        headers=headers,
+    )
+    assert res_sub.status_code == 200
+    data = res_sub.json()
+    assert data["status"] == "TIMED_OUT"
+    assert data["official_mastery_updated"] is False
+    assert data["duration_seconds"] == 30 * 60
+
+    # 4. DB state verification
+    db_session.expire_all()
+    att_db = db_session.get(ExamAttempt, UUID(attempt_id))
+    assert att_db is not None
+    assert att_db.status == ExamAttemptStatus.TIMED_OUT
+    assert att_db.duration_seconds == 30 * 60
+
+
+def test_start_exam_finalizes_expired_previous_attempt_as_timed_out(
+    db_client: TestClient,
+    db_session: Session,
+    exam_user_factory: Callable[[Role, str], User],
+    exam_bearer: Callable[[User], dict[str, str]],
+) -> None:
+    teacher = exam_user_factory(Role.TEACHER, "t_restart@example.com")
+    student = exam_user_factory(Role.STUDENT, "s_restart@example.com")
+    exam, _ = _create_simple_exam(db_session, teacher, title="Restart Expired Exam")
+
+    headers = exam_bearer(student)
+
+    # Start attempt 1
+    res1 = db_client.post(f"/exams/{exam.id}/start", headers=headers)
+    att1_id = res1.json()["attempt_id"]
+
+    # Fast forward attempt 1
+    att1_row = db_session.get(ExamAttempt, UUID(att1_id))
+    assert att1_row is not None
+    att1_row.started_at = datetime.now(timezone.utc) - timedelta(minutes=35)
+    db_session.commit()
+
+    # Starting exam again should finalize attempt 1 as TIMED_OUT and return a new attempt
+    res2 = db_client.post(f"/exams/{exam.id}/start", headers=headers)
+    assert res2.status_code == 200
+    att2_id = res2.json()["attempt_id"]
+    assert att2_id != att1_id
+
+    # Check attempt 1 in DB
+    db_session.expire_all()
+    att1_check = db_session.get(ExamAttempt, UUID(att1_id))
+    assert att1_check is not None
+    assert att1_check.status == ExamAttemptStatus.TIMED_OUT
+
+
+def test_finalize_timeout_idempotency(
+    db_client: TestClient,
+    db_session: Session,
+    exam_user_factory: Callable[[Role, str], User],
+    exam_bearer: Callable[[User], dict[str, str]],
+) -> None:
+    teacher = exam_user_factory(Role.TEACHER, "t_idemp@example.com")
+    student = exam_user_factory(Role.STUDENT, "s_idemp@example.com")
+    exam, _ = _create_simple_exam(db_session, teacher, title="Idempotent Timeout Exam")
+
+    headers = exam_bearer(student)
+
+    res_start = db_client.post(f"/exams/{exam.id}/start", headers=headers)
+    att_id = res_start.json()["attempt_id"]
+
+    # Fast forward
+    att_row = db_session.get(ExamAttempt, UUID(att_id))
+    assert att_row is not None
+    att_row.started_at = datetime.now(timezone.utc) - timedelta(minutes=32)
+    db_session.commit()
+
+    # 1. Finalize timeout
+    res_fin1 = db_client.post(f"/exams/attempts/{att_id}/finalize-timeout", headers=headers)
+    assert res_fin1.status_code == 200
+    assert res_fin1.json()["status"] == "TIMED_OUT"
+
+    # 2. Finalize timeout again (idempotent)
+    res_fin2 = db_client.post(f"/exams/attempts/{att_id}/finalize-timeout", headers=headers)
+    assert res_fin2.status_code == 200
+    assert res_fin2.json()["status"] == "TIMED_OUT"
+
+    # 3. Submit after finalize timeout (idempotent guard)
+    res_sub = db_client.post(f"/exams/attempts/{att_id}/submit", headers=headers)
+    assert res_sub.status_code == 200
+    assert res_sub.json()["status"] == "TIMED_OUT"
 
 
 def test_attempt_ownership_isolation(
@@ -287,3 +423,125 @@ def test_attempt_ownership_isolation(
     res_fin = db_client.post(f"/exams/attempts/{attempt_id}/finalize-timeout", headers=headers_s2)
     assert res_fin.status_code == 404
     assert res_fin.json()["error"]["code"] == "ATTEMPT_NOT_FOUND"
+
+
+def test_exam_analytics_access_policy_matrix(
+    db_client: TestClient,
+    db_session: Session,
+    exam_user_factory: Callable[[Role, str], User],
+    exam_bearer: Callable[[User], dict[str, str]],
+    teacher_profile: Callable[[User], TeacherProfile],
+    student_profile: Callable[[User], StudentProfile],
+) -> None:
+    # 1. Create actors
+    admin_user = exam_user_factory(Role.ADMIN, "admin_anly@example.com")
+    t_enrolled = exam_user_factory(Role.TEACHER, "t_enr_anly@example.com")
+    t_stranger = exam_user_factory(Role.TEACHER, "t_str_anly@example.com")
+    s_owner = exam_user_factory(Role.STUDENT, "s_own_anly@example.com")
+    s_other = exam_user_factory(Role.STUDENT, "s_oth_anly@example.com")
+    s_inactive = exam_user_factory(Role.STUDENT, "s_inact_anly@example.com")
+    parent_user = exam_user_factory(Role.PARENT, "p_anly@example.com")
+
+    t_enrolled_prof = teacher_profile(t_enrolled)
+    s_owner_prof = student_profile(s_owner)
+    s_inactive_prof = student_profile(s_inactive)
+
+    # 2. Classroom setup
+    classroom = Classroom(
+        name="Lớp 12 Analytics Test",
+        academic_year="2025-2026",
+        grade_level=12,
+        created_by=t_enrolled.id,
+    )
+    db_session.add(classroom)
+    db_session.flush()
+
+    db_session.add(
+        TeacherClassroom(
+            teacher_id=t_enrolled_prof.id,
+            classroom_id=classroom.id,
+            role="OWNER",
+        )
+    )
+    db_session.add(
+        StudentEnrollment(
+            student_id=s_owner_prof.id,
+            classroom_id=classroom.id,
+            status=EnrollmentStatus.ACTIVE,
+        )
+    )
+    db_session.add(
+        StudentEnrollment(
+            student_id=s_inactive_prof.id,
+            classroom_id=classroom.id,
+            status=EnrollmentStatus.INACTIVE,
+        )
+    )
+    db_session.commit()
+
+    # 3. Create exam and attempts
+    exam, q = _create_simple_exam(db_session, t_enrolled, title="Analytics Policy Exam")
+
+    # S_owner attempt (Submitted)
+    h_s_owner = exam_bearer(s_owner)
+    res_s1 = db_client.post(f"/exams/{exam.id}/start", headers=h_s_owner)
+    att_owner_id = res_s1.json()["attempt_id"]
+    db_client.post(
+        f"/exams/attempts/{att_owner_id}/answer",
+        json={"question_id": str(q.id), "student_answer": "4"},
+        headers=h_s_owner,
+    )
+    db_client.post(f"/exams/attempts/{att_owner_id}/submit", headers=h_s_owner)
+
+    # S_inactive attempt (Submitted)
+    h_s_inact = exam_bearer(s_inactive)
+    res_s3 = db_client.post(f"/exams/{exam.id}/start", headers=h_s_inact)
+    att_inact_id = res_s3.json()["attempt_id"]
+    db_client.post(
+        f"/exams/attempts/{att_inact_id}/answer",
+        json={"question_id": str(q.id), "student_answer": "4"},
+        headers=h_s_inact,
+    )
+    db_client.post(f"/exams/attempts/{att_inact_id}/submit", headers=h_s_inact)
+
+    # 4. Access tests for S_owner's attempt:
+    # 4a. Owner student -> 200 OK
+    res_get_owner = db_client.get(f"/exams/attempts/{att_owner_id}/analytics", headers=h_s_owner)
+    assert res_get_owner.status_code == 200
+    assert res_get_owner.json()["attempt_id"] == att_owner_id
+
+    # 4b. Other student -> 404 ATTEMPT_NOT_FOUND (privacy guard: hides attempt existence)
+    h_s_other = exam_bearer(s_other)
+    res_get_other = db_client.get(f"/exams/attempts/{att_owner_id}/analytics", headers=h_s_other)
+    assert res_get_other.status_code == 404
+    assert res_get_other.json()["error"]["code"] == "ATTEMPT_NOT_FOUND"
+
+    # 4c. Enrolled teacher (active student) -> 200 OK
+    h_t_enrolled = exam_bearer(t_enrolled)
+    res_get_t_enr = db_client.get(f"/exams/attempts/{att_owner_id}/analytics", headers=h_t_enrolled)
+    assert res_get_t_enr.status_code == 200
+    assert res_get_t_enr.json()["attempt_id"] == att_owner_id
+
+    # 4d. Stranger teacher -> 403 EXAM_ATTEMPT_ACCESS_DENIED
+    h_t_stranger = exam_bearer(t_stranger)
+    res_get_t_str = db_client.get(f"/exams/attempts/{att_owner_id}/analytics", headers=h_t_stranger)
+    assert res_get_t_str.status_code == 403
+    assert res_get_t_str.json()["error"]["code"] == "EXAM_ATTEMPT_ACCESS_DENIED"
+
+    # 4e. Parent -> 403 EXAM_ATTEMPT_ACCESS_DENIED
+    h_parent = exam_bearer(parent_user)
+    res_get_parent = db_client.get(f"/exams/attempts/{att_owner_id}/analytics", headers=h_parent)
+    assert res_get_parent.status_code == 403
+    assert res_get_parent.json()["error"]["code"] == "EXAM_ATTEMPT_ACCESS_DENIED"
+
+    # 4f. Admin -> 200 OK
+    h_admin = exam_bearer(admin_user)
+    res_get_admin = db_client.get(f"/exams/attempts/{att_owner_id}/analytics", headers=h_admin)
+    assert res_get_admin.status_code == 200
+    assert res_get_admin.json()["attempt_id"] == att_owner_id
+
+    # 5. Teacher accessing inactive student's attempt -> 403 EXAM_ATTEMPT_ACCESS_DENIED
+    res_get_inact = db_client.get(f"/exams/attempts/{att_inact_id}/analytics", headers=h_t_enrolled)
+    assert res_get_inact.status_code == 403
+    assert res_get_inact.json()["error"]["code"] == "EXAM_ATTEMPT_ACCESS_DENIED"
+

@@ -10,7 +10,7 @@ from app.auth.dependencies import get_current_user, require_any_role, require_ro
 from app.core.errors import ErrorResponse
 from app.core.exceptions import ApplicationError
 from app.database.session import get_db
-from app.exams.access_policy import assert_exam_access
+from app.exams.access_policy import assert_exam_access, assert_exam_attempt_access
 from app.exams.ai_explanation_service import ExamAIExplanationService
 from app.exams.ai_schemas import ExamAIExplanationRead
 from app.exams.analytics_service import ExamAnalyticsService
@@ -339,10 +339,7 @@ def get_exam_analytics(
     if attempt is None:
         raise ApplicationError(404, "ATTEMPT_NOT_FOUND", "Exam attempt not found.")
 
-    if user.role == Role.STUDENT:
-        student = session.scalar(select(StudentProfile).where(StudentProfile.user_id == user.id))
-        if not student or attempt.student_id != student.id:
-            raise ApplicationError(403, "NOT_YOUR_ATTEMPT", "You cannot view another student's exam analytics.")
+    assert_exam_attempt_access(session, user, attempt)
 
     return analytics_service.generate_analytics(attempt_id)
 
