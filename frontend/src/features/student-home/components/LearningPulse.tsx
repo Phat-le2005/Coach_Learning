@@ -37,7 +37,8 @@ export function LearningPulse({ data }: LearningPulseProps) {
         viewport={{ once: true, amount: 0.2 }}
       >
         <motion.div variants={fadeUp}>
-          <OrganicCard className={styles.metricCard} interactive>
+          <OrganicCard className={`${styles.metricCard} ${styles.metricCardMastery}`} interactive>
+            <span className={styles.metricCloud} aria-hidden="true" />
             <div className={styles.metricCopy}>
               <span className={styles.metricIcon} aria-hidden="true">
                 <Leaf size={19} />
@@ -50,7 +51,8 @@ export function LearningPulse({ data }: LearningPulseProps) {
         </motion.div>
 
         <motion.div variants={fadeUp}>
-          <OrganicCard className={styles.metricCard} interactive>
+          <OrganicCard className={`${styles.metricCard} ${styles.metricCardReview}`} interactive>
+            <span className={styles.metricLight} aria-hidden="true" />
             <div className={styles.metricCopy}>
               <span className={`${styles.metricIcon} ${styles.metricIconReview}`} aria-hidden="true">
                 <BookMarked size={19} />
@@ -67,7 +69,8 @@ export function LearningPulse({ data }: LearningPulseProps) {
         </motion.div>
 
         <motion.div variants={fadeUp}>
-          <OrganicCard className={styles.metricCard} interactive>
+          <OrganicCard className={`${styles.metricCard} ${styles.metricCardAssignment}`} interactive>
+            <span className={styles.metricRiver} aria-hidden="true" />
             <div className={styles.metricCopy}>
               <span className={`${styles.metricIcon} ${styles.metricIconAssignment}`} aria-hidden="true">
                 <ClipboardCheck size={19} />
@@ -84,7 +87,8 @@ export function LearningPulse({ data }: LearningPulseProps) {
         </motion.div>
 
         <motion.div variants={fadeUp}>
-          <OrganicCard className={styles.metricCard} interactive>
+          <OrganicCard className={`${styles.metricCard} ${styles.metricCardMomentum}`} interactive>
+            <span className={styles.metricLeafTrail} aria-hidden="true" />
             <div className={styles.metricCopy}>
               <span className={`${styles.metricIcon} ${styles.metricIconMomentum}`} aria-hidden="true">
                 <Flame size={19} />

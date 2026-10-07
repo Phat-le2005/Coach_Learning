@@ -47,11 +47,17 @@ export function KnowledgeGarden({ regions }: KnowledgeGardenProps) {
               >
                 <div className={styles.gardenIndex}>0{index + 1}</div>
                 <div className={styles.gardenLandscape} aria-hidden="true">
+                  <span className={styles.gardenCloud} />
                   <span className={styles.gardenSun} />
+                  <span className={styles.gardenRidge} />
                   <span className={styles.gardenHillBack} />
                   <span className={styles.gardenHillFront} />
+                  <span className={styles.gardenRiver} />
+                  <span className={styles.gardenPath} />
                   <span className={styles.gardenStemOne} />
                   <span className={styles.gardenStemTwo} />
+                  <span className={styles.gardenTree} />
+                  <span className={styles.gardenLight} />
                 </div>
                 <div className={styles.gardenContent}>
                   <MasteryBadge state={region.state === "not_started" ? "not_measured" : region.state} label={getRegionStateCopy(region.state)} />

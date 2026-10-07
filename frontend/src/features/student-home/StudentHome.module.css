@@ -1256,6 +1256,845 @@
   border-radius: 19px;
 }
 
+/* Learning Forest immersive layer */
+
+.forestAtmosphere {
+  position: fixed;
+  inset: 0;
+  z-index: -3;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgb(218 240 244 / 72%) 0%, rgb(236 244 231 / 42%) 38%, transparent 75%),
+    radial-gradient(circle at 54% 16%, rgb(255 248 218 / 54%), transparent 25rem);
+}
+
+.forestSun {
+  position: absolute;
+  top: -95px;
+  left: 58%;
+  width: 360px;
+  height: 360px;
+  border-radius: 50%;
+  opacity: 0.7;
+  filter: blur(12px);
+  background: radial-gradient(circle, rgb(255 250 215 / 86%) 0 12%, rgb(242 223 184 / 30%) 42%, transparent 70%);
+  animation: forest-sun-breathe 14s ease-in-out infinite;
+}
+
+.cloudLayer {
+  position: absolute;
+  inset-inline: -14%;
+  height: 280px;
+  opacity: 0.64;
+  will-change: transform;
+}
+
+.cloudLayer span {
+  position: absolute;
+  width: 260px;
+  height: 74px;
+  border-radius: 50%;
+  filter: blur(2px);
+  background: rgb(255 255 250 / 58%);
+  box-shadow: 92px 10px 0 -8px rgb(255 255 250 / 46%), 165px -3px 0 -20px rgb(255 255 250 / 38%);
+}
+
+.cloudLayer span::before,
+.cloudLayer span::after {
+  position: absolute;
+  content: "";
+  border-radius: 50%;
+  background: inherit;
+}
+
+.cloudLayer span::before {
+  top: -28px;
+  left: 54px;
+  width: 105px;
+  height: 90px;
+}
+
+.cloudLayer span::after {
+  top: -18px;
+  right: 28px;
+  width: 86px;
+  height: 72px;
+}
+
+.cloudLayerFar {
+  top: 56px;
+  filter: blur(8px);
+  animation: forest-cloud-drift 58s linear infinite;
+}
+
+.cloudLayerFar span:nth-child(1) { top: 12px; left: 4%; transform: scale(0.72); }
+.cloudLayerFar span:nth-child(2) { top: 112px; left: 43%; transform: scale(0.58); }
+.cloudLayerFar span:nth-child(3) { top: 28px; left: 78%; transform: scale(0.82); }
+
+.cloudLayerNear {
+  top: 385px;
+  opacity: 0.28;
+  filter: blur(16px);
+  animation: forest-cloud-drift-reverse 72s linear infinite;
+}
+
+.cloudLayerNear span:nth-child(1) { top: 20px; left: 12%; transform: scale(1.15); }
+.cloudLayerNear span:nth-child(2) { top: 72px; left: 70%; transform: scale(0.92); }
+
+.mistRibbonOne,
+.mistRibbonTwo {
+  position: absolute;
+  left: -18%;
+  width: 136%;
+  height: 180px;
+  border-radius: 50%;
+  opacity: 0.28;
+  filter: blur(24px);
+  background: linear-gradient(90deg, transparent, rgb(255 255 250 / 72%), rgb(203 230 244 / 48%), transparent);
+  will-change: transform;
+}
+
+.mistRibbonOne {
+  top: 630px;
+  transform: rotate(-4deg);
+  animation: forest-mist-shift 36s ease-in-out infinite;
+}
+
+.mistRibbonTwo {
+  top: 1480px;
+  opacity: 0.18;
+  transform: rotate(5deg);
+  animation: forest-mist-shift 46s -12s ease-in-out infinite reverse;
+}
+
+.distantHills {
+  position: absolute;
+  top: 510px;
+  right: -8%;
+  left: -8%;
+  height: 430px;
+  opacity: 0.18;
+  filter: blur(2px);
+}
+
+.distantHills span {
+  position: absolute;
+  bottom: 0;
+  width: 52%;
+  height: 58%;
+  border-radius: 55% 55% 0 0;
+  background: linear-gradient(180deg, var(--verdant-300), transparent 92%);
+}
+
+.distantHills span:nth-child(1) { left: -8%; transform: rotate(8deg); }
+.distantHills span:nth-child(2) { left: 29%; height: 76%; opacity: 0.58; transform: rotate(-6deg); }
+.distantHills span:nth-child(3) { right: -9%; height: 66%; transform: rotate(6deg); }
+
+.pollenField {
+  position: absolute;
+  inset: 0;
+}
+
+.pollenField i {
+  position: absolute;
+  top: var(--pollen-y);
+  left: var(--pollen-x);
+  width: 4px;
+  height: 4px;
+  border-radius: 50% 50% 50% 15%;
+  opacity: 0.36;
+  background: rgb(244 209 125 / 88%);
+  box-shadow: 0 0 12px rgb(242 223 184 / 70%);
+  animation: forest-pollen var(--pollen-duration) var(--pollen-delay) ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.topNav {
+  border-color: rgb(255 255 255 / 72%);
+  background:
+    linear-gradient(135deg, rgb(255 255 250 / 79%), rgb(238 247 238 / 66%)),
+    rgb(248 248 240 / 78%);
+  box-shadow: 0 18px 55px rgb(32 83 67 / 13%), inset 0 1px 0 rgb(255 255 255 / 86%);
+  backdrop-filter: blur(30px) saturate(138%);
+}
+
+.desktopNavActive {
+  background: linear-gradient(135deg, rgb(220 239 229 / 92%), rgb(203 230 244 / 62%));
+  box-shadow: inset 0 0 0 1px rgb(79 150 120 / 10%), 0 8px 20px rgb(40 105 85 / 8%);
+}
+
+.hero {
+  min-height: 625px;
+  border-radius: 54px 54px 36px 54px;
+  border-color: rgb(255 255 255 / 18%);
+  background:
+    radial-gradient(circle at 78% 18%, rgb(203 230 244 / 24%), transparent 25%),
+    radial-gradient(circle at 84% 72%, rgb(156 224 188 / 17%), transparent 32%),
+    radial-gradient(circle at 55% 110%, rgb(79 150 120 / 30%), transparent 40%),
+    linear-gradient(128deg, #0d2a23 0%, #153f34 42%, #246052 70%, #38536d 100%);
+  box-shadow: 0 38px 110px rgb(20 67 55 / 24%), inset 0 1px 0 rgb(255 255 255 / 10%);
+}
+
+.hero::before {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  content: "";
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgb(6 31 26 / 22%), transparent 52%),
+    linear-gradient(0deg, rgb(7 34 28 / 28%), transparent 34%);
+}
+
+.hero::after {
+  opacity: 0.22;
+  background-size: 8px 8px;
+}
+
+.heroCopy {
+  text-shadow: 0 2px 26px rgb(7 34 28 / 22%);
+}
+
+.heroAurora {
+  position: absolute;
+  top: -38%;
+  right: 4%;
+  width: 66%;
+  height: 90%;
+  border-radius: 50%;
+  opacity: 0.22;
+  filter: blur(38px);
+  background: conic-gradient(from 170deg, transparent, rgb(185 235 229 / 72%), rgb(203 230 244 / 44%), transparent 62%);
+  animation: forest-aurora 20s ease-in-out infinite;
+}
+
+.heroMist {
+  position: absolute;
+  right: -8%;
+  bottom: 4%;
+  width: 72%;
+  height: 110px;
+  border-radius: 50%;
+  opacity: 0.28;
+  filter: blur(21px);
+  background: linear-gradient(90deg, transparent, rgb(255 255 250 / 50%), transparent);
+  animation: forest-mist-shift 24s ease-in-out infinite;
+}
+
+.heroHorizon {
+  position: absolute;
+  right: -3%;
+  bottom: -11%;
+  width: 58%;
+  height: 38%;
+  opacity: 0.22;
+  border-radius: 65% 0 0;
+  background: linear-gradient(160deg, rgb(141 200 174 / 68%), rgb(16 46 38 / 20%));
+  clip-path: polygon(0 75%, 13% 54%, 27% 68%, 43% 31%, 58% 62%, 75% 20%, 100% 52%, 100% 100%, 0 100%);
+}
+
+.heroFireflyOne,
+.heroFireflyTwo {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--amber-200);
+  box-shadow: 0 0 15px 5px rgb(242 223 184 / 34%);
+  animation: forest-firefly 11s ease-in-out infinite;
+}
+
+.heroFireflyOne { top: 36%; right: 43%; }
+.heroFireflyTwo { right: 8%; bottom: 24%; animation-delay: -6s; }
+
+.heroLeafOne,
+.heroLeafTwo {
+  border-color: rgb(195 237 213 / 20%);
+  box-shadow: inset 12px 10px 32px rgb(195 237 213 / 4%);
+}
+
+.heroActions > a:first-child {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(110deg, #a7e8c5, #c3f0e7 54%, #cce8f6);
+  box-shadow: 0 17px 42px rgb(6 31 26 / 34%), 0 0 0 1px rgb(255 255 255 / 24%);
+}
+
+.heroActions > a:nth-child(2) {
+  border-color: rgb(255 255 255 / 24%);
+  background: rgb(255 255 255 / 9%);
+  backdrop-filter: blur(12px);
+}
+
+.canopyWrap {
+  width: min(100%, 570px);
+  margin-inline: auto;
+}
+
+.canopyWrap::before {
+  top: 5%;
+  left: 8%;
+  width: 84%;
+  height: 82%;
+  opacity: 0.72;
+  filter: blur(40px);
+  background: radial-gradient(circle, rgb(99 201 154 / 18%), rgb(92 169 214 / 7%) 48%, transparent 70%);
+}
+
+.treeGroundGlow { opacity: 0.9; }
+
+.treeFoliage circle {
+  fill: rgb(99 201 154 / 5%);
+  stroke: rgb(195 237 213 / 7%);
+  stroke-width: 1;
+}
+
+.treeFoliage circle:nth-child(2n) { fill: rgb(59 185 176 / 5%); }
+.treeFoliage circle:nth-child(3n) { fill: rgb(203 230 244 / 4%); }
+
+.treeTrunk {
+  fill: none;
+  stroke-width: 15;
+  stroke-linecap: round;
+  filter: drop-shadow(0 12px 15px rgb(3 23 18 / 24%));
+}
+
+.canopyBranch {
+  stroke: rgb(169 221 190 / 68%);
+  stroke-width: 4;
+  filter: drop-shadow(0 3px 5px rgb(7 34 28 / 22%));
+}
+
+.canopyRoots path {
+  stroke: rgb(185 235 229 / 28%);
+  stroke-width: 2;
+  stroke-dasharray: 0;
+}
+
+.treeTrunkRings path {
+  fill: none;
+  stroke: rgb(221 244 225 / 24%);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.canopyNodeHalo {
+  fill: rgb(255 255 255 / 2%);
+  stroke: rgb(255 255 255 / 9%);
+  stroke-width: 1;
+}
+
+.canopyNodeBody {
+  fill: var(--mint-500);
+  stroke: rgb(245 250 238 / 56%);
+  stroke-width: 1.4;
+  transition: filter var(--duration-standard), opacity var(--duration-standard);
+}
+
+.canopyNodeVein {
+  fill: none;
+  stroke: rgb(250 252 240 / 55%);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+}
+
+.canopyNodeDot { fill: rgb(255 250 218 / 92%); }
+.canopyNode_mastered .canopyNodeBody { fill: #68d69f; }
+.canopyNode_developing .canopyNodeBody { fill: #42c5bc; }
+.canopyNode_weak .canopyNodeBody { fill: #e2aa4d; }
+.canopyNode_review .canopyNodeBody { fill: #9386dc; }
+
+.canopyNode_not_started .canopyNodeBody {
+  fill: #7f918a;
+  opacity: 0.62;
+  filter: none;
+}
+
+.canopyNodeLock rect {
+  fill: rgb(246 247 235 / 76%);
+  stroke: none;
+}
+
+.canopyNodeLock path {
+  fill: none;
+  stroke: rgb(45 66 58 / 78%);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+}
+
+.canopyNode:hover .canopyNodeHalo,
+.canopyNode:focus .canopyNodeHalo {
+  fill: rgb(195 237 213 / 10%);
+  stroke: rgb(195 237 213 / 42%);
+}
+
+.canopyCaption {
+  margin-top: -12px;
+  color: rgb(244 245 234 / 58%);
+}
+
+.canopyCaption span {
+  background: linear-gradient(90deg, transparent, rgb(195 237 213 / 42%));
+}
+
+.canopyCaption span:last-child { transform: scaleX(-1); }
+
+.sectionHeading h2 {
+  color: #14382e;
+  text-shadow: 0 2px 24px rgb(156 224 188 / 16%);
+}
+
+.sectionEyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sectionEyebrow::before {
+  width: 18px;
+  height: 8px;
+  content: "";
+  border-radius: 80% 15% 80% 15%;
+  background: linear-gradient(135deg, var(--mint-500), var(--aqua-500));
+  transform: rotate(-16deg);
+}
+
+.metricCard {
+  isolation: isolate;
+  overflow: hidden;
+  border-color: rgb(255 255 255 / 68%);
+  background:
+    linear-gradient(145deg, rgb(255 255 250 / 82%), rgb(237 246 237 / 66%)),
+    var(--surface-glass);
+  box-shadow: 0 20px 52px rgb(31 69 56 / 10%), inset 0 1px 0 rgb(255 255 255 / 88%);
+}
+
+.metricCard::before {
+  position: absolute;
+  z-index: -1;
+  top: -70px;
+  right: -45px;
+  width: 170px;
+  height: 170px;
+  content: "";
+  border-radius: 50%;
+  opacity: 0.42;
+  filter: blur(4px);
+  background: radial-gradient(circle, var(--mint-200), transparent 68%);
+}
+
+.metricCardReview::before { background: radial-gradient(circle, var(--violet-200), transparent 68%); }
+.metricCardAssignment::before { background: radial-gradient(circle, var(--sky-200), transparent 68%); }
+.metricCardMomentum::before { background: radial-gradient(circle, var(--amber-200), transparent 68%); }
+
+.metricCard > *:not(.metricCloud, .metricLight, .metricRiver, .metricLeafTrail) {
+  position: relative;
+  z-index: 2;
+}
+
+.metricCloud {
+  position: absolute;
+  top: 23px;
+  right: 22px;
+  width: 58px;
+  height: 16px;
+  border-radius: 50%;
+  opacity: 0.28;
+  background: var(--sky-200);
+  box-shadow: 21px 2px 0 -3px var(--sky-200);
+  animation: forest-detail-float 12s ease-in-out infinite;
+}
+
+.metricCloud::before {
+  position: absolute;
+  top: -8px;
+  left: 14px;
+  width: 24px;
+  height: 23px;
+  content: "";
+  border-radius: 50%;
+  background: inherit;
+}
+
+.metricLight {
+  position: absolute;
+  top: 23px;
+  right: 25px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  opacity: 0.5;
+  background: radial-gradient(circle, rgb(255 250 218 / 90%), rgb(222 217 244 / 28%) 38%, transparent 70%);
+  animation: forest-sun-breathe 9s ease-in-out infinite;
+}
+
+.metricRiver {
+  position: absolute;
+  right: -12%;
+  bottom: 17px;
+  width: 72%;
+  height: 38px;
+  opacity: 0.23;
+  border-top: 7px solid var(--aqua-500);
+  border-radius: 50%;
+  transform: rotate(-8deg);
+}
+
+.metricLeafTrail {
+  position: absolute;
+  top: 27px;
+  right: 29px;
+  width: 16px;
+  height: 27px;
+  border-radius: 90% 15% 90% 15%;
+  opacity: 0.36;
+  background: var(--amber-500);
+  box-shadow: -27px 25px 0 -3px var(--mint-500), 8px 50px 0 -4px var(--verdant-300);
+  transform: rotate(22deg);
+  animation: forest-detail-float 14s -5s ease-in-out infinite;
+}
+
+.gardenGrid { perspective: 1200px; }
+
+.gardenCard {
+  min-height: 356px;
+  isolation: isolate;
+  border-color: rgb(255 255 255 / 68%);
+  background: linear-gradient(155deg, rgb(255 255 250 / 88%), rgb(238 245 235 / 78%));
+  box-shadow: 0 22px 58px rgb(31 69 56 / 10%), inset 0 1px 0 rgb(255 255 255 / 90%);
+}
+
+.gardenLandscape {
+  height: 178px;
+  border: 1px solid rgb(255 255 255 / 38%);
+  background:
+    radial-gradient(circle at 76% 20%, rgb(255 248 218 / 48%), transparent 19%),
+    linear-gradient(165deg, #cbeaf0 0%, #dff2df 54%, #a7d9b8 100%);
+  box-shadow: inset 0 -20px 40px rgb(40 105 85 / 8%);
+}
+
+.gardenCloud {
+  position: absolute;
+  top: 28px;
+  left: 22px;
+  width: 58px;
+  height: 15px;
+  border-radius: 50%;
+  opacity: 0.52;
+  filter: blur(0.5px);
+  background: rgb(255 255 250 / 78%);
+  box-shadow: 24px 3px 0 -3px rgb(255 255 250 / 68%);
+  animation: forest-detail-float 16s ease-in-out infinite;
+}
+
+.gardenCloud::before {
+  position: absolute;
+  top: -9px;
+  left: 17px;
+  width: 26px;
+  height: 24px;
+  content: "";
+  border-radius: 50%;
+  background: inherit;
+}
+
+.gardenSun {
+  top: 22px;
+  right: 23px;
+  width: 24px;
+  height: 24px;
+  opacity: 0.84;
+  box-shadow: 0 0 0 9px rgb(242 223 184 / 18%), 0 0 24px rgb(242 223 184 / 34%);
+}
+
+.gardenRidge {
+  position: absolute;
+  right: -7px;
+  bottom: 40px;
+  width: 120px;
+  height: 90px;
+  opacity: 0.32;
+  background: var(--sky-500);
+  clip-path: polygon(0 100%, 22% 48%, 38% 68%, 61% 20%, 100% 100%);
+}
+
+.gardenHillBack { bottom: -30px; background: #77b994; }
+.gardenHillFront { bottom: -48px; background: #3e8b68; }
+
+.gardenRiver {
+  position: absolute;
+  z-index: 2;
+  right: -32px;
+  bottom: 5px;
+  width: 150px;
+  height: 52px;
+  border-top: 11px solid rgb(128 218 211 / 76%);
+  border-radius: 50%;
+  transform: rotate(-12deg);
+}
+
+.gardenPath {
+  position: absolute;
+  z-index: 3;
+  bottom: -12px;
+  left: 36%;
+  width: 52px;
+  height: 89px;
+  opacity: 0.62;
+  background: linear-gradient(90deg, transparent 0 24%, rgb(242 223 184 / 76%) 42% 58%, transparent 76%);
+  clip-path: polygon(46% 0, 55% 0, 100% 100%, 0 100%);
+}
+
+.gardenTree {
+  position: absolute;
+  z-index: 4;
+  bottom: 28px;
+  left: 28px;
+  width: 5px;
+  height: 50px;
+  border-radius: 5px;
+  background: #32694f;
+}
+
+.gardenTree::before,
+.gardenTree::after {
+  position: absolute;
+  content: "";
+  border-radius: 55% 55% 48% 48%;
+  background: #65bb84;
+}
+
+.gardenTree::before {
+  top: -27px;
+  left: -19px;
+  width: 44px;
+  height: 48px;
+  box-shadow: 16px 11px 0 -7px #8bd4a5;
+}
+
+.gardenTree::after {
+  top: -10px;
+  left: -29px;
+  width: 34px;
+  height: 36px;
+  background: #4ca273;
+}
+
+.gardenLight {
+  position: absolute;
+  z-index: 5;
+  top: 74px;
+  right: 54px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgb(255 248 207 / 90%);
+  box-shadow: 0 0 12px 4px rgb(255 248 207 / 42%), -42px 34px 0 -1px rgb(255 248 207 / 76%);
+  animation: forest-firefly 9s -3s ease-in-out infinite;
+}
+
+.garden_mastered .gardenLandscape { filter: saturate(1.08) brightness(1.03); }
+.garden_mastered .gardenTree::before { box-shadow: 16px 11px 0 -7px #9ce0bc, -9px 14px 0 -8px #b9ebe5; }
+.garden_developing .gardenTree { transform: scale(0.84); transform-origin: bottom; }
+.garden_developing .gardenPath { opacity: 0.82; }
+.garden_weak .gardenLandscape { background: linear-gradient(155deg, #d9e9e8, #e8e0bc 58%, #c3b17c); }
+.garden_weak .gardenHillFront { background: #a58d4d; }
+.garden_weak .gardenTree::before,
+.garden_weak .gardenTree::after { background: #bba45f; }
+.garden_review .gardenLandscape { background: linear-gradient(155deg, #dfe6ee, #eadbbf 54%, #aa9ac5); }
+.garden_review .gardenHillFront { background: #766c9f; }
+.garden_review .gardenTree::before { background: #d59c5c; }
+.garden_review .gardenTree::after { background: #9f7358; }
+
+.garden_not_started {
+  opacity: 0.78;
+}
+
+.garden_not_started .gardenLandscape {
+  filter: saturate(0.18) contrast(0.86);
+}
+
+.garden_not_started .gardenLandscape::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background: linear-gradient(120deg, rgb(255 255 250 / 38%), transparent 42%, rgb(255 255 250 / 28%));
+  backdrop-filter: blur(1.5px);
+}
+
+.gardenProgress > span {
+  height: 7px;
+  background: linear-gradient(90deg, rgb(220 239 229 / 80%), rgb(203 230 244 / 60%));
+  box-shadow: inset 0 1px 2px rgb(29 75 61 / 8%);
+}
+
+.gardenProgress i {
+  position: relative;
+  background: linear-gradient(90deg, #4f9678, #63c99a, #5ca9d6);
+  box-shadow: 0 0 12px rgb(99 201 154 / 24%);
+}
+
+.priorityCard {
+  overflow: hidden;
+  border-color: rgb(255 255 255 / 68%);
+  background:
+    radial-gradient(circle at 100% 0, rgb(195 237 213 / 30%), transparent 30%),
+    linear-gradient(145deg, rgb(255 255 250 / 90%), rgb(237 246 237 / 76%));
+  box-shadow: 0 24px 62px rgb(31 69 56 / 11%);
+}
+
+.priorityCard::after {
+  position: absolute;
+  right: -60px;
+  bottom: -95px;
+  width: 270px;
+  height: 190px;
+  content: "";
+  border-radius: 50%;
+  opacity: 0.16;
+  background: var(--verdant-300);
+}
+
+.priorityItemActive {
+  border-color: rgb(79 150 120 / 18%);
+  background: linear-gradient(110deg, rgb(238 247 241 / 92%), rgb(203 230 244 / 34%));
+  box-shadow: 0 10px 30px rgb(40 105 85 / 7%);
+}
+
+.coachCard {
+  isolation: isolate;
+  border-color: rgb(255 255 255 / 14%);
+  background:
+    radial-gradient(circle at 20% 10%, rgb(185 235 229 / 20%), transparent 28%),
+    radial-gradient(circle at 92% 20%, rgb(222 217 244 / 32%), transparent 34%),
+    linear-gradient(150deg, #142f2b 0%, #284d47 52%, #4f5276 100%);
+  box-shadow: 0 30px 80px rgb(37 55 66 / 22%), inset 0 1px 0 rgb(255 255 255 / 9%);
+}
+
+.coachCard::after {
+  position: absolute;
+  z-index: -1;
+  right: -18%;
+  bottom: -12%;
+  width: 118%;
+  height: 46%;
+  content: "";
+  opacity: 0.16;
+  background: linear-gradient(160deg, transparent 20%, var(--mint-300));
+  clip-path: polygon(0 85%, 18% 42%, 37% 70%, 58% 18%, 72% 62%, 100% 26%, 100% 100%, 0 100%);
+}
+
+.coachVisual {
+  width: 116px;
+  height: 116px;
+}
+
+.coachGuideBeam {
+  position: absolute;
+  top: -70px;
+  left: 48%;
+  width: 84px;
+  height: 220px;
+  opacity: 0.18;
+  filter: blur(8px);
+  background: linear-gradient(180deg, rgb(222 217 244 / 8%), rgb(185 235 229 / 82%), transparent);
+  clip-path: polygon(45% 0, 55% 0, 100% 100%, 0 100%);
+}
+
+.coachOrbit {
+  border-color: rgb(222 217 244 / 38%);
+  box-shadow: 0 0 30px rgb(133 120 207 / 12%);
+}
+
+.coachOrbitSecondary {
+  position: absolute;
+  inset: 17px;
+  border: 1px dashed rgb(185 235 229 / 28%);
+  border-radius: 56% 44% 52% 48%;
+  transform: rotate(22deg);
+}
+
+.coachFireflyOne,
+.coachFireflyTwo {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--amber-200);
+  box-shadow: 0 0 13px 4px rgb(242 223 184 / 30%);
+  animation: forest-firefly 10s ease-in-out infinite;
+}
+
+.coachFireflyOne { top: 16px; right: 8px; }
+.coachFireflyTwo { bottom: 4px; left: 18px; animation-delay: -4s; }
+
+.coachCore {
+  width: 58px;
+  height: 58px;
+  color: #214a3e;
+  border: 1px solid rgb(255 255 255 / 28%);
+  background: linear-gradient(145deg, #e7ddfa, #c3edd5 58%, #b9ebe5);
+  box-shadow: 0 15px 38px rgb(7 29 34 / 30%), 0 0 30px rgb(185 235 229 / 18%);
+}
+
+.coachActions button {
+  border-color: rgb(255 255 255 / 13%);
+  border-radius: var(--radius-pill);
+  background: linear-gradient(90deg, rgb(255 255 255 / 8%), rgb(185 235 229 / 5%));
+  backdrop-filter: blur(8px);
+}
+
+.coachActions button:hover {
+  border-color: rgb(185 235 229 / 24%);
+  background: rgb(255 255 255 / 13%);
+  box-shadow: 0 10px 25px rgb(7 29 34 / 12%);
+}
+
+@keyframes forest-cloud-drift {
+  0% { transform: translate3d(-4%, 0, 0); }
+  50% { transform: translate3d(5%, 8px, 0); }
+  100% { transform: translate3d(-4%, 0, 0); }
+}
+
+@keyframes forest-cloud-drift-reverse {
+  0% { transform: translate3d(4%, 0, 0); }
+  50% { transform: translate3d(-5%, -7px, 0); }
+  100% { transform: translate3d(4%, 0, 0); }
+}
+
+@keyframes forest-mist-shift {
+  0%, 100% { transform: translate3d(-2%, 0, 0) rotate(-3deg); opacity: 0.18; }
+  50% { transform: translate3d(4%, -10px, 0) rotate(1deg); opacity: 0.32; }
+}
+
+@keyframes forest-pollen {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); opacity: 0.18; }
+  40% { transform: translate3d(14px, -24px, 0) rotate(70deg); opacity: 0.52; }
+  72% { transform: translate3d(-8px, -38px, 0) rotate(120deg); opacity: 0.3; }
+}
+
+@keyframes forest-firefly {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(0.8); opacity: 0.34; }
+  45% { transform: translate3d(9px, -12px, 0) scale(1.1); opacity: 0.9; }
+  75% { transform: translate3d(-4px, -5px, 0) scale(0.92); opacity: 0.52; }
+}
+
+@keyframes forest-sun-breathe {
+  0%, 100% { transform: scale(0.96); opacity: 0.56; }
+  50% { transform: scale(1.04); opacity: 0.76; }
+}
+
+@keyframes forest-aurora {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-4deg); opacity: 0.16; }
+  50% { transform: translate3d(-18px, 12px, 0) rotate(3deg); opacity: 0.27; }
+}
+
+@keyframes forest-detail-float {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(5px, -5px, 0); }
+}
+
 @media (max-width: 1199px) {
   .topNav {
     grid-template-columns: auto 1fr auto;
@@ -1279,6 +2118,10 @@
     min-height: 520px;
     grid-template-columns: minmax(0, 1.15fr) minmax(330px, 0.9fr);
     padding: 44px;
+  }
+
+  .canopyWrap {
+    width: min(100%, 500px);
   }
 
   .hero h1 {
@@ -1324,6 +2167,10 @@
     padding: 38px;
   }
 
+  .heroAurora {
+    right: -8%;
+  }
+
   .heroActions {
     align-items: flex-start;
     flex-direction: column;
@@ -1356,6 +2203,29 @@
     padding: 11px 16px calc(96px + env(safe-area-inset-bottom));
   }
 
+  .forestSun {
+    top: -80px;
+    left: 36%;
+    width: 270px;
+    height: 270px;
+  }
+
+  .cloudLayerFar {
+    top: 34px;
+    opacity: 0.42;
+  }
+
+  .cloudLayerNear,
+  .mistRibbonTwo,
+  .distantHills {
+    display: none;
+  }
+
+  .mistRibbonOne {
+    top: 690px;
+    opacity: 0.16;
+  }
+
   .topNavWrap {
     top: 9px;
     margin-bottom: 17px;
@@ -1364,7 +2234,9 @@
   .topNav {
     min-height: 63px;
     padding: 7px 8px 7px 12px;
-    border-radius: 21px;
+    border-radius: 23px 23px 17px 23px;
+    background: linear-gradient(135deg, rgb(255 255 250 / 86%), rgb(235 246 237 / 74%));
+    box-shadow: 0 15px 44px rgb(23 63 52 / 15%), inset 0 1px 0 rgb(255 255 255 / 92%);
   }
 
   .navActions {
@@ -1391,7 +2263,17 @@
     grid-template-columns: 1fr;
     gap: 25px;
     padding: 32px 23px 25px;
-    border-radius: 30px;
+    border-radius: 34px 34px 24px 34px;
+  }
+
+  .heroHorizon {
+    width: 100%;
+    height: 25%;
+    opacity: 0.15;
+  }
+
+  .heroFireflyOne {
+    right: 8%;
   }
 
   .heroMeta {
@@ -1467,6 +2349,12 @@
     padding: 18px;
   }
 
+  .metricCloud,
+  .metricLight,
+  .metricLeafTrail {
+    opacity: 0.22;
+  }
+
   .metricCard > :last-child {
     align-self: flex-end;
   }
@@ -1487,6 +2375,10 @@
 
   .gardenCardWrap {
     width: min(252px, 74vw);
+  }
+
+  .gardenCard {
+    min-height: 344px;
   }
 
   .closingGrid {
@@ -1542,10 +2434,10 @@
     gap: 3px;
     padding: 7px;
     border: 1px solid rgb(255 255 255 / 64%);
-    border-radius: 23px;
-    background: rgb(248 248 240 / 88%);
-    box-shadow: 0 17px 48px rgb(23 63 52 / 18%);
-    backdrop-filter: blur(24px) saturate(120%);
+    border-radius: 25px 25px 18px 25px;
+    background: linear-gradient(145deg, rgb(255 255 250 / 91%), rgb(231 244 234 / 82%));
+    box-shadow: 0 19px 55px rgb(23 63 52 / 22%), inset 0 1px 0 rgb(255 255 255 / 92%);
+    backdrop-filter: blur(28px) saturate(134%);
   }
 
   .bottomNavItem,
@@ -1563,7 +2455,8 @@
 
   .bottomNavActive {
     color: var(--verdant-900);
-    background: var(--verdant-100);
+    background: linear-gradient(145deg, rgb(220 239 229 / 96%), rgb(185 235 229 / 58%));
+    box-shadow: 0 7px 18px rgb(40 105 85 / 9%);
   }
 
   .disconnectedPreview {
@@ -1597,6 +2490,22 @@
 
 @media (prefers-reduced-motion: reduce) {
   .heroSpark,
+  .forestSun,
+  .cloudLayer,
+  .mistRibbonOne,
+  .mistRibbonTwo,
+  .pollenField i,
+  .heroAurora,
+  .heroMist,
+  .heroFireflyOne,
+  .heroFireflyTwo,
+  .metricCloud,
+  .metricLight,
+  .metricLeafTrail,
+  .gardenCloud,
+  .gardenLight,
+  .coachFireflyOne,
+  .coachFireflyTwo,
   .skeletonLine,
   .skeletonLineShort,
   .skeletonIcon,

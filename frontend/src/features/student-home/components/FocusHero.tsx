@@ -29,9 +29,14 @@ export function FocusHero({ data, showPreviewBadge }: FocusHeroProps) {
       animate="visible"
     >
       <div className={styles.heroDecor} aria-hidden="true">
+        <span className={styles.heroAurora} />
+        <span className={styles.heroMist} />
+        <span className={styles.heroHorizon} />
         <span className={styles.heroLeafOne} />
         <span className={styles.heroLeafTwo} />
         <span className={styles.heroSpark}>✦</span>
+        <span className={styles.heroFireflyOne} />
+        <span className={styles.heroFireflyTwo} />
       </div>
 
       <motion.div className={styles.heroCopy} variants={fadeUp}>

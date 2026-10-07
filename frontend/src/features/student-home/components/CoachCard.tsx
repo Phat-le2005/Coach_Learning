@@ -1,6 +1,6 @@
 "use client";
 
-import { BookOpenCheck, Lightbulb, Shapes, Sparkles } from "lucide-react";
+import { BookOpenCheck, Lightbulb, Shapes, Sprout } from "lucide-react";
 import { motion } from "motion/react";
 
 import { OrganicCard } from "@/components/ui/OrganicCard";
@@ -23,6 +23,7 @@ export function CoachCard() {
       <SectionHeading eyebrow="Quiet intelligence" title="Coach" />
       <OrganicCard className={styles.coachCard} variant="accent">
         <div className={styles.coachVisual} aria-hidden="true">
+          <span className={styles.coachGuideBeam} />
           <motion.span
             className={styles.coachOrbit}
             animate={reducedMotion ? undefined : { rotate: 360 }}
@@ -30,7 +31,10 @@ export function CoachCard() {
           >
             <i />
           </motion.span>
-          <span className={styles.coachCore}><Sparkles size={24} /></span>
+          <span className={styles.coachOrbitSecondary} />
+          <span className={styles.coachFireflyOne} />
+          <span className={styles.coachFireflyTwo} />
+          <span className={styles.coachCore}><Sprout size={25} /></span>
         </div>
         <p className={styles.coachLabel}>Hỗ trợ đúng lúc</p>
         <h2 id="coach-title">Một gợi ý vừa đủ để bạn tự tìm ra bước tiếp theo.</h2>

@@ -13,6 +13,7 @@ import { fadeUp, staggerContainer } from "@/lib/motion";
 import type { KnowledgeRegionViewModel, StudentHomeViewModel } from "./types";
 import styles from "./StudentHome.module.css";
 import { CoachCard } from "./components/CoachCard";
+import { ForestAtmosphere } from "./components/ForestAtmosphere";
 import { FocusHero } from "./components/FocusHero";
 import { GardenSkeleton, MetricSkeleton } from "./components/LoadingSkeletons";
 import { KnowledgeCanopy } from "./components/KnowledgeCanopy";
@@ -37,6 +38,7 @@ const disconnectedRegions: KnowledgeRegionViewModel[] = Array.from({ length: 5 }
 function StudentCanvas({ children }: { children: ReactNode }) {
   return (
     <div className={styles.canvas} id="student-home">
+      <ForestAtmosphere />
       <AmbientGlow className={styles.glowMint} size={440} opacity={0.33} duration={16} />
       <AmbientGlow className={styles.glowSky} color="var(--sky-200)" size={520} opacity={0.35} duration={19} />
       <AmbientGlow className={styles.glowViolet} color="var(--violet-200)" size={410} opacity={0.28} duration={20} />

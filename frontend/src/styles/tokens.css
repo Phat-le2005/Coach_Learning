@@ -33,6 +33,8 @@
   --surface-glass-strong: rgb(250 250 244 / 88%);
   --surface-muted: #e9eee7;
   --surface-verdant: #173f34;
+  --surface-sky-mist: #e8f3f1;
+  --surface-forest-glass: rgb(242 249 241 / 72%);
 
   --text-primary: #173329;
   --text-secondary: #52675d;
@@ -63,7 +65,7 @@
 
   --shadow-soft: 0 14px 40px rgb(31 69 56 / 8%);
   --shadow-card: 0 20px 60px rgb(31 69 56 / 12%);
-  --shadow-floating: 0 24px 80px rgb(31 69 56 / 16%);
+  --shadow-floating: 0 30px 92px rgb(31 69 56 / 18%);
   --shadow-focus: 0 0 0 4px var(--focus-ring);
 
   --duration-micro: 160ms;
