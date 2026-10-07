@@ -1,0 +1,31 @@
+.root {
+  display: inline-flex;
+  min-height: 46px;
+  align-items: center;
+  gap: 10px;
+}
+
+.copy {
+  display: grid;
+  line-height: 1.1;
+}
+
+.copy strong {
+  font-size: 1.05rem;
+  letter-spacing: -0.03em;
+}
+
+.copy small {
+  margin-top: 4px;
+  color: var(--text-tertiary);
+  font-size: 0.64rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 520px) {
+  .copy small {
+    display: none;
+  }
+}

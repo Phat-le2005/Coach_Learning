@@ -1,0 +1,232 @@
+.card {
+  position: relative;
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--shadow-soft);
+}
+
+.glass {
+  background: var(--surface-glass);
+  backdrop-filter: blur(22px) saturate(120%);
+}
+
+.solid {
+  background: var(--surface-elevated);
+}
+
+.accent {
+  color: var(--text-inverse);
+  border-color: rgb(255 255 255 / 11%);
+  background:
+    radial-gradient(circle at 86% 14%, rgb(185 235 229 / 25%), transparent 28%),
+    linear-gradient(145deg, var(--verdant-900), #315f57 58%, #4e638b);
+}
+
+.interactive {
+  transition:
+    transform var(--duration-standard) var(--ease-standard),
+    box-shadow var(--duration-standard) var(--ease-standard),
+    border-color var(--duration-standard) var(--ease-standard);
+}
+
+.interactive:hover {
+  transform: translateY(-3px);
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-card);
+}
+
+.button {
+  display: inline-flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 0 21px;
+  cursor: pointer;
+  font-size: 0.94rem;
+  font-weight: 700;
+  border-radius: var(--radius-pill);
+  transition:
+    transform var(--duration-micro) var(--ease-standard),
+    box-shadow var(--duration-micro) var(--ease-standard),
+    background-position var(--duration-standard) var(--ease-standard);
+}
+
+.button:hover:not(:disabled) {
+  transform: translateY(-2px) scale(1.01);
+}
+
+.button:active:not(:disabled) {
+  transform: translateY(0) scale(0.99);
+}
+
+.buttonPrimary {
+  color: var(--text-inverse);
+  background: linear-gradient(110deg, var(--verdant-900), var(--verdant-700), var(--aqua-500));
+  background-size: 180% 100%;
+  box-shadow: 0 12px 30px rgb(23 63 52 / 22%);
+}
+
+.buttonPrimary:hover:not(:disabled) {
+  background-position: 100% 0;
+  box-shadow: 0 16px 36px rgb(23 63 52 / 28%);
+}
+
+.buttonSecondary {
+  color: var(--verdant-900);
+  border: 1px solid var(--border-strong);
+  background: rgb(250 250 244 / 62%);
+}
+
+.buttonGhost {
+  color: inherit;
+  background: rgb(255 255 255 / 10%);
+}
+
+.button:disabled,
+.buttonDisabled {
+  cursor: not-allowed;
+  color: var(--text-tertiary);
+  background: var(--surface-muted);
+  box-shadow: none;
+}
+
+.iconButton {
+  display: inline-grid;
+  width: 46px;
+  height: 46px;
+  flex: 0 0 auto;
+  cursor: pointer;
+  place-items: center;
+  color: var(--verdant-900);
+  border: 1px solid var(--border-soft);
+  border-radius: 16px;
+  background: rgb(250 250 244 / 60%);
+  transition:
+    transform var(--duration-micro) var(--ease-standard),
+    background var(--duration-micro),
+    box-shadow var(--duration-micro);
+}
+
+.iconButton:hover {
+  transform: translateY(-2px);
+  background: var(--surface-elevated);
+  box-shadow: var(--shadow-soft);
+}
+
+.ring {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+}
+
+.ringSvg {
+  grid-area: 1 / 1;
+  transform: rotate(-90deg);
+}
+
+.ringTrack,
+.ringValue {
+  fill: none;
+}
+
+.ringTrack {
+  stroke: var(--verdant-100);
+}
+
+.ringValue {
+  stroke-linecap: round;
+  filter: drop-shadow(0 3px 5px rgb(79 150 120 / 22%));
+}
+
+.ringLabel {
+  grid-area: 1 / 1;
+  font-size: 1.08rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.pill {
+  display: inline-flex;
+  min-height: 28px;
+  align-items: center;
+  gap: 7px;
+  padding: 3px 10px;
+  color: var(--text-secondary);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-pill);
+  background: rgb(250 250 244 / 58%);
+}
+
+.pillDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--mint-500);
+  box-shadow: 0 0 0 4px rgb(99 201 154 / 14%);
+}
+
+.pillWarning .pillDot {
+  background: var(--amber-500);
+  box-shadow: 0 0 0 4px rgb(216 161 67 / 14%);
+}
+
+.pillViolet .pillDot {
+  background: var(--violet-500);
+  box-shadow: 0 0 0 4px rgb(133 120 207 / 14%);
+}
+
+.masteryBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.masteryIcon {
+  display: grid;
+  width: 27px;
+  height: 27px;
+  place-items: center;
+  border-radius: 10px 10px 10px 4px;
+  background: var(--verdant-100);
+}
+
+.masteryWeak .masteryIcon {
+  color: #8f651d;
+  background: var(--amber-200);
+}
+
+.masteryReview .masteryIcon {
+  color: #6d61b7;
+  background: var(--violet-200);
+}
+
+.masteryUnknown .masteryIcon {
+  color: var(--text-tertiary);
+  background: var(--surface-muted);
+}
+
+.glow {
+  position: absolute;
+  z-index: var(--z-background);
+  width: var(--glow-size, 360px);
+  height: var(--glow-size, 360px);
+  pointer-events: none;
+  border-radius: 50%;
+  opacity: var(--glow-opacity, 0.46);
+  filter: blur(55px);
+  background: var(--glow-color, var(--mint-200));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .interactive:hover,
+  .button:hover:not(:disabled),
+  .iconButton:hover {
+    transform: none;
+  }
+}
