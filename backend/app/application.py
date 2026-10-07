@@ -6,6 +6,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.router import api_router
+from app.api.version import API_VERSION
 from app.core.config import Settings, get_settings
 from app.core.errors import ErrorResponse, register_exception_handlers
 from app.core.logging import configure_logging
@@ -30,7 +31,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     configuration = settings if settings is not None else get_settings()
     application = FastAPI(
         title=configuration.app_name,
-        version="0.14.0",
+        version=API_VERSION,
         description="EduMS education management and university entrance exam support API.",
         # Always use the structured exception response, even when DEBUG=true.
         debug=False,

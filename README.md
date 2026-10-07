@@ -1,6 +1,6 @@
 # EduMS — Local development
 
-Hệ thống quản lý giáo dục và hỗ trợ thi tuyển sinh đại học, chạy trực tiếp trên máy local. Đã triển khai foundation 01–09 cùng versioned Curriculum, knowledge graph và Question classification. Xem [Foundation Audit](backend/FOUNDATION_AUDIT.md), [Curriculum Foundation](backend/CURRICULUM_FOUNDATION.md), [Authentication](backend/AUTHENTICATION.md), [Profile](backend/PROFILE_DOMAIN.md), [Academic](backend/ACADEMIC_DOMAIN.md), [Classroom](backend/CLASSROOM_DOMAIN.md), [Data Foundation](backend/DATA_FOUNDATION.md), [Question Bank](backend/QUESTION_BANK.md), [Question Import](backend/QUESTION_IMPORT.md) và [Synthetic Students](backend/SYNTHETIC_STUDENTS.md).
+Hệ thống quản lý giáo dục và hỗ trợ thi tuyển sinh đại học, chạy trực tiếp trên máy local. Đã triển khai foundation 01–09 cùng versioned Curriculum, knowledge graph và Question classification. Xem [Foundation Audit](backend/FOUNDATION_AUDIT.md), [Curriculum Foundation](backend/CURRICULUM_FOUNDATION.md), [Authentication](backend/AUTHENTICATION.md), [Profile](backend/PROFILE_DOMAIN.md), [Academic](backend/ACADEMIC_DOMAIN.md), [Classroom](backend/CLASSROOM_DOMAIN.md), [Data Foundation](backend/DATA_FOUNDATION.md), [Question Bank](backend/QUESTION_BANK.md), [Question Import](backend/QUESTION_IMPORT.md), [Synthetic Students](backend/SYNTHETIC_STUDENTS.md) và đặc tả hợp đồng đóng băng [API v1 Specification](backend/API_V1.md) ([OpenAPI Contract v1.0.0](backend/contracts/openapi-v1.json)).
 
 ## Kiến trúc
 
@@ -19,6 +19,7 @@ CoachLearning/
 ├── README.md
 ├── backend/
 │   ├── .env.example
+│   ├── API_V1.md
 │   ├── AUTHENTICATION.md
 │   ├── PROFILE_DOMAIN.md
 │   ├── ACADEMIC_DOMAIN.md
@@ -27,6 +28,7 @@ CoachLearning/
 │   ├── QUESTION_BANK.md
 │   ├── QUESTION_IMPORT.md
 │   ├── SYNTHETIC_STUDENTS.md
+│   ├── contracts/            # openapi-v1.json, openapi-v1.sha256, README.md, API_V1_CHANGELOG.md
 │   ├── requirements.txt
 │   ├── requirements-lock.txt
 │   ├── pytest.ini
@@ -40,7 +42,7 @@ CoachLearning/
 │   │   ├── seed_service.py
 │   │   ├── generate_synthetic_students.py
 │   │   ├── synthetic_student_service.py
-│   │   ├── api/                  # __init__.py, router.py, health.py
+│   │   ├── api/                  # __init__.py, router.py, health.py, version.py, export_contract.py, check_contract.py
 │   │   ├── core/                 # __init__.py, config.py, errors.py, exceptions.py, logging.py
 │   │   ├── database/             # __init__.py, base.py, session.py, check.py
 │   │   ├── auth/                 # __init__.py, models.py, schemas.py, security.py,
@@ -272,6 +274,23 @@ Nếu PowerShell chặn activation, gọi Python trong venv trực tiếp, khôn
 Nếu process kế thừa `DEBUG` không phải boolean, đặt `$env:DEBUG = 'true'` trong terminal PowerShell của backend hoặc `export DEBUG=true` trên Linux/macOS trước khi chạy. Không cần thay đổi environment toàn máy.
 
 Backend: http://127.0.0.1:8000/health. Swagger: http://127.0.0.1:8000/docs. OpenAPI: http://127.0.0.1:8000/openapi.json.
+
+### API Contract (Phiên bản v1.0.0)
+
+API contract được đóng băng chính thức tại phiên bản `1.0.0` theo kiến trúc Canonical Root Routing. Tài liệu chi tiết tại [API v1 Specification](backend/API_V1.md), schema [OpenAPI Contract v1.0.0](backend/contracts/openapi-v1.json) và [Changelog](backend/contracts/API_V1_CHANGELOG.md).
+
+- **Kiểm tra tính toàn vẹn contract (Check CLI)**:
+  ```powershell
+  python -m app.api.check_contract
+  ```
+- **Xuất / Đóng băng lại contract (Export CLI)**:
+  ```powershell
+  python -m app.api.export_contract
+  ```
+- **Kiểm thử hồi quy contract tự động**:
+  ```powershell
+  pytest tests/api_contract/ -v
+  ```
 
 ## Alembic
 

@@ -37,5 +37,6 @@ def test_openapi_and_docs(client: TestClient) -> None:
     assert client.get("/docs").status_code == 200
     schema = client.get("/openapi.json").json()
     assert schema["info"]["title"] == "EduMS"
+    assert schema["info"]["version"] == "1.0.0"
     assert "/health" in schema["paths"]
     assert "/ready" in schema["paths"]
