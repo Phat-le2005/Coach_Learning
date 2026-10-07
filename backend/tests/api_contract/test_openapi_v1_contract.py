@@ -1,4 +1,6 @@
 import json
+import re
+from pathlib import Path
 from typing import Any
 
 import pytest
@@ -10,6 +12,8 @@ from app.api.export_contract import (
     get_deterministic_schema,
 )
 from app.api.version import API_VERSION
+
+FROZEN_CONTRACT_SHA256 = "01b558addf218c6d47a0e22d7ccd04f6d246170e8661b8d5c0fb844ea513e008"
 
 
 @pytest.fixture(scope="module")
@@ -27,8 +31,27 @@ def test_openapi_matches_frozen_contract_and_hash(openapi_schema: dict[str, Any]
     assert openapi_schema == expected_schema, "OpenAPI schema differs from frozen openapi-v1.json"
     actual_hash = compute_compact_sha256(openapi_schema)
     assert actual_hash == expected_hash, f"Hash mismatch: expected {expected_hash}, got {actual_hash}"
+    assert expected_hash == FROZEN_CONTRACT_SHA256, (
+        f"Contract hash changed from baseline! Expected {FROZEN_CONTRACT_SHA256}, got {expected_hash}"
+    )
     assert openapi_schema["info"]["version"] == "1.0.0"
     assert API_VERSION == "1.0.0"
+
+
+def test_contract_generation_ignores_local_environment(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("APP_NAME", "Totally Different App")
+    monkeypatch.setenv("FRONTEND_URL", "http://example.invalid")
+    monkeypatch.setenv("DATABASE_NAME", "different_db")
+    monkeypatch.setenv("DATABASE_USER", "different_user")
+    monkeypatch.setenv("AI_PROVIDER", "some-other-provider")
+
+    isolated_schema = get_deterministic_schema()
+    assert isolated_schema["info"]["title"] == "EduMS"
+    assert isolated_schema["info"]["version"] == "1.0.0"
+
+    expected_schema = json.loads(OPENAPI_JSON_PATH.read_text(encoding="utf-8"))
+    assert isolated_schema == expected_schema
+    assert compute_compact_sha256(isolated_schema) == FROZEN_CONTRACT_SHA256
 
 
 def test_critical_methods_map(openapi_schema: dict[str, Any]) -> None:
@@ -42,7 +65,10 @@ def test_critical_methods_map(openapi_schema: dict[str, Any]) -> None:
         "/students/me": ["get"],
         "/students/me/goals": ["get", "post"],
         "/students/me/learning-state": ["get"],
+        "/students/me/today": ["get"],
         "/students/me/today/explanation": ["post"],
+        "/students/me/study-plan": ["get"],
+        "/students/me/study-plan/recalculate": ["post"],
         "/parent/students": ["get"],
         "/parent/students/{student_id}/progress": ["get"],
         "/parent/students/{student_id}/weekly-data": ["get"],
@@ -57,6 +83,13 @@ def test_critical_methods_map(openapi_schema: dict[str, Any]) -> None:
         "/exams/attempts/{attempt_id}/ai-explanation": ["post"],
         "/teacher-materials/upload": ["post"],
         "/teacher-materials/{material_id}/map": ["post"],
+        "/repair/adaptive/{adaptive_session_id}/next-action": ["get", "post"],
+        "/teacher/classes/{id}/analytics": ["get"],
+        "/teacher/classes/{id}/heatmap": ["get"],
+        "/teacher/classes/{id}/alerts": ["get"],
+        "/teacher/classes/{id}/students/{student_id}/analytics": ["get"],
+        "/teacher/classes/{id}/assignments/{assignment_id}/analytics": ["get"],
+        "/teacher/classes/{id}/copilot": ["post"],
     }
 
     for path, expected_methods in critical_map.items():
@@ -64,6 +97,46 @@ def test_critical_methods_map(openapi_schema: dict[str, Any]) -> None:
         path_item = paths[path]
         for method in expected_methods:
             assert method in path_item, f"Expected method '{method.upper()}' missing for path '{path}'"
+
+
+def test_study_method_invariants(openapi_schema: dict[str, Any]) -> None:
+    paths = openapi_schema["paths"]
+    assert "get" in paths["/students/me/today"]
+    assert "post" not in paths["/students/me/today"]
+
+    assert "post" in paths["/students/me/today/explanation"]
+    assert "get" not in paths["/students/me/today/explanation"]
+
+    assert "get" in paths["/students/me/study-plan"]
+    assert "post" not in paths["/students/me/study-plan"]
+
+    assert "post" in paths["/students/me/study-plan/recalculate"]
+    assert "get" not in paths["/students/me/study-plan/recalculate"]
+
+
+def test_repair_method_invariants(openapi_schema: dict[str, Any]) -> None:
+    paths = openapi_schema["paths"]
+    ep = "/repair/adaptive/{adaptive_session_id}/next-action"
+    assert ep in paths
+    assert "get" in paths[ep]
+    assert "post" in paths[ep]
+    assert "patch" not in paths[ep]
+    assert "delete" not in paths[ep]
+
+
+def test_teacher_analytics_invariants(openapi_schema: dict[str, Any]) -> None:
+    paths = openapi_schema["paths"]
+    analytics_paths = {
+        "/teacher/classes/{id}/analytics": "get",
+        "/teacher/classes/{id}/heatmap": "get",
+        "/teacher/classes/{id}/alerts": "get",
+        "/teacher/classes/{id}/students/{student_id}/analytics": "get",
+        "/teacher/classes/{id}/assignments/{assignment_id}/analytics": "get",
+        "/teacher/classes/{id}/copilot": "post",
+    }
+    for path, method in analytics_paths.items():
+        assert path in paths, f"Teacher analytics path '{path}' missing in OpenAPI"
+        assert method in paths[path], f"Teacher analytics method '{method.upper()}' missing for '{path}'"
 
 
 def test_ai_generation_endpoints_strictly_post_no_get(openapi_schema: dict[str, Any]) -> None:
@@ -152,3 +225,21 @@ def test_pagination_limits_bounded(openapi_schema: dict[str, Any]) -> None:
                     assert min_val >= 0, f"Parameter 'offset' minimum ({min_val}) in {method.upper()} {path} < 0"
 
     assert checked_count > 0, "No pagination parameters were found across OpenAPI paths"
+
+
+def test_api_v1_documented_endpoints_exist_in_frozen_openapi(openapi_schema: dict[str, Any]) -> None:
+    backend_dir = Path(__file__).resolve().parents[2]
+    doc_path = backend_dir / "API_V1.md"
+    assert doc_path.exists(), f"API_V1.md not found at {doc_path}"
+
+    content = doc_path.read_text(encoding="utf-8")
+    pattern = re.compile(r"`(GET|POST|PATCH|DELETE)\s+(/[^`\s]+)`")
+    matches = pattern.findall(content)
+    assert len(matches) > 0, "No documented endpoints found in API_V1.md"
+
+    paths = openapi_schema["paths"]
+    for method, path in matches:
+        assert path in paths, f"Documented path '{path}' in API_V1.md does not exist in frozen OpenAPI"
+        assert method.lower() in paths[path], (
+            f"Documented method '{method}' for '{path}' in API_V1.md does not exist in frozen OpenAPI"
+        )

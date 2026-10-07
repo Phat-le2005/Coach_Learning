@@ -40,14 +40,20 @@ Hoàn thành giai đoạn kiểm tra an ninh, cô lập dữ liệu và giao d�
    - Đánh giá độ thành thạo theo mô hình BKT, bản sao học tập (Digital Twin).
 8. **Exams & Simulation Engine (`/exams`)**:
    - Đề thi chuẩn hóa, thi thử bấm giờ với bộ đếm thời gian chính xác tới phần nhỏ của giây (sub-second ceil).
-   - Bắt đầu lượt thi (`/exams/{exam_id}/start`), nộp câu trả lời (`/answer`), nộp bài (`/submit`), xử lý hết giờ (`/timeout`).
+   - Bắt đầu lượt thi (`/exams/{exam_id}/start`), nộp câu trả lời (`/answer`), nộp bài (`/submit`), xử lý hết giờ (`/exams/attempts/{attempt_id}/finalize-timeout`).
    - Lọc bảo mật đề thi: Không để lộ đáp án (`correct_answer`) hay lời giải (`explanation`) khi học sinh đang làm bài.
    - Thống kê phân tích bài thi (`/exams/attempts/{attempt_id}/analytics`) với chính sách kiểm soát quyền chặt chẽ (Admin/Student sở hữu/Teacher phụ trách lớp học hoạt động).
    - Giải thích AI sau bài thi (`/exams/attempts/{attempt_id}/ai-explanation` - phương thức `POST`).
-9. **Teacher Materials & Homework (`/teacher/materials`, `/assignments`)**:
-   - Tải lên tài liệu giáo viên, bóc tách câu hỏi, gán nhãn chuyên môn (AI Overlay - `POST`).
+9. **Teacher Materials & Homework (`/teacher-materials`, `/teacher/assignments`, `/students/me/assignments`)**:
+   - Tải lên tài liệu giáo viên, bóc tách câu hỏi, gán nhãn chuyên môn (AI Mapping - `POST`).
    - Quản lý bài tập, chấm điểm snapshot bất biến và cập nhật bằng chứng năng lực.
-10. **Tutor & Personalized Memory (`/tutor`)**:
+10. **Tutor & Personalized Memory (`/ai/tutor`, `/tutor/sessions`)**:
     - Trợ lý gia sư AI tương tác nhiều lượt, quản lý bộ nhớ học tập dài hạn (Learning Memory).
-11. **University Admission Support (`/admission`)**:
+11. **University Admission Support (`/admission`, `/students/me`)**:
     - Phân tích điểm chuẩn, tổ hợp xét tuyển và tư vấn chiến lược nguyện vọng đại học.
+
+#### Công cụ Quản lý Contract & Hoàn thiện Tài liệu
+- Đóng băng hợp đồng OpenAPI 1.0.0 với mã băm chuẩn xác: `01b558addf218c6d47a0e22d7ccd04f6d246170e8661b8d5c0fb844ea513e008`.
+- Khởi tạo `export_contract` độc lập hoàn toàn với biến môi trường cục bộ và tệp `.env` (`_env_file=None`).
+- Hiệu chỉnh toàn bộ các dẫn chiếu endpoint trong tài liệu hướng dẫn khớp 100% với snapshot OpenAPI máy đọc.
+- Bổ sung bộ test kiểm tra tự động các cặp `METHOD /path` trong `API_V1.md`.
