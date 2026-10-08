@@ -1,0 +1,102 @@
+.wrapper {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.trigger {
+  display: inline-flex;
+  min-height: 46px;
+  max-width: 270px;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 11px 4px 4px;
+  cursor: pointer;
+  border: 1px solid rgb(255 255 255 / 58%);
+  border-radius: 18px;
+  background: rgb(255 255 250 / 76%);
+  box-shadow: 0 6px 20px rgb(23 63 52 / 8%);
+}
+
+.trigger:hover,
+.trigger[aria-expanded="true"] {
+  background: white;
+  box-shadow: 0 8px 26px rgb(23 63 52 / 14%);
+}
+
+.compact {
+  width: 46px;
+  height: 46px;
+  min-height: 46px;
+  justify-content: center;
+  padding: 0;
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+}
+
+.compact:hover,
+.compact[aria-expanded="true"] { background: rgb(220 239 229 / 50%); }
+
+.avatar {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 auto;
+  place-items: center;
+  color: var(--text-inverse);
+  border-radius: 15px 15px 15px 6px;
+  background: linear-gradient(145deg, var(--verdant-900), var(--verdant-500));
+  font-size: .82rem;
+  font-weight: 750;
+}
+
+.compact .avatar { width: 43px; height: 43px; }
+
+.triggerName {
+  max-width: 140px;
+  overflow: hidden;
+  font-size: .82rem;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chevron { flex: 0 0 auto; color: var(--verdant-700); }
+.compact .chevron { display: none; }
+
+.popover {
+  position: absolute;
+  z-index: calc(var(--z-nav) + 1);
+  top: calc(100% + 10px);
+  right: 0;
+  width: min(306px, calc(100vw - 32px));
+  padding: 18px;
+  color: var(--text-primary);
+  border: 1px solid rgb(255 255 255 / 75%);
+  border-radius: 24px 24px 18px 24px;
+  background: rgb(250 251 245 / 97%);
+  box-shadow: 0 22px 62px rgb(23 63 52 / 22%);
+  backdrop-filter: blur(22px);
+}
+
+.eyebrow {
+  margin: 0 0 7px;
+  color: var(--verdant-700);
+  font-size: .7rem;
+  font-weight: 750;
+  letter-spacing: .05em;
+}
+
+.fullName { display: block; overflow-wrap: anywhere; font-size: .96rem; }
+.email { display: block; margin-top: 1px; color: var(--text-secondary); font-size: .77rem; overflow-wrap: anywhere; }
+.separator { height: 1px; margin: 13px 0; background: var(--border-soft); }
+.profileLink { display: flex; min-height: 44px; align-items: center; gap: 10px; padding: 0 10px; border-radius: 13px; font-size: .85rem; font-weight: 650; }
+.profileLink:hover { color: var(--verdant-900); background: var(--verdant-100); }
+.popover button { width: 100%; justify-content: flex-start; }
+@media (max-width: 430px) {
+  .popover { right: -8px; width: min(286px, calc(100vw - 24px)); }
+  .triggerName { max-width: 92px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .trigger { transition: none; }
+}
