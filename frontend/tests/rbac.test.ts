@@ -1,0 +1,26 @@
+import assert from "node:assert/strict";
+import test from "node:test";
+
+import { canAccessPath, postLoginPath, requiredRoleForPath, safeReturnPath } from "../src/lib/auth/rbac";
+
+test("protected dashboard prefixes map to their exact roles", () => {
+  assert.equal(requiredRoleForPath("/student"), "STUDENT");
+  assert.equal(requiredRoleForPath("/teacher/classes"), "TEACHER");
+  assert.equal(requiredRoleForPath("/parent"), "PARENT");
+  assert.equal(requiredRoleForPath("/admin/users"), "ADMIN");
+});
+
+test("RBAC denies cross-role dashboard access", () => {
+  assert.equal(canAccessPath("STUDENT", "/student"), true);
+  assert.equal(canAccessPath("STUDENT", "/teacher"), false);
+  assert.equal(canAccessPath("ADMIN", "/admin/users"), true);
+});
+
+test("post-login redirect cannot cross role or leave the app", () => {
+  assert.equal(postLoginPath("STUDENT", "/student?tab=review"), "/student?tab=review");
+  assert.equal(postLoginPath("STUDENT", "/admin"), "/student");
+  assert.equal(postLoginPath("TEACHER", "https://evil.example"), "/teacher");
+  assert.equal(postLoginPath("STUDENT", "/login"), "/student");
+  assert.equal(safeReturnPath("//evil.example"), null);
+  assert.equal(safeReturnPath("/student\nmalformed"), null);
+});

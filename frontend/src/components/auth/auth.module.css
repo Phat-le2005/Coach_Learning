@@ -1,0 +1,21 @@
+.form { display: grid; gap: 20px; }
+.field { display: grid; gap: 8px; color: var(--text-secondary); font-size: .82rem; font-weight: 700; }
+.inputWrap { display: grid; min-height: 54px; grid-template-columns: 22px 1fr auto; align-items: center; gap: 10px; padding: 0 15px; color: var(--verdant-700); border: 1px solid var(--border-soft); border-radius: 18px 18px 18px 7px; background: rgb(255 255 250 / 72%); transition: border-color var(--duration-micro), box-shadow var(--duration-micro), background var(--duration-micro); }
+.inputWrap:focus-within { border-color: var(--aqua-500); background: white; box-shadow: var(--shadow-focus); }
+.inputWrap input { width: 100%; min-width: 0; padding: 0; border: 0; outline: 0; background: transparent; }
+.inputWrap input::placeholder { color: var(--text-tertiary); }
+.reveal { display: grid; width: 36px; height: 36px; cursor: pointer; place-items: center; color: var(--text-tertiary); border-radius: 12px; background: transparent; }
+.reveal:hover { color: var(--verdant-900); background: var(--verdant-50); }
+.submit { width: 100%; margin-top: 4px; }
+.error, .notice { padding: 12px 14px; font-size: .83rem; line-height: 1.5; border-radius: 14px 14px 14px 5px; }
+.error { color: #833c31; border: 1px solid rgb(222 125 107 / 28%); background: rgb(244 208 200 / 43%); }
+.notice { color: #76581f; border: 1px solid rgb(216 161 67 / 24%); background: rgb(242 223 184 / 45%); }
+.privacy { margin: -3px 8px 0; color: var(--text-tertiary); font-size: .72rem; line-height: 1.55; text-align: center; }
+.spinner { animation: spin 800ms linear infinite; }
+.logout { display: inline-flex; min-height: 42px; align-items: center; gap: 8px; padding: 0 13px; cursor: pointer; color: var(--text-secondary); border: 1px solid var(--border-soft); border-radius: var(--radius-pill); background: rgb(255 255 250 / 54%); }
+.logout:hover { color: var(--verdant-900); background: white; }
+.logout:disabled { cursor: wait; opacity: .65; }
+.logoutCompact { width: 44px; height: 44px; min-height: 44px; justify-content: center; padding: 0; border-radius: 15px; }
+.logoutCompact span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .spinner { animation: none; } }

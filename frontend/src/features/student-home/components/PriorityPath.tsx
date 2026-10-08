@@ -25,6 +25,7 @@ export function PriorityPath({ priorities }: PriorityPathProps) {
       />
       <OrganicCard className={styles.priorityCard} variant="solid">
         <span className={styles.priorityCardIcon} aria-hidden="true"><Route size={21} /></span>
+        {priorities.length === 0 ? <div className={styles.priorityEmpty}><h3>Chưa có ưu tiên học tập</h3><p>Backend chưa xác định mục tiêu tiếp theo cho phiên hiện tại.</p></div> : null}
         <motion.ol
           className={styles.priorityList}
           variants={staggerContainer}

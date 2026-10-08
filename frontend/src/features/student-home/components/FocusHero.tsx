@@ -70,6 +70,7 @@ export function FocusHero({ data, showPreviewBadge }: FocusHeroProps) {
         <KnowledgeCanopy
           regions={data.knowledgeRegions}
           subjectName={data.subject.name}
+          ghost={data.knowledgeRegions.length === 0}
           actionType={data.currentAction.type}
           targetName={data.currentAction.targetName}
         />

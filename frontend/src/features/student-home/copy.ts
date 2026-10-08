@@ -58,7 +58,7 @@ const actionCopy: Record<StudentHomeActionType, ActionCopy> = {
   },
 };
 
-const priorityReasonCopy: Record<StudentPriorityReasonCode, string> = {
+const priorityReasonCopy: Record<string, string> = {
   VERIFIED_ROOT_CAUSE: "Nền tảng cần củng cố",
   PREREQUISITE_REPAIR: "Kiến thức tiên quyết",
   CURRENT_LESSON: "Bài đang học",
@@ -80,7 +80,7 @@ export function getActionCopy(type: StudentHomeActionType): ActionCopy {
 }
 
 export function getPriorityReasonCopy(code: StudentPriorityReasonCode): string {
-  return priorityReasonCopy[code];
+  return priorityReasonCopy[code] ?? "Ưu tiên học tập";
 }
 
 export function getRegionStateCopy(state: KnowledgeRegionState): string {

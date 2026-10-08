@@ -1,0 +1,23 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "incremental": false,
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "outDir": ".test-dist",
+    "rootDir": "."
+  },
+  "include": [
+    "src/lib/api/client.ts",
+    "src/lib/api/contracts.ts",
+    "src/lib/api/validation.ts",
+    "src/lib/auth/constants.ts",
+    "src/lib/auth/cookie-policy.ts",
+    "src/lib/auth/rbac.ts",
+    "src/lib/auth/security.ts",
+    "src/lib/auth/session-codec.ts",
+    "tests/**/*.ts"
+  ],
+  "exclude": ["node_modules", ".next"]
+}

@@ -32,7 +32,13 @@ export function KnowledgeGarden({ regions }: KnowledgeGardenProps) {
         description="Mỗi vùng phát triển theo cách bạn học."
         action={<span className={styles.dragHint}>Cuộn để khám phá <ArrowUpRight size={15} /></span>}
       />
-      <div className={styles.gardenScrollFrame}>
+      {regions.length === 0 ? (
+        <OrganicCard className={styles.realDataEmpty} variant="glass">
+          <h3>Chưa có dữ liệu chương và chủ đề</h3>
+          <p>Learning State hiện chưa trả về cấu trúc chapter/topic. EduMS sẽ không dựng khu vực giả để lấp khoảng trống này.</p>
+        </OrganicCard>
+      ) : null}
+      {regions.length > 0 ? <div className={styles.gardenScrollFrame}>
         <motion.div
           className={styles.gardenGrid}
           variants={staggerContainer}
@@ -77,7 +83,7 @@ export function KnowledgeGarden({ regions }: KnowledgeGardenProps) {
             );
           })}
         </motion.div>
-      </div>
+      </div> : null}
     </section>
   );
 }

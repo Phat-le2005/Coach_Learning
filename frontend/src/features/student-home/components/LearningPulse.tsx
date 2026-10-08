@@ -19,8 +19,10 @@ export interface LearningPulseProps {
 type ProgressStyle = CSSProperties & { "--metric-progress": string };
 
 export function LearningPulse({ data }: LearningPulseProps) {
-  const completion = data.assignments.completion ?? 0;
-  const progressStyle: ProgressStyle = { "--metric-progress": `${Math.min(100, Math.max(0, completion))}%` };
+  const completion = data.assignments.completion;
+  const progressStyle: ProgressStyle = { "--metric-progress": `${completion === undefined ? 0 : Math.min(100, Math.max(0, completion))}%` };
+  const activeDays = data.momentum.activeDays;
+  const week = data.momentum.week;
 
   return (
     <section className={styles.section} id="learning-pulse" aria-labelledby="learning-pulse-title">
@@ -81,7 +83,7 @@ export function LearningPulse({ data }: LearningPulseProps) {
             <div className={styles.assignmentVisual} style={progressStyle}>
               <b>{data.assignments.activeCount}</b>
               <span aria-hidden="true"><i /></span>
-              <small>{completion}% tiến độ</small>
+              <small>{completion === undefined ? "Chưa có dữ liệu tiến độ" : `${completion}% tiến độ`}</small>
             </div>
           </OrganicCard>
         </motion.div>
@@ -94,15 +96,15 @@ export function LearningPulse({ data }: LearningPulseProps) {
                 <Sprout size={19} />
               </span>
               <strong>Nhịp học liên tục</strong>
-              <small>{data.momentum.activeDays} ngày gần nhất</small>
+              <small>{activeDays === undefined ? "Backend chưa cung cấp chuỗi ngày" : `${activeDays} ngày gần nhất`}</small>
             </div>
-            <div className={styles.momentumVisual} aria-label={`${data.momentum.activeDays} ngày học liên tục`}>
-              <div aria-hidden="true">
-                {data.momentum.week.map((active, index) => (
+            <div className={styles.momentumVisual} aria-label={activeDays === undefined ? "Chưa có dữ liệu nhịp học" : `${activeDays} ngày học liên tục`}>
+              {week ? <div aria-hidden="true">
+                {week.map((active, index) => (
                   <span className={active ? styles.momentumActive : ""} key={`day-${index + 1}`} />
                 ))}
-              </div>
-              <b>{data.momentum.activeDays}</b>
+              </div> : null}
+              <b>{activeDays ?? "—"}</b>
             </div>
           </OrganicCard>
         </motion.div>

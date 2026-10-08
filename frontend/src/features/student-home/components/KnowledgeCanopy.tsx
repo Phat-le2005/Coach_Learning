@@ -208,7 +208,7 @@ export function KnowledgeCanopy({
         ) : null}
       </svg>
       <div className={styles.canopyCaption}>
-        <span /> Cây tri thức đang lớn lên cùng bạn <span />
+        <span /> {ghost ? "Đang chờ dữ liệu bản đồ tri thức" : "Cây tri thức đang lớn lên cùng bạn"} <span />
       </div>
     </div>
   );

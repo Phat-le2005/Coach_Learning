@@ -1,29 +1,42 @@
 # EduMS frontend
 
-Next.js App Router frontend cho EduMS. Phase hiện tại thiết lập **EduMS Verdant** (`Nature × Future × Learning`) và visual experience của Student Home tại `/student`.
+Next.js 16 App Router frontend của EduMS, dùng visual system **EduMS Verdant / Learning Forest**. Runtime hiện kết nối FastAPI thật qua lớp BFF của Next.js; Student Home không đọc preview fixture hoặc synthetic student.
 
-## UI preview
-
-Preview data chỉ dùng để duyệt thiết kế. Từ thư mục repository, cài dependency và vào frontend:
+## Cấu hình local
 
 ```bash
 cd frontend
-npm install
+npm ci
+copy .env.example .env.local
 ```
 
-Sao chép `.env.example` thành `.env.local` và bật:
+Cập nhật `.env.local`:
 
 ```text
-NEXT_PUBLIC_UI_PREVIEW_MODE=true
+API_BASE_URL=http://127.0.0.1:8000
+AUTH_SESSION_SECRET=<chuỗi ngẫu nhiên tối thiểu 32 ký tự>
+SESSION_COOKIE_SECURE=false
+AUTH_REFRESH_COOKIE_MAX_AGE_SECONDS=604800
 ```
 
-Khi flag là `false`, Student Home hiển thị disconnected state có chủ đích và không hiển thị số liệu giả. Chưa có auth hoặc Student Learning State API integration trong phase này.
+`API_BASE_URL` chỉ chứa origin. Client dùng đúng canonical root paths của FastAPI và không tự thêm `/api/v1`. Trong production, dùng HTTPS và bỏ `SESSION_COOKIE_SECURE=false` hoặc đặt thành `true`.
 
-Khởi động development server:
+Khởi động FastAPI trước, sau đó chạy:
 
 ```bash
 npm run dev
 ```
+
+Mở `http://localhost:3000/login`. Token chỉ tồn tại trong HttpOnly cookie do Next Route Handlers quản lý; frontend không lưu token trong `localStorage`.
+
+## Authentication boundary
+
+- Browser gọi `/auth/login`, `/auth/refresh`, `/auth/me`, `/auth/logout` trên Next.js BFF.
+- BFF chuyển tiếp ba endpoint canonical đầu tiên tới FastAPI và validate response runtime.
+- Access/refresh token dùng HttpOnly cookie; session metadata có chữ ký HMAC; mutation dùng SameSite cookie, kiểm tra Origin và CSRF double-submit token.
+- `src/proxy.ts` làm optimistic route guard. Mỗi server page vẫn kiểm tra session/role, còn authorization dữ liệu cuối cùng thuộc FastAPI.
+- Backend contract hiện chưa có logout/revoke endpoint; logout frontend xóa cookie cục bộ, không tuyên bố thu hồi server session.
+- `/student` đọc `GET /students/me/learning-state`. Trường backend chưa cung cấp hiển thị unavailable/empty state, không được lấp bằng số giả.
 
 ## Design system
 
@@ -39,6 +52,7 @@ npm run dev
 ```bash
 npm install
 npm run dev
+npm test
 npm run typecheck
 npm run build
 npm run check
@@ -50,6 +64,7 @@ Chạy validation từ một dependency tree tái lập bằng lockfile:
 
 ```bash
 npm ci
+npm test
 npm run typecheck
 npm run build
 ```

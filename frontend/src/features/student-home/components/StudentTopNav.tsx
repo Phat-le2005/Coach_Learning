@@ -1,6 +1,7 @@
 import { Bell, Flame } from "lucide-react";
 
 import { IconButton } from "@/components/ui/IconButton";
+import { LogoutButton } from "@/components/auth/LogoutButton";
 
 import { BrandMark } from "./BrandMark";
 import styles from "../StudentHome.module.css";
@@ -8,7 +9,7 @@ import styles from "../StudentHome.module.css";
 export interface StudentTopNavProps {
   displayName: string;
   avatarLabel: string;
-  activeDays: number;
+  activeDays?: number;
 }
 
 const navItems = [
@@ -41,7 +42,7 @@ export function StudentTopNav({ displayName, avatarLabel, activeDays }: StudentT
         </div>
 
         <div className={styles.navActions}>
-          {activeDays > 0 ? (
+          {activeDays !== undefined && activeDays > 0 ? (
             <span className={styles.momentumPill} aria-label={`${activeDays} ngày học liên tục`}>
               <Flame size={17} strokeWidth={2} aria-hidden="true" />
               <strong>{activeDays}</strong>
@@ -54,6 +55,7 @@ export function StudentTopNav({ displayName, avatarLabel, activeDays }: StudentT
           <button className={styles.avatarButton} type="button" aria-label={`Tài khoản của ${displayName}`}>
             {avatarLabel}
           </button>
+          <LogoutButton compact />
         </div>
       </nav>
     </header>

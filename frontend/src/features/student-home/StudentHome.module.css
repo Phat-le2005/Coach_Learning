@@ -2165,3 +2165,16 @@
     transform: none;
   }
 }
+
+.realDataEmpty {
+  padding: 28px;
+  border-radius: var(--radius-xl);
+}
+
+.realDataEmpty h3,
+.priorityEmpty h3 { margin-bottom: 7px; font-size: 1rem; }
+
+.realDataEmpty p,
+.priorityEmpty p { max-width: 640px; margin: 0; color: var(--text-secondary); font-size: .85rem; }
+
+.priorityEmpty { padding: 42px 12px 24px; text-align: center; }

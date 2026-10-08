@@ -1,13 +1,7 @@
 import { Leaf } from "lucide-react";
-import { redirect } from "next/navigation";
-
 import styles from "./page.module.css";
 
 export default function HomePage() {
-  if (process.env.NEXT_PUBLIC_UI_PREVIEW_MODE === "true") {
-    redirect("/student");
-  }
-
   return (
     <main className={styles.page}>
       <section className={styles.card} aria-labelledby="welcome-title">
@@ -21,8 +15,8 @@ export default function HomePage() {
         <p className={styles.copy}>
           Không gian học tập đang sẵn sàng. Trải nghiệm dành cho học sinh sẽ hiển thị dữ liệu thật sau khi kết nối tài khoản.
         </p>
-        <a className={styles.link} href="/student">
-          Mở không gian học tập
+        <a className={styles.link} href="/login">
+          Đăng nhập EduMS
         </a>
       </section>
     </main>

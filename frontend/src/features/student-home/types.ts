@@ -18,13 +18,7 @@ export type KnowledgeRegionState =
 
 export type KnowledgeBiome = "meadow" | "river" | "mountain" | "forest" | "sky";
 
-export type StudentPriorityReasonCode =
-  | "VERIFIED_ROOT_CAUSE"
-  | "PREREQUISITE_REPAIR"
-  | "CURRENT_LESSON"
-  | "REVIEW_DUE"
-  | "WEAK_PROBLEM_TYPE"
-  | "WEAK_CONCEPT";
+export type StudentPriorityReasonCode = string;
 
 export interface KnowledgeRegionViewModel {
   id: string;
@@ -69,8 +63,8 @@ export interface StudentHomeViewModel {
     completion?: number;
   };
   momentum: {
-    activeDays: number;
-    week: boolean[];
+    activeDays?: number;
+    week?: boolean[];
   };
   knowledgeRegions: KnowledgeRegionViewModel[];
   priorities: PriorityViewModel[];
