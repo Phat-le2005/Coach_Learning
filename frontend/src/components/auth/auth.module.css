@@ -19,3 +19,6 @@
 .logoutCompact span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 @keyframes spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .spinner { animation: none; } }
+
+.logoutArea { width: 100%; }
+.logoutError { color: #833c31; font-size: .76rem; line-height: 1.45; margin: 7px 2px 0; }
