@@ -1,0 +1,216 @@
+.canopyWrap {
+  position: relative;
+  width: min(100%, 570px);
+  margin-inline: auto;
+  padding-top: 5px;
+}
+
+.canopyWrap::before {
+  position: absolute;
+  top: 5%;
+  left: 8%;
+  width: 84%;
+  height: 82%;
+  content: "";
+  pointer-events: none;
+  border-radius: 50%;
+  opacity: 0.72;
+  filter: blur(40px);
+  background: radial-gradient(circle, rgb(99 201 154 / 18%), rgb(92 169 214 / 7%) 48%, transparent 70%);
+}
+
+.canopy {
+  position: relative;
+  width: 100%;
+  overflow: visible;
+}
+
+.treeGroundGlow { opacity: 0.9; }
+
+.treeFoliage circle {
+  fill: rgb(99 201 154 / 5%);
+  stroke: rgb(195 237 213 / 7%);
+  stroke-width: 1;
+}
+
+.treeFoliage circle:nth-child(2n) { fill: rgb(59 185 176 / 5%); }
+.treeFoliage circle:nth-child(3n) { fill: rgb(203 230 244 / 4%); }
+
+.treeTrunk {
+  fill: none;
+  stroke-width: 15;
+  stroke-linecap: round;
+  filter: drop-shadow(0 12px 15px rgb(3 23 18 / 24%));
+}
+
+.canopyBranch {
+  fill: none;
+  stroke: rgb(169 221 190 / 68%);
+  stroke-width: 4;
+  stroke-linecap: round;
+  filter: drop-shadow(0 3px 5px rgb(7 34 28 / 22%));
+  transition: stroke 240ms ease, stroke-width 240ms ease;
+}
+
+.branchTarget {
+  stroke: rgb(222 231 151 / 82%);
+  stroke-width: 5;
+}
+
+.canopyRoots path {
+  fill: none;
+  stroke: rgb(185 235 229 / 28%);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.canopyRepair .rootRepair {
+  stroke: rgb(226 170 77 / 68%);
+  stroke-width: 4;
+}
+
+.canopyRepair .rootRecovery {
+  stroke: rgb(104 214 159 / 88%);
+  stroke-width: 1.6;
+  stroke-dasharray: 5 8;
+}
+
+.canopyReview .branchTarget { stroke: rgb(226 170 77 / 82%); }
+
+.treeTrunkRings path {
+  fill: none;
+  stroke: rgb(221 244 225 / 24%);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.canopyNode {
+  cursor: pointer;
+  outline: none;
+}
+
+.canopyNodeHalo {
+  fill: rgb(255 255 255 / 2%);
+  stroke: rgb(255 255 255 / 9%);
+  stroke-width: 1;
+  transform-origin: center;
+  transition: fill 160ms ease, stroke 160ms ease, transform 160ms ease;
+}
+
+.canopyNode:focus-visible .canopyNodeHalo {
+  stroke: var(--sky-200);
+  stroke-width: 3;
+}
+
+.canopyNodeBody {
+  fill: var(--mint-500);
+  stroke: rgb(245 250 238 / 56%);
+  stroke-width: 1.4;
+  transition: filter 240ms ease, opacity 240ms ease;
+}
+
+.canopyNodeVein {
+  fill: none;
+  stroke: rgb(250 252 240 / 55%);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+}
+
+.canopyNodeDot { fill: rgb(255 250 218 / 92%); }
+.canopyNode_mastered .canopyNodeBody { fill: #68d69f; }
+.canopyNode_developing .canopyNodeBody { fill: #42c5bc; }
+.canopyNode_weak .canopyNodeBody { fill: #e2aa4d; }
+.canopyNode_review .canopyNodeBody { fill: #9386dc; }
+
+.canopyNode_not_started .canopyNodeBody {
+  fill: #7f918a;
+  opacity: 0.62;
+  filter: none;
+}
+
+.canopyNodeTarget .canopyNodeHalo {
+  fill: rgb(222 231 151 / 12%);
+  stroke: rgb(255 240 174 / 58%);
+  animation: target-breathe 3.4s ease-in-out infinite;
+}
+
+.canopyNodeLock rect {
+  fill: rgb(246 247 235 / 76%);
+  stroke: none;
+}
+
+.canopyNodeLock path {
+  fill: none;
+  stroke: rgb(45 66 58 / 78%);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+}
+
+.canopyNode:hover .canopyNodeHalo,
+.canopyNode:focus .canopyNodeHalo {
+  fill: rgb(195 237 213 / 10%);
+  stroke: rgb(195 237 213 / 42%);
+  transform: scale(1.04);
+}
+
+.canopyTooltip rect {
+  fill: rgb(16 46 38 / 96%);
+  stroke: rgb(255 255 255 / 14%);
+}
+
+.canopyTooltip text { fill: var(--text-inverse); }
+
+.tooltipTitle {
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.tooltipMeta {
+  fill: rgb(232 244 234 / 74%);
+  font-size: 8px;
+  font-weight: 550;
+}
+
+.canopyParticles circle { fill: var(--amber-200); }
+
+.canopyCaption {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: -12px;
+  color: rgb(244 245 234 / 58%);
+  font-size: 0.7rem;
+  letter-spacing: 0.03em;
+}
+
+.canopyCaption span {
+  width: 18px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(195 237 213 / 42%));
+}
+
+.canopyCaption span:last-child { transform: scaleX(-1); }
+
+.canopyGhost {
+  filter: saturate(0.55);
+  opacity: 0.76;
+}
+
+@keyframes target-breathe {
+  0%, 100% { opacity: 0.55; transform: scale(0.96); }
+  50% { opacity: 1; transform: scale(1.08); }
+}
+
+@media (max-width: 1199px) {
+  .canopyWrap { width: min(100%, 500px); }
+}
+
+@media (max-width: 767px) {
+  .canopyWrap { width: min(100%, 400px); }
+  .canopyCaption { margin-top: -14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .canopyNodeTarget .canopyNodeHalo { animation: none; }
+}

@@ -1,4 +1,4 @@
-import { BookOpen, Bot, ClipboardCheck, House, Waypoints } from "lucide-react";
+import { BookOpen, ClipboardCheck, House, Sparkles, Waypoints } from "lucide-react";
 
 import styles from "../StudentHome.module.css";
 
@@ -7,7 +7,7 @@ const items = [
   { label: "Học", href: "#learning-pulse", icon: BookOpen },
   { label: "Bản đồ", href: "#knowledge-garden", icon: Waypoints },
   { label: "Bài tập", href: "#priority-path", icon: ClipboardCheck },
-  { label: "Coach", href: "#coach", icon: Bot },
+  { label: "Coach", href: "#coach", icon: Sparkles },
 ];
 
 export function StudentBottomNav() {

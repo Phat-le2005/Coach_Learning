@@ -40,8 +40,8 @@ function StudentCanvas({ children }: { children: ReactNode }) {
     <div className={styles.canvas} id="student-home">
       <ForestAtmosphere />
       <AmbientGlow className={styles.glowMint} size={440} opacity={0.33} duration={16} />
-      <AmbientGlow className={styles.glowSky} color="var(--sky-200)" size={520} opacity={0.35} duration={19} />
-      <AmbientGlow className={styles.glowViolet} color="var(--violet-200)" size={410} opacity={0.28} duration={20} />
+      <AmbientGlow className={styles.glowSky} color="var(--sky-200)" size={520} opacity={0.35} duration={19} animated={false} />
+      <AmbientGlow className={styles.glowViolet} color="var(--violet-200)" size={410} opacity={0.28} duration={20} animated={false} />
       <span className={styles.backgroundCurveOne} aria-hidden="true" />
       <span className={styles.backgroundCurveTwo} aria-hidden="true" />
       {children}
@@ -91,7 +91,7 @@ export function StudentHomeDisconnected() {
                 <DatabaseZap size={15} aria-hidden="true" />
                 Chưa kết nối dữ liệu
               </span>
-              <p className={styles.greeting}>EduMS Verdant</p>
+              <p className={styles.greeting}>EduMS Learning Forest</p>
               <h1 id="disconnected-title">Không gian học tập đã sẵn sàng.</h1>
               <p className={styles.heroDescription}>
                 Kết nối dữ liệu học tập để bắt đầu hành trình của bạn. Không có số liệu xem trước nào được hiển thị trong chế độ này.

@@ -1,6 +1,6 @@
 "use client";
 
-import { BookMarked, ClipboardCheck, Flame, Leaf } from "lucide-react";
+import { BookMarked, ClipboardCheck, Leaf, Sprout } from "lucide-react";
 import { motion } from "motion/react";
 import type { CSSProperties } from "react";
 
@@ -91,7 +91,7 @@ export function LearningPulse({ data }: LearningPulseProps) {
             <span className={styles.metricLeafTrail} aria-hidden="true" />
             <div className={styles.metricCopy}>
               <span className={`${styles.metricIcon} ${styles.metricIconMomentum}`} aria-hidden="true">
-                <Flame size={19} />
+                <Sprout size={19} />
               </span>
               <strong>Nhịp học liên tục</strong>
               <small>{data.momentum.activeDays} ngày gần nhất</small>

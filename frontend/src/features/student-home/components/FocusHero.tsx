@@ -32,6 +32,7 @@ export function FocusHero({ data, showPreviewBadge }: FocusHeroProps) {
         <span className={styles.heroAurora} />
         <span className={styles.heroMist} />
         <span className={styles.heroHorizon} />
+        <span className={styles.heroCloud} />
         <span className={styles.heroLeafOne} />
         <span className={styles.heroLeafTwo} />
         <span className={styles.heroSpark}>✦</span>
@@ -44,7 +45,7 @@ export function FocusHero({ data, showPreviewBadge }: FocusHeroProps) {
           <StatusPill>{data.subject.name}</StatusPill>
           {showPreviewBadge ? <span className={styles.previewBadge}>UI Preview</span> : null}
         </div>
-        <p className={styles.greeting}>Chào buổi sáng, {data.student.displayName}</p>
+        <p className={styles.greeting}>Chào {data.student.displayName}</p>
         <h1 id="student-focus-title">{copy.title}</h1>
         <p className={styles.heroDescription}>{copy.description}</p>
         {data.currentAction.targetName ? (
@@ -66,7 +67,12 @@ export function FocusHero({ data, showPreviewBadge }: FocusHeroProps) {
       </motion.div>
 
       <motion.div className={styles.heroVisual} variants={fadeUp}>
-        <KnowledgeCanopy regions={data.knowledgeRegions} subjectName={data.subject.name} />
+        <KnowledgeCanopy
+          regions={data.knowledgeRegions}
+          subjectName={data.subject.name}
+          actionType={data.currentAction.type}
+          targetName={data.currentAction.targetName}
+        />
       </motion.div>
     </motion.section>
   );

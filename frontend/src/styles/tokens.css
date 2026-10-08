@@ -36,6 +36,17 @@
   --surface-sky-mist: #e8f3f1;
   --surface-forest-glass: rgb(242 249 241 / 72%);
 
+  --sky-morning: #d9eff2;
+  --sky-haze: #edf6ef;
+  --cloud-white: rgb(255 255 250 / 76%);
+  --cloud-shadow: rgb(203 230 244 / 42%);
+  --mist-soft: rgb(238 247 241 / 48%);
+  --sun-glow: rgb(255 248 218 / 72%);
+  --leaf-light: #c3edd5;
+  --leaf-mid: #63c99a;
+  --leaf-deep: #286955;
+  --earth-soft: #d8c69d;
+
   --text-primary: #173329;
   --text-secondary: #52675d;
   --text-tertiary: #74847c;

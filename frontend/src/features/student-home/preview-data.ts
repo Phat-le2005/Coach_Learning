@@ -40,6 +40,7 @@ export const studentHomePreviewData: StudentHomeViewModel = {
       progress: 86,
       state: "mastered",
       accent: "mint",
+      biome: "meadow",
     },
     {
       id: "preview-change",
@@ -47,6 +48,7 @@ export const studentHomePreviewData: StudentHomeViewModel = {
       progress: 64,
       state: "developing",
       accent: "aqua",
+      biome: "river",
     },
     {
       id: "preview-accumulation",
@@ -54,6 +56,7 @@ export const studentHomePreviewData: StudentHomeViewModel = {
       progress: 48,
       state: "weak",
       accent: "amber",
+      biome: "mountain",
     },
     {
       id: "preview-space",
@@ -61,12 +64,14 @@ export const studentHomePreviewData: StudentHomeViewModel = {
       progress: 57,
       state: "review",
       accent: "violet",
+      biome: "forest",
     },
     {
       id: "preview-uncertainty",
       label: "Vùng xác suất",
       state: "not_started",
       accent: "sky",
+      biome: "sky",
     },
   ],
   priorities: [

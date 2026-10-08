@@ -9,7 +9,7 @@ import { OrganicCard } from "@/components/ui/OrganicCard";
 import { fadeUp, staggerContainer } from "@/lib/motion";
 
 import { getRegionStateCopy } from "../copy";
-import type { KnowledgeRegionViewModel } from "../types";
+import type { KnowledgeBiome, KnowledgeRegionViewModel } from "../types";
 import styles from "../StudentHome.module.css";
 import { SectionHeading } from "./SectionHeading";
 
@@ -21,6 +21,8 @@ type GardenStyle = CSSProperties & {
   "--garden-progress": string;
 };
 
+const fallbackBiomes: KnowledgeBiome[] = ["meadow", "river", "mountain", "forest", "sky"];
+
 export function KnowledgeGarden({ regions }: KnowledgeGardenProps) {
   return (
     <section className={styles.section} id="knowledge-garden" aria-labelledby="knowledge-garden-title">
@@ -30,21 +32,24 @@ export function KnowledgeGarden({ regions }: KnowledgeGardenProps) {
         description="Mỗi vùng phát triển theo cách bạn học."
         action={<span className={styles.dragHint}>Cuộn để khám phá <ArrowUpRight size={15} /></span>}
       />
-      <motion.div
-        className={styles.gardenGrid}
-        variants={staggerContainer}
-        initial={false}
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.15 }}
-      >
-        {regions.map((region, index) => {
-          const style: GardenStyle = { "--garden-progress": `${region.progress ?? 0}%` };
-          return (
-            <motion.div variants={fadeUp} key={region.id} className={styles.gardenCardWrap}>
-              <OrganicCard
-                className={`${styles.gardenCard} ${styles[`garden_${region.state}`]} ${styles[`gardenAccent_${region.accent}`]}`}
-                interactive
-              >
+      <div className={styles.gardenScrollFrame}>
+        <motion.div
+          className={styles.gardenGrid}
+          variants={staggerContainer}
+          initial={false}
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.15 }}
+        >
+          {regions.map((region, index) => {
+            const style: GardenStyle = { "--garden-progress": `${region.progress ?? 0}%` };
+            const biome = region.biome ?? fallbackBiomes[index % fallbackBiomes.length];
+            return (
+              <motion.div variants={fadeUp} key={region.id} className={styles.gardenCardWrap}>
+                <OrganicCard
+                  className={`${styles.gardenCard} ${styles[`garden_${region.state}`]} ${styles[`gardenAccent_${region.accent}`]} ${styles[`gardenBiome_${biome}`]}`}
+                  data-biome={biome}
+                  interactive
+                >
                 <div className={styles.gardenIndex}>0{index + 1}</div>
                 <div className={styles.gardenLandscape} aria-hidden="true">
                   <span className={styles.gardenCloud} />
@@ -67,11 +72,12 @@ export function KnowledgeGarden({ regions }: KnowledgeGardenProps) {
                     <strong>{region.progress === undefined ? "—" : `${region.progress}%`}</strong>
                   </div>
                 </div>
-              </OrganicCard>
-            </motion.div>
-          );
-        })}
-      </motion.div>
+                </OrganicCard>
+              </motion.div>
+            );
+          })}
+        </motion.div>
+      </div>
     </section>
   );
 }

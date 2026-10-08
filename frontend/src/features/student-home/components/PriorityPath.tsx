@@ -38,7 +38,9 @@ export function PriorityPath({ priorities }: PriorityPathProps) {
               variants={fadeUp}
               key={priority.id}
             >
-              <span className={styles.priorityNode}>{index + 1}</span>
+              <span className={`${styles.priorityNode} ${index === 0 ? styles.priorityNodeCurrent : index === 1 ? styles.priorityNodeNext : styles.priorityNodeLater}`}>
+                {index + 1}
+              </span>
               <div className={styles.priorityCopy}>
                 <small>{getPriorityReasonCopy(priority.reasonCode)}</small>
                 <h3>{priority.targetName}</h3>

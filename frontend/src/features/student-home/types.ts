@@ -16,6 +16,8 @@ export type KnowledgeRegionState =
   | "review"
   | "not_started";
 
+export type KnowledgeBiome = "meadow" | "river" | "mountain" | "forest" | "sky";
+
 export type StudentPriorityReasonCode =
   | "VERIFIED_ROOT_CAUSE"
   | "PREREQUISITE_REPAIR"
@@ -30,6 +32,8 @@ export interface KnowledgeRegionViewModel {
   progress?: number;
   state: KnowledgeRegionState;
   accent: "mint" | "aqua" | "sky" | "violet" | "amber";
+  /** Presentation-only scenery. It is not part of the academic API contract. */
+  biome?: KnowledgeBiome;
 }
 
 export interface PriorityViewModel {

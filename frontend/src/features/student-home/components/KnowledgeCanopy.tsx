@@ -5,13 +5,16 @@ import { useId, useState } from "react";
 
 import { useHydratedReducedMotion } from "@/lib/use-hydrated-reduced-motion";
 
-import type { KnowledgeRegionViewModel } from "../types";
-import styles from "../StudentHome.module.css";
+import { getRegionStateCopy } from "../copy";
+import type { KnowledgeRegionViewModel, StudentHomeActionType } from "../types";
+import styles from "./KnowledgeCanopy.module.css";
 
 export interface KnowledgeCanopyProps {
   regions: KnowledgeRegionViewModel[];
   subjectName: string;
   ghost?: boolean;
+  actionType?: StudentHomeActionType;
+  targetName?: string;
 }
 
 const leaves = [
@@ -41,15 +44,43 @@ const foliage = [
   { cx: 166, cy: 211, r: 70 },
 ];
 
-export function KnowledgeCanopy({ regions, subjectName, ghost = false }: KnowledgeCanopyProps) {
+function normalizedTarget(value: string) {
+  return value.toLocaleLowerCase("vi").replace(/^vùng\s+/u, "").trim();
+}
+
+export function KnowledgeCanopy({
+  regions,
+  subjectName,
+  ghost = false,
+  actionType,
+  targetName,
+}: KnowledgeCanopyProps) {
   const reducedMotion = useHydratedReducedMotion();
   const titleId = useId();
   const instanceId = useId().replaceAll(":", "");
   const [activeId, setActiveId] = useState<string | null>(null);
   const visibleRegions = regions.slice(0, leaves.length);
+  const normalizedActionTarget = targetName ? normalizedTarget(targetName) : "";
+  let targetIndex = normalizedActionTarget
+    ? visibleRegions.findIndex((region) => {
+        const regionTarget = normalizedTarget(region.label);
+        return normalizedActionTarget.includes(regionTarget) || regionTarget.includes(normalizedActionTarget);
+      })
+    : -1;
+
+  if (targetIndex < 0 && actionType === "CONTINUE_REPAIR") {
+    targetIndex = visibleRegions.findIndex((region) => region.state === "weak");
+  }
+  if (targetIndex < 0 && actionType === "REVIEW_DUE") {
+    targetIndex = visibleRegions.findIndex((region) => region.state === "review");
+  }
+
+  const modeClass = actionType === "CONTINUE_REPAIR"
+    ? styles.canopyRepair
+    : actionType === "REVIEW_DUE" ? styles.canopyReview : "";
 
   return (
-    <div className={[styles.canopyWrap, ghost ? styles.canopyGhost : ""].filter(Boolean).join(" ")}>
+    <div className={[styles.canopyWrap, ghost ? styles.canopyGhost : "", modeClass].filter(Boolean).join(" ")}>
       <svg className={styles.canopy} viewBox="0 0 560 420" role="group" aria-labelledby={titleId}>
         <title id={titleId}>{`Cây tri thức của ${subjectName}`}</title>
         <defs>
@@ -83,15 +114,16 @@ export function KnowledgeCanopy({ regions, subjectName, ghost = false }: Knowled
         />
 
         <g className={styles.canopyRoots} aria-hidden="true">
-          <path d="M284 360 C247 361 210 375 169 398" />
+          <path className={actionType === "CONTINUE_REPAIR" ? styles.rootRepair : undefined} d="M284 360 C247 361 210 375 169 398" />
           <path d="M284 360 C316 366 350 380 389 402" />
           <path d="M282 358 C279 375 280 391 281 410" />
           <path d="M275 363 C253 378 239 393 226 410" />
+          {actionType === "CONTINUE_REPAIR" ? <path className={styles.rootRecovery} d="M284 360 C249 362 213 375 176 396" /> : null}
         </g>
 
         {branches.slice(0, visibleRegions.length).map((path, index) => (
           <motion.path
-            className={styles.canopyBranch}
+            className={`${styles.canopyBranch} ${index === targetIndex ? styles.branchTarget : ""}`}
             d={path}
             key={path}
             initial={{ pathLength: 0, opacity: 0 }}
@@ -108,17 +140,17 @@ export function KnowledgeCanopy({ regions, subjectName, ghost = false }: Knowled
         {visibleRegions.map((region, index) => {
           const leaf = leaves[index];
           const active = activeId === region.id;
+          const currentTarget = index === targetIndex;
           const rotation = `rotate(${leaf.rotation} ${leaf.x} ${leaf.y})`;
-          const stateLabel = region.state === "not_started"
-            ? "chưa mở"
-            : region.progress === undefined ? "chưa đo lường" : `${region.progress}%`;
+          const stateLabel = getRegionStateCopy(region.state);
+          const progressLabel = region.progress === undefined ? "Chưa đo lường" : `${region.progress}% hoàn thành`;
 
           return (
             <motion.g
-              className={`${styles.canopyNode} ${styles[`canopyNode_${region.state}`]}`}
+              className={`${styles.canopyNode} ${styles[`canopyNode_${region.state}`]} ${currentTarget ? styles.canopyNodeTarget : ""}`}
               role="button"
               tabIndex={0}
-              aria-label={`${region.label}: ${stateLabel}`}
+              aria-label={`${region.label}: ${stateLabel}, ${progressLabel}`}
               key={region.id}
               onMouseEnter={() => setActiveId(region.id)}
               onMouseLeave={() => setActiveId(null)}
@@ -146,9 +178,10 @@ export function KnowledgeCanopy({ regions, subjectName, ghost = false }: Knowled
               ) : <circle className={styles.canopyNodeDot} cx={leaf.x + 12} cy={leaf.y - 5} r="3.5" />}
               {active ? (
                 <g className={styles.canopyTooltip} aria-hidden="true">
-                  <rect x={leaf.x - 70} y={leaf.y - 61} width="140" height="32" rx="13" />
-                  <text x={leaf.x} y={leaf.y - 40} textAnchor="middle">
-                    {region.label.length > 21 ? `${region.label.slice(0, 20)}…` : region.label}
+                  <rect x={leaf.x - 78} y={leaf.y - 82} width="156" height="52" rx="14" />
+                  <text x={leaf.x} y={leaf.y - 63} textAnchor="middle">
+                    <tspan className={styles.tooltipTitle} x={leaf.x}>{region.label.length > 22 ? `${region.label.slice(0, 21)}…` : region.label}</tspan>
+                    <tspan className={styles.tooltipMeta} x={leaf.x} dy="15">{stateLabel} · {progressLabel}</tspan>
                   </text>
                 </g>
               ) : null}
@@ -160,9 +193,7 @@ export function KnowledgeCanopy({ regions, subjectName, ghost = false }: Knowled
           <g className={styles.canopyParticles} aria-hidden="true">
             {[
               { cx: 102, cy: 222, duration: 12 },
-              { cx: 265, cy: 119, duration: 15 },
               { cx: 468, cy: 210, duration: 13 },
-              { cx: 355, cy: 299, duration: 17 },
             ].map((particle, index) => (
               <motion.circle
                 key={`${particle.cx}-${particle.cy}`}

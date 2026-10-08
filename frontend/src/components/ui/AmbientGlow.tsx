@@ -13,6 +13,7 @@ export interface AmbientGlowProps {
   size?: number;
   opacity?: number;
   duration?: number;
+  animated?: boolean;
 }
 
 type GlowStyle = CSSProperties & {
@@ -27,6 +28,7 @@ export function AmbientGlow({
   size = 360,
   opacity = 0.46,
   duration = 14,
+  animated = true,
 }: AmbientGlowProps) {
   const reducedMotion = useHydratedReducedMotion();
   const style: GlowStyle = {
@@ -40,7 +42,7 @@ export function AmbientGlow({
       aria-hidden="true"
       className={[styles.glow, className ?? ""].filter(Boolean).join(" ")}
       style={style}
-      animate={reducedMotion ? undefined : { x: [0, 16, -5, 0], y: [0, -10, 6, 0] }}
+      animate={reducedMotion || !animated ? undefined : { x: [0, 16, -5, 0], y: [0, -10, 6, 0] }}
       transition={{ duration, repeat: Infinity, ease: "easeInOut" }}
     />
   );
