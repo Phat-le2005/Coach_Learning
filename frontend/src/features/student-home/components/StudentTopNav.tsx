@@ -1,6 +1,5 @@
-import { Bell, Flame } from "lucide-react";
+import { Flame } from "lucide-react";
 
-import { IconButton } from "@/components/ui/IconButton";
 import { AccountMenu } from "@/components/auth/AccountMenu";
 
 import { BrandMark } from "./BrandMark";
@@ -8,7 +7,7 @@ import styles from "../StudentHome.module.css";
 
 export interface StudentTopNavProps {
   displayName: string;
-  avatarLabel: string;
+  email?: string;
   activeDays?: number;
 }
 
@@ -20,7 +19,7 @@ const navItems = [
   { label: "Thi thử", href: "#coach" },
 ];
 
-export function StudentTopNav({ displayName, avatarLabel, activeDays }: StudentTopNavProps) {
+export function StudentTopNav({ displayName, email, activeDays }: StudentTopNavProps) {
   return (
     <header className={styles.topNavWrap}>
       <nav className={styles.topNav} aria-label="Điều hướng học sinh">
@@ -49,10 +48,7 @@ export function StudentTopNav({ displayName, avatarLabel, activeDays }: StudentT
               <span>ngày</span>
             </span>
           ) : null}
-          <IconButton label="Thông báo">
-            <Bell size={19} strokeWidth={1.9} />
-          </IconButton>
-          <AccountMenu fullName={displayName} role="STUDENT" compact />
+          <AccountMenu fullName={displayName} email={email} role="STUDENT" compact />
         </div>
       </nav>
     </header>

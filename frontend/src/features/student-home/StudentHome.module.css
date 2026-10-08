@@ -138,26 +138,6 @@
   color: var(--text-secondary);
 }
 
-.avatarButton {
-  display: grid;
-  width: 46px;
-  height: 46px;
-  cursor: pointer;
-  place-items: center;
-  color: var(--text-inverse);
-  font-size: 0.9rem;
-  font-weight: 750;
-  border-radius: 17px 17px 17px 7px;
-  background: linear-gradient(145deg, var(--verdant-900), var(--verdant-500));
-  box-shadow: 0 10px 23px rgb(23 63 52 / 20%);
-  transition: transform var(--duration-micro), box-shadow var(--duration-micro);
-}
-
-.avatarButton:hover {
-  transform: translateY(-2px) rotate(2deg);
-  box-shadow: 0 14px 28px rgb(23 63 52 / 25%);
-}
-
 .hero {
   position: relative;
   display: grid;
@@ -1898,17 +1878,6 @@
     gap: 7px;
   }
 
-  .navActions > button:nth-last-child(2) {
-    width: 43px;
-    height: 43px;
-  }
-
-  .avatarButton {
-    width: 43px;
-    height: 43px;
-    border-radius: 15px 15px 15px 6px;
-  }
-
   .momentumPill {
     display: none;
   }
@@ -2158,7 +2127,6 @@
   }
 
   .desktopNavLink:hover,
-  .avatarButton:hover,
   .priorityAction:hover,
   .coachActions button:hover,
   .coachActions button:hover svg {

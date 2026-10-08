@@ -1,26 +1,28 @@
 "use client";
 
 import { LogOut } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
-import { authenticatedMutation, BrowserAuthError } from "@/lib/auth/browser";
+import { BrowserAuthError, logoutAndRedirect } from "@/lib/auth/browser";
 import styles from "./auth.module.css";
 
 export function LogoutButton({ compact = false }: { compact?: boolean }) {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const submittingRef = useRef(false);
 
   async function logout() {
-    if (pending) return;
+    if (submittingRef.current) return;
+    submittingRef.current = true;
     setPending(true);
     setError(null);
     try {
-      await authenticatedMutation("/auth/logout");
-      window.location.replace("/login");
+      await logoutAndRedirect(() => window.location.replace("/login"));
     } catch (caught) {
       setError(caught instanceof BrowserAuthError
         ? "Không thể đăng xuất an toàn. Vui lòng thử lại."
         : "Mất kết nối khi đăng xuất. Vui lòng thử lại.");
+      submittingRef.current = false;
       setPending(false);
     }
   }

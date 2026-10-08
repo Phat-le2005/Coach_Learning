@@ -8,14 +8,15 @@ on:
 
 jobs:
   validate-frontend:
-    name: Frontend Typecheck and Production Build
+    name: Frontend Tests, Typecheck and Production Build
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: frontend
     env:
-      NEXT_PUBLIC_API_BASE_URL: http://127.0.0.1:8000
-      NEXT_PUBLIC_UI_PREVIEW_MODE: "false"
+      API_BASE_URL: http://127.0.0.1:8000
+      AUTH_SESSION_SECRET: ci-only-session-secret-with-at-least-32-characters
+      SESSION_COOKIE_SECURE: "true"
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

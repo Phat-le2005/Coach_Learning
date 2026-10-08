@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { AccountMenu } from "@/components/auth/AccountMenu";
+import { SessionHeartbeat } from "@/components/auth/SessionHeartbeat";
 import { BrandMark } from "@/features/student-home/components/BrandMark";
 import { readSession } from "@/lib/auth/server";
 import styles from "./account.module.css";
@@ -15,6 +17,7 @@ export default async function AccountPage() {
 
   return (
     <main className={styles.page}>
+      <SessionHeartbeat />
       <div className={styles.content}>
         <header className={styles.header}>
           <BrandMark />
@@ -29,7 +32,7 @@ export default async function AccountPage() {
             <div><dt>Email</dt><dd>{session.email}</dd></div>
             <div><dt>Vai trò</dt><dd>{roleLabel[session.role]}</dd></div>
           </dl>
-          <a className={styles.back} href={`/${session.role.toLowerCase()}`}>Quay về không gian của tôi →</a>
+          <Link className={styles.back} href={`/${session.role.toLowerCase()}`}>Quay về không gian của tôi →</Link>
         </section>
       </div>
     </main>

@@ -55,7 +55,7 @@ export function StudentHome({ data, showPreviewBadge = false }: StudentHomeProps
       <StudentCanvas>
         <StudentTopNav
           displayName={data.student.displayName}
-          avatarLabel={data.student.avatarLabel}
+          email={data.student.email}
           activeDays={data.momentum.activeDays}
         />
         <main className={styles.main}>
@@ -77,7 +77,7 @@ export function StudentHomeDisconnected() {
   return (
     <MotionProvider>
       <StudentCanvas>
-        <StudentTopNav displayName="Bạn" avatarLabel="—" activeDays={0} />
+        <StudentTopNav displayName="Bạn" activeDays={0} />
         <main className={styles.main}>
           <motion.section
             className={`${styles.hero} ${styles.disconnectedHero}`}

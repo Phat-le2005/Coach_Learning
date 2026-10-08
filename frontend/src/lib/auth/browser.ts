@@ -34,3 +34,17 @@ export async function authenticatedMutation(path: "/auth/login" | "/auth/refresh
   });
   return parseResponse(response);
 }
+
+type AuthMutation = typeof authenticatedMutation;
+
+export async function endBrowserSession(mutate: AuthMutation = authenticatedMutation): Promise<void> {
+  const body = await mutate("/auth/logout");
+  if (body.success !== true) {
+    throw new BrowserAuthError("Phản hồi đăng xuất không hợp lệ.", 503, "INVALID_LOGOUT_RESPONSE");
+  }
+}
+
+export async function logoutAndRedirect(redirect: () => void, mutate: AuthMutation = authenticatedMutation): Promise<void> {
+  await endBrowserSession(mutate);
+  redirect();
+}

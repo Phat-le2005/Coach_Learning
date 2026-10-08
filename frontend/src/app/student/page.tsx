@@ -25,7 +25,7 @@ export default async function StudentPage() {
   if (!accessToken) return <SessionRecovery />;
   try {
     const learningState = await createBackendApiClient().studentLearningState(accessToken);
-    return <><SessionHeartbeat /><StudentHome data={toStudentHomeViewModel(learningState, session.fullName)} /></>;
+    return <><SessionHeartbeat /><StudentHome data={toStudentHomeViewModel(learningState, session.fullName, session.email)} /></>;
   } catch (error) {
     if (error instanceof ApiResponseError) {
       if (error.status === 401) return <SessionRecovery />;

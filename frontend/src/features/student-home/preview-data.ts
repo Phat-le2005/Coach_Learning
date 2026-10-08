@@ -7,7 +7,6 @@ import type { StudentHomeViewModel } from "./types";
 export const studentHomePreviewData: StudentHomeViewModel = {
   student: {
     displayName: "Minh",
-    avatarLabel: "M",
   },
   subject: {
     id: "preview-math-12",

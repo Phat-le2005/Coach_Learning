@@ -17,19 +17,14 @@ function percent(value: number | null): number | undefined {
   return value === null ? undefined : Math.round(Math.min(1, Math.max(0, value)) * 100);
 }
 
-function avatarLabel(fullName: string): string {
-  const words = fullName.trim().split(/\s+/u).filter(Boolean);
-  return words.slice(-2).map((word) => word[0]?.toLocaleUpperCase("vi") ?? "").join("") || "—";
-}
-
-export function toStudentHomeViewModel(source: StudentLearningStateRead, fullName: string): StudentHomeViewModel {
+export function toStudentHomeViewModel(source: StudentLearningStateRead, fullName: string, email?: string): StudentHomeViewModel {
   if (!actionTypes.includes(source.current_action.action_type as StudentHomeActionType)) {
     throw new ApiContractError("Unknown StudentCurrentActionType", "response.current_action.action_type");
   }
   const focus = source.available_subjects.find((subject) => subject.id === source.focus_subject_id) ?? source.available_subjects[0];
   const mastery = percent(source.mastery_summary.average_problem_type_mastery ?? source.mastery_summary.average_concept_mastery);
   return {
-    student: { displayName: fullName, avatarLabel: avatarLabel(fullName) },
+    student: { displayName: fullName, email },
     subject: { id: focus?.id ?? "", name: focus?.name ?? "Chưa có môn học" },
     currentAction: { type: source.current_action.action_type as StudentHomeActionType, targetName: source.current_action.target_name ?? undefined, reasonCode: source.current_action.reason_code ?? undefined },
     mastery: { score: mastery, label: mastery === undefined ? "Chưa đủ dữ liệu" : "Độ vững hiện tại" },

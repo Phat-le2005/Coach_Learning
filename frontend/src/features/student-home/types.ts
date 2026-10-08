@@ -40,7 +40,7 @@ export interface PriorityViewModel {
 export interface StudentHomeViewModel {
   student: {
     displayName: string;
-    avatarLabel: string;
+    email?: string;
   };
   subject: {
     id: string;

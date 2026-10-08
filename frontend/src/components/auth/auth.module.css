@@ -2,10 +2,13 @@
 .field { display: grid; gap: 8px; color: var(--text-secondary); font-size: .82rem; font-weight: 700; }
 .inputWrap { display: grid; min-height: 54px; grid-template-columns: 22px 1fr auto; align-items: center; gap: 10px; padding: 0 15px; color: var(--verdant-700); border: 1px solid var(--border-soft); border-radius: 18px 18px 18px 7px; background: rgb(255 255 250 / 72%); transition: border-color var(--duration-micro), box-shadow var(--duration-micro), background var(--duration-micro); }
 .inputWrap:focus-within { border-color: var(--aqua-500); background: white; box-shadow: var(--shadow-focus); }
+.inputWrapInvalid { border-color: rgb(183 83 66 / 62%); background: rgb(255 248 245 / 88%); }
+.inputWrapInvalid:focus-within { border-color: #b75342; box-shadow: 0 0 0 4px rgb(183 83 66 / 13%); }
 .inputWrap input { width: 100%; min-width: 0; padding: 0; border: 0; outline: 0; background: transparent; }
 .inputWrap input::placeholder { color: var(--text-tertiary); }
 .reveal { display: grid; width: 36px; height: 36px; cursor: pointer; place-items: center; color: var(--text-tertiary); border-radius: 12px; background: transparent; }
 .reveal:hover { color: var(--verdant-900); background: var(--verdant-50); }
+.fieldError { margin: -2px 3px 0; color: #833c31; font-size: .76rem; font-weight: 600; line-height: 1.4; }
 .submit { width: 100%; margin-top: 4px; }
 .error, .notice { padding: 12px 14px; font-size: .83rem; line-height: 1.5; border-radius: 14px 14px 14px 5px; }
 .error { color: #833c31; border: 1px solid rgb(222 125 107 / 28%); background: rgb(244 208 200 / 43%); }

@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-import { authenticatedMutation, BrowserAuthError } from "@/lib/auth/browser";
+import { authenticatedMutation, BrowserAuthError, endBrowserSession } from "@/lib/auth/browser";
 
 export function SessionHeartbeat() {
   const router = useRouter();
@@ -16,7 +16,7 @@ export function SessionHeartbeat() {
       try {
         const response = await fetch("/auth/me", { cache: "no-store", credentials: "same-origin" });
         if (response.status === 403) {
-          await authenticatedMutation("/auth/logout");
+          await endBrowserSession();
           if (!cancelled) window.location.assign("/login?reason=expired");
           return;
         }

@@ -29,7 +29,12 @@ export function safeReturnPath(value: string | null): string | null {
   return value;
 }
 
+export function isSharedAuthenticatedPath(pathname: string): boolean {
+  return pathname.split(/[?#]/u, 1)[0] === "/account";
+}
+
 export function postLoginPath(role: Role, requestedPath?: string | null): string {
   const safe = safeReturnPath(requestedPath ?? null);
+  if (safe && isSharedAuthenticatedPath(safe)) return safe;
   return safe && requiredRoleForPath(safe) === role && canAccessPath(role, safe) ? safe : ROLE_HOME[role];
 }

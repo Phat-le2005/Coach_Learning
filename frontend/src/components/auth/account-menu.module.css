@@ -15,6 +15,7 @@
   border-radius: 18px;
   background: rgb(255 255 250 / 76%);
   box-shadow: 0 6px 20px rgb(23 63 52 / 8%);
+  transition: background var(--duration-micro), box-shadow var(--duration-micro), transform var(--duration-micro);
 }
 
 .trigger:hover,
@@ -77,6 +78,7 @@
   background: rgb(250 251 245 / 97%);
   box-shadow: 0 22px 62px rgb(23 63 52 / 22%);
   backdrop-filter: blur(22px);
+  animation: menuReveal var(--duration-micro) ease-out both;
 }
 
 .eyebrow {
@@ -92,11 +94,14 @@
 .separator { height: 1px; margin: 13px 0; background: var(--border-soft); }
 .profileLink { display: flex; min-height: 44px; align-items: center; gap: 10px; padding: 0 10px; border-radius: 13px; font-size: .85rem; font-weight: 650; }
 .profileLink:hover { color: var(--verdant-900); background: var(--verdant-100); }
+.profileLink:focus-visible { color: var(--verdant-900); background: var(--verdant-100); outline: 2px solid var(--aqua-500); outline-offset: 2px; }
 .popover button { width: 100%; justify-content: flex-start; }
+@keyframes menuReveal { from { opacity: 0; transform: translateY(-5px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
 @media (max-width: 430px) {
   .popover { right: -8px; width: min(286px, calc(100vw - 24px)); }
   .triggerName { max-width: 92px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .trigger { transition: none; }
+  .popover { animation: none; }
 }
