@@ -19,6 +19,13 @@ SESSION_COOKIE_SECURE=false
 AUTH_REFRESH_COOKIE_MAX_AGE_SECONDS=604800
 ```
 
+> **Lưu ý bảo mật:** `AUTH_SESSION_SECRET` bắt buộc phải có độ dài tối thiểu 32 ký tự. Hệ thống từ chối khởi tạo phiên nếu secret ngắn hơn 32 ký tự hoặc để trống.
+>
+> Tạo secret ngẫu nhiên nhanh:
+> - **PowerShell (Windows):** `-join ((65..90) + (97..122) + (48..57) | Get-Random -Count 48 | % {[char]$_})`
+> - **Bash / macOS / Linux:** `openssl rand -hex 32`
+> - **Node.js:** `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
+
 `API_BASE_URL` chỉ chứa origin. Client dùng đúng canonical root paths của FastAPI và không tự thêm `/api/v1`. Trong production, dùng HTTPS và bỏ `SESSION_COOKIE_SECURE=false` hoặc đặt thành `true`.
 
 Khởi động FastAPI trước, sau đó chạy:

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { canAccessPath, isSharedAuthenticatedPath, postLoginPath, requiredRoleForPath, safeReturnPath } from "../src/lib/auth/rbac";
+import { canAccessPath, isSharedAuthenticatedPath, postLoginPath, requiredRoleForPath, safeReturnPath, ROLE_HOME } from "../src/lib/auth/rbac";
 
 test("protected dashboard prefixes map to their exact roles", () => {
   assert.equal(requiredRoleForPath("/student"), "STUDENT");
@@ -26,4 +26,11 @@ test("post-login redirect cannot cross role or leave the app", () => {
   assert.equal(isSharedAuthenticatedPath("/account/security"), false);
   assert.equal(safeReturnPath("//evil.example"), null);
   assert.equal(safeReturnPath("/student\nmalformed"), null);
+});
+
+test("ROLE_HOME maps every canonical role to its dedicated dashboard", () => {
+  assert.equal(ROLE_HOME.STUDENT, "/student");
+  assert.equal(ROLE_HOME.TEACHER, "/teacher");
+  assert.equal(ROLE_HOME.PARENT, "/parent");
+  assert.equal(ROLE_HOME.ADMIN, "/admin");
 });

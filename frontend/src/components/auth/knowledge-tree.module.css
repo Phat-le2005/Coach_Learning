@@ -1,0 +1,117 @@
+.treeContainer {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  pointer-events: none;
+  user-select: none;
+}
+
+.treeSvg {
+  width: 100%;
+  height: auto;
+  max-height: 420px;
+  overflow: visible;
+  filter: drop-shadow(0 14px 28px rgb(16 46 38 / 22%));
+}
+
+/* Sunbeam rays */
+.sunray {
+  animation: ray-breath 8s ease-in-out infinite alternate;
+  transform-origin: 15% 10%;
+}
+
+.sunraySecond {
+  animation: ray-breath 10s ease-in-out 3s infinite alternate;
+  transform-origin: 25% 10%;
+}
+
+/* Knowledge buds glowing pulsation */
+.bud {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: bud-pulse 4s ease-in-out infinite;
+}
+
+.budAmber {
+  animation-delay: 0s;
+}
+
+.budMint {
+  animation-delay: 1.2s;
+}
+
+.budAqua {
+  animation-delay: 2.4s;
+}
+
+.budSky {
+  animation-delay: 0.8s;
+}
+
+.budViolet {
+  animation-delay: 1.8s;
+}
+
+/* Floating leaves */
+.leaf {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: leaf-sway 6s ease-in-out infinite;
+}
+
+.leaf1 {
+  animation-delay: 0.3s;
+}
+
+.leaf2 {
+  animation-delay: 2.1s;
+}
+
+.leaf3 {
+  animation-delay: 3.8s;
+}
+
+@keyframes ray-breath {
+  0% {
+    opacity: 0.14;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0.28;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes bud-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: scale(1.18);
+    opacity: 1;
+    filter: drop-shadow(0 0 10px currentColor);
+  }
+}
+
+@keyframes leaf-sway {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate(4px, -6px) rotate(12deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sunray,
+  .sunraySecond,
+  .bud,
+  .leaf {
+    animation: none !important;
+  }
+}

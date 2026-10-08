@@ -11,6 +11,10 @@ test("login fields report clear errors before a request is sent", () => {
     password: "Vui lòng nhập mật khẩu.",
   });
   assert.deepEqual(validateLoginFields("not-an-email", "secret"), { email: "Email chưa đúng định dạng." });
+  assert.deepEqual(validateLoginFields("   student@example.com   ", "secret"), {});
+  assert.deepEqual(validateLoginFields("student@example.com", "a".repeat(129)), {
+    password: "Mật khẩu không được vượt quá 128 ký tự.",
+  });
   assert.equal(hasLoginFieldErrors(validateLoginFields("student@example.com", "secret")), false);
 });
 
