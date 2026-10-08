@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 
 import type { Role } from "@/lib/api/contracts";
 import type { SessionPayload } from "@/lib/auth/session-codec";
-import { LogoutButton } from "@/components/auth/LogoutButton";
+import { AccountMenu } from "@/components/auth/AccountMenu";
 import { SessionHeartbeat } from "@/components/auth/SessionHeartbeat";
 
 import styles from "./app-shell.module.css";
@@ -21,7 +21,7 @@ export function DashboardShell({ session, children, title, description }: Dashbo
       <SessionHeartbeat />
       <header className={styles.header}>
         <Link className={styles.brand} href={`/${session.role.toLowerCase()}`}><span><Leaf size={20} /></span><strong>EduMS</strong></Link>
-        <div className={styles.identity}><span>{labels[session.role]}</span><b>{session.fullName}</b><LogoutButton /></div>
+        <div className={styles.identity}><span>{labels[session.role]}</span><AccountMenu fullName={session.fullName} email={session.email} role={session.role} /></div>
       </header>
       <main className={styles.main}>
         <section className={styles.intro}>
