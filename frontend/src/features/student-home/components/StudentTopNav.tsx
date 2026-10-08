@@ -1,7 +1,7 @@
 import { Bell, Flame } from "lucide-react";
 
 import { IconButton } from "@/components/ui/IconButton";
-import { LogoutButton } from "@/components/auth/LogoutButton";
+import { AccountMenu } from "@/components/auth/AccountMenu";
 
 import { BrandMark } from "./BrandMark";
 import styles from "../StudentHome.module.css";
@@ -52,10 +52,7 @@ export function StudentTopNav({ displayName, avatarLabel, activeDays }: StudentT
           <IconButton label="Thông báo">
             <Bell size={19} strokeWidth={1.9} />
           </IconButton>
-          <button className={styles.avatarButton} type="button" aria-label={`Tài khoản của ${displayName}`}>
-            {avatarLabel}
-          </button>
-          <LogoutButton compact />
+          <AccountMenu fullName={displayName} role="STUDENT" compact />
         </div>
       </nav>
     </header>
