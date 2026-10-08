@@ -79,3 +79,9 @@ npm run build
 `npm run typecheck` chạy `next typegen` trước `tsc --noEmit`, vì vậy typecheck không phụ thuộc vào `.next/` từ một lần chạy development trước đó. `next-env.d.ts` và `.next/` đều do Next.js sinh và không được theo dõi trong Git.
 
 Đọc `AGENTS.md` và tài liệu tương ứng trong `node_modules/next/dist/docs/` trước khi thay đổi convention của Next.js 16.
+Vai trò	Email đăng nhập	Trang sẽ chuyển đến sau khi đăng nhập
+🎓 Học sinh (Student)	student01.demo@example.com	Student Home (/student) & Khu Rừng Tri Thức (/student/knowledge)
+👨‍🏫 Giáo viên (Teacher)	teacher.math01.demo@example.com	Teacher Dashboard (/teacher)
+👨‍👩‍👧 Phụ huynh (Parent)	parent01.demo@example.com	Parent Dashboard (/parent)
+🛡️ Quản trị viên (Admin)	admin.demo@example.com	Admin Dashboard (/admin)
+Mật khẩu: 9O4DgZI4uhZ5nf1yLHy1y3zyhdCRgUjp
