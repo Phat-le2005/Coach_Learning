@@ -12,6 +12,12 @@ export async function proxy(request: NextRequest) {
 
   if (pathname === "/login" && session) return NextResponse.redirect(new URL(ROLE_HOME[session.role], request.url));
 
+  if (pathname === "/account" && !session) {
+    const url = new URL("/login", request.url);
+    url.searchParams.set("returnTo", "/account");
+    return NextResponse.redirect(url);
+  }
+
   const requiredRole = requiredRoleForPath(pathname);
   if (!requiredRole) return NextResponse.next();
   if (!session) {
@@ -28,5 +34,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/login", "/student/:path*", "/teacher/:path*", "/parent/:path*", "/admin/:path*"],
+  matcher: ["/login", "/account/:path*", "/student/:path*", "/teacher/:path*", "/parent/:path*", "/admin/:path*"],
 };
