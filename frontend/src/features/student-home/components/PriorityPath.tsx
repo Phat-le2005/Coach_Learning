@@ -13,9 +13,10 @@ import { SectionHeading } from "./SectionHeading";
 
 export interface PriorityPathProps {
   priorities: PriorityViewModel[];
+  onSelectPriority?: (priority: PriorityViewModel) => void;
 }
 
-export function PriorityPath({ priorities }: PriorityPathProps) {
+export function PriorityPath({ priorities, onSelectPriority }: PriorityPathProps) {
   return (
     <section className={styles.prioritySection} id="priority-path" aria-labelledby="priority-title">
       <SectionHeading
@@ -25,7 +26,12 @@ export function PriorityPath({ priorities }: PriorityPathProps) {
       />
       <OrganicCard className={styles.priorityCard} variant="solid">
         <span className={styles.priorityCardIcon} aria-hidden="true"><Route size={21} /></span>
-        {priorities.length === 0 ? <div className={styles.priorityEmpty}><h3>Chưa có ưu tiên học tập</h3><p>Backend chưa xác định mục tiêu tiếp theo cho phiên hiện tại.</p></div> : null}
+        {priorities.length === 0 ? (
+          <div className={styles.priorityEmpty}>
+            <h3>Chưa có ưu tiên học tập</h3>
+            <p>Backend chưa xác định mục tiêu tiếp theo cho phiên hiện tại.</p>
+          </div>
+        ) : null}
         <motion.ol
           className={styles.priorityList}
           variants={staggerContainer}
@@ -51,7 +57,12 @@ export function PriorityPath({ priorities }: PriorityPathProps) {
                     : `Độ vững hiện tại ${priority.mastery}%`}
                 </p>
               </div>
-              <button type="button" className={styles.priorityAction} aria-label={`Mở ${priority.targetName}`}>
+              <button
+                type="button"
+                className={styles.priorityAction}
+                onClick={() => onSelectPriority?.(priority)}
+                aria-label={`Xem chi tiết ${priority.targetName}`}
+              >
                 <ArrowRight size={18} />
               </button>
             </motion.li>

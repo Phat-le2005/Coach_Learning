@@ -11,7 +11,8 @@ const payload: SessionPayload = { v: 1, userId: "user-1", email: "student@exampl
 test("session token verifies and rejects tampering", async () => {
   const token = await signSession(payload, secret);
   assert.deepEqual(await verifySession(token, secret), payload);
-  assert.equal(await verifySession(`${token.slice(0, -1)}x`, secret), null);
+  const tampered = token.endsWith("x") ? `${token.slice(0, -1)}y` : `${token.slice(0, -1)}x`;
+  assert.equal(await verifySession(tampered, secret), null);
 });
 
 test("expired signed session is rejected", async () => {

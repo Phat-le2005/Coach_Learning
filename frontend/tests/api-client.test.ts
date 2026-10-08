@@ -45,6 +45,53 @@ test("validates the real Student Learning State boundary", async () => {
   assert.equal(requested, "http://api.example.test/students/me/learning-state?subject_id=math-id");
 });
 
+test("studentLearningState without subject_id omits query parameter", async () => {
+  let requested = "";
+  const response = {
+    student_id: "student-1", as_of: "2026-10-08T03:00:00Z", available_subjects: [], focus_subject_id: null,
+    current_action: { action_type: "IDLE", subject_id: null, resource_id: null, practice_session_id: null, assignment_id: null, verification_id: null, adaptive_repair_session_id: null, study_task_id: null, target_type: null, problem_type_id: null, concept_id: null, target_name: null, target_code: null, reason_code: null, repair_cycle_index: null, phase: null },
+    mastery_summary: { problem_type_started_count: 0, concept_started_count: 0, mastered_problem_type_count: 0, weak_problem_type_count: 0, mastered_concept_count: 0, weak_concept_count: 0, average_problem_type_mastery: null, average_concept_mastery: null, weak_problem_types: [], weak_concepts: [] },
+    priority_targets: [], active_learning: { practice_session_id: null, practice_session_type: null, verification_id: null, adaptive_repair_session_id: null, assignment_id: null },
+    verified_root_causes: [], repair: null, review: { due_now_count: 0, upcoming_count: 0, due_targets: [] },
+    assignments: { overdue_count: 0, in_progress_count: 0, pending_count: 0, upcoming: [] }, today_plan: null, latest_feedback: null, class_contexts: [],
+  };
+  const api = createApiClient({ baseUrl: "http://api.example.test", fetcher: async (input) => { requested = String(input); return Response.json(response); } });
+  const result = await api.studentLearningState("token");
+  assert.equal(result.student_id, "student-1");
+  assert.equal(requested, "http://api.example.test/students/me/learning-state");
+});
+
+test("studentLearningState parses fully populated nested real models", async () => {
+  const fullResponse = {
+    student_id: "student-1", as_of: "2026-10-08T03:00:00Z",
+    available_subjects: [{ id: "sub-1", code: "MATH12", name: "Toán 12" }],
+    focus_subject_id: "sub-1",
+    current_action: { action_type: "REVIEW_DUE", subject_id: "sub-1", resource_id: "pt-1", practice_session_id: null, assignment_id: null, verification_id: null, adaptive_repair_session_id: null, study_task_id: null, target_type: "PROBLEM_TYPE", problem_type_id: "pt-1", concept_id: null, target_name: "Cực trị hàm số", target_code: "MATH12-PT-03", reason_code: "REVIEW_DUE", repair_cycle_index: null, phase: null },
+    mastery_summary: { problem_type_started_count: 1, concept_started_count: 0, mastered_problem_type_count: 1, weak_problem_type_count: 0, mastered_concept_count: 0, weak_concept_count: 0, average_problem_type_mastery: 0.85, average_concept_mastery: null, weak_problem_types: [], weak_concepts: [] },
+    priority_targets: [{ target_type: "PROBLEM_TYPE", problem_type_id: "pt-1", concept_id: null, target_name: "Cực trị hàm số", target_code: "MATH12-PT-03", reason_code: "REVIEW_DUE", priority_score: 0.9, mastery_score: 0.85, confidence: 0.95, desired_difficulty: 0.7 }],
+    active_learning: { practice_session_id: null, practice_session_type: null, verification_id: null, adaptive_repair_session_id: null, assignment_id: null },
+    verified_root_causes: [], repair: null,
+    review: {
+      due_now_count: 1, upcoming_count: 0,
+      due_targets: [{ schedule_id: "sch-1", target_type: "PROBLEM_TYPE", problem_type_id: "pt-1", concept_id: null, target_name: "Cực trị hàm số", target_code: "MATH12-PT-03", next_review_at: "2026-10-08T00:00:00Z", review_interval_days: 2.0, review_count: 3, last_review_result: "CORRECT" }]
+    },
+    assignments: {
+      overdue_count: 0, in_progress_count: 1, pending_count: 0,
+      upcoming: [{ assignment_id: "asg-1", student_assignment_id: "sasg-1", classroom_id: "cls-1", subject_id: "sub-1", title: "Khảo sát hàm số", status: "IN_PROGRESS", start_at: "2026-10-01T00:00:00Z", due_at: "2026-10-15T00:00:00Z", score: null, is_overdue: false }]
+    },
+    today_plan: {
+      date: "2026-10-08", available_daily_minutes: 60, total_estimated_minutes: 30, completed_count: 0, total_count: 1, days_to_exam: 200, notice: "Kế hoạch ngày",
+      tasks: [{ id: "tsk-1", study_plan_id: "sp-1", task_type: "PRACTICE", status: "PENDING", planned_date: "2026-10-08", problem_type_id: "pt-1", problem_type_name: "Cực trị", concept_id: null, concept_name: null, topic_id: null, topic_name: null, chapter_id: null, chapter_name: null, subject_id: "sub-1", subject_name: "Toán 12", estimated_duration_minutes: 30, priority: 1, order_index: 0, reason_code: "REVIEW", completed_at: null, created_at: "2026-10-08T00:00:00Z", updated_at: "2026-10-08T00:00:00Z" }]
+    },
+    latest_feedback: null, class_contexts: [{ classroom_id: "cls-1", classroom_name: "12A1" }]
+  };
+  const api = createApiClient({ baseUrl: "http://api.example.test", fetcher: async () => Response.json(fullResponse) });
+  const result = await api.studentLearningState("token", "sub-1");
+  assert.equal(result.review.due_targets[0].schedule_id, "sch-1");
+  assert.equal(result.assignments.upcoming[0].title, "Khảo sát hàm số");
+  assert.equal(result.today_plan?.tasks[0].estimated_duration_minutes, 30);
+});
+
 for (const [status, category] of [[401, "unauthorized"], [403, "forbidden"], [404, "not_found"], [409, "conflict"], [422, "validation"], [503, "unavailable"]] as const) {
   test(`maps HTTP ${status} to ${category}`, async () => {
     const api = createApiClient({ baseUrl: "https://api.example.test", fetcher: async () => Response.json({ error: { code: `E_${status}`, message: "backend error", details: [{ field: "email", message: "invalid" }] } }, { status }) });

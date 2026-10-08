@@ -20,6 +20,10 @@
     "src/lib/auth/rbac.ts",
     "src/lib/auth/security.ts",
     "src/lib/auth/session-codec.ts",
+    "src/features/student-home/action-resolver.ts",
+    "src/features/student-home/adapter.ts",
+    "src/features/student-home/copy.ts",
+    "src/features/student-home/types.ts",
     "tests/**/*.ts"
   ],
   "exclude": ["node_modules", ".next"]

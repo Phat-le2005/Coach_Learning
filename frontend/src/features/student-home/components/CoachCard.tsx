@@ -41,15 +41,20 @@ export function CoachCard() {
         <p className={styles.coachCopy}>
           Khi bạn cần một gợi ý, Coach sẽ bắt đầu từ đúng chỗ bạn đang mắc.
         </p>
-        <div className={styles.coachActions} aria-label="Tùy chọn Coach đang ở chế độ xem trước">
+        <div className={styles.coachActions} aria-label="Tùy chọn Coach tương tác">
           {coachActions.map(({ label, icon: Icon }) => (
-            <button type="button" key={label} title="Chức năng sẽ được kết nối sau API freeze">
+            <button
+              type="button"
+              key={label}
+              disabled
+              title="Tính năng gia sư AI sẽ kích hoạt trực tiếp trong Không gian luyện tập (FE-REAL-03)"
+            >
               <Icon size={17} aria-hidden="true" />
               {label}
             </button>
           ))}
         </div>
-        <p className={styles.coachFootnote}>Chưa kết nối AI trong phiên bản visual foundation.</p>
+        <p className={styles.coachFootnote}>Hỗ trợ AI theo ngữ cảnh sẽ kích hoạt trực tiếp trong Không gian luyện tập.</p>
       </OrganicCard>
     </section>
   );

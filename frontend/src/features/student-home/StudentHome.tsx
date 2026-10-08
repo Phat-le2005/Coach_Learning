@@ -2,7 +2,7 @@
 
 import { DatabaseZap, LockKeyhole } from "lucide-react";
 import { motion } from "motion/react";
-import type { ReactNode } from "react";
+import { type ReactNode, useState } from "react";
 
 import { MotionProvider } from "@/components/motion/MotionProvider";
 import { AmbientGlow } from "@/components/ui/AmbientGlow";
@@ -10,8 +10,10 @@ import { GradientButton } from "@/components/ui/GradientButton";
 import { OrganicCard } from "@/components/ui/OrganicCard";
 import { fadeUp, staggerContainer } from "@/lib/motion";
 
-import type { KnowledgeRegionViewModel, StudentHomeViewModel } from "./types";
+import type { ResolvedStudentAction } from "./action-resolver";
+import type { PriorityViewModel, StudentHomeViewModel } from "./types";
 import styles from "./StudentHome.module.css";
+import { ActionDetailModal } from "./components/ActionDetailModal";
 import { CoachCard } from "./components/CoachCard";
 import { ForestAtmosphere } from "./components/ForestAtmosphere";
 import { FocusHero } from "./components/FocusHero";
@@ -25,15 +27,7 @@ import { StudentTopNav } from "./components/StudentTopNav";
 
 export interface StudentHomeProps {
   data: StudentHomeViewModel;
-  showPreviewBadge?: boolean;
 }
-
-const disconnectedRegions: KnowledgeRegionViewModel[] = Array.from({ length: 5 }, (_, index) => ({
-  id: `disconnected-region-${index + 1}`,
-  label: "Vùng tri thức chưa kết nối",
-  state: "not_started" as const,
-  accent: index % 2 === 0 ? "mint" as const : "sky" as const,
-}));
 
 function StudentCanvas({ children }: { children: ReactNode }) {
   return (
@@ -49,7 +43,29 @@ function StudentCanvas({ children }: { children: ReactNode }) {
   );
 }
 
-export function StudentHome({ data, showPreviewBadge = false }: StudentHomeProps) {
+export function StudentHome({ data }: StudentHomeProps) {
+  const [selectedAction, setSelectedAction] = useState<ResolvedStudentAction | null>(null);
+  const [selectedPriority, setSelectedPriority] = useState<PriorityViewModel | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenActionDetail = () => {
+    setSelectedAction(data.resolvedAction);
+    setSelectedPriority(null);
+    setIsModalOpen(true);
+  };
+
+  const handleSelectPriority = (priority: PriorityViewModel) => {
+    setSelectedAction(null);
+    setSelectedPriority(priority);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedAction(null);
+    setSelectedPriority(null);
+  };
+
   return (
     <MotionProvider>
       <StudentCanvas>
@@ -59,15 +75,30 @@ export function StudentHome({ data, showPreviewBadge = false }: StudentHomeProps
           activeDays={data.momentum.activeDays}
         />
         <main className={styles.main}>
-          <FocusHero data={data} showPreviewBadge={showPreviewBadge} />
+          {data.availableSubjects.length === 0 ? (
+            <OrganicCard className={styles.realDataEmpty} variant="glass">
+              <h3>Chưa có môn học được đăng ký</h3>
+              <p>
+                Tài khoản học sinh hiện chưa có môn học nào trong phạm vi lớp học được cấp quyền. Vui lòng liên hệ nhà
+                trường để được xếp lớp.
+              </p>
+            </OrganicCard>
+          ) : null}
+          <FocusHero data={data} onOpenActionDetail={handleOpenActionDetail} />
           <LearningPulse data={data} />
           <KnowledgeGarden regions={data.knowledgeRegions} />
           <div className={styles.closingGrid}>
-            <PriorityPath priorities={data.priorities} />
+            <PriorityPath priorities={data.priorities} onSelectPriority={handleSelectPriority} />
             <CoachCard />
           </div>
         </main>
         <StudentBottomNav />
+        <ActionDetailModal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          action={selectedAction}
+          priority={selectedPriority}
+        />
       </StudentCanvas>
     </MotionProvider>
   );
@@ -102,7 +133,7 @@ export function StudentHomeDisconnected() {
               </GradientButton>
             </motion.div>
             <motion.div className={styles.heroVisual} variants={fadeUp}>
-              <KnowledgeCanopy regions={disconnectedRegions} subjectName="Không gian học tập" ghost />
+              <KnowledgeCanopy regions={[]} subjectName="Không gian học tập" ghost />
             </motion.div>
           </motion.section>
 

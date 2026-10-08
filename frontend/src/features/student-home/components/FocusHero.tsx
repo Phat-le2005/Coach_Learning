@@ -1,24 +1,33 @@
 "use client";
 
-import { ArrowRight, Map } from "lucide-react";
+import { ArrowRight, Route } from "lucide-react";
 import { motion } from "motion/react";
+import { useRouter } from "next/navigation";
+import type { ChangeEvent } from "react";
 
 import { GradientButton } from "@/components/ui/GradientButton";
 import { StatusPill } from "@/components/ui/StatusPill";
 import { fadeUp, staggerContainer } from "@/lib/motion";
 
-import { getActionCopy } from "../copy";
 import type { StudentHomeViewModel } from "../types";
 import styles from "../StudentHome.module.css";
 import { KnowledgeCanopy } from "./KnowledgeCanopy";
 
 export interface FocusHeroProps {
   data: StudentHomeViewModel;
-  showPreviewBadge: boolean;
+  onOpenActionDetail: () => void;
 }
 
-export function FocusHero({ data, showPreviewBadge }: FocusHeroProps) {
-  const copy = getActionCopy(data.currentAction.type);
+export function FocusHero({ data, onOpenActionDetail }: FocusHeroProps) {
+  const router = useRouter();
+  const action = data.resolvedAction;
+
+  const handleSubjectChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    const selectedSubjectId = event.target.value;
+    if (selectedSubjectId && selectedSubjectId !== data.subject.id) {
+      router.push(`/student?subject_id=${encodeURIComponent(selectedSubjectId)}`);
+    }
+  };
 
   return (
     <motion.section
@@ -42,26 +51,50 @@ export function FocusHero({ data, showPreviewBadge }: FocusHeroProps) {
 
       <motion.div className={styles.heroCopy} variants={fadeUp}>
         <div className={styles.heroMeta}>
-          <StatusPill>{data.subject.name}</StatusPill>
-          {showPreviewBadge ? <span className={styles.previewBadge}>UI Preview</span> : null}
+          {data.availableSubjects.length > 1 ? (
+            <div className={styles.subjectSelectorWrap}>
+              <select
+                id="student-subject-select"
+                className={styles.subjectSelect}
+                value={data.subject.id}
+                onChange={handleSubjectChange}
+                aria-label="Chọn môn học"
+              >
+                {data.availableSubjects.map((sub) => (
+                  <option key={sub.id} value={sub.id}>
+                    {sub.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          ) : (
+            <StatusPill>{data.subject.name}</StatusPill>
+          )}
         </div>
         <p className={styles.greeting}>Chào {data.student.displayName}</p>
-        <h1 id="student-focus-title">{copy.title}</h1>
-        <p className={styles.heroDescription}>{copy.description}</p>
-        {data.currentAction.targetName ? (
+        <h1 id="student-focus-title">{action.title}</h1>
+        <p className={styles.heroDescription}>{action.description}</p>
+        {action.targetName ? (
           <p className={styles.focusTarget}>
             <span aria-hidden="true" />
-            Trọng tâm: <strong>{data.currentAction.targetName}</strong>
+            Trọng tâm: <strong>{action.targetName}</strong>
           </p>
         ) : null}
         <div className={styles.heroActions}>
-          <GradientButton href="#priority-path">
-            {copy.primaryLabel}
-            <ArrowRight size={18} aria-hidden="true" />
-          </GradientButton>
-          <GradientButton href="#knowledge-garden" variant="secondary">
-            <Map size={17} aria-hidden="true" />
-            Xem bản đồ tri thức
+          {action.hasAvailableRoute && action.route ? (
+            <GradientButton href={action.route}>
+              {action.primaryLabel}
+              <ArrowRight size={18} aria-hidden="true" />
+            </GradientButton>
+          ) : (
+            <GradientButton onClick={onOpenActionDetail}>
+              {action.primaryLabel}
+              <ArrowRight size={18} aria-hidden="true" />
+            </GradientButton>
+          )}
+          <GradientButton href="#priority-path" variant="secondary">
+            <Route size={17} aria-hidden="true" />
+            Xem lộ trình ưu tiên
           </GradientButton>
         </div>
       </motion.div>
