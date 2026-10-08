@@ -1,0 +1,855 @@
+/* ==========================================================================
+   Knowledge Forest · Interactive Knowledge Map Styles
+   ========================================================================== */
+
+.pageContainer {
+  position: relative;
+  width: min(100%, 1280px);
+  margin: 0 auto;
+  padding: clamp(20px, 3.5vw, 44px) clamp(16px, 3.2vw, 36px) 100px;
+  overflow-x: hidden;
+}
+
+/* --------------------------------------------------------------------------
+   Header & Subject Selector
+   -------------------------------------------------------------------------- */
+.header {
+  position: relative;
+  margin-bottom: 28px;
+}
+
+.headerTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.breadcrumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: var(--text-tertiary);
+}
+
+.breadcrumbLink {
+  color: var(--verdant-700);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color var(--duration-micro);
+}
+
+.breadcrumbLink:hover {
+  color: var(--verdant-900);
+  text-decoration: underline;
+}
+
+.subjectSelectorWrap {
+  position: relative;
+}
+
+.subjectSelect {
+  appearance: none;
+  background: rgb(255 255 250 / 88%);
+  border: 1.5px solid var(--border-soft);
+  border-radius: var(--radius-pill);
+  padding: 8px 36px 8px 16px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--verdant-900);
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgb(31 69 56 / 06%);
+  transition: border-color var(--duration-micro), box-shadow var(--duration-micro);
+}
+
+.subjectSelect:hover {
+  border-color: var(--verdant-500);
+}
+
+.subjectSelect:focus-visible {
+  outline: none;
+  border-color: var(--aqua-500);
+  box-shadow: var(--shadow-focus);
+}
+
+.subjectSelectorIcon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--verdant-700);
+}
+
+.titleRow {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.mainTitle {
+  margin: 0;
+  font-size: clamp(2rem, 3.8vw, 3rem);
+  font-weight: 750;
+  letter-spacing: -0.04em;
+  color: var(--text-primary);
+  line-height: 1.1;
+}
+
+.subjectBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 13px;
+  border-radius: var(--radius-pill);
+  background: var(--verdant-100);
+  border: 1px solid rgb(40 105 85 / 18%);
+  color: var(--verdant-800);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.subtitle {
+  margin: 0;
+  max-width: 680px;
+  font-size: 0.94rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+/* --------------------------------------------------------------------------
+   Summary Stats Bar
+   -------------------------------------------------------------------------- */
+.statsBar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-top: 20px;
+  padding: 16px 20px;
+  border-radius: 20px;
+  background: rgb(255 255 250 / 75%);
+  border: 1px solid var(--border-soft);
+  backdrop-filter: blur(16px);
+  box-shadow: var(--shadow-soft);
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.statLabel {
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+}
+
+.statValue {
+  font-size: 1.45rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.statSubtext {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* --------------------------------------------------------------------------
+   Filters & Search Toolbar
+   -------------------------------------------------------------------------- */
+.toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 24px;
+  padding: 16px 20px;
+  border-radius: 20px;
+  background: rgb(255 255 250 / 85%);
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--shadow-soft);
+}
+
+.toolbarTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.searchWrap {
+  position: relative;
+  flex: 1;
+  min-width: 240px;
+  max-width: 440px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-tertiary);
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  height: 42px;
+  padding: 0 38px 0 40px;
+  font-size: 0.88rem;
+  color: var(--text-primary);
+  background: white;
+  border: 1.5px solid var(--border-soft);
+  border-radius: var(--radius-pill);
+  transition: border-color var(--duration-micro), box-shadow var(--duration-micro);
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: var(--aqua-500);
+  box-shadow: var(--shadow-focus);
+}
+
+.searchClear {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border: none;
+  background: var(--surface-muted);
+  border-radius: 50%;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.toolbarActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.toggleExpandBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--verdant-800);
+  background: var(--verdant-50);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: background var(--duration-micro);
+}
+
+.toggleExpandBtn:hover {
+  background: var(--verdant-100);
+}
+
+/* Filter pills row */
+.filterPills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+
+.filterPills::-webkit-scrollbar {
+  display: none;
+}
+
+.filterPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  font-size: 0.79rem;
+  font-weight: 700;
+  border: 1px solid var(--border-soft);
+  background: white;
+  color: var(--text-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--duration-micro);
+}
+
+.filterPill:hover {
+  border-color: var(--verdant-500);
+  color: var(--verdant-900);
+}
+
+.filterPillActive {
+  background: var(--verdant-800);
+  color: var(--text-inverse);
+  border-color: var(--verdant-800);
+}
+
+.filterPillActive:hover {
+  background: var(--verdant-900);
+  color: var(--text-inverse);
+}
+
+/* --------------------------------------------------------------------------
+   Chapters (Biome Landscapes) Accordion / Cards
+   -------------------------------------------------------------------------- */
+.treeList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.chapterCard {
+  border-radius: 24px;
+  background: rgb(255 255 250 / 92%);
+  border: 1.5px solid var(--border-soft);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  transition: box-shadow var(--duration-micro), border-color var(--duration-micro);
+}
+
+.chapterCard:hover {
+  border-color: var(--verdant-300);
+}
+
+/* Biome color accents */
+.biome_meadow {
+  border-left: 6px solid var(--mint-500);
+}
+
+.biome_river {
+  border-left: 6px solid var(--aqua-500);
+}
+
+.biome_mountain {
+  border-left: 6px solid var(--violet-500);
+}
+
+.biome_forest {
+  border-left: 6px solid var(--verdant-700);
+}
+
+.biome_sky {
+  border-left: 6px solid var(--sky-500);
+}
+
+.chapterHeader {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 24px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background var(--duration-micro);
+}
+
+.chapterHeader:hover {
+  background: rgb(244 249 245 / 55%);
+}
+
+.chapterHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+
+.chapterIndexBadge {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  font-size: 0.88rem;
+  font-weight: 800;
+  background: var(--verdant-100);
+  color: var(--verdant-900);
+  flex-shrink: 0;
+}
+
+.chapterTitleGroup {
+  min-width: 0;
+}
+
+.chapterMetaLine {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.biomeBadge {
+  font-size: 0.72rem;
+  font-weight: 750;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--verdant-700);
+}
+
+.chapterCode {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-tertiary);
+  background: var(--surface-muted);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.chapterTitle {
+  margin: 0;
+  font-size: 1.18rem;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chapterHeaderRight {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+.chapterStats {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.chapterProgressText {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--verdant-800);
+}
+
+.chapterCounts {
+  font-size: 0.76rem;
+  color: var(--text-tertiary);
+  font-weight: 600;
+}
+
+.expandIcon {
+  color: var(--verdant-700);
+  transition: transform var(--duration-standard);
+}
+
+.expandIconOpen {
+  transform: rotate(180deg);
+}
+
+/* Chapter body with topics */
+.chapterBody {
+  padding: 0 24px 22px;
+  border-top: 1px solid var(--border-soft);
+  background: rgb(250 252 250 / 60%);
+}
+
+.topicList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.topicCard {
+  border-radius: 16px;
+  background: white;
+  border: 1px solid var(--border-soft);
+  padding: 16px 18px;
+  box-shadow: 0 4px 12px rgb(31 69 56 / 04%);
+}
+
+.topicHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.topicTitleGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.topicBranchIcon {
+  color: var(--verdant-600);
+}
+
+.topicTitle {
+  margin: 0;
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.topicMeta {
+  font-size: 0.78rem;
+  color: var(--text-tertiary);
+  font-weight: 600;
+}
+
+/* Problem types grid */
+.problemTypeGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 10px;
+}
+
+.problemTypeBtn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 11px 14px;
+  border-radius: 14px;
+  background: rgb(255 255 250 / 90%);
+  border: 1.5px solid var(--border-soft);
+  cursor: pointer;
+  text-align: left;
+  transition: all var(--duration-micro);
+}
+
+.problemTypeBtn:hover {
+  border-color: var(--verdant-500);
+  background: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgb(31 69 56 / 08%);
+}
+
+.problemTypeBtn:focus-visible {
+  outline: none;
+  border-color: var(--aqua-500);
+  box-shadow: var(--shadow-focus);
+}
+
+.problemTypeBtnSelected {
+  border-color: var(--verdant-700) !important;
+  background: var(--verdant-50) !important;
+  box-shadow: 0 0 0 2px var(--verdant-700);
+}
+
+.problemTypeLeft {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+
+.statusDot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.statusDot_MASTERED { background: var(--mint-500); box-shadow: 0 0 8px var(--mint-300); }
+.statusDot_PRACTICING { background: var(--sky-500); }
+.statusDot_LEARNING { background: var(--aqua-500); }
+.statusDot_WEAK { background: var(--coral-500); box-shadow: 0 0 8px var(--coral-200); }
+.statusDot_REVIEW_DUE { background: var(--amber-500); box-shadow: 0 0 8px var(--amber-200); }
+.statusDot_NOT_STARTED { background: var(--text-tertiary); opacity: 0.55; }
+
+.problemTypeName {
+  font-size: 0.85rem;
+  font-weight: 650;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.problemTypeRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.problemTypeScore {
+  font-size: 0.82rem;
+  font-weight: 750;
+  color: var(--verdant-800);
+}
+
+.problemTypeReviewBadge {
+  color: var(--amber-500);
+  display: grid;
+  place-items: center;
+}
+
+/* --------------------------------------------------------------------------
+   Concepts Section (Subject-level knowledge branches)
+   -------------------------------------------------------------------------- */
+.conceptsSection {
+  margin-top: 36px;
+  padding: 24px;
+  border-radius: 24px;
+  background: rgb(255 255 250 / 80%);
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--shadow-soft);
+}
+
+.conceptsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.conceptsTitle {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 750;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.conceptsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 10px;
+}
+
+/* --------------------------------------------------------------------------
+   Empty and Error States
+   -------------------------------------------------------------------------- */
+.emptyCard {
+  text-align: center;
+  padding: 48px 24px;
+  border-radius: 24px;
+  background: rgb(255 255 250 / 80%);
+  border: 1.5px dashed var(--border-soft);
+}
+
+.emptyTitle {
+  margin: 12px 0 6px;
+  font-size: 1.25rem;
+  font-weight: 750;
+  color: var(--text-primary);
+}
+
+.emptyDesc {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  max-width: 440px;
+  margin: 0 auto;
+}
+
+/* --------------------------------------------------------------------------
+   Detail Drawer / Modal
+   -------------------------------------------------------------------------- */
+.drawerBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgb(16 46 38 / 45%);
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: flex-end;
+  animation: fadeIn 200ms ease;
+}
+
+.drawer {
+  width: min(100%, 480px);
+  height: 100%;
+  background: var(--surface-elevated);
+  box-shadow: -10px 0 40px rgb(16 46 38 / 20%);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  animation: slideInRight 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.drawerHeader {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: 20px 24px;
+  background: rgb(251 250 244 / 92%);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-soft);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.drawerCloseBtn {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: none;
+  background: var(--surface-muted);
+  border-radius: 12px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--duration-micro);
+}
+
+.drawerCloseBtn:hover {
+  background: var(--verdant-100);
+  color: var(--verdant-900);
+}
+
+.drawerBody {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 1;
+}
+
+.drawerCard {
+  border-radius: 18px;
+  background: white;
+  border: 1px solid var(--border-soft);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.drawerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.85rem;
+}
+
+.drawerLabel {
+  color: var(--text-tertiary);
+  font-weight: 600;
+}
+
+.drawerValue {
+  color: var(--text-primary);
+  font-weight: 750;
+}
+
+.guidanceCard {
+  border-radius: 18px;
+  background: var(--verdant-50);
+  border: 1px solid rgb(40 105 85 / 18%);
+  padding: 16px 18px;
+  font-size: 0.84rem;
+  line-height: 1.55;
+  color: var(--verdant-900);
+}
+
+.guidanceTitle {
+  font-weight: 750;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.drawerFooter {
+  position: sticky;
+  bottom: 0;
+  padding: 18px 24px;
+  background: rgb(251 250 244 / 94%);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--border-soft);
+}
+
+/* --------------------------------------------------------------------------
+   Mobile Adjustments
+   -------------------------------------------------------------------------- */
+@media (max-width: 900px) {
+  .pageContainer {
+    padding: 16px 14px 80px;
+  }
+
+  .mainTitle {
+    font-size: 1.9rem;
+  }
+
+  .statsBar {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .chapterHeader {
+    padding: 16px 18px;
+  }
+
+  .chapterBody {
+    padding: 0 16px 18px;
+  }
+
+  .problemTypeGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .drawer {
+    width: 100%;
+    max-height: 90vh;
+    border-radius: 24px 24px 0 0;
+    margin-top: auto;
+    animation: slideUp 260ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .drawerBackdrop {
+    align-items: flex-end;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drawer,
+  .drawerBackdrop,
+  .expandIcon {
+    animation: none !important;
+    transition: none !important;
+  }
+}

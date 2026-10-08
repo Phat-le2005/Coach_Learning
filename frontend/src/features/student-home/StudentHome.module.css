@@ -575,6 +575,22 @@
   font-weight: 650;
 }
 
+.gardenExploreLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--mint-400);
+  font-size: 0.8rem;
+  font-weight: 650;
+  text-decoration: none;
+  transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.gardenExploreLink:hover {
+  color: #fff;
+  transform: translateX(2px);
+}
+
 .gardenGrid {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));

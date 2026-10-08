@@ -24,6 +24,9 @@
     "src/features/student-home/adapter.ts",
     "src/features/student-home/copy.ts",
     "src/features/student-home/types.ts",
+    "src/features/knowledge-forest/types.ts",
+    "src/features/knowledge-forest/copy.ts",
+    "src/features/knowledge-forest/adapter.ts",
     "tests/**/*.ts"
   ],
   "exclude": ["node_modules", ".next"]

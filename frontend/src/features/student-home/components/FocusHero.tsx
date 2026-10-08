@@ -92,9 +92,12 @@ export function FocusHero({ data, onOpenActionDetail }: FocusHeroProps) {
               <ArrowRight size={18} aria-hidden="true" />
             </GradientButton>
           )}
-          <GradientButton href="#priority-path" variant="secondary">
+          <GradientButton
+            href={`/student/knowledge${data.subject?.id ? `?subject_id=${encodeURIComponent(data.subject.id)}` : ""}`}
+            variant="secondary"
+          >
             <Route size={17} aria-hidden="true" />
-            Xem lộ trình ưu tiên
+            Bản đồ tri thức
           </GradientButton>
         </div>
       </motion.div>

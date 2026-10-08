@@ -1,4 +1,5 @@
 import { Flame } from "lucide-react";
+import Link from "next/link";
 
 import { AccountMenu } from "@/components/auth/AccountMenu";
 
@@ -9,34 +10,50 @@ export interface StudentTopNavProps {
   displayName: string;
   email?: string;
   activeDays?: number;
+  currentRoute?: string;
+  subjectId?: string;
 }
 
-const navItems = [
-  { label: "Tổng quan", href: "#student-home", current: true },
-  { label: "Học tập", href: "#learning-pulse" },
-  { label: "Bản đồ tri thức", href: "#knowledge-garden" },
-  { label: "Bài tập", href: "#priority-path" },
-  { label: "Thi thử", href: "#coach" },
-];
+export function StudentTopNav({
+  displayName,
+  email,
+  activeDays,
+  currentRoute = "/student",
+  subjectId,
+}: StudentTopNavProps) {
+  const isKnowledge = currentRoute.startsWith("/student/knowledge");
+  const isHome = currentRoute === "/student" || (!isKnowledge && currentRoute.startsWith("/student"));
 
-export function StudentTopNav({ displayName, email, activeDays }: StudentTopNavProps) {
+  const knowledgeHref = subjectId
+    ? `/student/knowledge?subject_id=${encodeURIComponent(subjectId)}`
+    : "/student/knowledge";
+
+  const homeHref = subjectId ? `/student?subject_id=${encodeURIComponent(subjectId)}` : "/student";
+
+  const navItems = [
+    { label: "Tổng quan", href: homeHref, current: isHome },
+    { label: "Bản đồ tri thức", href: knowledgeHref, current: isKnowledge },
+    { label: "Nhiệm vụ", href: isHome ? "#learning-pulse" : `${homeHref}#learning-pulse`, current: false },
+    { label: "Bài tập ưu tiên", href: isHome ? "#priority-path" : `${homeHref}#priority-path`, current: false },
+  ];
+
   return (
     <header className={styles.topNavWrap}>
       <nav className={styles.topNav} aria-label="Điều hướng học sinh">
-        <a className={styles.brandLink} href="#student-home">
+        <Link className={styles.brandLink} href={homeHref}>
           <BrandMark />
-        </a>
+        </Link>
 
         <div className={styles.desktopNav}>
           {navItems.map((item) => (
-            <a
+            <Link
               className={item.current ? styles.desktopNavActive : styles.desktopNavLink}
               href={item.href}
               aria-current={item.current ? "page" : undefined}
               key={item.label}
             >
               {item.label}
-            </a>
+            </Link>
           ))}
         </div>
 

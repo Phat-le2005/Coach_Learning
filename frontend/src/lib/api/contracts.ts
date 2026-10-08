@@ -71,6 +71,74 @@ export interface StudentLearningStateRead {
   class_contexts: Record<string, unknown>[];
 }
 
+export const DERIVED_MASTERY_STATES = [
+  "NOT_STARTED",
+  "LEARNING",
+  "WEAK",
+  "PRACTICING",
+  "MASTERED",
+  "REVIEW_DUE",
+] as const;
+export type DerivedMasteryState = (typeof DERIVED_MASTERY_STATES)[number];
+
+export interface MasteryMetricRead {
+  mastery_score: number;
+  confidence: number;
+  attempt_count: number;
+  correct_count: number;
+  last_practiced_at: string | null;
+  last_updated_at: string | null;
+  state: DerivedMasteryState;
+}
+
+export interface ProblemTypeMasteryRead extends MasteryMetricRead {
+  problem_type_id: string;
+  topic_id: string;
+  code: string;
+  name: string;
+}
+
+export interface ConceptMasteryRead extends MasteryMetricRead {
+  concept_id: string;
+  subject_id: string;
+  code: string;
+  name: string;
+}
+
+export interface AggregateMasteryRead extends MasteryMetricRead {
+  problem_type_count: number;
+  started_problem_type_count: number;
+}
+
+export interface TopicMasteryRead extends AggregateMasteryRead {
+  topic_id: string;
+  chapter_id: string;
+  code: string;
+  name: string;
+  problem_types: ProblemTypeMasteryRead[];
+}
+
+export interface ChapterMasteryRead extends AggregateMasteryRead {
+  chapter_id: string;
+  subject_id: string;
+  code: string;
+  name: string;
+  topics: TopicMasteryRead[];
+}
+
+export interface SubjectMasteryRead extends AggregateMasteryRead {
+  subject_id: string;
+  code: string;
+  name: string;
+  chapters: ChapterMasteryRead[];
+  concepts: ConceptMasteryRead[];
+}
+
+export interface StudentMasteryRead {
+  student_id: string;
+  subjects: SubjectMasteryRead[];
+}
+
 const nullableString = (value: unknown, path: string) => nullable(value, path, string);
 const optionalNullableRecord = (value: unknown, path: string) => optional(value, path, (item, itemPath) => nullable(item, itemPath, record));
 
@@ -274,3 +342,92 @@ export function parseStudentLearningState(value: unknown, path = "response"): St
     class_contexts: array(source.class_contexts ?? [], `${path}.class_contexts`, record),
   };
 }
+
+export function parseDerivedMasteryState(value: unknown, path = "state"): DerivedMasteryState {
+  return oneOf(value, path, DERIVED_MASTERY_STATES);
+}
+
+function parseMetricFields(source: Record<string, unknown>, path: string): MasteryMetricRead {
+  return {
+    mastery_score: number(source.mastery_score, `${path}.mastery_score`),
+    confidence: number(source.confidence, `${path}.confidence`),
+    attempt_count: integer(source.attempt_count, `${path}.attempt_count`),
+    correct_count: integer(source.correct_count, `${path}.correct_count`),
+    last_practiced_at: nullableString(source.last_practiced_at, `${path}.last_practiced_at`),
+    last_updated_at: nullableString(source.last_updated_at, `${path}.last_updated_at`),
+    state: parseDerivedMasteryState(source.state, `${path}.state`),
+  };
+}
+
+export function parseProblemTypeMastery(value: unknown, path = "problem_type"): ProblemTypeMasteryRead {
+  const source = record(value, path);
+  return {
+    ...parseMetricFields(source, path),
+    problem_type_id: nonEmptyString(source.problem_type_id, `${path}.problem_type_id`),
+    topic_id: nonEmptyString(source.topic_id, `${path}.topic_id`),
+    code: nonEmptyString(source.code, `${path}.code`),
+    name: nonEmptyString(source.name, `${path}.name`),
+  };
+}
+
+export function parseConceptMastery(value: unknown, path = "concept"): ConceptMasteryRead {
+  const source = record(value, path);
+  return {
+    ...parseMetricFields(source, path),
+    concept_id: nonEmptyString(source.concept_id, `${path}.concept_id`),
+    subject_id: nonEmptyString(source.subject_id, `${path}.subject_id`),
+    code: nonEmptyString(source.code, `${path}.code`),
+    name: nonEmptyString(source.name, `${path}.name`),
+  };
+}
+
+export function parseTopicMastery(value: unknown, path = "topic"): TopicMasteryRead {
+  const source = record(value, path);
+  return {
+    ...parseMetricFields(source, path),
+    topic_id: nonEmptyString(source.topic_id, `${path}.topic_id`),
+    chapter_id: nonEmptyString(source.chapter_id, `${path}.chapter_id`),
+    code: nonEmptyString(source.code, `${path}.code`),
+    name: nonEmptyString(source.name, `${path}.name`),
+    problem_type_count: integer(source.problem_type_count, `${path}.problem_type_count`),
+    started_problem_type_count: integer(source.started_problem_type_count, `${path}.started_problem_type_count`),
+    problem_types: array(source.problem_types, `${path}.problem_types`, parseProblemTypeMastery),
+  };
+}
+
+export function parseChapterMastery(value: unknown, path = "chapter"): ChapterMasteryRead {
+  const source = record(value, path);
+  return {
+    ...parseMetricFields(source, path),
+    chapter_id: nonEmptyString(source.chapter_id, `${path}.chapter_id`),
+    subject_id: nonEmptyString(source.subject_id, `${path}.subject_id`),
+    code: nonEmptyString(source.code, `${path}.code`),
+    name: nonEmptyString(source.name, `${path}.name`),
+    problem_type_count: integer(source.problem_type_count, `${path}.problem_type_count`),
+    started_problem_type_count: integer(source.started_problem_type_count, `${path}.started_problem_type_count`),
+    topics: array(source.topics, `${path}.topics`, parseTopicMastery),
+  };
+}
+
+export function parseSubjectMastery(value: unknown, path = "subject"): SubjectMasteryRead {
+  const source = record(value, path);
+  return {
+    ...parseMetricFields(source, path),
+    subject_id: nonEmptyString(source.subject_id, `${path}.subject_id`),
+    code: nonEmptyString(source.code, `${path}.code`),
+    name: nonEmptyString(source.name, `${path}.name`),
+    problem_type_count: integer(source.problem_type_count, `${path}.problem_type_count`),
+    started_problem_type_count: integer(source.started_problem_type_count, `${path}.started_problem_type_count`),
+    chapters: array(source.chapters, `${path}.chapters`, parseChapterMastery),
+    concepts: array(source.concepts, `${path}.concepts`, parseConceptMastery),
+  };
+}
+
+export function parseStudentMastery(value: unknown, path = "response"): StudentMasteryRead {
+  const source = record(value, path);
+  return {
+    student_id: nonEmptyString(source.student_id, `${path}.student_id`),
+    subjects: array(source.subjects, `${path}.subjects`, parseSubjectMastery),
+  };
+}
+

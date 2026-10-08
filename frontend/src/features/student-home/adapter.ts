@@ -1,11 +1,22 @@
-import type { StudentLearningStateRead } from "../../lib/api/contracts";
+import type { StudentLearningStateRead, StudentMasteryRead } from "../../lib/api/contracts";
 import { ApiContractError } from "../../lib/api/validation";
 
 import { resolveStudentAction } from "./action-resolver";
-import type { StudentHomeActionType, StudentHomeViewModel } from "./types";
+import type {
+  KnowledgeBiome,
+  KnowledgeRegionState,
+  KnowledgeRegionViewModel,
+  StudentHomeActionType,
+  StudentHomeViewModel,
+} from "./types";
 
 export interface StudentHomeAdapter<TStudentLearningState> {
-  toViewModel(source: TStudentLearningState, fullName: string, email?: string): StudentHomeViewModel;
+  toViewModel(
+    source: TStudentLearningState,
+    fullName: string,
+    email?: string,
+    masteryData?: StudentMasteryRead | null
+  ): StudentHomeViewModel;
 }
 
 const actionTypes: readonly StudentHomeActionType[] = [
@@ -37,7 +48,8 @@ export function safeMasteryPercent(value: number | null | undefined): number | u
 export function toStudentHomeViewModel(
   source: StudentLearningStateRead,
   fullName: string,
-  email?: string
+  email?: string,
+  masteryData?: StudentMasteryRead | null
 ): StudentHomeViewModel {
   if (!actionTypes.includes(source.current_action.action_type as StudentHomeActionType)) {
     throw new ApiContractError("Unknown StudentCurrentActionType", "response.current_action.action_type");
@@ -130,7 +142,38 @@ export function toStudentHomeViewModel(
     },
     todayPlan,
     momentum: {},
-    knowledgeRegions: [],
+    knowledgeRegions: (() => {
+      if (!masteryData?.subjects) return [];
+      const activeMasterySubject = masteryData.subjects.find(
+        (s) => s.subject_id === subject.id || s.code.toLowerCase() === subject.code?.toLowerCase()
+      );
+      if (!activeMasterySubject?.chapters) return [];
+      const fallbackBiomes: readonly KnowledgeBiome[] = ["meadow", "river", "mountain", "forest", "sky"];
+      const accents: readonly ("mint" | "aqua" | "sky" | "violet" | "amber")[] = [
+        "mint",
+        "aqua",
+        "sky",
+        "violet",
+        "amber",
+      ];
+      return activeMasterySubject.chapters.map((chapter, index) => {
+        let state: KnowledgeRegionState = "not_started";
+        if (chapter.state === "MASTERED") state = "mastered";
+        else if (chapter.state === "WEAK") state = "weak";
+        else if (chapter.state === "REVIEW_DUE") state = "review";
+        else if (chapter.state === "LEARNING" || chapter.state === "PRACTICING") state = "developing";
+        else if (chapter.attempt_count === 0 || chapter.state === "NOT_STARTED") state = "not_started";
+
+        return {
+          id: chapter.chapter_id,
+          label: chapter.name,
+          progress: chapter.attempt_count > 0 ? safeMasteryPercent(chapter.mastery_score) : undefined,
+          state,
+          accent: accents[index % accents.length],
+          biome: fallbackBiomes[index % fallbackBiomes.length],
+        };
+      });
+    })(),
     priorities: source.priority_targets.map((priority) => ({
       id: priority.problem_type_id ?? priority.concept_id ?? `${priority.target_type}:${priority.target_code}`,
       targetType: priority.target_type,

@@ -2,6 +2,7 @@
 
 import { ArrowUpRight } from "lucide-react";
 import { motion } from "motion/react";
+import Link from "next/link";
 import type { CSSProperties } from "react";
 
 import { MasteryBadge } from "@/components/ui/MasteryBadge";
@@ -15,6 +16,7 @@ import { SectionHeading } from "./SectionHeading";
 
 export interface KnowledgeGardenProps {
   regions: KnowledgeRegionViewModel[];
+  subjectId?: string;
 }
 
 type GardenStyle = CSSProperties & {
@@ -23,14 +25,22 @@ type GardenStyle = CSSProperties & {
 
 const fallbackBiomes: KnowledgeBiome[] = ["meadow", "river", "mountain", "forest", "sky"];
 
-export function KnowledgeGarden({ regions }: KnowledgeGardenProps) {
+export function KnowledgeGarden({ regions, subjectId }: KnowledgeGardenProps) {
+  const knowledgeHref = subjectId
+    ? `/student/knowledge?subject_id=${encodeURIComponent(subjectId)}`
+    : "/student/knowledge";
+
   return (
     <section className={styles.section} id="knowledge-garden" aria-labelledby="knowledge-garden-title">
       <SectionHeading
         eyebrow="Bản đồ phát triển"
         title="Khu vườn tri thức"
         description="Mỗi vùng phát triển theo cách bạn học."
-        action={<span className={styles.dragHint}>Cuộn để khám phá <ArrowUpRight size={15} /></span>}
+        action={
+          <Link href={knowledgeHref} className={styles.gardenExploreLink}>
+            Mở Bản đồ tri thức <ArrowUpRight size={15} />
+          </Link>
+        }
       />
       {regions.length === 0 ? (
         <OrganicCard className={styles.realDataEmpty} variant="glass">

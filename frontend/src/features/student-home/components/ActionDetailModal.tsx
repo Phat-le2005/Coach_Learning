@@ -22,22 +22,57 @@ export interface ActionDetailModalProps {
 export function ActionDetailModal({ isOpen, onClose, action, priority }: ActionDetailModalProps) {
   const reducedMotion = useHydratedReducedMotion();
   const titleId = useId();
+  const modalRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     if (!isOpen) return;
 
+    // Save previous active element to restore focus on close
+    previousFocusRef.current = document.activeElement as HTMLElement | null;
+
+    // Lock background scroll
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    // Focus close button initially
+    closeButtonRef.current?.focus();
+
+    // Focus trap and Escape listener
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
+        event.preventDefault();
         onClose();
+        return;
+      }
+
+      if (event.key === "Tab") {
+        if (!modalRef.current) return;
+        const focusable = modalRef.current.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusable.length === 0) return;
+
+        const firstElement = focusable[0];
+        const lastElement = focusable[focusable.length - 1];
+
+        if (event.shiftKey && document.activeElement === firstElement) {
+          event.preventDefault();
+          lastElement.focus();
+        } else if (!event.shiftKey && document.activeElement === lastElement) {
+          event.preventDefault();
+          firstElement.focus();
+        }
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
-    closeButtonRef.current?.focus();
 
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = originalOverflow;
+      previousFocusRef.current?.focus();
     };
   }, [isOpen, onClose]);
 
@@ -78,6 +113,7 @@ export function ActionDetailModal({ isOpen, onClose, action, priority }: ActionD
       onClick={onClose}
     >
       <motion.div
+        ref={modalRef}
         className={styles.modal}
         onClick={(e) => e.stopPropagation()}
         initial={{ opacity: 0, scale: 0.94, y: 16 }}
@@ -198,7 +234,7 @@ export function ActionDetailModal({ isOpen, onClose, action, priority }: ActionD
               {action ? action.guidanceText : "Mục tiêu học tập đã được đồng bộ chính xác từ cơ sở dữ liệu thật."}
             </p>
             <p className={styles.guidanceSubtext}>
-              Giao diện làm bài tương tác (Learning Workspace) sẽ được ra mắt trong giai đoạn FE-REAL-03. Toàn bộ dữ liệu
+              Giao diện làm bài tương tác (Practice Workspace) sẽ được ra mắt trong giai đoạn FE-REAL-04. Toàn bộ dữ liệu
               hiển thị ở đây là số liệu thực 100% từ backend.
             </p>
           </div>

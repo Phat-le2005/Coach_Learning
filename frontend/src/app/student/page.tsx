@@ -39,11 +39,20 @@ export default async function StudentPage(props: {
   const requestedSubjectId = searchParams?.subject_id?.trim() || undefined;
 
   try {
-    const learningState = await createBackendApiClient().studentLearningState(accessToken, requestedSubjectId);
+    const client = createBackendApiClient();
+    const learningState = await client.studentLearningState(accessToken, requestedSubjectId);
+    let masteryData = null;
+    try {
+      masteryData = await client.studentMastery(accessToken);
+    } catch {
+      // Graceful degradation: Mastery API failure must not break Student Home
+      masteryData = null;
+    }
+
     return (
       <>
         <SessionHeartbeat />
-        <StudentHome data={toStudentHomeViewModel(learningState, session.fullName, session.email)} />
+        <StudentHome data={toStudentHomeViewModel(learningState, session.fullName, session.email, masteryData)} />
       </>
     );
   } catch (error) {

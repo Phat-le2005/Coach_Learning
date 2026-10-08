@@ -73,6 +73,8 @@ export function StudentHome({ data }: StudentHomeProps) {
           displayName={data.student.displayName}
           email={data.student.email}
           activeDays={data.momentum.activeDays}
+          currentRoute="/student"
+          subjectId={data.subject.id}
         />
         <main className={styles.main}>
           {data.availableSubjects.length === 0 ? (
@@ -86,13 +88,13 @@ export function StudentHome({ data }: StudentHomeProps) {
           ) : null}
           <FocusHero data={data} onOpenActionDetail={handleOpenActionDetail} />
           <LearningPulse data={data} />
-          <KnowledgeGarden regions={data.knowledgeRegions} />
+          <KnowledgeGarden regions={data.knowledgeRegions} subjectId={data.subject.id} />
           <div className={styles.closingGrid}>
             <PriorityPath priorities={data.priorities} onSelectPriority={handleSelectPriority} />
             <CoachCard />
           </div>
         </main>
-        <StudentBottomNav />
+        <StudentBottomNav currentRoute="/student" subjectId={data.subject.id} />
         <ActionDetailModal
           isOpen={isModalOpen}
           onClose={handleCloseModal}

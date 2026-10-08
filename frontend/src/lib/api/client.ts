@@ -1,5 +1,22 @@
-import type { LoginRequest, RefreshRequest, StudentLearningStateRead, TokenPair, UserRead } from "./contracts";
-import { parseStudentLearningState, parseTokenPair, parseUserRead, validateLoginRequest } from "./contracts";
+import type {
+  ConceptMasteryRead,
+  LoginRequest,
+  ProblemTypeMasteryRead,
+  RefreshRequest,
+  StudentLearningStateRead,
+  StudentMasteryRead,
+  TokenPair,
+  UserRead,
+} from "./contracts";
+import {
+  parseConceptMastery,
+  parseProblemTypeMastery,
+  parseStudentLearningState,
+  parseStudentMastery,
+  parseTokenPair,
+  parseUserRead,
+  validateLoginRequest,
+} from "./contracts";
 import { ApiContractError, record, string } from "./validation";
 
 export type ApiErrorCategory = "unauthorized" | "forbidden" | "not_found" | "conflict" | "validation" | "unavailable" | "http";
@@ -24,6 +41,9 @@ export const API_PATHS = {
   refresh: "/auth/refresh",
   me: "/auth/me",
   studentLearningState: "/students/me/learning-state",
+  studentMastery: "/students/me/mastery",
+  studentProblemTypeMastery: (id: string) => `/students/me/mastery/problem-types/${encodeURIComponent(id)}`,
+  studentConceptMastery: (id: string) => `/students/me/mastery/concepts/${encodeURIComponent(id)}`,
 } as const;
 
 type ResponseParser<T> = (value: unknown, path?: string) => T;
@@ -111,6 +131,15 @@ export function createApiClient({ baseUrl, fetcher = fetch }: ApiClientOptions) 
     studentLearningState(accessToken: string, subjectId?: string): Promise<StudentLearningStateRead> {
       const suffix = subjectId ? `?subject_id=${encodeURIComponent(subjectId)}` : "";
       return request(`${API_PATHS.studentLearningState}${suffix}`, parseStudentLearningState, { method: "GET" }, accessToken);
+    },
+    studentMastery(accessToken: string): Promise<StudentMasteryRead> {
+      return request(API_PATHS.studentMastery, parseStudentMastery, { method: "GET" }, accessToken);
+    },
+    studentProblemTypeMastery(accessToken: string, problemTypeId: string): Promise<ProblemTypeMasteryRead> {
+      return request(API_PATHS.studentProblemTypeMastery(problemTypeId), parseProblemTypeMastery, { method: "GET" }, accessToken);
+    },
+    studentConceptMastery(accessToken: string, conceptId: string): Promise<ConceptMasteryRead> {
+      return request(API_PATHS.studentConceptMastery(conceptId), parseConceptMastery, { method: "GET" }, accessToken);
     },
   };
 }
