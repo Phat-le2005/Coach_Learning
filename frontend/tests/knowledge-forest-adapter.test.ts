@@ -370,3 +370,23 @@ test("safely validates out-of-range mastery scores to undefined", () => {
   assert.equal(vm.chapters[0].topics[0].problemTypes[0].masteryScore, undefined);
 });
 
+test("distinguishes empty available subjects from subjects with no curriculum in DB", () => {
+  // Case A: Student has no assigned subjects at all
+  const unassignedVm = toKnowledgeForestViewModel(undefined, []);
+  assert.equal(unassignedVm.availableSubjects.length, 0);
+  assert.equal(unassignedVm.hasCurriculum, false);
+  assert.equal(unassignedVm.subject.name, "Chưa có môn học");
+
+  // Case B: Student has assigned subject, but no curriculum in DB for that subject
+  const emptyCurriculumVm = toKnowledgeForestViewModel(
+    { student_id: "student-1", subjects: [] },
+    [{ id: "sub-math", code: "MATH12", name: "Toán 12" }],
+    "sub-math",
+    "student-1"
+  );
+  assert.equal(emptyCurriculumVm.availableSubjects.length, 1);
+  assert.equal(emptyCurriculumVm.hasCurriculum, false);
+  assert.equal(emptyCurriculumVm.subject.name, "Toán 12");
+  assert.equal(emptyCurriculumVm.chapters.length, 0);
+});
+

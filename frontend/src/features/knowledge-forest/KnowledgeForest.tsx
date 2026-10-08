@@ -134,7 +134,15 @@ export function KnowledgeForest({ data, initialSelectedId }: KnowledgeForestProp
     <main className={styles.pageContainer}>
       <KnowledgeForestHeader data={data} />
 
-      {data.hasCurriculum ? (
+      {data.availableSubjects.length === 0 ? (
+        <div className={styles.emptyCard} data-testid="empty-no-subjects">
+          <h3 className={styles.emptyTitle}>Chưa có môn học được phân quyền</h3>
+          <p className={styles.emptyDesc}>
+            Tài khoản học sinh hiện chưa có môn học nào trong danh sách được phân quyền, hoặc lớp học
+            chưa kích hoạt kế hoạch giảng dạy. Vui lòng liên hệ giáo viên để được xếp lớp hoặc kích hoạt kế hoạch học tập.
+          </p>
+        </div>
+      ) : data.hasCurriculum ? (
         <>
           <KnowledgeForestFilters
             searchQuery={searchQuery}
@@ -162,11 +170,11 @@ export function KnowledgeForest({ data, initialSelectedId }: KnowledgeForestProp
           />
         </>
       ) : (
-        <div className={styles.emptyCard}>
+        <div className={styles.emptyCard} data-testid="empty-no-curriculum">
           <h3 className={styles.emptyTitle}>Chưa có chương trình học cho môn này</h3>
           <p className={styles.emptyDesc}>
             Môn học &ldquo;{data.subject.name}&rdquo; hiện chưa có dữ liệu chương và chủ đề được phát
-            hành. Hãy quay lại sau khi giáo viên hoặc quản trị viên cập nhật chương trình.
+            hành trong hệ thống. Hãy quay lại sau khi giáo viên hoặc quản trị viên cập nhật chương trình.
           </p>
         </div>
       )}
