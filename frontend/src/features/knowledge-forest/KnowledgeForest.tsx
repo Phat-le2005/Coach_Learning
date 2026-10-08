@@ -6,6 +6,7 @@ import { KnowledgeDetailDrawer, type SelectedKnowledgeItem } from "./components/
 import { KnowledgeForestFilters } from "./components/KnowledgeForestFilters";
 import { KnowledgeForestHeader } from "./components/KnowledgeForestHeader";
 import { KnowledgeForestTree } from "./components/KnowledgeForestTree";
+import { filterKnowledgeForest } from "./filter";
 import type {
   KnowledgeConceptNode,
   KnowledgeForestViewModel,
@@ -22,39 +23,79 @@ export interface KnowledgeForestProps {
 export function KnowledgeForest({ data, initialSelectedId }: KnowledgeForestProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<KnowledgeStatusFilter>("ALL");
-  const [selectedItem, setSelectedItem] = useState<SelectedKnowledgeItem>(() => {
-    if (!initialSelectedId) return null;
+
+  // Resolve initial item from initialSelectedId within this subject's hierarchy
+  const initialResolved = useMemo(() => {
+    if (!initialSelectedId) return { item: null, chapterId: null };
     for (const chapter of data.chapters) {
       for (const topic of chapter.topics) {
         const foundPt = topic.problemTypes.find((pt) => pt.id === initialSelectedId);
-        if (foundPt) return { kind: "problem_type", data: foundPt };
+        if (foundPt) {
+          return {
+            item: { kind: "problem_type" as const, data: foundPt },
+            chapterId: chapter.id,
+          };
+        }
       }
     }
     const foundConcept = data.concepts.find((c) => c.id === initialSelectedId);
-    if (foundConcept) return { kind: "concept", data: foundConcept };
-    return null;
-  });
+    if (foundConcept) {
+      return {
+        item: { kind: "concept" as const, data: foundConcept },
+        chapterId: null,
+      };
+    }
+    return { item: null, chapterId: null };
+  }, [data.chapters, data.concepts, initialSelectedId]);
 
-  // Default: first 2 chapters expanded or all if <= 3
-  const [expandedChapterIds, setExpandedChapterIds] = useState<Set<string>>(() => {
+  const [selectedItem, setSelectedItem] = useState<SelectedKnowledgeItem>(initialResolved.item);
+
+  // Manual expanded chapters: defaults to first 3 chapters + the chapter containing initialSelectedId (if any)
+  const [manualExpandedChapterIds, setManualExpandedChapterIds] = useState<Set<string>>(() => {
     const ids = new Set<string>();
     data.chapters.slice(0, 3).forEach((ch) => ids.add(ch.id));
+    if (initialResolved.chapterId) {
+      ids.add(initialResolved.chapterId);
+    }
     return ids;
   });
 
+  // Calculate filtered results and auto-expanded chapters
+  const {
+    totalMatchedCount,
+    autoExpandedChapterIds,
+    isFiltered,
+  } = useMemo(
+    () =>
+      filterKnowledgeForest({
+        chapters: data.chapters,
+        concepts: data.concepts,
+        searchQuery,
+        statusFilter,
+      }),
+    [data.chapters, data.concepts, searchQuery, statusFilter]
+  );
+
+  // When searching, auto-expand matching chapters; when search is cleared, restore manual expansions
+  const isSearchActive = Boolean(searchQuery.trim());
+  const effectiveExpandedChapterIds = isSearchActive
+    ? autoExpandedChapterIds
+    : manualExpandedChapterIds;
+
   const allChapterIds = useMemo(() => new Set(data.chapters.map((ch) => ch.id)), [data.chapters]);
-  const isAllExpanded = expandedChapterIds.size >= allChapterIds.size && allChapterIds.size > 0;
+  const isAllExpanded =
+    effectiveExpandedChapterIds.size >= allChapterIds.size && allChapterIds.size > 0;
 
   const handleToggleExpandAll = () => {
     if (isAllExpanded) {
-      setExpandedChapterIds(new Set());
+      setManualExpandedChapterIds(new Set());
     } else {
-      setExpandedChapterIds(new Set(allChapterIds));
+      setManualExpandedChapterIds(new Set(allChapterIds));
     }
   };
 
   const handleToggleChapter = (chapterId: string) => {
-    setExpandedChapterIds((prev) => {
+    setManualExpandedChapterIds((prev) => {
       const next = new Set(prev);
       if (next.has(chapterId)) {
         next.delete(chapterId);
@@ -77,6 +118,11 @@ export function KnowledgeForest({ data, initialSelectedId }: KnowledgeForestProp
     setSelectedItem(null);
   };
 
+  const handleResetFilters = () => {
+    setSearchQuery("");
+    setStatusFilter("ALL");
+  };
+
   const selectedId =
     selectedItem?.kind === "problem_type"
       ? selectedItem.data.id
@@ -97,18 +143,22 @@ export function KnowledgeForest({ data, initialSelectedId }: KnowledgeForestProp
             onStatusFilterChange={setStatusFilter}
             allExpanded={isAllExpanded}
             onToggleExpandAll={handleToggleExpandAll}
+            matchCount={totalMatchedCount}
+            isFiltered={isFiltered}
+            onResetFilters={handleResetFilters}
           />
 
           <KnowledgeForestTree
             chapters={data.chapters}
             concepts={data.concepts}
-            expandedChapterIds={expandedChapterIds}
+            expandedChapterIds={effectiveExpandedChapterIds}
             onToggleChapter={handleToggleChapter}
             selectedId={selectedId}
             onSelectProblemType={handleSelectProblemType}
             onSelectConcept={handleSelectConcept}
             searchQuery={searchQuery}
             statusFilter={statusFilter}
+            onResetFilters={handleResetFilters}
           />
         </>
       ) : (

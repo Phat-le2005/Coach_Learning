@@ -27,6 +27,7 @@
     "src/features/knowledge-forest/types.ts",
     "src/features/knowledge-forest/copy.ts",
     "src/features/knowledge-forest/adapter.ts",
+    "src/features/knowledge-forest/filter.ts",
     "tests/**/*.ts"
   ],
   "exclude": ["node_modules", ".next"]

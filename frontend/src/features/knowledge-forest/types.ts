@@ -1,4 +1,4 @@
-import type { DerivedMasteryState, StudentLearningSubjectRead } from "@/lib/api/contracts";
+import type { DerivedMasteryState, StudentLearningSubjectRead } from "../../lib/api/contracts";
 
 export type KnowledgeBiome = "meadow" | "river" | "mountain" | "forest" | "sky";
 

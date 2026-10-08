@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronsDownUp, ChevronsUpDown, Search, X } from "lucide-react";
+import { ChevronsDownUp, ChevronsUpDown, RotateCcw, Search, X } from "lucide-react";
 
 import { STATUS_FILTERS } from "../copy";
 import type { KnowledgeStatusFilter } from "../types";
@@ -13,6 +13,9 @@ export interface KnowledgeForestFiltersProps {
   onStatusFilterChange: (status: KnowledgeStatusFilter) => void;
   allExpanded: boolean;
   onToggleExpandAll: () => void;
+  matchCount?: number;
+  isFiltered?: boolean;
+  onResetFilters?: () => void;
 }
 
 export function KnowledgeForestFilters({
@@ -22,6 +25,9 @@ export function KnowledgeForestFilters({
   onStatusFilterChange,
   allExpanded,
   onToggleExpandAll,
+  matchCount,
+  isFiltered,
+  onResetFilters,
 }: KnowledgeForestFiltersProps) {
   return (
     <div className={styles.toolbar} role="search" aria-label="Bộ lọc và tìm kiếm tri thức">
@@ -32,10 +38,10 @@ export function KnowledgeForestFilters({
             id="knowledge-search-input"
             type="search"
             className={styles.searchInput}
-            placeholder="Tìm theo tên dạng bài hoặc mã kiến thức..."
+            placeholder="Tìm theo tên dạng bài, chủ đề, chương hoặc mã kiến thức..."
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            aria-label="Tìm kiếm dạng bài"
+            aria-label="Tìm kiếm kiến thức"
           />
           {searchQuery ? (
             <button
@@ -50,6 +56,24 @@ export function KnowledgeForestFilters({
         </div>
 
         <div className={styles.toolbarActions}>
+          {isFiltered && matchCount !== undefined ? (
+            <span className={styles.filterResultsPill} aria-live="polite">
+              {matchCount} kết quả
+            </span>
+          ) : null}
+
+          {isFiltered && onResetFilters ? (
+            <button
+              type="button"
+              className={styles.filterClearBtn}
+              onClick={onResetFilters}
+              aria-label="Xóa tất cả bộ lọc và tìm kiếm"
+            >
+              <RotateCcw size={13} aria-hidden="true" />
+              <span>Xóa lọc</span>
+            </button>
+          ) : null}
+
           <button
             type="button"
             className={styles.toggleExpandBtn}

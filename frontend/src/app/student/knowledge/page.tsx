@@ -6,6 +6,7 @@ import { SessionRecovery } from "@/components/auth/SessionRecovery";
 import { GradientButton } from "@/components/ui/GradientButton";
 import { KnowledgeForest } from "@/features/knowledge-forest/KnowledgeForest";
 import { toKnowledgeForestViewModel } from "@/features/knowledge-forest/adapter";
+import type { KnowledgeForestViewModel } from "@/features/knowledge-forest/types";
 import { ForestAtmosphere } from "@/features/student-home/components/ForestAtmosphere";
 import { StudentBottomNav } from "@/features/student-home/components/StudentBottomNav";
 import { StudentTopNav } from "@/features/student-home/components/StudentTopNav";
@@ -45,8 +46,9 @@ export default async function StudentKnowledgePage(props: {
 
   const client = createBackendApiClient();
   let learningState: StudentLearningStateRead;
-  let mastery: StudentMasteryRead | null = null;
+  let mastery: StudentMasteryRead;
 
+  // 1. Fetch Student Learning State
   try {
     learningState = await client.studentLearningState(accessToken, requestedSubjectId);
   } catch (error) {
@@ -102,18 +104,85 @@ export default async function StudentKnowledgePage(props: {
     );
   }
 
-  // Gracefully fetch mastery without crashing if mastery is temporarily unavailable
-  try {
-    mastery = await client.studentMastery(accessToken);
-  } catch {
-    mastery = null;
+  // 2. Validate requestedSubjectId strictly belongs to student's available scope
+  if (
+    requestedSubjectId &&
+    !learningState.available_subjects.some((s) => s.id === requestedSubjectId)
+  ) {
+    return state(
+      "error",
+      "Môn học ngoài phạm vi",
+      "Môn học được yêu cầu không nằm trong danh sách môn học bạn được phân quyền truy cập."
+    );
   }
 
-  const viewModel = toKnowledgeForestViewModel(
-    mastery,
-    learningState.available_subjects,
-    requestedSubjectId || learningState.focus_subject_id || undefined
-  );
+  // 3. Fetch Student Mastery with explicit, distinct outcome handling (P0)
+  try {
+    mastery = await client.studentMastery(accessToken);
+  } catch (error) {
+    if (error instanceof ApiResponseError) {
+      if (error.status === 401) return <SessionRecovery />;
+      if (error.status === 403) {
+        return state(
+          "unauthorized",
+          "Không có quyền đọc dữ liệu tri thức",
+          "Tài khoản của bạn không được cấp quyền truy cập bảng đo lường tri thức."
+        );
+      }
+      if (error.status === 404) {
+        return state(
+          "error",
+          "Không tìm thấy dữ liệu tri thức",
+          `Không tìm thấy dữ liệu đo lường tri thức cho học sinh (${error.code || "MASTERY_NOT_FOUND"}).`
+        );
+      }
+      if (error.status === 503) {
+        return state(
+          "error",
+          "Dịch vụ tri thức tạm thời chưa sẵn sàng",
+          "Máy chủ đo lường tri thức đang bận hoặc đang bảo trì. Vui lòng thử lại sau ít phút."
+        );
+      }
+    }
+    if (error instanceof ApiNetworkError) {
+      return state(
+        "error",
+        "Lỗi kết nối máy chủ tri thức",
+        "Không thể kết nối đến dịch vụ đo lường tri thức. Vui lòng kiểm tra kết nối mạng và thử lại."
+      );
+    }
+    return state(
+      "error",
+      "Dữ liệu tri thức không đúng contract",
+      "Phản hồi dữ liệu tri thức không tuân thủ OpenAPI contract. Hệ thống từ chối hiển thị để bảo đảm tính chính xác."
+    );
+  }
+
+  // 4. Validate Student ID Data Isolation
+  if (mastery.student_id !== learningState.student_id) {
+    return state(
+      "error",
+      "Lỗi đồng bộ hồ sơ học sinh",
+      "Định danh học sinh giữa Learning State và Mastery không khớp nhau. Hệ thống đã ngăn chặn để bảo vệ dữ liệu cá nhân."
+    );
+  }
+
+  // 5. Construct ViewModel safely
+  let viewModel: KnowledgeForestViewModel;
+  try {
+    viewModel = toKnowledgeForestViewModel(
+      mastery,
+      learningState.available_subjects,
+      requestedSubjectId || learningState.focus_subject_id || undefined,
+      learningState.student_id
+    );
+  } catch (error) {
+    return state(
+      "error",
+      "Dữ liệu tri thức không hợp lệ",
+      error instanceof Error ? error.message : "Không thể khởi tạo bản đồ tri thức từ dữ liệu nhận được."
+    );
+  }
 
   return (
     <>
@@ -125,7 +194,11 @@ export default async function StudentKnowledgePage(props: {
         currentRoute="/student/knowledge"
         subjectId={viewModel.subject.id}
       />
-      <KnowledgeForest data={viewModel} initialSelectedId={requestedNodeId} />
+      <KnowledgeForest
+        key={viewModel.subject.id}
+        data={viewModel}
+        initialSelectedId={requestedNodeId}
+      />
       <StudentBottomNav currentRoute="/student/knowledge" subjectId={viewModel.subject.id} />
     </>
   );

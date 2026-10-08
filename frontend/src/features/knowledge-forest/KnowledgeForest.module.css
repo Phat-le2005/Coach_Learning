@@ -670,6 +670,61 @@
   margin: 0 auto;
 }
 
+.resetFiltersBtn {
+  margin-top: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: var(--verdant-700);
+  color: #fff;
+  border: none;
+  font-size: 0.86rem;
+  font-weight: 650;
+  cursor: pointer;
+  transition: background 0.16s ease, transform 0.16s ease;
+}
+
+.resetFiltersBtn:hover {
+  background: var(--verdant-800);
+  transform: translateY(-1px);
+}
+
+.filterResultsPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--verdant-100);
+  color: var(--verdant-800);
+  font-size: 0.78rem;
+  font-weight: 700;
+  border: 1px solid rgb(40 105 85 / 18%);
+}
+
+.filterClearBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-weight: 650;
+  border: 1px solid var(--border-soft);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.filterClearBtn:hover {
+  background: var(--surface-card, #fff);
+  color: var(--text-primary);
+  border-color: var(--border-medium);
+}
+
 /* --------------------------------------------------------------------------
    Detail Drawer / Modal
    -------------------------------------------------------------------------- */

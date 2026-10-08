@@ -44,6 +44,9 @@ export default async function StudentPage(props: {
     let masteryData = null;
     try {
       masteryData = await client.studentMastery(accessToken);
+      if (masteryData && masteryData.student_id !== learningState.student_id) {
+        masteryData = null;
+      }
     } catch {
       // Graceful degradation: Mastery API failure must not break Student Home
       masteryData = null;

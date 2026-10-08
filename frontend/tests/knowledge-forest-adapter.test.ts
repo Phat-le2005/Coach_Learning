@@ -3,6 +3,7 @@ import test from "node:test";
 
 import { toKnowledgeForestViewModel } from "../src/features/knowledge-forest/adapter";
 import type { StudentLearningSubjectRead, StudentMasteryRead } from "../src/lib/api/contracts";
+import { ApiContractError } from "../src/lib/api/validation";
 
 const mockAvailableSubjects: StudentLearningSubjectRead[] = [
   { id: "sub-math", code: "MATH12", name: "Toán 12" },
@@ -233,3 +234,139 @@ test("falls back gracefully when availableSubjects is empty", () => {
   assert.equal(vm.availableSubjects.length, 0);
   assert.equal(vm.subject.id, "");
 });
+
+test("enforces student data isolation: student_id mismatch throws ApiContractError", () => {
+  const masteryData = createMockMasteryData(); // student_id: "student-1"
+
+  assert.throws(
+    () =>
+      toKnowledgeForestViewModel(
+        masteryData,
+        mockAvailableSubjects,
+        undefined,
+        "different-student-uuid"
+      ),
+    ApiContractError
+  );
+});
+
+test("marks hasCurriculum true when subject has concepts even if chapters are empty", () => {
+  const masteryData: StudentMasteryRead = {
+    student_id: "student-1",
+    subjects: [
+      {
+        subject_id: "sub-math",
+        code: "MATH12",
+        name: "Toán 12",
+        problem_type_count: 0,
+        started_problem_type_count: 0,
+        mastery_score: 0.8,
+        confidence: 0.8,
+        attempt_count: 5,
+        correct_count: 4,
+        last_practiced_at: "2026-10-08T00:00:00Z",
+        last_updated_at: "2026-10-08T00:00:00Z",
+        state: "MASTERED",
+        chapters: [],
+        concepts: [
+          {
+            concept_id: "c-only",
+            subject_id: "sub-math",
+            code: "CON-ONLY",
+            name: "Khái niệm độc lập",
+            mastery_score: 0.85,
+            confidence: 0.9,
+            attempt_count: 4,
+            correct_count: 3,
+            last_practiced_at: "2026-10-07T00:00:00Z",
+            last_updated_at: "2026-10-07T00:00:00Z",
+            state: "MASTERED",
+          },
+        ],
+      },
+    ],
+  };
+
+  const vm = toKnowledgeForestViewModel(masteryData, mockAvailableSubjects);
+  assert.equal(vm.chapters.length, 0);
+  assert.equal(vm.concepts.length, 1);
+  assert.equal(vm.hasCurriculum, true);
+});
+
+test("safely validates out-of-range mastery scores to undefined", () => {
+  const masteryData: StudentMasteryRead = {
+    student_id: "student-1",
+    subjects: [
+      {
+        subject_id: "sub-math",
+        code: "MATH12",
+        name: "Toán 12",
+        problem_type_count: 1,
+        started_problem_type_count: 1,
+        mastery_score: 1.5, // Out of bounds
+        confidence: 0.8,
+        attempt_count: 5,
+        correct_count: 4,
+        last_practiced_at: "2026-10-08T00:00:00Z",
+        last_updated_at: "2026-10-08T00:00:00Z",
+        state: "MASTERED",
+        chapters: [
+          {
+            chapter_id: "ch-1",
+            subject_id: "sub-math",
+            code: "CH01",
+            name: "Chương 1",
+            problem_type_count: 1,
+            started_problem_type_count: 1,
+            mastery_score: -0.2, // Out of bounds
+            confidence: 0.8,
+            attempt_count: 5,
+            correct_count: 4,
+            last_practiced_at: "2026-10-08T00:00:00Z",
+            last_updated_at: "2026-10-08T00:00:00Z",
+            state: "MASTERED",
+            topics: [
+              {
+                topic_id: "top-1",
+                chapter_id: "ch-1",
+                code: "TOP01",
+                name: "Chủ đề 1",
+                problem_type_count: 1,
+                started_problem_type_count: 1,
+                mastery_score: 0.5,
+                confidence: 0.8,
+                attempt_count: 5,
+                correct_count: 4,
+                last_practiced_at: "2026-10-08T00:00:00Z",
+                last_updated_at: "2026-10-08T00:00:00Z",
+                state: "MASTERED",
+                problem_types: [
+                  {
+                    problem_type_id: "pt-invalid",
+                    topic_id: "top-1",
+                    code: "PT-INV",
+                    name: "Dạng bài điểm số lỗi",
+                    mastery_score: 2.5, // Out of bounds
+                    confidence: 0.8,
+                    attempt_count: 3,
+                    correct_count: 2,
+                    last_practiced_at: "2026-10-08T00:00:00Z",
+                    last_updated_at: "2026-10-08T00:00:00Z",
+                    state: "MASTERED",
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+        concepts: [],
+      },
+    ],
+  };
+
+  const vm = toKnowledgeForestViewModel(masteryData, mockAvailableSubjects);
+  assert.equal(vm.summary.masteryScore, undefined);
+  assert.equal(vm.chapters[0].masteryScore, undefined);
+  assert.equal(vm.chapters[0].topics[0].problemTypes[0].masteryScore, undefined);
+});
+

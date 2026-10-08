@@ -144,8 +144,9 @@ export function toStudentHomeViewModel(
     momentum: {},
     knowledgeRegions: (() => {
       if (!masteryData?.subjects) return [];
+      if (masteryData.student_id && source.student_id && masteryData.student_id !== source.student_id) return [];
       const activeMasterySubject = masteryData.subjects.find(
-        (s) => s.subject_id === subject.id || s.code.toLowerCase() === subject.code?.toLowerCase()
+        (s) => s.subject_id === subject.id
       );
       if (!activeMasterySubject?.chapters) return [];
       const fallbackBiomes: readonly KnowledgeBiome[] = ["meadow", "river", "mountain", "forest", "sky"];

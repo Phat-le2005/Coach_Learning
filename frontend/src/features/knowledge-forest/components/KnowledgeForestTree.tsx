@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 
 import { getBiomeLabel, getMasteryStateLabel } from "../copy";
+import { filterKnowledgeForest } from "../filter";
 import type {
   KnowledgeChapterNode,
   KnowledgeConceptNode,
@@ -27,6 +28,7 @@ export interface KnowledgeForestTreeProps {
   onSelectConcept: (concept: KnowledgeConceptNode) => void;
   searchQuery: string;
   statusFilter: KnowledgeStatusFilter;
+  onResetFilters?: () => void;
 }
 
 export function KnowledgeForestTree({
@@ -39,83 +41,54 @@ export function KnowledgeForestTree({
   onSelectConcept,
   searchQuery,
   statusFilter,
+  onResetFilters,
 }: KnowledgeForestTreeProps) {
-  const query = searchQuery.trim().toLowerCase();
-
-  // Filter problem types within topics & chapters
-  const filteredChapters = chapters
-    .map((chapter) => {
-      const filteredTopics = chapter.topics
-        .map((topic) => {
-          const filteredProblemTypes = topic.problemTypes.filter((pt) => {
-            // Status filter
-            if (statusFilter !== "ALL" && pt.state !== statusFilter) {
-              return false;
-            }
-            // Search query filter
-            if (query) {
-              const nameMatch = pt.name.toLowerCase().includes(query);
-              const codeMatch = pt.code.toLowerCase().includes(query);
-              return nameMatch || codeMatch;
-            }
-            return true;
-          });
-
-          return {
-            ...topic,
-            problemTypes: filteredProblemTypes,
-          };
-        })
-        .filter((topic) => topic.problemTypes.length > 0 || !query);
-
-      return {
-        ...chapter,
-        topics: filteredTopics,
-        matchingProblemCount: filteredTopics.reduce(
-          (sum, t) => sum + t.problemTypes.length,
-          0
-        ),
-      };
-    })
-    .filter((chapter) => chapter.matchingProblemCount > 0 || !query);
-
-  // Filter concepts
-  const filteredConcepts = concepts.filter((c) => {
-    if (statusFilter !== "ALL" && c.state !== statusFilter) return false;
-    if (query) {
-      return (
-        c.name.toLowerCase().includes(query) || c.code.toLowerCase().includes(query)
-      );
-    }
-    return true;
+  // Use pure filter utility
+  const {
+    filteredChapters,
+    filteredConcepts,
+    totalMatchedCount,
+    isFiltered,
+  } = filterKnowledgeForest({
+    chapters,
+    concepts,
+    searchQuery,
+    statusFilter,
   });
 
-  const totalMatching = filteredChapters.reduce(
-    (sum, ch) => sum + ch.matchingProblemCount,
-    0
-  );
-
-  if (chapters.length === 0) {
+  // Genuinely empty curriculum in database
+  if (chapters.length === 0 && concepts.length === 0) {
     return (
       <div className={styles.emptyCard}>
         <Layers size={36} color="var(--text-tertiary)" aria-hidden="true" />
         <h3 className={styles.emptyTitle}>Chưa có cấu trúc môn học</h3>
         <p className={styles.emptyDesc}>
-          Môn học này hiện chưa có danh sách chương và chủ đề trong cơ sở dữ liệu.
+          Môn học này hiện chưa có danh sách chương, chủ đề hoặc khái niệm trong cơ sở dữ liệu.
         </p>
       </div>
     );
   }
 
-  if (totalMatching === 0 && (query || statusFilter !== "ALL")) {
+  // Active search/filter matched zero nodes (both problem types AND concepts)
+  if (totalMatchedCount === 0 && isFiltered) {
     return (
       <div className={styles.emptyCard}>
         <BookOpen size={36} color="var(--text-tertiary)" aria-hidden="true" />
-        <h3 className={styles.emptyTitle}>Không tìm thấy dạng bài phù hợp</h3>
+        <h3 className={styles.emptyTitle}>Không tìm thấy kết quả phù hợp</h3>
         <p className={styles.emptyDesc}>
-          Không có dạng bài nào khớp với từ khóa &ldquo;{searchQuery}&rdquo; hoặc bộ lọc trạng thái
-          đang chọn. Hãy thử điều chỉnh bộ lọc để xem thêm.
+          Không có dạng bài hoặc khái niệm nào khớp với từ khóa &ldquo;{searchQuery}&rdquo; hoặc bộ lọc trạng thái đang chọn.
         </p>
+        {onResetFilters ? (
+          <button
+            type="button"
+            className={styles.resetFiltersBtn}
+            onClick={onResetFilters}
+            aria-label="Xóa tất cả bộ lọc và từ khóa tìm kiếm"
+          >
+            <RotateCcw size={15} aria-hidden="true" />
+            <span>Xóa bộ lọc</span>
+          </button>
+        ) : null}
       </div>
     );
   }
@@ -125,6 +98,10 @@ export function KnowledgeForestTree({
       {filteredChapters.map((chapter, index) => {
         const isExpanded = expandedChapterIds.has(chapter.id);
         const biomeName = getBiomeLabel(chapter.biome);
+        const chapterProblemCount = chapter.topics.reduce(
+          (sum, t) => sum + t.problemTypes.length,
+          0
+        );
 
         return (
           <article
@@ -161,7 +138,7 @@ export function KnowledgeForestTree({
                     {chapter.masteryScore !== undefined ? `${chapter.masteryScore}%` : "—"}
                   </span>
                   <span className={styles.chapterCounts}>
-                    {chapter.matchingProblemCount} dạng bài · {chapter.topics.length} chủ đề
+                    {chapterProblemCount} dạng bài · {chapter.topics.length} chủ đề
                   </span>
                 </div>
 
@@ -257,7 +234,7 @@ export function KnowledgeForestTree({
         );
       })}
 
-      {/* Concepts section */}
+      {/* Concepts section: preserved even when chapter list is empty or filtered */}
       {filteredConcepts.length > 0 ? (
         <section className={styles.conceptsSection} aria-labelledby="concepts-section-title">
           <div className={styles.conceptsHeader}>

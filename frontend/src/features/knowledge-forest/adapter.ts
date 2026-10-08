@@ -1,4 +1,5 @@
-import type { StudentLearningSubjectRead, StudentMasteryRead } from "@/lib/api/contracts";
+import type { StudentLearningSubjectRead, StudentMasteryRead } from "../../lib/api/contracts";
+import { ApiContractError } from "../../lib/api/validation";
 
 import type {
   KnowledgeBiome,
@@ -12,11 +13,33 @@ import type {
 
 const fallbackBiomes: KnowledgeBiome[] = ["meadow", "river", "mountain", "forest", "sky"];
 
+/**
+ * Validates a unit interval score [0.0, 1.0] and converts it to whole integer percentage [0, 100].
+ * Returns undefined if score is null, undefined, NaN, or out of valid bounds.
+ */
+function safePercent(score: number | null | undefined): number | undefined {
+  if (score === null || score === undefined || typeof score !== "number" || Number.isNaN(score)) {
+    return undefined;
+  }
+  if (score < 0 || score > 1) {
+    return undefined;
+  }
+  return Math.round(score * 100);
+}
+
 export function toKnowledgeForestViewModel(
   mastery: StudentMasteryRead | null | undefined,
   availableSubjects: StudentLearningSubjectRead[] = [],
-  selectedSubjectId?: string
+  selectedSubjectId?: string,
+  studentId?: string
 ): KnowledgeForestViewModel {
+  // P0 Data Isolation invariant: Mastery student_id must match learning state student_id
+  if (mastery && studentId && mastery.student_id !== studentId) {
+    throw new ApiContractError(
+      `Hồ sơ học sinh không đồng nhất: Mastery student_id (${mastery.student_id}) không khớp Learning State (${studentId}).`
+    );
+  }
+
   // Safe fallback when availableSubjects is empty
   if (!availableSubjects || availableSubjects.length === 0) {
     return {
@@ -30,12 +53,11 @@ export function toKnowledgeForestViewModel(
     };
   }
 
-  // Filter mastery subjects to only those in the student's available scope
+  // Filter mastery subjects strictly to the student's available scope:
+  // Match strictly by subject_id to prevent mixing data across different IDs.
   const availableIds = new Set(availableSubjects.map((s) => s.id));
-  const availableCodes = new Set(availableSubjects.map((s) => s.code));
-
-  const scopedMasterySubjects = (mastery?.subjects ?? []).filter(
-    (subj) => availableIds.has(subj.subject_id) || availableCodes.has(subj.code)
+  const scopedMasterySubjects = (mastery?.subjects ?? []).filter((subj) =>
+    availableIds.has(subj.subject_id)
   );
 
   // Determine active subject from student's available scope
@@ -47,11 +69,9 @@ export function toKnowledgeForestViewModel(
 
   const activeSubjectInfo = requestedAvailableSubject ?? availableSubjects[0];
 
-  // Find corresponding mastery data for this active subject
+  // Find corresponding mastery data for this active subject by exact subject_id
   const activeMasterySubject = scopedMasterySubjects.find(
-    (subj) =>
-      subj.subject_id === activeSubjectInfo.id ||
-      subj.code.toLowerCase() === activeSubjectInfo.code.toLowerCase()
+    (subj) => subj.subject_id === activeSubjectInfo.id
   );
 
   if (!activeMasterySubject) {
@@ -119,13 +139,9 @@ export function toKnowledgeForestViewModel(
               topicName: topic.name,
               chapterId: chapter.chapter_id,
               chapterName: chapter.name,
-              masteryScore: hasEvidence
-                ? Math.round(pt.mastery_score * 100)
-                : undefined,
+              masteryScore: hasEvidence ? safePercent(pt.mastery_score) : undefined,
               rawMasteryScore: pt.mastery_score,
-              confidence: hasEvidence
-                ? Math.round(pt.confidence * 100)
-                : undefined,
+              confidence: hasEvidence ? safePercent(pt.confidence) : undefined,
               attemptCount: pt.attempt_count,
               correctCount: pt.correct_count,
               state: pt.state,
@@ -143,9 +159,7 @@ export function toKnowledgeForestViewModel(
           chapterId: chapter.chapter_id,
           problemTypeCount: topic.problem_type_count,
           startedProblemTypeCount: topic.started_problem_type_count,
-          masteryScore: hasTopicEvidence
-            ? Math.round(topic.mastery_score * 100)
-            : undefined,
+          masteryScore: hasTopicEvidence ? safePercent(topic.mastery_score) : undefined,
           rawMasteryScore: topic.mastery_score,
           state: topic.state,
           attemptCount: topic.attempt_count,
@@ -161,9 +175,7 @@ export function toKnowledgeForestViewModel(
         biome,
         problemTypeCount: chapter.problem_type_count,
         startedProblemTypeCount: chapter.started_problem_type_count,
-        masteryScore: hasChapterEvidence
-          ? Math.round(chapter.mastery_score * 100)
-          : undefined,
+        masteryScore: hasChapterEvidence ? safePercent(chapter.mastery_score) : undefined,
         rawMasteryScore: chapter.mastery_score,
         state: chapter.state,
         attemptCount: chapter.attempt_count,
@@ -181,13 +193,9 @@ export function toKnowledgeForestViewModel(
         code: concept.code,
         name: concept.name,
         subjectId: concept.subject_id,
-        masteryScore: hasEvidence
-          ? Math.round(concept.mastery_score * 100)
-          : undefined,
+        masteryScore: hasEvidence ? safePercent(concept.mastery_score) : undefined,
         rawMasteryScore: concept.mastery_score,
-        confidence: hasEvidence
-          ? Math.round(concept.confidence * 100)
-          : undefined,
+        confidence: hasEvidence ? safePercent(concept.confidence) : undefined,
         attemptCount: concept.attempt_count,
         correctCount: concept.correct_count,
         state: concept.state,
@@ -200,13 +208,9 @@ export function toKnowledgeForestViewModel(
   const summary: KnowledgeForestSummary = {
     problemTypeCount: totalProblemTypes || activeMasterySubject.problem_type_count,
     startedProblemTypeCount: activeMasterySubject.started_problem_type_count,
-    masteryScore: hasSubjectEvidence
-      ? Math.round(activeMasterySubject.mastery_score * 100)
-      : undefined,
+    masteryScore: hasSubjectEvidence ? safePercent(activeMasterySubject.mastery_score) : undefined,
     rawMasteryScore: activeMasterySubject.mastery_score,
-    confidence: hasSubjectEvidence
-      ? Math.round(activeMasterySubject.confidence * 100)
-      : undefined,
+    confidence: hasSubjectEvidence ? safePercent(activeMasterySubject.confidence) : undefined,
     attemptCount: activeMasterySubject.attempt_count,
     state: activeMasterySubject.state,
     masteredCount: totalMastered,
@@ -227,7 +231,7 @@ export function toKnowledgeForestViewModel(
     summary,
     chapters,
     concepts,
-    hasCurriculum: chapters.length > 0,
+    hasCurriculum: chapters.length > 0 || concepts.length > 0,
     hasEvidence: hasSubjectEvidence,
   };
 }
