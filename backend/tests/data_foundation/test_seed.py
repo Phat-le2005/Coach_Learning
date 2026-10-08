@@ -1,7 +1,7 @@
 from uuid import uuid4
 
 import pytest
-from pydantic import SecretStr, ValidationError
+from pydantic import EmailStr, SecretStr, TypeAdapter, ValidationError
 from sqlalchemy import func, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
@@ -36,6 +36,13 @@ from data.synthetic import generate_students
 
 def count(session: Session, model: type) -> int:
     return session.scalar(select(func.count()).select_from(model)) or 0
+
+
+def test_seed_user_emails_satisfy_the_auth_schema() -> None:
+    email_adapter = TypeAdapter(EmailStr)
+    assert [str(email_adapter.validate_python(record.email)) for record in USERS] == [
+        record.email for record in USERS
+    ]
 
 
 def test_seed_creates_complete_stable_dataset_and_is_idempotent(
@@ -74,7 +81,7 @@ def test_seed_creates_complete_stable_dataset_and_is_idempotent(
     }
     admin_id = stable_id("user", "ADMIN_01")
     admin = db_session.get(User, admin_id)
-    assert admin is not None and admin.email == "admin.demo@edums.local" and admin.role == Role.ADMIN
+    assert admin is not None and admin.email == "admin.demo@example.com" and admin.role == Role.ADMIN
     assert verify_password(seed_settings.seed_demo_password.get_secret_value(), admin.password_hash)
     password_hash = admin.password_hash
     all_ids_before = {
@@ -91,6 +98,12 @@ def test_seed_creates_complete_stable_dataset_and_is_idempotent(
         "concepts": set(db_session.scalars(select(Concept.id))),
         "classes": set(db_session.scalars(select(Classroom.id))),
     }
+
+    admin.email = "admin.demo@edums.local"
+    db_session.flush()
+    renamed = SeedService(db_session, seed_settings).seed().to_dict()
+    assert renamed["users"]["updated"] == 1
+    assert db_session.get(User, admin_id).email == "admin.demo@example.com"
 
 
 def test_grade_12_mathematics_catalog_and_prerequisites(
@@ -294,7 +307,7 @@ def test_identity_collision_rolls_back_entire_seed(
     db_session: Session, seed_settings: Settings
 ) -> None:
     db_session.add(User(
-        id=uuid4(), email="admin.demo@edums.local", password_hash="synthetic-not-used",
+        id=uuid4(), email="admin.demo@example.com", password_hash="synthetic-not-used",
         full_name="Collision", role=Role.ADMIN, is_active=True,
     ))
     db_session.commit()

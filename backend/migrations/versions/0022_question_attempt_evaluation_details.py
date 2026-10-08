@@ -15,6 +15,16 @@ depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:
+    # Alembic creates ``alembic_version.version_num`` as VARCHAR(32) by
+    # default. This revision ID (and later revision IDs) are longer than that,
+    # so widen the bookkeeping column before Alembic records this revision.
+    op.alter_column(
+        "alembic_version",
+        "version_num",
+        existing_type=sa.String(length=32),
+        type_=sa.String(length=128),
+        existing_nullable=False,
+    )
     op.add_column(
         "question_attempts",
         sa.Column("evaluation_details", sa.JSON(), nullable=True),

@@ -193,7 +193,7 @@ class SyntheticStudentService:
         user_id = stable_id("synthetic-user", student_key)
         profile_id = stable_id("synthetic-student-profile", student_key)
         mode = student_key.split(":")[1].lower()
-        email = f"synthetic.{seed}.{mode}.{index:04d}@edums.local"
+        email = f"synthetic.{seed}.{mode}.{index:04d}@example.com"
         full_name = f"Synthetic {profile.value.replace('_', ' ').title()} Student {index:04d}"
         user = self.session.get(User, user_id)
         email_collision = self.session.scalar(select(User).where(User.email == email))

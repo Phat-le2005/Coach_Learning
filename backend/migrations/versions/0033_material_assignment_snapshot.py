@@ -74,8 +74,16 @@ def upgrade() -> None:
         sa.Column("label", sa.String(20), nullable=False),
         sa.Column("content", sa.Text(), nullable=False),
         sa.Column("order_index", sa.Integer(), nullable=False),
-        sa.UniqueConstraint("assignment_material_item_id", "label"),
-        sa.UniqueConstraint("assignment_material_item_id", "order_index"),
+        sa.UniqueConstraint(
+            "assignment_material_item_id",
+            "label",
+            name="uq_assignment_material_item_options_item_label",
+        ),
+        sa.UniqueConstraint(
+            "assignment_material_item_id",
+            "order_index",
+            name="uq_assignment_material_item_options_item_order",
+        ),
     )
     _mapping_table("assignment_material_item_concepts", "concepts", "concept_id")
     _mapping_table("assignment_material_item_problem_types", "problem_types", "problem_type_id")

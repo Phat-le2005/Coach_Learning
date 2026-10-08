@@ -196,7 +196,7 @@ class SeedService:
         collision = self.session.scalar(select(User).where(User.email == record.email))
         if collision is not None and collision.id != user_id:
             raise self._conflict("user email", record.email)
-        if existing is not None and (existing.email != record.email or existing.role != record.role):
+        if existing is not None and existing.role != record.role:
             raise self._conflict("user identity", record.code)
         if existing is None:
             existing = User(
@@ -210,7 +210,11 @@ class SeedService:
             self.session.add(existing)
             self.summary.mark("users", "created")
         else:
-            self._reconcile("users", existing, {"full_name": record.full_name, "is_active": True})
+            self._reconcile(
+                "users",
+                existing,
+                {"email": record.email, "full_name": record.full_name, "is_active": True},
+            )
         self.session.flush()
         profile = self._seed_profile(existing, record)
         self.session.flush()

@@ -12,7 +12,7 @@ def generate_students(count: int, *, prefix: str = "STUDENT") -> tuple[UserSeed,
     return tuple(
         UserSeed(
             code=f"{normalized}_{index:02d}",
-            email=f"{normalized.lower()}{index:02d}.demo@edums.local",
+            email=f"{normalized.lower()}{index:02d}.demo@example.com",
             full_name=f"Demo Student {index:02d}",
             role=Role.STUDENT,
         )

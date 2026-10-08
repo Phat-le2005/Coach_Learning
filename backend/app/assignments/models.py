@@ -270,7 +270,18 @@ class AssignmentMaterialItem(Base):
 
 class AssignmentMaterialItemOption(Base):
     __tablename__ = "assignment_material_item_options"
-    __table_args__ = (UniqueConstraint("assignment_material_item_id", "label"), UniqueConstraint("assignment_material_item_id", "order_index"))
+    __table_args__ = (
+        UniqueConstraint(
+            "assignment_material_item_id",
+            "label",
+            name="uq_assignment_material_item_options_item_label",
+        ),
+        UniqueConstraint(
+            "assignment_material_item_id",
+            "order_index",
+            name="uq_assignment_material_item_options_item_order",
+        ),
+    )
     id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, default=uuid4)
     assignment_material_item_id: Mapped[UUID] = mapped_column(ForeignKey("assignment_material_items.id", ondelete="CASCADE"), nullable=False)
     label: Mapped[str] = mapped_column(String(20), nullable=False)
