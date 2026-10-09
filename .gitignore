@@ -27,3 +27,6 @@ npm-debug.log*
 Thumbs.db
 Desktop.ini
 *.log
+
+# Local build/download workspace
+.tmp/

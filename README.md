@@ -217,6 +217,14 @@ Next.js nhúng biến `NEXT_PUBLIC_*` vào client bundle. Sau khi đổi URL, re
 
 ## Setup backend từ đầu
 
+Trên Windows PowerShell, sau khi đã tạo `.venv` và điền `backend/.env`, có thể khởi động an toàn từ thư mục gốc bằng:
+
+```powershell
+.\backend\run_dev.ps1
+```
+
+Launcher này luôn dùng `backend/.venv/Scripts/python.exe`. Không chạy `uvicorn app.main:app --reload` trực tiếp nếu chưa activate virtual environment, vì Windows có thể gọi Uvicorn/Python toàn cục và báo thiếu package dù dependency đã được cài trong `.venv`.
+
 Từ root:
 
 ```text
@@ -537,4 +545,4 @@ cd backend
 
 - [FastAPI: Settings and Environment Variables](https://fastapi.tiangolo.com/advanced/settings/)
 - [Next.js: Installation](https://nextjs.org/docs/app/getting-started/installation)
-- [Alembic: Tutorial](https://alembic.sqlalchemy.org/en/latest/tutorial.html)
+- [Alembic: Tutorial](https://alembic.sqlalchemy.org/en/latest/tutorial.html)
