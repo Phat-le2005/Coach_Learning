@@ -81,13 +81,13 @@ def test_idempotency_and_stale_revision(db_session, solution_domain):
     key=uuid4()
     args={"expected_attempt_revision":current["attempt_revision_number"],"client_action_id":key,"draft":SolutionStepDraft(step_type="CUSTOM",content_latex="first")}
     first=s.add_step(d["student"].id,UUID(current["id"]),**args)
-    same=s.add_step(d["student"].id,current["id"],**args)
+    same=s.add_step(d["student"].id,UUID(current["id"]),**args)
     assert same==first
     with pytest.raises(ApplicationError) as exc:
-        s.add_step(d["student"].id,current["id"],expected_attempt_revision=1,client_action_id=key,draft=SolutionStepDraft(step_type="CUSTOM",content_latex="different"))
+        s.add_step(d["student"].id,UUID(current["id"]),expected_attempt_revision=1,client_action_id=key,draft=SolutionStepDraft(step_type="CUSTOM",content_latex="different"))
     assert exc.value.code=="ACTION_KEY_REUSED"
     with pytest.raises(ApplicationError) as exc:
-        s.add_step(d["student"].id,current["id"],expected_attempt_revision=1,client_action_id=uuid4(),draft=SolutionStepDraft(step_type="CUSTOM",content_latex="stale"))
+        s.add_step(d["student"].id,UUID(current["id"]),expected_attempt_revision=1,client_action_id=uuid4(),draft=SolutionStepDraft(step_type="CUSTOM",content_latex="stale"))
     assert exc.value.code=="SOLUTION_REVISION_CONFLICT"
     assert db_session.scalar(select(SolutionOperation).where(SolutionOperation.client_action_id==key)) is not None
 
@@ -100,10 +100,44 @@ def test_cross_student_and_teacher_denied(db_session, solution_domain):
     assert db_session.scalar(select(SolutionAttempt).where(SolutionAttempt.id==UUID(current["id"]))) is not None
 
 
-def test_pg_migration_roundtrip_isolated(postgres_engine):
-    names={t for t in Base.metadata.tables if t.startswith("math_")}
-    from sqlalchemy import inspect
-    inspector=inspect(postgres_engine)
-    assert names.issubset(set(inspector.get_table_names()))
-    indices=inspector.get_indexes("math_solution_steps")
-    assert any(x["name"]=="uq_math_solution_step_active_index" and x["unique"] for x in indices)
+def test_pg_math_schema_roundtrip_isolated():
+    """Exercise 0046 against an ephemeral PostgreSQL schema, separate from legacy migrations."""
+    import os
+    from sqlalchemy import create_engine, inspect, text
+    from sqlalchemy.engine import make_url
+    from sqlalchemy.schema import CreateSchema, DropSchema
+    from alembic.migration import MigrationContext
+    from alembic.operations import Operations
+    from tests.migrations import load_migration
+
+    url = os.getenv("EDUMS_TEST_DATABASE_URL")
+    if not url:
+        pytest.skip("PostgreSQL integration requires EDUMS_TEST_DATABASE_URL")
+    if make_url(url).drivername != "postgresql+psycopg":
+        pytest.fail("Only PostgreSQL test URLs are allowed")
+    engine = create_engine(url, hide_parameters=True)
+    schema = "step_verify_" + uuid4().hex
+    try:
+        with engine.begin() as conn:
+            conn.execute(CreateSchema(schema))
+            conn.exec_driver_sql(f'SET LOCAL search_path TO "{schema}", public')
+            conn.exec_driver_sql("CREATE EXTENSION IF NOT EXISTS vector")
+            # Build only preexisting parent tables as schema test prerequisites.
+            for table in Base.metadata.sorted_tables:
+                if not table.name.startswith("math_"):
+                    table.create(conn, checkfirst=True)
+            with Operations.context(MigrationContext.configure(conn)):
+                load_migration("0046_math_solutions").upgrade()
+            expected = {name for name in Base.metadata.tables if name.startswith("math_")}
+            inspector = inspect(conn)
+            assert expected.issubset(set(inspector.get_table_names()))
+            assert any(i["name"] == "uq_math_solution_step_active_index" and i["unique"]
+                       for i in inspector.get_indexes("math_solution_steps"))
+            with Operations.context(MigrationContext.configure(conn)):
+                load_migration("0046_math_solutions").downgrade()
+            inspector = inspect(conn)
+            assert expected.isdisjoint(set(inspector.get_table_names()))
+    finally:
+        with engine.begin() as conn:
+            conn.execute(DropSchema(schema, cascade=True))
+        engine.dispose()
