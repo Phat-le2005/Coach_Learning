@@ -1,27 +1,32 @@
 # Thiết kế Hệ thống Giải toán Từng bước (Solution Engine Design)
-## Module `backend/app/math_solutions/`
+## Module `backend/app/math_solutions/` (Hiệu chỉnh Kiến trúc Sprint 1.1)
 
 - **Dự án**: Coach Learning (EduMS)
-- **Mã Sprint**: SPRINT-01 (ARCH-01 + DATA-READY-01)
+- **Mã Sprint**: SPRINT-01.1
 - **Phạm vi học thuật đầu tiên**: Toán 12 — Tính đơn điệu của hàm số (Xét dấu đạo hàm)
-- **Trạng thái**: THIẾT KẾ KIẾN TRÚC & ĐỀ XUẤT SCHEMA (CHƯA CHẠY MIGRATION)
+- **Trạng thái**: THIẾT KẾ KIẾN TRÚC & ĐẶC TẢ ĐỘNG CƠ (ENGINE SPECIFICATION)
 
 ---
 
 ## 1. Giới thiệu Module `math_solutions`
 
-Module `backend/app/math_solutions/` được thiết kế nhằm mục đích cung cấp một động cơ giải toán tương tác theo từng bước (Step-by-Step Math Solution Engine). Thay vì chỉ nhận chuỗi đáp án thô của học sinh, module này cho phép:
-- Mô hình hóa lời giải thành một chuỗi các bước toán học vi mô (`SolutionStep`).
-- Hỗ trợ học sinh chỉnh sửa, thêm, xóa mềm, thay đổi thứ tự bước linh hoạt.
-- Biểu diễn công thức toán học (LaTeX) và các cấu trúc dữ liệu toán học chuyên biệt như Bảng xét dấu (`SIGN_TABLE`) và Bảng biến thiên (`VARIATION_TABLE`).
-- Quản lý phiên bản (`StepRevision`) giúp chống mất dữ liệu khi autosave hoặc chỉnh sửa đồng thời, đồng thời cho phép khôi phục (rollback) trạng thái bài làm.
-- Cung cấp cơ chế đánh giá 4 tầng (4-Tier Evaluation): Phản hồi tham khảo $\to$ Kiểm chứng toán học $\to$ Đánh giá AI $\to$ Quyết định chấm cuối cùng.
+Module `backend/app/math_solutions/` cung cấp động cơ giải toán tương tác theo từng bước (Step-by-Step Math Solution Engine). Thay vì chỉ nhận chuỗi đáp án thô nguyên khối, module này:
+1. Mô hình hóa bài giải thành một chuỗi các bước toán học vi mô (`SolutionStep`).
+2. Hỗ trợ đầy đủ **hai nguồn bài tập**:
+   - Câu hỏi chuẩn tắc từ Ngân hàng câu hỏi (`Question`).
+   - Ảnh chụp câu hỏi bất biến từ tài liệu PDF bóc tách của giáo viên (`AssignmentMaterialItem`), gắn liền với phân quyền lớp học.
+3. Cho phép học sinh thêm, sửa, xóa mềm, sắp xếp lại thứ tự bước giải mượt mà, lưu lịch sử phiên bản (`StepRevision`) chống mất dữ liệu khi autosave hoặc gián đoạn mạng.
+4. Biểu diễn đối tượng toán học trực quan chuyên biệt (`MathArtifact`: Bảng xét dấu `SIGN_TABLE` và Bảng biến thiên `VARIATION_TABLE`).
+5. Cung cấp cơ chế đánh giá 4 tầng (4-Tier Evaluation):
+   - Phản hồi tham khảo $\to$ Kiểm chứng toán học tất định (CAS) $\to$ Đánh giá suy luận AI theo Rubric $\to$ Quyết định đánh giá chung cuộc (`EvaluationDecision`).
+6. **Bảo toàn tính toàn vẹn của Bằng chứng Học tập và Mastery**:
+   - Từng bước giải hoặc bản nháp tuyệt đối không ghi nhận Mastery.
+   - Bài làm ban đầu sai được lưu giữ vĩnh viễn kết quả sai; các chu trình can thiệp (Kiểm chứng, Sửa sai, Ôn tập) là các sự kiện độc lập phát sinh bằng chứng riêng.
+   - Phân định rõ nguồn bằng chứng chuyên biệt `MATH_SOLUTION_EVALUATION` và cơ chế chống ghi trùng với Assignment v1.
 
 ---
 
-## 2. Kiến trúc Thực thể Cốt lõi (Domain Entities)
-
-Hệ thống bao gồm 8 thực thể chính:
+## 2. Kiến trúc Thực thể và Luồng Dữ liệu (Domain Entities)
 
 ```mermaid
 classDiagram
@@ -29,13 +34,17 @@ classDiagram
     class SolutionAttempt {
         UUID id
         UUID student_id
-        UUID question_id
         ContextType context_type
+        UUID question_id
+        UUID assignment_material_item_id
+        UUID student_assignment_material_item_id
         UUID practice_session_id
         UUID assignment_id
+        UUID student_assignment_id
         SolutionMode mode
         SolutionStatus status
-        int current_revision_number
+        int attempt_revision_number
+        string idempotency_key
         float total_score
         bool is_correct
         datetime started_at
@@ -57,18 +66,19 @@ classDiagram
         UUID id
         UUID step_id
         UUID attempt_id
-        int revision_number
+        int step_revision_number
         int step_index_at_revision
         string content_latex
         string explanation_text
         json artifact_snapshot
         ChangeReason change_reason
+        string idempotency_key
         datetime created_at
     }
 
     class MathArtifact {
         UUID id
-        UUID step_id
+        UUID step_revision_id
         ArtifactType artifact_type
         json payload
         datetime created_at
@@ -77,6 +87,7 @@ classDiagram
     class SolutionRubric {
         UUID id
         UUID question_id
+        UUID assignment_material_item_id
         int rubric_version
         string title
         json criteria
@@ -86,10 +97,11 @@ classDiagram
 
     class StepEvaluation {
         UUID id
+        UUID step_revision_id
         UUID step_id
         UUID rubric_id
         EvaluatorType evaluator_type
-        bool is_valid_math
+        MathValidity is_valid_math
         float score
         float confidence
         bool error_detected
@@ -101,7 +113,7 @@ classDiagram
     class SolutionFeedback {
         UUID id
         UUID attempt_id
-        UUID step_id
+        UUID step_revision_id
         FeedbackType feedback_type
         string content
         bool is_reference_only
@@ -120,135 +132,193 @@ classDiagram
         datetime decided_at
     }
 
+    class EvaluationOverride {
+        UUID id
+        UUID decision_id
+        UUID teacher_id
+        float previous_score
+        float new_score
+        bool previous_is_correct
+        bool new_is_correct
+        string override_reason
+        datetime created_at
+    }
+
     SolutionAttempt "1" *-- "many" SolutionStep : contains
     SolutionStep "1" *-- "many" StepRevision : tracks
-    SolutionStep "1" *-- "0..1" MathArtifact : embeds
-    SolutionStep "1" *-- "many" StepEvaluation : evaluated by
+    StepRevision "1" *-- "0..1" MathArtifact : snapshots
+    StepRevision "1" *-- "many" StepEvaluation : evaluated by
     SolutionAttempt "1" *-- "many" SolutionFeedback : receives
     SolutionAttempt "1" -- "0..1" EvaluationDecision : finalized by
+    EvaluationDecision "1" -- "many" EvaluationOverride : audited by
     SolutionRubric "1" -- "many" StepEvaluation : guides
 ```
 
 ---
 
-## 3. Giải quyết 9 Yêu cầu Thiết kế Cốt lõi
+## 3. Giải quyết Triệt để Các Yêu cầu Kiến trúc
 
-### Yêu cầu 1: Một bài toán có nhiều bước và nhiều lời giải hợp lệ
-- **Vấn đề**: Trong toán học (đặc biệt là Tính đơn điệu), một bài toán có thể giải theo nhiều hướng:
-  - *Hướng 1 (Chuẩn tắc)*: Tập xác định $\to$ Tính đạo hàm $y'$ $\to$ Tìm nghiệm $y'=0$ $\to$ Bảng xét dấu đạo hàm $\to$ Kết luận khoảng đơn điệu.
-  - *Hướng 2 (Dùng giá trị thử - Test points)*: Tính đạo hàm $\to$ Thay giá trị đại diện trên từng khoảng để xác định dấu $\to$ Kết luận.
-  - *Hướng 3 (Biến đổi đại số)*: Đánh giá trực tiếp dấu của biểu thức đạo hàm (ví dụ: bình phương luôn không âm).
-- **Giải pháp**:
-  - `SolutionRubric` định nghĩa nhiều `AlternativeSolutionPath`. Mỗi path chứa tập hợp các tiêu chí cần đạt tương ứng.
-  - `StepEvaluation` nhận diện bước giải hiện tại khớp với nhánh giải nào, không ép buộc học sinh phải đi theo một chuỗi bước máy móc.
-
-### Yêu cầu 2: Học sinh có thể thêm, sửa, xóa, sắp xếp bước
-- **Thêm bước**: Học sinh thêm bước tại vị trí bất kỳ; các bước phía sau được tăng `step_index`.
-- **Sửa bước**: Cập nhật nội dung LaTeX hoặc giải thích; tự động lưu một bản ghi `StepRevision` mới.
-- **Xóa bước (Soft Delete)**: Đánh dấu `is_deleted = true`, ẩn khỏi giao diện bài làm nhưng vẫn lưu trong lịch sử để có thể khôi phục hoặc xem lại quá trình tư duy của học sinh.
-- **Sắp xếp lại bước**: Hỗ trợ kéo thả trên giao diện. Thao tác reorder gửi mảng `[ { step_id, new_step_index } ]`, cập nhật lại vị trí hiển thị và ghi nhận `change_reason = STUDENT_REORDER` trong `StepRevision`.
-
-### Yêu cầu 3: Hỗ trợ công thức toán, bảng xét dấu, bảng biến thiên và giải thích bằng lời
-Mỗi `SolutionStep` kết hợp:
-1. `content_latex`: Biểu thức toán học dạng LaTeX chuẩn (ví dụ: `y' = x^2 - 2x - 3`).
-2. `explanation_text`: Lời giải thích tự nhiên của học sinh (ví dụ: "Xét dấu tam thức bậc hai bằng quy tắc trong trái ngoài cùng").
-3. `MathArtifact` (nếu bước thuộc loại bảng):
-   - **`SIGN_TABLE` (Bảng xét dấu)**: Cấu trúc JSON chuẩn hóa:
-     ```json
-     {
-       "variable": "x",
-       "row_expression": "y'",
-       "intervals": [
-         { "label": "-inf", "value": null },
-         { "label": "-1", "value": -1, "sign_at": "0" },
-         { "label": "3", "value": 3, "sign_at": "0" },
-         { "label": "+inf", "value": null }
-       ],
-       "signs": [
-         { "from": "-inf", "to": "-1", "sign": "+" },
-         { "from": "-1", "to": "3", "sign": "-" },
-         { "from": "3", "to": "+inf", "sign": "+" }
-       ]
-     }
-     ```
-   - **`VARIATION_TABLE` (Bảng biến thiên)**: Mở rộng từ bảng xét dấu, bổ sung hàng giá trị $y$ và chiều mũi tên biến thiên (`UP`, `DOWN`).
-
-### Yêu cầu 4: Lưu revision và có thể khôi phục bài làm (Rollback)
-- Mỗi lần chỉnh sửa bước hoặc autosave, hệ thống tạo một bản ghi `StepRevision` với `revision_number = current_revision_number + 1`.
-- `artifact_snapshot` lưu toàn bộ trạng thái bảng xét dấu tại thời điểm đó.
-- Khi học sinh muốn khôi phục lại trạng thái cũ, hệ thống tạo bản ghi revision mới mang cờ `change_reason = ROLLBACK`, sao chép dữ liệu từ revision được chỉ định mà không xóa lịch sử cũ (bảo toàn tính audit).
-
-### Yêu cầu 5: Hỗ trợ cả `SELF_PRACTICE` và `CLASSROOM_ASSIGNMENT`
-- Trường `context_type` trong `SolutionAttempt` phân định rõ:
-  - `SELF_PRACTICE`: Đi kèm `practice_session_id` trỏ về bảng `practice_sessions`. Học sinh tự học trên Knowledge Forest hoặc trang tự luyện.
-  - `CLASSROOM_ASSIGNMENT`: Đi kèm `assignment_id` và `student_assignment_id` trỏ về bảng `assignments` và `student_assignments`. Giáo viên có thể xem tiến độ và chấm bài.
-- Ràng buộc toàn vẹn cơ sở dữ liệu (`CHECK` constraint) đảm bảo:
-  `context_type = 'SELF_PRACTICE' AND practice_session_id IS NOT NULL AND assignment_id IS NULL` HOẶC
-  `context_type = 'CLASSROOM_ASSIGNMENT' AND assignment_id IS NOT NULL AND practice_session_id IS NULL`.
-
-### Yêu cầu 6: Phân biệt `GUIDED_LEARNING` và `INDEPENDENT_SOLUTION`
-- **`GUIDED_LEARNING` (Học có giàn giáo)**:
-  - Sau khi học sinh hoàn thành mỗi bước, hệ thống có thể chạy `StepEvaluation` tức thì.
-  - Cung cấp gợi ý dẫn dắt sư phạm (`SolutionFeedback`) dạng câu hỏi gợi mở (Socratic hint) nếu bước đó sai, giúp học sinh tự sửa lỗi ngay tại chỗ.
-  - Thích hợp cho học sinh đang ở trạng thái `WEAK`, `LEARNING` hoặc trong phase `GUIDED` của lộ trình `AdaptiveRepair`.
-- **`INDEPENDENT_SOLUTION` (Làm bài độc lập / Kiểm tra)**:
-  - Hệ thống chỉ lưu trữ và hỗ trợ học sinh biên soạn bước mà **không đưa ra bất kỳ phản hồi hay chấm điểm nào giữa chừng**.
-  - Chỉ khi học sinh bấm "Nộp bài", toàn bộ bài giải mới được chuyển sang trạng thái `SUBMITTED` và kích hoạt quá trình đánh giá tổng thể.
-  - Thích hợp cho bài tập lớp có tính điểm, bài kiểm tra hoặc phase `FINAL_RECHECK` của sửa sai.
-
-### Yêu cầu 7: Không dùng bản nháp hoặc mỗi bước giải làm bằng chứng Mastery độc lập
-- **Nguyên tắc an toàn dữ liệu**:
-  - Các bước giải `SolutionStep` hoặc các lần sửa nháp `StepRevision` **tuyệt đối không được phát sinh sự kiện `LearningEvidenceEvent`**.
-  - Một học sinh có thể gõ thử nghiệm, xóa đi viết lại nhiều lần — điều này không phản ánh rằng học sinh liên tục thành thạo rồi lại yếu.
-  - Chỉ khi toàn bộ `SolutionAttempt` được nộp và một `EvaluationDecision` được ban hành chính thức (xác nhận điểm toàn bài và các quan niệm sai lầm cụ thể), hệ thống mới phát sinh **duy nhất một sự kiện bằng chứng học tập** (`LearningEvidenceEvent`) vào bảng `learning_evidence_events`.
-  - Nhờ vậy, điểm số trên Knowledge Forest và Mastery Engine luôn phản ánh kết quả học tập chân thực, không bị nhiễu.
-
-### Yêu cầu 8: Cơ chế Đánh giá 4 Tầng (4-Tier Evaluation Framework)
-Hệ thống phân tách rạch ròi 4 cấp độ đánh giá:
-1. **Tầng 1 — Phản hồi tham khảo (`SolutionFeedback`)**:
-   - Gợi ý cách làm, câu hỏi sư phạm, cảnh báo nhắc nhở.
-   - Có cờ `is_reference_only = true`. Hoàn toàn không ảnh hưởng đến điểm số của học sinh.
-2. **Tầng 2 — Kiểm chứng toán học tất định (Deterministic Math Verification)**:
-   - Sử dụng bộ parser toán học kiểm tra tính hợp lệ cú pháp, cân bằng ngoặc, tập xác định, và kiểm tra tính nhất quán toán học (ví dụ: kiểm tra xem đạo hàm của $f(x)$ có thực sự bằng biểu thức học sinh gõ hay không bằng cách tính đạo hàm hình thức).
-   - Xác nhận `is_valid_math = true/false` một cách khách quan, không phụ thuộc vào AI.
-3. **Tầng 3 — Đánh giá suy luận AI (`StepEvaluation` qua `AIGateway`)**:
-   - Đối chiếu bước giải với `SolutionRubric` để nhận diện học sinh đang giải theo phương pháp nào, bước giải đã giải quyết được tiêu chí nào của bài toán, và có dấu hiệu của quan niệm sai lầm cụ thể (như `DERIVATIVE_SIGN_DIRECTION`) hay không.
-   - Trả về `score`, `confidence`, và `evidence_quote`.
-4. **Tầng 4 — Quyết định đánh giá chung cuộc (`EvaluationDecision`)**:
-   - Tổng hợp kết quả từ Tầng 2 và Tầng 3 (hoặc được giáo viên ghi đè `TEACHER_OVERRIDE`).
-   - Ban hành điểm số cuối cùng `final_score` và danh sách lỗi được xác nhận `confirmed_misconceptions`.
-   - Là thực thể duy nhất phát sinh `LearningEvidenceEvent`.
-
-### Yêu cầu 9: Chống mất dữ liệu khi autosave hoặc chỉnh sửa đồng thời (Concurrency Control)
-- **Khóa lạc quan (Optimistic Locking)**:
-  - `SolutionAttempt` có trường `current_revision_number`.
-  - Mọi request autosave hoặc cập nhật bước từ client phải gửi kèm `expected_revision_number`.
-  - Nếu `expected_revision_number != attempt.current_revision_number`, hệ thống phát hiện xung đột ghi đè (Conflict 409) và trả về trạng thái mới nhất để client merge, tránh mất dữ liệu khi mở hai tab cùng lúc.
-- **Mã định danh thao tác (Client Idempotency Key)**:
-  - Mỗi thao tác thêm bước hoặc cập nhật nội dung được gắn một `client_action_id` (UUID tạo từ phía client).
-  - Nếu mạng chập chờn gửi lại request 2 lần, hệ thống nhận diện thao tác trùng lặp và trả về kết quả đã xử lý mà không nhân bản bước giải.
-- **Append-only Revision Log**:
-  - Dữ liệu lịch sử bước giải luôn được ghi mới vào `StepRevision`. Ngay cả khi xảy ra sự cố phần mềm, dữ liệu trước đó của học sinh vẫn được lưu đầy đủ và có thể phục hồi 100%.
+### 3.1. Hỗ trợ Hai Nguồn Bài tập Bình đẳng (Canonical Question vs Teacher PDF Snapshot)
+- **Nguồn 1: Canonical Question (`questions`)**:
+  - Dành cho các bài toán chuẩn hóa trong Ngân hàng đề thi của hệ thống.
+  - Sử dụng trong tự luyện cá nhân (`SELF_PRACTICE` kèm `practice_session_id`) hoặc bài tập giao từ ngân hàng chung.
+  - Rubric liên kết qua trường `math_solution_rubrics.question_id`.
+- **Nguồn 2: Teacher Material Item Snapshot (`assignment_material_items`)**:
+  - Dành cho câu hỏi tự luận bóc tách từ file PDF/DOCX do giáo viên tải lên.
+  - Được đóng băng bất biến trong `assignment_material_items` và gán cho học sinh qua `student_assignment_material_items`.
+  - **Không bắt buộc câu hỏi PDF phải xuất bản vào ngân hàng câu hỏi công khai**. Quyền truy cập được bảo vệ nghiêm ngặt theo lớp học thông qua `student_assignments` và `classrooms`.
+  - Rubric liên kết trực tiếp qua `math_solution_rubrics.assignment_material_item_id` (phiên bản hóa theo `rubric_version`), đảm bảo chuẩn chấm khớp đúng snapshot đã giao.
+- **Ràng buộc loại trừ**: Ràng buộc `CHECK (chk_solution_source_exclusive)` bảo đảm một attempt chỉ trỏ về đúng một nguồn duy nhất.
 
 ---
 
-## 4. Đặc tả Lược đồ Cơ sở Dữ liệu Đề xuất (SQL Schema Draft)
+### 3.2. Quản lý Bước giải, Sắp xếp và Chống Xung đột Unique Index
+- **Thao tác Thêm / Sửa / Xóa mềm**:
+  - Thêm bước: tạo `SolutionStep` mới với `step_index` phù hợp và tạo bản ghi `StepRevision(step_revision_number=1)`.
+  - Sửa bước: cập nhật nội dung và tạo `StepRevision(step_revision_number = n+1)`.
+  - Xóa mềm: đánh dấu `is_deleted = true`, giải phóng `step_index` trên partial index để không cản trở việc chèn bước mới.
+- **Cơ chế Reorder không gây lỗi vi phạm Unique Constraint**:
+  - Chỉ mục duy nhất trên bảng `math_solution_steps`:
+    ```sql
+    CREATE UNIQUE INDEX uq_math_solution_step_active_index 
+    ON math_solution_steps(attempt_id, step_index) 
+    WHERE is_deleted = FALSE 
+    DEFERRABLE INITIALLY DEFERRED;
+    ```
+  - Trong một transaction đổi vị trí (ví dụ swap bước 1 và bước 2): Postgres trì hoãn kiểm tra ràng buộc duy nhất cho đến khi lệnh `COMMIT` được gọi.
+  - Tầng service bổ sung phương án phòng thủ **Two-Phase Reindexing**: gán giá trị tạm thời mang dấu âm (`step_index = -new_index`) rồi chuyển sang giá trị dương (`step_index = ABS(step_index)`).
 
-*(Lưu ý: Đây là thiết kế kiến trúc chuẩn bị cho Sprint tiếp theo; chưa áp dụng migration trong Sprint này).*
+---
+
+### 3.3. Đánh giá Bước giải Bất biến (Revision-bound Step Evaluation)
+- **Nguyên lý**: Bước giải `SolutionStep` là thực thể khả biến (học sinh có thể sửa nội dung liên tục). Nếu kết quả đánh giá trỏ vào `step_id`, kết quả chấm sẽ bị sai lệch khi học sinh sửa code LaTeX.
+- **Giải pháp**:
+  - `StepEvaluation` **bắt buộc trỏ khóa ngoại vào `step_revision_id`** của bảng `math_step_revisions`.
+  - Mỗi bản ghi đánh giá gắn chặt với một ảnh chụp bất biến cụ thể của lời giải và bảng xét dấu.
+- **Mở rộng Trạng thái Kiểm chứng Toán học (`is_valid_math`)**:
+  - Thay vì kiểu boolean nhị phân (`true/false`), trường `is_valid_math` là enum 4 trạng thái:
+    1. `VALID`: Biểu thức toán học cú pháp chuẩn và suy luận toán học chính xác.
+    2. `INVALID`: Sai sót toán học hoặc vi phạm quy tắc suy luận logic.
+    3. `UNDETERMINED`: Bộ parser hoặc CAS hình thức không thể xác định (ví dụ: biểu thức vượt ngoài tập quy tắc, timeout tính toán).
+    4. `NEEDS_REVIEW`: Biểu thức có dấu hiệu mơ hồ, cần chuyển tiếp cho giáo viên hoặc mô hình AI cấp cao hơn thẩm định.
+
+---
+
+### 3.4. Mô hình Bằng chứng Bất biến & Chống Ghi trùng với Assignment v1
+
+#### A. Ràng buộc Kiến trúc Resolver Hiện tại
+Trong `backend/app/knowledge_gap/evidence_context.py`:
+- Resolver hiện chỉ hỗ trợ 3 nguồn:
+  - `PRACTICE_QUESTION` $\to$ Bắt buộc đọc `QuestionAttempt`.
+  - `ASSIGNMENT_CANONICAL_QUESTION` $\to$ Bắt buộc đọc `AssignmentStudentQuestion`.
+  - `TEACHER_MATERIAL_ITEM` $\to$ Bắt buộc đọc `StudentAssignmentMaterialItem`.
+- **Nghiêm cấm**: Không được tái sử dụng `PRACTICE_QUESTION` với `source_entity_id = EvaluationDecision.id` vì resolver sẽ gọi `session.get(QuestionAttempt, decision.id) == None` và ném lỗi `ApplicationError(409, "EVIDENCE_SOURCE_CONTEXT_MISSING")`.
+
+#### B. Đề xuất Nguồn Bằng chứng Mới: `MATH_SOLUTION_EVALUATION`
+1. **Mở rộng Enum**: Bổ sung `MATH_SOLUTION_EVALUATION` vào `LearningEvidenceSourceKind`.
+2. **Cập nhật `LearningEvidenceContextResolver`**:
+   ```python
+   if event.source_kind == LearningEvidenceSourceKind.MATH_SOLUTION_EVALUATION:
+       decision = self.session.get(EvaluationDecision, event.source_entity_id)
+       if decision is None:
+           raise self._source_missing()
+       attempt = self.session.get(SolutionAttempt, decision.attempt_id)
+       if attempt is None or attempt.student_id != event.student_id:
+           raise self._source_missing()
+       
+       # Nhánh 1: Canonical Question
+       if attempt.question_id is not None:
+           question = self.session.get(Question, attempt.question_id)
+           return DiagnosticEvidenceContext(
+               **base,
+               student_response=self._serialize_attempt_summary(attempt),
+               content=question.content,
+               expected_answer=question.correct_answer,
+               explanation=question.explanation,
+               canonical_question=question,
+           )
+       # Nhánh 2: Teacher Material Item Snapshot
+       if attempt.assignment_material_item_id is not None:
+           snapshot = self.session.get(AssignmentMaterialItem, attempt.assignment_material_item_id)
+           return DiagnosticEvidenceContext(
+               **base,
+               student_response=self._serialize_attempt_summary(attempt),
+               content=snapshot.content or "",
+               expected_answer=snapshot.correct_answer,
+               explanation=snapshot.explanation,
+               assignment_material_snapshot_id=snapshot.id,
+           )
+   ```
+
+#### C. Chống Ghi trùng Bằng chứng với Assignment v1 (Double-Counting Prevention)
+Khi học sinh làm bài tập giải từng bước trong một bài tập lớp (`CLASSROOM_ASSIGNMENT`):
+- **Quy tắc duy nhất**: Chỉ phát sinh **đúng 1 sự kiện `LearningEvidenceEvent`** thông qua `EvaluationDecision` với `source_kind = MATH_SOLUTION_EVALUATION`.
+- Quy trình nộp bài Assignment v1 thông thường sẽ kiểm tra xem câu hỏi đó có `SolutionAttempt` liên kết hay không:
+  - Nếu câu hỏi đã được giải và chấm qua Solution Engine: hệ thống cập nhật trường `score` và `student_answer` trên `AssignmentStudentQuestion` / `StudentAssignmentMaterialItem` nhưng **tuyệt đối KHÔNG phát sinh thêm sự kiện `ASSIGNMENT_CANONICAL_QUESTION` hoặc `TEACHER_MATERIAL_ITEM`**.
+  - Nhờ vậy, điểm năng lực Mastery và lịch sử chẩn đoán chỉ ghi nhận một luồng bằng chứng duy nhất.
+
+#### D. Tính Bất biến của Bằng chứng và Lịch sử Ghi đè của Giáo viên
+- Bảng `learning_evidence_events` có trigger SQLAlchemy cấm cập nhật/xóa: `ValueError("LearningEvidenceEvent is append-only")`.
+- Khi giáo viên chấm bài hoặc điều chỉnh điểm số (`TEACHER_OVERRIDE`):
+  1. Bản ghi `learning_evidence_events` ban đầu được **giữ nguyên vẹn 100%**.
+  2. Hệ thống ghi nhật ký chi tiết vào bảng audit `math_evaluation_overrides` (chứa `previous_score`, `new_score`, lý do và ID giáo viên).
+  3. Nếu việc sửa điểm làm thay đổi trạng thái thành thạo của học sinh, một sự kiện bằng chứng điều chỉnh (Corrective Evidence Event) độc lập mới được phát sinh bổ sung, bảo tồn lịch sử audit minh bạch.
+
+---
+
+### 3.5. Công thức Tính toán Mastery Chuẩn xác (Loại bỏ Số liệu Hardcode)
+
+Hệ thống tính toán Mastery **không sử dụng bất kỳ giá trị hardcode nào** (như 75% hay confidence 72%). Tất cả đều tuân thủ chính xác công thức từ `DeterministicMasteryCalculationStrategy` (`backend/app/mastery/strategy.py`):
+
+1. **Khi học sinh làm sai bài giải ban đầu** (`score = 0.40`, `is_correct = False`, `hint_count = 0`):
+   - Hệ số độ khó: $\text{difficulty\_factor} = 1.1 - 0.3 \times \text{difficulty}$.
+   - Tốc độ tăng trưởng: $\text{mastery\_rate} = \min(0.3, 0.22 \times \text{weight} \times \text{difficulty\_factor} \times 1.0)$.
+   - Điểm Mastery mới:
+     $$\text{mastery\_score}_{\text{new}} = \text{mastery\_score}_{\text{prev}} + \text{mastery\_rate} \times (0.40 - \text{mastery\_score}_{\text{prev}})$$
+   - Độ tự tin mới:
+     $$\text{confidence\_gain} = 0.13 \times (0.5 + 0.5 \times \text{weight}) \times 1.0 \times (0.9 + 0.1 \times \text{difficulty})$$
+     $$\text{confidence}_{\text{new}} = \text{confidence}_{\text{prev}} + \text{confidence\_gain} \times (1.0 - \text{confidence}_{\text{prev}})$$
+2. **Quy tắc xác định trạng thái hiển thị (`derive_mastery_state` trong `app.mastery.state`)**:
+   - `NOT_STARTED`: `attempt_count == 0`.
+   - `MASTERED`: `mastery_score >= 0.8` VÀ `confidence >= 0.65` (nếu cách lần luyện cuối $\ge 14$ ngày $\to$ chuyển thành `REVIEW_DUE`).
+   - `WEAK`: `mastery_score < 0.4` VÀ `confidence >= 0.25`.
+   - `PRACTICING`: `attempt_count >= 3` HOẶC `mastery_score >= 0.55`.
+   - `LEARNING`: các trường hợp còn lại.
+
+---
+
+### 3.6. Concurrency, Khóa Ghi và Bảo mật Rubric
+1. **Phân định rõ 2 bộ đếm Revision**:
+   - `attempt_revision_number` (trên `SolutionAttempt`): Đếm phiên bản toàn phiên, phục vụ Khóa lạc quan chống ghi đè đồng thời từ hai client.
+   - `step_revision_number` (trên `StepRevision`): Đếm phiên bản riêng của từng bước giải logic, phục vụ tính năng rollback bước.
+2. **Khóa chống trùng lặp (Idempotency Keys)**:
+   - Client gửi `idempotency_key` trong header hoặc payload của mọi request thêm bước, sửa bước, reorder.
+   - Nếu client bị gián đoạn mạng và gửi lại request cũ, database chặn trùng lặp qua partial unique index và trả về kết quả đã xử lý.
+3. **Khóa ghi sau khi nộp (Post-Submit Write Lock)**:
+   - Khi bài làm chuyển sang `SUBMITTED` hoặc `EVALUATED`, mọi API sửa đổi từ phía học sinh bị khóa cứng (HTTP 403 Forbidden).
+4. **Bảo mật tiêu chí Rubric**:
+   - Trường `criteria` của `SolutionRubric` bị ẩn hoàn toàn đối với học sinh cho đến khi hoàn tất nộp bài hoặc được mở theo giàn giáo có kiểm soát trong chế độ `GUIDED_LEARNING`.
+
+---
+
+## 4. Đặc tả Lược đồ Cơ sở Dữ liệu Đề xuất (SQL Draft)
 
 ```sql
--- 1. Bảng SolutionAttempt
+-- 1. Bảng SolutionAttempt (Hỗ trợ 2 nguồn bài tập)
 CREATE TABLE math_solution_attempts (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     student_id UUID NOT NULL REFERENCES student_profiles(id) ON DELETE RESTRICT,
-    question_id UUID NOT NULL REFERENCES questions(id) ON DELETE RESTRICT,
     context_type VARCHAR(50) NOT NULL CHECK (context_type IN ('SELF_PRACTICE', 'CLASSROOM_ASSIGNMENT')),
+    question_id UUID REFERENCES questions(id) ON DELETE RESTRICT,
+    assignment_material_item_id UUID REFERENCES assignment_material_items(id) ON DELETE RESTRICT,
+    student_assignment_material_item_id UUID REFERENCES student_assignment_material_items(id) ON DELETE CASCADE,
     practice_session_id UUID REFERENCES practice_sessions(id) ON DELETE SET NULL,
-    assignment_id UUID REFERENCES assignments(id) ON DELETE SET NULL,
-    student_assignment_id UUID REFERENCES student_assignments(id) ON DELETE SET NULL,
+    assignment_id UUID REFERENCES assignments(id) ON DELETE CASCADE,
+    student_assignment_id UUID REFERENCES student_assignments(id) ON DELETE CASCADE,
     mode VARCHAR(50) NOT NULL CHECK (mode IN ('GUIDED_LEARNING', 'INDEPENDENT_SOLUTION')),
     status VARCHAR(50) NOT NULL DEFAULT 'DRAFT' CHECK (status IN ('DRAFT', 'IN_PROGRESS', 'SUBMITTED', 'EVALUATED', 'ABANDONED')),
-    current_revision_number INT NOT NULL DEFAULT 1,
+    attempt_revision_number INT NOT NULL DEFAULT 1,
+    idempotency_key VARCHAR(100),
     total_score DOUBLE PRECISION CHECK (total_score IS NULL OR (total_score >= 0.0 AND total_score <= 1.0)),
     is_correct BOOLEAN,
     started_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -256,14 +326,20 @@ CREATE TABLE math_solution_attempts (
     evaluated_at TIMESTAMPTZ,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    CONSTRAINT chk_solution_attempt_context CHECK (
-        (context_type = 'SELF_PRACTICE' AND practice_session_id IS NOT NULL AND assignment_id IS NULL) OR
-        (context_type = 'CLASSROOM_ASSIGNMENT' AND assignment_id IS NOT NULL AND practice_session_id IS NULL)
+    CONSTRAINT chk_solution_source_exclusive CHECK (
+        (question_id IS NOT NULL AND assignment_material_item_id IS NULL AND student_assignment_material_item_id IS NULL) OR
+        (question_id IS NULL AND assignment_material_item_id IS NOT NULL AND student_assignment_material_item_id IS NOT NULL)
+    ),
+    CONSTRAINT chk_solution_context_alignment CHECK (
+        (context_type = 'SELF_PRACTICE' AND practice_session_id IS NOT NULL AND assignment_id IS NULL AND student_assignment_id IS NULL AND question_id IS NOT NULL) OR
+        (context_type = 'CLASSROOM_ASSIGNMENT' AND assignment_id IS NOT NULL AND student_assignment_id IS NOT NULL)
     )
 );
 
+CREATE UNIQUE INDEX uq_math_solution_attempts_idempotency ON math_solution_attempts(student_id, idempotency_key) WHERE idempotency_key IS NOT NULL;
 CREATE INDEX ix_math_solution_attempts_student ON math_solution_attempts(student_id, started_at);
-CREATE INDEX ix_math_solution_attempts_question ON math_solution_attempts(question_id, status);
+CREATE INDEX ix_math_solution_attempts_question ON math_solution_attempts(question_id, status) WHERE question_id IS NOT NULL;
+CREATE INDEX ix_math_solution_attempts_material ON math_solution_attempts(assignment_material_item_id, status) WHERE assignment_material_item_id IS NOT NULL;
 
 -- 2. Bảng SolutionStep
 CREATE TABLE math_solution_steps (
@@ -276,10 +352,10 @@ CREATE TABLE math_solution_steps (
     content_latex TEXT NOT NULL,
     explanation_text TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    CONSTRAINT uq_math_solution_step_attempt_index UNIQUE (attempt_id, step_index, is_deleted)
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+CREATE UNIQUE INDEX uq_math_solution_step_active_index ON math_solution_steps(attempt_id, step_index) WHERE is_deleted = FALSE DEFERRABLE INITIALLY DEFERRED;
 CREATE INDEX ix_math_solution_steps_attempt ON math_solution_steps(attempt_id, step_index);
 
 -- 3. Bảng StepRevision
@@ -287,47 +363,56 @@ CREATE TABLE math_step_revisions (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     step_id UUID NOT NULL REFERENCES math_solution_steps(id) ON DELETE CASCADE,
     attempt_id UUID NOT NULL REFERENCES math_solution_attempts(id) ON DELETE CASCADE,
-    revision_number INT NOT NULL CHECK (revision_number >= 1),
+    step_revision_number INT NOT NULL CHECK (step_revision_number >= 1),
     step_index_at_revision INT NOT NULL,
     content_latex TEXT NOT NULL,
     explanation_text TEXT,
     artifact_snapshot JSONB,
     change_reason VARCHAR(50) NOT NULL CHECK (change_reason IN ('STUDENT_EDIT', 'STUDENT_REORDER', 'AUTOSAVE', 'ROLLBACK')),
+    idempotency_key VARCHAR(100),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    CONSTRAINT uq_math_step_revisions_step_rev UNIQUE (step_id, revision_number)
+    CONSTRAINT uq_math_step_revisions_step_rev UNIQUE (step_id, step_revision_number)
 );
 
--- 4. Bảng MathArtifact
+CREATE UNIQUE INDEX uq_math_step_revisions_idempotency ON math_step_revisions(step_id, idempotency_key) WHERE idempotency_key IS NOT NULL;
+
+-- 4. Bảng MathArtifact (Gắn chặt với StepRevision)
 CREATE TABLE math_artifacts (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    step_id UUID NOT NULL REFERENCES math_solution_steps(id) ON DELETE CASCADE,
+    step_revision_id UUID NOT NULL UNIQUE REFERENCES math_step_revisions(id) ON DELETE CASCADE,
     artifact_type VARCHAR(50) NOT NULL CHECK (artifact_type IN ('SIGN_TABLE', 'VARIATION_TABLE', 'INTERVAL_SET', 'SYSTEM_OF_EQUATIONS')),
     payload JSONB NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    CONSTRAINT uq_math_artifacts_step UNIQUE (step_id)
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- 5. Bảng SolutionRubric
+-- 5. Bảng SolutionRubric (Hỗ trợ cả Canonical và Teacher Material Item)
 CREATE TABLE math_solution_rubrics (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    question_id UUID NOT NULL REFERENCES questions(id) ON DELETE CASCADE,
+    question_id UUID REFERENCES questions(id) ON DELETE CASCADE,
+    assignment_material_item_id UUID REFERENCES assignment_material_items(id) ON DELETE CASCADE,
     rubric_version INT NOT NULL DEFAULT 1,
     title VARCHAR(255) NOT NULL,
     criteria JSONB NOT NULL,
     max_score DOUBLE PRECISION NOT NULL DEFAULT 1.0 CHECK (max_score > 0),
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    CONSTRAINT uq_math_solution_rubrics_question_ver UNIQUE (question_id, rubric_version)
+    CONSTRAINT chk_rubric_target_exclusive CHECK (
+        (question_id IS NOT NULL AND assignment_material_item_id IS NULL) OR
+        (question_id IS NULL AND assignment_material_item_id IS NOT NULL)
+    )
 );
 
--- 6. Bảng StepEvaluation
+CREATE UNIQUE INDEX uq_rubric_canonical ON math_solution_rubrics(question_id, rubric_version) WHERE question_id IS NOT NULL;
+CREATE UNIQUE INDEX uq_rubric_material ON math_solution_rubrics(assignment_material_item_id, rubric_version) WHERE assignment_material_item_id IS NOT NULL;
+
+-- 6. Bảng StepEvaluation (Gắn với StepRevision và mở rộng 4 trạng thái CAS)
 CREATE TABLE math_step_evaluations (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    step_revision_id UUID NOT NULL REFERENCES math_step_revisions(id) ON DELETE CASCADE,
     step_id UUID NOT NULL REFERENCES math_solution_steps(id) ON DELETE CASCADE,
     rubric_id UUID REFERENCES math_solution_rubrics(id) ON DELETE SET NULL,
     evaluator_type VARCHAR(50) NOT NULL CHECK (evaluator_type IN ('DETERMINISTIC_RULES', 'AI_HEURISTIC', 'TEACHER')),
-    is_valid_math BOOLEAN NOT NULL,
+    is_valid_math VARCHAR(20) NOT NULL CHECK (is_valid_math IN ('VALID', 'INVALID', 'UNDETERMINED', 'NEEDS_REVIEW')),
     score DOUBLE PRECISION NOT NULL CHECK (score >= 0.0 AND score <= 1.0),
     confidence DOUBLE PRECISION NOT NULL CHECK (confidence >= 0.0 AND confidence <= 1.0),
     error_detected BOOLEAN NOT NULL DEFAULT FALSE,
@@ -337,18 +422,20 @@ CREATE TABLE math_step_evaluations (
     evaluated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+CREATE INDEX ix_math_step_evaluations_revision ON math_step_evaluations(step_revision_id, evaluator_type);
+
 -- 7. Bảng SolutionFeedback
 CREATE TABLE math_solution_feedbacks (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     attempt_id UUID NOT NULL REFERENCES math_solution_attempts(id) ON DELETE CASCADE,
-    step_id UUID REFERENCES math_solution_steps(id) ON DELETE SET NULL,
+    step_revision_id UUID REFERENCES math_step_revisions(id) ON DELETE SET NULL,
     feedback_type VARCHAR(50) NOT NULL CHECK (feedback_type IN ('REFERENCE_HINT', 'SOCRATIC_QUESTION', 'VERIFICATION_ALERT', 'ERROR_CORRECTION')),
     content TEXT NOT NULL,
     is_reference_only BOOLEAN NOT NULL DEFAULT TRUE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- 8. Bảng EvaluationDecision
+-- 8. Bảng EvaluationDecision (Quyết định chung cuộc, phát sinh bằng chứng duy nhất)
 CREATE TABLE math_evaluation_decisions (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     attempt_id UUID NOT NULL UNIQUE REFERENCES math_solution_attempts(id) ON DELETE CASCADE,
@@ -360,4 +447,32 @@ CREATE TABLE math_evaluation_decisions (
     decided_by UUID REFERENCES users(id) ON DELETE SET NULL,
     decided_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+-- 9. Bảng EvaluationOverride (Lịch sử audit của Giáo viên)
+CREATE TABLE math_evaluation_overrides (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    decision_id UUID NOT NULL REFERENCES math_evaluation_decisions(id) ON DELETE CASCADE,
+    teacher_id UUID NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
+    previous_score DOUBLE PRECISION NOT NULL,
+    new_score DOUBLE PRECISION NOT NULL,
+    previous_is_correct BOOLEAN NOT NULL,
+    new_is_correct BOOLEAN NOT NULL,
+    override_reason TEXT NOT NULL,
+    corrective_evidence_event_id UUID REFERENCES learning_evidence_events(id) ON DELETE SET NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
 ```
+
+---
+
+## 5. Architecture Decision Record (ADR)
+
+### ADR-03: Thiết kế Động cơ Giải toán Từng bước Hoàn chỉnh
+
+- **Trạng thái**: ĐÃ DUYỆT (ACCEPTED)
+- **Quyết định**:
+  1. Tách biệt hoàn toàn `attempt_revision_number` (optimistic lock cấp phiên) và `step_revision_number` (lịch sử rollback từng bước).
+  2. Bắt buộc gắn kết `StepEvaluation` vào `StepRevision` bất biến.
+  3. Mở rộng `is_valid_math` thành 4 trạng thái để xử lý triệt để các hạn chế của bộ parser/CAS toán học.
+  4. Đề xuất nguồn bằng chứng chuyên biệt `MATH_SOLUTION_EVALUATION` và tích hợp vào `LearningEvidenceContextResolver` cho cả 2 nhánh đề bài, đảm bảo chống ghi trùng với Assignment v1.
+  5. Thiết lập bảng `math_evaluation_overrides` bảo vệ tính toàn vẹn append-only của `learning_evidence_events`.

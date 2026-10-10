@@ -1,25 +1,25 @@
 # Đề xuất Kiến trúc Phiên bản Hóa API (API Versioning Proposal)
-## Bảo vệ Frozen API v1 và Thiết lập API v2 cho Math Solution Engine
+## Bảo vệ Frozen API v1 và Thiết lập API v2 bằng FastAPI Sub-Application
 
 - **Dự án**: Coach Learning (EduMS)
-- **Mã Sprint**: SPRINT-01 (ARCH-01 + DATA-READY-01)
+- **Mã Sprint**: SPRINT-01.1 (Kiến trúc chuẩn hóa trước Migration)
 - **Mã tài liệu**: API-VER-01
-- **Trạng thái**: ĐỀ XUẤT KIẾN TRÚC (CHƯA THÊM PRODUCTION ENDPOINT)
+- **Trạng thái**: ĐỀ XUẤT KIẾN TRÚC ĐÃ HIỆU CHỈNH (ARCHITECTURAL SPECIFICATION)
 
 ---
 
 ## 1. Hiện trạng Kiểm tra Hợp đồng API v1 (API v1 Contract Audit)
 
 ### 1.1. Cơ chế Đóng băng Hiện tại (Current Freeze Mechanism)
-Hệ thống hiện đang bảo vệ toàn vẹn hợp đồng API v1 bằng cơ chế song song:
+Hệ thống hiện đang bảo vệ toàn vẹn hợp đồng API v1 bằng cơ chế song song nghiêm ngặt:
 1. **File lược đồ chuẩn tắc**: `backend/contracts/openapi-v1.json` (chứa toàn bộ định nghĩa endpoints, query params, request bodies và responses của API v1).
-2. **File mã băm SHA-256**: `backend/contracts/openapi-v1.sha256` (lưu mã hash SHA-256 nhỏ gọn của schema được sinh bằng thuật toán sắp xếp khóa `sort_keys=True`).
+2. **File mã băm SHA-256**: `backend/contracts/openapi-v1.sha256` (lưu mã hash SHA-256 nhỏ gọn của schema được sinh bằng thuật toán sắp xếp khóa `sort_keys=True`, loại bỏ khoảng trắng `separators=(',', ':')`).
 3. **Công cụ xuất hợp đồng**: `backend/app/api/export_contract.py`:
-   - Khởi tạo ứng dụng tạm với cấu hình kiểm thử (`app = create_app(settings)`).
-   - Xuất schema `app.openapi()` ra file JSON và tính toán SHA-256.
+   - Khởi tạo ứng dụng chuẩn thông qua cấu hình `app = create_app(settings)`.
+   - Lấy lược đồ thông qua `app.openapi()`, xuất schema ra file JSON chuẩn và tính toán mã băm SHA-256.
 4. **Công cụ kiểm tra hợp đồng**: `backend/app/api/check_contract.py`:
-   - So sánh schema thời gian thực với `openapi-v1.json` và mã băm `openapi-v1.sha256`.
-   - Nếu phát hiện bất kỳ sự khác biệt nào (contract drift), lệnh trả về mã lỗi 1 và hiển thị diff chi tiết.
+   - So sánh schema thời gian thực được sinh từ `get_deterministic_schema()` với `openapi-v1.json` và mã băm `openapi-v1.sha256`.
+   - Nếu phát hiện bất kỳ sự khác biệt nào (contract drift), lệnh trả về mã thoát 1 và hiển thị diff chi tiết qua `sys.stderr`.
 5. **Cổng kiểm soát CI**: File `.github/workflows/backend-data-validation.yml` chạy tự động lệnh:
    ```bash
    python -m app.api.check_contract
@@ -33,166 +33,183 @@ application.include_router(api_router)
 ```
 Tất cả các route từ mọi module đều được gộp chung vào một router duy nhất `api_router` (`backend/app/api/router.py`).
 Nếu chúng ta khai báo các endpoint mới của `math_solutions` trực tiếp vào `api_router`:
-- Hàm `app.openapi()` sẽ tự động đưa các endpoint mới vào schema tổng.
+- Hàm `app.openapi()` của ứng dụng chính sẽ tự động gom các endpoint mới vào schema tổng.
 - File `openapi-v1.json` và mã hash `openapi-v1.sha256` sẽ ngay lập tức bị lệch (Drift detected).
-- **Ràng buộc cấm**: Quy định dự án nghiêm cấm việc sửa đổi file checksum `openapi-v1.sha256` để "hợp thức hóa" contract drift của v1.
-
-Do đó, **bắt buộc phải có một kiến trúc phiên bản hóa API độc lập** cho các chức năng mới.
-
----
-
-## 2. Phân tích Các Phương án Phiên bản Hóa API (Comparison of Strategies)
-
-### Phương án 1 (Khuyến nghị): Explicit URI Versioning `/api/v2` với Hợp đồng Riêng `openapi-v2.json`
-- **Mô tả**:
-  - Giữ nguyên toàn bộ `api_router` hiện tại phục vụ API v1 (tất cả các route gốc `/students`, `/teachers`, `/practice`, `/assignments`, `/mastery`... giữ nguyên tiền tố và ngữ nghĩa).
-  - Tạo router phiên bản mới `api_v2_router` (hoặc mount tại tiền tố `/api/v2` hoặc tạo sub-app FastAPI).
-  - Toàn bộ endpoints của `math_solutions` được đặt dưới `/api/v2/math-solutions/...`.
-  - Hợp đồng mới được xuất ra file riêng: `backend/contracts/openapi-v2.json` và `backend/contracts/openapi-v2.sha256`.
-  - Mở rộng script `check_contract.py` để kiểm tra độc lập cả hai hợp đồng:
-    - Kiểm tra `openapi-v1.json` đối chiếu với v1 routes $\to$ Đảm bảo v1 không suy suyển.
-    - Kiểm tra `openapi-v2.json` đối chiếu với v2 routes $\to$ Đảm bảo v2 không bị drift ngoài ý muốn.
-- **Ưu điểm**:
-  - **Bảo vệ tuyệt đối API v1**: Không chạm vào bất kỳ dòng nào của `openapi-v1.json` và `openapi-v1.sha256`.
-  - **Tương thích hoàn hảo với frontend**: Next.js client có thể dùng `apiClientV1` cho các tính năng hiện tại và `apiClientV2` cho Solution Engine mà không bị xung đột.
-  - **Hỗ trợ tự nhiên bởi FastAPI**: Dễ dàng tạo OpenAPI docs riêng cho `/docs/v1` và `/docs/v2`.
-- **Nhược điểm**:
-  - Cần cấu hình router v2 riêng và cập nhật nhẹ kịch bản export/check trong CI.
+- **Ràng buộc cấm (`API-V1-FREEZE`)**: Quy định dự án nghiêm cấm việc sửa đổi file checksum `openapi-v1.sha256` để "hợp thức hóa" contract drift của v1.
+- **Ràng buộc cấm giả lập cấu hình**: Không được phép thay thế cơ chế sinh hợp đồng v1 bằng một ứng dụng dummy/mock có cấu hình khác với `create_app(settings)` thực tế trong sản xuất.
 
 ---
 
-### Phương án 2: Namespaced Feature Sub-path `/api/v1-ext/math-solutions` hoặc Router Cô lập
-- **Mô tả**:
-  - Đặt các endpoint giải toán dưới một sub-path mở rộng, ví dụ `/api/v1-ext/math-solutions/` hoặc `/api/solutions/v1/`.
-  - Không tăng số phiên bản toàn cục lên v2 mà coi đây là một "extension namespace".
-- **Ưu điểm**:
-  - Giữ cảm giác hệ thống vẫn ở thế hệ v1, chỉ mở rộng thêm tính năng giải toán.
-- **Nhược điểm**:
-  - Vẫn làm thay đổi schema của `app.openapi()` nếu mount vào cùng ứng dụng gốc, buộc phải viết middleware lọc schema phức tạp.
-  - Tiền tố `/api/v1-ext/` không theo quy ước chuẩn RESTful quốc tế, gây khó hiểu cho các nhà phát triển tích hợp sau này.
+## 2. Phân tích Các Phương án Kỹ thuật Phiên bản Hóa
+
+### Phương án A (BỊ BÁC BỎ): Dùng dummy `FastAPI` instance trong script xuất hợp đồng
+- **Cách làm**: Sửa `export_contract.py` để khởi tạo `app = FastAPI(title="EduMS v1", ...)` và chỉ include `api_router`, tách riêng khỏi `create_app()`.
+- **Lý do bác bỏ**: Vi phạm nguyên tắc bảo toàn hợp đồng thực tế. Việc tạo một instance giả lập với metadata khác làm mất đi tính đại diện trung thực của ứng dụng runtime, che giấu các lỗi cấu hình middleware hoặc lifespan.
+
+### Phương án B (BỊ BÁC BỎ): Gộp router v2 vào app gốc với tiền tố `APIRouter(prefix="/api/v2")`
+- **Cách làm**: `application.include_router(api_v2_router)`.
+- **Lý do bác bỏ**: Khi dùng `include_router`, FastAPI mặc định hợp nhất toàn bộ routes vào một cây tài liệu OpenAPI duy nhất (`application.openapi()`). Điều này làm hỏng 100% mã hash của `openapi-v1.sha256`.
+
+### Phương án C (ĐƯỢC CHỌN - CHUẨN KIẾN TRÚC): FastAPI Sub-Application Mount tại `/api/v2`
+- **Cách làm**:
+  - Tạo một ứng dụng FastAPI con riêng biệt: `v2_app = create_v2_app(configuration)`.
+  - Mount ứng dụng con vào ứng dụng chính: `application.mount("/api/v2", v2_app)`.
+- **Cơ chế hoạt động sâu của FastAPI / Starlette**:
+  1. **Tách biệt OpenAPI tự nhiên**: Starlette coi một mounted app là một ASGI endpoint độc lập. Bộ sinh OpenAPI mặc định của FastAPI (`application.openapi()`) **chỉ quét các route được đăng ký trực tiếp trên app cha, hoàn toàn không đào sâu vào mounted sub-apps**.
+  2. **Bảo tồn tuyệt đối OpenAPI v1**: `create_app(settings).openapi()` tiếp tục trả về chính xác 100% schema của toàn bộ route v1 hiện hành mà không cần bất kỳ bộ lọc, mock app hay cấu hình phụ nào.
+  3. **OpenAPI v2 độc lập**: Bản thân `v2_app` sở hữu OpenAPI schema riêng biệt, có tài liệu Swagger tại `/api/v2/docs` và schema tại `/api/v2/openapi.json`.
+  4. **Không bị lặp tiền tố URL**: Trong `v2_app`, các route được định nghĩa theo đường dẫn tương đối (ví dụ: `@router.post("/math-solutions/attempts")`). Khi được mount tại `/api/v2`, đường dẫn tuyệt đối chuẩn xác là `/api/v2/math-solutions/attempts`, hoàn toàn triệt tiêu nguy cơ sinh trùng lặp `/api/v2/api/v2/...`.
 
 ---
 
-### Phương án 3: Header-based Versioning (`Accept: application/vnd.edums.v2+json`)
-- **Mô tả**:
-  - Sử dụng chung đường dẫn URL, phân biệt phiên bản thông qua HTTP Request Header `Accept` hoặc `X-API-Version`.
-- **Ưu điểm**:
-  - Giữ nguyên cấu trúc URL sạch.
-- **Nhược điểm**:
-  - FastAPI không hỗ trợ native việc sinh OpenAPI phân tách rõ ràng theo header mà cần can thiệp sâu vào OpenAPI generator nội bộ.
-  - Gây khó khăn lớn cho việc caching ở tầng CDN/Reverse Proxy và khó kiểm thử thủ công qua Swagger UI hoặc browser thông thường.
+## 3. Thiết kế Mã nguồn Chi tiết (Implementation Specification)
 
----
+### 3.1. Cấu trúc Khởi tạo Ứng dụng v2 (`backend/app/api/v2/application.py`)
+```python
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from app.core.config import Settings
+from app.core.errors import ErrorResponse, register_exception_handlers
+from app.api.v2.router import api_v2_router
 
-## 3. Lựa chọn và Đề xuất Kiến trúc
-
-### Quyết định: Chọn **Phương án 1 (URI Versioning `/api/v2` với contract `openapi-v2.json`)**
-
-#### Lý do lựa chọn:
-1. **Tuân thủ triệt để nguyên tắc `API-V1-FREEZE`**:
-   Bằng cách tách biệt ứng dụng con hoặc router generator cho v1 và v2, file `contracts/openapi-v1.json` và mã băm `contracts/openapi-v1.sha256` được bảo toàn 100%, không xảy ra bất kỳ rủi ro nào với CI hiện có.
-2. **Cách ly rủi ro (Fault Isolation)**:
-   Mọi thay đổi, bổ sung hoặc thử nghiệm đối với Solution Engine trong tương lai chỉ tác động lên schema của v2, hoàn toàn không ảnh hưởng đến sự ổn định của các module hiện tại (`practice/`, `assignments/`, `mastery/`).
-3. **Phù hợp với mô hình Modular Monolith**:
-   Mô hình này cho phép backend phát triển thành các thế hệ API rõ ràng, minh bạch cho đội ngũ frontend và các đối tác tích hợp.
-
----
-
-## 4. Kế hoạch Triển khai Chi tiết (Implementation Plan)
-
-### 4.1. Cấu trúc Thư mục Đề xuất
-```
-backend/
-├── app/
-│   ├── api/
-│   │   ├── check_contract.py         # Mở rộng để kiểm tra cả v1 và v2
-│   │   ├── export_contract.py        # Mở rộng để xuất cả openapi-v1 và openapi-v2
-│   │   ├── router.py                 # Router v1 hiện tại (GIỮ NGUYÊN)
-│   │   ├── v2/
-│   │   │   ├── __init__.py
-│   │   │   └── router.py             # Router v2 tập hợp các feature v2
-│   ├── math_solutions/
-│   │   ├── router.py                 # Endpoints của Solution Engine
-│   │   ├── schemas.py
-│   │   └── service.py
-├── contracts/
-│   ├── openapi-v1.json               # ĐÓNG BĂNG (KHÔNG CHỈNH SỬA)
-│   ├── openapi-v1.sha256             # ĐÓNG BĂNG (KHÔNG CHỈNH SỬA)
-│   ├── openapi-v2.json               # HỢP ĐỒNG MỚI CHO V2
-│   └── openapi-v2.sha256             # MÃ BĂM MỚI CHO V2
+def create_v2_app(settings: Settings) -> FastAPI:
+    """Tạo FastAPI sub-application độc lập cho API v2."""
+    v2_app = FastAPI(
+        title=f"{settings.app_name} API v2",
+        version="2.0.0",
+        description="EduMS API v2 — Step-by-Step Math Solution Engine & Advanced Learning Services.",
+        debug=False,
+        docs_url="/docs",
+        redoc_url="/redoc",
+        openapi_url="/openapi.json",
+        responses={
+            422: {"model": ErrorResponse},
+            500: {"model": ErrorResponse},
+        },
+    )
+    v2_app.state.settings = settings
+    register_exception_handlers(v2_app)
+    v2_app.include_router(api_v2_router)
+    return v2_app
 ```
 
-### 4.2. Thiết kế Mã nguồn Cụ thể (Kế hoạch khi kích hoạt STEP-API-01)
-
-#### 1. Router v2 (`backend/app/api/v2/router.py`)
+### 3.2. Router v2 (`backend/app/api/v2/router.py`)
 ```python
 from fastapi import APIRouter
 from app.math_solutions.router import router as math_solutions_router
 
-api_v2_router = APIRouter(prefix="/api/v2")
-api_v2_router.include_router(math_solutions_router, prefix="/math-solutions", tags=["Math Solutions (v2)"])
+api_v2_router = APIRouter()
+# Không đặt prefix="/api/v2" ở đây vì mount("/api/v2", ...) đã cung cấp tiền tố gốc
+api_v2_router.include_router(
+    math_solutions_router,
+    prefix="/math-solutions",
+    tags=["Math Solutions (v2)"],
+)
 ```
 
-#### 2. Tích hợp trong `application.py`
+### 3.3. Tích hợp Mount trong `backend/app/application.py`
 ```python
 def create_app(settings: Settings | None = None) -> FastAPI:
-    ...
-    # v1 Router (Mount tại gốc hoặc theo prefix cũ)
+    configuration = settings if settings is not None else get_settings()
+    application = FastAPI(
+        title=configuration.app_name,
+        version=API_VERSION,
+        description="EduMS education management and university entrance exam support API.",
+        debug=False,
+        lifespan=lifespan,
+        responses={
+            422: {"model": ErrorResponse},
+            500: {"model": ErrorResponse},
+        },
+    )
+    application.state.settings = configuration
+    application.add_middleware(
+        CORSMiddleware,
+        allow_origins=[configuration.frontend_origin],
+        allow_credentials=False,
+        allow_methods=["GET", "POST", "PATCH", "DELETE"],
+        allow_headers=["Accept", "Content-Type", "Authorization"],
+    )
+    register_exception_handlers(application)
+    
+    # 1. API v1 hiện hành (giữ nguyên gốc)
     application.include_router(api_router)
     
-    # v2 Router (Mount riêng biệt dưới /api/v2)
-    application.include_router(api_v2_router)
+    # 2. Mount API v2 sub-application tại /api/v2
+    # LƯU Ý: mount() không đưa route con vào application.openapi() -> Bảo toàn v1 freeze!
+    from app.api.v2.application import create_v2_app
+    v2_subapp = create_v2_app(configuration)
+    application.mount("/api/v2", v2_subapp)
+    
     return application
 ```
 
-#### 3. Bộ tạo Schema Độc lập (`export_contract.py`)
-Để tạo schema v1 độc lập mà không chứa các route v2:
+---
+
+## 4. Quản lý Hợp đồng Song song (Dual Contract Lifecycle)
+
+### 4.1. Cấu trúc Lưu trữ Hợp đồng
+```
+backend/contracts/
+├── openapi-v1.json        # [FROZEN] Khóa cứng toàn bộ API v1
+├── openapi-v1.sha256      # [FROZEN] Checksum bất biến của v1
+├── openapi-v2.json        # [ACTIVE] Hợp đồng mới của API v2
+└── openapi-v2.sha256      # [ACTIVE] Checksum tự động của v2
+```
+
+### 4.2. Cơ chế Sinh Schema Chuẩn tắc (`backend/app/api/export_contract.py`)
 ```python
-def get_v1_deterministic_schema() -> dict[str, Any]:
-    # Khởi tạo app chỉ include api_router v1
-    app = FastAPI(title="EduMS v1", version="1.0.0")
-    app.include_router(api_router)
+def get_deterministic_schema() -> dict[str, Any]:
+    """Sinh lược đồ OpenAPI v1 chuẩn từ ứng dụng thực tế.
+    Nhờ cơ chế mount, lược đồ này hoàn toàn không chứa route v2."""
+    settings = get_contract_settings()
+    app = create_app(settings)
     return app.openapi()
 
 def get_v2_deterministic_schema() -> dict[str, Any]:
-    # Khởi tạo app include api_v2_router
-    app = FastAPI(title="EduMS v2", version="2.0.0")
-    app.include_router(api_v2_router)
-    return app.openapi()
+    """Sinh lược đồ OpenAPI v2 chuẩn từ sub-application v2."""
+    from app.api.v2.application import create_v2_app
+    settings = get_contract_settings()
+    v2_app = create_v2_app(settings)
+    return v2_app.openapi()
 ```
-Bằng kỹ thuật này:
-- `openapi-v1.json` được sinh **chính xác 100% từ `api_router` v1**, giữ nguyên vẹn hash `openapi-v1.sha256` mà không bị lẫn route v2.
-- `openapi-v2.json` được sinh độc lập từ `api_v2_router` với mã hash riêng.
 
-#### 4. Kịch bản Kiểm tra Hợp đồng (`check_contract.py`)
-Script sẽ chạy tuần tự hai vòng kiểm tra:
-1. `verify_contract_v1()`: Đọc `openapi-v1.json` và `openapi-v1.sha256` $\to$ Báo lỗi nếu có drift v1.
-2. `verify_contract_v2()`: Đọc `openapi-v2.json` và `openapi-v2.sha256` $\to$ Báo lỗi nếu có drift v2.
-
----
-
-## 5. Danh mục Endpoints Đề xuất cho Solution Engine (API v2)
-
-*(Dự kiến triển khai tại Sprint tiếp theo sau khi phương án được phê duyệt; KHÔNG thêm vào production lúc này)*:
-
-| Phương thức | Đường dẫn | Chức năng | Phân quyền |
-| :--- | :--- | :--- | :--- |
-| `POST` | `/api/v2/math-solutions/attempts` | Khởi tạo phiên giải bài (`SolutionAttempt`) | `STUDENT` |
-| `GET` | `/api/v2/math-solutions/attempts/{id}` | Lấy chi tiết bài làm, danh sách bước & feedback | `STUDENT`, `TEACHER` |
-| `POST` | `/api/v2/math-solutions/attempts/{id}/steps` | Thêm bước giải mới vào bài làm | `STUDENT` |
-| `PATCH` | `/api/v2/math-solutions/attempts/{id}/steps/{step_id}` | Cập nhật nội dung bước (tạo `StepRevision` mới) | `STUDENT` |
-| `DELETE` | `/api/v2/math-solutions/attempts/{id}/steps/{step_id}` | Xóa mềm bước giải | `STUDENT` |
-| `POST` | `/api/v2/math-solutions/attempts/{id}/reorder` | Sắp xếp lại thứ tự các bước | `STUDENT` |
-| `POST` | `/api/v2/math-solutions/attempts/{id}/steps/{step_id}/rollback` | Khôi phục bước về một `revision_number` cũ | `STUDENT` |
-| `POST` | `/api/v2/math-solutions/attempts/{id}/evaluate-step/{step_id}` | Yêu cầu đánh giá bước tức thì (chế độ Guided) | `STUDENT` |
-| `POST` | `/api/v2/math-solutions/attempts/{id}/submit` | Nộp bài toàn bộ và kích hoạt chấm chung cuộc | `STUDENT` |
-| `GET` | `/api/v2/math-solutions/rubrics/{question_id}` | Xem rubric chấm của câu hỏi | `TEACHER`, `STUDENT` |
-| `POST` | `/api/v2/math-solutions/attempts/{id}/teacher-grade` | Giáo viên chấm bài / ghi đè điểm | `TEACHER` |
+### 4.3. Kịch bản Kiểm tra Hợp đồng (`backend/app/api/check_contract.py`)
+Script kiểm tra thực hiện hai pha độc lập:
+1. **Pha 1 — Kiểm tra v1 (`verify_v1_contract()`)**:
+   - Chạy `get_deterministic_schema()`.
+   - Đối chiếu với `openapi-v1.json` và `openapi-v1.sha256`.
+   - Nếu có bất kỳ sự thay đổi nào $\to$ Báo lỗi thất bại ngay lập tức (FAIL).
+2. **Pha 2 — Kiểm tra v2 (`verify_v2_contract()`)**:
+   - Chạy `get_v2_deterministic_schema()`.
+   - Đối chiếu với `openapi-v2.json` và `openapi-v2.sha256`.
+   - Kiểm soát contract drift của các tính năng mới mà không đụng chạm đến v1.
 
 ---
 
-## 6. Cam kết Ràng buộc Kiến trúc
+## 5. Kế hoạch Regression Chứng minh Tính Toàn vẹn (Regression Proof Plan)
 
-1. **Không can thiệp vào `contracts/openapi-v1.json` và `contracts/openapi-v1.sha256`**.
-2. **Không sửa đổi mã băm để che giấu contract drift**.
-3. **Chưa thêm bất kỳ production endpoint nào trong Sprint 1 này**. Việc hiện thực hóa các router v2 sẽ được tiến hành trong Sprint tiếp theo (`STEP-API-01`) theo đúng lộ trình backlog được phê duyệt.
+Kế hoạch kiểm thử regression xác minh 4 luận điểm kỹ thuật bắt buộc:
+
+| Mục tiêu chứng minh | Phương pháp kiểm thử | Kết quả kỳ vọng |
+| :--- | :--- | :--- |
+| **1. OpenAPI v1 giữ nguyên nội dung và checksum** | Chạy `.venv\Scripts\python -m app.api.check_contract` sau khi mount sub-app v2 rỗng/có route. | Trả về mã thoát 0: `API v1 contract verification PASSED`. File `openapi-v1.sha256` không lệch 1 bit. |
+| **2. API v2 có hợp đồng độc lập** | Gọi `GET /api/v2/openapi.json` trên test client; chạy `verify_v2_contract()`. | Schema v2 chỉ chứa các thẻ `Math Solutions (v2)` và các endpoint `/math-solutions/...`, có mã hash v2 riêng biệt. |
+| **3. Các endpoint v1 giữ nguyên hành vi** | Chạy toàn bộ test suite hiện có của backend: `pytest tests/`. | 100% tests của `auth/`, `students/`, `practice/`, `assignments/`, `mastery/` vượt qua bình thường, đường dẫn và quyền truy cập không đổi. |
+| **4. Mount không sinh tiền tố lặp** | Kiểm tra danh sách URLs bằng `TestClient(app)`: gọi `POST /api/v2/math-solutions/attempts`. | Request được route chính xác tới handler v2; không tồn tại các path dạng `/api/v2/api/v2/...` hay `/api/v2/v2/...`. |
+
+---
+
+## 6. Architecture Decision Record (ADR)
+
+### ADR-01: Lựa chọn Kiến trúc Phiên bản hóa API cho Sprint 1.1
+
+- **Trạng thái**: ĐÃ DUYỆT (ACCEPTED)
+- **Bối cảnh**: Hệ thống yêu cầu đóng băng vĩnh viễn hợp đồng API v1 (`API-V1-FREEZE`), nghiêm cấm cập nhật checksum `openapi-v1.sha256`. Module mới `math_solutions` yêu cầu mở rộng các endpoint RESTful hiện đại.
+- **Quyết định**: Sử dụng FastAPI Sub-application mount tại `/api/v2` thay vì gộp chung APIRouter vào root app.
+- **Hệ quả tích cực**:
+  - Bảo vệ 100% hợp đồng v1 mà không cần can thiệp logic sinh schema giả lập.
+  - Tách biệt hoàn toàn OpenAPI docs cho v1 và v2.
+  - Không sinh tiền tố lặp, đảm bảo URL RESTful tiêu chuẩn.
+  - Phù hợp với kiến trúc Modular Monolith mở rộng dài hạn.
+- **Hệ quả cần quản lý**: Cần duy trì 2 file hợp đồng (`openapi-v1.json` và `openapi-v2.json`) trong CI pipeline.
