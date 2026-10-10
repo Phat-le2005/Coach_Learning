@@ -5,6 +5,7 @@ on:
     branches:
       - "test/step-verify-*"
       - "feat/step-core-*"
+      - "test/step-verify-02-*"
   pull_request:
     branches: [main, develop, "feat/step-arch-01-math-solutions-schema"]
 
