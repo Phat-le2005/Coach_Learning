@@ -1,6 +1,9 @@
 # Thiết kế Hệ thống Giải toán Từng bước (Solution Engine Design)
 ## Module `backend/app/math_solutions/` (Hiệu chỉnh Kiến trúc Sprint 1.1)
 
+
+> **Bắt buộc trước migration — STEP-ARCH-00:** [Final Schema & Effective Evidence Safety Gate](STEP_ARCH_00_SAFETY_GATE.md) là quyết định thiết kế ưu tiên nếu các ví dụ SQL/logic bên dưới còn mâu thuẫn. Chưa xác minh PostgreSQL runtime.
+
 - **Dự án**: Coach Learning (EduMS)
 - **Mã Sprint**: SPRINT-01.1
 - **Phạm vi học thuật đầu tiên**: Toán 12 — Tính đơn điệu của hàm số (Xét dấu đạo hàm)
@@ -183,10 +186,10 @@ classDiagram
     CREATE UNIQUE INDEX uq_math_solution_step_active_index 
     ON math_solution_steps(attempt_id, step_index) 
     WHERE is_deleted = FALSE 
-    DEFERRABLE INITIALLY DEFERRED;
+    NON-DEFERRABLE (partial unique index; immediate uniqueness check);
     ```
   - Trong một transaction đổi vị trí (ví dụ swap bước 1 và bước 2): Postgres trì hoãn kiểm tra ràng buộc duy nhất cho đến khi lệnh `COMMIT` được gọi.
-  - Tầng service bổ sung phương án phòng thủ **Two-Phase Reindexing**: gán giá trị tạm thời mang dấu âm (`step_index = -new_index`) rồi chuyển sang giá trị dương (`step_index = ABS(step_index)`).
+  - Tầng service bổ sung phương án phòng thủ **Two-Phase Reindexing**: gán chỉ số tạm DƯƠNG duy nhất lớn hơn mọi index hiện có và index đích, flush, sau đó chuyển về thứ tự 1..N trong cùng transaction đã khóa SolutionAttempt.
 
 ---
 
@@ -257,12 +260,11 @@ Khi học sinh làm bài tập giải từng bước trong một bài tập lớ
   - Nếu câu hỏi đã được giải và chấm qua Solution Engine: hệ thống cập nhật trường `score` và `student_answer` trên `AssignmentStudentQuestion` / `StudentAssignmentMaterialItem` nhưng **tuyệt đối KHÔNG phát sinh thêm sự kiện `ASSIGNMENT_CANONICAL_QUESTION` hoặc `TEACHER_MATERIAL_ITEM`**.
   - Nhờ vậy, điểm năng lực Mastery và lịch sử chẩn đoán chỉ ghi nhận một luồng bằng chứng duy nhất.
 
-#### D. Tính Bất biến của Bằng chứng và Lịch sử Ghi đè của Giáo viên
-- Bảng `learning_evidence_events` có trigger SQLAlchemy cấm cập nhật/xóa: `ValueError("LearningEvidenceEvent is append-only")`.
-- Khi giáo viên chấm bài hoặc điều chỉnh điểm số (`TEACHER_OVERRIDE`):
-  1. Bản ghi `learning_evidence_events` ban đầu được **giữ nguyên vẹn 100%**.
-  2. Hệ thống ghi nhật ký chi tiết vào bảng audit `math_evaluation_overrides` (chứa `previous_score`, `new_score`, lý do và ID giáo viên).
-  3. Nếu việc sửa điểm làm thay đổi trạng thái thành thạo của học sinh, một sự kiện bằng chứng điều chỉnh (Corrective Evidence Event) độc lập mới được phát sinh bổ sung, bảo tồn lịch sử audit minh bạch.
+#### D. Teacher regrade — effective-evidence projection
+- `LearningEvidenceEvent` cũ là immutable ledger. Giáo viên sửa điểm chỉ append audit vào `math_evaluation_overrides`; **không emit corrective LearningEvidenceEvent như một lần làm mới**.
+- Với mỗi sự kiện gốc, effective score/correctness lấy bản override có thẩm quyền mới nhất. Under student row lock, rebuild/replay các sự kiện có hiệu lực theo thứ tự ổn định từ clean state (hoặc snapshot được kiểm chứng), giữ nguyên số lượt, weights, hints, difficulty, timestamps; reconcile ReviewSchedule. Trường hợp chưa có safe replay thì correction PENDING, không sửa Mastery.
+- Tests: 0.4 -> 1.0 -> 0.7 cùng một attempt vẫn count=1, retries không double count; verification/repair thực vẫn có attempt/evidence độc lập.
+- SQLAlchemy before_update/delete hooks không bảo vệ khỏi direct SQL; cần chính sách DB role/trigger tương ứng.
 
 ---
 
@@ -315,6 +317,7 @@ CREATE TABLE math_solution_attempts (
     practice_session_id UUID REFERENCES practice_sessions(id) ON DELETE SET NULL,
     assignment_id UUID REFERENCES assignments(id) ON DELETE CASCADE,
     student_assignment_id UUID REFERENCES student_assignments(id) ON DELETE CASCADE,
+    assignment_student_question_id UUID REFERENCES assignment_student_questions(id) ON DELETE RESTRICT,
     mode VARCHAR(50) NOT NULL CHECK (mode IN ('GUIDED_LEARNING', 'INDEPENDENT_SOLUTION')),
     status VARCHAR(50) NOT NULL DEFAULT 'DRAFT' CHECK (status IN ('DRAFT', 'IN_PROGRESS', 'SUBMITTED', 'EVALUATED', 'ABANDONED')),
     attempt_revision_number INT NOT NULL DEFAULT 1,
@@ -355,7 +358,7 @@ CREATE TABLE math_solution_steps (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE UNIQUE INDEX uq_math_solution_step_active_index ON math_solution_steps(attempt_id, step_index) WHERE is_deleted = FALSE DEFERRABLE INITIALLY DEFERRED;
+CREATE UNIQUE INDEX uq_math_solution_step_active_index ON math_solution_steps(attempt_id, step_index) WHERE is_deleted = FALSE;
 CREATE INDEX ix_math_solution_steps_attempt ON math_solution_steps(attempt_id, step_index);
 
 -- 3. Bảng StepRevision
@@ -476,3 +479,8 @@ CREATE TABLE math_evaluation_overrides (
   3. Mở rộng `is_valid_math` thành 4 trạng thái để xử lý triệt để các hạn chế của bộ parser/CAS toán học.
   4. Đề xuất nguồn bằng chứng chuyên biệt `MATH_SOLUTION_EVALUATION` và tích hợp vào `LearningEvidenceContextResolver` cho cả 2 nhánh đề bài, đảm bảo chống ghi trùng với Assignment v1.
   5. Thiết lập bảng `math_evaluation_overrides` bảo vệ tính toàn vẹn append-only của `learning_evidence_events`.
+
+
+---
+### STEP-ARCH-00 — implementation overrides
+Không dùng SQL `DEFERRABLE` cho partial unique index, cũng không dùng temporary negative step indexes. Thêm `math_solution_operations` (bảng thứ 10) để idempotency thực sự cho mọi mutation. Correction trong `math_evaluation_overrides` chỉ điều chỉnh effective-evidence projection và rebuild/reconcile Mastery + Review, không tạo lần học mới. Ưu tiên [safety gate](STEP_ARCH_00_SAFETY_GATE.md).

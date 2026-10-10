@@ -1,6 +1,9 @@
 # Thiết kế Lát cắt Dọc (Vertical Slice End-to-End Design)
 ## Kịch bản: Học sinh giải bài Tính Đơn Điệu, Tính Đạo Hàm Đúng nhưng Sai Bảng Xét Dấu
 
+
+> **Bắt buộc trước migration — STEP-ARCH-00:** [Final Schema & Effective Evidence Safety Gate](STEP_ARCH_00_SAFETY_GATE.md) là quyết định thiết kế ưu tiên nếu các ví dụ SQL/logic bên dưới còn mâu thuẫn. Chưa xác minh PostgreSQL runtime.
+
 - **Dự án**: Coach Learning (EduMS)
 - **Mã tài liệu**: SLICE-M12-01
 - **Mã Sprint**: SPRINT-01.1
@@ -234,3 +237,8 @@ sequenceDiagram
   3. Xử lý các pha Kiểm chứng, Sửa sai và Ôn tập như các phiên độc lập, mỗi phiên phát sinh bằng chứng riêng biệt.
   4. Chuẩn hóa chu kỳ ôn tập ngắt quãng thành 2.0 ngày theo đúng `ReviewPolicy` và `LearningFeedbackPolicy` của backend.
   5. Loại bỏ toàn bộ các số liệu Mastery bịa đặt, tính toán nhất quán theo `DeterministicMasteryCalculationStrategy`.
+
+
+---
+### Teacher regrade không tạo lần học mới
+Nếu giáo viên sửa điểm bài đầu từ 0.40 sang 1.0, lưu override audit và rebuild effective Mastery; không thêm `LearningEvidenceEvent`. Hai sự kiện trong vertical slice đại diện cho **hai lượt giải thực** (bài đầu và independent recheck), không phải điểm cũ + correction.

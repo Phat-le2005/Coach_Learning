@@ -1,6 +1,9 @@
 # Báo cáo Sẵn sàng Dữ liệu Toán 12 (Math 12 Data Readiness Report)
 ## Chuyên đề Trọng điểm: Tính Đơn Điệu của Hàm Số & Lỗi Xét Dấu Đạo Hàm (Hiệu chỉnh Sprint 1.1)
 
+
+> **Bắt buộc trước migration — STEP-ARCH-00:** [Final Schema & Effective Evidence Safety Gate](STEP_ARCH_00_SAFETY_GATE.md) là quyết định thiết kế ưu tiên nếu các ví dụ SQL/logic bên dưới còn mâu thuẫn. Chưa xác minh PostgreSQL runtime.
+
 - **Dự án**: Coach Learning (EduMS)
 - **Mã Sprint**: SPRINT-01.1
 - **Mã tài liệu**: DATA-M12-01
@@ -90,7 +93,7 @@ flowchart LR
 
 1. **Thông tin Nguồn gốc và Quyền tác giả (Provenance Metadata)**:
    - Tác giả biên soạn: Đội ngũ Chuyên môn Toán EduMS (ghi rõ họ tên tác giả và mã nhân sự).
-   - Bản quyền: Thuộc sở hữu 100% của Công ty TNHH Giáo dục EduMS.
+   - Quyền sở hữu/sử dụng: chỉ xác nhận sau khi có hồ sơ tác giả/chủ sở hữu và chuyển giao hoặc giấy phép hợp lệ. Không mặc định tồn tại pháp nhân EduMS.
    - Trạng thái bản quyền: `RIGHTS_VERIFIED_INTERNAL_ORIGINAL`.
 2. **Quy trình Phê duyệt Học thuật**:
    - Vòng 1: Biên soạn đề bài, lời giải mẫu và bảng xét dấu `SIGN_TABLE` JSON.
@@ -110,3 +113,8 @@ flowchart LR
   2. Xác định quy mô ngân hàng câu hỏi tối thiểu là 18-20 câu cho chuyên đề Tính đơn điệu để phục vụ trọn vẹn chu trình Assignment (6), Verification (2-3), Adaptive Repair (8) và Spaced Review (2-3).
   3. Gắn nhãn `SIGN_TABLE_QUADRATIC_RULE_INVERTED` là Candidate Misconception cần qua cổng Domain Review trước khi nạp vào database seed.
   4. Mọi câu hỏi biên soạn nội bộ bắt buộc phải có đầy đủ metadata về tác giả, bản quyền và chữ ký duyệt học thuật trước khi đưa vào sản xuất.
+
+
+---
+### STEP-ARCH-00 — quyền dữ liệu
+18–20 câu nguyên bản là mục tiêu biên soạn, chưa phải sản phẩm đã kiểm duyệt; provenance và quyền chuyển giao phải có bằng chứng. Candidate `SIGN_TABLE_QUADRATIC_RULE_INVERTED` vẫn chưa duyệt/seed. Không dùng `DERIVATIVE_ARITHMETIC_SLIP` cho mọi dạng áp dụng sai quy tắc đạo hàm.

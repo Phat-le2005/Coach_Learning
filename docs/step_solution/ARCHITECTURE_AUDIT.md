@@ -1,6 +1,9 @@
 # Báo cáo Kiểm tra Kiến trúc (Architecture Audit Report)
 ## Hệ thống Giải toán Từng bước (Step-by-Step Math Solution Engine) — Hiệu chỉnh Sprint 1.1
 
+
+> **Bắt buộc trước migration — STEP-ARCH-00:** [Final Schema & Effective Evidence Safety Gate](STEP_ARCH_00_SAFETY_GATE.md) là quyết định thiết kế ưu tiên nếu các ví dụ SQL/logic bên dưới còn mâu thuẫn. Chưa xác minh PostgreSQL runtime.
+
 - **Dự án**: Coach Learning (EduMS)
 - **Mã Sprint**: SPRINT-01.1
 - **Trạng thái**: HOÀN TẤT KIỂM TRA ĐỐI SOÁT KIẾN TRÚC & QUY TẮC SƯ PHẠM
@@ -63,7 +66,7 @@ Tuy nhiên, các mô hình làm bài tập hiện tại (`practice/`, `assignmen
 
 ### 3.3. Module `learning_evidence/` & Hạn chế của Context Resolver
 - **Hiện trạng kiểm tra**:
-  - Bảng `learning_evidence_events` là append-only, có trigger cấm UPDATE và DELETE.
+  - Bảng `learning_evidence_events` là append-only, có SQLAlchemy ORM listeners chặn UPDATE/DELETE, chưa xác nhận DB-level trigger.
   - Service `LearningEvidenceContextResolver` (`backend/app/knowledge_gap/evidence_context.py`) ánh xạ dữ liệu theo `source_kind`:
     - `PRACTICE_QUESTION`: Gọi `session.get(QuestionAttempt, event.source_entity_id)`.
     - `ASSIGNMENT_CANONICAL_QUESTION`: Gọi `session.get(AssignmentStudentQuestion, event.source_entity_id)`.
