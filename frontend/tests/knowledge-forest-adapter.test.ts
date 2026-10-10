@@ -390,3 +390,20 @@ test("distinguishes empty available subjects from subjects with no curriculum in
   assert.equal(emptyCurriculumVm.chapters.length, 0);
 });
 
+
+test("marks a released subject as self-study discovery while preserving real hierarchy", () => {
+  const masteryData = createMockMasteryData();
+  const selfStudySubjects = [{ id: "sub-math", code: "MATH12", name: "Toán 12" }];
+
+  const vm = toKnowledgeForestViewModel(
+    masteryData,
+    selfStudySubjects,
+    "sub-math",
+    "student-1",
+    ["sub-math"]
+  );
+
+  assert.equal(vm.accessMode, "SELF_STUDY_DISCOVERY");
+  assert.equal(vm.hasCurriculum, true);
+  assert.equal(vm.chapters[0].topics[0].problemTypes.length, 3);
+});

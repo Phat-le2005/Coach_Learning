@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { safeMasteryPercent, toStudentHomeViewModel } from "../src/features/student-home/adapter";
-import type { StudentLearningStateRead } from "../src/lib/api/contracts";
+import type { StudentLearningStateRead, StudentMasteryRead } from "../src/lib/api/contracts";
 import { ApiContractError } from "../src/lib/api/validation";
 
 function createLearningState(overrides: Partial<StudentLearningStateRead> = {}): StudentLearningStateRead {
@@ -277,4 +277,71 @@ test("toStudentHomeViewModel throws ApiContractError for invalid current_action 
     () => toStudentHomeViewModel(source, "Học sinh"),
     (err: unknown) => err instanceof ApiContractError && err.path === "response.current_action.action_type"
   );
+});
+
+test("new student receives truthful self-study onboarding without classroom data leakage", () => {
+  const source = createLearningState({
+    available_subjects: [],
+    focus_subject_id: null,
+    class_contexts: [],
+  });
+  const mastery: StudentMasteryRead = {
+    student_id: source.student_id,
+    subjects: [
+      {
+        subject_id: "math-self-study",
+        code: "MATH_G12",
+        name: "Toán 12",
+        mastery_score: 0,
+        confidence: 0,
+        attempt_count: 0,
+        correct_count: 0,
+        last_practiced_at: null,
+        last_updated_at: null,
+        state: "NOT_STARTED",
+        problem_type_count: 1,
+        started_problem_type_count: 0,
+        chapters: [
+          {
+            chapter_id: "chapter-1",
+            subject_id: "math-self-study",
+            code: "CHAPTER_1",
+            name: "Ứng dụng đạo hàm",
+            mastery_score: 0,
+            confidence: 0,
+            attempt_count: 0,
+            correct_count: 0,
+            last_practiced_at: null,
+            last_updated_at: null,
+            state: "NOT_STARTED",
+            problem_type_count: 1,
+            started_problem_type_count: 0,
+            topics: [],
+          },
+        ],
+        concepts: [],
+      },
+    ],
+  };
+
+  const vm = toStudentHomeViewModel(source, "Học sinh mới", undefined, mastery, {
+    availableSubjects: [
+      { id: "math-self-study", code: "MATH_G12", name: "Toán 12" },
+    ],
+    selectedSubjectId: "math-self-study",
+    discoveryOnlySubjectIds: ["math-self-study"],
+  });
+
+  assert.equal(vm.learningContext.mode, "SELF_STUDY_ONBOARDING");
+  assert.equal(vm.learningContext.subjectHasActivity, false);
+  assert.equal(vm.subject.name, "Toán 12");
+  assert.equal(vm.currentAction.type, "IDLE");
+  assert.equal(vm.mastery.hasEvidence, false);
+  assert.equal(vm.mastery.score, undefined);
+  assert.equal(vm.assignments.activeCount, 0);
+  assert.equal(vm.review.dueCount, 0);
+  assert.equal(vm.todayPlan, null);
+  assert.equal(vm.priorities.length, 0);
+  assert.equal(vm.knowledgeRegions[0].state, "not_started");
+  assert.equal(vm.knowledgeRegions[0].progress, undefined);
 });

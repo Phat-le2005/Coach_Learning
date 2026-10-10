@@ -205,16 +205,16 @@ export function KnowledgeDetailDrawer({ item, onClose }: KnowledgeDetailDrawerPr
             ) : null}
           </div>
 
-          {/* Truthful Workspace Guidance Callout */}
+          {/* Truthful Practice Workspace boundary */}
           <div className={styles.guidanceCard}>
             <div className={styles.guidanceTitle}>
               <Info size={16} aria-hidden="true" />
-              <span>Không gian luyện tập tương tác</span>
+              <span>{isProblemType ? "Dạng bài đã được chọn" : "Kiến thức nền tảng"}</span>
             </div>
             <p style={{ margin: 0 }}>
-              Giao diện làm bài chi tiết và bài tập thực hành thích ứng (Practice Workspace) đang được hoàn thiện
-              ở giai đoạn tiếp theo (FE-REAL-04). Toàn bộ dữ liệu tiến độ và độ vững trên đây được cập nhật 100%
-              từ cơ sở dữ liệu thật của bạn.
+              {isProblemType
+                ? "Dạng bài này đã sẵn sàng làm phạm vi cho phiên tự học. EduMS chỉ bắt đầu luyện tập sau khi backend xác nhận có câu hỏi đã duyệt và được phân loại đầy đủ; hệ thống không tạo phiên rỗng hoặc giả định câu hỏi khả dụng."
+                : "Hãy chọn một dạng bài trong chương để chuẩn bị phạm vi luyện tập. Khái niệm này không tự động tạo mục tiêu thi hoặc kế hoạch học."}
             </p>
           </div>
         </div>

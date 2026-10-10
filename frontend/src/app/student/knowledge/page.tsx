@@ -10,6 +10,11 @@ import type { KnowledgeForestViewModel } from "@/features/knowledge-forest/types
 import { ForestAtmosphere } from "@/features/student-home/components/ForestAtmosphere";
 import { StudentBottomNav } from "@/features/student-home/components/StudentBottomNav";
 import { StudentTopNav } from "@/features/student-home/components/StudentTopNav";
+import {
+  resolveStudentSubjectAccess,
+  selectAccessibleSubject,
+} from "@/features/self-study/discovery";
+import { getPublishedSelfStudySubjectCodes } from "@/features/self-study/server-policy";
 import { ApiNetworkError, ApiResponseError, createBackendApiClient } from "@/lib/api/client";
 import type { StudentLearningStateRead, StudentMasteryRead } from "@/lib/api/contracts";
 import { requirePageRole } from "@/lib/auth/page-session";
@@ -50,7 +55,7 @@ export default async function StudentKnowledgePage(props: {
 
   // 1. Fetch Student Learning State
   try {
-    learningState = await client.studentLearningState(accessToken, requestedSubjectId);
+    learningState = await client.studentLearningState(accessToken);
   } catch (error) {
     if (error instanceof ApiResponseError) {
       if (error.status === 401) return <SessionRecovery />;
@@ -104,19 +109,7 @@ export default async function StudentKnowledgePage(props: {
     );
   }
 
-  // 2. Validate requestedSubjectId strictly belongs to student's available scope
-  if (
-    requestedSubjectId &&
-    !learningState.available_subjects.some((s) => s.id === requestedSubjectId)
-  ) {
-    return state(
-      "error",
-      "Môn học ngoài phạm vi",
-      "Môn học được yêu cầu không nằm trong danh sách môn học bạn được phân quyền truy cập."
-    );
-  }
-
-  // 3. Fetch Student Mastery with explicit, distinct outcome handling (P0)
+  // 2. Fetch Student Mastery with explicit, distinct outcome handling (P0)
   try {
     mastery = await client.studentMastery(accessToken);
   } catch (error) {
@@ -158,7 +151,7 @@ export default async function StudentKnowledgePage(props: {
     );
   }
 
-  // 4. Validate Student ID Data Isolation
+  // 3. Validate Student ID Data Isolation
   if (mastery.student_id !== learningState.student_id) {
     return state(
       "error",
@@ -167,14 +160,34 @@ export default async function StudentKnowledgePage(props: {
     );
   }
 
-  // 5. Construct ViewModel safely
+  const subjectAccess = resolveStudentSubjectAccess(
+    learningState.available_subjects,
+    mastery,
+    getPublishedSelfStudySubjectCodes()
+  );
+  const selectedSubject = selectAccessibleSubject(
+    subjectAccess,
+    requestedSubjectId,
+    learningState.focus_subject_id
+  );
+
+  if (requestedSubjectId && !selectedSubject) {
+    return state(
+      "error",
+      "Môn học ngoài phạm vi",
+      "Môn học được chọn không thuộc hoạt động của bạn và chưa được phát hành cho chế độ tự học."
+    );
+  }
+
+  // 4. Construct ViewModel safely
   let viewModel: KnowledgeForestViewModel;
   try {
     viewModel = toKnowledgeForestViewModel(
       mastery,
-      learningState.available_subjects,
-      requestedSubjectId || learningState.focus_subject_id || undefined,
-      learningState.student_id
+      subjectAccess.subjects,
+      selectedSubject?.id,
+      learningState.student_id,
+      subjectAccess.discoveryOnlySubjectIds
     );
   } catch (error) {
     return state(

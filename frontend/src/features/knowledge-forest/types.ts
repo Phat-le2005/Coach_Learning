@@ -87,6 +87,7 @@ export interface KnowledgeForestViewModel {
     name: string;
   };
   availableSubjects: StudentLearningSubjectRead[];
+  accessMode: "UNAVAILABLE" | "SELF_STUDY_DISCOVERY" | "LEARNING_ACTIVITY";
   summary: KnowledgeForestSummary;
   chapters: KnowledgeChapterNode[];
   concepts: KnowledgeConceptNode[];

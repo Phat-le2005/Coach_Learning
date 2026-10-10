@@ -136,10 +136,10 @@ export function KnowledgeForest({ data, initialSelectedId }: KnowledgeForestProp
 
       {data.availableSubjects.length === 0 ? (
         <div className={styles.emptyCard} data-testid="empty-no-subjects">
-          <h3 className={styles.emptyTitle}>Chưa có môn học được phân quyền</h3>
+          <h3 className={styles.emptyTitle}>Chưa có môn tự học được phát hành</h3>
           <p className={styles.emptyDesc}>
-            Tài khoản học sinh hiện chưa có môn học nào trong danh sách được phân quyền, hoặc lớp học
-            chưa kích hoạt kế hoạch giảng dạy. Vui lòng liên hệ giáo viên để được xếp lớp hoặc kích hoạt kế hoạch học tập.
+            Tài khoản chưa có hoạt động học tập và chưa có môn nào vượt qua cổng phát hành dành cho
+            tự học. EduMS không hiển thị curriculum staging để thay thế.
           </p>
         </div>
       ) : data.hasCurriculum ? (

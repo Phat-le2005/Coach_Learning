@@ -31,7 +31,8 @@ export function toKnowledgeForestViewModel(
   mastery: StudentMasteryRead | null | undefined,
   availableSubjects: StudentLearningSubjectRead[] = [],
   selectedSubjectId?: string,
-  studentId?: string
+  studentId?: string,
+  discoveryOnlySubjectIds: readonly string[] = []
 ): KnowledgeForestViewModel {
   // P0 Data Isolation invariant: Mastery student_id must match learning state student_id
   if (mastery && studentId && mastery.student_id !== studentId) {
@@ -45,6 +46,7 @@ export function toKnowledgeForestViewModel(
     return {
       subject: { id: "", code: "", name: "Chưa có môn học" },
       availableSubjects: [],
+      accessMode: "UNAVAILABLE",
       summary: createEmptySummary(),
       chapters: [],
       concepts: [],
@@ -82,6 +84,9 @@ export function toKnowledgeForestViewModel(
         name: activeSubjectInfo.name,
       },
       availableSubjects,
+      accessMode: discoveryOnlySubjectIds.includes(activeSubjectInfo.id)
+        ? "SELF_STUDY_DISCOVERY"
+        : "LEARNING_ACTIVITY",
       summary: createEmptySummary(),
       chapters: [],
       concepts: [],
@@ -228,6 +233,9 @@ export function toKnowledgeForestViewModel(
       name: activeSubjectInfo.name,
     },
     availableSubjects,
+    accessMode: discoveryOnlySubjectIds.includes(activeSubjectInfo.id)
+      ? "SELF_STUDY_DISCOVERY"
+      : "LEARNING_ACTIVITY",
     summary,
     chapters,
     concepts,

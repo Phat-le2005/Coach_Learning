@@ -6,8 +6,11 @@ from fastapi.testclient import TestClient
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
+from app.classes.models import StudentEnrollment
 from app.practice.models import PracticeSession, QuestionAttempt
-from app.questions.models import Question
+from app.questions.models import Question, QuestionStatus
+from app.students.goal_models import AcademicGoal
+from app.students.models import StudentProfile
 from app.users.models import User
 from tests.practice.conftest import PracticeContent
 
@@ -253,3 +256,60 @@ def test_unknown_question_is_rejected(
     assert response.status_code == 422
     assert response.json()["error"]["code"] == "QUESTION_NOT_ELIGIBLE"
 
+
+
+def test_student_starts_self_study_without_classroom_or_academic_goal(
+    db_client: TestClient,
+    db_session: Session,
+    practice_students: tuple[User, User],
+    practice_bearer: BearerFactory,
+    practice_content: PracticeContent,
+) -> None:
+    student, _ = practice_students
+    profile = db_session.scalar(
+        select(StudentProfile).where(StudentProfile.user_id == student.id)
+    )
+    assert profile is not None
+    assert db_session.scalar(
+        select(func.count()).select_from(StudentEnrollment).where(
+            StudentEnrollment.student_id == profile.id
+        )
+    ) == 0
+    assert db_session.scalar(
+        select(func.count()).select_from(AcademicGoal).where(
+            AcademicGoal.student_id == profile.id
+        )
+    ) == 0
+
+    created = create_session(db_client, practice_bearer(student), practice_content)
+
+    assert created["student_id"] == str(profile.id)
+    assert created["subject_id"] == str(practice_content.subject.id)
+    assert created["status"] == "ACTIVE"
+
+
+def test_self_study_session_reports_no_question_when_only_ineligible_items_remain(
+    db_client: TestClient,
+    db_session: Session,
+    practice_students: tuple[User, User],
+    practice_bearer: BearerFactory,
+    practice_content: PracticeContent,
+) -> None:
+    for question in (
+        practice_content.mcq,
+        practice_content.true_false,
+        practice_content.short_answer,
+        practice_content.open_response,
+    ):
+        question.status = QuestionStatus.DRAFT
+    db_session.commit()
+
+    student, _ = practice_students
+    headers = practice_bearer(student)
+    created = create_session(db_client, headers, practice_content)
+    response = db_client.get(
+        f"/practice/sessions/{created['id']}/next-question", headers=headers
+    )
+
+    assert response.status_code == 404
+    assert response.json()["error"]["code"] == "NO_AVAILABLE_QUESTION"

@@ -17,6 +17,7 @@ API_BASE_URL=http://127.0.0.1:8000
 AUTH_SESSION_SECRET=<chuỗi ngẫu nhiên tối thiểu 32 ký tự>
 SESSION_COOKIE_SECURE=false
 AUTH_REFRESH_COOKIE_MAX_AGE_SECONDS=604800
+SELF_STUDY_PUBLISHED_SUBJECT_CODES=MATH_G12
 ```
 
 > **Lưu ý bảo mật:** `AUTH_SESSION_SECRET` bắt buộc phải có độ dài tối thiểu 32 ký tự. Hệ thống từ chối khởi tạo phiên nếu secret ngắn hơn 32 ký tự hoặc để trống.
@@ -44,6 +45,14 @@ Mở `http://localhost:3000/login`. Token chỉ tồn tại trong HttpOnly cooki
 - `src/proxy.ts` làm optimistic route guard. Mỗi server page vẫn kiểm tra session/role, còn authorization dữ liệu cuối cùng thuộc FastAPI.
 - Backend contract hiện chưa có logout/revoke endpoint; logout frontend xóa cookie cục bộ, không tuyên bố thu hồi server session.
 - `/student` đọc `GET /students/me/learning-state`. Trường backend chưa cung cấp hiển thị unavailable/empty state, không được lấp bằng số giả.
+
+## Independent self-study boundary
+
+- Student Home và Knowledge Forest hợp nhất phạm vi hoạt động thật từ `GET /students/me/learning-state` với hierarchy của `GET /students/me/mastery`.
+- `SELF_STUDY_PUBLISHED_SUBJECT_CODES` là publication allowlist phía server. Mastery chỉ cung cấp read model curriculum; bản thân response mastery không phải bằng chứng rằng mọi subject đã được phát hành. Hiện môi trường phát triển cho phép `MATH_G12`.
+- Subject có activity, assignment, goal hoặc lớp học thật vẫn được giữ nguyên dù không nằm trong allowlist tự học. Subject chỉ để khám phá phải vừa nằm trong allowlist vừa có hierarchy chapter → topic → problem type thật.
+- Lựa chọn subject trước activity chỉ nằm trong URL điều hướng hiện tại. API v1 chưa có contract lưu đăng ký môn tự học độc lập; frontend không dùng `localStorage`, AcademicGoal giả hoặc lớp học giả để thay thế. Khi một practice session thật được tạo, Learning State sẽ nhận subject đó từ activity.
+- Practice Workspace và bước kiểm tra câu hỏi `APPROVED` theo ProblemType thuộc FE-REAL-04. Knowledge Forest hiện chỉ chuẩn bị đúng subject/problem type và không tạo session rỗng.
 
 ## Design system
 
@@ -89,3 +98,4 @@ npm run build
 | 🛡️ Quản trị viên (Admin) | `admin.demo@example.com` | Admin Dashboard (`/admin`) |
 
 > Mật khẩu tài khoản demo được cấu hình trong môi trường phát triển (xem `backend/.env.example`), không commit thông tin mật khẩu thực tế vào kho mã nguồn.
+9O4DgZI4uhZ5nf1yLHy1y3zyhdCRgUjp

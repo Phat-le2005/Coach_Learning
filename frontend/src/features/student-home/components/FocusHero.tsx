@@ -21,6 +21,10 @@ export interface FocusHeroProps {
 export function FocusHero({ data, onOpenActionDetail }: FocusHeroProps) {
   const router = useRouter();
   const action = data.resolvedAction;
+  const isSelfStudyOnboarding = data.learningContext.mode === "SELF_STUDY_ONBOARDING";
+  const knowledgeHref = `/student/knowledge${
+    data.subject.id ? `?subject_id=${encodeURIComponent(data.subject.id)}` : ""
+  }`;
 
   const handleSubjectChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const selectedSubjectId = event.target.value;
@@ -68,20 +72,33 @@ export function FocusHero({ data, onOpenActionDetail }: FocusHeroProps) {
               </select>
             </div>
           ) : (
-            <StatusPill>{data.subject.name}</StatusPill>
+            <StatusPill>
+              {isSelfStudyOnboarding ? `Tự học · ${data.subject.name}` : data.subject.name}
+            </StatusPill>
           )}
         </div>
         <p className={styles.greeting}>Chào {data.student.displayName}</p>
-        <h1 id="student-focus-title">{action.title}</h1>
-        <p className={styles.heroDescription}>{action.description}</p>
-        {action.targetName ? (
+        <h1 id="student-focus-title">
+          {isSelfStudyOnboarding ? `Mở lối vào ${data.subject.name}` : action.title}
+        </h1>
+        <p className={styles.heroDescription}>
+          {isSelfStudyOnboarding
+            ? "Chọn một chương và khám phá từng dạng bài theo nhịp của bạn. Mọi tiến độ chỉ bắt đầu khi có hoạt động học thật."
+            : action.description}
+        </p>
+        {!isSelfStudyOnboarding && action.targetName ? (
           <p className={styles.focusTarget}>
             <span aria-hidden="true" />
             Trọng tâm: <strong>{action.targetName}</strong>
           </p>
         ) : null}
         <div className={styles.heroActions}>
-          {action.hasAvailableRoute && action.route ? (
+          {isSelfStudyOnboarding ? (
+            <GradientButton href={knowledgeHref}>
+              Bắt đầu tự học
+              <ArrowRight size={18} aria-hidden="true" />
+            </GradientButton>
+          ) : action.hasAvailableRoute && action.route ? (
             <GradientButton href={action.route}>
               {action.primaryLabel}
               <ArrowRight size={18} aria-hidden="true" />
@@ -92,13 +109,12 @@ export function FocusHero({ data, onOpenActionDetail }: FocusHeroProps) {
               <ArrowRight size={18} aria-hidden="true" />
             </GradientButton>
           )}
-          <GradientButton
-            href={`/student/knowledge${data.subject?.id ? `?subject_id=${encodeURIComponent(data.subject.id)}` : ""}`}
-            variant="secondary"
-          >
-            <Route size={17} aria-hidden="true" />
-            Bản đồ tri thức
-          </GradientButton>
+          {!isSelfStudyOnboarding ? (
+            <GradientButton href={knowledgeHref} variant="secondary">
+              <Route size={17} aria-hidden="true" />
+              Bản đồ tri thức
+            </GradientButton>
+          ) : null}
         </div>
       </motion.div>
 

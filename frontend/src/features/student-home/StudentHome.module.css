@@ -2197,6 +2197,68 @@
   border-radius: var(--radius-xl);
 }
 
+.selfStudyOnboarding {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px;
+  padding: clamp(20px, 3vw, 28px);
+  border: 1px solid rgb(60 141 104 / 24%);
+  background:
+    radial-gradient(circle at 8% 20%, rgb(151 224 186 / 28%), transparent 34%),
+    rgb(255 255 250 / 82%);
+}
+
+.selfStudyIcon {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border-radius: 18px 18px 18px 8px;
+  color: var(--verdant-800);
+  background: linear-gradient(145deg, var(--mint-100), rgb(255 255 250 / 90%));
+  box-shadow: 0 12px 30px rgb(38 111 82 / 14%);
+}
+
+.selfStudyCopy h2,
+.selfStudyCopy p,
+.selfStudyEyebrow {
+  margin: 0;
+}
+
+.selfStudyCopy h2 {
+  margin-top: 3px;
+  font-size: clamp(1.08rem, 2vw, 1.35rem);
+  color: var(--text-primary);
+}
+
+.selfStudyCopy p:last-child {
+  margin-top: 6px;
+  max-width: 720px;
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+.selfStudyEyebrow {
+  color: var(--verdant-700);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 720px) {
+  .selfStudyOnboarding {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .selfStudyOnboarding > :last-child {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+}
+
 .realDataEmpty h3,
 .priorityEmpty h3 { margin-bottom: 7px; font-size: 1rem; }
 

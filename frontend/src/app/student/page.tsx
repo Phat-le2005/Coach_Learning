@@ -6,6 +6,11 @@ import { SessionHeartbeat } from "@/components/auth/SessionHeartbeat";
 import { GradientButton } from "@/components/ui/GradientButton";
 import { StudentHome } from "@/features/student-home/StudentHome";
 import { toStudentHomeViewModel } from "@/features/student-home/adapter";
+import {
+  resolveStudentSubjectAccess,
+  selectAccessibleSubject,
+} from "@/features/self-study/discovery";
+import { getPublishedSelfStudySubjectCodes } from "@/features/self-study/server-policy";
 import { ApiNetworkError, ApiResponseError, createBackendApiClient } from "@/lib/api/client";
 import { requirePageRole } from "@/lib/auth/page-session";
 import { readAccessToken } from "@/lib/auth/server";
@@ -40,7 +45,7 @@ export default async function StudentPage(props: {
 
   try {
     const client = createBackendApiClient();
-    const learningState = await client.studentLearningState(accessToken, requestedSubjectId);
+    let learningState = await client.studentLearningState(accessToken);
     let masteryData = null;
     try {
       masteryData = await client.studentMastery(accessToken);
@@ -52,10 +57,56 @@ export default async function StudentPage(props: {
       masteryData = null;
     }
 
+    const subjectAccess = resolveStudentSubjectAccess(
+      learningState.available_subjects,
+      masteryData,
+      getPublishedSelfStudySubjectCodes()
+    );
+    const selectedSubject = selectAccessibleSubject(
+      subjectAccess,
+      requestedSubjectId,
+      learningState.focus_subject_id
+    );
+
+    if (requestedSubjectId && !selectedSubject) {
+      return state(
+        "error",
+        "Môn học ngoài phạm vi",
+        "Môn học được chọn không thuộc hoạt động của bạn và chưa được phát hành cho chế độ tự học."
+      );
+    }
+
+    const selectedHasActivity = selectedSubject
+      ? learningState.available_subjects.some((subject) => subject.id === selectedSubject.id)
+      : false;
+    if (
+      selectedSubject &&
+      selectedHasActivity &&
+      learningState.focus_subject_id !== selectedSubject.id
+    ) {
+      const focusedState = await client.studentLearningState(accessToken, selectedSubject.id);
+      if (focusedState.student_id !== learningState.student_id) {
+        throw new Error("Student identity changed while resolving the selected subject.");
+      }
+      learningState = focusedState;
+    }
+
     return (
       <>
         <SessionHeartbeat />
-        <StudentHome data={toStudentHomeViewModel(learningState, session.fullName, session.email, masteryData)} />
+        <StudentHome
+          data={toStudentHomeViewModel(
+            learningState,
+            session.fullName,
+            session.email,
+            masteryData,
+            {
+              availableSubjects: subjectAccess.subjects,
+              selectedSubjectId: selectedSubject?.id,
+              discoveryOnlySubjectIds: subjectAccess.discoveryOnlySubjectIds,
+            }
+          )}
+        />
       </>
     );
   } catch (error) {

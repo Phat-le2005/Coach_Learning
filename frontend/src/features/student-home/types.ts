@@ -62,6 +62,11 @@ export interface StudentHomeViewModel {
     code?: string;
   };
   availableSubjects: StudentHomeSubjectViewModel[];
+  learningContext: {
+    mode: "UNAVAILABLE" | "SELF_STUDY_ONBOARDING" | "SELF_STUDY" | "CLASSROOM";
+    classContextCount: number;
+    subjectHasActivity: boolean;
+  };
   currentAction: {
     type: StudentHomeActionType;
     targetName?: string;

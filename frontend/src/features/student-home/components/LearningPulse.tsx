@@ -20,6 +20,7 @@ export function LearningPulse({ data }: LearningPulseProps) {
   const review = data.review;
   const assignments = data.assignments;
   const todayPlan = data.todayPlan;
+  const hasClassroomContext = data.learningContext.mode === "CLASSROOM";
 
   return (
     <section className={styles.section} id="learning-pulse" aria-labelledby="learning-pulse-title">
@@ -81,16 +82,20 @@ export function LearningPulse({ data }: LearningPulseProps) {
               <span className={`${styles.metricIcon} ${styles.metricIconAssignment}`} aria-hidden="true">
                 <ClipboardCheck size={19} />
               </span>
-              <strong>Bài tập cần xử lý</strong>
+              <strong>Bài tập từ lớp</strong>
               <small>
-                {assignments.activeCount > 0
+                {!hasClassroomContext
+                  ? "Không áp dụng trong lối tự học hiện tại"
+                  : assignments.activeCount > 0
                   ? `${assignments.overdueCount} quá hạn · ${assignments.inProgressCount} đang làm · ${assignments.pendingCount} chưa nộp`
                   : "Không có bài cần nộp"}
               </small>
             </div>
             <div className={styles.assignmentVisual}>
-              <b>{assignments.activeCount}</b>
-              {assignments.overdueCount > 0 ? (
+              <b>{hasClassroomContext ? assignments.activeCount : "—"}</b>
+              {!hasClassroomContext ? (
+                <small>Chưa có ngữ cảnh lớp học</small>
+              ) : assignments.overdueCount > 0 ? (
                 <small style={{ color: "var(--amber-700, #b45309)", fontWeight: 650 }}>
                   {assignments.overdueCount} bài quá hạn
                 </small>

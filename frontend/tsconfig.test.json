@@ -5,7 +5,7 @@
     "incremental": false,
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
-    "outDir": ".test-dist",
+    "outDir": ".test-build",
     "rootDir": "."
   },
   "include": [

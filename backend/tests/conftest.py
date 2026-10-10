@@ -135,7 +135,11 @@ def postgres_engine() -> Iterator[Engine]:
             # Alembic ALTER COLUMN operations do not consistently honor
             # schema_translate_map, so keep unqualified DDL inside this test's
             # isolated schema as well.
-            connection.exec_driver_sql(f'SET LOCAL search_path TO "{schema}"')
+            # pgvector installs its `vector` type in public. Keep the isolated
+            # schema first while allowing migrations to resolve extension types.
+            connection.exec_driver_sql(
+                f'SET LOCAL search_path TO "{schema}", public'
+            )
             upgrade_test_schema(connection)
         yield translated
     finally:

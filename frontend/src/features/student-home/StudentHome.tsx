@@ -1,6 +1,6 @@
 "use client";
 
-import { DatabaseZap, LockKeyhole } from "lucide-react";
+import { ArrowRight, DatabaseZap, LockKeyhole, Sprout } from "lucide-react";
 import { motion } from "motion/react";
 import { type ReactNode, useState } from "react";
 
@@ -77,12 +77,32 @@ export function StudentHome({ data }: StudentHomeProps) {
           subjectId={data.subject.id}
         />
         <main className={styles.main}>
-          {data.availableSubjects.length === 0 ? (
+          {data.learningContext.mode === "SELF_STUDY_ONBOARDING" ? (
+            <OrganicCard className={styles.selfStudyOnboarding} variant="glass">
+              <span className={styles.selfStudyIcon} aria-hidden="true">
+                <Sprout size={22} />
+              </span>
+              <div className={styles.selfStudyCopy}>
+                <p className={styles.selfStudyEyebrow}>Lối học cá nhân</p>
+                <h2>Bắt đầu tự học {data.subject.name}</h2>
+                <p>
+                  Khám phá chương, chủ đề và dạng bài đã được phát hành. Bạn không cần tham gia lớp
+                  hoặc đặt mục tiêu thi để bắt đầu.
+                </p>
+              </div>
+              <GradientButton
+                href={`/student/knowledge?subject_id=${encodeURIComponent(data.subject.id)}`}
+              >
+                Bắt đầu tự học
+                <ArrowRight size={17} aria-hidden="true" />
+              </GradientButton>
+            </OrganicCard>
+          ) : data.availableSubjects.length === 0 ? (
             <OrganicCard className={styles.realDataEmpty} variant="glass">
-              <h3>Chưa có môn học được đăng ký</h3>
+              <h3>Chưa có môn tự học được phát hành</h3>
               <p>
-                Tài khoản học sinh hiện chưa có môn học nào trong phạm vi lớp học được cấp quyền. Vui lòng liên hệ nhà
-                trường để được xếp lớp.
+                Tài khoản chưa có hoạt động học tập và hệ thống chưa phát hành môn tự học phù hợp.
+                EduMS không dùng dữ liệu staging hoặc số liệu giả để lấp trạng thái này.
               </p>
             </OrganicCard>
           ) : null}
