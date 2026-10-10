@@ -21,6 +21,16 @@ def load_migration(revision: str) -> ModuleType:
 
 
 def upgrade_test_schema(connection: Connection) -> None:
+    # Manual Operations-driven tests skip Alembic's command runner, which
+    # normally creates its version bookkeeping table. Historical revision 0022
+    # widens alembic_version.version_num on PostgreSQL; ensure the isolated
+    # *test schema* has the original Alembic table before applying migrations.
+    # SQLite tests must retain the prior exact-table-count expectations.
+    if connection.dialect.name == "postgresql":
+        connection.exec_driver_sql(
+            "CREATE TABLE IF NOT EXISTS alembic_version "
+            "(version_num VARCHAR(32) NOT NULL PRIMARY KEY)"
+        )
     context = MigrationContext.configure(connection, opts={"target_metadata": Base.metadata})
     with Operations.context(context):
         for script in reversed(list(migration_scripts().walk_revisions())):
