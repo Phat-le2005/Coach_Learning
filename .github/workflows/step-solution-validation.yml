@@ -43,3 +43,5 @@ jobs:
         run: python -m app.api.check_contract
       - name: Verify PostgreSQL migration and step lifecycle
         run: pytest tests/math_solutions/ -q --tb=short
+      - name: Run complete backend regression
+        run: pytest tests/ -q --tb=short
