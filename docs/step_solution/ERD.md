@@ -1,6 +1,9 @@
 # Thiết kế Thực thể - Quan hệ (Entity-Relationship Diagram & Schema Specification)
 ## Module `backend/app/math_solutions/` (Hiệu chỉnh Kiến trúc Sprint 1.1)
 
+
+> **Bắt buộc trước migration — STEP-ARCH-00:** [Final Schema & Effective Evidence Safety Gate](STEP_ARCH_00_SAFETY_GATE.md) là quyết định thiết kế ưu tiên nếu các ví dụ SQL/logic bên dưới còn mâu thuẫn. Chưa xác minh PostgreSQL runtime.
+
 - **Dự án**: Coach Learning (EduMS)
 - **Mã tài liệu**: ERD-STEP-01
 - **Mã Sprint**: SPRINT-01.1
@@ -175,6 +178,7 @@ Quản lý phiên làm bài giải toán của học sinh. Hỗ trợ **hai ngu�
   - `practice_session_id` $\to$ `practice_sessions(id)` [ON DELETE SET NULL, NULLABLE]
   - `assignment_id` $\to$ `assignments(id)` [ON DELETE CASCADE, NULLABLE]
   - `student_assignment_id` $\to$ `student_assignments(id)` [ON DELETE CASCADE, NULLABLE]
+  - `assignment_student_question_id` $\to$ `assignment_student_questions(id)` [ON DELETE RESTRICT, NULLABLE] — dành cho canonical classroom item, phải khớp StudentAssignment và Question.
 - **Thuộc tính**:
   - `context_type`: `VARCHAR(50)` ('SELF_PRACTICE' hoặc 'CLASSROOM_ASSIGNMENT').
   - `mode`: `VARCHAR(50)` ('GUIDED_LEARNING' hoặc 'INDEPENDENT_SOLUTION').
@@ -225,8 +229,8 @@ Lưu trữ từng bước giải logic trong bài toán.
   - `explanation_text`: `TEXT`.
 - **Ràng buộc & Chỉ mục**:
   - `step_index >= 1`.
-  - **uq_math_solution_step_active_index**: `UNIQUE (attempt_id, step_index) WHERE is_deleted = FALSE DEFERRABLE INITIALLY DEFERRED`.
-    *(Lưu ý: Ràng buộc UNIQUE được cấu hình `DEFERRABLE INITIALLY DEFERRED` trong PostgreSQL để cho phép swap/reorder thứ tự các bước trong cùng một transaction mà không bị bắn lỗi vi phạm ràng buộc giữa chừng).*
+  - **uq_math_solution_step_active_index**: `UNIQUE (attempt_id, step_index) WHERE is_deleted = FALSE NON-DEFERRABLE (partial unique index; immediate uniqueness check)`.
+    *(Lưu ý: Ràng buộc UNIQUE được cấu hình `NON-DEFERRABLE (partial unique index; immediate uniqueness check)` trong PostgreSQL để cho phép swap/reorder thứ tự các bước trong cùng một transaction mà không bị bắn lỗi vi phạm ràng buộc giữa chừng).*
   - `ix_math_solution_steps_attempt`: `(attempt_id, step_index)`.
 
 ---
@@ -364,12 +368,12 @@ Lưu vết toàn bộ lịch sử can thiệp điểm số và nhận xét của
 
 ## 3. Kiến trúc Đồng bộ & Giải quyết Xung đột (Concurrency & Integrity)
 
-### 3.1. Cơ chế Reorder không gây Xung đột Unique Constraint
-Khi học sinh đổi thứ tự bước (ví dụ: đổi bước 1 thành 2, bước 2 thành 1):
-1. **Phương pháp Postgres Deferrable**: Định nghĩa ràng buộc `uq_math_solution_step_active_index` là `DEFERRABLE INITIALLY DEFERRED`. Việc kiểm tra duy nhất chỉ thực hiện khi transaction kết thúc (COMMIT), cho phép hoán đổi vị trí mà không phát sinh lỗi trùng index.
-2. **Kỹ thuật Two-Phase Reindexing (Phòng ngừa cấp ứng dụng)**:
-   - Pha 1: `UPDATE math_solution_steps SET step_index = -new_index WHERE ...`
-   - Pha 2: `UPDATE math_solution_steps SET step_index = ABS(step_index) WHERE ...`
+### 3.1. Reorder an toàn theo PostgreSQL (STEP-ARCH-00)
+- Partial unique index trên active steps **không** hỗ trợ DEFERRABLE; `CHECK (step_index >= 1)` luôn có hiệu lực.
+- Trong một transaction: khóa row `SolutionAttempt` `FOR UPDATE`, kiểm tra ownership và optimistic revision sau khóa; xác nhận phép hoán vị đầy đủ các bước active.
+- Pha 1 cập nhật tất cả step sang chỉ số tạm dương duy nhất > max(existing, destination)+N và flush. Pha 2 cập nhật step về 1..N, flush; ghi immutable revisions + mutation journal, tăng revision rồi commit. Nếu lỗi rollback toàn bộ.
+- Soft-delete được loại khỏi partial index; restore phải chọn index trống mới. Idempotency key trùng với payload giống hệt trả response cũ, payload khác trả 409.
+- SQL probe: [partial_index_reorder_probe.sql](sql/partial_index_reorder_probe.sql). Còn cần chạy PostgreSQL thực và concurrency integration tests.
 
 ### 3.2. Khóa Lạc quan (Optimistic Concurrency Control)
 - `SolutionAttempt.attempt_revision_number` quản lý phiên bản toàn phiên.
@@ -398,3 +402,9 @@ Khi trạng thái bài làm chuyển sang `SUBMITTED` hoặc `EVALUATED`:
   3. Mở rộng `is_valid_math` thành 4 trạng thái (`VALID`, `INVALID`, `UNDETERMINED`, `NEEDS_REVIEW`).
   4. Sử dụng Postgres Deferrable Constraint cho chỉ mục sắp xếp bước.
   5. Bổ sung bảng `math_evaluation_overrides` ghi vết giáo viên chấm bài, bảo toàn nguyên tắc append-only của `LearningEvidenceEvent`.
+
+
+---
+### STEP-ARCH-00 — mutation journal và quyền nguồn
+Bổ sung **bảng thứ 10** `math_solution_operations`: id, attempt_id FK, actor_user_id FK, client_action_id UUID, operation_type, request_hash SHA-256, response_snapshot JSONB, result_attempt_revision, created_at, UNIQUE(attempt_id, client_action_id). Bảng ghi trong cùng transaction cho add/edit/delete/reorder/rollback/submit; attempt creation dùng idempotency key theo student. Chỉ per-step idempotency không đủ cho reorder/delete/submit. Cùng key + hash khác trả 409.
+Canonical classroom attempt phải trỏ đúng `AssignmentStudentQuestion` đã giao; PDF attempt trỏ `StudentAssignmentMaterialItem` và đúng `AssignmentMaterialItem` snapshot, tất cả khớp StudentAssignment, Assignment, student và classroom. Service bắt buộc verify liên kết ID server-side; có thể bổ sung composite FK ở migration. Rubric version phải freeze khi attempt bắt đầu.

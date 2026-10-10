@@ -1,6 +1,9 @@
 # Kế hoạch Triển khai Chi tiết (Implementation Backlog)
 ## Step-by-Step Math Solution Engine Roadmap (Hiệu chỉnh Sprint 1.1)
 
+
+> **Bắt buộc trước migration — STEP-ARCH-00:** [Final Schema & Effective Evidence Safety Gate](STEP_ARCH_00_SAFETY_GATE.md) là quyết định thiết kế ưu tiên nếu các ví dụ SQL/logic bên dưới còn mâu thuẫn. Chưa xác minh PostgreSQL runtime.
+
 - **Dự án**: Coach Learning (EduMS)
 - **Mã Sprint**: SPRINT-01.1
 - **Mã tài liệu**: BACKLOG-STEP-01
@@ -59,7 +62,7 @@ flowchart TD
 - **Ưu tiên**: **P0 (Critical)**
 - **Tiền đề**: Phê duyệt tài liệu `MATH12_DATA_READINESS.md` Sprint 1.1.
 - **Mô tả**:
-  Xây dựng bộ dữ liệu hạt nhân nguyên bản 100% thuộc sở hữu của EduMS cho dạng bài `MONOTONICITY_FROM_EXPRESSION` (Toán 12), đảm bảo đủ số lượng để không bị cạn pool (`BANK_EXHAUSTED`):
+  Xây dựng bộ dữ liệu hạt nhân nguyên bản do nhóm biên soạn có hồ sơ xác minh quyền sử dụng và quyền phát hành, không mặc định sở hữu tuyệt đối cho dạng bài `MONOTONICITY_FROM_EXPRESSION` (Toán 12), đảm bảo đủ số lượng để không bị cạn pool (`BANK_EXHAUSTED`):
   - 6 bài toán giao bài lớp học (Assignment): đầy đủ 5 bước chuẩn và rubric có trọng số.
   - 2 - 3 bài toán kiểm chứng độc lập (Independent Verification): cô lập kỹ năng xét dấu tam thức bậc hai.
   - 8 bài toán sửa sai thích ứng (Adaptive Repair Pool): đa dạng hàm bậc 3, trùng phương, phân thức bậc 1/1.
@@ -82,7 +85,7 @@ flowchart TD
 - **Mô tả**:
   Tạo cấu trúc module `backend/app/math_solutions/`, xây dựng các model SQLAlchemy 2.0 theo đúng thiết kế:
   - `SolutionAttempt`: Hỗ trợ Dual Source (`question_id` vs `assignment_material_item_id` / `student_assignment_material_item_id`), `attempt_revision_number`, `idempotency_key`.
-  - `SolutionStep`: Chỉ mục sắp xếp `uq_math_solution_step_active_index` với cấu hình Postgres `DEFERRABLE INITIALLY DEFERRED`.
+  - `SolutionStep`: Chỉ mục sắp xếp `uq_math_solution_step_active_index` với cấu hình Postgres `NON-DEFERRABLE (partial unique index; immediate uniqueness check)`.
   - `StepRevision`: Gắn snapshot artifact, lý do sửa đổi và khóa idempotency.
   - `MathArtifact`: Khóa ngoại 1-1 trỏ vào `step_revision_id` bất biến.
   - `SolutionRubric`: Khóa ngoại hỗ trợ cả câu hỏi chuẩn và snapshot tài liệu PDF giáo viên (`rubric_version`).
@@ -250,3 +253,8 @@ flowchart TD
   1. Khóa cứng danh mục nhiệm vụ từ `STEP-DATA-01` đến `STEP-VERIFY-01` theo thứ tự phụ thuộc chặt chẽ.
   2. Đưa toàn bộ các ràng buộc kiến trúc Sprint 1.1 (Dual Source, Sub-App Mount v2, Deferrable Reorder, `MATH_SOLUTION_EVALUATION`, ReviewPolicy 2.0 ngày) vào tiêu chí nghiệm thu bắt buộc của từng task.
   3. Sẵn sàng khởi động Sprint 2 ngay sau khi Sprint 1.1 hoàn tất cam kết tài liệu.
+
+
+---
+### STEP-ARCH-00 — blocker trước STEP-ARCH-01
+Phải chạy SQL probe trên Postgres và triển khai thiết kế bảng `math_solution_operations` (tổng cộng 10 bảng). Kiểm tra correction replay/rebuild và classroom ownership, cùng frozen API v1 shared enum impact; khi chưa PASS, chưa migrate production.

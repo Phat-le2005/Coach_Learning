@@ -1,6 +1,9 @@
 # Đề xuất Kiến trúc Phiên bản Hóa API (API Versioning Proposal)
 ## Bảo vệ Frozen API v1 và Thiết lập API v2 bằng FastAPI Sub-Application
 
+
+> **Bắt buộc trước migration — STEP-ARCH-00:** [Final Schema & Effective Evidence Safety Gate](STEP_ARCH_00_SAFETY_GATE.md) là quyết định thiết kế ưu tiên nếu các ví dụ SQL/logic bên dưới còn mâu thuẫn. Chưa xác minh PostgreSQL runtime.
+
 - **Dự án**: Coach Learning (EduMS)
 - **Mã Sprint**: SPRINT-01.1 (Kiến trúc chuẩn hóa trước Migration)
 - **Mã tài liệu**: API-VER-01
@@ -213,3 +216,8 @@ Kế hoạch kiểm thử regression xác minh 4 luận điểm kỹ thuật b�
   - Không sinh tiền tố lặp, đảm bảo URL RESTful tiêu chuẩn.
   - Phù hợp với kiến trúc Modular Monolith mở rộng dài hạn.
 - **Hệ quả cần quản lý**: Cần duy trì 2 file hợp đồng (`openapi-v1.json` và `openapi-v2.json`) trong CI pipeline.
+
+
+---
+### Ghi chú STEP-ARCH-00 — shared schemas
+Mount API v2 tách OpenAPI route tree nhưng **không cô lập enum/schema dùng chung với API v1**. Việc thêm `MATH_SOLUTION_EVALUATION` vào `LearningEvidenceSourceKind` có thể gây OpenAPI v1 drift. Phải chạy exact hash contract checker từ `create_app(settings)`, tách internal persistence/v2 DTO nếu cần, không re-freeze v1 để che drift. Test mount, CORS, auth, responses 422/500, không lộ rubric.
