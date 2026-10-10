@@ -117,15 +117,21 @@ def test_pg_math_schema_roundtrip_isolated():
         pytest.fail("Only PostgreSQL test URLs are allowed")
     engine = create_engine(url, hide_parameters=True)
     schema = "step_verify_" + uuid4().hex
+    created = False
     try:
         with engine.begin() as conn:
             conn.execute(CreateSchema(schema))
+        created = True
+        with engine.begin() as conn:
             conn.exec_driver_sql(f'SET LOCAL search_path TO "{schema}", public')
-            conn.exec_driver_sql("CREATE EXTENSION IF NOT EXISTS vector")
-            # Build only preexisting parent tables as schema test prerequisites.
-            for table in Base.metadata.sorted_tables:
-                if not table.name.startswith("math_"):
-                    table.create(conn, checkfirst=True)
+            # Minimal foreign-key parents; testing 0046 itself, not legacy migrations.
+            for name in (
+                "users", "student_profiles", "questions", "assignment_material_items",
+                "student_assignment_material_items", "assignment_student_questions",
+                "practice_sessions", "assignments", "misconception_definitions",
+                "learning_evidence_events",
+            ):
+                conn.exec_driver_sql(f"CREATE TABLE {name} (id UUID PRIMARY KEY)")
             with Operations.context(MigrationContext.configure(conn)):
                 load_migration("0046_math_solutions").upgrade()
             expected = {name for name in Base.metadata.tables if name.startswith("math_")}
@@ -138,6 +144,7 @@ def test_pg_math_schema_roundtrip_isolated():
             inspector = inspect(conn)
             assert expected.isdisjoint(set(inspector.get_table_names()))
     finally:
-        with engine.begin() as conn:
-            conn.execute(DropSchema(schema, cascade=True))
+        if created:
+            with engine.begin() as conn:
+                conn.execute(DropSchema(schema, cascade=True))
         engine.dispose()
