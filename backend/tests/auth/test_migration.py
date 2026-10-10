@@ -76,6 +76,12 @@ def test_migration_chain_matches_models_and_can_downgrade(db_engine: Engine) -> 
             "admission_data_sources", "admission_rules",
             "student_admission_targets", "admission_import_histories",
             "tutor_sessions", "tutor_session_summaries", "student_learning_memories",
+            # STEP-ARCH-01: the 10 additional math_solution domain tables.
+            "math_solution_rubrics", "math_solution_attempts",
+            "math_solution_steps", "math_step_revisions", "math_artifacts",
+            "math_step_evaluations", "math_solution_feedbacks",
+            "math_evaluation_decisions", "math_evaluation_overrides",
+            "math_solution_operations",
         }
         context = MigrationContext.configure(connection)
         assert compare_metadata(context, Base.metadata) == []
