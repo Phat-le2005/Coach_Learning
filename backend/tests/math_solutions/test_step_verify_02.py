@@ -103,10 +103,6 @@ def test_classroom_pdf_cross_student_and_cross_assignment_rejected(db_session):
     sb=StudentAssignment(assignment_id=assignment_b.id,student_id=other_profile.id,status=StudentAssignmentStatus.NOT_STARTED)
     db.add_all([sa,sb]);db.flush()
     # A snapshot belongs to B, but is deliberately presented as if assigned to A.
-    fake=StudentAssignmentMaterialItem(
-        student_assignment_id=sa.id,teacher_material_item_id=uuid4(),assignment_material_item_id=uuid4(),
-        order_index=0,evaluation_status="NEEDS_EVALUATION")
-    # Do not commit invalid FK rows: use a B snapshot and directly test foreign student assignment.
     service=MathSolutionService(db)
     with pytest.raises(ApplicationError) as ex:
         service.create(owner.id,source_kind="TEACHER_MATERIAL",context_type="CLASSROOM_ASSIGNMENT",
