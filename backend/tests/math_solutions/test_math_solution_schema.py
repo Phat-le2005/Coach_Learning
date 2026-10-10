@@ -1,5 +1,5 @@
 """STEP-ARCH-01 schema smoke tests; database integration runs separately."""
-from sqlalchemy import create_mock_engine
+from app.database import models as _all_models  # noqa: F401; resolve foreign keys
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.schema import CreateIndex, CreateTable
 
