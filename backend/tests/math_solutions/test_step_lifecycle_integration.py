@@ -128,7 +128,7 @@ def test_pg_math_schema_roundtrip_isolated():
             for name in (
                 "users", "student_profiles", "questions", "assignment_material_items",
                 "student_assignment_material_items", "assignment_student_questions",
-                "practice_sessions", "assignments", "misconception_definitions",
+                "practice_sessions", "assignments", "student_assignments", "misconception_definitions",
                 "learning_evidence_events",
             ):
                 conn.exec_driver_sql(f"CREATE TABLE {name} (id UUID PRIMARY KEY)")
