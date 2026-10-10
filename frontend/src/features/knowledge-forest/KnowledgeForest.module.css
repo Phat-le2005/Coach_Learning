@@ -908,3 +908,91 @@
     transition: none !important;
   }
 }
+
+/* ==========================================================================
+   Living Knowledge Tree · organic SVG camera
+   ========================================================================== */
+.pageContainer { width: min(100%, 1600px); overflow-x: clip; }
+.livingTreeSection { position: relative; display: grid; gap: 12px; }
+.treeQuickNav { display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 8px; scrollbar-width: thin; scrollbar-color: rgb(59 112 87 / 28%) transparent; }
+.quickNavButton { display: inline-flex; align-items: center; gap: 6px; flex: 0 0 auto; min-height: 36px; max-width: 260px; padding: 7px 13px; overflow: hidden; color: var(--verdant-800); font: inherit; font-size: .78rem; font-weight: 720; text-overflow: ellipsis; white-space: nowrap; background: rgb(255 255 250 / 78%); border: 1px solid rgb(52 108 81 / 18%); border-radius: 999px; box-shadow: 0 6px 18px rgb(31 69 56 / 5%); cursor: pointer; backdrop-filter: blur(14px); }
+.quickNavButton:hover, .quickNavButtonActive { color: white; background: var(--verdant-700); border-color: var(--verdant-700); }
+.treeViewport { position: relative; height: clamp(620px, 76vh, 920px); min-height: 620px; overflow: hidden; isolation: isolate; background: radial-gradient(circle at 50% 18%, rgb(255 253 220 / 82%), transparent 27%), linear-gradient(180deg, rgb(236 248 239 / 96%) 0%, rgb(221 240 226 / 92%) 60%, rgb(244 238 210 / 95%) 100%); border: 1px solid rgb(39 94 70 / 16%); border-radius: clamp(24px, 3vw, 40px); box-shadow: 0 28px 70px rgb(31 69 56 / 16%), inset 0 1px 0 rgb(255 255 255 / 78%); touch-action: none; }
+.treeViewport::before, .treeViewport::after { position: absolute; z-index: 0; content: ""; pointer-events: none; }
+.treeViewport::before { inset: 0; opacity: .3; background-image: radial-gradient(circle, rgb(40 105 85 / 18%) 0 1px, transparent 1.5px); background-size: 28px 28px; mask-image: linear-gradient(to bottom, transparent, black 22%, black 75%, transparent); }
+.treeViewport::after { right: -12%; bottom: -18%; left: -12%; height: 42%; background: radial-gradient(ellipse at center, rgb(121 158 111 / 34%), transparent 68%); }
+.treeCanvas { position: relative; z-index: 1; display: block; cursor: grab; user-select: none; }
+.treeCanvas:active { cursor: grabbing; }
+.treeCanvas:focus-visible { outline: 3px solid rgb(39 125 91 / 54%); outline-offset: -5px; border-radius: inherit; }
+.cameraControls { position: absolute; z-index: 4; top: 16px; right: 16px; display: grid; gap: 6px; padding: 6px; background: rgb(255 255 250 / 78%); border: 1px solid rgb(35 91 67 / 18%); border-radius: 18px; box-shadow: 0 10px 28px rgb(31 69 56 / 12%); backdrop-filter: blur(16px); }
+.cameraControls button { display: grid; width: 38px; height: 38px; color: var(--verdant-800); background: transparent; border: 0; border-radius: 12px; cursor: pointer; place-items: center; }
+.cameraControls button:hover { color: white; background: var(--verdant-700); }
+.zoomReadout { position: absolute; z-index: 4; right: 18px; bottom: 16px; min-width: 52px; padding: 6px 10px; color: var(--verdant-800); font-size: .72rem; font-weight: 800; text-align: center; background: rgb(255 255 250 / 78%); border: 1px solid rgb(35 91 67 / 14%); border-radius: 999px; backdrop-filter: blur(14px); }
+.treeAtmosphere ellipse { fill: rgb(77 119 73 / 20%); }
+.treeAtmosphere circle { fill: rgb(139 195 150 / 10%); filter: blur(12px); }
+.rootGroup path { fill: none; stroke: #75543b; stroke-width: 22; stroke-linecap: round; opacity: .88; }
+.trunk { stroke: rgb(75 50 34 / 35%); stroke-width: 3; }
+.trunkLabel { fill: rgb(255 250 229 / 88%); font-size: 20px; font-weight: 820; letter-spacing: .06em; paint-order: stroke; stroke: rgb(80 56 39 / 45%); stroke-width: 5px; }
+.chapterBranchGroup, .topicBranchGroup, .semanticLeafGroup { transition: opacity 240ms ease, filter 240ms ease; }
+.chapterBranchShadow { fill: none; stroke: rgb(50 35 25 / 18%); stroke-width: 34; stroke-linecap: round; transform: translateY(7px); }
+.chapterBranch { fill: none; stroke: url("#living-branch"); stroke-width: 25; stroke-linecap: round; transition: stroke-width 180ms ease, filter 180ms ease; }
+.topicBranch { fill: none; stroke: #876344; stroke-width: 11; stroke-linecap: round; transition: stroke-width 180ms ease, filter 180ms ease; }
+.twig { fill: none; stroke: #756344; stroke-width: 4; stroke-linecap: round; }
+.pathHighlighted { filter: drop-shadow(0 0 7px rgb(133 219 163 / 88%)); stroke: #4f9d6d; }
+.branchHitArea { fill: none; stroke: transparent; stroke-width: 54; cursor: pointer; }
+.branchHitArea:focus-visible { outline: none; stroke: rgb(61 139 99 / 24%); }
+.chapterLabel, .topicLabel { cursor: pointer; outline: none; }
+.chapterLabel > text:first-child { fill: #244b3c; font-size: 21px; font-weight: 820; paint-order: stroke; stroke: rgb(244 248 230 / 94%); stroke-linejoin: round; stroke-width: 8px; }
+.chapterMeta { fill: #668071; font-size: 12px; font-weight: 750; paint-order: stroke; stroke: rgb(244 248 230 / 94%); stroke-width: 5px; }
+.topicLabel > text:first-child { fill: #315c49; font-size: 15px; font-weight: 790; paint-order: stroke; stroke: rgb(239 246 224 / 96%); stroke-linejoin: round; stroke-width: 7px; }
+.topicMeta { fill: #6b8175; font-size: 10px; font-weight: 740; paint-order: stroke; stroke: rgb(239 246 224 / 96%); stroke-width: 4px; }
+.chapterLabel:focus-visible > text:first-child, .topicLabel:focus-visible > text:first-child { fill: #087a68; text-decoration: underline; }
+.topicCanopy { cursor: zoom-in; outline: none; }
+.decorativeFoliage { pointer-events: none; }
+.canopyMass { fill: rgb(116 181 126 / 17%); stroke: rgb(68 139 91 / 11%); stroke-width: 2; }
+.decorativeLeaf { fill: rgb(91 164 108 / 18%); stroke: rgb(62 126 83 / 12%); stroke-width: 1.2; }
+.topicCanopy text { fill: #2d6d4f; font-size: 25px; font-weight: 850; paint-order: stroke; stroke: rgb(239 247 225 / 82%); stroke-width: 7px; }
+.semanticLeafGroup { opacity: 1; }
+.semanticLeafLowDetail { opacity: 0; pointer-events: none; }
+.semanticLeafLowDetail:focus-within { opacity: 1; }
+.semanticLeaf { cursor: pointer; outline: none; transform-box: fill-box; transform-origin: center; transition: transform 170ms ease, filter 170ms ease; }
+.semanticLeaf:hover, .semanticLeaf:focus-visible, .leafSelected { transform: scale(1.18); filter: url("#leaf-glow"); }
+.leafShape { stroke: rgb(24 79 55 / 42%); stroke-width: 1.5; }
+.leafVein { fill: none; stroke: rgb(246 255 239 / 58%); stroke-width: 1.3; stroke-linecap: round; }
+.leaf_MASTERED .leafShape { fill: #329663; }
+.leaf_PRACTICING .leafShape { fill: #58a6a3; }
+.leaf_LEARNING .leafShape { fill: #78bd8a; }
+.leaf_WEAK .leafShape { fill: #b7a86c; }
+.leaf_REVIEW_DUE .leafShape { fill: #d09a4f; }
+.leaf_NOT_STARTED .leafShape { fill: #b9d8ad; stroke-dasharray: 2 2; }
+.masteryFruit circle { fill: #7257a6; stroke: #f2e7b8; stroke-width: 2; }
+.masteryFruit path { fill: none; stroke: #50784f; stroke-width: 2.5; stroke-linecap: round; }
+.reviewDew { fill: #ffd877; stroke: rgb(255 255 240 / 90%); stroke-width: 1.5; }
+.leafTooltip { opacity: 0; pointer-events: none; transition: opacity 120ms ease; }
+.semanticLeaf:hover .leafTooltip, .semanticLeaf:focus-visible .leafTooltip, .leafSelected .leafTooltip { opacity: 1; }
+.leafTooltip rect { fill: rgb(255 255 248 / 96%); stroke: rgb(44 104 77 / 22%); stroke-width: 1; filter: drop-shadow(0 7px 12px rgb(31 69 56 / 16%)); }
+.leafTooltip text { fill: #234a3a; font-size: 10px; font-weight: 770; }
+.tooltipMeta { fill: #789083 !important; font-size: 8px !important; }
+.treeDimmed { opacity: .17; filter: saturate(.55); }
+.treeLegend { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 18px; padding: 10px 14px; color: var(--text-secondary); font-size: .74rem; font-weight: 680; }
+.treeLegend span { display: inline-flex; align-items: center; gap: 6px; }
+.treeLegend i { width: 13px; height: 9px; border-radius: 80% 20% 75% 25%; transform: rotate(-18deg); }
+.legendMastered { background: #329663; box-shadow: 5px -4px 0 -1px #7257a6; }
+.legendLearning { background: #78bd8a; }
+.legendWeak { background: #b7a86c; }
+.legendReview { background: #d09a4f; }
+.legendNotStarted { background: #b9d8ad; border: 1px dashed #6d9a70; }
+.srOnly { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+@media (max-width: 700px) {
+  .treeViewport { height: calc(100dvh - 190px); min-height: 540px; border-radius: 24px; }
+  .cameraControls { top: 10px; right: 10px; }
+  .cameraControls button { width: 42px; height: 42px; }
+  .quickNavButton { min-height: 42px; font-size: .76rem; }
+  .treeLegend { justify-content: flex-start; overflow-x: auto; flex-wrap: nowrap; }
+  .treeLegend span { flex: 0 0 auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .chapterBranchGroup, .topicBranchGroup, .semanticLeafGroup, .semanticLeaf, .leafTooltip, .chapterBranch, .topicBranch { transition: none !important; }
+}
+.leafShape { transition: fill 220ms ease; }
+@media (prefers-reduced-motion: reduce) { .leafShape { transition: none !important; } }

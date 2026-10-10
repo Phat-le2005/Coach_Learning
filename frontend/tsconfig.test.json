@@ -28,6 +28,7 @@
     "src/features/knowledge-forest/copy.ts",
     "src/features/knowledge-forest/adapter.ts",
     "src/features/knowledge-forest/filter.ts",
+    "src/features/knowledge-forest/living-tree-layout.ts",
     "tests/**/*.ts"
   ],
   "exclude": ["node_modules", ".next"]

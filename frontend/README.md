@@ -98,4 +98,3 @@ npm run build
 | 🛡️ Quản trị viên (Admin) | `admin.demo@example.com` | Admin Dashboard (`/admin`) |
 
 > Mật khẩu tài khoản demo được cấu hình trong môi trường phát triển (xem `backend/.env.example`), không commit thông tin mật khẩu thực tế vào kho mã nguồn.
-9O4DgZI4uhZ5nf1yLHy1y3zyhdCRgUjp
