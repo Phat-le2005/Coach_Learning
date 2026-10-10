@@ -42,7 +42,7 @@ def _domain(db):
     owner,student=_identity(db,Role.STUDENT,"owner")
     other,other_profile=_identity(db,Role.STUDENT,"outsider")
     teacher,_=_identity(db,Role.TEACHER,"teacher")
-    subject=Subject(code=f"STEP{uuid4().hex[:10]}",name="Fixture mathematics",grade_level=12)
+    subject=Subject(code=f"STEP-{uuid4().hex[:10].upper()}",name="Fixture mathematics",grade_level=12)
     db.add(subject);db.flush()
     question=Question(subject_id=subject.id,content="Find monotonic intervals",question_type=QuestionType.OPEN_RESPONSE,
         difficulty=.5,correct_answer=None,explanation="Test fixture",source_type="TEST",exam_weight=.5,
