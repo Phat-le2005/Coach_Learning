@@ -29,6 +29,7 @@ from app.math_solutions.schemas import SolutionStepDraft
 from app.practice.models import PracticeSession, PracticeSessionStatus
 from app.questions.models import Question, QuestionStatus
 from app.students.models import StudentProfile
+from app.teacher_materials.models import TeacherMaterial, TeacherMaterialItem
 
 
 def _fail(status: int, code: str, message: str) -> ApplicationError:
@@ -169,12 +170,12 @@ class MathSolutionService:
             if (
                 existing.context_type != context_type or existing.source_kind != source_kind
                 or existing.mode != mode or
-                (question_id is not None and existing.question_id != question_id) or
-                (practice_session_id is not None and existing.practice_session_id != practice_session_id) or
-                (student_assignment_id is not None and existing.student_assignment_id != student_assignment_id) or
-                (assignment_student_question_id is not None and existing.assignment_student_question_id != assignment_student_question_id) or
-                (student_assignment_material_item_id is not None and existing.student_assignment_material_item_id != student_assignment_material_item_id) or
-                (rubric_id is not None and existing.rubric_id != rubric_id)
+                existing.question_id != question_id or
+                existing.practice_session_id != practice_session_id or
+                existing.student_assignment_id != student_assignment_id or
+                existing.assignment_student_question_id != assignment_student_question_id or
+                existing.student_assignment_material_item_id != student_assignment_material_item_id or
+                existing.rubric_id != rubric_id
             ):
                 raise _fail(409, "CREATE_KEY_REUSED", "This create key already belongs to another request.")
             return self._snapshot(existing)
@@ -242,6 +243,16 @@ class MathSolutionService:
                 snapshot = self.session.get(AssignmentMaterialItem, item.assignment_material_item_id)
                 if snapshot is None or snapshot.assignment_id != assignment.id:
                     raise _fail(409, "MATERIAL_SNAPSHOT_MISMATCH", "Material snapshot does not match its assignment.")
+                if snapshot.teacher_material_item_id != item.teacher_material_item_id:
+                    raise _fail(409, "MATERIAL_ITEM_SNAPSHOT_MISMATCH", "Assigned item and snapshot do not have the same source.")
+                origin = self.session.get(TeacherMaterialItem, item.teacher_material_item_id)
+                material = self.session.get(TeacherMaterial, origin.teacher_material_id) if origin is not None else None
+                if (
+                    material is None or material.classroom_id != assignment.classroom_id
+                    or material.subject_id != assignment.subject_id
+                    or (snapshot.teacher_material_id is not None and snapshot.teacher_material_id != material.id)
+                ):
+                    raise _fail(403, "MATERIAL_SOURCE_NOT_ACCESSIBLE", "Source document belongs to a different classroom.")
                 material_id = snapshot.id
 
         q = self.session.get(Question, question_id) if question_id else None
@@ -273,7 +284,9 @@ class MathSolutionService:
                 ).order_by(SolutionAttempt.started_at.desc()).limit(1)
             )
             if previous is not None:
-                # Classroom assignment: one immutable solution per assigned question.
+                # Existing classroom item is immutable: never silently switch modes or rubrics.
+                if previous.mode != mode or previous.rubric_id != rubric_id:
+                    raise _fail(409, "SOLUTION_CONFIGURATION_CONFLICT", "Existing assigned solution has a different mode or rubric.")
                 return self._snapshot(previous)
         row = SolutionAttempt(
             student_id=student.id, source_kind=source_kind, context_type=context_type,
