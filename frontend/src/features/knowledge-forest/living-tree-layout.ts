@@ -53,7 +53,8 @@ export interface LivingTreeLayout {
 export interface TreeCamera { x: number; y: number; scale: number }
 export interface TreeViewport { width: number; height: number }
 
-const MIN_SCALE = 0.18;
+const MIN_FIT_SCALE = 0.05;
+const MIN_INTERACTIVE_SCALE = 0.08;
 const MAX_SCALE = 2.4;
 
 function rounded(value: number): number {
@@ -230,14 +231,16 @@ export function buildLivingTreeLayout(chapters: readonly KnowledgeChapterNode[])
   };
 }
 
-function clampScale(scale: number): number {
-  return Math.min(MAX_SCALE, Math.max(MIN_SCALE, scale));
+function clampInteractiveScale(scale: number): number {
+  return Math.min(MAX_SCALE, Math.max(MIN_INTERACTIVE_SCALE, scale));
 }
 
 export function fitTreeCamera(viewport: TreeViewport, bounds: TreeRect, padding = 36, maxScale = 1): TreeCamera {
-  const availableWidth = Math.max(1, viewport.width - padding * 2);
-  const availableHeight = Math.max(1, viewport.height - padding * 2);
-  const scale = clampScale(Math.min(maxScale, availableWidth / Math.max(1, bounds.width), availableHeight / Math.max(1, bounds.height)));
+  const safePadding = viewport.width < 440 ? Math.min(padding, 16) : viewport.width < 640 ? Math.min(padding, 24) : padding;
+  const availableWidth = Math.max(1, viewport.width - safePadding * 2);
+  const availableHeight = Math.max(1, viewport.height - safePadding * 2);
+  const rawFitScale = Math.min(maxScale, availableWidth / Math.max(1, bounds.width), availableHeight / Math.max(1, bounds.height));
+  const scale = Math.min(MAX_SCALE, Math.max(MIN_FIT_SCALE, rawFitScale));
   return {
     x: rounded((viewport.width - bounds.width * scale) / 2 - bounds.x * scale),
     y: rounded((viewport.height - bounds.height * scale) / 2 - bounds.y * scale),
@@ -250,7 +253,7 @@ export function focusTreeCamera(viewport: TreeViewport, bounds: TreeRect, paddin
 }
 
 export function zoomTreeCameraAt(camera: TreeCamera, viewportPoint: TreePoint, requestedScale: number): TreeCamera {
-  const scale = clampScale(requestedScale);
+  const scale = clampInteractiveScale(requestedScale);
   const worldX = (viewportPoint.x - camera.x) / camera.scale;
   const worldY = (viewportPoint.y - camera.y) / camera.scale;
   return {
@@ -278,4 +281,8 @@ export function rectsOverlap(first: TreeRect, second: TreeRect, gap = 0): boolea
   );
 }
 
-export const LIVING_TREE_DIMENSIONS = { minScale: MIN_SCALE, maxScale: MAX_SCALE } as const;
+export const LIVING_TREE_DIMENSIONS = {
+  minScale: MIN_INTERACTIVE_SCALE,
+  minFitScale: MIN_FIT_SCALE,
+  maxScale: MAX_SCALE,
+} as const;

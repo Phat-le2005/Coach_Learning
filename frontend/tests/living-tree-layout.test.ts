@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
+  LIVING_TREE_DIMENSIONS,
   buildLivingTreeLayout,
   fitTreeCamera,
   focusTreeCamera,
@@ -238,4 +239,86 @@ test("day-one 6/8/9 curriculum keeps every unstarted leaf visible without fake f
   assert.equal(layout.leaves.length, 9);
   assert.ok(layout.leaves.every((leaf) => leaf.node.state === "NOT_STARTED"));
   assert.ok(layout.leaves.every((leaf) => leaf.hasFruit === false));
+});
+
+test("fitTreeCamera scales tree to fit 360px and 390px mobile viewports without horizontal clipping", () => {
+  const topicCounts = [2, 2, 1, 1, 1, 1];
+  let leafIndex = 0;
+  const chapters: KnowledgeChapterNode[] = topicCounts.map((count, chapterIndex) => {
+    const topics: KnowledgeTopicNode[] = Array.from({ length: count }, (_, topicIndex) => {
+      const problemCount = chapterIndex === 0 && topicIndex === 0 ? 2 : 1;
+      const topicId = `test-topic-${chapterIndex}-${topicIndex}`;
+      const problemTypes: KnowledgeProblemTypeNode[] = Array.from(
+        { length: problemCount },
+        () => {
+          const index = leafIndex++;
+          return {
+            id: `test-problem-${index}`,
+            code: `TEST_PROBLEM_${index}`,
+            name: `Problem ${index + 1}`,
+            topicId,
+            topicName: `Topic ${chapterIndex + 1}.${topicIndex + 1}`,
+            chapterId: `test-chapter-${chapterIndex}`,
+            chapterName: `Chapter ${chapterIndex + 1}`,
+            rawMasteryScore: 0,
+            attemptCount: 0,
+            correctCount: 0,
+            state: "NOT_STARTED",
+            lastPracticedAt: null,
+            isReviewDue: false,
+          };
+        }
+      );
+      return {
+        id: topicId,
+        code: `TEST_TOPIC_${chapterIndex}_${topicIndex}`,
+        name: `Topic ${chapterIndex + 1}.${topicIndex + 1}`,
+        chapterId: `test-chapter-${chapterIndex}`,
+        problemTypeCount: problemTypes.length,
+        startedProblemTypeCount: 0,
+        rawMasteryScore: 0,
+        state: "NOT_STARTED",
+        attemptCount: 0,
+        problemTypes,
+      };
+    });
+    return {
+      id: `test-chapter-${chapterIndex}`,
+      code: `TEST_CHAPTER_${chapterIndex}`,
+      name: `Chapter ${chapterIndex + 1}`,
+      biome: "forest",
+      problemTypeCount: topics.reduce((sum, item) => sum + item.problemTypeCount, 0),
+      startedProblemTypeCount: 0,
+      rawMasteryScore: 0,
+      state: "NOT_STARTED",
+      attemptCount: 0,
+      topics,
+    };
+  });
+
+  const layout = buildLivingTreeLayout(chapters);
+
+  // Assert MIN_FIT_SCALE separation from interactive zoom scale
+  assert.equal(LIVING_TREE_DIMENSIONS.minFitScale, 0.05);
+  assert.equal(LIVING_TREE_DIMENSIONS.minScale, 0.08);
+
+  // Test 360px screen (e.g. inner tree canvas container ~320-360px wide)
+  for (const viewportWidth of [320, 360, 390]) {
+    const viewport = { width: viewportWidth, height: 600 };
+    const padding = viewportWidth < 440 ? 16 : 24;
+    const camera = fitTreeCamera(viewport, layout.bounds, padding, 0.92);
+
+    assert.ok(camera.scale >= LIVING_TREE_DIMENSIONS.minFitScale);
+    // Tree content width rendered must fit inside the viewport with padding
+    const renderedWidth = layout.bounds.width * camera.scale;
+    assert.ok(
+      renderedWidth <= viewport.width,
+      `Tree rendered width (${renderedWidth}) must fit within viewport width (${viewport.width}) at ${viewportWidth}px`
+    );
+    const renderedHeight = layout.bounds.height * camera.scale;
+    assert.ok(
+      renderedHeight <= viewport.height,
+      `Tree rendered height (${renderedHeight}) must fit within viewport height (${viewport.height}) at ${viewportWidth}px`
+    );
+  }
 });

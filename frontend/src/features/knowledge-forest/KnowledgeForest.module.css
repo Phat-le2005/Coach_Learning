@@ -953,8 +953,10 @@
 .decorativeLeaf { fill: rgb(91 164 108 / 18%); stroke: rgb(62 126 83 / 12%); stroke-width: 1.2; }
 .topicCanopy text { fill: #2d6d4f; font-size: 25px; font-weight: 850; paint-order: stroke; stroke: rgb(239 247 225 / 82%); stroke-width: 7px; }
 .semanticLeafGroup { opacity: 1; }
-.semanticLeafLowDetail { opacity: 0; pointer-events: none; }
-.semanticLeafLowDetail:focus-within { opacity: 1; }
+.semanticLeafLowDetail { opacity: 1; pointer-events: auto; }
+.semanticLeafLowDetail .leafShape { stroke-width: 2px; }
+.semanticLeafLowDetail .twig { stroke-width: 3.5px; }
+.semanticLeafLowDetail:not(:hover):not(:focus-within) .leafTooltip { display: none; }
 .semanticLeaf { cursor: pointer; outline: none; transform-box: fill-box; transform-origin: center; transition: transform 170ms ease, filter 170ms ease; }
 .semanticLeaf:hover, .semanticLeaf:focus-visible, .leafSelected { transform: scale(1.18); filter: url("#leaf-glow"); }
 .leafShape { stroke: rgb(24 79 55 / 42%); stroke-width: 1.5; }

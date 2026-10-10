@@ -59,9 +59,10 @@ export function KnowledgeForest({ data, initialSelectedId }: KnowledgeForestProp
   const handleCloseDetail = () => {
     setSelectedItem(null);
     const url = new URL(window.location.href);
-    url.searchParams.delete("node");
-    window.history.pushState(null, "", `${url.pathname}${url.search}${url.hash}`);
-    window.dispatchEvent(new PopStateEvent("popstate"));
+    if (url.searchParams.has("node")) {
+      url.searchParams.delete("node");
+      window.history.pushState(null, "", `${url.pathname}${url.search}${url.hash}`);
+    }
   };
 
   return (

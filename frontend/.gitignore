@@ -3,5 +3,6 @@ next-env.d.ts
 .next/
 .test-dist/
 .test-build/
+.next-build/
 node_modules/
 .env.local

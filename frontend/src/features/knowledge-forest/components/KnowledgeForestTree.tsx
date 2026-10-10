@@ -84,11 +84,22 @@ export function KnowledgeForestTree({
   const pointersRef = useRef(new Map<number, TreePoint>());
   const lastPanPointRef = useRef<TreePoint | null>(null);
   const gestureStartRef = useRef<GestureStart | null>(null);
+  const pointerDownPosRef = useRef<TreePoint | null>(null);
+  const isDraggingRef = useRef(false);
   const layout = useMemo(() => buildLivingTreeLayout(chapters), [chapters]);
   const [viewport, setViewport] = useState<TreeViewport>({ width: 1, height: 1 });
   const [camera, setCamera] = useState<TreeCamera>(INITIAL_CAMERA);
   const [focusTarget, setFocusTarget] = useState<FocusTarget>(null);
   const [hasCameraReady, setHasCameraReady] = useState(false);
+
+  const cameraRef = useRef(camera);
+  useEffect(() => {
+    cameraRef.current = camera;
+  }, [camera]);
+  const viewportStateRef = useRef(viewport);
+  useEffect(() => {
+    viewportStateRef.current = viewport;
+  }, [viewport]);
 
   const filtered = useMemo(
     () => filterKnowledgeForest({ chapters, concepts: [], searchQuery, statusFilter }),
@@ -111,7 +122,8 @@ export function KnowledgeForestTree({
 
   const fitTree = useCallback(() => {
     if (viewport.width <= 1 || viewport.height <= 1) return;
-    setCamera(fitTreeCamera(viewport, layout.bounds, 34, 0.92));
+    const padding = viewport.width < 440 ? 16 : viewport.width < 640 ? 24 : 34;
+    setCamera(fitTreeCamera(viewport, layout.bounds, padding, 0.92));
     setFocusTarget(null);
   }, [layout.bounds, viewport]);
 
@@ -153,10 +165,23 @@ export function KnowledgeForestTree({
         const leaf = topic.leaves.find((candidate) => candidate.node.id === nodeId);
         if (leaf) {
           if (revealLeaf) onSelectProblemType(leaf.node);
-          else onClearSelection();
           setFocusTarget({ kind: "leaf", id: nodeId, chapterId: chapter.node.id, topicId: topic.node.id });
-          focusBounds({ x: leaf.center.x - 150, y: leaf.center.y - 115, width: 300, height: 230 }, 1.45);
           if (updateHistory) writeNodeToHistory(nodeId);
+
+          const currentCamera = cameraRef.current;
+          const currentViewport = viewportStateRef.current;
+          const screenX = currentCamera.x + leaf.center.x * currentCamera.scale;
+          const screenY = currentCamera.y + leaf.center.y * currentCamera.scale;
+          const isAlreadyVisible =
+            currentCamera.scale >= 0.75 &&
+            screenX >= 60 &&
+            screenX <= currentViewport.width - 60 &&
+            screenY >= 60 &&
+            screenY <= currentViewport.height - 60;
+
+          if (!isAlreadyVisible) {
+            focusBounds({ x: leaf.center.x - 150, y: leaf.center.y - 115, width: 300, height: 230 }, 1.45);
+          }
           return;
         }
       }
@@ -178,7 +203,8 @@ export function KnowledgeForestTree({
 
   useEffect(() => {
     if (viewport.width <= 1 || viewport.height <= 1 || hasCameraReady) return;
-    setCamera(fitTreeCamera(viewport, layout.bounds, 34, 0.92));
+    const padding = viewport.width < 440 ? 16 : viewport.width < 640 ? 24 : 34;
+    setCamera(fitTreeCamera(viewport, layout.bounds, padding, 0.92));
     setHasCameraReady(true);
     if (initialNodeId) requestAnimationFrame(() => focusNode(initialNodeId, false));
   }, [focusNode, hasCameraReady, initialNodeId, layout.bounds, viewport]);
@@ -190,10 +216,25 @@ export function KnowledgeForestTree({
   }, [focusNode]);
 
   useEffect(() => {
+    if (!selectedId && focusTarget?.kind === "leaf") {
+      setFocusTarget(null);
+    }
+  }, [selectedId, focusTarget]);
+
+  useEffect(() => {
     if (!searchQuery.trim()) return;
     const firstResult = filtered.filteredChapters.flatMap((chapter) => chapter.topics).flatMap((topic) => topic.problemTypes)[0];
-    if (firstResult) focusNode(firstResult.id, false, false);
-  }, [filtered.filteredChapters, focusNode, searchQuery]);
+    if (!firstResult) return;
+    for (const chapter of layout.chapters) {
+      for (const topic of chapter.topics) {
+        const leaf = topic.leaves.find((candidate) => candidate.node.id === firstResult.id);
+        if (leaf) {
+          focusBounds({ x: leaf.center.x - 150, y: leaf.center.y - 115, width: 300, height: 230 }, 1.25);
+          return;
+        }
+      }
+    }
+  }, [filtered.filteredChapters, focusBounds, layout.chapters, searchQuery]);
 
   const zoomBy = (factor: number) => {
     setCamera((current) => zoomTreeCameraAt(current, { x: viewport.width / 2, y: viewport.height / 2 }, current.scale * factor));
@@ -209,8 +250,13 @@ export function KnowledgeForestTree({
     event.currentTarget.setPointerCapture(event.pointerId);
     const nextPoint = { x: event.clientX, y: event.clientY };
     pointersRef.current.set(event.pointerId, nextPoint);
-    if (pointersRef.current.size === 1) lastPanPointRef.current = nextPoint;
+    isDraggingRef.current = false;
+    if (pointersRef.current.size === 1) {
+      lastPanPointRef.current = nextPoint;
+      pointerDownPosRef.current = nextPoint;
+    }
     if (pointersRef.current.size === 2) {
+      isDraggingRef.current = true;
       const [first, second] = [...pointersRef.current.values()];
       gestureStartRef.current = { camera, midpoint: midpoint(first, second), distance: distance(first, second) };
     }
@@ -220,6 +266,12 @@ export function KnowledgeForestTree({
     if (!pointersRef.current.has(event.pointerId)) return;
     const nextPoint = { x: event.clientX, y: event.clientY };
     pointersRef.current.set(event.pointerId, nextPoint);
+    if (pointerDownPosRef.current) {
+      const dist = Math.hypot(nextPoint.x - pointerDownPosRef.current.x, nextPoint.y - pointerDownPosRef.current.y);
+      if (dist > 6) {
+        isDraggingRef.current = true;
+      }
+    }
     if (pointersRef.current.size === 1 && lastPanPointRef.current) {
       const previous = lastPanPointRef.current;
       setCamera((current) => panTreeCamera(current, { x: nextPoint.x - previous.x, y: nextPoint.y - previous.y }));
@@ -237,6 +289,14 @@ export function KnowledgeForestTree({
     pointersRef.current.delete(event.pointerId);
     gestureStartRef.current = null;
     lastPanPointRef.current = pointersRef.current.size === 1 ? [...pointersRef.current.values()][0] : null;
+    if (pointersRef.current.size === 0) {
+      pointerDownPosRef.current = null;
+    }
+  };
+
+  const handleNodeClick = (action: () => void) => {
+    if (isDraggingRef.current) return;
+    action();
   };
 
   const handleTreeKeyDown = (event: ReactKeyboardEvent<SVGSVGElement>) => {
@@ -292,8 +352,8 @@ export function KnowledgeForestTree({
               return <g key={chapter.node.id} className={`${styles.chapterBranchGroup} ${chapterDimmed || chapterFiltered ? styles.treeDimmed : ""}`}>
                 <path d={chapter.branch.path} className={styles.chapterBranchShadow} aria-hidden="true" />
                 <path d={chapter.branch.path} className={`${styles.chapterBranch} ${chapterFocused ? styles.pathHighlighted : ""}`} aria-hidden="true" />
-                <path d={chapter.branch.path} className={styles.branchHitArea} role="button" tabIndex={0} aria-label={`Tập trung cành chương ${chapter.node.name}`} onPointerDown={(event) => event.stopPropagation()} onClick={() => focusNode(chapter.node.id, true)} onKeyDown={(event) => keyboardActivate(event, () => focusNode(chapter.node.id, true))} />
-                <g className={styles.chapterLabel} transform={`translate(${chapter.labelBounds.x + chapter.labelBounds.width / 2} ${chapter.labelBounds.y + chapter.labelBounds.height / 2})`} role="button" tabIndex={0} aria-label={`Chương ${chapterIndex + 1}: ${chapter.node.name}`} onPointerDown={(event) => event.stopPropagation()} onClick={() => focusNode(chapter.node.id, true)} onKeyDown={(event) => keyboardActivate(event, () => focusNode(chapter.node.id, true))}>
+                <path d={chapter.branch.path} className={styles.branchHitArea} role="button" tabIndex={0} data-tree-node="chapter" data-node-id={chapter.node.id} aria-label={`Tập trung cành chương ${chapter.node.name}`} onClick={() => handleNodeClick(() => focusNode(chapter.node.id, true))} onKeyDown={(event) => keyboardActivate(event, () => focusNode(chapter.node.id, true))} />
+                <g className={styles.chapterLabel} data-tree-node="chapter" data-node-id={chapter.node.id} transform={`translate(${chapter.labelBounds.x + chapter.labelBounds.width / 2} ${chapter.labelBounds.y + chapter.labelBounds.height / 2})`} role="button" tabIndex={0} aria-label={`Chương ${chapterIndex + 1}: ${chapter.node.name}`} onClick={() => handleNodeClick(() => focusNode(chapter.node.id, true))} onKeyDown={(event) => keyboardActivate(event, () => focusNode(chapter.node.id, true))}>
                   <text textAnchor="middle">{shortLabel(chapter.node.name, 30)}</text>
                   <text textAnchor="middle" y="20" className={styles.chapterMeta}>{chapter.node.topics.length} chủ đề · {chapter.node.problemTypeCount} lá</text>
                 </g>
@@ -305,8 +365,8 @@ export function KnowledgeForestTree({
                   const canopyScale = Math.max(0.72, Math.sqrt(Math.max(1, topic.leaves.length)) * 0.5);
                   return <g key={topic.node.id} className={`${styles.topicBranchGroup} ${topicDimmed || topicFiltered ? styles.treeDimmed : ""}`}>
                     <path d={topic.branch.path} className={`${styles.topicBranch} ${topicFocused || topicInPath ? styles.pathHighlighted : ""}`} aria-hidden="true" />
-                    <path d={topic.branch.path} className={styles.branchHitArea} role="button" tabIndex={0} aria-label={`Tập trung nhánh chủ đề ${topic.node.name}`} onPointerDown={(event) => event.stopPropagation()} onClick={() => focusNode(topic.node.id, true)} onKeyDown={(event) => keyboardActivate(event, () => focusNode(topic.node.id, true))} />
-                    <g className={styles.topicCanopy} transform={`translate(${topic.center.x} ${topic.center.y - 18})`} role={lowDetail ? "button" : undefined} tabIndex={lowDetail ? 0 : undefined} aria-label={lowDetail ? `${topic.node.name}, ${topic.leaves.length} dạng bài. Mở cụm lá.` : undefined} onPointerDown={(event) => event.stopPropagation()} onClick={() => lowDetail && focusNode(topic.node.id, true)} onKeyDown={(event) => lowDetail && keyboardActivate(event, () => focusNode(topic.node.id, true))}>
+                    <path d={topic.branch.path} className={styles.branchHitArea} role="button" tabIndex={0} data-tree-node="topic" data-node-id={topic.node.id} aria-label={`Tập trung nhánh chủ đề ${topic.node.name}`} onClick={() => handleNodeClick(() => focusNode(topic.node.id, true))} onKeyDown={(event) => keyboardActivate(event, () => focusNode(topic.node.id, true))} />
+                    <g className={styles.topicCanopy} data-tree-node="topic-canopy" data-node-id={topic.node.id} transform={`translate(${topic.center.x} ${topic.center.y - 18})`} role="button" tabIndex={0} aria-label={`Nhánh chủ đề ${topic.node.name}, ${topic.leaves.length} dạng bài. Nhấn để phóng to xem lá.`} onClick={() => handleNodeClick(() => focusNode(topic.node.id, true))} onKeyDown={(event) => keyboardActivate(event, () => focusNode(topic.node.id, true))}>
                       <g className={styles.decorativeFoliage} aria-hidden="true" transform={`scale(${canopyScale})`}>
                         <path className={styles.canopyMass} d="M -82 7 C -83 -30 -49 -55 -15 -36 C 4 -72 55 -57 62 -20 C 96 -9 96 34 62 45 C 36 65 7 55 -7 42 C -42 59 -83 41 -82 7 Z" />
                         <path className={styles.decorativeLeaf} d="M -52 -10 C -35 -34 -10 -24 -18 6 C -38 22 -57 11 -52 -10 Z" />
@@ -314,9 +374,8 @@ export function KnowledgeForestTree({
                         <path className={styles.decorativeLeaf} d="M 35 4 C 55 -20 79 -2 65 24 C 43 35 27 23 35 4 Z" />
                         <path className={styles.decorativeLeaf} d="M -19 24 C 1 3 24 19 12 43 C -9 54 -28 43 -19 24 Z" />
                       </g>
-                      {lowDetail ? <text textAnchor="middle" y="5">{topic.leaves.length}</text> : null}
                     </g>
-                    <g className={styles.topicLabel} transform={`translate(${topic.labelBounds.x + topic.labelBounds.width / 2} ${topic.labelBounds.y + topic.labelBounds.height / 2})`} role="button" tabIndex={0} aria-label={`Chủ đề ${topic.node.name}`} onPointerDown={(event) => event.stopPropagation()} onClick={() => focusNode(topic.node.id, true)} onKeyDown={(event) => keyboardActivate(event, () => focusNode(topic.node.id, true))}>
+                    <g className={styles.topicLabel} data-tree-node="topic" data-node-id={topic.node.id} transform={`translate(${topic.labelBounds.x + topic.labelBounds.width / 2} ${topic.labelBounds.y + topic.labelBounds.height / 2})`} role="button" tabIndex={0} aria-label={`Chủ đề ${topic.node.name}`} onClick={() => handleNodeClick(() => focusNode(topic.node.id, true))} onKeyDown={(event) => keyboardActivate(event, () => focusNode(topic.node.id, true))}>
                       <text textAnchor="middle">{shortLabel(topic.node.name, 28)}</text><text textAnchor="middle" y="17" className={styles.topicMeta}>{topic.leaves.length} dạng bài</text>
                     </g>
                     {topic.leaves.map((leaf) => {
@@ -326,9 +385,9 @@ export function KnowledgeForestTree({
                       const stateLabel = getMasteryStateLabel(leaf.node.state);
                       return <g key={leaf.node.id} className={`${styles.semanticLeafGroup} ${lowDetail ? styles.semanticLeafLowDetail : ""} ${leafDimmed || leafFiltered ? styles.treeDimmed : ""}`}>
                         <path d={leaf.twig.path} className={`${styles.twig} ${selected ? styles.pathHighlighted : ""}`} aria-hidden="true" />
-                        <g transform={`translate(${leaf.center.x} ${leaf.center.y}) rotate(${leaf.rotation})`} role="button" tabIndex={0} aria-label={`${leaf.node.name}: ${stateLabel}${leaf.node.masteryScore === undefined ? ", chưa có điểm đo" : `, ${leaf.node.masteryScore}%`}`} aria-pressed={selected} className={`${styles.semanticLeaf} ${styles[`leaf_${leaf.node.state}`]} ${selected ? styles.leafSelected : ""}`} onPointerDown={(event) => event.stopPropagation()} onClick={() => focusNode(leaf.node.id, true)} onKeyDown={(event) => keyboardActivate(event, () => focusNode(leaf.node.id, true))}>
+                        <g transform={`translate(${leaf.center.x} ${leaf.center.y}) rotate(${leaf.rotation})`} role="button" tabIndex={0} data-tree-node="leaf" data-node-id={leaf.node.id} aria-label={`${leaf.node.name}: ${stateLabel}${leaf.node.masteryScore === undefined ? ", chưa có điểm đo" : `, ${leaf.node.masteryScore}%`}`} aria-pressed={selected} className={`${styles.semanticLeaf} ${styles[`leaf_${leaf.node.state}`]} ${selected ? styles.leafSelected : ""}`} onClick={() => handleNodeClick(() => focusNode(leaf.node.id, true))} onKeyDown={(event) => keyboardActivate(event, () => focusNode(leaf.node.id, true))}>
                           <title>{`${leaf.node.name} · ${stateLabel}`}</title><path d="M 0 -14 C 20 -15 27 2 0 17 C -27 2 -20 -15 0 -14 Z" className={styles.leafShape} /><path d="M -14 5 C -5 2 5 -2 15 -8" className={styles.leafVein} aria-hidden="true" />
-                          {leaf.hasFruit ? <g className={styles.masteryFruit} aria-hidden="true" transform="translate(15 -14) rotate(-20)"><circle r="8" /><path d="M 0 -8 Q 4 -15 10 -13" /></g> : null}
+                          {leaf.hasFruit ? <g className={styles.masteryFruit} data-tree-fruit="true" aria-hidden="true" transform="translate(15 -14) rotate(-20)"><circle r="8" /><path d="M 0 -8 Q 4 -15 10 -13" /></g> : null}
                           {leaf.node.state === "REVIEW_DUE" ? <circle className={styles.reviewDew} cx="-14" cy="-8" r="4" aria-hidden="true" /> : null}
                           <g className={styles.leafTooltip} transform={`rotate(${-leaf.rotation}) translate(0 -40)`} aria-hidden="true"><rect x="-95" y="-27" width="190" height="42" rx="15" /><text textAnchor="middle" y="-8">{shortLabel(leaf.node.name, 30)}</text><text textAnchor="middle" y="7" className={styles.tooltipMeta}>{stateLabel}</text></g>
                         </g>
