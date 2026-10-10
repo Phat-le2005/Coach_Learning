@@ -13,6 +13,13 @@ export interface StudentSubjectAccess {
 
 const SUBJECT_CODE_PATTERN = /^[A-Z0-9][A-Z0-9_:-]{0,63}$/;
 
+export class SelfStudyPublicationPolicyError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "SelfStudyPublicationPolicyError";
+  }
+}
+
 export function parsePublishedSelfStudySubjectCodes(rawValue: string | undefined): string[] {
   if (!rawValue) return [];
 
@@ -22,6 +29,33 @@ export function parsePublishedSelfStudySubjectCodes(rawValue: string | undefined
     .filter((value) => SUBJECT_CODE_PATTERN.test(value));
 
   return [...new Set(codes)];
+}
+
+/**
+ * Reads an environment-owned publication policy without silently converting a
+ * missing or malformed deployment setting into "no subjects are available".
+ * An explicitly empty value remains a valid fail-closed policy.
+ */
+export function requirePublishedSelfStudySubjectCodes(
+  rawValue: string | undefined
+): string[] {
+  if (rawValue === undefined) {
+    throw new SelfStudyPublicationPolicyError(
+      "SELF_STUDY_PUBLISHED_SUBJECT_CODES must be configured explicitly."
+    );
+  }
+
+  const configuredValues = rawValue
+    .split(",")
+    .map((value) => value.trim())
+    .filter(Boolean);
+  if (configuredValues.some((value) => !SUBJECT_CODE_PATTERN.test(value.toUpperCase()))) {
+    throw new SelfStudyPublicationPolicyError(
+      "SELF_STUDY_PUBLISHED_SUBJECT_CODES contains an invalid subject code."
+    );
+  }
+
+  return parsePublishedSelfStudySubjectCodes(rawValue);
 }
 
 function hasBrowsableCurriculum(subject: SubjectMasteryRead): boolean {

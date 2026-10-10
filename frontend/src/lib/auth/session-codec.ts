@@ -59,6 +59,10 @@ export async function verifySession(token: string | undefined, secret: string, n
   try {
     const expected = await hmac(secret, encodedPayload);
     const actual = base64UrlDecode(encodedSignature);
+    // Reject alternate, non-canonical Base64URL spellings of the same bytes.
+    // Without this check, changing only unused trailing bits can leave the HMAC
+    // bytes unchanged while the serialized cookie string has been tampered with.
+    if (base64UrlEncode(actual) !== encodedSignature) return null;
     if (!timingSafeEqual(expected, actual)) return null;
     const payload = parsePayload(JSON.parse(decoder.decode(base64UrlDecode(encodedPayload))) as unknown);
     return payload && payload.expiresAt > now ? payload : null;

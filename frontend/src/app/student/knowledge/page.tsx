@@ -13,6 +13,7 @@ import { StudentTopNav } from "@/features/student-home/components/StudentTopNav"
 import {
   resolveStudentSubjectAccess,
   selectAccessibleSubject,
+  SelfStudyPublicationPolicyError,
 } from "@/features/self-study/discovery";
 import { getPublishedSelfStudySubjectCodes } from "@/features/self-study/server-policy";
 import { ApiNetworkError, ApiResponseError, createBackendApiClient } from "@/lib/api/client";
@@ -44,6 +45,20 @@ export default async function StudentKnowledgePage(props: {
   const session = await requirePageRole("STUDENT", "/student/knowledge");
   const accessToken = await readAccessToken();
   if (!accessToken) return <SessionRecovery />;
+
+  let publishedSelfStudyCodes: string[];
+  try {
+    publishedSelfStudyCodes = getPublishedSelfStudySubjectCodes();
+  } catch (error) {
+    if (error instanceof SelfStudyPublicationPolicyError) {
+      return state(
+        "error",
+        "Cấu hình môn tự học chưa sẵn sàng",
+        "Môi trường triển khai chưa khai báo rõ danh sách môn được phát hành cho tự học. EduMS đã dừng thay vì âm thầm ẩn cây tri thức."
+      );
+    }
+    throw error;
+  }
 
   const searchParams = props.searchParams ? await props.searchParams : undefined;
   const requestedSubjectId = searchParams?.subject_id?.trim() || undefined;
@@ -163,7 +178,7 @@ export default async function StudentKnowledgePage(props: {
   const subjectAccess = resolveStudentSubjectAccess(
     learningState.available_subjects,
     mastery,
-    getPublishedSelfStudySubjectCodes()
+    publishedSelfStudyCodes
   );
   const selectedSubject = selectAccessibleSubject(
     subjectAccess,

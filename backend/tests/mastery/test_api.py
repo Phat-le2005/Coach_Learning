@@ -5,8 +5,11 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.classes.models import Classroom, StudentEnrollment, TeacherClassroom
+from app.mastery.models import StudentConceptMastery, StudentProblemTypeMastery
+from app.practice.models import PracticeSession
 from app.practice.schemas import PracticeAnswerCreate, PracticeSessionCreate
 from app.practice.service import PracticeService
+from app.students.goal_models import AcademicGoal
 from app.students.models import StudentProfile
 from app.teachers.models import TeacherProfile
 from app.users.models import Role, User
@@ -39,6 +42,71 @@ def create_mastery_evidence(
     )
     assert profile is not None
     return profile
+
+
+def test_new_student_receives_complete_curriculum_without_learning_activity(
+    db_client: TestClient,
+    db_session: Session,
+    practice_students: tuple[User, User],
+    practice_bearer: BearerFactory,
+    practice_content: PracticeContent,
+) -> None:
+    _, student = practice_students
+    profile = db_session.scalar(
+        select(StudentProfile).where(StudentProfile.user_id == student.id)
+    )
+    assert profile is not None
+    headers = practice_bearer(student)
+
+    assert db_session.scalar(
+        select(StudentEnrollment).where(StudentEnrollment.student_id == profile.id)
+    ) is None
+    assert db_session.scalar(
+        select(AcademicGoal).where(AcademicGoal.student_id == profile.id)
+    ) is None
+    assert db_session.scalar(
+        select(PracticeSession).where(PracticeSession.student_id == profile.id)
+    ) is None
+    assert db_session.scalar(
+        select(StudentProblemTypeMastery).where(
+            StudentProblemTypeMastery.student_id == profile.id
+        )
+    ) is None
+    assert db_session.scalar(
+        select(StudentConceptMastery).where(StudentConceptMastery.student_id == profile.id)
+    ) is None
+
+    learning_state = db_client.get("/students/me/learning-state", headers=headers)
+    assert learning_state.status_code == 200, learning_state.text
+    assert learning_state.json()["available_subjects"] == []
+    assert learning_state.json()["class_contexts"] == []
+    assert learning_state.json()["today_plan"] is None
+
+    overview = db_client.get("/students/me/mastery", headers=headers)
+    assert overview.status_code == 200, overview.text
+    subject = next(
+        item
+        for item in overview.json()["subjects"]
+        if item["subject_id"] == str(practice_content.subject.id)
+    )
+    assert len(subject["chapters"]) == 1
+    assert len(subject["chapters"][0]["topics"]) == 1
+    leaves = subject["chapters"][0]["topics"][0]["problem_types"]
+    assert len(leaves) == 1
+    assert leaves[0]["state"] == "NOT_STARTED"
+    assert leaves[0]["attempt_count"] == 0
+    assert leaves[0]["mastery_score"] == 0.0
+    assert subject["concepts"][0]["state"] == "NOT_STARTED"
+
+    # Both read endpoints are side-effect free: the catalog is not fake mastery.
+    assert db_session.scalar(
+        select(StudentProblemTypeMastery).where(
+            StudentProblemTypeMastery.student_id == profile.id
+        )
+    ) is None
+    assert db_session.scalar(
+        select(StudentConceptMastery).where(StudentConceptMastery.student_id == profile.id)
+    ) is None
 
 
 def test_student_mastery_api_returns_hierarchy_and_leaf_details(

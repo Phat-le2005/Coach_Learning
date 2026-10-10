@@ -9,6 +9,7 @@ import { toStudentHomeViewModel } from "@/features/student-home/adapter";
 import {
   resolveStudentSubjectAccess,
   selectAccessibleSubject,
+  SelfStudyPublicationPolicyError,
 } from "@/features/self-study/discovery";
 import { getPublishedSelfStudySubjectCodes } from "@/features/self-study/server-policy";
 import { ApiNetworkError, ApiResponseError, createBackendApiClient } from "@/lib/api/client";
@@ -110,6 +111,13 @@ export default async function StudentPage(props: {
       </>
     );
   } catch (error) {
+    if (error instanceof SelfStudyPublicationPolicyError) {
+      return state(
+        "error",
+        "Cấu hình môn tự học chưa sẵn sàng",
+        "Môi trường triển khai chưa khai báo rõ danh sách môn được phát hành cho tự học. EduMS đã dừng thay vì âm thầm ẩn nội dung."
+      );
+    }
     if (error instanceof ApiResponseError) {
       if (error.status === 401) return <SessionRecovery />;
       if (error.status === 403) {

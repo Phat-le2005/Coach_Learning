@@ -3,8 +3,10 @@ import test from "node:test";
 
 import {
   parsePublishedSelfStudySubjectCodes,
+  requirePublishedSelfStudySubjectCodes,
   resolveStudentSubjectAccess,
   selectAccessibleSubject,
+  SelfStudyPublicationPolicyError,
 } from "../src/features/self-study/discovery";
 import type { StudentMasteryRead, SubjectMasteryRead } from "../src/lib/api/contracts";
 
@@ -78,6 +80,19 @@ test("publication policy parsing is normalized, deterministic, and rejects inval
     ["MATH_G12", "PHYS_G12"]
   );
   assert.deepEqual(parsePublishedSelfStudySubjectCodes(undefined), []);
+});
+
+test("deployment publication policy must be explicit and valid", () => {
+  assert.throws(
+    () => requirePublishedSelfStudySubjectCodes(undefined),
+    SelfStudyPublicationPolicyError
+  );
+  assert.throws(
+    () => requirePublishedSelfStudySubjectCodes("MATH_G12,not allowed!"),
+    SelfStudyPublicationPolicyError
+  );
+  assert.deepEqual(requirePublishedSelfStudySubjectCodes(""), []);
+  assert.deepEqual(requirePublishedSelfStudySubjectCodes("math_g12,MATH_G12"), ["MATH_G12"]);
 });
 
 test("new student can discover only explicitly released subjects with browsable hierarchy", () => {

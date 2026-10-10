@@ -407,3 +407,83 @@ test("marks a released subject as self-study discovery while preserving real hie
   assert.equal(vm.hasCurriculum, true);
   assert.equal(vm.chapters[0].topics[0].problemTypes.length, 3);
 });
+test("new student sees the complete published 6/8/9 catalog with every leaf NOT_STARTED", () => {
+  const metric = {
+    mastery_score: 0,
+    confidence: 0,
+    attempt_count: 0,
+    correct_count: 0,
+    last_practiced_at: null,
+    last_updated_at: null,
+    state: "NOT_STARTED" as const,
+  };
+  const topicCounts = [2, 2, 1, 1, 1, 1];
+  let problemTypeIndex = 0;
+  const chapters = topicCounts.map((topicCount, chapterIndex) => ({
+    chapter_id: `chapter-${chapterIndex}`,
+    subject_id: "math-g12",
+    code: `CHAPTER_${chapterIndex}`,
+    name: `Chapter ${chapterIndex + 1}`,
+    ...metric,
+    problem_type_count: topicCount + (chapterIndex === 0 ? 1 : 0),
+    started_problem_type_count: 0,
+    topics: Array.from({ length: topicCount }, (_, topicIndex) => {
+      const problemCount = chapterIndex === 0 && topicIndex === 0 ? 2 : 1;
+      const topicId = `topic-${chapterIndex}-${topicIndex}`;
+      return {
+        topic_id: topicId,
+        chapter_id: `chapter-${chapterIndex}`,
+        code: `TOPIC_${chapterIndex}_${topicIndex}`,
+        name: `Topic ${chapterIndex + 1}.${topicIndex + 1}`,
+        ...metric,
+        problem_type_count: problemCount,
+        started_problem_type_count: 0,
+        problem_types: Array.from({ length: problemCount }, () => {
+          const index = problemTypeIndex++;
+          return {
+            problem_type_id: `problem-type-${index}`,
+            topic_id: topicId,
+            code: `PROBLEM_TYPE_${index}`,
+            name: `Problem type ${index + 1}`,
+            ...metric,
+          };
+        }),
+      };
+    }),
+  }));
+  const mastery: StudentMasteryRead = {
+    student_id: "new-student",
+    subjects: [
+      {
+        subject_id: "math-g12",
+        code: "MATH_G12",
+        name: "Grade 12 Mathematics",
+        ...metric,
+        problem_type_count: 9,
+        started_problem_type_count: 0,
+        chapters,
+        concepts: [],
+      },
+    ],
+  };
+
+  const viewModel = toKnowledgeForestViewModel(
+    mastery,
+    [{ id: "math-g12", code: "MATH_G12", name: "Grade 12 Mathematics" }],
+    "math-g12",
+    "new-student",
+    ["math-g12"]
+  );
+  const topics = viewModel.chapters.flatMap((chapter) => chapter.topics);
+  const leaves = topics.flatMap((topic) => topic.problemTypes);
+
+  assert.equal(viewModel.accessMode, "SELF_STUDY_DISCOVERY");
+  assert.equal(viewModel.chapters.length, 6);
+  assert.equal(topics.length, 8);
+  assert.equal(leaves.length, 9);
+  assert.equal(viewModel.summary.problemTypeCount, 9);
+  assert.equal(viewModel.summary.notStartedCount, 9);
+  assert.equal(viewModel.summary.masteredCount, 0);
+  assert.ok(leaves.every((leaf) => leaf.state === "NOT_STARTED"));
+  assert.ok(leaves.every((leaf) => leaf.masteryScore === undefined));
+});

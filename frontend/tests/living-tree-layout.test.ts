@@ -177,3 +177,65 @@ test("fit and cursor-centered zoom camera math is stable", () => {
   const focused = focusTreeCamera(viewport, { x: 700, y: 400, width: 220, height: 180 });
   assert.ok(focused.scale > camera.scale);
 });
+test("day-one 6/8/9 curriculum keeps every unstarted leaf visible without fake fruit", () => {
+  const topicCounts = [2, 2, 1, 1, 1, 1];
+  let leafIndex = 0;
+  const chapters: KnowledgeChapterNode[] = topicCounts.map((count, chapterIndex) => {
+    const topics: KnowledgeTopicNode[] = Array.from({ length: count }, (_, topicIndex) => {
+      const problemCount = chapterIndex === 0 && topicIndex === 0 ? 2 : 1;
+      const topicId = `day-one-topic-${chapterIndex}-${topicIndex}`;
+      const problemTypes: KnowledgeProblemTypeNode[] = Array.from(
+        { length: problemCount },
+        () => {
+          const index = leafIndex++;
+          return {
+            id: `day-one-problem-${index}`,
+            code: `DAY_ONE_PROBLEM_${index}`,
+            name: `Day one problem type ${index + 1}`,
+            topicId,
+            topicName: `Day one topic ${chapterIndex + 1}.${topicIndex + 1}`,
+            chapterId: `day-one-chapter-${chapterIndex}`,
+            chapterName: `Day one chapter ${chapterIndex + 1}`,
+            rawMasteryScore: 0,
+            attemptCount: 0,
+            correctCount: 0,
+            state: "NOT_STARTED",
+            lastPracticedAt: null,
+            isReviewDue: false,
+          };
+        }
+      );
+      return {
+        id: topicId,
+        code: `DAY_ONE_TOPIC_${chapterIndex}_${topicIndex}`,
+        name: `Day one topic ${chapterIndex + 1}.${topicIndex + 1}`,
+        chapterId: `day-one-chapter-${chapterIndex}`,
+        problemTypeCount: problemTypes.length,
+        startedProblemTypeCount: 0,
+        rawMasteryScore: 0,
+        state: "NOT_STARTED",
+        attemptCount: 0,
+        problemTypes,
+      };
+    });
+    return {
+      id: `day-one-chapter-${chapterIndex}`,
+      code: `DAY_ONE_CHAPTER_${chapterIndex}`,
+      name: `Day one chapter ${chapterIndex + 1}`,
+      biome: "forest",
+      problemTypeCount: topics.reduce((sum, item) => sum + item.problemTypeCount, 0),
+      startedProblemTypeCount: 0,
+      rawMasteryScore: 0,
+      state: "NOT_STARTED",
+      attemptCount: 0,
+      topics,
+    };
+  });
+
+  const layout = buildLivingTreeLayout(chapters);
+  assert.equal(layout.chapters.length, 6);
+  assert.equal(layout.chapters.flatMap((item) => item.topics).length, 8);
+  assert.equal(layout.leaves.length, 9);
+  assert.ok(layout.leaves.every((leaf) => leaf.node.state === "NOT_STARTED"));
+  assert.ok(layout.leaves.every((leaf) => leaf.hasFruit === false));
+});
