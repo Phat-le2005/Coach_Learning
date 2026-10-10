@@ -1,0 +1,45 @@
+name: Step Solution PostgreSQL Verification
+
+on:
+  push:
+    branches:
+      - "test/step-verify-*"
+      - "feat/step-core-*"
+  pull_request:
+    branches: [main, develop, "feat/step-arch-01-math-solutions-schema"]
+
+jobs:
+  step-verification:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_DB: edums_step_test
+          POSTGRES_USER: edums_step
+          POSTGRES_PASSWORD: test_only_step_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U edums_step -d edums_step_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    defaults:
+      run:
+        working-directory: backend
+    env:
+      APP_ENV: test
+      EDUMS_TEST_DATABASE_URL: postgresql+psycopg://edums_step:test_only_step_password@localhost:5432/edums_step_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Verify frozen API v1
+        run: python -m app.api.check_contract
+      - name: Verify PostgreSQL migration and step lifecycle
+        run: pytest tests/math_solutions/ -q --tb=short
