@@ -30,6 +30,8 @@ jobs:
         working-directory: backend
     env:
       APP_ENV: test
+      DATABASE_NAME: edums_step_test
+      DATABASE_USER: edums_step
       EDUMS_TEST_DATABASE_URL: postgresql+psycopg://edums_step:test_only_step_password@localhost:5432/edums_step_test
     steps:
       - uses: actions/checkout@v4
