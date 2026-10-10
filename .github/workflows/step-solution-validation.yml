@@ -45,5 +45,16 @@ jobs:
         run: python -m app.api.check_contract
       - name: Verify PostgreSQL migration and step lifecycle
         run: pytest tests/math_solutions/ -q --tb=short
+      - name: Verify migration registry and PostgreSQL fixtures
+        run: >-
+          pytest -q --tb=short
+          tests/auth/test_migration.py
+          tests/academic/test_postgres.py
+          tests/auth/test_postgres_concurrency.py
+          tests/classes/test_postgres.py
+          tests/data_foundation/test_postgres.py
+          tests/diagnostics/test_postgres_concurrency.py
+          tests/questions/test_import_postgres.py
+          tests/synthetic/test_postgres.py
       - name: Run complete backend regression
         run: pytest tests/ -q --tb=short
