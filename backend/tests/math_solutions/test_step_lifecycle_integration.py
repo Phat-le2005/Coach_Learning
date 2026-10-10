@@ -1,5 +1,5 @@
 """STEP-VERIFY-01: exercise actual migration and solution lifecycle on test database."""
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 import pytest
 from sqlalchemy import select
@@ -42,7 +42,7 @@ def _create(s, d):
 
 
 def _call(s, name, d, current, **kwargs):
-    return getattr(s,name)(d["student"].id, current["id"],expected_attempt_revision=current["attempt_revision_number"],client_action_id=uuid4(),**kwargs)
+    return getattr(s,name)(d["student"].id, UUID(current["id"]),expected_attempt_revision=current["attempt_revision_number"],client_action_id=uuid4(),**kwargs)
 
 
 def test_real_schema_supports_reorder_delete_restore_and_submission(db_session, solution_domain):
@@ -53,7 +53,6 @@ def test_real_schema_supports_reorder_delete_restore_and_submission(db_session, 
         current=_call(s,"add_step",d,current,draft=SolutionStepDraft(step_type="CUSTOM",content_latex=formula))
     assert [z["step_index"] for z in current["steps"]]==[1,2,3]
     ordered=[current["steps"][1]["id"],current["steps"][0]["id"],current["steps"][2]["id"]]
-    from uuid import UUID
     current=_call(s,"reorder_steps",d,current,step_ids=[UUID(k) for k in ordered])
     assert current["steps"][0]["id"]==ordered[0]
     current=_call(s,"delete_step",d,current,step_id=UUID(ordered[0]))
@@ -81,7 +80,7 @@ def test_idempotency_and_stale_revision(db_session, solution_domain):
     assert duplicate["id"]==current["id"]
     key=uuid4()
     args={"expected_attempt_revision":current["attempt_revision_number"],"client_action_id":key,"draft":SolutionStepDraft(step_type="CUSTOM",content_latex="first")}
-    first=s.add_step(d["student"].id,current["id"],**args)
+    first=s.add_step(d["student"].id,UUID(current["id"]),**args)
     same=s.add_step(d["student"].id,current["id"],**args)
     assert same==first
     with pytest.raises(ApplicationError) as exc:
@@ -95,7 +94,6 @@ def test_idempotency_and_stale_revision(db_session, solution_domain):
 
 def test_cross_student_and_teacher_denied(db_session, solution_domain):
     d=solution_domain;s=MathSolutionService(db_session);current=_create(s,d)
-    from uuid import UUID
     for actor in (d["outsider"],d["teacher"]):
         with pytest.raises(ApplicationError):
             s.get(actor.id,UUID(current["id"]))
