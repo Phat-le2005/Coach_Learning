@@ -5,6 +5,7 @@ on:
     branches:
       - "test/step-verify-*"
       - "feat/step-core-*"
+      - "feat/step-api-v2-*"
       - "test/step-verify-02-*"
   pull_request:
     branches: [main, develop, "feat/step-arch-01-math-solutions-schema"]
@@ -44,6 +45,8 @@ jobs:
         run: pip install -r requirements.txt
       - name: Verify frozen API v1
         run: python -m app.api.check_contract
+      - name: Verify API v2 contract
+        run: python -m app.api.v2.check_contract
       - name: Verify PostgreSQL migration and step lifecycle
         run: pytest tests/math_solutions/ -q --tb=short
       - name: Verify migration registry and PostgreSQL fixtures

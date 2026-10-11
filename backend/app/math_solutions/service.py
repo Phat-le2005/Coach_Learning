@@ -125,7 +125,14 @@ class MathSolutionService:
             "id": str(attempt.id), "status": attempt.status,
             "context_type": attempt.context_type, "source_kind": attempt.source_kind,
             "mode": attempt.mode, "attempt_revision_number": attempt.attempt_revision_number,
+            "question_id": str(attempt.question_id) if attempt.question_id else None,
+            "practice_session_id": str(attempt.practice_session_id) if attempt.practice_session_id else None,
+            "student_assignment_id": str(attempt.student_assignment_id) if attempt.student_assignment_id else None,
+            "assignment_student_question_id": str(attempt.assignment_student_question_id) if attempt.assignment_student_question_id else None,
+            "student_assignment_material_item_id": str(attempt.student_assignment_material_item_id) if attempt.student_assignment_material_item_id else None,
             "steps": steps, "submitted_at": attempt.submitted_at.isoformat() if attempt.submitted_at else None,
+            "started_at": attempt.started_at.isoformat(),
+            "updated_at": attempt.updated_at.isoformat(),
         }
 
     def get(self, actor_user_id: UUID, attempt_id: UUID) -> dict[str, Any]:
@@ -140,6 +147,7 @@ class MathSolutionService:
                 "step_index_at_revision": row.step_index_at_revision,
                 "content_latex": row.content_latex, "explanation_text": row.explanation_text,
                 "artifact": row.artifact_snapshot, "change_reason": row.change_reason,
+                "created_at": row.created_at.isoformat(),
             }
             for row in self.session.scalars(
                 select(StepRevision).where(StepRevision.step_id == step.id)
