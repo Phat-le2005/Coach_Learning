@@ -5,6 +5,7 @@ from datetime import datetime, timedelta, timezone
 from uuid import UUID, uuid4
 
 import pytest
+from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
@@ -34,6 +35,7 @@ from app.math_solutions.models import (
     StepEvaluation,
     StepRevision,
 )
+from app.math_solutions.service import MathSolutionService
 from app.practice.models import PracticeSession, PracticeSessionStatus, PracticeSessionType
 from app.questions.models import Question, QuestionStatus, QuestionType
 from app.students.models import StudentProfile
@@ -627,6 +629,57 @@ def test_v2_cache_control_and_error_envelope_on_all_error_codes(
     )
     assert options.status_code == 200
     assert options.headers.get("access-control-allow-origin") == "http://localhost:3000"
+
+
+def test_v2_unhandled_500_keeps_private_cache_policy_and_cors(
+    db_app: FastAPI,
+    v2_domain: V2Domain,
+    auth_headers,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    internal_detail = "database-password-or-rubric-must-not-leak"
+
+    def raise_unexpected_error(*args: object, **kwargs: object) -> None:
+        raise RuntimeError(internal_detail)
+
+    monkeypatch.setattr(MathSolutionService, "get", raise_unexpected_error)
+    with TestClient(db_app, raise_server_exceptions=False) as client:
+        response = client.get(
+            f"/api/v2/math-solutions/attempts/{uuid4()}",
+            headers={
+                **auth_headers(v2_domain.student),
+                "Origin": "http://localhost:3000",
+            },
+        )
+        docs_response = client.get("/api/v2/docs")
+        preflight = client.options(
+            "/api/v2/math-solutions/attempts",
+            headers={
+                "Origin": "http://localhost:3000",
+                "Access-Control-Request-Method": "POST",
+                "Access-Control-Request-Headers": "authorization,content-type",
+            },
+        )
+
+    assert response.status_code == 500
+    assert response.json() == {
+        "error": {
+            "code": "INTERNAL_SERVER_ERROR",
+            "message": "An unexpected error occurred.",
+        }
+    }
+    assert response.headers["cache-control"] == "no-store"
+    assert response.headers["pragma"] == "no-cache"
+    assert response.headers["access-control-allow-origin"] == "http://localhost:3000"
+    assert internal_detail not in response.text
+
+    assert docs_response.status_code == 200
+    assert docs_response.headers.get("cache-control") != "no-store"
+    assert docs_response.headers.get("pragma") != "no-cache"
+    assert preflight.status_code == 200
+    assert preflight.headers["access-control-allow-origin"] == "http://localhost:3000"
+    assert preflight.headers.get("cache-control") != "no-store"
+    assert preflight.headers.get("pragma") != "no-cache"
 
 
 def test_v2_all_endpoints_reject_teacher_and_anonymous(

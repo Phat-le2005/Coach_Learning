@@ -1,30 +1,20 @@
 from collections.abc import Callable
-from datetime import date, datetime, timedelta, timezone
-from uuid import UUID, uuid4
-
-import pytest
+from datetime import date, datetime, timedelta
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
 from app.ai.gateway import AIGateway
 from app.ai.mock_provider import MockAIProvider
-from app.assignments.models import Assignment, AssignmentStatus, AssignmentType, StudentAssignment, StudentAssignmentStatus
 from app.attempts.models import StudySession
 from app.concepts.models import Concept, ConceptRelation, RelationType
 from app.core.config import get_settings
 from app.curriculum.models import Chapter, ProblemType, ProblemTypeConcept, Topic
-from app.main import app
 from app.mastery.models import StudentConceptMastery, StudentProblemTypeMastery
 from app.parents.dashboard_schemas import (
-    ParentWeeklyAIInput,
     ParentWeeklyAIOutput,
-    ParentWeeklyAISummaryRead,
 )
 from app.parents.models import ParentProfile, ParentStudentRelationship
 from app.parents.parent_ai_service import ParentAISummaryService
-from app.parents.portal_router import get_ai_summary_service
-from app.planning.study_models import StudyPlan, StudyPlanStatus, StudyTask, StudyTaskReasonCode, StudyTaskStatus, StudyTaskType
-from app.practice.models import PracticeSession, PracticeSessionStatus, PracticeSessionType, QuestionAttempt
 from app.students.models import StudentProfile
 from app.subjects.models import Subject
 from app.users.models import Role, User
@@ -82,6 +72,8 @@ def test_parent_ai_summary_success(
     parent_user_factory: Callable[[Role, str], User],
     parent_profile_helper: Callable[[User], ParentProfile],
     student_profile_helper: Callable[[User], StudentProfile],
+    parent_test_now: datetime,
+    parent_test_clock: Callable[[], datetime],
 ) -> None:
     p_user = parent_user_factory(Role.PARENT, "ai_summary_parent@example.com")
     s_user = parent_user_factory(Role.STUDENT, "ai_summary_student@example.com")
@@ -101,7 +93,7 @@ def test_parent_ai_summary_success(
     subject, chapter, topic, pt, concept = _setup_curriculum(db_session, "AISUC")
 
     # Add study session
-    now = datetime.now(timezone.utc)
+    now = parent_test_now
     db_session.add(
         StudySession(
             student_id=s_prof.id,
@@ -135,12 +127,15 @@ def test_parent_ai_summary_success(
     )
     mock_provider = MockAIProvider(canned_structured=canned)
     gateway = AIGateway(provider=mock_provider, settings=get_settings())
-    service = ParentAISummaryService(db_session, gateway=gateway)
+    service = ParentAISummaryService(db_session, gateway=gateway, clock=parent_test_clock)
 
     result = service.generate_weekly_summary(p_user.id, s_prof.id)
 
     assert result.is_fallback is False
     assert result.student_id == s_prof.id
+    assert result.generated_at == parent_test_now
+    assert result.week_start_date == date(2026, 2, 16)
+    assert result.week_end_date == date(2026, 2, 22)
     assert "45 phút" in result.progress
     assert "Tìm tham số về tính đơn điệu" in result.current_challenge
     assert "bất phương trình" in result.next_week
@@ -157,6 +152,7 @@ def test_parent_ai_summary_max_2_recommendations_enforced(
     parent_user_factory: Callable[[Role, str], User],
     parent_profile_helper: Callable[[User], ParentProfile],
     student_profile_helper: Callable[[User], StudentProfile],
+    parent_test_clock: Callable[[], datetime],
 ) -> None:
     p_user = parent_user_factory(Role.PARENT, "clamp_rec_p@example.com")
     s_user = parent_user_factory(Role.STUDENT, "clamp_rec_s@example.com")
@@ -186,7 +182,7 @@ def test_parent_ai_summary_max_2_recommendations_enforced(
     )
     mock_provider = MockAIProvider(canned_structured=out)
     gateway = AIGateway(provider=mock_provider, settings=get_settings())
-    service = ParentAISummaryService(db_session, gateway=gateway)
+    service = ParentAISummaryService(db_session, gateway=gateway, clock=parent_test_clock)
 
     result = service.generate_weekly_summary(p_user.id, s_prof.id)
     assert len(result.how_parent_can_help) <= 2
@@ -204,6 +200,8 @@ def test_parent_ai_summary_fallback_when_ai_offline(
     parent_user_factory: Callable[[Role, str], User],
     parent_profile_helper: Callable[[User], ParentProfile],
     student_profile_helper: Callable[[User], StudentProfile],
+    parent_test_now: datetime,
+    parent_test_clock: Callable[[], datetime],
 ) -> None:
     p_user = parent_user_factory(Role.PARENT, "fallback_p@example.com")
     s_user = parent_user_factory(Role.STUDENT, "fallback_s@example.com")
@@ -220,7 +218,7 @@ def test_parent_ai_summary_fallback_when_ai_offline(
     )
     subject, chapter, topic, pt, concept = _setup_curriculum(db_session, "AIFALL")
 
-    now = datetime.now(timezone.utc)
+    now = parent_test_now
     # Add study time
     db_session.add(
         StudySession(
@@ -258,12 +256,15 @@ def test_parent_ai_summary_fallback_when_ai_offline(
     # Provider configured to fail with 10 failures
     failing_provider = MockAIProvider(service_unavailable_failures=10)
     gateway = AIGateway(provider=failing_provider, settings=get_settings())
-    service = ParentAISummaryService(db_session, gateway=gateway)
+    service = ParentAISummaryService(db_session, gateway=gateway, clock=parent_test_clock)
 
     result = service.generate_weekly_summary(p_user.id, s_prof.id)
 
     assert result.is_fallback is True
     assert result.student_id == s_prof.id
+    assert result.generated_at == parent_test_now
+    assert result.week_start_date == date(2026, 2, 16)
+    assert result.week_end_date == date(2026, 2, 22)
     # Check deterministic fallback logic
     assert "90" in result.progress or "phút" in result.progress
     assert pt.name in result.current_challenge
@@ -281,6 +282,7 @@ def test_parent_ai_summary_input_has_zero_chat_or_tutor_logs(
     parent_user_factory: Callable[[Role, str], User],
     parent_profile_helper: Callable[[User], ParentProfile],
     student_profile_helper: Callable[[User], StudentProfile],
+    parent_test_clock: Callable[[], datetime],
 ) -> None:
     p_user = parent_user_factory(Role.PARENT, "privacy_p@example.com")
     s_user = parent_user_factory(Role.STUDENT, "privacy_s@example.com")
@@ -297,7 +299,7 @@ def test_parent_ai_summary_input_has_zero_chat_or_tutor_logs(
     )
     db_session.commit()
 
-    service = ParentAISummaryService(db_session)
+    service = ParentAISummaryService(db_session, clock=parent_test_clock)
     context_input, parent_name = service.build_weekly_context(p_user.id, s_prof.id)
 
     # Check input payload schema
