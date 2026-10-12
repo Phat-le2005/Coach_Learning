@@ -1,4 +1,5 @@
 from collections.abc import Callable
+from datetime import datetime, timezone
 
 import pytest
 from sqlalchemy import select
@@ -15,6 +16,17 @@ from app.users.schemas import UserCreate
 from app.users.service import UserService
 
 PARENT_TEST_PASSWORD = "Synthetic-Parent-Test-Password-2026!"
+PARENT_TEST_NOW = datetime(2026, 2, 18, 12, 0, tzinfo=timezone.utc)
+
+
+@pytest.fixture
+def parent_test_now() -> datetime:
+    return PARENT_TEST_NOW
+
+
+@pytest.fixture
+def parent_test_clock(parent_test_now: datetime) -> Callable[[], datetime]:
+    return lambda: parent_test_now
 
 
 @pytest.fixture

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 from datetime import date, datetime, time, timedelta, timezone
 import logging
 from uuid import UUID
@@ -36,6 +37,13 @@ from app.users.models import User
 
 logger = logging.getLogger(__name__)
 
+UtcClock = Callable[[], datetime]
+
+
+def utc_now() -> datetime:
+    return datetime.now(timezone.utc)
+
+
 DAY_NAMES = ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ nhật"]
 
 
@@ -49,8 +57,15 @@ class ParentDashboardService:
     - Privacy & Safety: Zero private AI conversations, zero raw messages, zero peer comparison, no minor noisy errors.
     """
 
-    def __init__(self, session: Session) -> None:
+    def __init__(self, session: Session, *, clock: UtcClock | None = None) -> None:
         self.session = session
+        self._clock = clock or utc_now
+
+    def _now(self) -> datetime:
+        value = self._clock()
+        if value.tzinfo is None:
+            raise ValueError("ParentDashboardService clock must return a timezone-aware datetime.")
+        return value.astimezone(timezone.utc)
 
     # --------------------------------------------------------------------------
     # Security & Relationship Authorization
@@ -117,7 +132,7 @@ class ParentDashboardService:
         )
 
         summaries: list[ParentStudentSummaryRead] = []
-        now = datetime.now(timezone.utc)
+        now = self._now()
         week_start = now - timedelta(days=7)
 
         for rel, student, user in rows:
@@ -197,7 +212,7 @@ class ParentDashboardService:
         parent = self.require_parent_profile(parent_user_id)
         _, student, user = self.require_active_relationship(parent.id, student_id)
 
-        ref_date = target_date or datetime.now(timezone.utc).date()
+        ref_date = target_date or self._now().date()
         # Monday as start of week
         start_of_week = ref_date - timedelta(days=ref_date.weekday())
         end_of_week = start_of_week + timedelta(days=6)
@@ -661,7 +676,7 @@ class ParentDashboardService:
         dates = [self._aware(d) for d in [last_attempt, last_sa] if d is not None]
         if dates:
             latest = max(dates)
-            if latest and datetime.now(timezone.utc) - latest > timedelta(days=5):
+            if latest and self._now() - latest > timedelta(days=5):
                 alerts.append(
                     ParentInterventionAlertRead(
                         rule_code=AlertRuleCode.INACTIVE_STUDY,

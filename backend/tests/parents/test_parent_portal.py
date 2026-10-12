@@ -1,8 +1,9 @@
 from collections.abc import Callable
-from datetime import date, datetime, timedelta, timezone
+from datetime import date, datetime, time, timedelta, timezone
 from uuid import UUID, uuid4
 
 import pytest
+from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
@@ -11,7 +12,9 @@ from app.attempts.models import StudySession
 from app.concepts.models import Concept, ConceptRelation, RelationType
 from app.curriculum.models import Chapter, ProblemType, ProblemTypeConcept, Topic
 from app.mastery.models import StudentConceptMastery, StudentProblemTypeMastery
+from app.parents.dashboard_service import ParentDashboardService
 from app.parents.models import ParentProfile, ParentStudentRelationship
+from app.parents.portal_router import get_dashboard_service
 from app.planning.study_models import StudyPlan, StudyPlanStatus, StudyTask, StudyTaskReasonCode, StudyTaskStatus, StudyTaskType
 from app.practice.models import PracticeSession, PracticeSessionStatus, PracticeSessionType, QuestionAttempt
 from app.students.models import StudentProfile
@@ -307,12 +310,15 @@ def test_parent_dashboard_progress_aggregation_and_phrasing(
 # --------------------------------------------------------------------------
 
 def test_parent_student_weekly_data_breakdown(
+    db_app: FastAPI,
     db_client: TestClient,
     db_session: Session,
     parent_user_factory: Callable[[Role, str], User],
     parent_bearer: Callable[[User], dict[str, str]],
     parent_profile_helper: Callable[[User], ParentProfile],
     student_profile_helper: Callable[[User], StudentProfile],
+    parent_test_now: datetime,
+    parent_test_clock: Callable[[], datetime],
 ) -> None:
     p_user = parent_user_factory(Role.PARENT, "p_week@example.com")
     s_user = parent_user_factory(Role.STUDENT, "s_week@example.com")
@@ -329,37 +335,65 @@ def test_parent_student_weekly_data_breakdown(
         )
     )
 
-    # Create study sessions during the current week:
-    # 2 sessions: 45 min and 30 min -> 75 min total
-    now = datetime.now(timezone.utc)
-    s1 = StudySession(
-        student_id=s_prof.id,
-        started_at=now - timedelta(hours=3),
-        ended_at=now - timedelta(hours=3) + timedelta(minutes=45),
+    # Use the exact Monday/Sunday boundaries of the fixed clock's week.
+    week_start = parent_test_now.date() - timedelta(days=parent_test_now.weekday())
+    monday_start = datetime.combine(week_start, time.min, tzinfo=timezone.utc)
+    sunday_start = datetime.combine(
+        week_start + timedelta(days=6), time(hour=23), tzinfo=timezone.utc
     )
-    s2 = StudySession(
-        student_id=s_prof.id,
-        started_at=now - timedelta(days=1),
-        ended_at=now - timedelta(days=1) + timedelta(minutes=30),
+    previous_week = monday_start - timedelta(minutes=31)
+    next_week = monday_start + timedelta(days=7)
+    db_session.add_all(
+        [
+            StudySession(
+                student_id=s_prof.id,
+                started_at=monday_start,
+                ended_at=monday_start + timedelta(minutes=45),
+            ),
+            StudySession(
+                student_id=s_prof.id,
+                started_at=sunday_start,
+                ended_at=sunday_start + timedelta(minutes=30),
+            ),
+            StudySession(
+                student_id=s_prof.id,
+                started_at=previous_week,
+                ended_at=previous_week + timedelta(minutes=30),
+            ),
+            StudySession(
+                student_id=s_prof.id,
+                started_at=next_week,
+                ended_at=next_week + timedelta(minutes=30),
+            ),
+        ]
     )
-    db_session.add_all([s1, s2])
     db_session.commit()
 
-    p_headers = parent_bearer(p_user)
-    res = db_client.get(f"/parent/students/{s_prof.id}/weekly-data", headers=p_headers)
+    db_app.dependency_overrides[get_dashboard_service] = lambda: ParentDashboardService(
+        db_session, clock=parent_test_clock
+    )
+    try:
+        p_headers = parent_bearer(p_user)
+        res = db_client.get(
+            f"/parent/students/{s_prof.id}/weekly-data", headers=p_headers
+        )
+    finally:
+        db_app.dependency_overrides.pop(get_dashboard_service, None)
+
     assert res.status_code == 200
     data = res.json()
-
     assert data["student_id"] == str(s_prof.id)
+    assert data["week_start_date"] == week_start.isoformat()
+    assert data["week_end_date"] == (week_start + timedelta(days=6)).isoformat()
     assert len(data["daily_study_time"]) == 7
-    # Verify daily labels are in Vietnamese
-    days = [d["day_of_week"] for d in data["daily_study_time"]]
-    assert "Thứ 2" in days
-    assert "Chủ nhật" in days
 
-    # Total study time should reflect the recorded sessions (~75 min)
-    assert data["total_study_time_minutes"] >= 75
-    assert "75" in data["overall_weekly_summary"] or str(data["total_study_time_minutes"]) in data["overall_weekly_summary"]
+    daily_minutes = {
+        item["date"]: item["study_time_minutes"] for item in data["daily_study_time"]
+    }
+    assert daily_minutes[week_start.isoformat()] == 45
+    assert daily_minutes[(week_start + timedelta(days=6)).isoformat()] == 30
+    assert data["total_study_time_minutes"] == 75
+    assert "75" in data["overall_weekly_summary"]
 
 
 # --------------------------------------------------------------------------

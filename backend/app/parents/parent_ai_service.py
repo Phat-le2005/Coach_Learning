@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import concurrent.futures
-from datetime import date, datetime, timezone
+from datetime import date
 import logging
 from typing import Any
 from uuid import UUID
@@ -19,7 +19,7 @@ from app.parents.dashboard_schemas import (
     ParentWeeklyAIOutput,
     ParentWeeklyAISummaryRead,
 )
-from app.parents.dashboard_service import ParentDashboardService
+from app.parents.dashboard_service import ParentDashboardService, UtcClock, utc_now
 from app.users.models import User
 
 logger = logging.getLogger(__name__)
@@ -45,9 +45,11 @@ class ParentAISummaryService:
         session: Session,
         gateway: Any | None = None,
         prompt_registry: PromptRegistry | None = None,
+        clock: UtcClock | None = None,
     ) -> None:
         self.session = session
-        self.dashboard_service = ParentDashboardService(session)
+        self._clock = clock or utc_now
+        self.dashboard_service = ParentDashboardService(session, clock=self._clock)
         self.gateway = gateway or get_ai_gateway_singleton(get_settings())
         self.prompt_registry = prompt_registry or default_prompt_registry
 
@@ -341,7 +343,7 @@ class ParentAISummaryService:
                 next_week=ai_output.next_week.strip(),
                 how_parent_can_help=cleaned_recommendations,
                 is_fallback=False,
-                generated_at=datetime.now(timezone.utc),
+                generated_at=self._clock(),
             )
 
         except Exception as exc:
@@ -471,5 +473,5 @@ class ParentAISummaryService:
             next_week=next_week,
             how_parent_can_help=how_parent_can_help[:2],
             is_fallback=True,
-            generated_at=datetime.now(timezone.utc),
+            generated_at=self._clock(),
         )

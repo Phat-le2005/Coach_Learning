@@ -6,6 +6,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.router import api_router
+from app.api.v2.application import create_v2_app
 from app.api.version import API_VERSION
 from app.core.config import Settings, get_settings
 from app.core.errors import ErrorResponse, register_exception_handlers
@@ -51,4 +52,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     )
     register_exception_handlers(application)
     application.include_router(api_router)
+    v2_application = create_v2_app(configuration)
+    # Keep test/runtime dependency replacements consistent across the mount boundary.
+    v2_application.dependency_overrides = application.dependency_overrides
+    application.mount("/api/v2", v2_application)
     return application
