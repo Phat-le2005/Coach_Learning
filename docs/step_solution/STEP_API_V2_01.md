@@ -21,7 +21,7 @@ Authorization: Bearer <access-token>
 
 Student ID luôn được suy ra từ token và `StudentProfile`; client không được gửi `student_id`. Mọi thao tác đọc hoặc ghi đều kiểm tra attempt thuộc đúng student. Attempt/step/revision không thuộc người dùng được che dưới lỗi `404` hoặc từ chối trước khi truy cập nguồn assignment.
 
-Mọi response thành công chứa lời giải có `Cache-Control: no-store` và `Pragma: no-cache`. DTO chỉ trả dữ liệu cần dựng workspace; không trả `correct_answer`, explanation chuẩn, rubric nội bộ, teacher-only data hoặc dữ liệu lớp khác.
+Mọi response thành công lẫn error responses (`401`, `403`, `404`, `409`, `422`) thuộc `/api/v2/math-solutions` đều có `Cache-Control: no-store` và `Pragma: no-cache` để đảm bảo thông tin nhạy cảm không bị cache ở bất kỳ tầng nào. DTO chỉ trả dữ liệu cần dựng workspace; không trả `correct_answer`, explanation chuẩn, rubric nội bộ, teacher-only data hoặc dữ liệu lớp khác.
 
 ## Endpoints
 

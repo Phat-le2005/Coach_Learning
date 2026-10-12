@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, Response
 
 from app.api.v2.router import api_v2_router
 from app.core.config import Settings
@@ -23,5 +23,16 @@ def create_v2_app(settings: Settings) -> FastAPI:
     )
     application.state.settings = settings
     register_exception_handlers(application)
+
+    @application.middleware("http")
+    async def enforce_math_solutions_cache_control(request: Request, call_next):
+        response: Response = await call_next(request)
+        if request.method != "OPTIONS":
+            path = request.scope.get("path", "")
+            if "/math-solutions" in path or "/math-solutions" in request.url.path:
+                response.headers["Cache-Control"] = "no-store"
+                response.headers["Pragma"] = "no-cache"
+        return response
+
     application.include_router(api_v2_router)
     return application

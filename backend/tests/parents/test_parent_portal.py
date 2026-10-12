@@ -339,8 +339,8 @@ def test_parent_student_weekly_data_breakdown(
     )
     s2 = StudySession(
         student_id=s_prof.id,
-        started_at=now - timedelta(days=1),
-        ended_at=now - timedelta(days=1) + timedelta(minutes=30),
+        started_at=now - timedelta(hours=1),
+        ended_at=now - timedelta(hours=1) + timedelta(minutes=30),
     )
     db_session.add_all([s1, s2])
     db_session.commit()

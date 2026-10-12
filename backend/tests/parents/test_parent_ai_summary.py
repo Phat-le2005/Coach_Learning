@@ -225,8 +225,8 @@ def test_parent_ai_summary_fallback_when_ai_offline(
     db_session.add(
         StudySession(
             student_id=s_prof.id,
-            started_at=now - timedelta(days=1, minutes=90),
-            ended_at=now - timedelta(days=1),
+            started_at=now - timedelta(minutes=100),
+            ended_at=now - timedelta(minutes=10),
         )
     )
     # Add weak problem type
