@@ -213,6 +213,316 @@
         "title": "MathArtifactRead",
         "type": "object"
       },
+      "PaginatedSolutionAttemptsRead": {
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/SolutionAttemptRead"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "page": {
+            "title": "Page",
+            "type": "integer"
+          },
+          "size": {
+            "title": "Size",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          },
+          "total_pages": {
+            "title": "Total Pages",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "page",
+          "size",
+          "total_pages"
+        ],
+        "title": "PaginatedSolutionAttemptsRead",
+        "type": "object"
+      },
+      "PrepareAssignmentResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "item_count": {
+            "title": "Item Count",
+            "type": "integer"
+          },
+          "problems": {
+            "items": {
+              "$ref": "#/components/schemas/ProblemRead"
+            },
+            "title": "Problems",
+            "type": "array"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "student_assignment_id": {
+            "format": "uuid",
+            "title": "Student Assignment Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "student_assignment_id",
+          "status",
+          "item_count",
+          "problems"
+        ],
+        "title": "PrepareAssignmentResponse",
+        "type": "object"
+      },
+      "ProblemOptionRead": {
+        "additionalProperties": false,
+        "properties": {
+          "content": {
+            "title": "Content",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "order_index": {
+            "title": "Order Index",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "content",
+          "order_index"
+        ],
+        "title": "ProblemOptionRead",
+        "type": "object"
+      },
+      "ProblemRead": {
+        "additionalProperties": false,
+        "properties": {
+          "assignment_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Assignment Id"
+          },
+          "assignment_student_question_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Assignment Student Question Id"
+          },
+          "content": {
+            "title": "Content",
+            "type": "string"
+          },
+          "context_type": {
+            "$ref": "#/components/schemas/SolutionContext"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "is_read_only": {
+            "default": false,
+            "title": "Is Read Only",
+            "type": "boolean"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/components/schemas/ProblemOptionRead"
+            },
+            "title": "Options",
+            "type": "array"
+          },
+          "order_index": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Order Index"
+          },
+          "practice_session_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Practice Session Id"
+          },
+          "question_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Question Id"
+          },
+          "question_type": {
+            "$ref": "#/components/schemas/QuestionType"
+          },
+          "source_kind": {
+            "$ref": "#/components/schemas/SolutionSourceKind"
+          },
+          "source_metadata": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ProblemSourceMetadataRead"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "student_assignment_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Student Assignment Id"
+          },
+          "student_assignment_material_item_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Student Assignment Material Item Id"
+          }
+        },
+        "required": [
+          "id",
+          "source_kind",
+          "context_type",
+          "content",
+          "question_type"
+        ],
+        "title": "ProblemRead",
+        "type": "object"
+      },
+      "ProblemSourceMetadataRead": {
+        "additionalProperties": false,
+        "properties": {
+          "grade_level": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Grade Level"
+          },
+          "page_end": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Page End"
+          },
+          "page_start": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Page Start"
+          },
+          "subject_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subject Id"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          }
+        },
+        "title": "ProblemSourceMetadataRead",
+        "type": "object"
+      },
+      "QuestionType": {
+        "enum": [
+          "MULTIPLE_CHOICE",
+          "TRUE_FALSE",
+          "SHORT_ANSWER",
+          "OPEN_RESPONSE"
+        ],
+        "title": "QuestionType",
+        "type": "string"
+      },
       "ReorderStepsRequest": {
         "additionalProperties": false,
         "properties": {
@@ -680,6 +990,182 @@
   "openapi": "3.1.0",
   "paths": {
     "/math-solutions/attempts": {
+      "get": {
+        "operationId": "list_attempts_math_solutions_attempts_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "default": 1,
+              "minimum": 1,
+              "title": "Page",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "size",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Size",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "question_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Question Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "practice_session_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Practice Session Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "student_assignment_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Student Assignment Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/SolutionAttemptStatus"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedSolutionAttemptsRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Attempts",
+        "tags": [
+          "Math Solutions"
+        ]
+      },
       "post": {
         "operationId": "create_attempt_math_solutions_attempts_post",
         "requestBody": {
@@ -868,6 +1354,104 @@
           }
         ],
         "summary": "Get Attempt",
+        "tags": [
+          "Math Solutions"
+        ]
+      }
+    },
+    "/math-solutions/attempts/{attempt_id}/problem": {
+      "get": {
+        "operationId": "get_attempt_problem_math_solutions_attempts__attempt_id__problem_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "attempt_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Attempt Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Attempt Problem",
         "tags": [
           "Math Solutions"
         ]
@@ -1776,6 +2360,304 @@
           }
         ],
         "summary": "Submit Attempt",
+        "tags": [
+          "Math Solutions"
+        ]
+      }
+    },
+    "/math-solutions/practice-sessions/{session_id}/next-problem": {
+      "get": {
+        "operationId": "get_practice_next_problem_math_solutions_practice_sessions__session_id__next_problem_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "session_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Session Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Practice Next Problem",
+        "tags": [
+          "Math Solutions"
+        ]
+      }
+    },
+    "/math-solutions/student-assignments/{student_assignment_id}/prepare": {
+      "post": {
+        "operationId": "prepare_student_assignment_math_solutions_student_assignments__student_assignment_id__prepare_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "student_assignment_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Student Assignment Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrepareAssignmentResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Prepare Student Assignment",
+        "tags": [
+          "Math Solutions"
+        ]
+      }
+    },
+    "/math-solutions/student-assignments/{student_assignment_id}/problems": {
+      "get": {
+        "operationId": "get_student_assignment_problems_math_solutions_student_assignments__student_assignment_id__problems_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "student_assignment_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Student Assignment Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ProblemRead"
+                  },
+                  "title": "Response Get Student Assignment Problems Math Solutions Student Assignments  Student Assignment Id  Problems Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Student Assignment Problems",
         "tags": [
           "Math Solutions"
         ]
