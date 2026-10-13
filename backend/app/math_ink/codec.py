@@ -25,7 +25,10 @@ def encode_strokes(strokes: list[InkStroke]) -> tuple[bytes, str, int]:
 def decode_strokes(blob: bytes) -> list[InkStroke]:
     # Cap decompression even if the database blob becomes corrupted.
     obj = zlib.decompressobj()
-    raw = obj.decompress(blob, MAX_RAW_BYTES + 1)
+    try:
+        raw = obj.decompress(blob, MAX_RAW_BYTES + 1)
+    except zlib.error as exc:
+        raise ApplicationError(409, "INK_PAGE_INVALID", "Stored ink page is not valid.") from exc
     if len(raw) > MAX_RAW_BYTES or obj.unconsumed_tail or not obj.eof:
         raise ApplicationError(409, "INK_PAGE_INVALID", "Stored ink page is not valid.")
     try:
