@@ -13,21 +13,39 @@ from typing import Any, Callable
 from uuid import UUID
 
 from sqlalchemy import func, select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 
 from app.assignments.models import (
-    Assignment, AssignmentMaterialItem, AssignmentStatus, AssignmentStudentQuestion,
+    Assignment, AssignmentMaterialItem, AssignmentQuestion, AssignmentStatus,
+    AssignmentStudentQuestion, AssignmentType,
     StudentAssignment, StudentAssignmentMaterialItem, StudentAssignmentStatus,
 )
+from app.assignments.service import AssignmentService
 from app.classes.models import EnrollmentStatus, StudentEnrollment
 from app.core.exceptions import ApplicationError
 from app.math_solutions.models import (
     MathArtifact, SolutionAttempt, SolutionOperation, SolutionRubric,
     SolutionStep, StepRevision,
 )
-from app.math_solutions.schemas import SolutionStepDraft
-from app.practice.models import PracticeSession, PracticeSessionStatus
-from app.questions.models import Question, QuestionStatus
+from app.math_solutions.schemas import (
+    PaginatedSolutionAttemptsRead,
+    PrepareAssignmentResponse,
+    ProblemOptionRead,
+    ProblemRead,
+    ProblemSourceMetadataRead,
+    SolutionContext,
+    SolutionMode,
+    SolutionSourceKind,
+    SolutionStepDraft,
+)
+from app.practice.models import (
+    EvaluationStatus,
+    PracticeSession,
+    PracticeSessionStatus,
+    QuestionAttempt,
+)
+from app.practice.service import PracticeService
+from app.questions.models import Question, QuestionStatus, QuestionType
 from app.students.models import StudentProfile
 from app.teacher_materials.models import TeacherMaterial, TeacherMaterialItem
 
@@ -489,3 +507,485 @@ class MathSolutionService:
         return self._apply(actor_user_id, attempt_id,
             expected_attempt_revision=expected_attempt_revision, client_action_id=client_action_id,
             operation="SUBMIT", payload={}, callback=action)
+
+    def list_attempts(
+        self,
+        actor_user_id: UUID,
+        *,
+        page: int = 1,
+        size: int = 20,
+        question_id: UUID | None = None,
+        practice_session_id: UUID | None = None,
+        student_assignment_id: UUID | None = None,
+        status: str | None = None,
+    ) -> dict[str, Any]:
+        student = self._student(actor_user_id)
+        stmt = select(SolutionAttempt).where(SolutionAttempt.student_id == student.id)
+        if question_id is not None:
+            stmt = stmt.where(SolutionAttempt.question_id == question_id)
+        if practice_session_id is not None:
+            stmt = stmt.where(SolutionAttempt.practice_session_id == practice_session_id)
+        if student_assignment_id is not None:
+            stmt = stmt.where(SolutionAttempt.student_assignment_id == student_assignment_id)
+        if status is not None:
+            stmt = stmt.where(SolutionAttempt.status == status)
+
+        total = self.session.scalar(select(func.count()).select_from(stmt.subquery())) or 0
+        stmt = stmt.order_by(SolutionAttempt.updated_at.desc(), SolutionAttempt.id.desc())
+        stmt = stmt.offset((page - 1) * size).limit(size)
+        attempts = list(self.session.scalars(stmt).all())
+        total_pages = (total + size - 1) // size if total > 0 else 0
+        return {
+            "items": [self._snapshot(a) for a in attempts],
+            "total": total,
+            "page": page,
+            "size": size,
+            "total_pages": total_pages,
+        }
+
+    def get_attempt_problem(self, actor_user_id: UUID, attempt_id: UUID) -> ProblemRead:
+        attempt = self._attempt(actor_user_id, attempt_id, lock=False)
+        is_read_only = attempt.status in ("SUBMITTED", "EVALUATED", "ABANDONED")
+        if not is_read_only and attempt.context_type == "CLASSROOM_ASSIGNMENT":
+            assignment = self.session.get(Assignment, attempt.assignment_id) if attempt.assignment_id else None
+            if assignment is not None:
+                if assignment.status != AssignmentStatus.PUBLISHED:
+                    is_read_only = True
+                elif assignment.due_at and _utc(assignment.due_at) < datetime.now(timezone.utc):
+                    is_read_only = True
+            student_assignment = self.session.get(StudentAssignment, attempt.student_assignment_id) if attempt.student_assignment_id else None
+            if student_assignment is not None and student_assignment.status in (
+                StudentAssignmentStatus.SUBMITTED,
+                StudentAssignmentStatus.GRADED,
+            ):
+                is_read_only = True
+        elif not is_read_only and attempt.context_type == "SELF_PRACTICE":
+            session_obj = self.session.get(PracticeSession, attempt.practice_session_id) if attempt.practice_session_id else None
+            if session_obj is not None and session_obj.status in (
+                PracticeSessionStatus.COMPLETED,
+                PracticeSessionStatus.ABANDONED,
+            ):
+                is_read_only = True
+
+        if attempt.source_kind == "CANONICAL":
+            if attempt.question_id is None:
+                raise _fail(404, "QUESTION_NOT_FOUND", "Attempt does not reference a valid question.")
+            question = self.session.scalar(
+                select(Question)
+                .options(selectinload(Question.options))
+                .where(
+                    Question.id == attempt.question_id,
+                    Question.status == QuestionStatus.APPROVED,
+                )
+            )
+            if question is None:
+                raise _fail(404, "QUESTION_NOT_FOUND", "Question not found or is not approved.")
+            order_index = None
+            if attempt.assignment_student_question_id is not None:
+                asq = self.session.get(AssignmentStudentQuestion, attempt.assignment_student_question_id)
+                if asq is not None:
+                    order_index = asq.order_index
+            options = [
+                ProblemOptionRead(
+                    id=opt.id,
+                    label=opt.label,
+                    content=opt.content,
+                    order_index=opt.order_index,
+                )
+                for opt in sorted(question.options, key=lambda o: o.order_index)
+            ]
+            return ProblemRead(
+                id=question.id,
+                source_kind=SolutionSourceKind.CANONICAL,
+                context_type=SolutionContext(attempt.context_type),
+                content=question.content,
+                question_type=question.question_type,
+                options=options,
+                order_index=order_index,
+                is_read_only=is_read_only,
+                question_id=question.id,
+                practice_session_id=attempt.practice_session_id,
+                assignment_id=attempt.assignment_id,
+                student_assignment_id=attempt.student_assignment_id,
+                assignment_student_question_id=attempt.assignment_student_question_id,
+                student_assignment_material_item_id=None,
+                source_metadata=None,
+            )
+        elif attempt.source_kind == "TEACHER_MATERIAL":
+            if attempt.student_assignment_material_item_id is None:
+                raise _fail(404, "MATERIAL_ITEM_NOT_FOUND", "Attempt does not reference a valid material item.")
+            sami = self.session.scalar(
+                select(StudentAssignmentMaterialItem).where(
+                    StudentAssignmentMaterialItem.id == attempt.student_assignment_material_item_id,
+                    StudentAssignmentMaterialItem.student_assignment_id == attempt.student_assignment_id,
+                )
+            )
+            if sami is None:
+                raise _fail(404, "MATERIAL_ITEM_NOT_FOUND", "Student assignment material item not found.")
+            ami = self.session.scalar(
+                select(AssignmentMaterialItem)
+                .options(
+                    selectinload(AssignmentMaterialItem.options),
+                    selectinload(AssignmentMaterialItem.teacher_material_item),
+                    selectinload(AssignmentMaterialItem.assignment),
+                )
+                .where(AssignmentMaterialItem.id == sami.assignment_material_item_id)
+            )
+            if ami is None or ami.content is None:
+                raise _fail(404, "MATERIAL_ITEM_NOT_FOUND", "Assignment material snapshot not found.")
+            tmi = ami.teacher_material_item
+            tm = self.session.get(TeacherMaterial, ami.teacher_material_id) if ami.teacher_material_id else None
+            title = tm.title if tm is not None else (ami.assignment.title if ami.assignment is not None else None)
+            subject_id = tm.subject_id if tm is not None else (ami.assignment.subject_id if ami.assignment is not None else None)
+            meta = ProblemSourceMetadataRead(
+                title=title,
+                subject_id=subject_id,
+                grade_level=None,
+                page_start=tmi.page_start if tmi is not None else None,
+                page_end=tmi.page_end if tmi is not None else None,
+            )
+            options = [
+                ProblemOptionRead(
+                    id=opt.id,
+                    label=opt.label,
+                    content=opt.content,
+                    order_index=opt.order_index,
+                )
+                for opt in sorted(ami.options, key=lambda o: o.order_index)
+            ]
+            return ProblemRead(
+                id=sami.id,
+                source_kind=SolutionSourceKind.TEACHER_MATERIAL,
+                context_type=SolutionContext(attempt.context_type),
+                content=ami.content,
+                question_type=ami.question_type or QuestionType.OPEN_RESPONSE,
+                options=options,
+                order_index=sami.order_index,
+                is_read_only=is_read_only,
+                question_id=None,
+                practice_session_id=None,
+                assignment_id=attempt.assignment_id,
+                student_assignment_id=attempt.student_assignment_id,
+                assignment_student_question_id=None,
+                student_assignment_material_item_id=sami.id,
+                source_metadata=meta,
+            )
+        else:
+            raise _fail(422, "INVALID_SOURCE_KIND", f"Unsupported source kind: {attempt.source_kind}")
+
+    def get_practice_next_problem(self, actor_user_id: UUID, session_id: UUID) -> ProblemRead:
+        student = self._student(actor_user_id)
+        practice_session = self.session.scalar(
+            select(PracticeSession).where(
+                PracticeSession.id == session_id,
+                PracticeSession.student_id == student.id,
+            )
+        )
+        if practice_session is None:
+            raise _fail(404, "PRACTICE_SESSION_NOT_FOUND", "Practice session not found.")
+        if practice_session.status != PracticeSessionStatus.ACTIVE:
+            raise _fail(409, "PRACTICE_SESSION_NOT_ACTIVE", "Practice session is not active.")
+
+        practice_svc = PracticeService(self.session)
+        stmt = practice_svc._eligible_questions(practice_session, exclude_attempted=True)
+        stmt = stmt.where(
+            ~Question.id.in_(
+                select(SolutionAttempt.question_id).where(
+                    SolutionAttempt.practice_session_id == practice_session.id,
+                    SolutionAttempt.question_id.is_not(None),
+                )
+            )
+        )
+        question = self.session.scalar(stmt.limit(1))
+        if question is None:
+            group_stmt = practice_svc._eligible_groups(practice_session, exclude_attempted=True)
+            has_groups = self.session.scalar(select(group_stmt.subquery()).limit(1)) is not None
+            if has_groups:
+                raise _fail(422, "QUESTION_GROUP_NOT_SUPPORTED", "Question groups are not supported in individual Math Workspace.")
+            raise _fail(404, "NO_QUESTIONS_AVAILABLE", "No eligible questions available in this practice session.")
+
+        options = [
+            ProblemOptionRead(
+                id=opt.id,
+                label=opt.label,
+                content=opt.content,
+                order_index=opt.order_index,
+            )
+            for opt in sorted(question.options, key=lambda o: o.order_index)
+        ]
+        return ProblemRead(
+            id=question.id,
+            source_kind=SolutionSourceKind.CANONICAL,
+            context_type=SolutionContext.SELF_PRACTICE,
+            content=question.content,
+            question_type=question.question_type,
+            options=options,
+            order_index=None,
+            is_read_only=False,
+            question_id=question.id,
+            practice_session_id=practice_session.id,
+            assignment_id=None,
+            student_assignment_id=None,
+            assignment_student_question_id=None,
+            student_assignment_material_item_id=None,
+            source_metadata=None,
+        )
+
+    def prepare_student_assignment(self, actor_user_id: UUID, student_assignment_id: UUID) -> PrepareAssignmentResponse:
+        student = self._student(actor_user_id)
+        try:
+            sa = self.session.scalar(
+                select(StudentAssignment)
+                .where(
+                    StudentAssignment.id == student_assignment_id,
+                    StudentAssignment.student_id == student.id,
+                )
+                .with_for_update()
+            )
+            if sa is None:
+                raise _fail(404, "STUDENT_ASSIGNMENT_NOT_FOUND", "Student assignment not found.")
+
+            assignment = self.session.get(Assignment, sa.assignment_id)
+            if assignment is None:
+                raise _fail(404, "ASSIGNMENT_NOT_FOUND", "Assignment not found.")
+
+            if assignment.status != AssignmentStatus.PUBLISHED:
+                raise _fail(409, "ASSIGNMENT_NOT_PUBLISHED", "Assignment is not published.")
+
+            enrollment = self.session.scalar(
+                select(StudentEnrollment).where(
+                    StudentEnrollment.classroom_id == assignment.classroom_id,
+                    StudentEnrollment.student_id == student.id,
+                    StudentEnrollment.status == EnrollmentStatus.ACTIVE,
+                )
+            )
+            if enrollment is None:
+                raise _fail(403, "NOT_ENROLLED_IN_CLASSROOM", "Student is not enrolled in this classroom.")
+
+            if assignment.start_at and _utc(assignment.start_at) > datetime.now(timezone.utc):
+                raise _fail(409, "ASSIGNMENT_NOT_OPEN", "Assignment is not open yet.")
+
+            if sa.status in (StudentAssignmentStatus.SUBMITTED, StudentAssignmentStatus.GRADED):
+                raise _fail(409, "ASSIGNMENT_ALREADY_SUBMITTED", "Assignment is already submitted.")
+
+            existing_qs = self.session.scalars(
+                select(AssignmentStudentQuestion)
+                .where(AssignmentStudentQuestion.student_assignment_id == sa.id)
+                .order_by(AssignmentStudentQuestion.order_index)
+            ).all()
+            existing_mis = self.session.scalars(
+                select(StudentAssignmentMaterialItem)
+                .where(StudentAssignmentMaterialItem.student_assignment_id == sa.id)
+                .order_by(StudentAssignmentMaterialItem.order_index)
+            ).all()
+
+            if not existing_qs and not existing_mis:
+                if assignment.assignment_type == AssignmentType.SAME_SET:
+                    assign_qs = list(self.session.scalars(
+                        select(AssignmentQuestion)
+                        .where(AssignmentQuestion.assignment_id == assignment.id)
+                        .order_by(AssignmentQuestion.order_index)
+                    ).all())
+                    for idx, aq in enumerate(assign_qs):
+                        self.session.add(
+                            AssignmentStudentQuestion(
+                                student_assignment_id=sa.id,
+                                question_id=aq.question_id,
+                                order_index=idx,
+                            )
+                        )
+                    assign_items = list(self.session.scalars(
+                        select(AssignmentMaterialItem)
+                        .where(AssignmentMaterialItem.assignment_id == assignment.id)
+                        .order_by(AssignmentMaterialItem.order_index)
+                    ).all())
+                    for link in assign_items:
+                        self.session.add(
+                            StudentAssignmentMaterialItem(
+                                student_assignment_id=sa.id,
+                                teacher_material_item_id=link.teacher_material_item_id,
+                                assignment_material_item_id=link.id,
+                                order_index=len(assign_qs) + link.order_index,
+                                evaluation_status=EvaluationStatus.NEEDS_EVALUATION,
+                            )
+                        )
+                elif assignment.assignment_type == AssignmentType.ADAPTIVE_SET:
+                    adaptive_qs = AssignmentService(self.session)._select_adaptive_questions_for_student(
+                        student.id, assignment
+                    )
+                    for idx, q in enumerate(adaptive_qs):
+                        self.session.add(
+                            AssignmentStudentQuestion(
+                                student_assignment_id=sa.id,
+                                question_id=q.id,
+                                order_index=idx,
+                            )
+                        )
+                if sa.status == StudentAssignmentStatus.NOT_STARTED:
+                    sa.status = StudentAssignmentStatus.IN_PROGRESS
+                    sa.started_at = datetime.now(timezone.utc)
+                self.session.commit()
+                self.session.refresh(sa)
+
+            problems = self._load_student_assignment_problems(student, sa, assignment)
+            return PrepareAssignmentResponse(
+                student_assignment_id=sa.id,
+                status=sa.status.value if hasattr(sa.status, "value") else str(sa.status),
+                item_count=len(problems),
+                problems=problems,
+            )
+        except Exception:
+            self.session.rollback()
+            raise
+
+    def get_student_assignment_problems(self, actor_user_id: UUID, student_assignment_id: UUID) -> list[ProblemRead]:
+        student = self._student(actor_user_id)
+        sa = self.session.scalar(
+            select(StudentAssignment).where(
+                StudentAssignment.id == student_assignment_id,
+                StudentAssignment.student_id == student.id,
+            )
+        )
+        if sa is None:
+            raise _fail(404, "STUDENT_ASSIGNMENT_NOT_FOUND", "Student assignment not found.")
+
+        assignment = self.session.get(Assignment, sa.assignment_id)
+        if assignment is None:
+            raise _fail(404, "ASSIGNMENT_NOT_FOUND", "Assignment not found.")
+
+        if assignment.status != AssignmentStatus.PUBLISHED:
+            raise _fail(409, "ASSIGNMENT_NOT_PUBLISHED", "Assignment is not published.")
+
+        enrollment = self.session.scalar(
+            select(StudentEnrollment).where(
+                StudentEnrollment.classroom_id == assignment.classroom_id,
+                StudentEnrollment.student_id == student.id,
+                StudentEnrollment.status == EnrollmentStatus.ACTIVE,
+            )
+        )
+        if enrollment is None:
+            raise _fail(403, "NOT_ENROLLED_IN_CLASSROOM", "Student is not enrolled in this classroom.")
+
+        has_qs = self.session.scalar(
+            select(AssignmentStudentQuestion.id).where(
+                AssignmentStudentQuestion.student_assignment_id == sa.id
+            ).limit(1)
+        )
+        has_mis = self.session.scalar(
+            select(StudentAssignmentMaterialItem.id).where(
+                StudentAssignmentMaterialItem.student_assignment_id == sa.id
+            ).limit(1)
+        )
+        if not has_qs and not has_mis:
+            raise _fail(409, "ASSIGNMENT_NOT_PREPARED", "Assignment problems have not been prepared yet. Call POST prepare first.")
+
+        return self._load_student_assignment_problems(student, sa, assignment)
+
+    def _load_student_assignment_problems(
+        self, student: StudentProfile, sa: StudentAssignment, assignment: Assignment
+    ) -> list[ProblemRead]:
+        is_read_only = (
+            sa.status in (StudentAssignmentStatus.SUBMITTED, StudentAssignmentStatus.GRADED)
+            or (assignment.due_at and _utc(assignment.due_at) < datetime.now(timezone.utc))
+            or assignment.status != AssignmentStatus.PUBLISHED
+        )
+        sqs = list(self.session.scalars(
+            select(AssignmentStudentQuestion)
+            .options(
+                selectinload(AssignmentStudentQuestion.question).selectinload(Question.options)
+            )
+            .where(AssignmentStudentQuestion.student_assignment_id == sa.id)
+            .order_by(AssignmentStudentQuestion.order_index)
+        ).all())
+
+        problems: list[ProblemRead] = []
+        for sq in sqs:
+            q = sq.question
+            options = [
+                ProblemOptionRead(
+                    id=opt.id,
+                    label=opt.label,
+                    content=opt.content,
+                    order_index=opt.order_index,
+                )
+                for opt in sorted(q.options, key=lambda o: o.order_index)
+            ]
+            problems.append(
+                ProblemRead(
+                    id=q.id,
+                    source_kind=SolutionSourceKind.CANONICAL,
+                    context_type=SolutionContext.CLASSROOM_ASSIGNMENT,
+                    content=q.content,
+                    question_type=q.question_type,
+                    options=options,
+                    order_index=sq.order_index,
+                    is_read_only=is_read_only,
+                    question_id=q.id,
+                    practice_session_id=None,
+                    assignment_id=assignment.id,
+                    student_assignment_id=sa.id,
+                    assignment_student_question_id=sq.id,
+                    student_assignment_material_item_id=None,
+                    source_metadata=None,
+                )
+            )
+
+        smis = list(self.session.scalars(
+            select(StudentAssignmentMaterialItem)
+            .options(
+                selectinload(StudentAssignmentMaterialItem.assignment_material_item)
+                .selectinload(AssignmentMaterialItem.options),
+                selectinload(StudentAssignmentMaterialItem.assignment_material_item)
+                .selectinload(AssignmentMaterialItem.teacher_material_item),
+            )
+            .where(StudentAssignmentMaterialItem.student_assignment_id == sa.id)
+            .order_by(StudentAssignmentMaterialItem.order_index)
+        ).all())
+
+        for smi in smis:
+            ami = smi.assignment_material_item
+            if ami is None or ami.content is None:
+                continue
+            tmi = ami.teacher_material_item
+            tm = self.session.get(TeacherMaterial, ami.teacher_material_id) if ami.teacher_material_id else None
+            title = tm.title if tm is not None else assignment.title
+            subject_id = tm.subject_id if tm is not None else assignment.subject_id
+            meta = ProblemSourceMetadataRead(
+                title=title,
+                subject_id=subject_id,
+                grade_level=None,
+                page_start=tmi.page_start if tmi is not None else None,
+                page_end=tmi.page_end if tmi is not None else None,
+            )
+            options = [
+                ProblemOptionRead(
+                    id=opt.id,
+                    label=opt.label,
+                    content=opt.content,
+                    order_index=opt.order_index,
+                )
+                for opt in sorted(ami.options, key=lambda o: o.order_index)
+            ]
+            problems.append(
+                ProblemRead(
+                    id=smi.id,
+                    source_kind=SolutionSourceKind.TEACHER_MATERIAL,
+                    context_type=SolutionContext.CLASSROOM_ASSIGNMENT,
+                    content=ami.content,
+                    question_type=ami.question_type or QuestionType.OPEN_RESPONSE,
+                    options=options,
+                    order_index=smi.order_index,
+                    is_read_only=is_read_only,
+                    question_id=None,
+                    practice_session_id=None,
+                    assignment_id=assignment.id,
+                    student_assignment_id=sa.id,
+                    assignment_student_question_id=None,
+                    student_assignment_material_item_id=smi.id,
+                    source_metadata=meta,
+                )
+            )
+
+        problems.sort(key=lambda p: (p.order_index is None, p.order_index or 0))
+        return problems
+

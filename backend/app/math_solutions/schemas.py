@@ -7,6 +7,8 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
+from app.questions.models import QuestionType
+
 
 class SolutionContext(StrEnum):
     SELF_PRACTICE = "SELF_PRACTICE"
@@ -178,3 +180,64 @@ class StepRevisionRead(BaseModel):
     artifact: MathArtifactRead | None
     change_reason: str
     created_at: datetime
+
+
+class ProblemOptionRead(BaseModel):
+    model_config = ConfigDict(extra="forbid", hide_input_in_errors=True)
+
+    id: UUID
+    label: str
+    content: str
+    order_index: int
+
+
+class ProblemSourceMetadataRead(BaseModel):
+    model_config = ConfigDict(extra="forbid", hide_input_in_errors=True)
+
+    title: str | None = None
+    subject_id: UUID | None = None
+    grade_level: int | None = None
+    page_start: int | None = None
+    page_end: int | None = None
+
+
+class ProblemRead(BaseModel):
+    model_config = ConfigDict(extra="forbid", hide_input_in_errors=True)
+
+    id: UUID
+    source_kind: SolutionSourceKind
+    context_type: SolutionContext
+    content: str
+    question_type: QuestionType
+    options: list[ProblemOptionRead] = Field(default_factory=list)
+    order_index: int | None = None
+    is_read_only: bool = False
+
+    question_id: UUID | None = None
+    practice_session_id: UUID | None = None
+    assignment_id: UUID | None = None
+    student_assignment_id: UUID | None = None
+    assignment_student_question_id: UUID | None = None
+    student_assignment_material_item_id: UUID | None = None
+
+    source_metadata: ProblemSourceMetadataRead | None = None
+
+
+class PrepareAssignmentResponse(BaseModel):
+    model_config = ConfigDict(extra="forbid", hide_input_in_errors=True)
+
+    student_assignment_id: UUID
+    status: str
+    item_count: int
+    problems: list[ProblemRead]
+
+
+class PaginatedSolutionAttemptsRead(BaseModel):
+    model_config = ConfigDict(extra="forbid", hide_input_in_errors=True)
+
+    items: list[SolutionAttemptRead]
+    total: int
+    page: int
+    size: int
+    total_pages: int
+

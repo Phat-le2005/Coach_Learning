@@ -1,7 +1,7 @@
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, Response, status
+from fastapi import APIRouter, Depends, Query, Response, status
 from sqlalchemy.orm import Session
 
 from app.auth.dependencies import require_role
@@ -10,9 +10,13 @@ from app.database.session import get_db
 from app.math_solutions.schemas import (
     AttemptCreateRequest,
     AttemptMutationToken,
+    PaginatedSolutionAttemptsRead,
+    PrepareAssignmentResponse,
+    ProblemRead,
     ReorderStepsRequest,
     RollbackStepRequest,
     SolutionAttemptRead,
+    SolutionAttemptStatus,
     StepMutationRequest,
     StepRevisionRead,
 )
@@ -55,6 +59,31 @@ def create_attempt(
     return MathSolutionService(session).create(current_user.id, **data.model_dump())
 
 
+@router.get(
+    "/attempts",
+    response_model=PaginatedSolutionAttemptsRead,
+)
+def list_attempts(
+    current_user: StudentUser,
+    session: Database,
+    page: int = Query(1, ge=1),
+    size: int = Query(20, ge=1, le=100),
+    question_id: UUID | None = None,
+    practice_session_id: UUID | None = None,
+    student_assignment_id: UUID | None = None,
+    status: SolutionAttemptStatus | None = None,
+) -> dict[str, object]:
+    return MathSolutionService(session).list_attempts(
+        current_user.id,
+        page=page,
+        size=size,
+        question_id=question_id,
+        practice_session_id=practice_session_id,
+        student_assignment_id=student_assignment_id,
+        status=status.value if status is not None else None,
+    )
+
+
 @router.get("/attempts/{attempt_id}", response_model=SolutionAttemptRead)
 def get_attempt(
     attempt_id: UUID,
@@ -62,6 +91,20 @@ def get_attempt(
     session: Database,
 ) -> dict[str, object]:
     return MathSolutionService(session).get(current_user.id, attempt_id)
+
+
+@router.get(
+    "/attempts/{attempt_id}/problem",
+    response_model=ProblemRead,
+)
+def get_attempt_problem(
+    attempt_id: UUID,
+    current_user: StudentUser,
+    session: Database,
+) -> ProblemRead:
+    return MathSolutionService(session).get_attempt_problem(
+        current_user.id, attempt_id
+    )
 
 
 @router.post(
@@ -204,4 +247,46 @@ def submit_attempt(
 ) -> dict[str, object]:
     return MathSolutionService(session).submit(
         current_user.id, attempt_id, **data.model_dump()
+    )
+
+
+@router.get(
+    "/practice-sessions/{session_id}/next-problem",
+    response_model=ProblemRead,
+)
+def get_practice_next_problem(
+    session_id: UUID,
+    current_user: StudentUser,
+    session: Database,
+) -> ProblemRead:
+    return MathSolutionService(session).get_practice_next_problem(
+        current_user.id, session_id
+    )
+
+
+@router.post(
+    "/student-assignments/{student_assignment_id}/prepare",
+    response_model=PrepareAssignmentResponse,
+)
+def prepare_student_assignment(
+    student_assignment_id: UUID,
+    current_user: StudentUser,
+    session: Database,
+) -> PrepareAssignmentResponse:
+    return MathSolutionService(session).prepare_student_assignment(
+        current_user.id, student_assignment_id
+    )
+
+
+@router.get(
+    "/student-assignments/{student_assignment_id}/problems",
+    response_model=list[ProblemRead],
+)
+def get_student_assignment_problems(
+    student_assignment_id: UUID,
+    current_user: StudentUser,
+    session: Database,
+) -> list[ProblemRead]:
+    return MathSolutionService(session).get_student_assignment_problems(
+        current_user.id, student_assignment_id
     )
