@@ -1,13 +1,20 @@
 from __future__ import annotations
 
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
+from threading import Barrier
+from unittest.mock import patch
 from uuid import UUID, uuid4
 
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import func, select
+from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session
+
+from app.math_solutions.schemas import SolutionStepDraft
+from app.math_solutions.service import MathSolutionService
 
 from app.assignments.models import (
     Assignment,
@@ -977,4 +984,521 @@ def test_cache_control_headers_on_delivery_error_and_success(
     assert res_403.status_code == 403
     assert res_403.headers.get("Cache-Control") == "no-store"
     assert res_403.headers.get("Pragma") == "no-cache"
+
+
+# =========================================================================
+# 5. FIX-01 Deadline Enforcement Tests (Before, At, After, Prepared)
+# =========================================================================
+
+def test_deadline_enforcement_lifecycle(
+    db_client: TestClient, delivery_domain: DeliveryDomain, auth_headers, db_session: Session
+) -> None:
+    headers_a = auth_headers(delivery_domain.student_a)
+    sa_id = delivery_domain.student_assignment_a.id
+    prepare_url = f"/api/v2/math-solutions/student-assignments/{sa_id}/prepare"
+    problems_url = f"/api/v2/math-solutions/student-assignments/{sa_id}/problems"
+
+    # Case 1: Trước hạn (now < due_at) -> Prepare succeeds, is_read_only is False
+    now = datetime.now(timezone.utc)
+    delivery_domain.assignment.start_at = now - timedelta(hours=2)
+    delivery_domain.assignment.due_at = now + timedelta(hours=2)
+    db_session.commit()
+
+    res1 = db_client.post(prepare_url, headers=headers_a)
+    assert res1.status_code == 200
+    assert res1.json()["item_count"] == 2
+    assert res1.json()["problems"][0]["is_read_only"] is False
+
+    # Case 2: Đúng hạn (exact deadline: now == due_at)
+    # The condition `_utc(assignment.due_at) < now` evaluates False when now == due_at,
+    # so submission, mutation and prepare are accepted at exact due_at.
+    exact_deadline = datetime(2026, 10, 15, 12, 0, 0, tzinfo=timezone.utc)
+    delivery_domain.assignment.due_at = exact_deadline
+    db_session.commit()
+
+    q_id = str(delivery_domain.canonical_question.id)
+    asq = db_session.scalar(
+        select(AssignmentStudentQuestion).where(
+            AssignmentStudentQuestion.student_assignment_id == sa_id,
+            AssignmentStudentQuestion.question_id == delivery_domain.canonical_question.id,
+        )
+    )
+    assert asq is not None
+
+    with patch("app.math_solutions.service._now", return_value=exact_deadline):
+        create_res = db_client.post(
+            "/api/v2/math-solutions/attempts",
+            json={
+                "source_kind": "CANONICAL",
+                "context_type": "CLASSROOM_ASSIGNMENT",
+                "mode": "INDEPENDENT_SOLUTION",
+                "create_idempotency_key": "deadline-exact-attempt",
+                "question_id": q_id,
+                "student_assignment_id": str(sa_id),
+                "assignment_student_question_id": str(asq.id),
+            },
+            headers=headers_a,
+        )
+        assert create_res.status_code == 201
+        attempt_id = create_res.json()["id"]
+
+        # Mutation at exact deadline
+        step_res = db_client.post(
+            f"/api/v2/math-solutions/attempts/{attempt_id}/steps",
+            json={
+                "expected_attempt_revision": 1,
+                "client_action_id": str(uuid4()),
+                "step_type": "CUSTOM",
+                "content_latex": "f'(x)=3x^2-3",
+            },
+            headers=headers_a,
+        )
+        assert step_res.status_code == 201
+
+    # Case 3: Sau hạn (now > due_at) trên bài CHƯA prepare
+    past_assignment = Assignment(
+        classroom_id=delivery_domain.classroom.id,
+        subject_id=delivery_domain.subject.id,
+        title="Quá hạn nộp",
+        assignment_type=AssignmentType.SAME_SET,
+        status=AssignmentStatus.PUBLISHED,
+        question_count=1,
+        start_at=now - timedelta(days=2),
+        due_at=now - timedelta(minutes=5),
+        created_by=delivery_domain.teacher.id,
+    )
+    db_session.add(past_assignment)
+    db_session.flush()
+
+    sa_past = StudentAssignment(
+        assignment_id=past_assignment.id,
+        student_id=delivery_domain.student_profile_a.id,
+        status=StudentAssignmentStatus.NOT_STARTED,
+        assigned_at=now - timedelta(days=2),
+    )
+    db_session.add(sa_past)
+    db_session.commit()
+
+    # Calling prepare after deadline returns 409 ASSIGNMENT_OUTSIDE_WINDOW
+    res_past = db_client.post(
+        f"/api/v2/math-solutions/student-assignments/{sa_past.id}/prepare",
+        headers=headers_a,
+    )
+    assert res_past.status_code == 409
+    assert res_past.json()["error"]["code"] == "ASSIGNMENT_OUTSIDE_WINDOW"
+
+    # Case 4: Bài ĐÃ prepare trước hạn, sau hạn học sinh vào lại
+    after_deadline = exact_deadline + timedelta(seconds=1)
+
+    with patch("app.math_solutions.service._now", return_value=after_deadline):
+        # 4a: Calling prepare again after deadline is rejected with 409 ASSIGNMENT_OUTSIDE_WINDOW
+        prep_after = db_client.post(prepare_url, headers=headers_a)
+        assert prep_after.status_code == 409
+        assert prep_after.json()["error"]["code"] == "ASSIGNMENT_OUTSIDE_WINDOW"
+
+        # 4b: Calling GET /problems succeeds with 200 and is_read_only is True
+        prob_after = db_client.get(problems_url, headers=headers_a)
+        assert prob_after.status_code == 200
+        for p in prob_after.json():
+            assert p["is_read_only"] is True
+
+        # 4c: Calling GET /attempts/{attempt_id}/problem returns is_read_only = True
+        att_prob_after = db_client.get(
+            f"/api/v2/math-solutions/attempts/{attempt_id}/problem",
+            headers=headers_a,
+        )
+        assert att_prob_after.status_code == 200
+        assert att_prob_after.json()["is_read_only"] is True
+
+        # 4d: All mutations after deadline are rejected with 409 ASSIGNMENT_OUTSIDE_WINDOW
+        step_after = db_client.post(
+            f"/api/v2/math-solutions/attempts/{attempt_id}/steps",
+            json={
+                "expected_attempt_revision": 2,
+                "client_action_id": str(uuid4()),
+                "step_type": "CUSTOM",
+                "content_latex": "f'(x)>0",
+            },
+            headers=headers_a,
+        )
+        assert step_after.status_code == 409
+        assert step_after.json()["error"]["code"] == "ASSIGNMENT_OUTSIDE_WINDOW"
+
+        submit_after = db_client.post(
+            f"/api/v2/math-solutions/attempts/{attempt_id}/submit",
+            json={
+                "expected_attempt_revision": 2,
+                "client_action_id": str(uuid4()),
+            },
+            headers=headers_a,
+        )
+        assert submit_after.status_code == 409
+        assert submit_after.json()["error"]["code"] == "ASSIGNMENT_OUTSIDE_WINDOW"
+
+
+# =========================================================================
+# 6. FIX-06 Assignment Not Open Yet (start_at in future)
+# =========================================================================
+
+def test_assignment_not_open_yet(
+    db_client: TestClient, delivery_domain: DeliveryDomain, auth_headers, db_session: Session
+) -> None:
+    headers_a = auth_headers(delivery_domain.student_a)
+    future_start = datetime.now(timezone.utc) + timedelta(days=2)
+    delivery_domain.assignment.start_at = future_start
+    delivery_domain.assignment.due_at = future_start + timedelta(days=5)
+    db_session.commit()
+
+    sa_id = delivery_domain.student_assignment_a.id
+
+    # POST prepare fails with ASSIGNMENT_NOT_OPEN
+    prep_res = db_client.post(
+        f"/api/v2/math-solutions/student-assignments/{sa_id}/prepare",
+        headers=headers_a,
+    )
+    assert prep_res.status_code == 409
+    assert prep_res.json()["error"]["code"] == "ASSIGNMENT_NOT_OPEN"
+
+
+# =========================================================================
+# 7. FIX-06 Canonical Question Revoked or Subject Mismatched
+# =========================================================================
+
+def test_canonical_question_revoked_or_subject_mismatch(
+    db_client: TestClient, delivery_domain: DeliveryDomain, auth_headers, db_session: Session
+) -> None:
+    headers_a = auth_headers(delivery_domain.student_a)
+    sa_id = delivery_domain.student_assignment_a.id
+
+    # 1. Prepare first
+    prep_res = db_client.post(
+        f"/api/v2/math-solutions/student-assignments/{sa_id}/prepare",
+        headers=headers_a,
+    )
+    assert prep_res.status_code == 200
+
+    # 2. Revoke canonical question APPROVED status
+    delivery_domain.canonical_question.status = QuestionStatus.DRAFT
+    db_session.commit()
+
+    # GET problems must fail with CANONICAL_QUESTION_INVALID
+    prob_res = db_client.get(
+        f"/api/v2/math-solutions/student-assignments/{sa_id}/problems",
+        headers=headers_a,
+    )
+    assert prob_res.status_code == 409
+    assert prob_res.json()["error"]["code"] == "CANONICAL_QUESTION_INVALID"
+
+    # 3. Restore status but mismatch subject
+    delivery_domain.canonical_question.status = QuestionStatus.APPROVED
+    other_subj = Subject(code="OTHER-MATH-12", name="Other Subject", grade_level=12)
+    db_session.add(other_subj)
+    db_session.flush()
+    delivery_domain.canonical_question.subject_id = other_subj.id
+    db_session.commit()
+
+    prob_res2 = db_client.get(
+        f"/api/v2/math-solutions/student-assignments/{sa_id}/problems",
+        headers=headers_a,
+    )
+    assert prob_res2.status_code == 422
+    assert prob_res2.json()["error"]["code"] == "SUBJECT_MISMATCH"
+
+
+# =========================================================================
+# 8. FIX-02 PDF Snapshot Integrity Negative Cases
+# =========================================================================
+
+def test_pdf_snapshot_integrity_negative_cases(
+    db_client: TestClient, delivery_domain: DeliveryDomain, auth_headers, db_session: Session
+) -> None:
+    headers_a = auth_headers(delivery_domain.student_a)
+    sa_id = delivery_domain.student_assignment_a.id
+
+    # Prepare first
+    prep_res = db_client.post(
+        f"/api/v2/math-solutions/student-assignments/{sa_id}/prepare",
+        headers=headers_a,
+    )
+    assert prep_res.status_code == 200
+
+    smi = db_session.scalar(
+        select(StudentAssignmentMaterialItem).where(
+            StudentAssignmentMaterialItem.student_assignment_id == sa_id
+        )
+    )
+    assert smi is not None
+
+    # Negative 1: Snapshot belongs to a different assignment
+    other_assign = Assignment(
+        classroom_id=delivery_domain.classroom.id,
+        subject_id=delivery_domain.subject.id,
+        title="Other Assignment",
+        assignment_type=AssignmentType.SAME_SET,
+        status=AssignmentStatus.PUBLISHED,
+        question_count=1,
+        created_by=delivery_domain.teacher.id,
+    )
+    db_session.add(other_assign)
+    db_session.flush()
+
+    orig_assign_id = delivery_domain.material_snapshot.assignment_id
+    delivery_domain.material_snapshot.assignment_id = other_assign.id
+    db_session.commit()
+
+    res_mismatch = db_client.get(
+        f"/api/v2/math-solutions/student-assignments/{sa_id}/problems",
+        headers=headers_a,
+    )
+    assert res_mismatch.status_code == 409
+    assert res_mismatch.json()["error"]["code"] == "MATERIAL_SNAPSHOT_MISMATCH"
+
+    # Restore assignment_id
+    delivery_domain.material_snapshot.assignment_id = orig_assign_id
+    db_session.commit()
+
+    # Negative 2: Mismatched item origin
+    orig_tmi_id = smi.teacher_material_item_id
+    fake_tmi = TeacherMaterialItem(
+        teacher_material_id=delivery_domain.teacher_material.id,
+        order_index=99,
+        page_start=10,
+        page_end=10,
+        content="Fake origin",
+        content_hash="c" * 64,
+        extraction_status=MaterialItemExtractionStatus.READY,
+        evaluation_mode=MaterialEvaluationMode.OPEN_RESPONSE,
+    )
+    db_session.add(fake_tmi)
+    db_session.flush()
+    smi.teacher_material_item_id = fake_tmi.id
+    db_session.commit()
+
+    res_item_mismatch = db_client.get(
+        f"/api/v2/math-solutions/student-assignments/{sa_id}/problems",
+        headers=headers_a,
+    )
+    assert res_item_mismatch.status_code == 409
+    assert res_item_mismatch.json()["error"]["code"] == "MATERIAL_ITEM_SNAPSHOT_MISMATCH"
+
+    # Restore tmi
+    smi.teacher_material_item_id = orig_tmi_id
+    db_session.commit()
+
+    # Negative 3: Origin material from a different classroom
+    other_class = Classroom(
+        name="12A2 Other Class",
+        academic_year="2026-2027",
+        created_by=delivery_domain.teacher.id,
+        grade_level=12,
+    )
+    db_session.add(other_class)
+    db_session.flush()
+    orig_class_id = delivery_domain.teacher_material.classroom_id
+    delivery_domain.teacher_material.classroom_id = other_class.id
+    db_session.commit()
+
+    res_source_cross = db_client.get(
+        f"/api/v2/math-solutions/student-assignments/{sa_id}/problems",
+        headers=headers_a,
+    )
+    assert res_source_cross.status_code == 403
+    assert res_source_cross.json()["error"]["code"] == "MATERIAL_SOURCE_NOT_ACCESSIBLE"
+
+    # Restore classroom
+    delivery_domain.teacher_material.classroom_id = orig_class_id
+    db_session.commit()
+
+    # Negative 4: Snapshot with empty content
+    orig_content = delivery_domain.material_snapshot.content
+    delivery_domain.material_snapshot.content = ""
+    db_session.commit()
+
+    res_empty = db_client.get(
+        f"/api/v2/math-solutions/student-assignments/{sa_id}/problems",
+        headers=headers_a,
+    )
+    assert res_empty.status_code == 409
+    assert res_empty.json()["error"]["code"] == "MATERIAL_SNAPSHOT_INVALID"
+
+    # Restore content
+    delivery_domain.material_snapshot.content = orig_content
+    db_session.commit()
+
+
+# =========================================================================
+# 9. FIX-04 Transaction Safety (Rollback leaves no partial writes)
+# =========================================================================
+
+def test_transaction_safety_rollback_leaves_no_partial_writes(
+    db_client: TestClient, delivery_domain: DeliveryDomain, auth_headers, db_session: Session
+) -> None:
+    headers_a = auth_headers(delivery_domain.student_a)
+    now = datetime.now(timezone.utc)
+
+    # Create a new assignment with a corrupted snapshot (empty content)
+    corrupted_assignment = Assignment(
+        classroom_id=delivery_domain.classroom.id,
+        subject_id=delivery_domain.subject.id,
+        title="Corrupted Assignment",
+        assignment_type=AssignmentType.SAME_SET,
+        status=AssignmentStatus.PUBLISHED,
+        question_count=1,
+        start_at=now - timedelta(hours=1),
+        due_at=now + timedelta(days=2),
+        created_by=delivery_domain.teacher.id,
+    )
+    db_session.add(corrupted_assignment)
+    db_session.flush()
+
+    corrupt_ami = AssignmentMaterialItem(
+        assignment_id=corrupted_assignment.id,
+        teacher_material_id=delivery_domain.teacher_material.id,
+        teacher_material_item_id=delivery_domain.teacher_material_item.id,
+        order_index=0,
+        content="",  # Empty / corrupted content!
+        evaluation_mode=MaterialEvaluationMode.TEACHER_REVIEW,
+    )
+    db_session.add(corrupt_ami)
+    db_session.flush()
+
+    sa_corrupt = StudentAssignment(
+        assignment_id=corrupted_assignment.id,
+        student_id=delivery_domain.student_profile_a.id,
+        status=StudentAssignmentStatus.NOT_STARTED,
+        assigned_at=now - timedelta(hours=1),
+    )
+    db_session.add(sa_corrupt)
+    db_session.commit()
+
+    # Calling prepare must fail with MATERIAL_SNAPSHOT_INVALID
+    prep_res = db_client.post(
+        f"/api/v2/math-solutions/student-assignments/{sa_corrupt.id}/prepare",
+        headers=headers_a,
+    )
+    assert prep_res.status_code == 409
+    assert prep_res.json()["error"]["code"] == "MATERIAL_SNAPSHOT_INVALID"
+
+    # Verify atomic rollback: sa.status is STILL NOT_STARTED, zero rows in DB
+    db_session.expire_all()
+    reloaded_sa = db_session.get(StudentAssignment, sa_corrupt.id)
+    assert reloaded_sa.status == StudentAssignmentStatus.NOT_STARTED
+    assert reloaded_sa.started_at is None
+
+    smi_count = db_session.scalar(
+        select(func.count(StudentAssignmentMaterialItem.id)).where(
+            StudentAssignmentMaterialItem.student_assignment_id == sa_corrupt.id
+        )
+    )
+    assert smi_count == 0
+
+    # Fix the corruption and retry prepare
+    corrupt_ami.content = "Fixed valid mathematical problem content"
+    db_session.commit()
+
+    retry_res = db_client.post(
+        f"/api/v2/math-solutions/student-assignments/{sa_corrupt.id}/prepare",
+        headers=headers_a,
+    )
+    assert retry_res.status_code == 200
+    assert retry_res.json()["status"] == "IN_PROGRESS"
+    assert retry_res.json()["item_count"] == 1
+
+
+# =========================================================================
+# 10. FIX-03 PostgreSQL Concurrency Integration Tests
+# =========================================================================
+
+def test_postgres_concurrency_prepare_two_transactions(postgres_engine: Engine) -> None:
+    """Verifies that two concurrent transactions calling prepare for the same StudentAssignment
+    materialize exactly one set of items without duplicates or deadlocks using PostgreSQL row locking."""
+    # Setup domain on PostgreSQL
+    with Session(postgres_engine, expire_on_commit=False) as db:
+        teacher = User(email=f"pg-teach-{uuid4().hex}@test.com", full_name="PG Teacher", role=Role.TEACHER, password_hash="test")
+        student = User(email=f"pg-stud-{uuid4().hex}@test.com", full_name="PG Student", role=Role.STUDENT, password_hash="test")
+        db.add_all([teacher, student])
+        db.flush()
+
+        sp = StudentProfile(user_id=student.id)
+        db.add(sp)
+        db.flush()
+
+        subj = Subject(code=f"PG-M-{uuid4().hex[:6].upper()}", name="PG Math", grade_level=12)
+        db.add(subj)
+        db.flush()
+
+        classroom = Classroom(name="PG 12A1", academic_year="2026-2027", created_by=teacher.id, grade_level=12)
+        db.add(classroom)
+        db.flush()
+
+        db.add(StudentEnrollment(classroom_id=classroom.id, student_id=sp.id, status=EnrollmentStatus.ACTIVE))
+
+        now = datetime.now(timezone.utc)
+        assignment = Assignment(
+            classroom_id=classroom.id,
+            subject_id=subj.id,
+            title="PG Concurrency Assignment",
+            assignment_type=AssignmentType.SAME_SET,
+            status=AssignmentStatus.PUBLISHED,
+            question_count=2,
+            start_at=now - timedelta(hours=1),
+            due_at=now + timedelta(days=2),
+            created_by=teacher.id,
+        )
+        db.add(assignment)
+        db.flush()
+
+        # Add 2 canonical questions to assignment
+        q1 = Question(subject_id=subj.id, content="PG Question 1", question_type=QuestionType.OPEN_RESPONSE, difficulty=0.5, status=QuestionStatus.APPROVED, created_by=teacher.id, source_type="TEST", exam_weight=0.5, explanation="PG Question 1")
+        q2 = Question(subject_id=subj.id, content="PG Question 2", question_type=QuestionType.OPEN_RESPONSE, difficulty=0.5, status=QuestionStatus.APPROVED, created_by=teacher.id, source_type="TEST", exam_weight=0.5, explanation="PG Question 2")
+        db.add_all([q1, q2])
+        db.flush()
+
+        db.add_all([
+            AssignmentQuestion(assignment_id=assignment.id, question_id=q1.id, order_index=0),
+            AssignmentQuestion(assignment_id=assignment.id, question_id=q2.id, order_index=1),
+        ])
+        db.flush()
+
+        sa = StudentAssignment(
+            assignment_id=assignment.id,
+            student_id=sp.id,
+            status=StudentAssignmentStatus.NOT_STARTED,
+            assigned_at=now - timedelta(hours=1),
+        )
+        db.add(sa)
+        db.commit()
+
+        student_user_id = student.id
+        student_assignment_id = sa.id
+
+    barrier = Barrier(2)
+
+    def prepare_worker():
+        with Session(postgres_engine, expire_on_commit=False) as db:
+            barrier.wait(timeout=10)
+            svc = MathSolutionService(db)
+            return svc.prepare_student_assignment(student_user_id, student_assignment_id)
+
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        f1 = executor.submit(prepare_worker)
+        f2 = executor.submit(prepare_worker)
+        r1 = f1.result(timeout=15)
+        r2 = f2.result(timeout=15)
+
+    assert r1.status == "IN_PROGRESS"
+    assert r2.status == "IN_PROGRESS"
+    assert r1.item_count == 2
+    assert r2.item_count == 2
+
+    # Verify exactly 2 rows exist in DB (no duplicates!)
+    with Session(postgres_engine) as db:
+        count = db.scalar(
+            select(func.count(AssignmentStudentQuestion.id)).where(
+                AssignmentStudentQuestion.student_assignment_id == student_assignment_id
+            )
+        )
+        assert count == 2
+        reloaded = db.get(StudentAssignment, student_assignment_id)
+        assert reloaded.status == StudentAssignmentStatus.IN_PROGRESS
 

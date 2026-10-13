@@ -58,6 +58,10 @@ def _utc(value: datetime) -> datetime:
     return value.replace(tzinfo=timezone.utc) if value.tzinfo is None else value.astimezone(timezone.utc)
 
 
+def _now() -> datetime:
+    return datetime.now(timezone.utc)
+
+
 def _digest(value: dict[str, Any]) -> str:
     return sha256(json.dumps(value, sort_keys=True, separators=(",", ":"), default=str).encode("utf-8")).hexdigest()
 
@@ -240,10 +244,10 @@ class MathSolutionService:
                 StudentAssignmentStatus.SUBMITTED, StudentAssignmentStatus.GRADED
             ):
                 raise _fail(409, "ASSIGNMENT_NOT_OPEN", "The assignment is not available for writing.")
-            now = datetime.now(timezone.utc)
-            if _utc(assignment.start_at) > now or (
-                assignment.due_at is not None and _utc(assignment.due_at) < now
-            ):
+            now = _now()
+            if assignment.start_at and _utc(assignment.start_at) > now:
+                raise _fail(409, "ASSIGNMENT_NOT_OPEN", "Assignment is not open yet.")
+            if assignment.due_at is not None and _utc(assignment.due_at) < now:
                 raise _fail(409, "ASSIGNMENT_OUTSIDE_WINDOW", "The assignment is outside its submission window.")
             enrolled = self.session.scalar(
                 select(StudentEnrollment).where(
@@ -356,6 +360,21 @@ class MathSolutionService:
                 return prior.response_snapshot
             if attempt.status not in ("DRAFT", "IN_PROGRESS"):
                 raise _fail(409, "SOLUTION_LOCKED", "Solution cannot be modified after submission.")
+            if attempt.context_type == "CLASSROOM_ASSIGNMENT":
+                if attempt.assignment_id is not None:
+                    assignment = self.session.get(Assignment, attempt.assignment_id)
+                    if assignment is not None:
+                        now = _now()
+                        if assignment.status != AssignmentStatus.PUBLISHED:
+                            raise _fail(409, "ASSIGNMENT_NOT_OPEN", "The assignment is not open.")
+                        if assignment.start_at and _utc(assignment.start_at) > now:
+                            raise _fail(409, "ASSIGNMENT_NOT_OPEN", "Assignment is not open yet.")
+                        if assignment.due_at is not None and _utc(assignment.due_at) < now:
+                            raise _fail(409, "ASSIGNMENT_OUTSIDE_WINDOW", "The assignment is outside its submission window.")
+                if attempt.student_assignment_id is not None:
+                    sa = self.session.get(StudentAssignment, attempt.student_assignment_id)
+                    if sa is not None and sa.status in (StudentAssignmentStatus.SUBMITTED, StudentAssignmentStatus.GRADED):
+                        raise _fail(409, "ASSIGNMENT_ALREADY_SUBMITTED", "Assignment has already been submitted.")
             if attempt.attempt_revision_number != expected_attempt_revision:
                 raise _fail(409, "SOLUTION_REVISION_CONFLICT", "Reload the latest solution before retrying.")
             callback(attempt)
@@ -499,11 +518,11 @@ class MathSolutionService:
             if attempt.context_type == "CLASSROOM_ASSIGNMENT":
                 assignment = self.session.get(Assignment, attempt.assignment_id)
                 if assignment is None or assignment.status != AssignmentStatus.PUBLISHED or (
-                    assignment.due_at and _utc(assignment.due_at) < datetime.now(timezone.utc)
+                    assignment.due_at and _utc(assignment.due_at) < _now()
                 ):
                     raise _fail(409, "ASSIGNMENT_NOT_OPEN", "Cannot submit after the assignment is closed.")
             attempt.status = "SUBMITTED"
-            attempt.submitted_at = datetime.now(timezone.utc)
+            attempt.submitted_at = _now()
         return self._apply(actor_user_id, attempt_id,
             expected_attempt_revision=expected_attempt_revision, client_action_id=client_action_id,
             operation="SUBMIT", payload={}, callback=action)
@@ -551,7 +570,7 @@ class MathSolutionService:
             if assignment is not None:
                 if assignment.status != AssignmentStatus.PUBLISHED:
                     is_read_only = True
-                elif assignment.due_at and _utc(assignment.due_at) < datetime.now(timezone.utc):
+                elif assignment.due_at and _utc(assignment.due_at) < _now():
                     is_read_only = True
             student_assignment = self.session.get(StudentAssignment, attempt.student_assignment_id) if attempt.student_assignment_id else None
             if student_assignment is not None and student_assignment.status in (
@@ -633,6 +652,10 @@ class MathSolutionService:
             )
             if ami is None or ami.content is None:
                 raise _fail(404, "MATERIAL_ITEM_NOT_FOUND", "Assignment material snapshot not found.")
+            if attempt.assignment_id is not None and ami.assignment_id != attempt.assignment_id:
+                raise _fail(409, "MATERIAL_SNAPSHOT_MISMATCH", "Material snapshot does not match assignment.")
+            if ami.teacher_material_item_id != sami.teacher_material_item_id:
+                raise _fail(409, "MATERIAL_ITEM_SNAPSHOT_MISMATCH", "Assigned item and snapshot origin do not match.")
             tmi = ami.teacher_material_item
             tm = self.session.get(TeacherMaterial, ami.teacher_material_id) if ami.teacher_material_id else None
             title = tm.title if tm is not None else (ami.assignment.title if ami.assignment is not None else None)
@@ -762,8 +785,12 @@ class MathSolutionService:
             if enrollment is None:
                 raise _fail(403, "NOT_ENROLLED_IN_CLASSROOM", "Student is not enrolled in this classroom.")
 
-            if assignment.start_at and _utc(assignment.start_at) > datetime.now(timezone.utc):
+            now = _now()
+            if assignment.start_at and _utc(assignment.start_at) > now:
                 raise _fail(409, "ASSIGNMENT_NOT_OPEN", "Assignment is not open yet.")
+
+            if assignment.due_at is not None and _utc(assignment.due_at) < now:
+                raise _fail(409, "ASSIGNMENT_OUTSIDE_WINDOW", "The assignment is outside its submission window.")
 
             if sa.status in (StudentAssignmentStatus.SUBMITTED, StudentAssignmentStatus.GRADED):
                 raise _fail(409, "ASSIGNMENT_ALREADY_SUBMITTED", "Assignment is already submitted.")
@@ -823,11 +850,12 @@ class MathSolutionService:
                         )
                 if sa.status == StudentAssignmentStatus.NOT_STARTED:
                     sa.status = StudentAssignmentStatus.IN_PROGRESS
-                    sa.started_at = datetime.now(timezone.utc)
-                self.session.commit()
-                self.session.refresh(sa)
+                    sa.started_at = _now()
+                self.session.flush()
 
             problems = self._load_student_assignment_problems(student, sa, assignment)
+            self.session.commit()
+            self.session.refresh(sa)
             return PrepareAssignmentResponse(
                 student_assignment_id=sa.id,
                 status=sa.status.value if hasattr(sa.status, "value") else str(sa.status),
@@ -886,7 +914,7 @@ class MathSolutionService:
     ) -> list[ProblemRead]:
         is_read_only = (
             sa.status in (StudentAssignmentStatus.SUBMITTED, StudentAssignmentStatus.GRADED)
-            or (assignment.due_at and _utc(assignment.due_at) < datetime.now(timezone.utc))
+            or (assignment.due_at and _utc(assignment.due_at) < _now())
             or assignment.status != AssignmentStatus.PUBLISHED
         )
         sqs = list(self.session.scalars(
@@ -901,6 +929,10 @@ class MathSolutionService:
         problems: list[ProblemRead] = []
         for sq in sqs:
             q = sq.question
+            if q is None or q.status != QuestionStatus.APPROVED:
+                raise _fail(409, "CANONICAL_QUESTION_INVALID", "Assigned question is not approved or no longer available.")
+            if q.subject_id != assignment.subject_id:
+                raise _fail(422, "SUBJECT_MISMATCH", "Question and assignment subject must match.")
             options = [
                 ProblemOptionRead(
                     id=opt.id,
@@ -943,11 +975,29 @@ class MathSolutionService:
         ).all())
 
         for smi in smis:
+            if smi.student_assignment_id != sa.id:
+                raise _fail(403, "MATERIAL_ITEM_NOT_ACCESSIBLE", "Material item is not assigned to this student assignment.")
             ami = smi.assignment_material_item
-            if ami is None or ami.content is None:
-                continue
-            tmi = ami.teacher_material_item
-            tm = self.session.get(TeacherMaterial, ami.teacher_material_id) if ami.teacher_material_id else None
+            if ami is None:
+                raise _fail(409, "MATERIAL_SNAPSHOT_INVALID", "Assignment material snapshot not found.")
+            if ami.assignment_id != assignment.id:
+                raise _fail(409, "MATERIAL_SNAPSHOT_MISMATCH", "Material snapshot does not match its assignment.")
+            if ami.teacher_material_item_id != smi.teacher_material_item_id:
+                raise _fail(409, "MATERIAL_ITEM_SNAPSHOT_MISMATCH", "Assigned item and snapshot do not have the same source.")
+            origin = self.session.get(TeacherMaterialItem, smi.teacher_material_item_id)
+            if origin is None:
+                raise _fail(409, "MATERIAL_SNAPSHOT_INVALID", "Origin material item not found.")
+            material = self.session.get(TeacherMaterial, origin.teacher_material_id) if origin is not None else None
+            if (
+                material is None or material.classroom_id != assignment.classroom_id
+                or material.subject_id != assignment.subject_id
+                or (ami.teacher_material_id is not None and ami.teacher_material_id != material.id)
+            ):
+                raise _fail(403, "MATERIAL_SOURCE_NOT_ACCESSIBLE", "Source document belongs to a different classroom.")
+            if not ami.content:
+                raise _fail(409, "MATERIAL_SNAPSHOT_INVALID", "Assignment material snapshot content is empty.")
+            tmi = ami.teacher_material_item or origin
+            tm = material
             title = tm.title if tm is not None else assignment.title
             subject_id = tm.subject_id if tm is not None else assignment.subject_id
             meta = ProblemSourceMetadataRead(

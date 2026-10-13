@@ -15,6 +15,7 @@ Sau bản nâng cấp này, hệ thống hỗ trợ trọn vẹn vòng lặp h�
 Tất cả các endpoint hoạt động dưới các nguyên tắc cốt lõi:
 - **Zero Database Write Side-effects on Read**: Endpoint `GET /student-assignments/{id}/problems` là thuần túy đọc (pure read). Không tự ý khởi tạo bài làm, không đổi trạng thái ngầm, không tạo bản ghi mới khi đọc.
 - **Explicit & Idempotent Materialization**: Khởi tạo phân bổ câu hỏi bài tập thông qua `POST /student-assignments/{id}/prepare` với cơ chế row locking (`with_for_update`). Cho phép retry nhiều lần mà không sinh câu hỏi trùng hoặc bốc thăm lại (no rerolls cho adaptive sets).
+- **Atomic Validation Before Commit**: Xác thực toàn bộ câu hỏi canonical và snapshot tài liệu giáo viên trước khi commit giao dịch prepare. Nếu phát hiện snapshot hỏng hoặc câu hỏi không hợp lệ, transaction rollback hoàn toàn và không để lại dữ liệu dở dang.
 - **Tuyệt đối không lộ đáp án & giải thích nội bộ (Response Redaction)**: DTO loại bỏ hoàn toàn `correct_answer`, `explanation`, `storage_key`, `is_correct`, internal rubrics, và metadata nhạy cảm của giáo viên.
 - **Bắt buộc No-Store Cache-Control**: Mọi HTTP response (cả mã `200` lẫn các mã lỗi `401`, `403`, `404`, `409`, `422`) đều trả `Cache-Control: no-store` và `Pragma: no-cache`.
 - **Standalone Question Enforcement**: Endpoint `next-problem` từ chối các câu hỏi chùm (`QuestionGroup`) với mã `422 QUESTION_GROUP_NOT_SUPPORTED`.
@@ -82,42 +83,38 @@ Lấy câu hỏi đơn lẻ tiếp theo cho phiên tự luyện của học sinh
   - Tái sử dụng logic đủ điều kiện (`_eligible_questions`) của `PracticeService`.
   - Bỏ qua các câu hỏi đã có `QuestionAttempt` (v1) hoặc `SolutionAttempt` (v2).
   - Kiểm tra loại câu hỏi: Nếu thuộc `QuestionGroup`, trả `422 QUESTION_GROUP_NOT_SUPPORTED`.
-  - Nếu hết câu hỏi phù hợp, trả `404 NO_MORE_QUESTIONS`.
+  - Nếu hết câu hỏi phù hợp, trả `404 NO_QUESTIONS_AVAILABLE`.
 - **Response thành công (`200 OK`)**:
 ```json
 {
+  "id": "8bb3805f-fc5b-4375-961d-a3d5ea9dc710",
   "source_kind": "CANONICAL",
-  "question_id": "8bb3805f-fc5b-4375-961d-a3d5ea9dc710",
-  "student_assignment_id": null,
-  "assignment_student_question_id": null,
-  "student_assignment_material_item_id": null,
-  "prompt": "Tìm khoảng đồng biến của hàm số $y = x^3 - 3x^2 + 2$.",
-  "content_latex": "f(x) = x^3 - 3x^2 + 2",
+  "context_type": "SELF_PRACTICE",
+  "content": "Tìm khoảng đồng biến của hàm số $y = x^3 - 3x^2 + 2$.",
   "question_type": "MULTIPLE_CHOICE",
   "options": [
     {
       "id": "11111111-1111-1111-1111-111111111111",
-      "option_code": "A",
+      "label": "A",
       "content": "$(-\\infty; 0)$ và $(2; +\\infty)$",
-      "order": 1
+      "order_index": 1
     },
     {
       "id": "22222222-2222-2222-2222-222222222222",
-      "option_code": "B",
+      "label": "B",
       "content": "$(0; 2)$",
-      "order": 2
+      "order_index": 2
     }
   ],
-  "source_metadata": {
-    "source_material_id": null,
-    "page_number": null,
-    "item_order": null,
-    "metadata": {
-      "difficulty": "EASY",
-      "grade": 12
-    }
-  },
-  "is_read_only": false
+  "order_index": null,
+  "is_read_only": false,
+  "question_id": "8bb3805f-fc5b-4375-961d-a3d5ea9dc710",
+  "practice_session_id": "f5a4b3c2-d1e0-4987-a654-3210fedcba98",
+  "assignment_id": null,
+  "student_assignment_id": null,
+  "assignment_student_question_id": null,
+  "student_assignment_material_item_id": null,
+  "source_metadata": null
 }
 ```
 
@@ -129,16 +126,66 @@ Chuẩn bị (materialize) danh sách bài tập được giao cho học sinh.
 
 - **Nghiệp vụ**:
   - Khóa dòng `student_assignment` bằng database transaction (`with_for_update`).
+  - Kiểm tra trạng thái bài tập: Nếu chưa mở (`ASSIGNMENT_NOT_OPEN`), quá hạn nộp (`ASSIGNMENT_OUTSIDE_WINDOW`), hoặc đã nộp (`ASSIGNMENT_ALREADY_SUBMITTED`), trả mã lỗi `409`.
   - Hỗ trợ cả hai chế độ giao bài: `SAME_SET` (cùng đề cho cả lớp) và `ADAPTIVE_SET` (đề cá nhân hóa theo năng lực).
   - Hỗ trợ cả 2 nguồn tài liệu: Question Bank Canonical Questions và Teacher Material PDF Items.
+  - Xác thực tính toàn vẹn của toàn bộ câu hỏi và snapshot trước khi commit (`atomic materialization`).
   - Idempotent: Nếu đã khởi tạo trước đó, trả lại trạng thái hiện tại ngay lập tức mà không xáo trộn lại câu hỏi.
 - **Response thành công (`200 OK`)**:
 ```json
 {
   "student_assignment_id": "c1f7b889-7cfc-4029-9e80-77a82fb99ef1",
   "status": "IN_PROGRESS",
-  "total_problems": 3,
-  "ready_at": "2026-10-12T14:00:00Z"
+  "item_count": 2,
+  "problems": [
+    {
+      "id": "8bb3805f-fc5b-4375-961d-a3d5ea9dc710",
+      "source_kind": "CANONICAL",
+      "context_type": "CLASSROOM_ASSIGNMENT",
+      "content": "Cho hàm số $y=f(x)$...",
+      "question_type": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "11111111-1111-1111-1111-111111111111",
+          "label": "A",
+          "content": "Đồng biến trên $(1; 3)$",
+          "order_index": 1
+        }
+      ],
+      "order_index": 0,
+      "is_read_only": false,
+      "question_id": "8bb3805f-fc5b-4375-961d-a3d5ea9dc710",
+      "practice_session_id": null,
+      "assignment_id": "a0a0a0a0-bbbb-cccc-dddd-eeeeeeeeeeee",
+      "student_assignment_id": "c1f7b889-7cfc-4029-9e80-77a82fb99ef1",
+      "assignment_student_question_id": "e229c9db-0a42-49ce-b8eb-710899aa1234",
+      "student_assignment_material_item_id": null,
+      "source_metadata": null
+    },
+    {
+      "id": "d4e5f6a7-8901-2345-6789-abcdefabcdef",
+      "source_kind": "TEACHER_MATERIAL",
+      "context_type": "CLASSROOM_ASSIGNMENT",
+      "content": "Câu 2 (Trích đề PDF): Xét tính đơn điệu...",
+      "question_type": "OPEN_RESPONSE",
+      "options": [],
+      "order_index": 1,
+      "is_read_only": false,
+      "question_id": null,
+      "practice_session_id": null,
+      "assignment_id": "a0a0a0a0-bbbb-cccc-dddd-eeeeeeeeeeee",
+      "student_assignment_id": "c1f7b889-7cfc-4029-9e80-77a82fb99ef1",
+      "assignment_student_question_id": null,
+      "student_assignment_material_item_id": "d4e5f6a7-8901-2345-6789-abcdefabcdef",
+      "source_metadata": {
+        "title": "Phiếu bài tập Đạo hàm",
+        "subject_id": "33333333-3333-3333-3333-333333333333",
+        "grade_level": null,
+        "page_start": 2,
+        "page_end": 2
+      }
+    }
+  ]
 }
 ```
 
@@ -151,58 +198,10 @@ Chuẩn bị (materialize) danh sách bài tập được giao cho học sinh.
 - **Nghiệp vụ**:
   - **Pure Read**: Tuyệt đối không ghi, không sửa đổi dữ liệu hoặc thay đổi trạng thái bài nộp.
   - Kiểm tra trạng thái chuẩn bị: Nếu bài tập chưa được `prepare`, trả `409 ASSIGNMENT_NOT_PREPARED`.
-  - Trả về danh sách `ProblemRead[]` theo đúng thứ tự (`order` / `item_order`).
+  - Trả về danh sách `ProblemRead[]` theo đúng thứ tự (`order_index`).
   - Cờ `is_read_only` được tính tự động: `true` nếu bài tập đã nộp (`SUBMITTED`/`GRADED`) hoặc đã qua hạn chót (`due_at`).
 - **Response thành công (`200 OK`)**:
-```json
-[
-  {
-    "source_kind": "CANONICAL",
-    "question_id": "8bb3805f-fc5b-4375-961d-a3d5ea9dc710",
-    "student_assignment_id": "c1f7b889-7cfc-4029-9e80-77a82fb99ef1",
-    "assignment_student_question_id": "e229c9db-0a42-49ce-b8eb-710899aa1234",
-    "student_assignment_material_item_id": null,
-    "prompt": "Cho hàm số $y=f(x)$ có bảng biến thiên...",
-    "content_latex": "f'(x) = 0",
-    "question_type": "MULTIPLE_CHOICE",
-    "options": [
-      {
-        "id": "11111111-1111-1111-1111-111111111111",
-        "option_code": "A",
-        "content": "Đồng biến trên $(1; 3)$",
-        "order": 1
-      }
-    ],
-    "source_metadata": {
-      "source_material_id": null,
-      "page_number": null,
-      "item_order": 1,
-      "metadata": {}
-    },
-    "is_read_only": false
-  },
-  {
-    "source_kind": "TEACHER_MATERIAL",
-    "question_id": null,
-    "student_assignment_id": "c1f7b889-7cfc-4029-9e80-77a82fb99ef1",
-    "assignment_student_question_id": null,
-    "student_assignment_material_item_id": "d4e5f6a7-8901-2345-6789-abcdefabcdef",
-    "prompt": "Câu 2 (Trích đề PDF): Xét tính đơn điệu...",
-    "content_latex": "y = \\frac{2x+1}{x-1}",
-    "question_type": null,
-    "options": [],
-    "source_metadata": {
-      "source_material_id": "aa11bb22-3344-5566-7788-99aabbccddeeff",
-      "page_number": 2,
-      "item_order": 2,
-      "metadata": {
-        "title": "Phiếu bài tập Đạo hàm"
-      }
-    },
-    "is_read_only": false
-  }
-]
-```
+  - Trả về danh sách mảng `ProblemRead[]` như mô tả trong cấu trúc mục 3.2.
 
 ---
 
@@ -212,7 +211,7 @@ Lấy nội dung đề bài tương ứng với một `SolutionAttempt` cụ th�
 
 - **Nghiệp vụ**:
   - Dùng để phục hồi đề bài khi học sinh tải lại (F5 / deep link) trang Workspace.
-  - Kiểm tra quyền sở hữu của học sinh.
+  - Kiểm tra quyền sở hữu của học sinh (`403` / `404`).
   - Tính toán `is_read_only`: `true` nếu attempt đã ở trạng thái `SUBMITTED`, hoặc assignment gốc đã khóa.
 - **Response thành công (`200 OK`)**:
   - Trả về đúng đối tượng `ProblemRead` tương ứng với nguồn đề của attempt.
@@ -266,8 +265,8 @@ Lấy danh sách các bài làm (attempts) có phân trang và bộ lọc linh h
 ### 4.1. Vòng lặp Tự luyện (Self-Practice Flow)
 1. **Lấy câu hỏi tiếp theo**:
    Gọi `GET /api/v2/math-solutions/practice-sessions/{session_id}/next-problem`.
-   - Nếu nhận `200`: Hiển thị đề bài (`prompt`, `content_latex`, `options`).
-   - Nếu nhận `404 (NO_MORE_QUESTIONS)`: Hiển thị thông báo hoàn thành buổi luyện tập.
+   - Nếu nhận `200`: Hiển thị đề bài (`content`, `options`).
+   - Nếu nhận `404 (NO_QUESTIONS_AVAILABLE)`: Hiển thị thông báo hoàn thành buổi luyện tập.
 2. **Khởi tạo bài làm**:
    Tạo client idempotency key (ví dụ: `uuid()`).
    Gọi `POST /api/v2/math-solutions/attempts` với:
@@ -316,25 +315,29 @@ API sử dụng Error Envelope chung:
 |---|---|---|
 | `401 Unauthorized` | `UNAUTHORIZED` | Token thiếu, hết hạn hoặc chữ ký JWT không hợp lệ. |
 | `403 Forbidden` | `FORBIDDEN` | Tài khoản không phải role `STUDENT`, hoặc cố truy cập bài tập/phiên làm bài của học sinh khác / ngoài lớp học ghi danh. |
-| `404 Not Found` | `NOT_FOUND` / `NO_MORE_QUESTIONS` | Thực thể không tồn tại trong database, hoặc phiên tự luyện không còn câu hỏi nào hợp lệ để phân phối. |
+| `404 Not Found` | `NOT_FOUND` / `NO_QUESTIONS_AVAILABLE` | Thực thể không tồn tại trong database, hoặc phiên tự luyện không còn câu hỏi nào hợp lệ để phân phối. |
 | `409 Conflict` | `ASSIGNMENT_NOT_PREPARED` | Cố đọc danh sách câu hỏi khi chưa gọi `prepare`. |
-| `409 Conflict` | `ASSIGNMENT_WINDOW_CLOSED` | Cố gọi `prepare` hoặc tạo attempt khi bài tập đã quá hạn nộp. |
+| `409 Conflict` | `ASSIGNMENT_NOT_OPEN` | Cố gọi `prepare`, tạo attempt hoặc mutate khi bài tập chưa đến thời điểm mở (`start_at`). |
+| `409 Conflict` | `ASSIGNMENT_OUTSIDE_WINDOW` | Cố gọi `prepare`, tạo attempt hoặc mutate bước sau thời điểm hạn nộp (`due_at`). |
+| `409 Conflict` | `ASSIGNMENT_ALREADY_SUBMITTED` | Cố gọi `prepare` hoặc mutate khi bài tập của học sinh đã nộp hoặc đã chấm. |
+| `409 Conflict` | `MATERIAL_SNAPSHOT_MISMATCH` / `MATERIAL_SNAPSHOT_INVALID` | Snapshot tài liệu giáo viên bị hỏng, rỗng hoặc không khớp với bài giao. |
+| `409 Conflict` | `CANONICAL_QUESTION_INVALID` | Câu hỏi canonical bị thu hồi trạng thái `APPROVED` hoặc không khả dụng. |
 | `422 Unprocessable` | `QUESTION_GROUP_NOT_SUPPORTED` | Cố tải câu hỏi chùm (QuestionGroup) qua endpoint bài toán đơn lẻ. |
 
 ---
 
 ## 6. Các Giới Hạn Đã Biết (Known Limitations)
 
-1. **Hiển thị File PDF Giáo viên**: Endpoint trả về metadata định vị (`source_material_id`, `page_number`, `item_order`). Frontend sử dụng API v1 có kiểm soát quyền (`GET /api/teacher-materials/{id}/file`) để tải stream tài liệu nếu cần preview trang PDF.
+1. **Hiển thị File PDF Giáo viên**: Endpoint trả về metadata định vị (`title`, `page_start`, `page_end`). Frontend sử dụng API v1 có kiểm soát quyền (`GET /api/teacher-materials/{id}/file`) để tải stream tài liệu nếu cần preview trang PDF.
 2. **Hỗ trợ QuestionGroup**: Nhóm câu hỏi đọc hiểu/ngữ cảnh chung (`QuestionGroup`) chưa được đưa vào Math Workspace giai đoạn này. Sẽ cần vertical slice mở rộng để biểu diễn cấu trúc đề nhiều cấp.
 3. **AI Evaluation & Hinting**: Chưa kích hoạt tự động chấm hay gợi ý AI trong quá trình nộp bài.
-4. **Dữ liệu Toán 12**: Data ngân hàng câu hỏi phụ thuộc vào dữ liệu có sẵn của hệ thống; việc bổ sung bài toán sẽ do sprint sư phạm tiếp theo bổ sung.
+4. **Dữ liệu Toán 12**: Data ngân hàng câu hỏi phụ thuộc vào dữ liệu có sẵn của hệ thống; việc bổ sung bài toán sẽ do sprint sư phạm tiếp theo đảm nhiệm.
 
 ---
 
 ## 7. Kết quả Kiểm thử & Nghiệm thu
 
 - `python -m app.api.check_contract`: **PASSED** (Hợp đồng API v1 giữ nguyên vẹn 100%, 0 checksum drift).
-- `python -m app.api.v2.check_contract`: **PASSED** (Hợp đồng API v2 mở rộng đạt 14 endpoints chuẩn hóa).
+- `python -m app.api.v2.check_contract`: **PASSED** (Hợp đồng API v2 đạt 14 endpoints chuẩn hóa).
 - `pytest tests/math_solutions/test_v2_problem_delivery.py`: **14/14 PASSED**.
 - `pytest tests/math_solutions/`: **46 PASSED, 2 SKIPPED**.
