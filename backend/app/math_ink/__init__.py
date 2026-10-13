@@ -1,0 +1,1 @@
+"""Bounded, per-page handwritten drafts for Math Solution Attempts."""
