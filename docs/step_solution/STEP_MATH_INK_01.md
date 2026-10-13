@@ -13,3 +13,10 @@ This is a backend storage foundation (not a finished handwriting workspace or OC
 - Follow-up: canvas frontend, browser cache reconciliation, lossless export, OCR selection and verified step comparison.
 
 Security: current user is derived from bearer token, not request payload; another student's attempt resolves as 404. In-progress attempts are writable; submitted/expired assignments are read only.
+
+
+## Draft PR release blockers
+- Regenerate \`backend/contracts/openapi-v2.json\` and \`backend/contracts/openapi-v2.sha256\` using existing deterministic exporter; update exact-route-count assertions in both v2 suites. New ink endpoints are registered but the frozen snapshot has **not** been regenerated; v2 contract CI is expected to fail.
+- Run PostgreSQL Alembic upgrade/downgrade, concurrency race tests and complete backend regression. These have **not** been run in this environment.
+- Validate page deletion semantics, document-wide quotas and long-term operation-journal retention before production rollout.
+- Implement typed frontend canvas and offline IndexedDB reconciliation as a separate reviewed increment. This PR contains **no working browser canvas**.
