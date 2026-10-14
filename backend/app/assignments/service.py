@@ -886,7 +886,19 @@ class AssignmentService:
                     explanation=question.explanation,
                 )
             )
-            if evaluation.score is not None and evaluation.is_correct is not None:
+            from app.math_solutions.models import EvaluationDecision, SolutionAttempt
+
+            has_solution_eval = self.session.scalar(
+                select(SolutionAttempt.id)
+                .join(EvaluationDecision, EvaluationDecision.attempt_id == SolutionAttempt.id)
+                .where(
+                    SolutionAttempt.assignment_student_question_id == sq.id,
+                    SolutionAttempt.status == "EVALUATED",
+                    EvaluationDecision.learning_evidence_event_id.is_not(None),
+                )
+                .limit(1)
+            )
+            if not has_solution_eval and evaluation.score is not None and evaluation.is_correct is not None:
                 self.evidence_publisher.publish(
                     LearningEvidencePayload(
                         student_id=student.id,
@@ -1067,6 +1079,22 @@ class AssignmentService:
         snapshot = sm.assignment_material_item
         if snapshot is None or snapshot.snapshotted_at is None:
             raise ApplicationError(409, "MATERIAL_SNAPSHOT_MISSING", "Published material snapshot is missing.")
+
+        from app.math_solutions.models import EvaluationDecision, SolutionAttempt
+
+        has_solution_eval = self.session.scalar(
+            select(SolutionAttempt.id)
+            .join(EvaluationDecision, EvaluationDecision.attempt_id == SolutionAttempt.id)
+            .where(
+                SolutionAttempt.student_assignment_material_item_id == sm.id,
+                SolutionAttempt.status == "EVALUATED",
+                EvaluationDecision.learning_evidence_event_id.is_not(None),
+            )
+            .limit(1)
+        )
+        if has_solution_eval:
+            return
+
         self.evidence_publisher.publish(
             LearningEvidencePayload(
                 student_id=sa.student_id,

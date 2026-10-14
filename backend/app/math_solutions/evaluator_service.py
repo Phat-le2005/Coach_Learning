@@ -173,5 +173,16 @@ class MathEvaluatorService:
         attempt.total_score = final_score
         attempt.is_correct = is_correct
 
+        self.session.flush()
+
+        # Emit LearningEvidence and update Mastery & ReviewSchedule
+        try:
+            from app.math_solutions.evidence_adapter import MathSolutionEvidenceAdapter
+            adapter = MathSolutionEvidenceAdapter(self.session)
+            adapter.emit_evidence_for_decision(decision.id)
+        except Exception:
+            import logging
+            logging.getLogger(__name__).exception("Failed to emit evidence for decision %s", decision.id)
+
         self.session.commit()
         return decision
