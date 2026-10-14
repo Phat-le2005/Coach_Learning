@@ -1,8 +1,10 @@
+from datetime import datetime, timedelta, timezone
 from uuid import UUID, uuid4
 import pytest
-from sqlalchemy import select
+from sqlalchemy import func, select
 from app.core.exceptions import ApplicationError
-from app.math_ink.models import MathInkDocument, MathInkPage
+from app.math_ink.models import MathInkDocument, MathInkOperation, MathInkPage
+from app.math_ink.prune_operations import prune_expired_operations
 from app.math_ink.schemas import InkPageWrite, InkStroke, InkPoint
 from app.math_ink.service import MathInkService
 from app.math_solutions.service import MathSolutionService
@@ -52,3 +54,23 @@ def test_ink_save_replay_stale_and_ownership(db_session):
     with pytest.raises(ApplicationError) as err:
         ink.get_document(outsider.id,aid)
     assert err.value.status_code == 404
+    # Expired idempotency records are removed in bounded batches. Replaying an
+    # expired action must conflict on the document revision instead of overwriting.
+    operations = db_session.scalars(select(MathInkOperation)).all()
+    assert len(operations) == 2
+    expired_at = datetime.now(timezone.utc) - timedelta(days=8)
+    for operation in operations:
+        operation.created_at = expired_at
+    db_session.commit()
+
+    removed = prune_expired_operations(
+        db_session, now=datetime.now(timezone.utc), batch_size=10
+    )
+    assert removed == 2
+    db_session.commit()
+    assert db_session.scalar(select(func.count()).select_from(MathInkOperation)) == 0
+
+    with pytest.raises(ApplicationError) as err:
+        ink.save_page(owner.id, aid, 0, payload)
+    assert err.value.code == "INK_REVISION_CONFLICT"
+

@@ -1,7 +1,7 @@
 """Storage is normalized per page. Ink never updates solution steps or mastery."""
 from datetime import datetime
 from uuid import UUID, uuid4
-from sqlalchemy import CheckConstraint, DateTime, ForeignKey, Integer, LargeBinary, String, UniqueConstraint, Uuid, func
+from sqlalchemy import CheckConstraint, DateTime, ForeignKey, Index, Integer, LargeBinary, String, UniqueConstraint, Uuid, func
 from sqlalchemy.orm import Mapped, mapped_column
 from app.database.base import Base
 
@@ -38,7 +38,10 @@ class MathInkPage(Base):
 
 class MathInkOperation(Base):
     __tablename__ = "math_ink_operations"
-    __table_args__ = (UniqueConstraint("document_id", "client_action_id", name="uq_math_ink_action"),)
+    __table_args__ = (
+        UniqueConstraint("document_id", "client_action_id", name="uq_math_ink_action"),
+        Index("ix_math_ink_operations_created_at_id", "created_at", "id"),
+    )
     id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, default=uuid4)
     document_id: Mapped[UUID] = mapped_column(ForeignKey("math_ink_documents.id", ondelete="CASCADE"), nullable=False)
     actor_user_id: Mapped[UUID] = mapped_column(ForeignKey("users.id", ondelete="RESTRICT"), nullable=False)
