@@ -20,6 +20,8 @@ import { PageNavigator } from "./components/PageNavigator";
 import { ProblemPane } from "./components/ProblemPane";
 import { MathCanvas } from "./components/MathCanvas";
 import { SyncStatusBadge } from "./components/SyncStatusBadge";
+import { OcrConfirmModal } from "./components/OcrConfirmModal";
+import type { OCRRecognizeResponse, StepKind } from "@/lib/api/contracts";
 import styles from "./MathWorkspace.module.css";
 
 interface PageMemory {
@@ -86,6 +88,13 @@ export function MathWorkspace({
   // Sync state
   const [syncStatus, setSyncStatus] = useState<SyncStatus>("saved");
   const [syncErrorMessage, setSyncErrorMessage] = useState<string | undefined>();
+
+  // OCR recognition & confirmation state
+  const [isRecognizingOCR, setIsRecognizingOCR] = useState(false);
+  const [ocrModalOpen, setOcrModalOpen] = useState(false);
+  const [ocrData, setOcrData] = useState<OCRRecognizeResponse | null>(null);
+  const [isSubmittingStep, setIsSubmittingStep] = useState(false);
+  const [ocrError, setOcrError] = useState<string | null>(null);
 
   // Debounce save timer ref
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -192,6 +201,91 @@ export function MathWorkspace({
       }
     },
     [attemptId, accessToken, documentRevision, apiClient],
+  );
+
+  // OCR Recognition Workflow (Human-in-the-loop Invariant)
+  const handleTriggerOCR = useCallback(async () => {
+    if (currentPageMemory.strokes.length === 0) {
+      return;
+    }
+
+    setOcrError(null);
+    setIsRecognizingOCR(true);
+
+    try {
+      // 1. If currently dirty, flush to server first so recognition has latest strokes
+      if (currentPageMemory.isDirty) {
+        if (saveTimeoutRef.current) {
+          clearTimeout(saveTimeoutRef.current);
+          saveTimeoutRef.current = null;
+        }
+        await flushSavePage(currentPageIndex, currentPageMemory.strokes);
+      }
+
+      // 2. Call OCR recognition
+      const resp = await apiClient.recognizeMathInk(accessToken, attemptId, {
+        page_index: currentPageIndex,
+      });
+
+      setOcrData(resp);
+      setOcrModalOpen(true);
+    } catch (err: unknown) {
+      if (err instanceof ApiResponseError) {
+        setOcrError(err.message);
+      } else if (err instanceof ApiNetworkError) {
+        setOcrError("Không thể kết nối đến máy chủ nhận diện. Vui lòng kiểm tra mạng.");
+      } else {
+        setOcrError("Lỗi nhận diện nét vẽ. Vui lòng thử lại.");
+      }
+    } finally {
+      setIsRecognizingOCR(false);
+    }
+  }, [
+    currentPageMemory.strokes,
+    currentPageMemory.isDirty,
+    currentPageIndex,
+    flushSavePage,
+    apiClient,
+    accessToken,
+    attemptId,
+  ]);
+
+  const handleConfirmStep = useCallback(
+    async (stepType: StepKind, latex: string, explanation: string) => {
+      setIsSubmittingStep(true);
+      setOcrError(null);
+
+      try {
+        const expectedRev = attempt?.current_revision ?? 1;
+        const updatedAttempt = await apiClient.createMathStep(accessToken, attemptId, {
+          expected_attempt_revision: expectedRev,
+          client_action_id: generateUuid(),
+          step_type: stepType,
+          content_latex: latex,
+          explanation_text: explanation || null,
+        });
+
+        setAttempt(updatedAttempt);
+        setOcrModalOpen(false);
+        setOcrData(null);
+      } catch (err: unknown) {
+        if (err instanceof ApiResponseError) {
+          setOcrError(err.message);
+          throw err;
+        } else if (err instanceof ApiNetworkError) {
+          const msg = "Không thể lưu bước giải: mất kết nối mạng.";
+          setOcrError(msg);
+          throw new Error(msg);
+        } else {
+          const msg = "Không thể lưu bước giải.";
+          setOcrError(msg);
+          throw new Error(msg);
+        }
+      } finally {
+        setIsSubmittingStep(false);
+      }
+    },
+    [attempt?.current_revision, apiClient, accessToken, attemptId],
   );
 
   // 3. Handle strokes update with Undo stack & autosave debounce
@@ -513,6 +607,9 @@ export function MathWorkspace({
         onZoomIn={() => setZoomLevel((z) => Math.min(2.0, z + 0.1))}
         onZoomOut={() => setZoomLevel((z) => Math.max(0.6, z - 0.1))}
         onResetZoom={() => setZoomLevel(1.0)}
+        onTriggerOCR={handleTriggerOCR}
+        isRecognizingOCR={isRecognizingOCR}
+        strokeCount={currentPageMemory.strokes.length}
       />
 
       {/* Main 2-Column Split Workspace */}
@@ -543,6 +640,16 @@ export function MathWorkspace({
           />
         </section>
       </main>
+
+      {/* OCR Confirmation Dialog (Human-in-the-loop Invariant) */}
+      <OcrConfirmModal
+        isOpen={ocrModalOpen}
+        onClose={() => setOcrModalOpen(false)}
+        ocrData={ocrData}
+        isSubmitting={isSubmittingStep}
+        onConfirmStep={handleConfirmStep}
+        errorMessage={ocrError}
+      />
     </div>
   );
 }

@@ -11,6 +11,7 @@ import {
   parseProblemOptionRead,
   parseProblemRead,
   parseSolutionAttemptRead,
+  parseOCRRecognizeResponse,
 } from "../src/lib/api/contracts.js";
 import { ApiContractError } from "../src/lib/api/validation.js";
 
@@ -151,4 +152,33 @@ test("parseSolutionAttemptRead parses attempt status and revision", () => {
   assert.equal(result.id, "f0000000-0000-0000-0000-000000000006");
   assert.equal(result.status, "IN_PROGRESS");
   assert.equal(result.current_revision, 1);
+});
+
+test("parseSolutionAttemptRead parses attempt_revision_number from v2 contract", () => {
+  const input = {
+    id: "f0000000-0000-0000-0000-000000000007",
+    question_id: "q0000000-0000-0000-0000-000000000001",
+    status: "IN_PROGRESS",
+    attempt_revision_number: 5,
+    started_at: "2026-10-14T10:00:00Z",
+  };
+  const result = parseSolutionAttemptRead(input);
+  assert.equal(result.id, "f0000000-0000-0000-0000-000000000007");
+  assert.equal(result.current_revision, 5);
+});
+
+test("parseOCRRecognizeResponse parses valid recognition output", () => {
+  const input = {
+    latex: "\\int (3x^2 - 2x + 1) dx = x^3 - x^2 + x + C",
+    confidence: 0.96,
+    suggested_step_type: "EXPLANATION",
+    explanation_text: "Từng bước tính nguyên hàm.",
+    detected_symbols: ["\\int", "3x^2", "dx"],
+  };
+  const result = parseOCRRecognizeResponse(input);
+  assert.equal(result.latex, "\\int (3x^2 - 2x + 1) dx = x^3 - x^2 + x + C");
+  assert.equal(result.confidence, 0.96);
+  assert.equal(result.suggested_step_type, "EXPLANATION");
+  assert.equal(result.explanation_text, "Từng bước tính nguyên hàm.");
+  assert.deepEqual(result.detected_symbols, ["\\int", "3x^2", "dx"]);
 });

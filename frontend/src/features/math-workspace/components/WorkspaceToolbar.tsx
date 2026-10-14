@@ -14,6 +14,8 @@ import {
   ZoomIn,
   ZoomOut,
   RotateCcw,
+  Sparkles,
+  Loader2,
 } from "lucide-react";
 import type { DrawingTool, PaperGrid } from "../types";
 import {
@@ -43,6 +45,9 @@ interface WorkspaceToolbarProps {
   onZoomIn: () => void;
   onZoomOut: () => void;
   onResetZoom: () => void;
+  onTriggerOCR?: () => void;
+  isRecognizingOCR?: boolean;
+  strokeCount?: number;
 }
 
 export function WorkspaceToolbar({
@@ -65,6 +70,9 @@ export function WorkspaceToolbar({
   onZoomIn,
   onZoomOut,
   onResetZoom,
+  onTriggerOCR,
+  isRecognizingOCR = false,
+  strokeCount = 0,
 }: WorkspaceToolbarProps) {
   return (
     <div className={styles.toolbar} role="toolbar" aria-label="Thanh công cụ vẽ">
@@ -226,6 +234,38 @@ export function WorkspaceToolbar({
           <Trash2 size={17} />
         </button>
       </div>
+
+      {/* Group: AI OCR Recognition */}
+      {onTriggerOCR && (
+        <>
+          <div className={styles.divider} />
+          <div className={styles.toolGroup}>
+            <button
+              type="button"
+              className={styles.ocrButton}
+              onClick={onTriggerOCR}
+              disabled={isRecognizingOCR || strokeCount === 0}
+              title={
+                strokeCount === 0
+                  ? "Vẽ công thức lên trang để nhận diện"
+                  : "Nhận diện nét vẽ thành công thức toán học (OCR)"
+              }
+            >
+              {isRecognizingOCR ? (
+                <>
+                  <Loader2 className={styles.spinIcon} size={15} />
+                  <span>Đang nhận diện...</span>
+                </>
+              ) : (
+                <>
+                  <Sparkles size={15} />
+                  <span>Nhận diện AI</span>
+                </>
+              )}
+            </button>
+          </div>
+        </>
+      )}
 
       <div className={styles.divider} />
 

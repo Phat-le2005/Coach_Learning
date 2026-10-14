@@ -19,6 +19,7 @@ import {
   parseInkDocumentRead,
   parseInkPageRead,
   parseInkSaveRead,
+  parseOCRRecognizeResponse,
   parseProblemRead,
   parseProblemTypeMastery,
   parseSolutionAttemptRead,
@@ -27,6 +28,9 @@ import {
   parseTokenPair,
   parseUserRead,
   validateLoginRequest,
+  OCRRecognizeRequest,
+  OCRRecognizeResponse,
+  StepMutationRequest,
 } from "./contracts";
 import { ApiContractError, record, string } from "./validation";
 
@@ -57,8 +61,10 @@ export const API_PATHS = {
   studentConceptMastery: (id: string) => `/students/me/mastery/concepts/${encodeURIComponent(id)}`,
   mathAttempt: (id: string) => `/api/v2/math-solutions/attempts/${encodeURIComponent(id)}`,
   mathAttemptProblem: (id: string) => `/api/v2/math-solutions/attempts/${encodeURIComponent(id)}/problem`,
+  mathAttemptSteps: (id: string) => `/api/v2/math-solutions/attempts/${encodeURIComponent(id)}/steps`,
   mathInkDocument: (id: string) => `/api/v2/math-solutions/attempts/${encodeURIComponent(id)}/ink`,
   mathInkPage: (id: string, pageIndex: number) => `/api/v2/math-solutions/attempts/${encodeURIComponent(id)}/ink/pages/${pageIndex}`,
+  mathOcrRecognize: (id: string) => `/api/v2/math-solutions/attempts/${encodeURIComponent(id)}/ocr/recognize`,
 } as const;
 
 type ResponseParser<T> = (value: unknown, path?: string) => T;
@@ -173,6 +179,22 @@ export function createApiClient({ baseUrl, fetcher = fetch }: ApiClientOptions) 
         API_PATHS.mathInkPage(attemptId, pageIndex),
         parseInkSaveRead,
         { method: "PUT", body: JSON.stringify(payload) },
+        accessToken,
+      );
+    },
+    recognizeMathInk(accessToken: string, attemptId: string, payload: OCRRecognizeRequest): Promise<OCRRecognizeResponse> {
+      return request(
+        API_PATHS.mathOcrRecognize(attemptId),
+        parseOCRRecognizeResponse,
+        { method: "POST", body: JSON.stringify(payload) },
+        accessToken,
+      );
+    },
+    createMathStep(accessToken: string, attemptId: string, payload: StepMutationRequest): Promise<SolutionAttemptRead> {
+      return request(
+        API_PATHS.mathAttemptSteps(attemptId),
+        parseSolutionAttemptRead,
+        { method: "POST", body: JSON.stringify(payload) },
         accessToken,
       );
     },
