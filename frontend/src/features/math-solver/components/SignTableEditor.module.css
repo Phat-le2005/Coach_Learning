@@ -1,0 +1,282 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+}
+
+.headerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.titleGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.subtitle {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.controlGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.toolBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #475569;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.toolBtn:hover {
+  background-color: #f1f5f9;
+  color: #0f172a;
+}
+
+.tableScrollWrapper {
+  overflow-x: auto;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  background-color: #ffffff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
+.signTable {
+  width: 100%;
+  min-width: 320px;
+  border-collapse: collapse;
+  text-align: center;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.signTable th,
+.signTable td {
+  padding: 0.625rem 0.5rem;
+  border: 1px solid #e2e8f0;
+}
+
+.headerLabelCell {
+  width: 48px;
+  background-color: #f1f5f9;
+  font-weight: 700;
+  color: #334155;
+  border-right: 2px solid #cbd5e1 !important;
+}
+
+.infinityCell {
+  width: 44px;
+  font-weight: 600;
+  color: #64748b;
+  background-color: #fafafa;
+}
+
+.intervalSpaceCell {
+  width: 36px;
+  background-color: #fafafa;
+}
+
+.blankBoundCell {
+  background-color: #fafafa;
+}
+
+.pointCell {
+  min-width: 72px;
+  padding: 0.375rem !important;
+}
+
+.pointInputWrap {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  justify-content: center;
+}
+
+.pointInput {
+  width: 48px;
+  padding: 0.25rem 0.375rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-align: center;
+  color: #0f172a;
+  background-color: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.25rem;
+}
+
+.pointInput:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
+}
+
+.pointDisplay {
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.removePointBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  color: #94a3b8;
+  background: none;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.removePointBtn:hover {
+  color: #ef4444;
+  background-color: #fee2e2;
+}
+
+.signCell {
+  min-width: 50px;
+  padding: 0.25rem !important;
+}
+
+.signBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: 0.375rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.signBtn:disabled {
+  cursor: default;
+}
+
+.signPositive {
+  background-color: #ecfdf5;
+  color: #059669;
+  border-color: #a7f3d0;
+}
+
+.signPositive:not(:disabled):hover {
+  background-color: #d1fae5;
+  transform: scale(1.05);
+}
+
+.signNegative {
+  background-color: #fef2f2;
+  color: #dc2626;
+  border-color: #fecaca;
+}
+
+.signNegative:not(:disabled):hover {
+  background-color: #fee2e2;
+  transform: scale(1.05);
+}
+
+.signNeutral {
+  background-color: #f8fafc;
+  color: #64748b;
+  border-color: #e2e8f0;
+}
+
+.signNeutral:not(:disabled):hover {
+  background-color: #f1f5f9;
+  transform: scale(1.05);
+}
+
+.zeroCell {
+  width: 44px;
+  font-weight: 700;
+  color: #475569;
+}
+
+.addPointBar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.addInput {
+  flex: 1;
+  max-width: 240px;
+  padding: 0.375rem 0.625rem;
+  font-size: 0.8125rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.375rem;
+  background-color: #ffffff;
+}
+
+.addInput:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
+}
+
+.addBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #ffffff;
+  background-color: #2563eb;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.addBtn:hover:not(:disabled) {
+  background-color: #1d4ed8;
+}
+
+.addBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0.75rem;
+  }
+  .addPointBar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .addInput {
+    max-width: 100%;
+  }
+}
