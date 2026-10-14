@@ -125,6 +125,12 @@ def postgres_engine() -> Iterator[Engine]:
         pytest.fail("EDUMS_TEST_DATABASE_URL must use postgresql+psycopg")
     engine = create_engine(url, isolation_level="READ COMMITTED", hide_parameters=True, connect_args={"connect_timeout": 5})
     schema = f"edums_test_{uuid4().hex}"
+
+    @event.listens_for(engine, "connect")
+    def configure_search_path(dbapi_connection, connection_record) -> None:
+        with dbapi_connection.cursor() as cursor:
+            cursor.execute(f'SET search_path TO "{schema}", public')
+
     translated = engine.execution_options(schema_translate_map={None: schema})
     created = False
     try:

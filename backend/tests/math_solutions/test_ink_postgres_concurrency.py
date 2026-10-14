@@ -44,7 +44,7 @@ def _page(revision: int, x: float) -> InkPageWrite:
 
 
 def _create_attempt(session: Session) -> tuple[UUID, UUID]:
-    suffix = uuid4().hex[:10]
+    suffix = uuid4().hex[:10].upper()
     users = UserService(session)
     student = users.create_user(
         UserCreate(
