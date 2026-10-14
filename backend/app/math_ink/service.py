@@ -10,6 +10,7 @@ from app.assignments.models import Assignment, AssignmentStatus, StudentAssignme
 from app.core.exceptions import ApplicationError
 from app.math_ink.codec import encode_strokes, decode_strokes
 from app.math_ink.models import MathInkDocument, MathInkOperation, MathInkPage
+from app.math_ink.prune_operations import prune_expired_operations
 from app.math_ink.schemas import InkDocumentRead, InkPageRead, InkPageSummary, InkPageWrite, InkSaveRead
 from app.math_solutions.service import MathSolutionService, _utc
 
@@ -74,23 +75,33 @@ class MathInkService:
                         raise ApplicationError(409, "INK_ACTION_REUSED", "Action ID already belongs to another update.")
                     return InkSaveRead(document_revision=prior.result_revision, page_index=prior.page_index, sha256=content_hash)
             self._editable(attempt)
+            # Bound journal growth for actively edited documents.
+            if doc is not None:
+                prune_expired_operations(self.session, document_id=doc.id, batch_size=100)
             current = doc.revision if doc else 0
             if current != payload.expected_document_revision:
                 raise ApplicationError(409, "INK_REVISION_CONFLICT", "Reload ink document before saving again.")
+            unchanged = False
+            if doc is not None:
+                old_page = self.session.scalar(select(MathInkPage).where(
+                    MathInkPage.document_id == doc.id, MathInkPage.page_index == page_index
+                ))
+                unchanged = old_page is not None and old_page.sha256 == content_hash
             if doc is None:
                 doc = MathInkDocument(attempt_id=attempt_id, revision=1)
                 self.session.add(doc)
                 self.session.flush()
-            else:
+            elif not unchanged:
                 doc.revision += 1
             page = self.session.scalar(select(MathInkPage).where(MathInkPage.document_id == doc.id, MathInkPage.page_index == page_index))
             if page is None:
                 page = MathInkPage(document_id=doc.id, page_index=page_index)
                 self.session.add(page)
-            page.compressed_strokes = compressed
-            page.sha256 = content_hash
-            page.stroke_count = len(payload.strokes)
-            page.point_count = point_count
+            if not unchanged:
+                page.compressed_strokes = compressed
+                page.sha256 = content_hash
+                page.stroke_count = len(payload.strokes)
+                page.point_count = point_count
             self.session.add(MathInkOperation(
                 document_id=doc.id, actor_user_id=actor_user_id, client_action_id=payload.client_action_id,
                 request_hash=request_hash, page_index=page_index, result_revision=doc.revision,
