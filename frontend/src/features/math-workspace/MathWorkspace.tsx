@@ -1,0 +1,548 @@
+"use client";
+
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { createBackendApiClient, ApiResponseError, ApiNetworkError } from "@/lib/api/client";
+import type {
+  DrawingTool,
+  InkDocumentRead,
+  InkPageRead,
+  InkStroke,
+  PaperGrid,
+  ProblemRead,
+  SolutionAttemptRead,
+  SyncStatus,
+} from "./types";
+import { MAX_PAGES, A4_WIDTH } from "./types";
+import { generateUuid } from "./utils/ink-math";
+import { mathInkStorage } from "./storage/indexeddb";
+import { WorkspaceToolbar } from "./components/WorkspaceToolbar";
+import { PageNavigator } from "./components/PageNavigator";
+import { ProblemPane } from "./components/ProblemPane";
+import { MathCanvas } from "./components/MathCanvas";
+import { SyncStatusBadge } from "./components/SyncStatusBadge";
+import styles from "./MathWorkspace.module.css";
+
+interface PageMemory {
+  strokes: InkStroke[];
+  past: InkStroke[][];
+  future: InkStroke[][];
+  isDirty: boolean;
+}
+
+interface MathWorkspaceProps {
+  attemptId: string;
+  accessToken: string;
+  initialProblem?: ProblemRead | null;
+  initialAttempt?: SolutionAttemptRead | null;
+  initialDocument?: InkDocumentRead | null;
+  initialPage?: InkPageRead | null;
+}
+
+export function MathWorkspace({
+  attemptId,
+  accessToken,
+  initialProblem = null,
+  initialAttempt = null,
+  initialDocument = null,
+  initialPage = null,
+}: MathWorkspaceProps) {
+  // Problem & Attempt
+  const [problem, setProblem] = useState<ProblemRead | null>(initialProblem);
+  const [attempt, setAttempt] = useState<SolutionAttemptRead | null>(initialAttempt);
+
+  // Layout & View
+  const [isProblemPaneCollapsed, setIsProblemPaneCollapsed] = useState(false);
+  const [zoomLevel, setZoomLevel] = useState(1.0);
+
+  // Document & Multi-page
+  const [documentRevision, setDocumentRevision] = useState(
+    initialDocument?.document_revision ?? 0,
+  );
+  const [currentPageIndex, setCurrentPageIndex] = useState(0);
+  const [pageCount, setPageCount] = useState(
+    Math.max(1, initialDocument?.pages?.length ?? 1),
+  );
+
+  // Pages state memory
+  const [pagesMap, setPagesMap] = useState<Map<number, PageMemory>>(() => {
+    const map = new Map<number, PageMemory>();
+    const initialStrokes = initialPage?.strokes ?? [];
+    map.set(0, {
+      strokes: initialStrokes,
+      past: [],
+      future: [],
+      isDirty: false,
+    });
+    return map;
+  });
+
+  // Tools & Attributes
+  const [currentTool, setCurrentTool] = useState<DrawingTool>("pen");
+  const [penColor, setPenColor] = useState("#0f172a");
+  const [penWidth, setPenWidth] = useState(2);
+  const [highlighterWidth, setHighlighterWidth] = useState(18);
+  const [paperGrid, setPaperGrid] = useState<PaperGrid>("grid");
+
+  // Sync state
+  const [syncStatus, setSyncStatus] = useState<SyncStatus>("saved");
+  const [syncErrorMessage, setSyncErrorMessage] = useState<string | undefined>();
+
+  // Debounce save timer ref
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const apiClient = useRef(createBackendApiClient()).current;
+
+  // Current active page memory
+  const currentPageMemory: PageMemory = pagesMap.get(currentPageIndex) ?? {
+    strokes: [],
+    past: [],
+    future: [],
+    isDirty: false,
+  };
+
+  // 1. Initial data fetch if not passed via props
+  useEffect(() => {
+    if (!problem && attemptId && accessToken) {
+      apiClient
+        .getMathAttemptProblem(accessToken, attemptId)
+        .then(setProblem)
+        .catch(() => {});
+    }
+
+    if (!attempt && attemptId && accessToken) {
+      apiClient
+        .getMathAttempt(accessToken, attemptId)
+        .then(setAttempt)
+        .catch(() => {});
+    }
+
+    if (!initialDocument && attemptId && accessToken) {
+      apiClient
+        .getMathInkDocument(accessToken, attemptId)
+        .then((doc) => {
+          setDocumentRevision(doc.document_revision);
+          if (doc.pages.length > 0) {
+            setPageCount(doc.pages.length);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [attemptId, accessToken, problem, attempt, initialDocument, apiClient]);
+
+  // 2. Perform server save
+  const flushSavePage = useCallback(
+    async (pageIdx: number, strokesToSave: InkStroke[]) => {
+      setSyncStatus("saving");
+      setSyncErrorMessage(undefined);
+
+      const clientActionId = generateUuid();
+
+      // Save to IndexedDB immediately before network call
+      await mathInkStorage.savePageDraft(
+        attemptId,
+        pageIdx,
+        strokesToSave,
+        documentRevision,
+        clientActionId,
+        true,
+      );
+
+      try {
+        const response = await apiClient.saveMathInkPage(
+          accessToken,
+          attemptId,
+          pageIdx,
+          {
+            expected_document_revision: documentRevision,
+            client_action_id: clientActionId,
+            strokes: strokesToSave,
+          },
+        );
+
+        setDocumentRevision(response.document_revision);
+        setSyncStatus("saved");
+
+        // Mark clean in IndexedDB
+        await mathInkStorage.markPageClean(attemptId, pageIdx, response.document_revision);
+
+        setPagesMap((prev) => {
+          const updated = new Map(prev);
+          const pageMem = updated.get(pageIdx);
+          if (pageMem) {
+            updated.set(pageIdx, { ...pageMem, isDirty: false });
+          }
+          return updated;
+        });
+      } catch (err: unknown) {
+        if (err instanceof ApiResponseError) {
+          if (err.status === 409) {
+            setSyncStatus("conflict");
+            setSyncErrorMessage("Phiên bản trên máy chủ đã thay đổi.");
+            return;
+          }
+          setSyncStatus("error");
+          setSyncErrorMessage(err.message);
+        } else if (err instanceof ApiNetworkError) {
+          // Offline mode
+          setSyncStatus("offline");
+        } else {
+          setSyncStatus("error");
+          setSyncErrorMessage("Không thể lưu trang. Bản thảo đã được giữ an toàn.");
+        }
+      }
+    },
+    [attemptId, accessToken, documentRevision, apiClient],
+  );
+
+  // 3. Handle strokes update with Undo stack & autosave debounce
+  const handleStrokesChange = useCallback(
+    (newStrokes: InkStroke[]) => {
+      setPagesMap((prev) => {
+        const updated = new Map(prev);
+        const current = updated.get(currentPageIndex) ?? {
+          strokes: [],
+          past: [],
+          future: [],
+          isDirty: false,
+        };
+
+        const newPast = [...current.past, current.strokes];
+        if (newPast.length > 30) newPast.shift(); // Bound history
+
+        updated.set(currentPageIndex, {
+          strokes: newStrokes,
+          past: newPast,
+          future: [],
+          isDirty: true,
+        });
+        return updated;
+      });
+
+      setSyncStatus("unsaved");
+
+      // Save draft immediately to IndexedDB
+      mathInkStorage.savePageDraft(
+        attemptId,
+        currentPageIndex,
+        newStrokes,
+        documentRevision,
+        generateUuid(),
+        true,
+      );
+
+      // Debounce network save (1.5s)
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+      saveTimeoutRef.current = setTimeout(() => {
+        flushSavePage(currentPageIndex, newStrokes);
+      }, 1500);
+    },
+    [currentPageIndex, attemptId, documentRevision, flushSavePage],
+  );
+
+  // 4. Undo / Redo
+  const handleUndo = useCallback(() => {
+    if (currentPageMemory.past.length === 0) return;
+
+    const newPast = [...currentPageMemory.past];
+    const previousStrokes = newPast.pop()!;
+    const newFuture = [currentPageMemory.strokes, ...currentPageMemory.future];
+
+    setPagesMap((prev) => {
+      const updated = new Map(prev);
+      updated.set(currentPageIndex, {
+        strokes: previousStrokes,
+        past: newPast,
+        future: newFuture,
+        isDirty: true,
+      });
+      return updated;
+    });
+
+    handleStrokesChange(previousStrokes);
+  }, [currentPageMemory, currentPageIndex, handleStrokesChange]);
+
+  const handleRedo = useCallback(() => {
+    if (currentPageMemory.future.length === 0) return;
+
+    const newFuture = [...currentPageMemory.future];
+    const nextStrokes = newFuture.shift()!;
+    const newPast = [...currentPageMemory.past, currentPageMemory.strokes];
+
+    setPagesMap((prev) => {
+      const updated = new Map(prev);
+      updated.set(currentPageIndex, {
+        strokes: nextStrokes,
+        past: newPast,
+        future: newFuture,
+        isDirty: true,
+      });
+      return updated;
+    });
+
+    handleStrokesChange(nextStrokes);
+  }, [currentPageMemory, currentPageIndex, handleStrokesChange]);
+
+  const handleClearPage = useCallback(() => {
+    if (currentPageMemory.strokes.length === 0) return;
+    if (window.confirm("Bạn có chắc chắn muốn xóa toàn bộ nét vẽ trên trang này không?")) {
+      handleStrokesChange([]);
+    }
+  }, [currentPageMemory.strokes, handleStrokesChange]);
+
+  // 5. Switching Pages
+  const handleSelectPage = useCallback(
+    async (targetIndex: number) => {
+      if (targetIndex === currentPageIndex || targetIndex < 0 || targetIndex >= pageCount) {
+        return;
+      }
+
+      // If current page is dirty, flush save before leaving
+      if (currentPageMemory.isDirty) {
+        if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+        flushSavePage(currentPageIndex, currentPageMemory.strokes);
+      }
+
+      // Load target page data if not present in memory
+      if (!pagesMap.has(targetIndex)) {
+        // Check IndexedDB draft first
+        const offlineDraft = await mathInkStorage.getPageDraft(attemptId, targetIndex);
+        if (offlineDraft) {
+          setPagesMap((prev) => {
+            const updated = new Map(prev);
+            updated.set(targetIndex, {
+              strokes: offlineDraft.strokes,
+              past: [],
+              future: [],
+              isDirty: offlineDraft.isDirty,
+            });
+            return updated;
+          });
+        } else {
+          // Fetch from server
+          try {
+            const pageData = await apiClient.getMathInkPage(
+              accessToken,
+              attemptId,
+              targetIndex,
+            );
+            setPagesMap((prev) => {
+              const updated = new Map(prev);
+              updated.set(targetIndex, {
+                strokes: pageData.strokes,
+                past: [],
+                future: [],
+                isDirty: false,
+              });
+              return updated;
+            });
+          } catch {
+            // New empty page
+            setPagesMap((prev) => {
+              const updated = new Map(prev);
+              updated.set(targetIndex, {
+                strokes: [],
+                past: [],
+                future: [],
+                isDirty: false,
+              });
+              return updated;
+            });
+          }
+        }
+      }
+
+      setCurrentPageIndex(targetIndex);
+    },
+    [
+      currentPageIndex,
+      pageCount,
+      currentPageMemory,
+      flushSavePage,
+      pagesMap,
+      attemptId,
+      accessToken,
+      apiClient,
+    ],
+  );
+
+  const handleAddPage = useCallback(() => {
+    if (pageCount >= MAX_PAGES) return;
+    const newIndex = pageCount;
+    setPageCount((c) => c + 1);
+    setPagesMap((prev) => {
+      const updated = new Map(prev);
+      updated.set(newIndex, {
+        strokes: [],
+        past: [],
+        future: [],
+        isDirty: false,
+      });
+      return updated;
+    });
+    setCurrentPageIndex(newIndex);
+  }, [pageCount]);
+
+  const handleDeleteCurrentPage = useCallback(() => {
+    if (pageCount <= 1) return;
+    if (!window.confirm(`Bạn có chắc muốn xóa trang ${currentPageIndex + 1}?`)) return;
+
+    setPagesMap((prev) => {
+      const updated = new Map<number, PageMemory>();
+      let newIdx = 0;
+      for (let i = 0; i < pageCount; i++) {
+        if (i !== currentPageIndex) {
+          const mem = prev.get(i) ?? { strokes: [], past: [], future: [], isDirty: false };
+          updated.set(newIdx, mem);
+          newIdx++;
+        }
+      }
+      return updated;
+    });
+
+    setPageCount((c) => c - 1);
+    setCurrentPageIndex((i) => Math.max(0, i - 1));
+  }, [pageCount, currentPageIndex]);
+
+  // 6. Conflict Resolution
+  const handleResolveConflict = useCallback(async () => {
+    try {
+      const doc = await apiClient.getMathInkDocument(accessToken, attemptId);
+      setDocumentRevision(doc.document_revision);
+      const pageData = await apiClient.getMathInkPage(
+        accessToken,
+        attemptId,
+        currentPageIndex,
+      );
+
+      setPagesMap((prev) => {
+        const updated = new Map(prev);
+        updated.set(currentPageIndex, {
+          strokes: pageData.strokes,
+          past: [],
+          future: [],
+          isDirty: false,
+        });
+        return updated;
+      });
+
+      setSyncStatus("saved");
+      setSyncErrorMessage(undefined);
+    } catch {
+      setSyncErrorMessage("Không thể tải bản mới nhất từ máy chủ.");
+    }
+  }, [apiClient, accessToken, attemptId, currentPageIndex]);
+
+  // 7. Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        return;
+      }
+
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z") {
+        if (e.shiftKey) {
+          e.preventDefault();
+          handleRedo();
+        } else {
+          e.preventDefault();
+          handleUndo();
+        }
+      } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "y") {
+        e.preventDefault();
+        handleRedo();
+      } else if (e.key.toLowerCase() === "p") {
+        setCurrentTool("pen");
+      } else if (e.key.toLowerCase() === "h") {
+        setCurrentTool("highlighter");
+      } else if (e.key.toLowerCase() === "e") {
+        setCurrentTool("eraser");
+      } else if (e.key === "[") {
+        if (currentPageIndex > 0) handleSelectPage(currentPageIndex - 1);
+      } else if (e.key === "]") {
+        if (currentPageIndex < pageCount - 1) handleSelectPage(currentPageIndex + 1);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [handleUndo, handleRedo, handleSelectPage, currentPageIndex, pageCount]);
+
+  return (
+    <div className={styles.workspaceContainer}>
+      {/* Top Header Bar */}
+      <header className={styles.topHeader}>
+        <div className={styles.headerLeft}>
+          <h1 className={styles.headerTitle}>Không gian giải bài Toán</h1>
+          <SyncStatusBadge
+            status={syncStatus}
+            errorMessage={syncErrorMessage}
+            onRetry={() => flushSavePage(currentPageIndex, currentPageMemory.strokes)}
+            onResolveConflict={handleResolveConflict}
+          />
+        </div>
+
+        <PageNavigator
+          currentPageIndex={currentPageIndex}
+          pageCount={pageCount}
+          onSelectPage={handleSelectPage}
+          onAddPage={handleAddPage}
+          onDeleteCurrentPage={handleDeleteCurrentPage}
+        />
+      </header>
+
+      {/* Floating or Top Toolbar */}
+      <WorkspaceToolbar
+        currentTool={currentTool}
+        onSelectTool={setCurrentTool}
+        penColor={penColor}
+        onSelectPenColor={setPenColor}
+        penWidth={penWidth}
+        onSelectPenWidth={setPenWidth}
+        highlighterWidth={highlighterWidth}
+        onSelectHighlighterWidth={setHighlighterWidth}
+        paperGrid={paperGrid}
+        onSelectPaperGrid={setPaperGrid}
+        canUndo={currentPageMemory.past.length > 0}
+        onUndo={handleUndo}
+        canRedo={currentPageMemory.future.length > 0}
+        onRedo={handleRedo}
+        onClearPage={handleClearPage}
+        zoomLevel={zoomLevel}
+        onZoomIn={() => setZoomLevel((z) => Math.min(2.0, z + 0.1))}
+        onZoomOut={() => setZoomLevel((z) => Math.max(0.6, z - 0.1))}
+        onResetZoom={() => setZoomLevel(1.0)}
+      />
+
+      {/* Main 2-Column Split Workspace */}
+      <main className={styles.mainLayout}>
+        {/* Left Column: Problem (35%) */}
+        <ProblemPane
+          problem={problem}
+          attempt={attempt}
+          isCollapsed={isProblemPaneCollapsed}
+          onToggleCollapse={() => setIsProblemPaneCollapsed((c) => !c)}
+        />
+
+        {/* Right Column: A4 Writing Canvas (65% or expanded) */}
+        <section
+          className={`${styles.canvasPane} ${isProblemPaneCollapsed ? styles.canvasPaneExpanded : ""}`}
+          aria-label="Không gian giấy A4 viết tay"
+        >
+          <MathCanvas
+            strokes={currentPageMemory.strokes}
+            onStrokesChange={handleStrokesChange}
+            currentTool={currentTool}
+            penColor={penColor}
+            penWidth={penWidth}
+            highlighterWidth={highlighterWidth}
+            paperGrid={paperGrid}
+            zoomLevel={zoomLevel}
+            isReadOnly={attempt?.status === "SUBMITTED"}
+          />
+        </section>
+      </main>
+    </div>
+  );
+}
