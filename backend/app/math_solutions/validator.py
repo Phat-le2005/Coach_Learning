@@ -33,7 +33,12 @@ class ValidationResult:
 
 def clean_latex_to_python(latex_str: str) -> str:
     """Normalize LaTeX mathematical string into a parseable Python/SymPy expression."""
-    s = re.sub(r"^(?:y\'|f\'\(x\)|y|f\(x\))\s*=\s*", "", latex_str.strip())
+    match = re.search(r"(?:y\'|f\'\(x\)|y|f\(x\))\s*=\s*([^\$\.\;\n\r]+)", latex_str)
+    if match:
+        s = match.group(1)
+    else:
+        s = re.sub(r"^(?:y\'|f\'\(x\)|y|f\(x\))\s*=\s*", "", latex_str.strip())
+    s = s.replace("$", "")
     s = re.sub(r"\\frac\{([^}]+)\}\{([^}]+)\}", r"((\1)/(\2))", s)
     s = s.replace("^", "**")
     s = s.replace("\\left", "").replace("\\right", "").replace("\\,", " ")
