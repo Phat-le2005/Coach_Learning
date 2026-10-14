@@ -41,6 +41,11 @@ def test_ink_save_replay_stale_and_ownership(db_session):
     assert ink.save_page(owner.id,aid,0,payload) == first
     assert ink.get_page(owner.id,aid,0).strokes == payload.strokes
     assert db_session.scalar(select(MathInkPage)).stroke_count == 1
+    no_op = ink.save_page(owner.id, aid, 0, payload.model_copy(update={
+        "expected_document_revision": 1, "client_action_id": uuid4(),
+    }))
+    assert no_op.document_revision == 1
+    assert ink.get_document(owner.id, aid).document_revision == 1
     with pytest.raises(ApplicationError) as err:
         ink.save_page(owner.id,aid,0,payload.model_copy(update={"client_action_id":uuid4()}))
     assert err.value.code == "INK_REVISION_CONFLICT"
