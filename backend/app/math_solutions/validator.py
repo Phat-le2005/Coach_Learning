@@ -60,7 +60,7 @@ def _safe_parse_expression(expression: str, variable: sympy.Symbol) -> sympy.Exp
     if len(expression) > _MAX_EXPRESSION_LENGTH:
         raise ValueError("Mathematical expression is too long.")
 
-    normalized = expression.strip()
+    normalized = expression.strip().replace("^", "**")
     normalized = re.sub(r"(?<=\\d)\\s*(?=[x(])", "*", normalized)
     normalized = re.sub(r"(?<=x)\\s*(?=\\()", "*", normalized)
     normalized = re.sub(r"(?<=\\))\\s*(?=[x\\d(])", "*", normalized)
