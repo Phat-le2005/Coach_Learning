@@ -462,6 +462,13 @@ class LearningPriorityService:
     def _resolve_active_teaching_plan(
         self, student_id: UUID, subject_id: UUID
     ) -> ActiveTeachingPlanContext | None:
+        """Return only currently published targets from the student's active plan.
+
+        Teaching-plan items are retained for audit when a curriculum revision retires a
+        ProblemType.  An inactive item must not make the learning-state read model fail
+        or be selected as a current lesson; it remains in the plan for teacher/admin
+        review instead.
+        """
         items = list(
             self.session.execute(
                 select(TeachingPlanItem.problem_type_id, TeachingPlanItem.priority)
@@ -470,11 +477,16 @@ class LearningPriorityService:
                     StudentEnrollment,
                     StudentEnrollment.classroom_id == TeachingPlan.classroom_id,
                 )
+                .join(ProblemType, ProblemType.id == TeachingPlanItem.problem_type_id)
+                .join(Topic, Topic.id == ProblemType.topic_id)
+                .join(Chapter, Chapter.id == Topic.chapter_id)
                 .where(
                     StudentEnrollment.student_id == student_id,
                     StudentEnrollment.status == EnrollmentStatus.ACTIVE,
                     TeachingPlan.subject_id == subject_id,
                     TeachingPlan.status == TeachingPlanStatus.ACTIVE,
+                    Chapter.subject_id == subject_id,
+                    ProblemType.is_active.is_(True),
                 )
                 .order_by(
                     TeachingPlanItem.priority.desc(),

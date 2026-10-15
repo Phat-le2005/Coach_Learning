@@ -516,3 +516,73 @@ def test_recommendation_is_deterministic_for_unchanged_state(
 
     assert first is not None
     assert first == second
+
+
+def test_teaching_plan_with_deactivated_problem_type_does_not_fail_subject_validation(
+    db_session: Session,
+    student_profile: StudentProfile,
+    practice_content: PracticeContent,
+) -> None:
+    from datetime import date
+    from app.classes.models import Classroom, EnrollmentStatus, StudentEnrollment
+    from app.planning.models import TeachingPlan, TeachingPlanItem, TeachingPlanStatus
+
+    # Create an inactive problem type in the same subject
+    inactive_pt = _add_problem_type(db_session, practice_content, "INACTIVE_PT")
+    inactive_pt.is_active = False
+
+    classroom = Classroom(
+        name="Test Room",
+        academic_year="2026-2027",
+        grade_level=12,
+        created_by=student_profile.user_id,
+    )
+    db_session.add(classroom)
+    db_session.flush()
+
+    enrollment = StudentEnrollment(
+        classroom_id=classroom.id,
+        student_id=student_profile.id,
+        status=EnrollmentStatus.ACTIVE,
+    )
+    db_session.add(enrollment)
+
+    plan = TeachingPlan(
+        classroom_id=classroom.id,
+        subject_id=practice_content.subject.id,
+        start_date=date.today(),
+        status=TeachingPlanStatus.ACTIVE,
+        created_by=student_profile.user_id,
+    )
+    db_session.add(plan)
+    db_session.flush()
+
+    # Add both active and inactive problem types to the teaching plan
+    item1 = TeachingPlanItem(
+        teaching_plan_id=plan.id,
+        problem_type_id=practice_content.problem_type.id,
+        priority=1,
+        order_index=1,
+    )
+    item2 = TeachingPlanItem(
+        teaching_plan_id=plan.id,
+        problem_type_id=inactive_pt.id,
+        priority=2,
+        order_index=2,
+    )
+    db_session.add_all([item1, item2])
+    db_session.flush()
+
+    # Priorities resolution should succeed and ignore the inactive problem type
+    service = LearningPriorityService(db_session)
+    resolved_plan = service._resolve_active_teaching_plan(
+        student_profile.id, practice_content.subject.id
+    )
+    assert resolved_plan is not None
+    assert practice_content.problem_type.id in resolved_plan.problem_type_ids
+    assert inactive_pt.id not in resolved_plan.problem_type_ids
+
+    priorities = service.get_priorities(student_profile.id, practice_content.subject.id)
+    assert priorities is not None
+    assert all(p.problem_type_id != inactive_pt.id for p in priorities if p.problem_type_id)
+

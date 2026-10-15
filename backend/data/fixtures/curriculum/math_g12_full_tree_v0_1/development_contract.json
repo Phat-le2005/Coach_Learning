@@ -1,0 +1,29 @@
+{
+  "dataset_code": "MATH_G12_GDPT2018_DEVELOPMENT_FULL_TREE_V0_1",
+  "environment_scope": [
+    "development",
+    "test"
+  ],
+  "production_import_allowed": false,
+  "canonical_activation": false,
+  "question_import_allowed": false,
+  "source_artifacts_immutable": true,
+  "expected_counts": {
+    "chapters": 6,
+    "topics": 25,
+    "problem_types": 75,
+    "concepts": 89,
+    "learning_outcomes": 34,
+    "concept_relations": 93,
+    "problem_type_concepts": 200,
+    "problem_type_learning_outcomes": 82
+  },
+  "chapter_codes": [
+    "DERIVATIVE_APPLICATIONS",
+    "VECTORS_GEOMETRY",
+    "GROUPED_DATA_DISPERSION",
+    "INTEGRALS",
+    "OXYZ_CHAPTER",
+    "PROBABILITY_CHAPTER"
+  ]
+}

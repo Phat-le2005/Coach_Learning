@@ -6,9 +6,9 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.classes.access import TeacherStudentAccessService
-from app.concepts.models import Concept
+from app.concepts.models import Concept, ConceptRelation, RelationType
 from app.core.exceptions import ApplicationError
-from app.curriculum.models import Chapter, ProblemType, Topic
+from app.curriculum.models import Chapter, ProblemType, ProblemTypeConcept, Topic
 from app.mastery.aggregation import MasteryAggregationService, MasterySnapshot
 from app.mastery.models import StudentConceptMastery, StudentProblemTypeMastery
 from app.mastery.schemas import (
@@ -87,6 +87,12 @@ class MasteryQueryService:
                 )
             )
         )
+        active_topic_ids = {problem_type.topic_id for problem_type in problem_types}
+        topics = [topic for topic in topics if topic.id in active_topic_ids]
+        active_chapter_ids = {topic.chapter_id for topic in topics}
+        chapters = [chapter for chapter in chapters if chapter.id in active_chapter_ids]
+        active_subject_ids = {chapter.subject_id for chapter in chapters}
+        subjects = [subject for subject in subjects if subject.id in active_subject_ids]
         concepts = list(
             self.session.scalars(
                 select(Concept).order_by(
@@ -94,6 +100,34 @@ class MasteryQueryService:
                 )
             )
         )
+        active_problem_type_ids = {problem_type.id for problem_type in problem_types}
+        active_concept_ids = set(
+            self.session.scalars(
+                select(ProblemTypeConcept.concept_id).where(
+                    ProblemTypeConcept.problem_type_id.in_(active_problem_type_ids)
+                )
+            )
+        )
+        if active_concept_ids:
+            prerequisite_relations = self.session.execute(
+                select(
+                    ConceptRelation.source_concept_id,
+                    ConceptRelation.target_concept_id,
+                ).where(ConceptRelation.relation_type == RelationType.PREREQUISITE)
+            ).all()
+            changed = True
+            while changed:
+                changed = False
+                for source_id, target_id in prerequisite_relations:
+                    if (
+                        target_id in active_concept_ids
+                        and source_id not in active_concept_ids
+                    ):
+                        active_concept_ids.add(source_id)
+                        changed = True
+            concepts = [
+                concept for concept in concepts if concept.id in active_concept_ids
+            ]
         problem_mastery = {
             item.problem_type_id: item
             for item in self.session.scalars(

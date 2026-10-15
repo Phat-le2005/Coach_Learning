@@ -1,0 +1,35 @@
+[
+  {
+    "code": "DERIVATIVE_APPLICATIONS",
+    "name": "Ứng dụng đạo hàm để khảo sát và vẽ đồ thị của hàm số",
+    "description": "Taxonomy nội bộ Coach Learning được dẫn xuất từ phạm vi chính thức lớp 12; không phải cấu trúc chương do Bộ GDĐT ban hành.",
+    "order_index": 10
+  },
+  {
+    "code": "VECTORS_GEOMETRY",
+    "name": "Vectơ và hệ tọa độ trong không gian",
+    "description": "Vectơ trong không gian; tọa độ vectơ; biểu thức tọa độ của các phép toán vectơ và vận dụng.",
+    "order_index": 20
+  },
+  {
+    "code": "GROUPED_DATA_DISPERSION",
+    "name": "Các số đặc trưng đo mức độ phân tán cho mẫu số liệu ghép nhóm",
+    "description": "Khoảng biến thiên, khoảng tứ phân vị, phương sai, độ lệch chuẩn; so sánh, diễn giải và vận dụng.",
+    "order_index": 30
+  },
+  {
+    "code": "INTEGRALS",
+    "name": "Nguyên hàm. Tích phân",
+    "order_index": 40
+  },
+  {
+    "code": "OXYZ_CHAPTER",
+    "name": "Phương pháp tọa độ trong không gian",
+    "order_index": 50
+  },
+  {
+    "code": "PROBABILITY_CHAPTER",
+    "name": "Xác suất có điều kiện và các quy tắc tính xác suất",
+    "order_index": 60
+  }
+]

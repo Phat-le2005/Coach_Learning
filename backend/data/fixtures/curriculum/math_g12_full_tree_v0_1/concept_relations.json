@@ -1,0 +1,467 @@
+[
+  {
+    "source_code": "ANTIDERIVATIVE",
+    "target_code": "DEFINITE_INTEGRAL",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "CONDITIONAL_PROBABILITY",
+    "target_code": "PROBABILITY_TREE",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "CONDITIONAL_PROBABILITY",
+    "target_code": "TOTAL_PROBABILITY",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "COORDINATE_VECTOR_OPERATIONS_3D",
+    "target_code": "VECTOR_COORDINATE_CONSTRAINTS_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "CRITICAL_POINT",
+    "target_code": "EXTREMUM_CRITERION",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "CUBIC_FUNCTION_STRUCTURE",
+    "target_code": "FUNCTION_ANALYSIS",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "DERIVATIVE_RULES",
+    "target_code": "ANTIDERIVATIVE",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "DERIVATIVE_RULES",
+    "target_code": "DERIVATIVE_SIGN",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "DERIVATIVE_SIGN",
+    "target_code": "EXTREMUM_CRITERION",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "DERIVATIVE_SIGN",
+    "target_code": "SIGN_ANALYSIS",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "DIRECTION_VECTOR",
+    "target_code": "LINE_EQUATION",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "DISPERSION_COMPARISON",
+    "target_code": "DATA_STABILITY_CONSISTENCY",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "DISPERSION_COMPARISON",
+    "target_code": "DISPERSION_INTERPRETATION",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "DISPERSION_INTERPRETATION",
+    "target_code": "REAL_WORLD_DISPERSION_MODELING",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "DOT_PRODUCT_3D",
+    "target_code": "COORDINATE_VECTOR_OPERATIONS_3D",
+    "relation_type": "RELATED_TO"
+  },
+  {
+    "source_code": "DOT_PRODUCT_3D",
+    "target_code": "VECTOR_ANGLE_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "DOT_PRODUCT_3D",
+    "target_code": "VECTOR_COORDINATE_CONSTRAINTS_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "ENDPOINT_EVALUATION",
+    "target_code": "GLOBAL_EXTREMA",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "EXTREMUM_CRITERION",
+    "target_code": "LOCAL_EXTREMUM",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "FIRST_DERIVATIVE",
+    "target_code": "CRITICAL_POINT",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "FIRST_DERIVATIVE",
+    "target_code": "DERIVATIVE_RULES",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "FUNCTION_ANALYSIS",
+    "target_code": "GRAPH_SYMMETRY",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "FUNCTION_DOMAIN",
+    "target_code": "FIRST_DERIVATIVE",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "FUNCTION_DOMAIN",
+    "target_code": "GLOBAL_EXTREMA",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "FUNCTION_GRAPH",
+    "target_code": "GRAPH_READING",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "GLOBAL_EXTREMA",
+    "target_code": "OPTIMIZATION",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "GROUPED_DATA_CLASS_BOUNDARY",
+    "target_code": "GROUPED_RANGE",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "GROUPED_DATA_CLASS_INTERVAL",
+    "target_code": "GROUPED_DATA_CLASS_BOUNDARY",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "GROUPED_DATA_CLASS_INTERVAL",
+    "target_code": "GROUPED_DATA_FREQUENCY",
+    "relation_type": "RELATED_TO"
+  },
+  {
+    "source_code": "GROUPED_DATA_CLASS_INTERVAL",
+    "target_code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "GROUPED_DATA_FREQUENCY",
+    "target_code": "GROUPED_MEAN_FOR_DISPERSION",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "GROUPED_DATA_FREQUENCY",
+    "target_code": "GROUPED_QUARTILE_INTERPOLATION",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "GROUPED_DATA_FREQUENCY",
+    "target_code": "GROUPED_RANGE",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "GROUPED_DATA_FREQUENCY",
+    "target_code": "GROUPED_VARIANCE",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+    "target_code": "GROUPED_MEAN_FOR_DISPERSION",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+    "target_code": "GROUPED_VARIANCE",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "GROUPED_IQR",
+    "target_code": "DISPERSION_COMPARISON",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "GROUPED_IQR",
+    "target_code": "IQR_ROBUSTNESS",
+    "relation_type": "RELATED_TO"
+  },
+  {
+    "source_code": "GROUPED_MEAN_FOR_DISPERSION",
+    "target_code": "GROUPED_VARIANCE",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "GROUPED_QUARTILE_INTERPOLATION",
+    "target_code": "GROUPED_IQR",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "GROUPED_RANGE",
+    "target_code": "DISPERSION_COMPARISON",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "GROUPED_STANDARD_DEVIATION",
+    "target_code": "DISPERSION_COMPARISON",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "GROUPED_VARIANCE",
+    "target_code": "DISPERSION_COMPARISON",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "GROUPED_VARIANCE",
+    "target_code": "GROUPED_STANDARD_DEVIATION",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "HORIZONTAL_ASYMPTOTE",
+    "target_code": "FUNCTION_ANALYSIS",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "INEQUALITY_SOLVING",
+    "target_code": "PARAMETER_REASONING",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "INEQUALITY_SOLVING",
+    "target_code": "SIGN_ANALYSIS",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "LIMIT_AT_INFINITY",
+    "target_code": "HORIZONTAL_ASYMPTOTE",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "LIMIT_AT_INFINITY",
+    "target_code": "OBLIQUE_ASYMPTOTE",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "LIMIT_AT_POINT",
+    "target_code": "VERTICAL_ASYMPTOTE",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "LINEAR_FRACTION_STRUCTURE",
+    "target_code": "FUNCTION_ANALYSIS",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "LINE_EQUATION",
+    "target_code": "INTERSECTION_OXYZ",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "LOCAL_EXTREMUM",
+    "target_code": "FUNCTION_ANALYSIS",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "LOCAL_EXTREMUM",
+    "target_code": "GLOBAL_EXTREMA",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "MATHEMATICAL_MODELING",
+    "target_code": "CONTEXT_INTERPRETATION",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "MATHEMATICAL_MODELING",
+    "target_code": "OPTIMIZATION",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "MONOTONICITY",
+    "target_code": "MONOTONICITY_CRITERION",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "MONOTONICITY_CRITERION",
+    "target_code": "CONTEXT_INTERPRETATION",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "MONOTONICITY_CRITERION",
+    "target_code": "FUNCTION_ANALYSIS",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "MONOTONICITY_CRITERION",
+    "target_code": "PARAMETER_REASONING",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "MONOTONICITY_CRITERION",
+    "target_code": "VARIATION_TABLE",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "NORMAL_VECTOR",
+    "target_code": "PLANE_EQUATION",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "OBLIQUE_ASYMPTOTE",
+    "target_code": "FUNCTION_ANALYSIS",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "OXYZ_COORDINATE_SYSTEM",
+    "target_code": "POINT_COORDINATES_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "OXYZ_COORDINATE_SYSTEM",
+    "target_code": "VECTOR_COORDINATES_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "PLANE_EQUATION",
+    "target_code": "DISTANCE_OXYZ",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "POINT_COORDINATES_3D",
+    "target_code": "CENTROID_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "POINT_COORDINATES_3D",
+    "target_code": "MIDPOINT_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "POINT_COORDINATES_3D",
+    "target_code": "VECTOR_FROM_POINTS_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "POLYNOMIAL_DIVISION",
+    "target_code": "OBLIQUE_ASYMPTOTE",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "QUADRATIC_OVER_LINEAR_STRUCTURE",
+    "target_code": "FUNCTION_ANALYSIS",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "SIGN_ANALYSIS",
+    "target_code": "MONOTONICITY_CRITERION",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "SPACE_VECTOR",
+    "target_code": "DOT_PRODUCT_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "SPACE_VECTOR",
+    "target_code": "VECTOR_DIFFERENCE_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "SPACE_VECTOR",
+    "target_code": "VECTOR_DIRECTION_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "SPACE_VECTOR",
+    "target_code": "VECTOR_EQUALITY_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "SPACE_VECTOR",
+    "target_code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "SPACE_VECTOR",
+    "target_code": "VECTOR_SUM_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "TOTAL_PROBABILITY",
+    "target_code": "BAYES_FORMULA",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "VARIATION_TABLE",
+    "target_code": "FUNCTION_ANALYSIS",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "VARIATION_TABLE",
+    "target_code": "LOCAL_EXTREMUM",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "VECTOR_COORDINATES_3D",
+    "target_code": "COORDINATE_VECTOR_OPERATIONS_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "VECTOR_COORDINATES_3D",
+    "target_code": "DIRECTION_VECTOR",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "VECTOR_COORDINATES_3D",
+    "target_code": "NORMAL_VECTOR",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "VECTOR_COORDINATES_3D",
+    "target_code": "REAL_WORLD_VECTOR_MODELING_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "VECTOR_COORDINATES_3D",
+    "target_code": "VECTOR_FROM_POINTS_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "VECTOR_DIFFERENCE_3D",
+    "target_code": "COORDINATE_VECTOR_OPERATIONS_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "VECTOR_FROM_POINTS_3D",
+    "target_code": "VECTOR_LENGTH_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "VECTOR_LENGTH_3D",
+    "target_code": "DISTANCE_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "VECTOR_LENGTH_3D",
+    "target_code": "VECTOR_COORDINATE_CONSTRAINTS_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+    "target_code": "COORDINATE_VECTOR_OPERATIONS_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "VECTOR_SUM_3D",
+    "target_code": "COORDINATE_VECTOR_OPERATIONS_3D",
+    "relation_type": "PREREQUISITE"
+  },
+  {
+    "source_code": "VERTICAL_ASYMPTOTE",
+    "target_code": "FUNCTION_ANALYSIS",
+    "relation_type": "PREREQUISITE"
+  }
+]

@@ -1,0 +1,165 @@
+[
+  {
+    "chapter_code": "DERIVATIVE_APPLICATIONS",
+    "code": "MONOTONICITY_TOPIC",
+    "name": "Tính đơn điệu của hàm số",
+    "description": "Đọc, xác định và biểu diễn tính đồng biến/nghịch biến; bao gồm bài toán tham số.",
+    "order_index": 10
+  },
+  {
+    "chapter_code": "DERIVATIVE_APPLICATIONS",
+    "code": "EXTREMA_TOPIC",
+    "name": "Cực trị của hàm số",
+    "description": "Nhận biết và xác định điểm cực trị, giá trị cực trị từ đạo hàm, bảng biến thiên và đồ thị.",
+    "order_index": 20
+  },
+  {
+    "chapter_code": "DERIVATIVE_APPLICATIONS",
+    "code": "GLOBAL_EXTREMA_TOPIC",
+    "name": "Giá trị lớn nhất và giá trị nhỏ nhất",
+    "description": "Nhận biết và xác định giá trị lớn nhất/nhỏ nhất trên tập xác định hoặc đoạn cho trước.",
+    "order_index": 30
+  },
+  {
+    "chapter_code": "DERIVATIVE_APPLICATIONS",
+    "code": "FUNCTION_ANALYSIS_TOPIC",
+    "name": "Tiệm cận, khảo sát và vẽ đồ thị hàm số",
+    "description": "Tiệm cận, quy trình khảo sát, ba họ hàm theo chương trình và tính đối xứng của đồ thị.",
+    "order_index": 40
+  },
+  {
+    "chapter_code": "DERIVATIVE_APPLICATIONS",
+    "code": "DERIVATIVE_APPLICATION_TOPIC",
+    "name": "Ứng dụng đạo hàm trong bài toán thực tiễn",
+    "description": "Mô hình hóa, tối ưu hóa và diễn giải kết quả trong ngữ cảnh thực tế.",
+    "order_index": 50
+  },
+  {
+    "chapter_code": "VECTORS_GEOMETRY",
+    "code": "SPACE_VECTOR_OPERATIONS_TOPIC",
+    "name": "Vectơ và các phép toán vectơ trong không gian",
+    "description": "Quan hệ vectơ, cộng trừ vectơ, nhân số và tích vô hướng trong không gian.",
+    "order_index": 10
+  },
+  {
+    "chapter_code": "VECTORS_GEOMETRY",
+    "code": "OXYZ_VECTOR_COORDINATES_TOPIC",
+    "name": "Tọa độ điểm và vectơ trong không gian",
+    "description": "Hệ trục Oxyz, tọa độ điểm, tọa độ vectơ và vectơ xác định bởi hai điểm.",
+    "order_index": 20
+  },
+  {
+    "chapter_code": "VECTORS_GEOMETRY",
+    "code": "VECTOR_COORDINATE_OPERATIONS_TOPIC",
+    "name": "Biểu thức tọa độ của các phép toán vectơ",
+    "description": "Phép toán tọa độ, độ dài, khoảng cách, tích vô hướng, góc, trung điểm và trọng tâm.",
+    "order_index": 30
+  },
+  {
+    "chapter_code": "VECTORS_GEOMETRY",
+    "code": "VECTOR_APPLICATION_TOPIC",
+    "name": "Vận dụng vectơ và tọa độ vectơ",
+    "description": "Bài toán tham số, mô hình hóa và tình huống thực tiễn dùng vectơ/tọa độ.",
+    "order_index": 40
+  },
+  {
+    "chapter_code": "GROUPED_DATA_DISPERSION",
+    "code": "GROUPED_RANGE_IQR_TOPIC",
+    "name": "Khoảng biến thiên và khoảng tứ phân vị",
+    "description": "Đo độ phân tán bằng khoảng biến thiên và khoảng tứ phân vị của mẫu ghép nhóm.",
+    "order_index": 10
+  },
+  {
+    "chapter_code": "GROUPED_DATA_DISPERSION",
+    "code": "GROUPED_VARIANCE_SD_TOPIC",
+    "name": "Phương sai và độ lệch chuẩn",
+    "description": "Tính và sử dụng phương sai, độ lệch chuẩn cho mẫu số liệu ghép nhóm.",
+    "order_index": 20
+  },
+  {
+    "chapter_code": "GROUPED_DATA_DISPERSION",
+    "code": "GROUPED_DISPERSION_COMPARISON_TOPIC",
+    "name": "So sánh và diễn giải mức độ phân tán",
+    "description": "So sánh độ ổn định/phân tán của các mẫu và diễn giải ý nghĩa số đo.",
+    "order_index": 30
+  },
+  {
+    "chapter_code": "GROUPED_DATA_DISPERSION",
+    "code": "GROUPED_DISPERSION_APPLICATION_TOPIC",
+    "name": "Vận dụng độ phân tán trong thực tiễn",
+    "description": "Dùng các số đo phân tán để kết luận, ra quyết định hoặc giải bài toán thực tiễn/liên môn.",
+    "order_index": 40
+  },
+  {
+    "chapter_code": "INTEGRALS",
+    "code": "ANTIDERIVATIVE_TOPIC",
+    "name": "Nguyên hàm",
+    "order_index": 10
+  },
+  {
+    "chapter_code": "INTEGRALS",
+    "code": "DEFINITE_INTEGRAL_TOPIC",
+    "name": "Tích phân và tính chất",
+    "order_index": 20
+  },
+  {
+    "chapter_code": "INTEGRALS",
+    "code": "INTEGRAL_GEOMETRIC_APPLICATION_TOPIC",
+    "name": "Ứng dụng tích phân tính diện tích và thể tích",
+    "order_index": 30
+  },
+  {
+    "chapter_code": "INTEGRALS",
+    "code": "INTEGRAL_PRACTICAL_APPLICATION_TOPIC",
+    "name": "Ứng dụng nguyên hàm và tích phân trong thực tiễn",
+    "order_index": 40
+  },
+  {
+    "chapter_code": "OXYZ_CHAPTER",
+    "code": "OXYZ_PLANE_TOPIC",
+    "name": "Phương trình mặt phẳng",
+    "order_index": 10
+  },
+  {
+    "chapter_code": "OXYZ_CHAPTER",
+    "code": "OXYZ_LINE_TOPIC",
+    "name": "Phương trình đường thẳng trong không gian",
+    "order_index": 20
+  },
+  {
+    "chapter_code": "OXYZ_CHAPTER",
+    "code": "OXYZ_ANGLE_DISTANCE_TOPIC",
+    "name": "Góc và khoảng cách bằng phương pháp tọa độ",
+    "order_index": 30
+  },
+  {
+    "chapter_code": "OXYZ_CHAPTER",
+    "code": "OXYZ_SPHERE_TOPIC",
+    "name": "Phương trình mặt cầu và quan hệ hình học",
+    "order_index": 40
+  },
+  {
+    "chapter_code": "OXYZ_CHAPTER",
+    "code": "OXYZ_APPLICATION_TOPIC",
+    "name": "Vận dụng vectơ và tọa độ vào thực tiễn",
+    "order_index": 50
+  },
+  {
+    "chapter_code": "PROBABILITY_CHAPTER",
+    "code": "CONDITIONAL_PROBABILITY_TOPIC",
+    "name": "Xác suất có điều kiện",
+    "order_index": 10
+  },
+  {
+    "chapter_code": "PROBABILITY_CHAPTER",
+    "code": "TOTAL_PROBABILITY_BAYES_TOPIC",
+    "name": "Xác suất toàn phần và công thức Bayes",
+    "order_index": 20
+  },
+  {
+    "chapter_code": "PROBABILITY_CHAPTER",
+    "code": "PROBABILITY_TREE_TOPIC",
+    "name": "Sơ đồ hình cây và ứng dụng",
+    "order_index": 30
+  }
+]

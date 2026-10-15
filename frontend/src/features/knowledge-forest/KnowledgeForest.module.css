@@ -998,3 +998,132 @@
 }
 .leafShape { transition: fill 220ms ease; }
 @media (prefers-reduced-motion: reduce) { .leafShape { transition: none !important; } }
+
+/* ==========================================================================
+   Galaxy Constellation — Cosmic Knowledge Graph Engine
+   ========================================================================== */
+
+@keyframes galaxyBeamFlow {
+  0% { stroke-dashoffset: 48; }
+  100% { stroke-dashoffset: 0; }
+}
+
+@keyframes galaxyPulse {
+  0%, 100% { opacity: 0.45; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.06); }
+}
+
+.galaxyNebulaDark {
+  background:
+    radial-gradient(circle at 20% 30%, rgb(59 185 176 / 20%), transparent 48%),
+    radial-gradient(circle at 80% 70%, rgb(99 201 154 / 18%), transparent 48%),
+    radial-gradient(circle at 50% 50%, rgb(133 120 207 / 15%), transparent 55%),
+    #081b16;
+  color: #eef7f1;
+}
+
+.galaxyNebulaLight {
+  background:
+    radial-gradient(circle at 18% 25%, rgb(99 201 154 / 24%), transparent 45%),
+    radial-gradient(circle at 82% 75%, rgb(92 169 214 / 22%), transparent 45%),
+    var(--surface-canvas);
+  color: #173329;
+}
+
+.viewModeToggleGroup {
+  display: inline-flex;
+  align-items: center;
+  background: rgb(0 0 0 / 18%);
+  padding: 4px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-soft);
+  gap: 4px;
+}
+
+.viewModeBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  background: transparent;
+  color: var(--text-secondary);
+  border: none;
+  transition: background 180ms ease, color 180ms ease;
+}
+
+.viewModeBtnActive {
+  background: var(--verdant-700);
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgb(31 69 56 / 25%);
+}
+
+.beamLine {
+  stroke-dasharray: 6 12;
+  animation: galaxyBeamFlow 2.2s linear infinite;
+}
+
+.galaxyCoreHalo {
+  animation: galaxyPulse 4.5s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.galaxyCoreNode {
+  cursor: pointer;
+  transition: transform 180ms ease, stroke 180ms ease;
+}
+
+.galaxyCoreNode:hover {
+  transform: scale(1.08);
+}
+
+.galaxyPlanetNode {
+  cursor: pointer;
+  transition: transform 180ms ease, stroke 180ms ease;
+}
+
+.galaxyPlanetNode:hover {
+  transform: scale(1.18);
+}
+
+.galaxyStarNode {
+  cursor: pointer;
+  outline: none;
+  transition: transform 160ms ease, filter 160ms ease;
+}
+
+.galaxyStarNode:hover,
+.galaxyStarSelected {
+  transform: scale(1.6);
+}
+
+.galaxyLabel {
+  font-family: inherit;
+  font-weight: 650;
+  text-anchor: middle;
+  pointer-events: none;
+  user-select: none;
+}
+
+.galaxyCoreLabelText {
+  fill: #ffffff;
+  font-size: 13.5px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.galaxyPlanetLabelText {
+  fill: #cbe6f4;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.galaxyStarLabelText {
+  fill: #dcefe5;
+  font-size: 9.5px;
+  font-weight: 500;
+  opacity: 0.9;
+}

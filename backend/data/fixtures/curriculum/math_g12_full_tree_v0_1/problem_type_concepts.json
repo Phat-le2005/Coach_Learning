@@ -1,0 +1,1202 @@
+[
+  {
+    "problem_type_code": "ANGLE_IN_OXYZ",
+    "concept_code": "ANGLE_OXYZ",
+    "weight": 1.0,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "ANTIDERIVATIVE_WITH_CONDITION",
+    "concept_code": "ANTIDERIVATIVE",
+    "weight": 0.8,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "ANTIDERIVATIVE_WITH_CONDITION",
+    "concept_code": "INITIAL_VALUE_CONDITION",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "AREA_BY_INTEGRAL",
+    "concept_code": "AREA_BY_INTEGRAL",
+    "weight": 0.45,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "AREA_BY_INTEGRAL",
+    "concept_code": "DEFINITE_INTEGRAL",
+    "weight": 0.55,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "ASYMPTOTE_FROM_GRAPH",
+    "concept_code": "GRAPH_READING",
+    "weight": 0.5,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "ASYMPTOTE_FROM_GRAPH",
+    "concept_code": "HORIZONTAL_ASYMPTOTE",
+    "weight": 0.17,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "ASYMPTOTE_FROM_GRAPH",
+    "concept_code": "OBLIQUE_ASYMPTOTE",
+    "weight": 0.16,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "ASYMPTOTE_FROM_GRAPH",
+    "concept_code": "VERTICAL_ASYMPTOTE",
+    "weight": 0.17,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "BAYES_POSTERIOR",
+    "concept_code": "BAYES_FORMULA",
+    "weight": 0.5,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "BAYES_POSTERIOR",
+    "concept_code": "CONDITIONAL_PROBABILITY",
+    "weight": 0.5,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "CALCULATE_ANTIDERIVATIVE",
+    "concept_code": "ANTIDERIVATIVE",
+    "weight": 1.0,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "CALCULATE_DEFINITE_INTEGRAL",
+    "concept_code": "DEFINITE_INTEGRAL",
+    "weight": 1.0,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "CALCULATE_GROUPED_IQR",
+    "concept_code": "GROUPED_DATA_FREQUENCY",
+    "weight": 0.1,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "CALCULATE_GROUPED_IQR",
+    "concept_code": "GROUPED_IQR",
+    "weight": 0.55,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "CALCULATE_GROUPED_IQR",
+    "concept_code": "GROUPED_QUARTILE_INTERPOLATION",
+    "weight": 0.35,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "CALCULATE_GROUPED_RANGE",
+    "concept_code": "GROUPED_DATA_CLASS_BOUNDARY",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "CALCULATE_GROUPED_RANGE",
+    "concept_code": "GROUPED_DATA_FREQUENCY",
+    "weight": 0.15,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "CALCULATE_GROUPED_RANGE",
+    "concept_code": "GROUPED_RANGE",
+    "weight": 0.6,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "concept_code": "GROUPED_DATA_FREQUENCY",
+    "weight": 0.1,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "concept_code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+    "weight": 0.1,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "concept_code": "GROUPED_STANDARD_DEVIATION",
+    "weight": 0.55,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+    "concept_code": "GROUPED_VARIANCE",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+    "concept_code": "GROUPED_DATA_FREQUENCY",
+    "weight": 0.1,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+    "concept_code": "GROUPED_DATA_REPRESENTATIVE_VALUE",
+    "weight": 0.15,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+    "concept_code": "GROUPED_MEAN_FOR_DISPERSION",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "CALCULATE_GROUPED_VARIANCE",
+    "concept_code": "GROUPED_VARIANCE",
+    "weight": 0.55,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "COMPARE_GROUPED_IQR",
+    "concept_code": "DISPERSION_COMPARISON",
+    "weight": 0.5,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "COMPARE_GROUPED_IQR",
+    "concept_code": "GROUPED_IQR",
+    "weight": 0.4,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "COMPARE_GROUPED_IQR",
+    "concept_code": "IQR_ROBUSTNESS",
+    "weight": 0.1,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "COMPARE_GROUPED_RANGE",
+    "concept_code": "DISPERSION_COMPARISON",
+    "weight": 0.55,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "COMPARE_GROUPED_RANGE",
+    "concept_code": "GROUPED_RANGE",
+    "weight": 0.45,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "COMPARE_GROUPED_VARIANCE_SD",
+    "concept_code": "DISPERSION_COMPARISON",
+    "weight": 0.45,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "COMPARE_GROUPED_VARIANCE_SD",
+    "concept_code": "GROUPED_STANDARD_DEVIATION",
+    "weight": 0.3,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "COMPARE_GROUPED_VARIANCE_SD",
+    "concept_code": "GROUPED_VARIANCE",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "COMPLETE_FUNCTION_ANALYSIS_CUBIC",
+    "concept_code": "CUBIC_FUNCTION_STRUCTURE",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "COMPLETE_FUNCTION_ANALYSIS_CUBIC",
+    "concept_code": "DERIVATIVE_RULES",
+    "weight": 0.15,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "COMPLETE_FUNCTION_ANALYSIS_CUBIC",
+    "concept_code": "FUNCTION_ANALYSIS",
+    "weight": 0.45,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "COMPLETE_FUNCTION_ANALYSIS_CUBIC",
+    "concept_code": "VARIATION_TABLE",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "COMPLETE_FUNCTION_ANALYSIS_LINEAR_FRACTION",
+    "concept_code": "DERIVATIVE_RULES",
+    "weight": 0.1,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "COMPLETE_FUNCTION_ANALYSIS_LINEAR_FRACTION",
+    "concept_code": "FUNCTION_ANALYSIS",
+    "weight": 0.4,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "COMPLETE_FUNCTION_ANALYSIS_LINEAR_FRACTION",
+    "concept_code": "HORIZONTAL_ASYMPTOTE",
+    "weight": 0.15,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "COMPLETE_FUNCTION_ANALYSIS_LINEAR_FRACTION",
+    "concept_code": "LINEAR_FRACTION_STRUCTURE",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "COMPLETE_FUNCTION_ANALYSIS_LINEAR_FRACTION",
+    "concept_code": "VERTICAL_ASYMPTOTE",
+    "weight": 0.15,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "COMPLETE_FUNCTION_ANALYSIS_QUADRATIC_OVER_LINEAR",
+    "concept_code": "DERIVATIVE_RULES",
+    "weight": 0.15,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "COMPLETE_FUNCTION_ANALYSIS_QUADRATIC_OVER_LINEAR",
+    "concept_code": "FUNCTION_ANALYSIS",
+    "weight": 0.35,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "COMPLETE_FUNCTION_ANALYSIS_QUADRATIC_OVER_LINEAR",
+    "concept_code": "OBLIQUE_ASYMPTOTE",
+    "weight": 0.15,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "COMPLETE_FUNCTION_ANALYSIS_QUADRATIC_OVER_LINEAR",
+    "concept_code": "QUADRATIC_OVER_LINEAR_STRUCTURE",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "COMPLETE_FUNCTION_ANALYSIS_QUADRATIC_OVER_LINEAR",
+    "concept_code": "VERTICAL_ASYMPTOTE",
+    "weight": 0.15,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "CONCLUDE_FROM_GROUPED_DISPERSION",
+    "concept_code": "DATA_STABILITY_CONSISTENCY",
+    "weight": 0.3,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "CONCLUDE_FROM_GROUPED_DISPERSION",
+    "concept_code": "DISPERSION_INTERPRETATION",
+    "weight": 0.4,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "CONCLUDE_FROM_GROUPED_DISPERSION",
+    "concept_code": "REAL_WORLD_DISPERSION_MODELING",
+    "weight": 0.3,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "CONDITIONAL_PROBABILITY_DIRECT",
+    "concept_code": "CONDITIONAL_PROBABILITY",
+    "weight": 1.0,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "COORDINATE_DISTANCE_PROJECTION",
+    "concept_code": "COORDINATE_GEOMETRY",
+    "weight": 0.5,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "COORDINATE_DISTANCE_PROJECTION",
+    "concept_code": "PROJECTION_OXYZ",
+    "weight": 0.5,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "COORDINATE_GEOMETRY_APPLICATION",
+    "concept_code": "COORDINATE_GEOMETRY",
+    "weight": 1.0,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "EXTREMA_FROM_DERIVATIVE_SIGN",
+    "concept_code": "DERIVATIVE_SIGN",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "EXTREMA_FROM_DERIVATIVE_SIGN",
+    "concept_code": "EXTREMUM_CRITERION",
+    "weight": 0.5,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "EXTREMA_FROM_DERIVATIVE_SIGN",
+    "concept_code": "LOCAL_EXTREMUM",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "EXTREMA_FROM_GRAPH",
+    "concept_code": "GRAPH_READING",
+    "weight": 0.55,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "EXTREMA_FROM_GRAPH",
+    "concept_code": "LOCAL_EXTREMUM",
+    "weight": 0.45,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "EXTREMA_FROM_VARIATION_TABLE",
+    "concept_code": "GRAPH_READING",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "EXTREMA_FROM_VARIATION_TABLE",
+    "concept_code": "LOCAL_EXTREMUM",
+    "weight": 0.35,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "EXTREMA_FROM_VARIATION_TABLE",
+    "concept_code": "VARIATION_TABLE",
+    "weight": 0.45,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "FIND_FUNCTION_EXTREMA",
+    "concept_code": "CRITICAL_POINT",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "FIND_FUNCTION_EXTREMA",
+    "concept_code": "DERIVATIVE_RULES",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "FIND_FUNCTION_EXTREMA",
+    "concept_code": "EXTREMUM_CRITERION",
+    "weight": 0.35,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "FIND_FUNCTION_EXTREMA",
+    "concept_code": "LOCAL_EXTREMUM",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+    "concept_code": "CRITICAL_POINT",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+    "concept_code": "DERIVATIVE_RULES",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+    "concept_code": "ENDPOINT_EVALUATION",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+    "concept_code": "GLOBAL_EXTREMA",
+    "weight": 0.35,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "GLOBAL_EXTREMA_RECOGNITION",
+    "concept_code": "GLOBAL_EXTREMA",
+    "weight": 0.55,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "GLOBAL_EXTREMA_RECOGNITION",
+    "concept_code": "GRAPH_READING",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "GLOBAL_EXTREMA_RECOGNITION",
+    "concept_code": "VARIATION_TABLE",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "GLOBAL_EXTREMA_SIMPLE_DOMAIN",
+    "concept_code": "DERIVATIVE_RULES",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "GLOBAL_EXTREMA_SIMPLE_DOMAIN",
+    "concept_code": "FUNCTION_DOMAIN",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "GLOBAL_EXTREMA_SIMPLE_DOMAIN",
+    "concept_code": "GLOBAL_EXTREMA",
+    "weight": 0.4,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "GLOBAL_EXTREMA_SIMPLE_DOMAIN",
+    "concept_code": "VARIATION_TABLE",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "GRAPH_IDENTIFICATION_FROM_FEATURES",
+    "concept_code": "FUNCTION_ANALYSIS",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "GRAPH_IDENTIFICATION_FROM_FEATURES",
+    "concept_code": "FUNCTION_GRAPH",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "GRAPH_IDENTIFICATION_FROM_FEATURES",
+    "concept_code": "GRAPH_READING",
+    "weight": 0.35,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "GRAPH_IDENTIFICATION_FROM_FEATURES",
+    "concept_code": "VARIATION_TABLE",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "GRAPH_SYMMETRY_IDENTIFICATION",
+    "concept_code": "FUNCTION_ANALYSIS",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "GRAPH_SYMMETRY_IDENTIFICATION",
+    "concept_code": "GRAPH_READING",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "GRAPH_SYMMETRY_IDENTIFICATION",
+    "concept_code": "GRAPH_SYMMETRY",
+    "weight": 0.55,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "HORIZONTAL_ASYMPTOTE_RATIONAL",
+    "concept_code": "HORIZONTAL_ASYMPTOTE",
+    "weight": 0.55,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "HORIZONTAL_ASYMPTOTE_RATIONAL",
+    "concept_code": "LIMIT_AT_INFINITY",
+    "weight": 0.45,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "IDENTIFY_MORE_STABLE_GROUPED_DATA",
+    "concept_code": "DATA_STABILITY_CONSISTENCY",
+    "weight": 0.5,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "IDENTIFY_MORE_STABLE_GROUPED_DATA",
+    "concept_code": "DISPERSION_COMPARISON",
+    "weight": 0.35,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "IDENTIFY_MORE_STABLE_GROUPED_DATA",
+    "concept_code": "DISPERSION_INTERPRETATION",
+    "weight": 0.15,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "INTEGRAL_PROPERTIES",
+    "concept_code": "DEFINITE_INTEGRAL",
+    "weight": 0.75,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "INTEGRAL_PROPERTIES",
+    "concept_code": "INTEGRAL_PROPERTIES",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "INTERPRET_GROUPED_DISPERSION_MEASURE",
+    "concept_code": "DATA_STABILITY_CONSISTENCY",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "INTERPRET_GROUPED_DISPERSION_MEASURE",
+    "concept_code": "DISPERSION_INTERPRETATION",
+    "weight": 0.6,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "INTERPRET_GROUPED_DISPERSION_MEASURE",
+    "concept_code": "REAL_WORLD_DISPERSION_MODELING",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "LINE_DISTANCE_IN_OXYZ",
+    "concept_code": "DISTANCE_OXYZ",
+    "weight": 0.5,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "LINE_DISTANCE_IN_OXYZ",
+    "concept_code": "LINE_EQUATION",
+    "weight": 0.5,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "LINE_EQUATION_DIRECTION_VECTOR",
+    "concept_code": "DIRECTION_VECTOR",
+    "weight": 0.5,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "LINE_EQUATION_DIRECTION_VECTOR",
+    "concept_code": "LINE_EQUATION",
+    "weight": 0.5,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "LINE_PLANE_INTERSECTION",
+    "concept_code": "INTERSECTION_OXYZ",
+    "weight": 0.3333,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "LINE_PLANE_INTERSECTION",
+    "concept_code": "LINE_EQUATION",
+    "weight": 0.3333,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "LINE_PLANE_INTERSECTION",
+    "concept_code": "PLANE_EQUATION",
+    "weight": 0.3333,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "LINE_RELATION",
+    "concept_code": "LINE_RELATION",
+    "weight": 1.0,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "MIDPOINT_CENTROID_COORDINATES_3D",
+    "concept_code": "CENTROID_3D",
+    "weight": 0.3,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "MIDPOINT_CENTROID_COORDINATES_3D",
+    "concept_code": "MIDPOINT_3D",
+    "weight": 0.5,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "MIDPOINT_CENTROID_COORDINATES_3D",
+    "concept_code": "POINT_COORDINATES_3D",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "MONOTONICITY_FROM_DERIVATIVE_SIGN",
+    "concept_code": "DERIVATIVE_SIGN",
+    "weight": 0.35,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "MONOTONICITY_FROM_DERIVATIVE_SIGN",
+    "concept_code": "MONOTONICITY_CRITERION",
+    "weight": 0.4,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "MONOTONICITY_FROM_DERIVATIVE_SIGN",
+    "concept_code": "SIGN_ANALYSIS",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+    "concept_code": "DERIVATIVE_RULES",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+    "concept_code": "MONOTONICITY_CRITERION",
+    "weight": 0.45,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "MONOTONICITY_FROM_EXPRESSION",
+    "concept_code": "SIGN_ANALYSIS",
+    "weight": 0.3,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "MONOTONICITY_FROM_GRAPH",
+    "concept_code": "GRAPH_READING",
+    "weight": 0.55,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "MONOTONICITY_FROM_GRAPH",
+    "concept_code": "MONOTONICITY",
+    "weight": 0.45,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "MONOTONICITY_FROM_VARIATION_TABLE",
+    "concept_code": "GRAPH_READING",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "MONOTONICITY_FROM_VARIATION_TABLE",
+    "concept_code": "MONOTONICITY",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "MONOTONICITY_FROM_VARIATION_TABLE",
+    "concept_code": "VARIATION_TABLE",
+    "weight": 0.55,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "MULTI_MEASURE_GROUPED_DISPERSION_ANALYSIS",
+    "concept_code": "DISPERSION_COMPARISON",
+    "weight": 0.35,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "MULTI_MEASURE_GROUPED_DISPERSION_ANALYSIS",
+    "concept_code": "GROUPED_IQR",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "MULTI_MEASURE_GROUPED_DISPERSION_ANALYSIS",
+    "concept_code": "GROUPED_STANDARD_DEVIATION",
+    "weight": 0.15,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "MULTI_MEASURE_GROUPED_DISPERSION_ANALYSIS",
+    "concept_code": "GROUPED_VARIANCE",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "MULTI_MEASURE_GROUPED_DISPERSION_ANALYSIS",
+    "concept_code": "REAL_WORLD_DISPERSION_MODELING",
+    "weight": 0.1,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+    "concept_code": "LIMIT_AT_INFINITY",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+    "concept_code": "OBLIQUE_ASYMPTOTE",
+    "weight": 0.5,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+    "concept_code": "POLYNOMIAL_DIVISION",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "PARAMETER_EXTREMA_COUNT",
+    "concept_code": "CRITICAL_POINT",
+    "weight": 0.15,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "PARAMETER_EXTREMA_COUNT",
+    "concept_code": "EXTREMUM_CRITERION",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "PARAMETER_EXTREMA_COUNT",
+    "concept_code": "INEQUALITY_SOLVING",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "PARAMETER_EXTREMA_COUNT",
+    "concept_code": "PARAMETER_REASONING",
+    "weight": 0.45,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "PARAMETER_FROM_GROUPED_VARIANCE_SD",
+    "concept_code": "GROUPED_DATA_FREQUENCY",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "PARAMETER_FROM_GROUPED_VARIANCE_SD",
+    "concept_code": "GROUPED_MEAN_FOR_DISPERSION",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "PARAMETER_FROM_GROUPED_VARIANCE_SD",
+    "concept_code": "GROUPED_STANDARD_DEVIATION",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "PARAMETER_FROM_GROUPED_VARIANCE_SD",
+    "concept_code": "GROUPED_VARIANCE",
+    "weight": 0.35,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "PARAMETER_MONOTONICITY",
+    "concept_code": "FUNCTION_DOMAIN",
+    "weight": 0.1,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "PARAMETER_MONOTONICITY",
+    "concept_code": "INEQUALITY_SOLVING",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "PARAMETER_MONOTONICITY",
+    "concept_code": "MONOTONICITY_CRITERION",
+    "weight": 0.3,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "PARAMETER_MONOTONICITY",
+    "concept_code": "PARAMETER_REASONING",
+    "weight": 0.35,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "PARAMETER_VECTOR_COORDINATE_CONDITION_3D",
+    "concept_code": "COORDINATE_VECTOR_OPERATIONS_3D",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "PARAMETER_VECTOR_COORDINATE_CONDITION_3D",
+    "concept_code": "DOT_PRODUCT_3D",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "PARAMETER_VECTOR_COORDINATE_CONDITION_3D",
+    "concept_code": "VECTOR_COORDINATE_CONSTRAINTS_3D",
+    "weight": 0.6,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "PLANE_EQUATION_NORMAL_VECTOR",
+    "concept_code": "NORMAL_VECTOR",
+    "weight": 0.5,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "PLANE_EQUATION_NORMAL_VECTOR",
+    "concept_code": "PLANE_EQUATION",
+    "weight": 0.5,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "PLANE_RELATION",
+    "concept_code": "PLANE_RELATION",
+    "weight": 1.0,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "PLANE_SPHERE_RELATION",
+    "concept_code": "PLANE_EQUATION",
+    "weight": 0.5,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "PLANE_SPHERE_RELATION",
+    "concept_code": "SPHERE_EQUATION",
+    "weight": 0.5,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "POINT_COORDINATES_3D",
+    "concept_code": "OXYZ_COORDINATE_SYSTEM",
+    "weight": 0.3,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "POINT_COORDINATES_3D",
+    "concept_code": "POINT_COORDINATES_3D",
+    "weight": 0.7,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "POINT_PLANE_OR_PLANE_DISTANCE",
+    "concept_code": "DISTANCE_OXYZ",
+    "weight": 0.5,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "POINT_PLANE_OR_PLANE_DISTANCE",
+    "concept_code": "PLANE_EQUATION",
+    "weight": 0.5,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "PRACTICAL_ACCUMULATION",
+    "concept_code": "ANTIDERIVATIVE",
+    "weight": 0.45,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "PRACTICAL_ACCUMULATION",
+    "concept_code": "PRACTICAL_ACCUMULATION",
+    "weight": 0.55,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+    "concept_code": "CONTEXT_INTERPRETATION",
+    "weight": 0.15,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+    "concept_code": "GLOBAL_EXTREMA",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+    "concept_code": "MATHEMATICAL_MODELING",
+    "weight": 0.3,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+    "concept_code": "OPTIMIZATION",
+    "weight": 0.35,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "REAL_WORLD_MONOTONICITY_INTERPRETATION",
+    "concept_code": "CONTEXT_INTERPRETATION",
+    "weight": 0.4,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "REAL_WORLD_MONOTONICITY_INTERPRETATION",
+    "concept_code": "GRAPH_READING",
+    "weight": 0.1,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "REAL_WORLD_MONOTONICITY_INTERPRETATION",
+    "concept_code": "MATHEMATICAL_MODELING",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "REAL_WORLD_MONOTONICITY_INTERPRETATION",
+    "concept_code": "MONOTONICITY_CRITERION",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "REAL_WORLD_VECTOR_COORDINATE_MODELING_3D",
+    "concept_code": "REAL_WORLD_VECTOR_MODELING_3D",
+    "weight": 0.6,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "REAL_WORLD_VECTOR_COORDINATE_MODELING_3D",
+    "concept_code": "VECTOR_COORDINATES_3D",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "REAL_WORLD_VECTOR_COORDINATE_MODELING_3D",
+    "concept_code": "VECTOR_LENGTH_3D",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "SPHERE_EQUATION_CENTER_RADIUS",
+    "concept_code": "SPHERE_EQUATION",
+    "weight": 1.0,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "TOTAL_PROBABILITY",
+    "concept_code": "TOTAL_PROBABILITY",
+    "weight": 1.0,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "TREE_OR_TOTAL_PROBABILITY",
+    "concept_code": "PROBABILITY_TREE",
+    "weight": 0.5,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "TREE_OR_TOTAL_PROBABILITY",
+    "concept_code": "TOTAL_PROBABILITY",
+    "weight": 0.5,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "VECTOR_ANGLE_3D",
+    "concept_code": "DOT_PRODUCT_3D",
+    "weight": 0.4,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "VECTOR_ANGLE_3D",
+    "concept_code": "VECTOR_ANGLE_3D",
+    "weight": 0.6,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "VECTOR_COORDINATES_FROM_POINTS_3D",
+    "concept_code": "POINT_COORDINATES_3D",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "VECTOR_COORDINATES_FROM_POINTS_3D",
+    "concept_code": "VECTOR_COORDINATES_3D",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "VECTOR_COORDINATES_FROM_POINTS_3D",
+    "concept_code": "VECTOR_FROM_POINTS_3D",
+    "weight": 0.6,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "VECTOR_COORDINATE_ANGLE_3D",
+    "concept_code": "DOT_PRODUCT_3D",
+    "weight": 0.3,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "VECTOR_COORDINATE_ANGLE_3D",
+    "concept_code": "VECTOR_ANGLE_3D",
+    "weight": 0.45,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "VECTOR_COORDINATE_ANGLE_3D",
+    "concept_code": "VECTOR_LENGTH_3D",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "VECTOR_COORDINATE_DOT_PRODUCT_3D",
+    "concept_code": "COORDINATE_VECTOR_OPERATIONS_3D",
+    "weight": 0.5,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "VECTOR_COORDINATE_DOT_PRODUCT_3D",
+    "concept_code": "DOT_PRODUCT_3D",
+    "weight": 0.5,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "VECTOR_COORDINATE_LINEAR_OPERATIONS_3D",
+    "concept_code": "COORDINATE_VECTOR_OPERATIONS_3D",
+    "weight": 0.7,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "VECTOR_COORDINATE_LINEAR_OPERATIONS_3D",
+    "concept_code": "VECTOR_COORDINATES_3D",
+    "weight": 0.3,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "VECTOR_DOT_PRODUCT_3D",
+    "concept_code": "DOT_PRODUCT_3D",
+    "weight": 0.7,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "VECTOR_DOT_PRODUCT_3D",
+    "concept_code": "SPACE_VECTOR",
+    "weight": 0.3,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "concept_code": "VECTOR_DIFFERENCE_3D",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "concept_code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+    "weight": 0.4,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "VECTOR_GEOMETRIC_DECOMPOSITION_3D",
+    "concept_code": "VECTOR_SUM_3D",
+    "weight": 0.35,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "VECTOR_LENGTH_DISTANCE_3D",
+    "concept_code": "DISTANCE_3D",
+    "weight": 0.4,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "VECTOR_LENGTH_DISTANCE_3D",
+    "concept_code": "VECTOR_LENGTH_3D",
+    "weight": 0.6,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "VECTOR_RELATION_IDENTIFICATION_3D",
+    "concept_code": "SPACE_VECTOR",
+    "weight": 0.5,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "VECTOR_RELATION_IDENTIFICATION_3D",
+    "concept_code": "VECTOR_DIRECTION_3D",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "VECTOR_RELATION_IDENTIFICATION_3D",
+    "concept_code": "VECTOR_EQUALITY_3D",
+    "weight": 0.25,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+    "concept_code": "SPACE_VECTOR",
+    "weight": 0.3,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+    "concept_code": "VECTOR_SCALAR_MULTIPLICATION_3D",
+    "weight": 0.7,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "VECTOR_SUM_DIFFERENCE_3D",
+    "concept_code": "VECTOR_DIFFERENCE_3D",
+    "weight": 0.5,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "VECTOR_SUM_DIFFERENCE_3D",
+    "concept_code": "VECTOR_SUM_3D",
+    "weight": 0.5,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "VERTICAL_ASYMPTOTE_RATIONAL",
+    "concept_code": "FUNCTION_DOMAIN",
+    "weight": 0.2,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "VERTICAL_ASYMPTOTE_RATIONAL",
+    "concept_code": "LIMIT_AT_POINT",
+    "weight": 0.35,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "VERTICAL_ASYMPTOTE_RATIONAL",
+    "concept_code": "VERTICAL_ASYMPTOTE",
+    "weight": 0.45,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "VOLUME_BY_CROSS_SECTION",
+    "concept_code": "DEFINITE_INTEGRAL",
+    "weight": 0.5,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "VOLUME_BY_CROSS_SECTION",
+    "concept_code": "VOLUME_BY_CROSS_SECTION",
+    "weight": 0.5,
+    "is_primary": false
+  },
+  {
+    "problem_type_code": "VOLUME_BY_INTEGRAL",
+    "concept_code": "DEFINITE_INTEGRAL",
+    "weight": 0.5,
+    "is_primary": true
+  },
+  {
+    "problem_type_code": "VOLUME_BY_INTEGRAL",
+    "concept_code": "VOLUME_OF_REVOLUTION",
+    "weight": 0.5,
+    "is_primary": false
+  }
+]

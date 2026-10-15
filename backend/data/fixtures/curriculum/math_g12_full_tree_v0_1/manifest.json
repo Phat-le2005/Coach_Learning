@@ -1,0 +1,15 @@
+{
+  "dataset_code": "MATH_G12_GDPT2018_DEVELOPMENT_FULL_TREE_V0_1",
+  "dataset_version": "0.1.0-dev",
+  "curriculum_code": "GDPT2018",
+  "curriculum_name": "Ch??ng tr?nh gi?o d?c ph? th?ng 2018",
+  "curriculum_description": "Development-only full-tree projection for Grade 12 Mathematics.",
+  "curriculum_version_code": "GDPT2018_2018",
+  "curriculum_version": "2018",
+  "subject_code": "MATH_G12",
+  "grade_level": 12,
+  "source_name": "Development projection composed from existing reviewed EduMS curriculum artifacts",
+  "source_reference": "DATA-MATH12 scope/staging and full-scope candidate; not a production publication",
+  "verified_at": null,
+  "legacy_identity_compatible": true
+}
