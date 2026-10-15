@@ -129,7 +129,7 @@ def _safe_parse_expression(expression: str, variable: sympy.Symbol) -> sympy.Exp
 
 
 def extract_numbers_from_roots(text: str) -> set[float]:
-    """Extract root values from expressions like x = -1 \lor x = 3, x_1 = -1, x_2 = 3."""
+    r"""Extract root values from expressions like x = -1 \lor x = 3, x_1 = -1, x_2 = 3."""
     matches = re.findall(r"x(?:_\d+)?\s*=\s*(-?\d+(?:\.\d+)?)", text)
     if not matches:
         matches = re.findall(r"(-?\d+(?:\.\d+)?)", text)
