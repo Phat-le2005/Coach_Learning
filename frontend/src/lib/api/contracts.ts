@@ -1,4 +1,4 @@
-import { array, boolean, integer, nonEmptyString, nullable, number, oneOf, optional, record, string } from "./validation";
+import { ApiContractError, array, boolean, integer, nonEmptyString, nullable, number, oneOf, optional, record, string } from "./validation";
 
 export const ROLES = ["STUDENT", "TEACHER", "PARENT", "ADMIN"] as const;
 export type Role = (typeof ROLES)[number];
@@ -430,4 +430,228 @@ export function parseStudentMastery(value: unknown, path = "response"): StudentM
     subjects: array(source.subjects, `${path}.subjects`, parseSubjectMastery),
   };
 }
+
+// -----------------------------------------------------------------------------
+// Math Ink & Math Solutions V2 Contracts
+// -----------------------------------------------------------------------------
+
+export interface InkPoint {
+  x: number;
+  y: number;
+  pressure: number;
+}
+
+export interface InkStroke {
+  id: string;
+  tool: "PEN" | "HIGHLIGHTER";
+  color: string;
+  width: number;
+  points: InkPoint[];
+}
+
+export interface InkPageWrite {
+  expected_document_revision: number;
+  client_action_id: string;
+  strokes: InkStroke[];
+}
+
+export interface InkPageSummary {
+  page_index: number;
+  stroke_count: number;
+  point_count: number;
+  sha256: string;
+}
+
+export interface InkDocumentRead {
+  document_revision: number;
+  pages: InkPageSummary[];
+}
+
+export interface InkPageRead {
+  document_revision: number;
+  page_index: number;
+  strokes: InkStroke[];
+}
+
+export interface InkSaveRead {
+  document_revision: number;
+  page_index: number;
+  sha256: string;
+}
+
+export interface ProblemOptionRead {
+  id: string;
+  label: string;
+  content: string;
+  order_index: number;
+}
+
+export interface ProblemRead {
+  id: string;
+  content: string;
+  question_type: string;
+  options: ProblemOptionRead[];
+  order_index?: number | null;
+  is_read_only: boolean;
+  source_kind?: string;
+  context_type?: string;
+}
+
+export const STEP_KINDS = [
+  "ASSUMPTION",
+  "DERIVATIVE_CALCULATION",
+  "ROOT_FINDING",
+  "SIGN_TABLE",
+  "VARIATION_TABLE",
+  "CONCLUSION",
+  "EXPLANATION",
+  "CUSTOM",
+] as const;
+
+export type StepKind = (typeof STEP_KINDS)[number];
+
+export interface OCRRecognizeRequest {
+  page_index: number;
+  stroke_ids?: string[] | null;
+  hint_topic?: string | null;
+}
+
+export interface OCRRecognizeResponse {
+  latex: string;
+  confidence: number;
+  suggested_step_type: StepKind;
+  explanation_text: string | null;
+  detected_symbols: string[];
+}
+
+export interface StepMutationRequest {
+  expected_attempt_revision: number;
+  client_action_id: string;
+  step_type: StepKind;
+  content_latex?: string | null;
+  explanation_text?: string | null;
+}
+
+export interface SolutionAttemptRead {
+  id: string;
+  student_id?: string;
+  question_id: string | null;
+  status: string;
+  current_revision: number;
+  created_at: string;
+  updated_at?: string;
+}
+
+export function parseInkPoint(value: unknown, path = "point"): InkPoint {
+  const source = record(value, path);
+  return {
+    x: number(source.x, `${path}.x`),
+    y: number(source.y, `${path}.y`),
+    pressure: typeof source.pressure === "number" ? source.pressure : 0.5,
+  };
+}
+
+export function parseInkStroke(value: unknown, path = "stroke"): InkStroke {
+  const source = record(value, path);
+  const toolVal = string(source.tool, `${path}.tool`);
+  if (toolVal !== "PEN" && toolVal !== "HIGHLIGHTER") {
+    throw new ApiContractError(`Invalid stroke tool: ${toolVal}`, `${path}.tool`);
+  }
+  return {
+    id: nonEmptyString(source.id, `${path}.id`),
+    tool: toolVal,
+    color: string(source.color, `${path}.color`),
+    width: number(source.width, `${path}.width`),
+    points: array(source.points, `${path}.points`, parseInkPoint),
+  };
+}
+
+export function parseInkPageSummary(value: unknown, path = "page_summary"): InkPageSummary {
+  const source = record(value, path);
+  return {
+    page_index: integer(source.page_index, `${path}.page_index`),
+    stroke_count: integer(source.stroke_count, `${path}.stroke_count`),
+    point_count: integer(source.point_count, `${path}.point_count`),
+    sha256: string(source.sha256, `${path}.sha256`),
+  };
+}
+
+export function parseInkDocumentRead(value: unknown, path = "ink_document"): InkDocumentRead {
+  const source = record(value, path);
+  return {
+    document_revision: integer(source.document_revision, `${path}.document_revision`),
+    pages: array(source.pages, `${path}.pages`, parseInkPageSummary),
+  };
+}
+
+export function parseInkPageRead(value: unknown, path = "ink_page"): InkPageRead {
+  const source = record(value, path);
+  return {
+    document_revision: integer(source.document_revision, `${path}.document_revision`),
+    page_index: integer(source.page_index, `${path}.page_index`),
+    strokes: array(source.strokes, `${path}.strokes`, parseInkStroke),
+  };
+}
+
+export function parseInkSaveRead(value: unknown, path = "ink_save"): InkSaveRead {
+  const source = record(value, path);
+  return {
+    document_revision: integer(source.document_revision, `${path}.document_revision`),
+    page_index: integer(source.page_index, `${path}.page_index`),
+    sha256: string(source.sha256, `${path}.sha256`),
+  };
+}
+
+export function parseProblemOptionRead(value: unknown, path = "option"): ProblemOptionRead {
+  const source = record(value, path);
+  return {
+    id: nonEmptyString(source.id, `${path}.id`),
+    label: string(source.label, `${path}.label`),
+    content: string(source.content, `${path}.content`),
+    order_index: integer(source.order_index, `${path}.order_index`),
+  };
+}
+
+export function parseProblemRead(value: unknown, path = "problem"): ProblemRead {
+  const source = record(value, path);
+  return {
+    id: nonEmptyString(source.id, `${path}.id`),
+    content: string(source.content, `${path}.content`),
+    question_type: string(source.question_type, `${path}.question_type`),
+    options: array(source.options, `${path}.options`, parseProblemOptionRead),
+    order_index: typeof source.order_index === "number" ? source.order_index : null,
+    is_read_only: typeof source.is_read_only === "boolean" ? source.is_read_only : false,
+    source_kind: typeof source.source_kind === "string" ? source.source_kind : undefined,
+    context_type: typeof source.context_type === "string" ? source.context_type : undefined,
+  };
+}
+
+export function parseSolutionAttemptRead(value: unknown, path = "attempt"): SolutionAttemptRead {
+  const source = record(value, path);
+  const rev = typeof source.attempt_revision_number === "number"
+    ? source.attempt_revision_number
+    : (typeof source.current_revision === "number" ? integer(source.current_revision, `${path}.current_revision`) : 1);
+  return {
+    id: nonEmptyString(source.id, `${path}.id`),
+    student_id: typeof source.student_id === "string" ? source.student_id : undefined,
+    question_id: typeof source.question_id === "string" ? source.question_id : null,
+    status: string(source.status, `${path}.status`),
+    current_revision: rev,
+    created_at: typeof source.created_at === "string" ? source.created_at : (typeof source.started_at === "string" ? source.started_at : ""),
+    updated_at: typeof source.updated_at === "string" ? source.updated_at : undefined,
+  };
+}
+
+export function parseOCRRecognizeResponse(value: unknown, path = "ocr_recognize"): OCRRecognizeResponse {
+  const source = record(value, path);
+  const stepTypeVal = string(source.suggested_step_type, `${path}.suggested_step_type`) as StepKind;
+  return {
+    latex: string(source.latex, `${path}.latex`),
+    confidence: number(source.confidence, `${path}.confidence`),
+    suggested_step_type: stepTypeVal,
+    explanation_text: typeof source.explanation_text === "string" ? source.explanation_text : null,
+    detected_symbols: array(source.detected_symbols ?? [], `${path}.detected_symbols`, (v, p) => string(v, p)),
+  };
+}
+
 

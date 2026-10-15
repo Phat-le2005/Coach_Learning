@@ -7,6 +7,7 @@ EXPECTED_PATHS = {
     "/math-solutions/attempts",
     "/math-solutions/attempts/{attempt_id}/ink",
     "/math-solutions/attempts/{attempt_id}/ink/pages/{page_index}",
+    "/math-solutions/attempts/{attempt_id}/ocr/recognize",
     "/math-solutions/attempts/{attempt_id}",
     "/math-solutions/attempts/{attempt_id}/problem",
     "/math-solutions/attempts/{attempt_id}/steps",

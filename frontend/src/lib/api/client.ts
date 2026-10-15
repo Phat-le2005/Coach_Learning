@@ -1,8 +1,14 @@
 import type {
   ConceptMasteryRead,
+  InkDocumentRead,
+  InkPageRead,
+  InkPageWrite,
+  InkSaveRead,
   LoginRequest,
+  ProblemRead,
   ProblemTypeMasteryRead,
   RefreshRequest,
+  SolutionAttemptRead,
   StudentLearningStateRead,
   StudentMasteryRead,
   TokenPair,
@@ -10,12 +16,21 @@ import type {
 } from "./contracts";
 import {
   parseConceptMastery,
+  parseInkDocumentRead,
+  parseInkPageRead,
+  parseInkSaveRead,
+  parseOCRRecognizeResponse,
+  parseProblemRead,
   parseProblemTypeMastery,
+  parseSolutionAttemptRead,
   parseStudentLearningState,
   parseStudentMastery,
   parseTokenPair,
   parseUserRead,
   validateLoginRequest,
+  OCRRecognizeRequest,
+  OCRRecognizeResponse,
+  StepMutationRequest,
 } from "./contracts";
 import { ApiContractError, record, string } from "./validation";
 
@@ -44,6 +59,12 @@ export const API_PATHS = {
   studentMastery: "/students/me/mastery",
   studentProblemTypeMastery: (id: string) => `/students/me/mastery/problem-types/${encodeURIComponent(id)}`,
   studentConceptMastery: (id: string) => `/students/me/mastery/concepts/${encodeURIComponent(id)}`,
+  mathAttempt: (id: string) => `/api/v2/math-solutions/attempts/${encodeURIComponent(id)}`,
+  mathAttemptProblem: (id: string) => `/api/v2/math-solutions/attempts/${encodeURIComponent(id)}/problem`,
+  mathAttemptSteps: (id: string) => `/api/v2/math-solutions/attempts/${encodeURIComponent(id)}/steps`,
+  mathInkDocument: (id: string) => `/api/v2/math-solutions/attempts/${encodeURIComponent(id)}/ink`,
+  mathInkPage: (id: string, pageIndex: number) => `/api/v2/math-solutions/attempts/${encodeURIComponent(id)}/ink/pages/${pageIndex}`,
+  mathOcrRecognize: (id: string) => `/api/v2/math-solutions/attempts/${encodeURIComponent(id)}/ocr/recognize`,
 } as const;
 
 type ResponseParser<T> = (value: unknown, path?: string) => T;
@@ -140,6 +161,42 @@ export function createApiClient({ baseUrl, fetcher = fetch }: ApiClientOptions) 
     },
     studentConceptMastery(accessToken: string, conceptId: string): Promise<ConceptMasteryRead> {
       return request(API_PATHS.studentConceptMastery(conceptId), parseConceptMastery, { method: "GET" }, accessToken);
+    },
+    getMathAttempt(accessToken: string, attemptId: string): Promise<SolutionAttemptRead> {
+      return request(API_PATHS.mathAttempt(attemptId), parseSolutionAttemptRead, { method: "GET" }, accessToken);
+    },
+    getMathAttemptProblem(accessToken: string, attemptId: string): Promise<ProblemRead> {
+      return request(API_PATHS.mathAttemptProblem(attemptId), parseProblemRead, { method: "GET" }, accessToken);
+    },
+    getMathInkDocument(accessToken: string, attemptId: string): Promise<InkDocumentRead> {
+      return request(API_PATHS.mathInkDocument(attemptId), parseInkDocumentRead, { method: "GET" }, accessToken);
+    },
+    getMathInkPage(accessToken: string, attemptId: string, pageIndex: number): Promise<InkPageRead> {
+      return request(API_PATHS.mathInkPage(attemptId, pageIndex), parseInkPageRead, { method: "GET" }, accessToken);
+    },
+    saveMathInkPage(accessToken: string, attemptId: string, pageIndex: number, payload: InkPageWrite): Promise<InkSaveRead> {
+      return request(
+        API_PATHS.mathInkPage(attemptId, pageIndex),
+        parseInkSaveRead,
+        { method: "PUT", body: JSON.stringify(payload) },
+        accessToken,
+      );
+    },
+    recognizeMathInk(accessToken: string, attemptId: string, payload: OCRRecognizeRequest): Promise<OCRRecognizeResponse> {
+      return request(
+        API_PATHS.mathOcrRecognize(attemptId),
+        parseOCRRecognizeResponse,
+        { method: "POST", body: JSON.stringify(payload) },
+        accessToken,
+      );
+    },
+    createMathStep(accessToken: string, attemptId: string, payload: StepMutationRequest): Promise<SolutionAttemptRead> {
+      return request(
+        API_PATHS.mathAttemptSteps(attemptId),
+        parseSolutionAttemptRead,
+        { method: "POST", body: JSON.stringify(payload) },
+        accessToken,
+      );
     },
   };
 }

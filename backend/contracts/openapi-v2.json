@@ -418,6 +418,100 @@
         "title": "MathArtifactRead",
         "type": "object"
       },
+      "OCRRecognizeRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "hint_topic": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Gợi ý chủ đề bài toán để tăng độ chính xác của mô hình",
+            "title": "Hint Topic"
+          },
+          "page_index": {
+            "description": "Chỉ số trang chứa nét vẽ cần nhận diện (0-29)",
+            "maximum": 29.0,
+            "minimum": 0.0,
+            "title": "Page Index",
+            "type": "integer"
+          },
+          "stroke_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Danh sách ID nét vẽ được chọn để nhận diện, hoặc None để nhận diện cả trang",
+            "title": "Stroke Ids"
+          }
+        },
+        "required": [
+          "page_index"
+        ],
+        "title": "OCRRecognizeRequest",
+        "type": "object"
+      },
+      "OCRRecognizeResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "confidence": {
+            "description": "Độ tin cậy của kết quả nhận diện (0.0 - 1.0)",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Confidence",
+            "type": "number"
+          },
+          "detected_symbols": {
+            "description": "Các ký hiệu toán học chính được phát hiện trong nét vẽ",
+            "items": {
+              "type": "string"
+            },
+            "title": "Detected Symbols",
+            "type": "array"
+          },
+          "explanation_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Văn bản diễn giải tiếng Việt kèm theo (nếu phát hiện)",
+            "title": "Explanation Text"
+          },
+          "latex": {
+            "description": "Công thức LaTeX toán học được nhận diện từ nét vẽ",
+            "title": "Latex",
+            "type": "string"
+          },
+          "suggested_step_type": {
+            "$ref": "#/components/schemas/StepKind",
+            "description": "Loại bước giải được gợi ý (TRANSFORMATION, CALCULATION, CONCLUSION, DEDUCTION)"
+          }
+        },
+        "required": [
+          "latex",
+          "confidence",
+          "suggested_step_type"
+        ],
+        "title": "OCRRecognizeResponse",
+        "type": "object"
+      },
       "PaginatedSolutionAttemptsRead": {
         "additionalProperties": false,
         "properties": {
@@ -1885,6 +1979,114 @@
         "summary": "Save Page",
         "tags": [
           "Math Ink"
+        ]
+      }
+    },
+    "/math-solutions/attempts/{attempt_id}/ocr/recognize": {
+      "post": {
+        "operationId": "recognize_strokes_math_solutions_attempts__attempt_id__ocr_recognize_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "attempt_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Attempt Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OCRRecognizeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OCRRecognizeResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Recognize Strokes",
+        "tags": [
+          "Math OCR"
         ]
       }
     },
