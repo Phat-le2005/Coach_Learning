@@ -39,7 +39,7 @@ def test_safe_parser_rejects_oversized_expressions():
 
 def test_validator_still_handles_correct_and_incorrect_derivatives():
     validator = DeterministicMathValidator(
-        target_function_latex=r"\\frac{1}{3}x^3 - x^2 - 3x + 1"
+        target_function_latex=r"\frac{1}{3}x^3 - x^2 - 3x + 1"
     )
 
     correct = validator.validate_step(
