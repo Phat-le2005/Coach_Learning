@@ -1,16 +1,18 @@
+import ast
 from dataclasses import dataclass
 from enum import StrEnum
+import math
 import re
 from typing import Any
-import sympy
-from sympy import symbols, Eq, solve, simplify
-from sympy.parsing.sympy_parser import (
-    parse_expr,
-    standard_transformations,
-    implicit_multiplication_application,
-)
 
-_TRANSFORMATIONS = standard_transformations + (implicit_multiplication_application,)
+import sympy
+from sympy import Eq, Integer, Rational, simplify, solve, symbols
+
+
+_MAX_EXPRESSION_LENGTH = 512
+_MAX_AST_NODES = 128
+_MAX_EXPONENT = 12
+_MAX_ABSOLUTE_CONSTANT = 1_000_000
 
 
 class MathValidity(StrEnum):
@@ -32,25 +34,105 @@ class ValidationResult:
 
 
 def clean_latex_to_python(latex_str: str) -> str:
-    """Normalize LaTeX mathematical string into a parseable Python/SymPy expression."""
-    match = re.search(r"(?:y\'|f\'\(x\)|y|f\(x\))\s*=\s*([^\$\.\;\n\r]+)", latex_str)
+    """Normalize the supported subset of LaTeX into a mathematical expression."""
+    match = re.search(r"(?:y\\'|f\\'\\(x\\)|y|f\\(x\\))\\s*=\\s*([^\\$\\.\\;\\n\\r]+)", latex_str)
     if match:
         s = match.group(1)
     else:
-        s = re.sub(r"^(?:y\'|f\'\(x\)|y|f\(x\))\s*=\s*", "", latex_str.strip())
+        s = re.sub(r"^(?:y\\'|f\\'\\(x\\)|y|f\\(x\\))\\s*=\\s*", "", latex_str.strip())
     s = s.replace("$", "")
-    s = re.sub(r"\\frac\{([^}]+)\}\{([^}]+)\}", r"((\1)/(\2))", s)
+    s = re.sub(r"\\\\frac\\{([^}]+)\\}\\{([^}]+)\\}", r"((\\1)/(\\2))", s)
     s = s.replace("^", "**")
-    s = s.replace("\\left", "").replace("\\right", "").replace("\\,", " ")
+    s = s.replace("\\\\left", "").replace("\\\\right", "").replace("\\\\,", " ")
     s = s.replace("{", "(").replace("}", ")")
     return s.strip()
 
 
+def _safe_parse_expression(expression: str, variable: sympy.Symbol) -> sympy.Expr:
+    """Parse a deliberately small polynomial grammar without evaluating Python code.
+
+    SymPy's parse_expr uses eval internally and must not receive untrusted student input.
+    This parser accepts numeric constants, x, parentheses, unary signs, and + - * / **.
+    Implicit multiplication such as 2x and (1/3)x is normalized before Python AST parsing.
+    """
+    if not isinstance(expression, str) or not expression.strip():
+        raise ValueError("A non-empty mathematical expression is required.")
+    if len(expression) > _MAX_EXPRESSION_LENGTH:
+        raise ValueError("Mathematical expression is too long.")
+
+    normalized = expression.strip()
+    normalized = re.sub(r"(?<=\\d)\\s*(?=[x(])", "*", normalized)
+    normalized = re.sub(r"(?<=x)\\s*(?=\\()", "*", normalized)
+    normalized = re.sub(r"(?<=\\))\\s*(?=[x\\d(])", "*", normalized)
+
+    try:
+        tree = ast.parse(normalized, mode="eval")
+    except (SyntaxError, ValueError) as exc:
+        raise ValueError("Unsupported mathematical syntax.") from exc
+
+    if sum(1 for _ in ast.walk(tree)) > _MAX_AST_NODES:
+        raise ValueError("Mathematical expression is too complex.")
+
+    def build(node: ast.AST) -> sympy.Expr:
+        if isinstance(node, ast.Expression):
+            return build(node.body)
+
+        if isinstance(node, ast.Constant):
+            value = node.value
+            if type(value) is int:
+                if abs(value) > _MAX_ABSOLUTE_CONSTANT:
+                    raise ValueError("Numeric constant is out of range.")
+                return Integer(value)
+            if type(value) is float:
+                if not math.isfinite(value) or abs(value) > _MAX_ABSOLUTE_CONSTANT:
+                    raise ValueError("Numeric constant is out of range.")
+                return Rational(str(value))
+            raise ValueError("Only real numeric constants are supported.")
+
+        if isinstance(node, ast.Name):
+            if node.id != "x":
+                raise ValueError("Only the variable x is supported.")
+            return variable
+
+        if isinstance(node, ast.UnaryOp):
+            operand = build(node.operand)
+            if isinstance(node.op, ast.UAdd):
+                return operand
+            if isinstance(node.op, ast.USub):
+                return -operand
+            raise ValueError("Unsupported unary operator.")
+
+        if isinstance(node, ast.BinOp):
+            left = build(node.left)
+            right = build(node.right)
+            if isinstance(node.op, ast.Add):
+                return left + right
+            if isinstance(node.op, ast.Sub):
+                return left - right
+            if isinstance(node.op, ast.Mult):
+                return left * right
+            if isinstance(node.op, ast.Div):
+                if right == 0:
+                    raise ValueError("Division by zero is not supported.")
+                return left / right
+            if isinstance(node.op, ast.Pow):
+                if not right.is_Integer or abs(int(right)) > _MAX_EXPONENT:
+                    raise ValueError("Only bounded integer exponents are supported.")
+                return left**right
+            raise ValueError("Unsupported binary operator.")
+
+        # Calls, attributes, subscripts, comprehensions, and every other Python AST
+        # construct are intentionally rejected.
+        raise ValueError("Unsupported mathematical syntax.")
+
+    return build(tree)
+
+
 def extract_numbers_from_roots(text: str) -> set[float]:
     """Extract root values from expressions like x = -1 \\lor x = 3, x_1 = -1, x_2 = 3."""
-    matches = re.findall(r"x(?:_\d+)?\s*=\s*(-?\d+(?:\.\d+)?)", text)
+    matches = re.findall(r"x(?:_\\d+)?\\s*=\\s*(-?\\d+(?:\\.\\d+)?)", text)
     if not matches:
-        matches = re.findall(r"(-?\d+(?:\.\d+)?)", text)
+        matches = re.findall(r"(-?\\d+(?:\\.\\d+)?)", text)
     return {float(m) for m in matches}
 
 
@@ -70,7 +152,7 @@ class DeterministicMathValidator:
         if target_function_latex:
             try:
                 cleaned = clean_latex_to_python(target_function_latex)
-                self._target_expr = parse_expr(cleaned, transformations=_TRANSFORMATIONS)
+                self._target_expr = _safe_parse_expression(cleaned, self.x)
                 self._target_derivative = sympy.diff(self._target_expr, self.x)
                 raw_roots = solve(Eq(self._target_derivative, 0), self.x)
                 self._target_roots = {float(r) for r in raw_roots if r.is_real}
@@ -99,7 +181,6 @@ class DeterministicMathValidator:
             return self._validate_conclusion(content_latex, explanation_text)
 
         if step_type == "ASSUMPTION":
-            # Domain assumption like D = R
             if content_latex and ("D = \\mathbb{R}" in content_latex or "D = R" in content_latex or "R" in content_latex):
                 return ValidationResult(
                     validity=MathValidity.VALID,
@@ -114,7 +195,6 @@ class DeterministicMathValidator:
                 error_detected=False,
             )
 
-        # Fallback for unparseable or custom without recognized patterns
         if not content_latex and not artifact_payload:
             return ValidationResult(
                 validity=MathValidity.UNDETERMINED,
@@ -143,7 +223,7 @@ class DeterministicMathValidator:
 
         try:
             cleaned = clean_latex_to_python(content_latex)
-            student_d = parse_expr(cleaned, transformations=_TRANSFORMATIONS)
+            student_d = _safe_parse_expression(cleaned, self.x)
             is_zero = simplify(student_d - self._target_derivative) == 0
 
             if is_zero:
@@ -153,16 +233,15 @@ class DeterministicMathValidator:
                     confidence=1.0,
                     error_detected=False,
                 )
-            else:
-                return ValidationResult(
-                    validity=MathValidity.INVALID,
-                    score=0.0,
-                    confidence=0.98,
-                    error_detected=True,
-                    error_code="DERIVATIVE_ARITHMETIC_SLIP",
-                    error_description="Tính đạo hàm không chính xác do sai số hoặc sai dấu đại số.",
-                    evidence_quote=content_latex,
-                )
+            return ValidationResult(
+                validity=MathValidity.INVALID,
+                score=0.0,
+                confidence=0.98,
+                error_detected=True,
+                error_code="DERIVATIVE_ARITHMETIC_SLIP",
+                error_description="Tính đạo hàm không chính xác do sai số hoặc sai dấu đại số.",
+                evidence_quote=content_latex,
+            )
         except Exception:
             return ValidationResult(
                 validity=MathValidity.UNDETERMINED,
@@ -198,16 +277,15 @@ class DeterministicMathValidator:
                     confidence=1.0,
                     error_detected=False,
                 )
-            else:
-                return ValidationResult(
-                    validity=MathValidity.INVALID,
-                    score=0.0,
-                    confidence=0.98,
-                    error_detected=True,
-                    error_code="ROOT_FINDING_ERROR",
-                    error_description="Giải phương trình y' = 0 sai nghiệm.",
-                    evidence_quote=content_latex,
-                )
+            return ValidationResult(
+                validity=MathValidity.INVALID,
+                score=0.0,
+                confidence=0.98,
+                error_detected=True,
+                error_code="ROOT_FINDING_ERROR",
+                error_description="Giải phương trình y' = 0 sai nghiệm.",
+                evidence_quote=content_latex,
+            )
         except Exception:
             return ValidationResult(
                 validity=MathValidity.UNDETERMINED,
@@ -240,9 +318,7 @@ class DeterministicMathValidator:
                 error_detected=False,
             )
 
-        # Expected signs for f'(x) = x^2 - 2x - 3 (roots -1, 3, a = 1 > 0):
-        # x < -1: +, -1 < x < 3: -, x > 3: + -> ['+', '-', '+']
-        # If student filled ['-', '+', '-']: inverted quadratic rule
+        # Expected signs for f'(x) = x^2 - 2x - 3 (roots -1, 3, a = 1 > 0).
         if signs == ["-", "+", "-"] and (critical_points == [-1, 3] or critical_points == [-1.0, 3.0]):
             return ValidationResult(
                 validity=MathValidity.INVALID,
@@ -274,10 +350,7 @@ class DeterministicMathValidator:
         self, content_latex: str | None, explanation_text: str | None = None
     ) -> ValidationResult:
         text = (content_latex or "") + " " + (explanation_text or "")
-        # Check if student made monotonicity direction inversion (DERIVATIVE_SIGN_DIRECTION)
-        # e.g., claiming function is increasing on (-1, 3) when it's decreasing
         if "(-1, 3)" in text and ("đồng biến" in text or "tăng" in text or "increasing" in text.lower()):
-            # This conclusion matches the inverted sign table!
             return ValidationResult(
                 validity=MathValidity.INVALID,
                 score=0.0,
