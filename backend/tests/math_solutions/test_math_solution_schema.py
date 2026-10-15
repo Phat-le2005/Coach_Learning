@@ -8,7 +8,7 @@ from app.math_solutions import models as m
 
 
 def test_math_solutions_registers_ten_tables():
-    names={table for table in Base.metadata.tables if table.startswith("math_")}
+    names={table for table in Base.metadata.tables if table.startswith("math_") and not table.startswith("math_ink_")}
     assert names == {
         "math_solution_rubrics","math_solution_attempts","math_solution_steps",
         "math_step_revisions","math_artifacts","math_step_evaluations",

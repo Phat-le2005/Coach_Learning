@@ -61,6 +61,7 @@ from app.exams.models import (
 from app.hints.models import PracticeQuestionHint, QuestionHint
 from app.parents.models import ParentProfile, ParentStudentRelationship
 from app.mastery.models import StudentConceptMastery, StudentProblemTypeMastery
+from app.math_ink.models import MathInkDocument, MathInkPage, MathInkOperation
 from app.math_solutions.models import (
     SolutionAttempt, SolutionStep, StepRevision, MathArtifact, SolutionRubric,
     StepEvaluation, SolutionFeedback, EvaluationDecision, EvaluationOverride,
@@ -159,6 +160,7 @@ from app.knowledge_gap.models import (
 )
 
 __all__ = [
+    "MathInkDocument", "MathInkPage", "MathInkOperation",
     "AdaptiveRepairDecision",
     "AdaptiveRepairItem",
     "AdaptiveRepairSession",

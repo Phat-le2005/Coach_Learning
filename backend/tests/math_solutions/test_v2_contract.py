@@ -5,6 +5,8 @@ from app.api.v2.export_contract import get_v2_deterministic_schema
 
 EXPECTED_PATHS = {
     "/math-solutions/attempts",
+    "/math-solutions/attempts/{attempt_id}/ink",
+    "/math-solutions/attempts/{attempt_id}/ink/pages/{page_index}",
     "/math-solutions/attempts/{attempt_id}",
     "/math-solutions/attempts/{attempt_id}/problem",
     "/math-solutions/attempts/{attempt_id}/steps",

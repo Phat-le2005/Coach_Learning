@@ -134,7 +134,7 @@ def test_pg_math_schema_roundtrip_isolated():
                 conn.exec_driver_sql(f"CREATE TABLE {name} (id UUID PRIMARY KEY)")
             with Operations.context(MigrationContext.configure(conn)):
                 load_migration("0046_math_solutions").upgrade()
-            expected = {name for name in Base.metadata.tables if name.startswith("math_")}
+            expected = {name for name in Base.metadata.tables if name.startswith("math_") and not name.startswith("math_ink_")}
             inspector = inspect(conn)
             assert expected.issubset(set(inspector.get_table_names()))
             assert any(i["name"] == "uq_math_solution_step_active_index" and i["unique"]

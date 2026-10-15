@@ -176,6 +176,211 @@
         "title": "ErrorResponse",
         "type": "object"
       },
+      "InkDocumentRead": {
+        "properties": {
+          "document_revision": {
+            "title": "Document Revision",
+            "type": "integer"
+          },
+          "pages": {
+            "items": {
+              "$ref": "#/components/schemas/InkPageSummary"
+            },
+            "title": "Pages",
+            "type": "array"
+          }
+        },
+        "required": [
+          "document_revision",
+          "pages"
+        ],
+        "title": "InkDocumentRead",
+        "type": "object"
+      },
+      "InkPageRead": {
+        "properties": {
+          "document_revision": {
+            "title": "Document Revision",
+            "type": "integer"
+          },
+          "page_index": {
+            "title": "Page Index",
+            "type": "integer"
+          },
+          "strokes": {
+            "items": {
+              "$ref": "#/components/schemas/InkStroke"
+            },
+            "title": "Strokes",
+            "type": "array"
+          }
+        },
+        "required": [
+          "document_revision",
+          "page_index",
+          "strokes"
+        ],
+        "title": "InkPageRead",
+        "type": "object"
+      },
+      "InkPageSummary": {
+        "properties": {
+          "page_index": {
+            "title": "Page Index",
+            "type": "integer"
+          },
+          "point_count": {
+            "title": "Point Count",
+            "type": "integer"
+          },
+          "sha256": {
+            "title": "Sha256",
+            "type": "string"
+          },
+          "stroke_count": {
+            "title": "Stroke Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "page_index",
+          "stroke_count",
+          "point_count",
+          "sha256"
+        ],
+        "title": "InkPageSummary",
+        "type": "object"
+      },
+      "InkPageWrite": {
+        "additionalProperties": false,
+        "properties": {
+          "client_action_id": {
+            "format": "uuid",
+            "title": "Client Action Id",
+            "type": "string"
+          },
+          "expected_document_revision": {
+            "minimum": 0.0,
+            "title": "Expected Document Revision",
+            "type": "integer"
+          },
+          "strokes": {
+            "items": {
+              "$ref": "#/components/schemas/InkStroke"
+            },
+            "maxItems": 400,
+            "title": "Strokes",
+            "type": "array"
+          }
+        },
+        "required": [
+          "expected_document_revision",
+          "client_action_id",
+          "strokes"
+        ],
+        "title": "InkPageWrite",
+        "type": "object"
+      },
+      "InkPoint": {
+        "additionalProperties": false,
+        "properties": {
+          "pressure": {
+            "default": 0.5,
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Pressure",
+            "type": "number"
+          },
+          "x": {
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "X",
+            "type": "number"
+          },
+          "y": {
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Y",
+            "type": "number"
+          }
+        },
+        "required": [
+          "x",
+          "y"
+        ],
+        "title": "InkPoint",
+        "type": "object"
+      },
+      "InkSaveRead": {
+        "properties": {
+          "document_revision": {
+            "title": "Document Revision",
+            "type": "integer"
+          },
+          "page_index": {
+            "title": "Page Index",
+            "type": "integer"
+          },
+          "sha256": {
+            "title": "Sha256",
+            "type": "string"
+          }
+        },
+        "required": [
+          "document_revision",
+          "page_index",
+          "sha256"
+        ],
+        "title": "InkSaveRead",
+        "type": "object"
+      },
+      "InkStroke": {
+        "additionalProperties": false,
+        "properties": {
+          "color": {
+            "pattern": "^#[0-9a-fA-F]{6}$",
+            "title": "Color",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "points": {
+            "items": {
+              "$ref": "#/components/schemas/InkPoint"
+            },
+            "maxItems": 3000,
+            "minItems": 1,
+            "title": "Points",
+            "type": "array"
+          },
+          "tool": {
+            "enum": [
+              "PEN",
+              "HIGHLIGHTER"
+            ],
+            "title": "Tool",
+            "type": "string"
+          },
+          "width": {
+            "maximum": 24.0,
+            "minimum": 0.25,
+            "title": "Width",
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "tool",
+          "color",
+          "width",
+          "points"
+        ],
+        "title": "InkStroke",
+        "type": "object"
+      },
       "MathArtifactDraft": {
         "additionalProperties": false,
         "properties": {
@@ -1356,6 +1561,330 @@
         "summary": "Get Attempt",
         "tags": [
           "Math Solutions"
+        ]
+      }
+    },
+    "/math-solutions/attempts/{attempt_id}/ink": {
+      "get": {
+        "operationId": "get_document_math_solutions_attempts__attempt_id__ink_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "attempt_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Attempt Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InkDocumentRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Document",
+        "tags": [
+          "Math Ink"
+        ]
+      }
+    },
+    "/math-solutions/attempts/{attempt_id}/ink/pages/{page_index}": {
+      "get": {
+        "operationId": "get_page_math_solutions_attempts__attempt_id__ink_pages__page_index__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "attempt_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Attempt Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "page_index",
+            "required": true,
+            "schema": {
+              "maximum": 29,
+              "minimum": 0,
+              "title": "Page Index",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InkPageRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Page",
+        "tags": [
+          "Math Ink"
+        ]
+      },
+      "put": {
+        "operationId": "save_page_math_solutions_attempts__attempt_id__ink_pages__page_index__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "attempt_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Attempt Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "page_index",
+            "required": true,
+            "schema": {
+              "maximum": 29,
+              "minimum": 0,
+              "title": "Page Index",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InkPageWrite"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InkSaveRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Save Page",
+        "tags": [
+          "Math Ink"
         ]
       }
     },

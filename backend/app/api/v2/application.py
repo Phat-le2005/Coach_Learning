@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Request, Response
 
 from app.api.v2.router import api_v2_router
+from app.math_ink.body_limit import InkWriteBodyLimitMiddleware
 from app.core.config import Settings
 from app.core.errors import (
     ErrorResponse,
@@ -34,5 +35,6 @@ def create_v2_app(settings: Settings) -> FastAPI:
         apply_math_solutions_no_store(request, response)
         return response
 
+    application.add_middleware(InkWriteBodyLimitMiddleware)
     application.include_router(api_v2_router)
     return application

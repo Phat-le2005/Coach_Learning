@@ -166,7 +166,7 @@ def test_v2_openapi_docs_routes_and_cors_are_isolated(db_client: TestClient) -> 
     assert docs.status_code == 200
     assert schema_response.status_code == 200
     paths = schema_response.json()["paths"]
-    assert len(paths) == 14
+    assert len(paths) == 16
     assert "/math-solutions/attempts" in paths
     assert all(not path.startswith("/api/v2") for path in paths)
     assert db_client.get("/api/v2/api/v2/openapi.json").status_code == 404
