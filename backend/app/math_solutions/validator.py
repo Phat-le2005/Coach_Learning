@@ -63,6 +63,7 @@ def _safe_parse_expression(expression: str, variable: sympy.Symbol) -> sympy.Exp
     normalized = expression.strip().replace("^", "**")
     normalized = re.sub(r"(?<=\d)\s*(?=[x(])", "*", normalized)
     normalized = re.sub(r"(?<=x)\s*(?=\()", "*", normalized)
+    normalized = re.sub(r"(?<=\))\s*(?=[x\d(])", "*", normalized)
 
     try:
         tree = ast.parse(normalized, mode="eval")
@@ -128,11 +129,11 @@ def _safe_parse_expression(expression: str, variable: sympy.Symbol) -> sympy.Exp
 
 
 def extract_numbers_from_roots(text: str) -> set[float]:
-    """Extract root values from expressions like x = -1 \\lor x = 3, x_1 = -1, x_2 = 3."""
+    """Extract root values from expressions like x = -1 \lor x = 3, x_1 = -1, x_2 = 3."""
     matches = re.findall(r"x(?:_\d+)?\s*=\s*(-?\d+(?:\.\d+)?)", text)
     if not matches:
-    matches = re.findall(r"x(?:_\d+)?\s*=\s*(-?\d+(?:\.\d+)?)", text)
         matches = re.findall(r"(-?\d+(?:\.\d+)?)", text)
+    return {float(m) for m in matches}
 
 
 class DeterministicMathValidator:
