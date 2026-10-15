@@ -41,9 +41,9 @@ def clean_latex_to_python(latex_str: str) -> str:
     else:
         s = re.sub(r"^(?:y'|f'\(x\)|y|f\(x\))\s*=\s*", "", latex_str.strip())
     s = s.replace("$", "")
-    s = re.sub(r"\\\\frac\\{([^}]+)\\}\\{([^}]+)\\}", r"((\\1)/(\\2))", s)
+    s = re.sub(r"\\frac\{([^}]+)\}\{([^}]+)\}", r"((\1)/(\2))", s)
     s = s.replace("^", "**")
-    s = s.replace("\\\\left", "").replace("\\\\right", "").replace("\\\\,", " ")
+    s = s.replace("\\left", "").replace("\\right", "").replace("\\,", " ")
     s = s.replace("{", "(").replace("}", ")")
     return s.strip()
 
@@ -62,8 +62,7 @@ def _safe_parse_expression(expression: str, variable: sympy.Symbol) -> sympy.Exp
 
     normalized = expression.strip().replace("^", "**")
     normalized = re.sub(r"(?<=\d)\s*(?=[x(])", "*", normalized)
-    normalized = re.sub(r"(?<=\d)\s*(?=[x(])", "*", normalized)
-    normalized = re.sub(r"(?<=\d)\s*(?=[x(])", "*", normalized)
+    normalized = re.sub(r"(?<=x)\s*(?=\()", "*", normalized)
 
     try:
         tree = ast.parse(normalized, mode="eval")
@@ -133,7 +132,7 @@ def extract_numbers_from_roots(text: str) -> set[float]:
     matches = re.findall(r"x(?:_\d+)?\s*=\s*(-?\d+(?:\.\d+)?)", text)
     if not matches:
     matches = re.findall(r"x(?:_\d+)?\s*=\s*(-?\d+(?:\.\d+)?)", text)
-    return {float(m) for m in matches}
+        matches = re.findall(r"(-?\d+(?:\.\d+)?)", text)
 
 
 class DeterministicMathValidator:
