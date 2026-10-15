@@ -153,6 +153,61 @@ class LearningEvidenceContextResolver:
                 explanation=snapshot.explanation,
                 assignment_material_snapshot_id=snapshot.id,
             )
+        if event.source_kind == LearningEvidenceSourceKind.MATH_SOLUTION_EVALUATION:
+            from app.math_solutions.models import EvaluationDecision, SolutionAttempt, SolutionStep
+
+            decision = self.session.get(EvaluationDecision, event.source_entity_id)
+            if decision is None:
+                raise self._source_missing()
+            attempt = self.session.get(SolutionAttempt, decision.attempt_id)
+            if attempt is None or attempt.student_id != event.student_id:
+                raise self._source_missing()
+
+            steps = list(
+                self.session.scalars(
+                    select(SolutionStep)
+                    .where(
+                        SolutionStep.attempt_id == attempt.id,
+                        SolutionStep.is_deleted.is_(False),
+                    )
+                    .order_by(SolutionStep.step_index.asc())
+                )
+            )
+            step_lines = []
+            for s in steps:
+                line = f"Step {s.step_index} [{s.step_type}]: {s.content_latex}"
+                if s.explanation_text:
+                    line += f" ({s.explanation_text})"
+                step_lines.append(line)
+            student_response = "\n".join(step_lines) if step_lines else None
+
+            if attempt.question_id is not None:
+                question = self.session.get(Question, attempt.question_id)
+                if question is None or question.subject_id != event.subject_id:
+                    raise self._source_missing()
+                return DiagnosticEvidenceContext(
+                    **base,
+                    student_response=student_response,
+                    content=question.content,
+                    expected_answer=question.correct_answer,
+                    explanation=question.explanation,
+                    canonical_question=question,
+                )
+            if attempt.assignment_material_item_id is not None:
+                snapshot = self.session.get(
+                    AssignmentMaterialItem, attempt.assignment_material_item_id
+                )
+                if snapshot is None:
+                    raise self._source_missing()
+                return DiagnosticEvidenceContext(
+                    **base,
+                    student_response=student_response,
+                    content=snapshot.content or "",
+                    expected_answer=snapshot.correct_answer,
+                    explanation=snapshot.explanation,
+                    assignment_material_snapshot_id=snapshot.id,
+                )
+            raise self._source_missing()
         raise ApplicationError(
             422, "UNSUPPORTED_EVIDENCE_SOURCE", "Unsupported learning evidence source."
         )

@@ -30,6 +30,7 @@
     "src/features/knowledge-forest/filter.ts",
     "src/features/knowledge-forest/living-tree-layout.ts",
     "src/features/math-workspace/**/*.ts",
+    "src/features/math-solver/**/*.ts",
     "tests/**/*.ts"
   ],
   "exclude": ["node_modules", ".next"]
