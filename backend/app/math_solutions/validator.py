@@ -35,11 +35,11 @@ class ValidationResult:
 
 def clean_latex_to_python(latex_str: str) -> str:
     """Normalize the supported subset of LaTeX into a mathematical expression."""
-    match = re.search(r"(?:y\\'|f\\'\\(x\\)|y|f\\(x\\))\\s*=\\s*([^\\$\\.\\;\\n\\r]+)", latex_str)
+    match = re.search(r"(?:y'|f'\(x\)|y|f\(x\))\s*=\s*([^$.;\n\r]+)", latex_str)
     if match:
         s = match.group(1)
     else:
-        s = re.sub(r"^(?:y\\'|f\\'\\(x\\)|y|f\\(x\\))\\s*=\\s*", "", latex_str.strip())
+        s = re.sub(r"^(?:y'|f'\(x\)|y|f\(x\))\s*=\s*", "", latex_str.strip())
     s = s.replace("$", "")
     s = re.sub(r"\\\\frac\\{([^}]+)\\}\\{([^}]+)\\}", r"((\\1)/(\\2))", s)
     s = s.replace("^", "**")
@@ -61,9 +61,9 @@ def _safe_parse_expression(expression: str, variable: sympy.Symbol) -> sympy.Exp
         raise ValueError("Mathematical expression is too long.")
 
     normalized = expression.strip().replace("^", "**")
-    normalized = re.sub(r"(?<=\\d)\\s*(?=[x(])", "*", normalized)
-    normalized = re.sub(r"(?<=x)\\s*(?=\\()", "*", normalized)
-    normalized = re.sub(r"(?<=\\))\\s*(?=[x\\d(])", "*", normalized)
+    normalized = re.sub(r"(?<=\d)\s*(?=[x(])", "*", normalized)
+    normalized = re.sub(r"(?<=\d)\s*(?=[x(])", "*", normalized)
+    normalized = re.sub(r"(?<=\d)\s*(?=[x(])", "*", normalized)
 
     try:
         tree = ast.parse(normalized, mode="eval")
@@ -130,9 +130,9 @@ def _safe_parse_expression(expression: str, variable: sympy.Symbol) -> sympy.Exp
 
 def extract_numbers_from_roots(text: str) -> set[float]:
     """Extract root values from expressions like x = -1 \\lor x = 3, x_1 = -1, x_2 = 3."""
-    matches = re.findall(r"x(?:_\\d+)?\\s*=\\s*(-?\\d+(?:\\.\\d+)?)", text)
+    matches = re.findall(r"x(?:_\d+)?\s*=\s*(-?\d+(?:\.\d+)?)", text)
     if not matches:
-        matches = re.findall(r"(-?\\d+(?:\\.\\d+)?)", text)
+    matches = re.findall(r"x(?:_\d+)?\s*=\s*(-?\d+(?:\.\d+)?)", text)
     return {float(m) for m in matches}
 
 
