@@ -64,8 +64,9 @@ export function MathSolutionSolver({
   const [newContentLatex, setNewContentLatex] = useState("");
   const [newExplanation, setNewExplanation] = useState("");
   const [newSignTable, setNewSignTable] = useState<SignTablePayload>({
-    critical_points: [-1, 3],
-    signs: ["+", "-", "+"],
+    // Start without exercise-specific roots or pre-filled correct signs.
+    critical_points: [],
+    signs: ["+"],
   });
   const [isSavingStep, setIsSavingStep] = useState(false);
 
