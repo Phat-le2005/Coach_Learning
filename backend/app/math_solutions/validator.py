@@ -299,38 +299,57 @@ class DeterministicMathValidator:
         artifact_payload: dict[str, Any] | None,
         content_latex: str | None = None,
     ) -> ValidationResult:
-        if not artifact_payload:
-            return ValidationResult(
-                validity=MathValidity.UNDETERMINED,
-                score=None,
-                confidence=0.0,
-                error_detected=False,
-            )
+        """Verify quadratic derivative signs only when the exercise is known.
 
-        critical_points = artifact_payload.get("critical_points") or []
-        signs = artifact_payload.get("signs") or []
+        Unsupported functions, missing target expressions and malformed student
+        artifacts must never be graded against a fixed sample sign table.
+        """
+        needs_review = ValidationResult(
+            validity=MathValidity.NEEDS_REVIEW,
+            score=None,
+            confidence=0.0,
+            error_detected=False,
+            error_description="Chưa đủ dữ liệu để tự động kiểm chứng bảng xét dấu.",
+        )
+        if not isinstance(artifact_payload, dict) or self._target_derivative is None:
+            return needs_review
 
-        if not critical_points or not signs:
-            return ValidationResult(
-                validity=MathValidity.NEEDS_REVIEW,
-                score=None,
-                confidence=0.3,
-                error_detected=False,
-            )
+        critical_points = artifact_payload.get("critical_points")
+        signs = artifact_payload.get("signs")
+        if not isinstance(critical_points, list) or not isinstance(signs, list):
+            return needs_review
+        if len(critical_points) != 2 or len(signs) != 3:
+            return needs_review
+        if any(type(p) not in (int, float) or not math.isfinite(p) for p in critical_points):
+            return needs_review
+        if any(sign not in ("+", "-") for sign in signs):
+            return needs_review
 
-        # Expected signs for f'(x) = x^2 - 2x - 3 (roots -1, 3, a = 1 > 0).
-        if signs == ["-", "+", "-"] and (critical_points == [-1, 3] or critical_points == [-1.0, 3.0]):
-            return ValidationResult(
-                validity=MathValidity.INVALID,
-                score=0.0,
-                confidence=0.99,
-                error_detected=True,
-                error_code="SIGN_TABLE_QUADRATIC_RULE_INVERTED",
-                error_description="Áp dụng sai quy tắc dấu tam thức bậc hai (nhầm 'trong cùng ngoài khác' thay vì 'trong trái ngoài cùng').",
-                evidence_quote=str(artifact_payload),
-            )
+        try:
+            # This evaluator currently supports only quadratic derivatives with
+            # two distinct real roots. All other cases require human review.
+            polynomial = sympy.Poly(self._target_derivative, self.x)
+            if polynomial.degree() != 2 or self._target_roots is None:
+                return needs_review
+            roots = sorted(self._target_roots)
+            points = [float(p) for p in critical_points]
+            if len(roots) != 2 or not roots[0] < roots[1] or not points[0] < points[1]:
+                return needs_review
+            if any(not math.isclose(point, root, rel_tol=1e-9, abs_tol=1e-9)
+                   for point, root in zip(points, roots)):
+                return needs_review
 
-        if signs == ["+", "-", "+"] and (critical_points == [-1, 3] or critical_points == [-1.0, 3.0]):
+            leading = polynomial.LC()
+            if leading.is_positive:
+                expected_signs = ["+", "-", "+"]
+            elif leading.is_negative:
+                expected_signs = ["-", "+", "-"]
+            else:
+                return needs_review
+        except (ValueError, TypeError, sympy.PolynomialError):
+            return needs_review
+
+        if signs == expected_signs:
             return ValidationResult(
                 validity=MathValidity.VALID,
                 score=1.0,
@@ -338,12 +357,25 @@ class DeterministicMathValidator:
                 error_detected=False,
             )
 
+        if signs == ["-" if sign == "+" else "+" for sign in expected_signs]:
+            return ValidationResult(
+                validity=MathValidity.INVALID,
+                score=0.0,
+                confidence=0.99,
+                error_detected=True,
+                error_code="SIGN_TABLE_QUADRATIC_RULE_INVERTED",
+                error_description="Đã đảo ngược dấu của đạo hàm trên tất cả các khoảng.",
+                evidence_quote=str(artifact_payload),
+            )
+
         return ValidationResult(
-            validity=MathValidity.NEEDS_REVIEW,
-            score=0.5,
-            confidence=0.7,
-            error_detected=False,
-            error_description="Bảng xét dấu cần giáo viên kiểm duyệt.",
+            validity=MathValidity.INVALID,
+            score=0.0,
+            confidence=0.98,
+            error_detected=True,
+            error_code="SIGN_TABLE_SIGN_ERROR",
+            error_description="Dấu đạo hàm không khớp với hàm số của đề bài.",
+            evidence_quote=str(artifact_payload),
         )
 
     def _validate_conclusion(
