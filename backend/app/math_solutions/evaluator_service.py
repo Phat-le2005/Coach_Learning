@@ -145,7 +145,17 @@ class MathEvaluatorService:
         final_score, rubric_matches = rubric_evaluator.evaluate(step_validities_for_rubric)
 
         # Determine is_correct
-        is_correct = final_score >= 0.85 and len(detected_misconceptions) == 0
+        # An unverified mathematical step cannot justify a definitive correct
+        # decision, even when partial rubric credit exceeds the score threshold.
+        has_unverified_steps = any(
+            item["validity"] in ("UNDETERMINED", "NEEDS_REVIEW")
+            for item in step_validities_for_rubric
+        )
+        is_correct = (
+            final_score >= 0.85
+            and len(detected_misconceptions) == 0
+            and not has_unverified_steps
+        )
 
         # Save all step evaluations
         for step_eval in evaluations_to_save:
