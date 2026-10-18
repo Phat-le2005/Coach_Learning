@@ -117,3 +117,34 @@ def test_sign_table_abstains_without_supported_target_and_artifact(target, paylo
     assert result.validity == MathValidity.NEEDS_REVIEW
     assert result.score is None
     assert not result.error_detected
+
+
+def test_conclusion_is_checked_against_actual_problem_roots_and_direction():
+    positive = DeterministicMathValidator(target_function_latex="x^3/3 - 4x")
+    negative = DeterministicMathValidator(target_function_latex="-x^3/3 + 4x")
+
+    assert positive.validate_step(
+        step_type="CONCLUSION", content_latex="Hàm số nghịch biến trên (-2, 2)"
+    ).validity == MathValidity.VALID
+    assert positive.validate_step(
+        step_type="CONCLUSION", content_latex="Hàm số đồng biến trên (-2, 2)"
+    ).validity == MathValidity.INVALID
+    assert negative.validate_step(
+        step_type="CONCLUSION", content_latex="Hàm số đồng biến trên (-2, 2)"
+    ).validity == MathValidity.VALID
+    assert negative.validate_step(
+        step_type="CONCLUSION", content_latex="Hàm số nghịch biến trên (-2, 2)"
+    ).validity == MathValidity.INVALID
+
+
+def test_conclusion_does_not_grade_unrelated_or_unsupported_claims():
+    validator = DeterministicMathValidator(target_function_latex="x^3/3 - 4x")
+    for content in (
+        "Hàm số nghịch biến trên (-1, 3)",
+        "Hàm số đồng biến trên (-2, 2) và nghịch biến trên (3, 4)",
+        "Hàm số không đồng biến trên (-2, 2)",
+        "Hàm số đồng biến và nghịch biến trên (-2, 2)",
+    ):
+        result = validator.validate_step(step_type="CONCLUSION", content_latex=content)
+        assert result.validity == MathValidity.NEEDS_REVIEW
+        assert result.score is None
