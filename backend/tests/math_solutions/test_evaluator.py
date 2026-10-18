@@ -344,3 +344,94 @@ def test_e2e_vertical_slice_monotonicity_evaluation(db_session: Session):
     for ev in evaluations:
         assert ev.step_revision_id is not None
         assert ev.math_validity in ("VALID", "INVALID", "UNDETERMINED", "NEEDS_REVIEW")
+
+
+def test_evaluation_rolls_back_if_learning_evidence_write_fails(db_session: Session):
+    """Never publish a grading decision without its linked learning evidence."""
+    from unittest.mock import patch
+
+    users = UserService(db_session)
+    student_user = users.create_user(
+        UserCreate(
+            email="eval-atomic-student@example.com",
+            password="Eval-Test-Password-2026!",
+            full_name="Atomicity Student",
+            role=Role.STUDENT,
+        )
+    )
+    teacher_user = users.create_user(
+        UserCreate(
+            email="eval-atomic-teacher@example.com",
+            password="Eval-Test-Password-2026!",
+            full_name="Atomicity Teacher",
+            role=Role.TEACHER,
+        )
+    )
+    student = db_session.scalar(
+        select(StudentProfile).where(StudentProfile.user_id == student_user.id)
+    )
+    subject = Subject(code="MATH-EVAL-ATOMIC", name="Math Eval Atomic", grade_level=12)
+    db_session.add(subject)
+    db_session.flush()
+    question = Question(
+        subject_id=subject.id,
+        content="Tính đạo hàm của hàm số y = x^3",
+        question_type=QuestionType.OPEN_RESPONSE,
+        difficulty=0.5,
+        source_type="TEST",
+        exam_weight=0.5,
+        status=QuestionStatus.APPROVED,
+        created_by=teacher_user.id,
+    )
+    db_session.add(question)
+    db_session.flush()
+    practice = PracticeSession(
+        student_id=student.id,
+        subject_id=subject.id,
+        session_type=PracticeSessionType.PRACTICE,
+        status=PracticeSessionStatus.ACTIVE,
+    )
+    db_session.add(practice)
+    db_session.commit()
+
+    service = MathSolutionService(db_session)
+    created = service.create(
+        student_user.id,
+        source_kind="CANONICAL",
+        context_type="SELF_PRACTICE",
+        mode="INDEPENDENT_SOLUTION",
+        create_idempotency_key="eval-atomicity-test",
+        question_id=question.id,
+        practice_session_id=practice.id,
+    )
+    attempt_id = UUID(created["id"])
+    updated = service.add_step(
+        student_user.id,
+        attempt_id,
+        expected_attempt_revision=created["attempt_revision_number"],
+        client_action_id=uuid4(),
+        draft=SolutionStepDraft(
+            step_type="DERIVATIVE_CALCULATION",
+            content_latex="y' = 3x^2",
+        ),
+    )
+    service.submit(
+        student_user.id,
+        attempt_id,
+        expected_attempt_revision=updated["attempt_revision_number"],
+        client_action_id=uuid4(),
+    )
+
+    with patch(
+        "app.math_solutions.evidence_adapter.MathSolutionEvidenceAdapter.emit_evidence_for_decision",
+        side_effect=RuntimeError("evidence database unavailable"),
+    ):
+        with pytest.raises(RuntimeError, match="evidence database unavailable"):
+            MathEvaluatorService(db_session).evaluate_attempt(attempt_id)
+
+    db_session.expire_all()
+    assert db_session.get(SolutionAttempt, attempt_id).status == "SUBMITTED"
+    assert db_session.scalar(
+        select(EvaluationDecision).where(EvaluationDecision.attempt_id == attempt_id)
+    ) is None
+    assert db_session.scalars(select(StepEvaluation)).all() == []
