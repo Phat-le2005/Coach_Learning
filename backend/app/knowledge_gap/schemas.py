@@ -14,7 +14,11 @@ from app.knowledge_gap.models import (
     RootCauseVerificationStatus,
     RootCauseVerificationTargetType,
 )
-from app.learning_evidence.models import LearningEvidenceSourceKind
+class LearningEvidenceSourceKind(StrEnum):
+    PRACTICE_QUESTION = "PRACTICE_QUESTION"
+    ASSIGNMENT_CANONICAL_QUESTION = "ASSIGNMENT_CANONICAL_QUESTION"
+    TEACHER_MATERIAL_ITEM = "TEACHER_MATERIAL_ITEM"
+
 from app.recommendations.schemas import QuestionRecommendationRead
 
 

@@ -1012,7 +1012,8 @@ def test_deadline_enforcement_lifecycle(
     # Case 2: Đúng hạn (exact deadline: now == due_at)
     # The condition `_utc(assignment.due_at) < now` evaluates False when now == due_at,
     # so submission, mutation and prepare are accepted at exact due_at.
-    exact_deadline = datetime(2026, 10, 15, 12, 0, 0, tzinfo=timezone.utc)
+    # Relative to the fixture window so this boundary test remains valid over time.
+    exact_deadline = now + timedelta(hours=1)
     delivery_domain.assignment.due_at = exact_deadline
     db_session.commit()
 

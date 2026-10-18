@@ -1,0 +1,270 @@
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modalContainer {
+  background-color: #ffffff;
+  border-radius: 0.875rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 640px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.headerTitleWrap {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.headerIcon {
+  color: #2563eb;
+}
+
+.modalTitle {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.modalSubtitle {
+  font-size: 0.8125rem;
+  color: #64748b;
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 0.375rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.closeBtn:hover {
+  color: #0f172a;
+  background-color: #f1f5f9;
+}
+
+.modalContent {
+  padding: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.loadingState,
+.emptyState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 2.5rem 1rem;
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+.spinIcon {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.errorAlert {
+  padding: 0.75rem 1rem;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  border-radius: 0.5rem;
+  font-size: 0.8125rem;
+}
+
+.revisionList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.revisionCard {
+  border: 1px solid #e2e8f0;
+  border-radius: 0.625rem;
+  padding: 1rem;
+  background-color: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.currentRevisionCard {
+  border-color: #93c5fd;
+  background-color: #eff6ff;
+}
+
+.revisionCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.revMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.revBadge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #1e293b;
+  background-color: #e2e8f0;
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.activeTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #059669;
+  background-color: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+}
+
+.reasonBadge {
+  font-size: 0.6875rem;
+  color: #64748b;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+}
+
+.timeTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+.revFormulaPreview {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.375rem;
+}
+
+.codeIcon {
+  color: #64748b;
+  margin-top: 0.125rem;
+  flex-shrink: 0;
+}
+
+.revFormulaPreview code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.8125rem;
+  color: #0f172a;
+  word-break: break-all;
+}
+
+.revExplanation {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: #475569;
+  line-height: 1.4;
+}
+
+.cardActions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.25rem;
+}
+
+.rollbackBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.3125rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #4338ca;
+  background-color: #eef2ff;
+  border: 1px solid #c7d2fe;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.rollbackBtn:hover:not(:disabled) {
+  background-color: #e0e7ff;
+  color: #3730a3;
+}
+
+.rollbackBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.modalFooter {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.cancelBtn {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #475569;
+  background-color: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.cancelBtn:hover {
+  background-color: #e2e8f0;
+  color: #0f172a;
+}
