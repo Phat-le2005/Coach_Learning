@@ -15,6 +15,7 @@ import type {
 import { MAX_PAGES, A4_WIDTH } from "./types";
 import { generateUuid } from "./utils/ink-math";
 import { mathInkStorage } from "./storage/indexeddb";
+import { ensureLatestInkSaved } from "./utils/ocr-sync";
 import { WorkspaceToolbar } from "./components/WorkspaceToolbar";
 import { PageNavigator } from "./components/PageNavigator";
 import { ProblemPane } from "./components/ProblemPane";
@@ -177,17 +178,18 @@ export function MathWorkspace({
         setPagesMap((prev) => {
           const updated = new Map(prev);
           const pageMem = updated.get(pageIdx);
-          if (pageMem) {
+          if (pageMem && pageMem.strokes === strokesToSave) {
             updated.set(pageIdx, { ...pageMem, isDirty: false });
           }
           return updated;
         });
+        return true;
       } catch (err: unknown) {
         if (err instanceof ApiResponseError) {
           if (err.status === 409) {
             setSyncStatus("conflict");
             setSyncErrorMessage("Phiên bản trên máy chủ đã thay đổi.");
-            return;
+            return false;
           }
           setSyncStatus("error");
           setSyncErrorMessage(err.message);
@@ -196,8 +198,9 @@ export function MathWorkspace({
           setSyncStatus("offline");
         } else {
           setSyncStatus("error");
-          setSyncErrorMessage("Không thể lưu trang. Bản thảo đã được giữ an toàn.");
+          setSyncErrorMessage("Không thể lưu trang. Vui lòng thử lại.");
         }
+        return false;
       }
     },
     [attemptId, accessToken, documentRevision, apiClient],
@@ -219,7 +222,13 @@ export function MathWorkspace({
           clearTimeout(saveTimeoutRef.current);
           saveTimeoutRef.current = null;
         }
-        await flushSavePage(currentPageIndex, currentPageMemory.strokes);
+        const saved = await ensureLatestInkSaved(true, () =>
+          flushSavePage(currentPageIndex, currentPageMemory.strokes),
+        );
+        if (!saved) {
+          setOcrError("Không thể nhận diện vì nét vẽ chưa được lưu lên máy chủ. Vui lòng lưu lại trước khi thử OCR.");
+          return;
+        }
       }
 
       // 2. Call OCR recognition
