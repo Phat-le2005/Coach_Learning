@@ -53,3 +53,67 @@ def test_validator_still_handles_correct_and_incorrect_derivatives():
 
     assert correct.validity == MathValidity.VALID
     assert incorrect.validity == MathValidity.INVALID
+
+
+def test_sign_table_is_verified_against_problem_not_fixed_example():
+    # y' = x^2 - 4 has turning points at -2, 2.
+    validator = DeterministicMathValidator(target_function_latex="x^3/3 - 4x")
+
+    correct = validator.validate_step(
+        step_type="SIGN_TABLE",
+        content_latex=None,
+        artifact_payload={"critical_points": [-2, 2], "signs": ["+", "-", "+"]},
+    )
+    inverted = validator.validate_step(
+        step_type="SIGN_TABLE",
+        content_latex=None,
+        artifact_payload={"critical_points": [-2, 2], "signs": ["-", "+", "-"]},
+    )
+    sample_roots_for_wrong_problem = validator.validate_step(
+        step_type="SIGN_TABLE",
+        content_latex=None,
+        artifact_payload={"critical_points": [-1, 3], "signs": ["+", "-", "+"]},
+    )
+
+    assert correct.validity == MathValidity.VALID
+    assert inverted.validity == MathValidity.INVALID
+    assert inverted.error_code == "SIGN_TABLE_QUADRATIC_RULE_INVERTED"
+    assert sample_roots_for_wrong_problem.validity == MathValidity.NEEDS_REVIEW
+
+
+def test_sign_table_respects_negative_leading_coefficient():
+    validator = DeterministicMathValidator(target_function_latex="-x^3/3 + 4x")
+
+    correct = validator.validate_step(
+        step_type="SIGN_TABLE",
+        content_latex=None,
+        artifact_payload={"critical_points": [-2, 2], "signs": ["-", "+", "-"]},
+    )
+    inverted = validator.validate_step(
+        step_type="SIGN_TABLE",
+        content_latex=None,
+        artifact_payload={"critical_points": [-2, 2], "signs": ["+", "-", "+"]},
+    )
+    assert correct.validity == MathValidity.VALID
+    assert inverted.validity == MathValidity.INVALID
+
+
+@pytest.mark.parametrize(
+    "target,payload",
+    [
+        (None, {"critical_points": [-1, 3], "signs": ["+", "-", "+"]}),
+        ("x^2", {"critical_points": [0, 1], "signs": ["+", "-", "+"]}),
+        ("x^3/3 - 4x", {"critical_points": [2, -2], "signs": ["+", "-", "+"]}),
+        ("x^3/3 - 4x", {"critical_points": ["-2", 2], "signs": ["+", "-", "+"]}),
+        ("x^3/3 - 4x", {"critical_points": [-2, float("nan")], "signs": ["+", "-", "+"]}),
+        ("x^3/3 - 4x", {"critical_points": [-2, 2], "signs": ["+", "-"]}),
+        ("x^3/3 - 4x", {"critical_points": [-2, 2], "signs": ["+", "0", "+"]}),
+    ],
+)
+def test_sign_table_abstains_without_supported_target_and_artifact(target, payload):
+    result = DeterministicMathValidator(target_function_latex=target).validate_step(
+        step_type="SIGN_TABLE", content_latex=None, artifact_payload=payload
+    )
+    assert result.validity == MathValidity.NEEDS_REVIEW
+    assert result.score is None
+    assert not result.error_detected
