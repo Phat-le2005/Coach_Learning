@@ -381,29 +381,66 @@ class DeterministicMathValidator:
     def _validate_conclusion(
         self, content_latex: str | None, explanation_text: str | None = None
     ) -> ValidationResult:
-        text = (content_latex or "") + " " + (explanation_text or "")
-        if "(-1, 3)" in text and ("đồng biến" in text or "tăng" in text or "increasing" in text.lower()):
-            return ValidationResult(
-                validity=MathValidity.INVALID,
-                score=0.0,
-                confidence=0.95,
-                error_detected=True,
-                error_code="SIGN_TABLE_CONSEQUENCE_ERROR",
-                error_description="Kết luận sai khoảng đồng biến do bảng xét dấu trước đó bị sai.",
-                evidence_quote=text,
-            )
+        """Conservatively verify a single inner-interval monotonicity claim."""
+        needs_review = ValidationResult(
+            validity=MathValidity.NEEDS_REVIEW,
+            score=None,
+            confidence=0.0,
+            error_detected=False,
+            error_description="Kết luận ngoài phạm vi tự động kiểm chứng.",
+        )
+        if self._target_derivative is None or self._target_roots is None:
+            return needs_review
 
-        if "(-1, 3)" in text and ("nghịch biến" in text or "giảm" in text or "decreasing" in text.lower()):
+        try:
+            poly = sympy.Poly(self._target_derivative, self.x)
+            roots = sorted(self._target_roots)
+            if poly.degree() != 2 or len(roots) != 2 or not roots[0] < roots[1]:
+                return needs_review
+            lead = poly.LC()
+            if lead.is_positive:
+                expected_increasing = False
+            elif lead.is_negative:
+                expected_increasing = True
+            else:
+                return needs_review
+        except (ValueError, TypeError, sympy.PolynomialError):
+            return needs_review
+
+        # Only grade a single, explicit claim about the interval between roots.
+        text = (content_latex or "") + " " + (explanation_text or "")
+        intervals = re.findall(
+            r"\(\s*(-?\d+(?:\.\d+)?)\s*[,;]\s*(-?\d+(?:\.\d+)?)\s*\)",
+            text,
+        )
+        if not intervals:
+            return needs_review
+        unique_intervals = set(intervals)
+        if len(unique_intervals) != 1:
+            return needs_review
+        left, right = map(float, intervals[0])
+        if not (math.isclose(left, roots[0], abs_tol=1e-9, rel_tol=1e-9)
+                and math.isclose(right, roots[1], abs_tol=1e-9, rel_tol=1e-9)):
+            return needs_review
+
+        lower = (content_latex or "").lower()
+        increasing = any(term in lower for term in ("đồng biến", "tăng", "increasing"))
+        decreasing = any(term in lower for term in ("nghịch biến", "giảm", "decreasing"))
+        if increasing == decreasing or "không " in lower:
+            return needs_review
+        if increasing == expected_increasing:
             return ValidationResult(
                 validity=MathValidity.VALID,
                 score=1.0,
                 confidence=0.98,
                 error_detected=False,
             )
-
         return ValidationResult(
-            validity=MathValidity.NEEDS_REVIEW,
-            score=0.5,
-            confidence=0.6,
-            error_detected=False,
+            validity=MathValidity.INVALID,
+            score=0.0,
+            confidence=0.95,
+            error_detected=True,
+            error_code="SIGN_TABLE_CONSEQUENCE_ERROR",
+            error_description="Kết luận chiều biến thiên không phù hợp với dấu đạo hàm.",
+            evidence_quote=text,
         )
