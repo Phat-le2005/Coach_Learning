@@ -514,6 +514,7 @@ export interface OCRRecognizeRequest {
   page_index: number;
   stroke_ids?: string[] | null;
   hint_topic?: string | null;
+  include_alternatives?: boolean;
 }
 
 export interface OCRRecognizeResponse {
@@ -522,6 +523,7 @@ export interface OCRRecognizeResponse {
   suggested_step_type: StepKind;
   explanation_text: string | null;
   detected_symbols: string[];
+  alternative_latex: string[];
 }
 
 export interface StepMutationRequest {
@@ -540,6 +542,19 @@ export interface SolutionAttemptRead {
   current_revision: number;
   created_at: string;
   updated_at?: string;
+}
+
+export interface MathAttemptsPageRead {
+  items: SolutionAttemptRead[];
+  total: number;
+  page: number;
+  size: number;
+  total_pages: number;
+}
+
+export interface PracticeSessionStartRead {
+  id: string;
+  subject_id: string;
 }
 
 export function parseInkPoint(value: unknown, path = "point"): InkPoint {
@@ -642,6 +657,25 @@ export function parseSolutionAttemptRead(value: unknown, path = "attempt"): Solu
   };
 }
 
+export function parseMathAttemptsPageRead(value: unknown, path = "attempts"): MathAttemptsPageRead {
+  const source = record(value, path);
+  return {
+    items: array(source.items, `${path}.items`, parseSolutionAttemptRead),
+    total: integer(source.total, `${path}.total`),
+    page: integer(source.page, `${path}.page`),
+    size: integer(source.size, `${path}.size`),
+    total_pages: integer(source.total_pages, `${path}.total_pages`),
+  };
+}
+
+export function parsePracticeSessionStartRead(value: unknown, path = "practice_session"): PracticeSessionStartRead {
+  const source = record(value, path);
+  return {
+    id: nonEmptyString(source.id, `${path}.id`),
+    subject_id: nonEmptyString(source.subject_id, `${path}.subject_id`),
+  };
+}
+
 export function parseOCRRecognizeResponse(value: unknown, path = "ocr_recognize"): OCRRecognizeResponse {
   const source = record(value, path);
   const stepTypeVal = string(source.suggested_step_type, `${path}.suggested_step_type`) as StepKind;
@@ -651,6 +685,7 @@ export function parseOCRRecognizeResponse(value: unknown, path = "ocr_recognize"
     suggested_step_type: stepTypeVal,
     explanation_text: typeof source.explanation_text === "string" ? source.explanation_text : null,
     detected_symbols: array(source.detected_symbols ?? [], `${path}.detected_symbols`, (v, p) => string(v, p)),
+    alternative_latex: array(source.alternative_latex ?? [], `${path}.alternative_latex`, (v, p) => string(v, p)),
   };
 }
 

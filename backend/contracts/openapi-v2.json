@@ -434,6 +434,12 @@
             "description": "Gợi ý chủ đề bài toán để tăng độ chính xác của mô hình",
             "title": "Hint Topic"
           },
+          "include_alternatives": {
+            "default": false,
+            "description": "Thử thêm cách đọc từ cùng nét bút; chỉ trả gợi ý để học sinh chọn",
+            "title": "Include Alternatives",
+            "type": "boolean"
+          },
           "page_index": {
             "description": "Chỉ số trang chứa nét vẽ cần nhận diện (0-29)",
             "maximum": 29.0,
@@ -467,6 +473,15 @@
       "OCRRecognizeResponse": {
         "additionalProperties": false,
         "properties": {
+          "alternative_latex": {
+            "description": "Các cách đọc khác chưa được xác minh; không tự tạo bước giải",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 2,
+            "title": "Alternative Latex",
+            "type": "array"
+          },
           "confidence": {
             "description": "Độ tin cậy của kết quả nhận diện (0.0 - 1.0)",
             "maximum": 1.0,

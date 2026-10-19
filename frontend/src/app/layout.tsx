@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import "@/styles/tokens.css";
 import "@/styles/motion.css";
 import "@/styles/utilities.css";
+import "katex/dist/katex.min.css";
 import "./globals.css";
 
 export const metadata: Metadata = {

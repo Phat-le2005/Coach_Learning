@@ -306,13 +306,16 @@ def test_ocr_invariant_never_mutates_steps_or_mastery(
         select(func.count()).select_from(LearningEvidenceEvent)
     )
 
-    # Perform OCR recognition
-    resp = db_client.post(
-        f"/api/v2/math-solutions/attempts/{attempt_id}/ocr/recognize",
-        json={"page_index": 0, "hint_topic": "CALCULUS_INTEGRAL"},
-        headers=headers,
-    )
-    assert resp.status_code == 200
+    # Both the normal suggestion and an on-demand alternative request are read-only.
+    for include_alternatives in (False, True):
+        resp = db_client.post(
+            f"/api/v2/math-solutions/attempts/{attempt_id}/ocr/recognize",
+            json={"page_index": 0, "hint_topic": "CALCULUS_INTEGRAL",
+                  "include_alternatives": include_alternatives},
+            headers=headers,
+        )
+        assert resp.status_code == 200
+        assert resp.json()["alternative_latex"] == []
 
     db_session.expire_all()
     attempt_after = db_session.get(SolutionAttempt, attempt_id)

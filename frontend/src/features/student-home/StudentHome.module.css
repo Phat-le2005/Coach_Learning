@@ -2209,6 +2209,17 @@
     rgb(255 255 250 / 82%);
 }
 
+.practiceEntry {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px;
+  margin-top: 24px;
+  padding: clamp(20px, 3vw, 28px);
+  border: 1px solid rgb(60 141 104 / 24%);
+  background: rgb(255 255 250 / 82%);
+}
+
 .selfStudyIcon {
   display: grid;
   width: 48px;
@@ -2249,11 +2260,13 @@
 }
 
 @media (max-width: 720px) {
-  .selfStudyOnboarding {
+  .selfStudyOnboarding,
+  .practiceEntry {
     grid-template-columns: auto minmax(0, 1fr);
   }
 
-  .selfStudyOnboarding > :last-child {
+  .selfStudyOnboarding > :last-child,
+  .practiceEntry > :last-child {
     grid-column: 1 / -1;
     width: 100%;
   }

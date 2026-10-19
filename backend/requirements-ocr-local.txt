@@ -1,0 +1,5 @@
+# Optional, zero-fee on-device Math OCR. Install in an isolated Python environment.
+# The base FastAPI backend does not require PyTorch or a GPU.
+-r requirements.txt
+Pillow>=10,<12
+pix2tex==0.1.4

@@ -37,6 +37,12 @@ npm run dev
 
 Mở `http://localhost:3000/login`. Token chỉ tồn tại trong HttpOnly cookie do Next Route Handlers quản lý; frontend không lưu token trong `localStorage`.
 
+### Thử trang làm bài Toán
+
+Đăng nhập bằng tài khoản STUDENT, vào `/student` và chọn **Vào trang làm bài**, hoặc mở trực tiếp `/student/attempts`. Trang này liệt kê lượt làm thật của chính học sinh. Nút **Bắt đầu làm bài** tạo phiên tự luyện từ môn học được phép truy cập, chọn một câu hỏi `APPROVED` có phân loại hợp lệ, rồi mở `/student/attempts/{id}` với ID thật; không nhập nguyên văn `<attemptId>` vào thanh địa chỉ. Nếu chưa có câu hỏi đủ điều kiện trong database, trang sẽ báo rõ và không tạo bài làm giả.
+
+Để thử nhận diện nét viết, backend phải chạy với OCR provider thực (`MATH_OCR_PROVIDER=local_rapid` và checkpoint ONNX đã cài), sau đó viết bằng **Bút** và nhấn **Nhận diện AI**. OCR chỉ gợi ý; học sinh kiểm tra/sửa công thức và chủ động **Xác nhận bước giải**. Khi provider đang `disabled`, trang viết vẫn mở được nhưng nút OCR sẽ nhận lỗi dịch vụ thay vì kết quả giả.
+
 ## Authentication boundary
 
 - Browser gọi `/auth/login`, `/auth/refresh`, `/auth/me`, `/auth/logout` trên Next.js BFF.

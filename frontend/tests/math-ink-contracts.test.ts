@@ -11,9 +11,25 @@ import {
   parseProblemOptionRead,
   parseProblemRead,
   parseSolutionAttemptRead,
+  parseMathAttemptsPageRead,
+  parsePracticeSessionStartRead,
   parseOCRRecognizeResponse,
 } from "../src/lib/api/contracts.js";
 import { ApiContractError } from "../src/lib/api/validation.js";
+
+test("attempt history validates real paginated records", () => {
+  const result = parseMathAttemptsPageRead({
+    items: [{ id: "attempt-1", question_id: "question-1", status: "DRAFT", attempt_revision_number: 1, started_at: "2026-10-19T00:00:00Z" }],
+    total: 1, page: 1, size: 20, total_pages: 1,
+  });
+  assert.equal(result.items[0].id, "attempt-1");
+  assert.throws(() => parseMathAttemptsPageRead({ items: [{ id: "attempt-1" }], total: 1, page: 1, size: 20, total_pages: 1 }), ApiContractError);
+});
+
+test("practice session start validates its real identifiers", () => {
+  assert.deepEqual(parsePracticeSessionStartRead({ id: "session-1", subject_id: "subject-1" }), { id: "session-1", subject_id: "subject-1" });
+  assert.throws(() => parsePracticeSessionStartRead({ id: "session-1" }), ApiContractError);
+});
 
 test("parseInkPoint parses valid point with default pressure", () => {
   const result = parseInkPoint({ x: 0.25, y: 0.75 });
@@ -181,4 +197,18 @@ test("parseOCRRecognizeResponse parses valid recognition output", () => {
   assert.equal(result.suggested_step_type, "EXPLANATION");
   assert.equal(result.explanation_text, "Từng bước tính nguyên hàm.");
   assert.deepEqual(result.detected_symbols, ["\\int", "3x^2", "dx"]);
+  assert.deepEqual(result.alternative_latex, []);
+});
+
+test("parseOCRRecognizeResponse keeps optional student-reviewed alternatives typed", () => {
+  const input = {
+    latex: "x^2",
+    confidence: 0,
+    suggested_step_type: "EXPLANATION",
+    explanation_text: null,
+    detected_symbols: [],
+    alternative_latex: ["x^{2}", String.raw`\chi^2`],
+  };
+  assert.deepEqual(parseOCRRecognizeResponse(input).alternative_latex, input.alternative_latex);
+  assert.throws(() => parseOCRRecognizeResponse({ ...input, alternative_latex: [42] }));
 });

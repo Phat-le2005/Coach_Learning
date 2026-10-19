@@ -17,6 +17,14 @@ class MathOCRAdapter(ABC):
         """Recognize vector ink strokes into LaTeX formula and explanation text."""
         pass
 
+    def recognize_with_alternatives(
+        self,
+        strokes: list[InkStroke],
+        hint_topic: str | None = None,
+    ) -> OCRRecognizeResponse:
+        """Optional, on-demand suggestions; providers without this feature keep one result."""
+        return self.recognize(strokes, hint_topic=hint_topic)
+
 
 class MockMathOCRAdapter(MathOCRAdapter):
     """Deterministic, high-accuracy mock adapter for testing, development and CI."""

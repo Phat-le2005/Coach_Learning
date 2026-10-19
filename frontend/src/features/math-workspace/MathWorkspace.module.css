@@ -796,6 +796,12 @@
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .modalContainer {
+    animation: none;
+  }
+}
+
 .modalHeader {
   display: flex;
   align-items: center;
@@ -952,6 +958,88 @@
   font-style: italic;
   font-weight: 600;
   color: #1e3a8a;
+}
+
+.inkPreview {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.inkPreviewSvg {
+  display: block;
+  width: 100%;
+  height: 112px;
+  border: 1px solid #cbd8ca;
+  border-radius: 10px;
+  background: #fffefa;
+}
+
+.ocrCandidates {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+  gap: 0.5rem;
+}
+
+.ocrCandidate {
+  display: grid;
+  gap: 0.4rem;
+  min-height: 78px;
+  padding: 0.7rem;
+  border: 1px solid #cbd8ca;
+  border-radius: 10px;
+  background: #fffefa;
+  color: #17392d;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ocrCandidate:hover:not(:disabled),
+.ocrCandidateSelected {
+  border-color: #39755b;
+  background: #f0f8ef;
+}
+
+.ocrCandidate:focus-visible,
+.ocrRetryButton:focus-visible {
+  outline: 3px solid #548d70;
+  outline-offset: 2px;
+}
+
+.ocrCandidateLabel {
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.ocrCandidateFormula {
+  overflow-x: auto;
+  font-size: 1rem;
+}
+
+.ocrRetryButton {
+  align-self: flex-start;
+  border: 0;
+  background: transparent;
+  padding: 0.3rem 0;
+  color: #276748;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ocrRetryButton:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+.renderedFormula {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  color: #17392d;
+}
+
+.previewError {
+  color: #9a5421;
+  font-size: 0.8rem;
 }
 
 .emptyPreviewText {

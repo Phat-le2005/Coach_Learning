@@ -1,0 +1,7 @@
+# Academic datasets are byte-hashed by validators. Keep their checkout bytes
+# stable on Windows even when a developer has core.autocrlf=true.
+backend/data/**/*.json text eol=lf
+backend/data/**/*.csv text eol=lf
+# Generated API snapshots are compared byte-for-byte by contract checks.
+backend/contracts/openapi-v2.json text eol=lf
+backend/contracts/openapi-v2.sha256 text eol=lf
