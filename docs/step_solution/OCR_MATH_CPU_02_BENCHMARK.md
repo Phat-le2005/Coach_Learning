@@ -5,9 +5,10 @@
 On 2026-10-19, the user authorized installation and a real CPU run after freeing
 RAM. RapidLaTeXOCR and all four official checkpoints were installed outside the
 global Python environment. **Real ONNX inference ran on five self-rendered
-typeset images** and a separate 25-call repeat of those same images. The five
-images are technical smoke samples, not handwritten evidence. The user confirmed
-that no permitted set of 20 handwritten formulas is available yet. Therefore
+typeset images**, a separate 25-call repeat of those same images, and the
+20-image synthetic bundle described below. These images are technical smoke
+samples, not handwritten evidence. The user confirmed that no permitted set of
+20 human-handwritten formulas is available yet. Therefore
 the overall handwritten-OCR acceptance state remains `NOT_TESTED`, despite the
 real model execution reported below. No fake predictor was used for measurements.
 
@@ -71,6 +72,7 @@ actual human correction count remains unset until reviewed.
 | Group | Distinct images / calls | Recognized | Literal exact LaTeX | Mean / p95 inference | Peak process RSS |
 |---|---:|---:|---:|---:|---:|
 | Typeset technical smoke | 5 / 5 | 5/5 | 1/5 (20%) | 0.509 / 0.706 seconds | 316.8 MiB during initialization; 313.0 MiB during inference |
+| New synthetic handwriting-styled smoke bundle | 20 / 20 | 20/20 | 2/20 (10%) | 0.526 / 1.092 seconds | 314.3 MiB during inference |
 | Repeat stability check on the same five images | 5 / 25 | 25/25 | 5/25 (20%) | 0.477 / 0.650 seconds | 314.0 MiB during inference |
 | Permitted handwriting | 0 / 0 of required 20 distinct images | NOT_TESTED | NOT_TESTED | NOT_TESTED | NOT_TESTED |
 
@@ -95,6 +97,48 @@ LaTeX forms. Four literal mismatches do not equal four confirmed human edits;
 actual human correction count remains unmeasured. Accuracy and latency
 thresholds for handwritten samples have not been agreed, so no handwritten
 `PASS` or `FAIL` can be concluded.
+
+### Additional 20-image synthetic smoke run
+
+The user supplied `backend/data/EduMS_OCR_20_mau_Toan12.zip` on 2026-10-19.
+Its README explicitly labels `synthetic_smoke/images/S01.png` through
+`S20.png` as self-authored simulated handwriting graphics, **not real human
+handwriting**. The archive contains no handwritten PNGs; the
+`handwritten/` directory has a template manifest only. ZIP CRC checks passed,
+and the 20 manifest entries reference 20 distinct PNG hashes. Only the
+synthetic manifest and its images were extracted into gitignored `.tmp/` for
+this test. The original archive was not modified or committed.
+
+The real ONNX model returned nonempty text for all 20 synthetic images, but
+literal LaTeX exact match was 2/20 (10%), with mean literal CER 1.480, mean
+inference time 0.526 seconds, p95 1.092 seconds, model load 1.515 seconds,
+and sampled peak inference process RSS 314.3 MiB. Literal CER exceeds 1 here
+because several predictions contain long hallucinated fragments. A manual
+string/content review separated the 18 literal mismatches into nine apparent
+formatting-only differences (`S01`, `S04`, `S06`, `S07`, `S08`, `S10`, `S13`,
+`S16`, `S17`) and nine substantive recognition errors (`S02`, `S03`, `S09`,
+`S11`, `S12`, `S14`, `S15`, `S18`, `S19`). Including the two exact matches,
+11/20 appear to preserve the intended mathematical content; this is a
+preliminary human review, not a semantic accuracy benchmark.
+
+Concrete errors include `x` becoming `X` or `\\chi` (`S02`, `S03`, `S12`),
+`y` becoming `V` (`S18`), added derivative text (`S09`), malformed limit and
+trigonometric expressions (`S14`, `S15`), and a nonsensical output for the
+visually clear `\\sqrt{16}=4` (`S19`). Re-running `S09`, `S14`, `S15`, and
+`S19` after grayscale conversion and foreground cropping produced the same
+predictions. This small preprocessing probe does not establish that other
+preprocessing or models cannot help. It does establish that the current model
+cannot be trusted to grade from these OCR suggestions without user review.
+
+Command, run from `backend/` in the isolated OCR worktree:
+
+```powershell
+.venv/Scripts/python.exe -m scripts.benchmark_ocr_cpu --manifest ../.tmp/ocr_20_synthetic/manifest.json --model-dir ../.tmp/ocr_cpu_models --output ../.tmp/ocr_cpu_20_synthetic_report.json
+```
+
+The CLI printed `NOT_TESTED` and returned nonzero because it deliberately
+requires 20 permitted **human handwritten** samples for acceptance. The
+synthetic-smoke measurements above did run; they are not a handwriting PASS.
 
 ## EduMS integration checked
 
