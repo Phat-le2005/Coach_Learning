@@ -5,6 +5,7 @@ import { Sparkles, Check, X, AlertCircle, Loader2 } from "lucide-react";
 import type { OCRRecognizeResponse, StepKind } from "@/lib/api/contracts";
 import { STEP_KINDS } from "@/lib/api/contracts";
 import styles from "../MathWorkspace.module.css";
+import { getOcrConfidenceDisplay } from "../utils/ocr-confidence";
 
 const STEP_KIND_LABELS: Record<StepKind, string> = {
   DERIVATIVE_CALCULATION: "Tính đạo hàm (Derivative Calculation)",
@@ -52,11 +53,11 @@ export function OcrConfirmModal({
     return null;
   }
 
-  const confidencePercent = Math.round(ocrData.confidence * 100);
+  const confidenceDisplay = getOcrConfidenceDisplay(ocrData.confidence);
   const confidenceClass =
-    confidencePercent >= 90
+    confidenceDisplay.known && confidenceDisplay.percent !== null && confidenceDisplay.percent >= 90
       ? styles.confidenceHigh
-      : confidencePercent >= 75
+      : confidenceDisplay.known && confidenceDisplay.percent !== null && confidenceDisplay.percent >= 75
       ? styles.confidenceMedium
       : styles.confidenceLow;
 
@@ -87,7 +88,7 @@ export function OcrConfirmModal({
             <Sparkles className={styles.sparkleIcon} size={20} />
             <span id="ocr-modal-title">Xác nhận nhận diện nét vẽ (OCR)</span>
             <span className={`${styles.confidenceBadge} ${confidenceClass}`}>
-              {confidencePercent}% tin cậy
+              {confidenceDisplay.label}
             </span>
           </div>
           <button
