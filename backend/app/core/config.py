@@ -39,6 +39,12 @@ class Settings(BaseSettings):
     refresh_token_expire_days: int = Field(default=7, ge=1, le=30)
     seed_demo_password: SecretStr = SecretStr("")
 
+    # OCR is disabled by default; no mock output is ever served automatically.
+    math_ocr_provider: Literal["disabled", "mathpix", "mock"] = "disabled"
+    mathpix_app_id: str = ""
+    mathpix_app_key: SecretStr = SecretStr("")
+    math_ocr_timeout_seconds: float = Field(default=12.0, ge=1.0, le=30.0)
+
     ai_provider: str = Field(default="mock", min_length=1)
     ai_api_key: SecretStr = SecretStr("")
     ai_model_fast: str = Field(default="gemini-2.5-flash", min_length=1)
