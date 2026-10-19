@@ -8,6 +8,7 @@ Image = pytest.importorskip("PIL.Image")
 from app.core.exceptions import ApplicationError
 from app.math_ink.schemas import InkPoint, InkStroke
 from app.math_ocr.local_render import render_formula_png
+from app.math_ocr.local_preprocess import alternative_formula_pngs
 
 
 def stroke(*coords, tool="PEN", width=2):
@@ -55,3 +56,15 @@ def test_no_pen_or_excessive_points_fails_closed():
     with pytest.raises(ApplicationError) as ex2:
         render_formula_png(oversized)
     assert ex2.value.code == "OCR_STROKES_TOO_LARGE"
+
+
+def test_alternative_scales_preserve_ink_without_changing_original():
+    original = render_formula_png([stroke((0.30, 0.20), (0.33, 0.22))])
+    smaller, larger = alternative_formula_pngs(original)
+    assert original == render_formula_png([stroke((0.30, 0.20), (0.33, 0.22))])
+    base = Image.open(BytesIO(original))
+    for raw, width in ((smaller, base.width // 2), (larger, base.width * 3 // 2)):
+        image = Image.open(BytesIO(raw))
+        assert image.width == max(1, width)
+        assert image.mode == "RGB"
+        assert any(pixel != (255, 255, 255) for pixel in image.getdata())

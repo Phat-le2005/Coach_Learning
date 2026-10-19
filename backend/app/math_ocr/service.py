@@ -50,4 +50,6 @@ class MathOCRService:
                 "Không tìm thấy nét vẽ nào trên trang này để thực hiện nhận diện.",
             )
 
+        if req.include_alternatives:
+            return self.adapter.recognize_with_alternatives(strokes, hint_topic=req.hint_topic)
         return self.adapter.recognize(strokes, hint_topic=req.hint_topic)

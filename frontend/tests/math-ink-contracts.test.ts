@@ -181,4 +181,18 @@ test("parseOCRRecognizeResponse parses valid recognition output", () => {
   assert.equal(result.suggested_step_type, "EXPLANATION");
   assert.equal(result.explanation_text, "Từng bước tính nguyên hàm.");
   assert.deepEqual(result.detected_symbols, ["\\int", "3x^2", "dx"]);
+  assert.deepEqual(result.alternative_latex, []);
+});
+
+test("parseOCRRecognizeResponse keeps optional student-reviewed alternatives typed", () => {
+  const input = {
+    latex: "x^2",
+    confidence: 0,
+    suggested_step_type: "EXPLANATION",
+    explanation_text: null,
+    detected_symbols: [],
+    alternative_latex: ["x^{2}", String.raw`\chi^2`],
+  };
+  assert.deepEqual(parseOCRRecognizeResponse(input).alternative_latex, input.alternative_latex);
+  assert.throws(() => parseOCRRecognizeResponse({ ...input, alternative_latex: [42] }));
 });

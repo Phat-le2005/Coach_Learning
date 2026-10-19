@@ -140,6 +140,41 @@ The CLI printed `NOT_TESTED` and returned nonzero because it deliberately
 requires 20 permitted **human handwritten** samples for acceptance. The
 synthetic-smoke measurements above did run; they are not a handwriting PASS.
 
+### On-demand alternative suggestions (follow-up implementation)
+
+Four deterministic resizing experiments on the same 20 synthetic PNGs showed
+that no single scale improves every formula. Half-size fixed the mistaken
+`\\chi` in `S03`, while 1.5x offered an apparently correct reading for `S09`,
+`S14`, and `S19`. Those scales also degraded other already-correct readings.
+The implementation therefore **never automatically picks a resized result**.
+The first OCR response is unchanged and keeps one inference; an explicit
+student action requests the two additional scales, then the student selects or
+edits a suggestion before a Solution Step can be created.
+
+Running real ONNX inference for the first reading plus both optional scales on
+all 20 synthetic images took mean 1.237 seconds, p95 1.771 seconds per request,
+and sampled peak process RSS 326.2 MiB. Thirteen images yielded at least one
+distinct alternative. Manual inspection found that four initially substantive
+errors (`S03`, `S09`, `S14`, `S19`) had an apparently correct alternative. This
+is **candidate availability**, not automatic accuracy: the student still has
+to identify the correct formula, and some alternatives are worse. Literal
+exact LaTeX remained 2/20 for the candidate set because harmless formatting
+differences still count as mismatches. The predictions and timings are in the
+gitignored `.tmp/ocr_20_on_demand_alternatives.json`; no new model or synthetic
+asset was committed. No human-handwriting accuracy is claimed.
+
+The frontend sends only the saved, nonempty PEN stroke IDs to both OCR calls.
+The confirmation modal shows those strokes and renders the LaTeX
+locally with KaTeX configured for untrusted input. The student can inspect the
+original and optional alternative, edit the formula, then explicitly confirm.
+The backend v2 request adds optional `include_alternatives=false`; its response
+adds `alternative_latex=[]`. API v1 is untouched. OCR still writes no solution
+step, score, mastery or evidence.
+An additional direct adapter check ran saved-style PEN strokes through Pillow
+rasterization, the real ONNX model, and both optional scales; it returned a
+nonempty primary suggestion and two alternatives with uncalibrated confidence
+`0.0`. Those crude strokes are only a path smoke test, not an accuracy sample.
+
 ## EduMS integration checked
 
 The existing frontend saves dirty ink before OCR and prevents recognition if
@@ -180,6 +215,12 @@ Run from `backend/` unless stated otherwise:
 | `npm.cmd run typecheck` from `frontend/` | PASS |
 | `npm.cmd run build` from `frontend/` | BLOCKED: Turbopack rejects a test-only `node_modules` junction outside the worktree root |
 | `npm.cmd run build -- --webpack` from `frontend/` | PASS: compiled, typed, and generated all 16 static pages |
+| `.venv/Scripts/python.exe -m pytest -q tests/math_solutions` after on-demand changes | 132 passed, 5 skipped |
+| `.venv/Scripts/python.exe -m app.api.check_contract` and `.venv/Scripts/python.exe -m app.api.v2.check_contract` after changes | Both PASS |
+| `npm.cmd ci --ignore-scripts --no-audit --no-fund` in a gitignored copy of `frontend/` | PASS; avoids the worktree's shared `node_modules` junction |
+| `npm.cmd run test` in that isolated frontend copy | 128 passed |
+| `npm.cmd run typecheck` in that isolated frontend copy | PASS |
+| `npm.cmd run build` in that isolated frontend copy | PASS with Next.js 16 Turbopack; 16 static pages generated |
 
 Earlier Python tests used the global environment; the current OCR/solution
 tests and API contracts above were rerun in the isolated OCR venv. An attempted

@@ -9,6 +9,7 @@ class OCRRecognizeRequest(BaseModel):
     page_index: int = Field(ge=0, le=29, description="Chỉ số trang chứa nét vẽ cần nhận diện (0-29)")
     stroke_ids: list[UUID] | None = Field(default=None, description="Danh sách ID nét vẽ được chọn để nhận diện, hoặc None để nhận diện cả trang")
     hint_topic: str | None = Field(default=None, max_length=200, description="Gợi ý chủ đề bài toán để tăng độ chính xác của mô hình")
+    include_alternatives: bool = Field(default=False, description="Thử thêm cách đọc từ cùng nét bút; chỉ trả gợi ý để học sinh chọn")
 
 
 class OCRRecognizeResponse(BaseModel):
@@ -18,3 +19,4 @@ class OCRRecognizeResponse(BaseModel):
     suggested_step_type: StepKind = Field(description="Loại bước giải được gợi ý (TRANSFORMATION, CALCULATION, CONCLUSION, DEDUCTION)")
     explanation_text: str | None = Field(default=None, description="Văn bản diễn giải tiếng Việt kèm theo (nếu phát hiện)")
     detected_symbols: list[str] = Field(default_factory=list, description="Các ký hiệu toán học chính được phát hiện trong nét vẽ")
+    alternative_latex: list[str] = Field(default_factory=list, max_length=2, description="Các cách đọc khác chưa được xác minh; không tự tạo bước giải")

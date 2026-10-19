@@ -7,6 +7,7 @@ CPU and memory spikes on low-spec demo machines.
 """
 from __future__ import annotations
 
+import logging
 from functools import lru_cache
 from importlib.util import find_spec
 from pathlib import Path
@@ -18,11 +19,13 @@ from app.core.exceptions import ApplicationError
 from app.math_ink.schemas import InkStroke
 from app.math_ocr.adapter import MathOCRAdapter
 from app.math_ocr.local_render import render_formula_png
+from app.math_ocr.local_preprocess import alternative_formula_pngs
 from app.math_ocr.schemas import OCRRecognizeResponse
 from app.math_solutions.schemas import StepKind
 
 _CPU_INFERENCE_LOCK = Lock()
 _CPU_MODEL_LOCK = Lock()
+logger = logging.getLogger(__name__)
 _REQUIRED_WEIGHTS = (
     "encoder.onnx", "decoder.onnx", "image_resizer.onnx", "tokenizer.json",
 )
@@ -97,6 +100,17 @@ def _predict_png(png: bytes) -> tuple[str, float]:
     return model(png)
 
 
+def _usable_latex(result: object) -> str | None:
+    if not isinstance(result, tuple) or len(result) != 2 or not isinstance(result[0], str):
+        return None
+    latex = result[0].strip()
+    if (latex.startswith(r"\(") and latex.endswith(r"\)")) or (
+        latex.startswith(r"\[") and latex.endswith(r"\]")
+    ):
+        latex = latex[2:-2].strip()
+    return latex if latex and len(latex) <= 8000 else None
+
+
 class LocalRapidOCRAdapter(MathOCRAdapter):
     """Run one short mathematical expression through the local ONNX model."""
 
@@ -107,6 +121,21 @@ class LocalRapidOCRAdapter(MathOCRAdapter):
         self,
         strokes: list[InkStroke],
         hint_topic: str | None = None,
+    ) -> OCRRecognizeResponse:
+        return self._recognize(strokes, include_alternatives=False)
+
+    def recognize_with_alternatives(
+        self,
+        strokes: list[InkStroke],
+        hint_topic: str | None = None,
+    ) -> OCRRecognizeResponse:
+        return self._recognize(strokes, include_alternatives=True)
+
+    def _recognize(
+        self,
+        strokes: list[InkStroke],
+        *,
+        include_alternatives: bool,
     ) -> OCRRecognizeResponse:
         # Do not infer text from topic/number of strokes. Render actual drawing.
         if not _CPU_INFERENCE_LOCK.acquire(blocking=False):
@@ -126,31 +155,28 @@ class LocalRapidOCRAdapter(MathOCRAdapter):
                     "Local OCR could not process this expression.",
                 ) from exc
 
-            # RapidLaTeXOCR officially returns (latex, elapsed_seconds).
-            if not isinstance(result, tuple) or len(result) != 2:
-                raise ApplicationError(
-                    422, "OCR_NOT_RECOGNIZED", "No mathematical expression was recognized.",
-                )
-            latex, _elapsed = result
-            if not isinstance(latex, str):
-                raise ApplicationError(
-                    422, "OCR_NOT_RECOGNIZED", "No mathematical expression was recognized.",
-                )
-            latex = latex.strip()
-            if (latex.startswith(r"\(") and latex.endswith(r"\)")) or (
-                latex.startswith(r"\[") and latex.endswith(r"\]")
-            ):
-                latex = latex[2:-2].strip()
-            if not latex or len(latex) > 8000:
+            latex = _usable_latex(result)
+            if latex is None:
                 raise ApplicationError(
                     422, "OCR_NOT_RECOGNIZED", "No usable mathematical expression was recognized.",
                 )
+            alternatives: list[str] = []
+            if include_alternatives:
+                try:
+                    for variant_png in alternative_formula_pngs(image_bytes):
+                        candidate = _usable_latex(self._predictor(variant_png))
+                        if candidate and candidate != latex and candidate not in alternatives:
+                            alternatives.append(candidate)
+                except Exception:
+                    # A failed optional retry must not discard the usable first suggestion.
+                    logger.warning("Optional local OCR retry failed")
             return OCRRecognizeResponse(
                 latex=latex,
                 confidence=0.0,  # Provider doesn't expose calibrated confidence.
                 suggested_step_type=StepKind.EXPLANATION,
                 explanation_text=None,
                 detected_symbols=[],
+                alternative_latex=alternatives,
             )
         finally:
             _CPU_INFERENCE_LOCK.release()

@@ -16,6 +16,7 @@ import { MAX_PAGES, A4_WIDTH } from "./types";
 import { generateUuid } from "./utils/ink-math";
 import { mathInkStorage } from "./storage/indexeddb";
 import { ensureLatestInkSaved } from "./utils/ocr-sync";
+import { getOcrPenStrokes } from "./utils/ocr-ink";
 import { WorkspaceToolbar } from "./components/WorkspaceToolbar";
 import { PageNavigator } from "./components/PageNavigator";
 import { ProblemPane } from "./components/ProblemPane";
@@ -94,6 +95,8 @@ export function MathWorkspace({
   const [isRecognizingOCR, setIsRecognizingOCR] = useState(false);
   const [ocrModalOpen, setOcrModalOpen] = useState(false);
   const [ocrData, setOcrData] = useState<OCRRecognizeResponse | null>(null);
+  const [ocrSourcePageIndex, setOcrSourcePageIndex] = useState<number | null>(null);
+  const [ocrSourceStrokes, setOcrSourceStrokes] = useState<InkStroke[]>([]);
   const [isSubmittingStep, setIsSubmittingStep] = useState(false);
   const [ocrError, setOcrError] = useState<string | null>(null);
 
@@ -210,7 +213,8 @@ export function MathWorkspace({
 
   // OCR Recognition Workflow (Human-in-the-loop Invariant)
   const handleTriggerOCR = useCallback(async () => {
-    if (currentPageMemory.strokes.length === 0) {
+    const penStrokes = getOcrPenStrokes(currentPageMemory.strokes);
+    if (penStrokes.length === 0) {
       return;
     }
 
@@ -236,9 +240,12 @@ export function MathWorkspace({
       // 2. Call OCR recognition
       const resp = await apiClient.recognizeMathInk(accessToken, attemptId, {
         page_index: currentPageIndex,
+        stroke_ids: penStrokes.map((stroke) => stroke.id),
       });
 
       setOcrData(resp);
+      setOcrSourcePageIndex(currentPageIndex);
+      setOcrSourceStrokes(penStrokes);
       setOcrModalOpen(true);
     } catch (err: unknown) {
       if (err instanceof ApiResponseError) {
@@ -261,6 +268,18 @@ export function MathWorkspace({
     attemptId,
   ]);
 
+  const handleRequestOcrAlternatives = useCallback(async (): Promise<string[]> => {
+    if (ocrSourcePageIndex === null || ocrSourceStrokes.length === 0) {
+      throw new Error("No original pen strokes available for OCR retry.");
+    }
+    const response = await apiClient.recognizeMathInk(accessToken, attemptId, {
+      page_index: ocrSourcePageIndex,
+      stroke_ids: ocrSourceStrokes.map((stroke) => stroke.id),
+      include_alternatives: true,
+    });
+    return [response.latex, ...response.alternative_latex];
+  }, [ocrSourcePageIndex, ocrSourceStrokes, apiClient, accessToken, attemptId]);
+
   const handleConfirmStep = useCallback(
     async (stepType: StepKind, latex: string, explanation: string) => {
       setIsSubmittingStep(true);
@@ -279,6 +298,8 @@ export function MathWorkspace({
         setAttempt(updatedAttempt);
         setOcrModalOpen(false);
         setOcrData(null);
+        setOcrSourcePageIndex(null);
+        setOcrSourceStrokes([]);
       } catch (err: unknown) {
         if (err instanceof ApiResponseError) {
           setOcrError(err.message);
@@ -626,7 +647,7 @@ export function MathWorkspace({
         onResetZoom={() => setZoomLevel(1.0)}
         onTriggerOCR={handleTriggerOCR}
         isRecognizingOCR={isRecognizingOCR}
-        strokeCount={currentPageMemory.strokes.length}
+        strokeCount={getOcrPenStrokes(currentPageMemory.strokes).length}
       />
 
       {/* Main 2-Column Split Workspace */}
@@ -665,6 +686,8 @@ export function MathWorkspace({
         ocrData={ocrData}
         isSubmitting={isSubmittingStep}
         onConfirmStep={handleConfirmStep}
+        onRequestAlternatives={handleRequestOcrAlternatives}
+        sourceStrokes={ocrSourceStrokes}
         errorMessage={ocrError}
       />
     </div>

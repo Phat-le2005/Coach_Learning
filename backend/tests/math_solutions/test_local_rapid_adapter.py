@@ -39,6 +39,45 @@ def test_rapid_adapter_returns_model_text_not_problem_hint(monkeypatch):
     assert result.confidence == 0.0
     assert result.explanation_text is None
     assert captured == [b"real-render"]
+    assert result.alternative_latex == []
+
+
+def test_alternatives_are_on_demand_and_never_replace_primary(monkeypatch):
+    import app.math_ocr.local_rapid_adapter as module
+    monkeypatch.setattr(module, "render_formula_png", lambda strokes: b"original")
+    monkeypatch.setattr(module, "alternative_formula_pngs", lambda raw: (b"half", b"large"))
+    seen = []
+
+    def predictor(raw):
+        seen.append(raw)
+        return {b"original": "x^{2}", b"half": "x^2", b"large": r"\chi^{2}"}[raw], 0.1
+
+    adapter = LocalRapidOCRAdapter(predictor)
+    default = adapter.recognize([sample()])
+    assert default.latex == "x^{2}"
+    assert default.alternative_latex == []
+    assert seen == [b"original"]
+
+    reviewed = adapter.recognize_with_alternatives([sample()])
+    assert reviewed.latex == "x^{2}"
+    assert reviewed.alternative_latex == ["x^2", r"\chi^{2}"]
+    assert reviewed.confidence == 0.0
+    assert seen == [b"original", b"original", b"half", b"large"]
+
+
+def test_failed_alternate_keeps_first_suggestion(monkeypatch):
+    import app.math_ocr.local_rapid_adapter as module
+    monkeypatch.setattr(module, "render_formula_png", lambda strokes: b"original")
+    monkeypatch.setattr(module, "alternative_formula_pngs", lambda raw: (b"half", b"large"))
+
+    def predictor(raw):
+        if raw == b"large":
+            raise RuntimeError("private model detail")
+        return ("x^2" if raw == b"original" else "x^2"), 0.1
+
+    result = LocalRapidOCRAdapter(predictor).recognize_with_alternatives([sample()])
+    assert result.latex == "x^2"
+    assert result.alternative_latex == []
 
 
 def test_rapid_adapter_fails_when_result_missing(monkeypatch):

@@ -514,6 +514,7 @@ export interface OCRRecognizeRequest {
   page_index: number;
   stroke_ids?: string[] | null;
   hint_topic?: string | null;
+  include_alternatives?: boolean;
 }
 
 export interface OCRRecognizeResponse {
@@ -522,6 +523,7 @@ export interface OCRRecognizeResponse {
   suggested_step_type: StepKind;
   explanation_text: string | null;
   detected_symbols: string[];
+  alternative_latex: string[];
 }
 
 export interface StepMutationRequest {
@@ -651,6 +653,7 @@ export function parseOCRRecognizeResponse(value: unknown, path = "ocr_recognize"
     suggested_step_type: stepTypeVal,
     explanation_text: typeof source.explanation_text === "string" ? source.explanation_text : null,
     detected_symbols: array(source.detected_symbols ?? [], `${path}.detected_symbols`, (v, p) => string(v, p)),
+    alternative_latex: array(source.alternative_latex ?? [], `${path}.alternative_latex`, (v, p) => string(v, p)),
   };
 }
 
