@@ -11,8 +11,9 @@ from functools import lru_cache
 from importlib.util import find_spec
 from pathlib import Path
 from threading import Lock
-from typing import Callable
+from typing import Any, Callable
 
+from app.core.config import BACKEND_DIR, get_settings
 from app.core.exceptions import ApplicationError
 from app.math_ink.schemas import InkStroke
 from app.math_ocr.adapter import MathOCRAdapter
@@ -25,26 +26,53 @@ _CPU_MODEL_LOCK = Lock()
 _REQUIRED_WEIGHTS = (
     "encoder.onnx", "decoder.onnx", "image_resizer.onnx", "tokenizer.json",
 )
+_MIN_MODEL_BYTES = {
+    "encoder.onnx": 1_000_000,
+    "decoder.onnx": 1_000_000,
+    "image_resizer.onnx": 1_000_000,
+    "tokenizer.json": 1_000,
+}
 
 
-@lru_cache(maxsize=1)
-def _get_cpu_model():
-    """Lazy load ONNX sessions only after explicit model preinstallation."""
+def inspect_cpu_model_files(model_dir: Path | None = None) -> tuple[Path, dict[str, int]]:
+    """Check the four preinstalled files without importing or starting the model."""
     spec = find_spec("rapid_latex_ocr")
     if spec is None or spec.origin is None:
         raise ApplicationError(
             503, "OCR_LOCAL_DEPENDENCY_MISSING",
             "Install optional RapidLaTeXOCR CPU dependencies to enable local OCR.",
         )
-    models = Path(spec.origin).resolve().parent / "models"
-    if any(not (models / name).is_file() for name in _REQUIRED_WEIGHTS):
+    if model_dir is None:
+        model_dir = get_settings().math_ocr_model_dir
+    if model_dir is None:
+        models = Path(spec.origin).resolve().parent / "models"
+    else:
+        models = model_dir if model_dir.is_absolute() else BACKEND_DIR / model_dir
+    models = models.resolve()
+    sizes = {
+        name: (models / name).stat().st_size if (models / name).is_file() else 0
+        for name in _REQUIRED_WEIGHTS
+    }
+    if any(sizes[name] < _MIN_MODEL_BYTES[name] for name in _REQUIRED_WEIGHTS):
         raise ApplicationError(
             503, "OCR_LOCAL_MODEL_UNAVAILABLE",
-            "Local OCR model weights are not provisioned. See OCR CPU setup guide.",
+            "Local OCR model files are missing or incomplete. See OCR CPU setup guide.",
         )
+    return models, sizes
+
+
+@lru_cache(maxsize=1)
+def _get_cpu_model(model_dir: str) -> Any:
+    """Load ONNX sessions from checked paths; never invoke upstream auto-download."""
+    models, _ = inspect_cpu_model_files(Path(model_dir))
     try:
         from rapid_latex_ocr import LaTeXOCR
-        return LaTeXOCR()
+        return LaTeXOCR(
+            image_resizer_path=models / "image_resizer.onnx",
+            encoder_path=models / "encoder.onnx",
+            decoder_path=models / "decoder.onnx",
+            tokenizer_json=models / "tokenizer.json",
+        )
     except Exception as exc:
         raise ApplicationError(
             503, "OCR_LOCAL_MODEL_UNAVAILABLE",
@@ -52,9 +80,15 @@ def _get_cpu_model():
         ) from exc
 
 
-def _predict_png(png: bytes):
+def load_cpu_model(model_dir: Path | None = None) -> Any:
+    """Explicit prewarm entry point shared by the API and benchmark CLI."""
+    models, _ = inspect_cpu_model_files(model_dir)
+    return _get_cpu_model(str(models))
+
+
+def _predict_png(png: bytes) -> tuple[str, float]:
     with _CPU_MODEL_LOCK:
-        model = _get_cpu_model()
+        model = load_cpu_model()
     return model(png)
 
 

@@ -31,7 +31,7 @@ def render_formula_png(strokes: list[InkStroke]) -> bytes:
     xmin, ymin, xmax, ymax = WIDTH, HEIGHT, 0.0, 0.0
     for stroke in pens:
         for p in stroke.points:
-            x, y = p.x * WIDTH, p.y * HEIGHT
+            x, y = min(p.x * WIDTH, WIDTH - 1), min(p.y * HEIGHT, HEIGHT - 1)
             xmin, ymin = min(xmin, x), min(ymin, y)
             xmax, ymax = max(xmax, x), max(ymax, y)
     margin = 24
@@ -41,7 +41,11 @@ def render_formula_png(strokes: list[InkStroke]) -> bytes:
     image = Image.new("RGB", (max(1, right - left), max(1, bottom - top)), "white")
     canvas = ImageDraw.Draw(image)
     for stroke in pens:
-        coords = [(round(p.x * WIDTH - left), round(p.y * HEIGHT - top)) for p in stroke.points]
+        coords = [
+            (round(min(p.x * WIDTH, WIDTH - 1) - left),
+             round(min(p.y * HEIGHT, HEIGHT - 1) - top))
+            for p in stroke.points
+        ]
         # Preserve pen thickness approximately, clamp tiny/nonsensical values.
         thickness = max(2, min(12, int(round(stroke.width * 1.5))))
         if len(coords) == 1:

@@ -1,0 +1,45 @@
+{
+  "dataset_id": "OCR-MATH-CPU-02-SMOKE",
+  "samples": [
+    {
+      "id": "SMOKE_001",
+      "group": "SMOKE",
+      "image": "images/x_squared.png",
+      "reference_latex": "x^2+3x+2",
+      "reference_verified": true,
+      "source": "EduMS self-rendered MathText fixture"
+    },
+    {
+      "id": "SMOKE_002",
+      "group": "SMOKE",
+      "image": "images/fraction.png",
+      "reference_latex": "\\frac{1}{x+1}",
+      "reference_verified": true,
+      "source": "EduMS self-rendered MathText fixture"
+    },
+    {
+      "id": "SMOKE_003",
+      "group": "SMOKE",
+      "image": "images/square_root.png",
+      "reference_latex": "\\sqrt{x^2+1}",
+      "reference_verified": true,
+      "source": "EduMS self-rendered MathText fixture"
+    },
+    {
+      "id": "SMOKE_004",
+      "group": "SMOKE",
+      "image": "images/derivative.png",
+      "reference_latex": "f'(x)=3x^2-6x",
+      "reference_verified": true,
+      "source": "EduMS self-rendered MathText fixture"
+    },
+    {
+      "id": "SMOKE_005",
+      "group": "SMOKE",
+      "image": "images/integral.png",
+      "reference_latex": "\\int_0^1 x^2\\,dx",
+      "reference_verified": true,
+      "source": "EduMS self-rendered MathText fixture"
+    }
+  ]
+}

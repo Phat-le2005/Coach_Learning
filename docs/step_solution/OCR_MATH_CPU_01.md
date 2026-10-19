@@ -15,11 +15,12 @@ Upstream: [RapidAI/RapidLaTeXOCR](https://github.com/RapidAI/RapidLaTeXOCR), [Py
 python -m pip install -r requirements-ocr-cpu.txt
 ```
 
-3. Model checkpoint files must be placed in the installed Python package's `rapid_latex_ocr/models/` directory (including `encoder.onnx`, `decoder.onnx`, `image_resizer.onnx`, `tokenizer.json`). Some upstream installation methods download checkpoints automatically; verify the files before starting backend and do not rely on request-time model downloads.
+3. Model checkpoints are separate from the small Python wheel. Upstream `LaTeXOCR()` can download missing files during construction. EduMS therefore checks all four files and passes their paths explicitly, so an API request never downloads a checkpoint. The official upstream `v0.0.0` release contains `encoder.onnx`, `decoder.onnx`, `image_resizer.onnx`, and `tokenizer.json`. Run `python -m scripts.prepare_ocr_cpu_model --download` **only after checking RAM and approving the download**; the default target is the gitignored repository `.tmp/ocr_cpu_models/` directory. Set `MATH_OCR_MODEL_DIR=../.tmp/ocr_cpu_models` in `backend/.env` to use it.
 4. Configure your **local, gitignored** `backend/.env`:
 
 ```dotenv
 MATH_OCR_PROVIDER=local_rapid
+MATH_OCR_MODEL_DIR=../.tmp/ocr_cpu_models
 ```
 
 5. Start the usual FastAPI backend with **one worker** to avoid loading multiple copies of the model. Draw a **single short formula** in the student Math Workspace; wait for ink synchronization, click OCR, inspect or correct the resulting LaTeX and confirm only when accurate.
@@ -29,7 +30,7 @@ No Mathpix account, credit card, GPU, or OCR usage fees are needed for self-host
 ## Safety constraints
 
 - One simultaneous model inference per backend process. Additional requests receive `503 OCR_LOCAL_BUSY`; students can retry.
-- Model initialization is lazy. The server should be prewarmed with a *locally authorized* formula after provisioning weights; the first OCR request may otherwise pause while loading the model.
+- Model initialization is lazy. Run the real smoke benchmark on pre-provisioned checkpoints before enabling the provider; the first server OCR request may still pause while its own worker loads the model.
 - Zero confidence in the response means **uncalibrated/unknown**, not definitely incorrect.
 - Full-page multi-line written solutions and sign tables are **out of scope** for this first CPU benchmark. Start with short equations, fractions, radicals, derivatives and integrals.
 - OCR is strictly a suggestion. An explicit confirmation is required before creating a solution step or updating learning evidence.
