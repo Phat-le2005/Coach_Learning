@@ -132,23 +132,31 @@ class MathInkIndexedDb {
     attemptId: string,
     pageIndex: number,
     documentRevision: number,
-  ): Promise<void> {
-    const draft = await this.getPageDraft(attemptId, pageIndex);
-    if (!draft) return;
-    draft.isDirty = false;
-    draft.documentRevision = documentRevision;
-    draft.updatedAt = Date.now();
-
+    expectedActionId: string,
+  ): Promise<boolean> {
     const db = await this.getDb();
-    if (!db) return;
+    if (!db) return true; // The authoritative server save already succeeded.
 
+    // Read and conditionally write in ONE readwrite transaction, so an older
+    // in-flight save cannot mark a more recent ink draft as synchronized.
     return new Promise((resolve, reject) => {
       try {
         const tx = db.transaction(STORE_PAGES, "readwrite");
         const store = tx.objectStore(STORE_PAGES);
-        const req = store.put(draft);
-        req.onsuccess = () => resolve();
-        req.onerror = () => reject(req.error);
+        const req = store.get([attemptId, pageIndex]);
+        let matched = false;
+        req.onsuccess = () => {
+          const draft = req.result as StoredPageDraft | undefined;
+          if (!draft || draft.clientActionId !== expectedActionId) return;
+          matched = true;
+          draft.isDirty = false;
+          draft.documentRevision = documentRevision;
+          draft.updatedAt = Date.now();
+          store.put(draft);
+        };
+        tx.oncomplete = () => resolve(matched);
+        tx.onerror = () => reject(tx.error);
+        tx.onabort = () => reject(tx.error);
       } catch (err) {
         reject(err);
       }
