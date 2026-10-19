@@ -15,6 +15,7 @@ import type {
 import { MAX_PAGES, A4_WIDTH } from "./types";
 import { generateUuid } from "./utils/ink-math";
 import { mathInkStorage } from "./storage/indexeddb";
+import { ensureLatestInkSaved } from "./utils/ocr-sync";
 import { WorkspaceToolbar } from "./components/WorkspaceToolbar";
 import { PageNavigator } from "./components/PageNavigator";
 import { ProblemPane } from "./components/ProblemPane";
@@ -98,6 +99,11 @@ export function MathWorkspace({
 
   // Debounce save timer ref
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const revisionRef = useRef(initialDocument?.document_revision ?? 0);
+  const latestStrokesRef = useRef<Map<number, InkStroke[]>>(
+    new Map([[0, initialPage?.strokes ?? []]]),
+  );
+  const saveQueueRef = useRef<Promise<void>>(Promise.resolve());
 
   const apiClient = useRef(createBackendApiClient()).current;
 
@@ -129,6 +135,7 @@ export function MathWorkspace({
       apiClient
         .getMathInkDocument(accessToken, attemptId)
         .then((doc) => {
+          revisionRef.current = doc.document_revision;
           setDocumentRevision(doc.document_revision);
           if (doc.pages.length > 0) {
             setPageCount(doc.pages.length);
@@ -140,67 +147,65 @@ export function MathWorkspace({
 
   // 2. Perform server save
   const flushSavePage = useCallback(
-    async (pageIdx: number, strokesToSave: InkStroke[]) => {
-      setSyncStatus("saving");
-      setSyncErrorMessage(undefined);
-
-      const clientActionId = generateUuid();
-
-      // Save to IndexedDB immediately before network call
-      await mathInkStorage.savePageDraft(
-        attemptId,
-        pageIdx,
-        strokesToSave,
-        documentRevision,
-        clientActionId,
-        true,
-      );
-
-      try {
-        const response = await apiClient.saveMathInkPage(
-          accessToken,
-          attemptId,
-          pageIdx,
-          {
-            expected_document_revision: documentRevision,
-            client_action_id: clientActionId,
-            strokes: strokesToSave,
-          },
-        );
-
-        setDocumentRevision(response.document_revision);
-        setSyncStatus("saved");
-
-        // Mark clean in IndexedDB
-        await mathInkStorage.markPageClean(attemptId, pageIdx, response.document_revision);
-
-        setPagesMap((prev) => {
-          const updated = new Map(prev);
-          const pageMem = updated.get(pageIdx);
-          if (pageMem) {
-            updated.set(pageIdx, { ...pageMem, isDirty: false });
+    (pageIdx: number, strokesToSave: InkStroke[]): Promise<boolean> => {
+      const operation = async (): Promise<boolean> => {
+        if (latestStrokesRef.current.get(pageIdx) !== strokesToSave) return false;
+        setSyncStatus("saving");
+        setSyncErrorMessage(undefined);
+        const clientActionId = generateUuid();
+        const revision = revisionRef.current;
+        try {
+          await mathInkStorage.savePageDraft(
+            attemptId, pageIdx, strokesToSave, revision, clientActionId, true,
+          );
+          const response = await apiClient.saveMathInkPage(
+            accessToken, attemptId, pageIdx,
+            {
+              expected_document_revision: revision,
+              client_action_id: clientActionId,
+              strokes: strokesToSave,
+            },
+          );
+          revisionRef.current = response.document_revision;
+          setDocumentRevision(response.document_revision);
+          const matched = await mathInkStorage.markPageClean(
+            attemptId, pageIdx, response.document_revision, clientActionId,
+          );
+          if (!matched || latestStrokesRef.current.get(pageIdx) !== strokesToSave) {
+            setSyncStatus("unsaved");
+            return false;
           }
-          return updated;
-        });
-      } catch (err: unknown) {
-        if (err instanceof ApiResponseError) {
-          if (err.status === 409) {
+          setPagesMap((prev) => {
+            const updated = new Map(prev);
+            const page = updated.get(pageIdx);
+            if (page?.strokes === strokesToSave) {
+              updated.set(pageIdx, { ...page, isDirty: false });
+            }
+            return updated;
+          });
+          setSyncStatus("saved");
+          return true;
+        } catch (err: unknown) {
+          if (err instanceof ApiResponseError && err.status === 409) {
             setSyncStatus("conflict");
             setSyncErrorMessage("Phiên bản trên máy chủ đã thay đổi.");
-            return;
+          } else if (err instanceof ApiResponseError) {
+            setSyncStatus("error");
+            setSyncErrorMessage(err.message);
+          } else if (err instanceof ApiNetworkError) {
+            setSyncStatus("offline");
+          } else {
+            setSyncStatus("error");
+            setSyncErrorMessage("Không thể lưu trang. Vui lòng thử lại.");
           }
-          setSyncStatus("error");
-          setSyncErrorMessage(err.message);
-        } else if (err instanceof ApiNetworkError) {
-          // Offline mode
-          setSyncStatus("offline");
-        } else {
-          setSyncStatus("error");
-          setSyncErrorMessage("Không thể lưu trang. Bản thảo đã được giữ an toàn.");
+          return false;
         }
-      }
+      };
+      const pending = saveQueueRef.current.then(operation);
+      saveQueueRef.current = pending.then(() => undefined, () => undefined);
+      return pending;
     },
-    [attemptId, accessToken, documentRevision, apiClient],
+    [attemptId, accessToken, apiClient],
   );
 
   // OCR Recognition Workflow (Human-in-the-loop Invariant)
@@ -219,7 +224,13 @@ export function MathWorkspace({
           clearTimeout(saveTimeoutRef.current);
           saveTimeoutRef.current = null;
         }
-        await flushSavePage(currentPageIndex, currentPageMemory.strokes);
+        const saved = await ensureLatestInkSaved(true, () =>
+          flushSavePage(currentPageIndex, currentPageMemory.strokes),
+        );
+        if (!saved) {
+          setOcrError("Không thể nhận diện vì nét vẽ chưa được lưu lên máy chủ. Vui lòng lưu lại trước khi thử OCR.");
+          return;
+        }
       }
 
       // 2. Call OCR recognition
@@ -291,6 +302,7 @@ export function MathWorkspace({
   // 3. Handle strokes update with Undo stack & autosave debounce
   const handleStrokesChange = useCallback(
     (newStrokes: InkStroke[]) => {
+      latestStrokesRef.current.set(currentPageIndex, newStrokes);
       setPagesMap((prev) => {
         const updated = new Map(prev);
         const current = updated.get(currentPageIndex) ?? {
@@ -403,6 +415,7 @@ export function MathWorkspace({
         // Check IndexedDB draft first
         const offlineDraft = await mathInkStorage.getPageDraft(attemptId, targetIndex);
         if (offlineDraft) {
+          latestStrokesRef.current.set(targetIndex, offlineDraft.strokes);
           setPagesMap((prev) => {
             const updated = new Map(prev);
             updated.set(targetIndex, {
@@ -421,6 +434,7 @@ export function MathWorkspace({
               attemptId,
               targetIndex,
             );
+            latestStrokesRef.current.set(targetIndex, pageData.strokes);
             setPagesMap((prev) => {
               const updated = new Map(prev);
               updated.set(targetIndex, {
@@ -465,6 +479,7 @@ export function MathWorkspace({
     if (pageCount >= MAX_PAGES) return;
     const newIndex = pageCount;
     setPageCount((c) => c + 1);
+    latestStrokesRef.current.set(newIndex, []);
     setPagesMap((prev) => {
       const updated = new Map(prev);
       updated.set(newIndex, {
@@ -503,6 +518,7 @@ export function MathWorkspace({
   const handleResolveConflict = useCallback(async () => {
     try {
       const doc = await apiClient.getMathInkDocument(accessToken, attemptId);
+      revisionRef.current = doc.document_revision;
       setDocumentRevision(doc.document_revision);
       const pageData = await apiClient.getMathInkPage(
         accessToken,
@@ -510,6 +526,7 @@ export function MathWorkspace({
         currentPageIndex,
       );
 
+      latestStrokesRef.current.set(currentPageIndex, pageData.strokes);
       setPagesMap((prev) => {
         const updated = new Map(prev);
         updated.set(currentPageIndex, {
