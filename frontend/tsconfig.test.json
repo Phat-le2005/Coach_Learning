@@ -10,6 +10,7 @@
   },
   "include": [
     "src/lib/api/client.ts",
+    "src/lib/api/math-workspace-path.ts",
     "src/lib/api/contracts.ts",
     "src/lib/api/validation.ts",
     "src/lib/auth/constants.ts",

@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { createBackendApiClient, ApiResponseError, ApiNetworkError } from "@/lib/api/client";
+import { ApiResponseError, ApiNetworkError } from "@/lib/api/client";
+import { createBrowserMathApiClient } from "@/lib/api/browser-math";
 import type {
   DrawingTool,
   InkDocumentRead,
@@ -35,7 +36,6 @@ interface PageMemory {
 
 interface MathWorkspaceProps {
   attemptId: string;
-  accessToken: string;
   initialProblem?: ProblemRead | null;
   initialAttempt?: SolutionAttemptRead | null;
   initialDocument?: InkDocumentRead | null;
@@ -44,12 +44,13 @@ interface MathWorkspaceProps {
 
 export function MathWorkspace({
   attemptId,
-  accessToken,
   initialProblem = null,
   initialAttempt = null,
   initialDocument = null,
   initialPage = null,
 }: MathWorkspaceProps) {
+  // The BFF reads the HttpOnly cookie. No bearer token is passed to this client component.
+  const accessToken = "";
   // Problem & Attempt
   const [problem, setProblem] = useState<ProblemRead | null>(initialProblem);
   const [attempt, setAttempt] = useState<SolutionAttemptRead | null>(initialAttempt);
@@ -108,7 +109,7 @@ export function MathWorkspace({
   );
   const saveQueueRef = useRef<Promise<void>>(Promise.resolve());
 
-  const apiClient = useRef(createBackendApiClient()).current;
+  const apiClient = useRef(createBrowserMathApiClient()).current;
 
   // Current active page memory
   const currentPageMemory: PageMemory = pagesMap.get(currentPageIndex) ?? {
@@ -120,21 +121,21 @@ export function MathWorkspace({
 
   // 1. Initial data fetch if not passed via props
   useEffect(() => {
-    if (!problem && attemptId && accessToken) {
+    if (!problem && attemptId) {
       apiClient
         .getMathAttemptProblem(accessToken, attemptId)
         .then(setProblem)
         .catch(() => {});
     }
 
-    if (!attempt && attemptId && accessToken) {
+    if (!attempt && attemptId) {
       apiClient
         .getMathAttempt(accessToken, attemptId)
         .then(setAttempt)
         .catch(() => {});
     }
 
-    if (!initialDocument && attemptId && accessToken) {
+    if (!initialDocument && attemptId) {
       apiClient
         .getMathInkDocument(accessToken, attemptId)
         .then((doc) => {

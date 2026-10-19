@@ -117,7 +117,6 @@ export default async function StudentAttemptPage(props: AttemptPageProps) {
       <SessionHeartbeat />
       <MathWorkspace
         attemptId={attemptId}
-        accessToken={accessToken}
         initialAttempt={initialAttempt}
         initialProblem={initialProblem}
         initialDocument={initialDocument}
