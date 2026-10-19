@@ -544,6 +544,19 @@ export interface SolutionAttemptRead {
   updated_at?: string;
 }
 
+export interface MathAttemptsPageRead {
+  items: SolutionAttemptRead[];
+  total: number;
+  page: number;
+  size: number;
+  total_pages: number;
+}
+
+export interface PracticeSessionStartRead {
+  id: string;
+  subject_id: string;
+}
+
 export function parseInkPoint(value: unknown, path = "point"): InkPoint {
   const source = record(value, path);
   return {
@@ -641,6 +654,25 @@ export function parseSolutionAttemptRead(value: unknown, path = "attempt"): Solu
     current_revision: rev,
     created_at: typeof source.created_at === "string" ? source.created_at : (typeof source.started_at === "string" ? source.started_at : ""),
     updated_at: typeof source.updated_at === "string" ? source.updated_at : undefined,
+  };
+}
+
+export function parseMathAttemptsPageRead(value: unknown, path = "attempts"): MathAttemptsPageRead {
+  const source = record(value, path);
+  return {
+    items: array(source.items, `${path}.items`, parseSolutionAttemptRead),
+    total: integer(source.total, `${path}.total`),
+    page: integer(source.page, `${path}.page`),
+    size: integer(source.size, `${path}.size`),
+    total_pages: integer(source.total_pages, `${path}.total_pages`),
+  };
+}
+
+export function parsePracticeSessionStartRead(value: unknown, path = "practice_session"): PracticeSessionStartRead {
+  const source = record(value, path);
+  return {
+    id: nonEmptyString(source.id, `${path}.id`),
+    subject_id: nonEmptyString(source.subject_id, `${path}.subject_id`),
   };
 }
 

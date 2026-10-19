@@ -28,6 +28,19 @@ export default async function StudentAttemptPage(props: AttemptPageProps) {
   const targetPath = `/student/attempts/${attemptId}`;
   await requirePageRole("STUDENT", targetPath);
 
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(attemptId)) {
+    return (
+      <main style={{ width: "min(100% - 32px, 780px)", margin: "0 auto", paddingTop: "12vh" }}>
+        <PageState
+          kind="error"
+          title="Đường dẫn bài làm không hợp lệ"
+          description="Mã bài làm trong đường dẫn không đúng. Hãy mở bài từ danh sách bài làm của bạn."
+          action={<GradientButton href="/student/attempts">Xem bài làm của tôi</GradientButton>}
+        />
+      </main>
+    );
+  }
+
   const accessToken = await readAccessToken();
   if (!accessToken) return <SessionRecovery />;
 

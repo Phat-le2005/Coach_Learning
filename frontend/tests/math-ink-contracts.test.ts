@@ -11,9 +11,25 @@ import {
   parseProblemOptionRead,
   parseProblemRead,
   parseSolutionAttemptRead,
+  parseMathAttemptsPageRead,
+  parsePracticeSessionStartRead,
   parseOCRRecognizeResponse,
 } from "../src/lib/api/contracts.js";
 import { ApiContractError } from "../src/lib/api/validation.js";
+
+test("attempt history validates real paginated records", () => {
+  const result = parseMathAttemptsPageRead({
+    items: [{ id: "attempt-1", question_id: "question-1", status: "DRAFT", attempt_revision_number: 1, started_at: "2026-10-19T00:00:00Z" }],
+    total: 1, page: 1, size: 20, total_pages: 1,
+  });
+  assert.equal(result.items[0].id, "attempt-1");
+  assert.throws(() => parseMathAttemptsPageRead({ items: [{ id: "attempt-1" }], total: 1, page: 1, size: 20, total_pages: 1 }), ApiContractError);
+});
+
+test("practice session start validates its real identifiers", () => {
+  assert.deepEqual(parsePracticeSessionStartRead({ id: "session-1", subject_id: "subject-1" }), { id: "session-1", subject_id: "subject-1" });
+  assert.throws(() => parsePracticeSessionStartRead({ id: "session-1" }), ApiContractError);
+});
 
 test("parseInkPoint parses valid point with default pressure", () => {
   const result = parseInkPoint({ x: 0.25, y: 0.75 });

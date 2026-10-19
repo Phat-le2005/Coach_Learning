@@ -112,3 +112,31 @@ test("rejects a successful response that violates the contract", async () => {
 test("rejects API base URLs with an invented prefix", () => {
   assert.throws(() => normalizeApiBaseUrl("https://api.example.test/api/v1"), /root paths/u);
 });
+
+test("student workspace starts from a real approved problem through canonical API routes", async () => {
+  const calls: { path: string; method: string; body: Record<string, unknown> | null }[] = [];
+  const api = createApiClient({ baseUrl: "https://api.example.test", fetcher: async (input, init) => {
+    const path = new URL(String(input)).pathname + new URL(String(input)).search;
+    const body = init?.body ? JSON.parse(String(init.body)) as Record<string, unknown> : null;
+    calls.push({ path, method: init?.method ?? "GET", body });
+    if (path === "/practice/sessions") return Response.json({ id: "session-1", subject_id: "subject-1" });
+    if (path.endsWith("/next-problem")) return Response.json({ id: "question-1", content: "Bài toán thật", question_type: "OPEN_RESPONSE", options: [], is_read_only: false });
+    if (path === "/api/v2/math-solutions/attempts" && init?.method === "POST") return Response.json({ id: "attempt-1", question_id: "question-1", status: "DRAFT", attempt_revision_number: 1, started_at: "2026-10-19T00:00:00Z" });
+    return Response.json({ items: [], total: 0, page: 1, size: 20, total_pages: 0 });
+  } });
+  const history = await api.listMathAttempts("student-token");
+  const session = await api.createPracticeSession("student-token", "subject-1");
+  const problem = await api.getMathPracticeNextProblem("student-token", session.id);
+  const attempt = await api.createMathAttempt("student-token", session.id, problem.id);
+  assert.equal(history.total, 0);
+  assert.equal(attempt.id, "attempt-1");
+  assert.deepEqual(calls.map((call) => [call.method, call.path]), [
+    ["GET", "/api/v2/math-solutions/attempts?page=1&size=20"],
+    ["POST", "/practice/sessions"],
+    ["GET", "/api/v2/math-solutions/practice-sessions/session-1/next-problem"],
+    ["POST", "/api/v2/math-solutions/attempts"],
+  ]);
+  assert.deepEqual(calls[1].body, { subject_id: "subject-1", session_type: "PRACTICE", problem_type_ids: [], concept_ids: [] });
+  assert.equal(calls[3].body?.question_id, "question-1");
+  assert.equal(calls[3].body?.practice_session_id, "session-1");
+});

@@ -4,8 +4,10 @@ import type {
   InkPageRead,
   InkPageWrite,
   InkSaveRead,
+  MathAttemptsPageRead,
   LoginRequest,
   ProblemRead,
+  PracticeSessionStartRead,
   ProblemTypeMasteryRead,
   RefreshRequest,
   SolutionAttemptRead,
@@ -19,8 +21,10 @@ import {
   parseInkDocumentRead,
   parseInkPageRead,
   parseInkSaveRead,
+  parseMathAttemptsPageRead,
   parseOCRRecognizeResponse,
   parseProblemRead,
+  parsePracticeSessionStartRead,
   parseProblemTypeMastery,
   parseSolutionAttemptRead,
   parseStudentLearningState,
@@ -59,6 +63,9 @@ export const API_PATHS = {
   studentMastery: "/students/me/mastery",
   studentProblemTypeMastery: (id: string) => `/students/me/mastery/problem-types/${encodeURIComponent(id)}`,
   studentConceptMastery: (id: string) => `/students/me/mastery/concepts/${encodeURIComponent(id)}`,
+  mathAttempts: "/api/v2/math-solutions/attempts",
+  practiceSessions: "/practice/sessions",
+  mathPracticeNextProblem: (id: string) => `/api/v2/math-solutions/practice-sessions/${encodeURIComponent(id)}/next-problem`,
   mathAttempt: (id: string) => `/api/v2/math-solutions/attempts/${encodeURIComponent(id)}`,
   mathAttemptProblem: (id: string) => `/api/v2/math-solutions/attempts/${encodeURIComponent(id)}/problem`,
   mathAttemptSteps: (id: string) => `/api/v2/math-solutions/attempts/${encodeURIComponent(id)}/steps`,
@@ -161,6 +168,31 @@ export function createApiClient({ baseUrl, fetcher = fetch }: ApiClientOptions) 
     },
     studentConceptMastery(accessToken: string, conceptId: string): Promise<ConceptMasteryRead> {
       return request(API_PATHS.studentConceptMastery(conceptId), parseConceptMastery, { method: "GET" }, accessToken);
+    },
+    listMathAttempts(accessToken: string): Promise<MathAttemptsPageRead> {
+      return request(`${API_PATHS.mathAttempts}?page=1&size=20`, parseMathAttemptsPageRead, { method: "GET" }, accessToken);
+    },
+    createPracticeSession(accessToken: string, subjectId: string): Promise<PracticeSessionStartRead> {
+      return request(API_PATHS.practiceSessions, parsePracticeSessionStartRead, {
+        method: "POST",
+        body: JSON.stringify({ subject_id: subjectId, session_type: "PRACTICE", problem_type_ids: [], concept_ids: [] }),
+      }, accessToken);
+    },
+    getMathPracticeNextProblem(accessToken: string, sessionId: string): Promise<ProblemRead> {
+      return request(API_PATHS.mathPracticeNextProblem(sessionId), parseProblemRead, { method: "GET" }, accessToken);
+    },
+    createMathAttempt(accessToken: string, sessionId: string, questionId: string): Promise<SolutionAttemptRead> {
+      return request(API_PATHS.mathAttempts, parseSolutionAttemptRead, {
+        method: "POST",
+        body: JSON.stringify({
+          source_kind: "CANONICAL",
+          context_type: "SELF_PRACTICE",
+          mode: "INDEPENDENT_SOLUTION",
+          create_idempotency_key: `student-workspace:${sessionId}`,
+          question_id: questionId,
+          practice_session_id: sessionId,
+        }),
+      }, accessToken);
     },
     getMathAttempt(accessToken: string, attemptId: string): Promise<SolutionAttemptRead> {
       return request(API_PATHS.mathAttempt(attemptId), parseSolutionAttemptRead, { method: "GET" }, accessToken);

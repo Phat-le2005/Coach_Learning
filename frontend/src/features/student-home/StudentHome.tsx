@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, DatabaseZap, LockKeyhole, Sprout } from "lucide-react";
+import { ArrowRight, BookOpenText, DatabaseZap, LockKeyhole, Sprout } from "lucide-react";
 import { motion } from "motion/react";
 import { type ReactNode, useState } from "react";
 
@@ -107,6 +107,15 @@ export function StudentHome({ data }: StudentHomeProps) {
             </OrganicCard>
           ) : null}
           <FocusHero data={data} onOpenActionDetail={handleOpenActionDetail} />
+          <OrganicCard className={styles.practiceEntry} variant="glass">
+            <span className={styles.selfStudyIcon} aria-hidden="true"><BookOpenText size={22} /></span>
+            <div className={styles.selfStudyCopy}>
+              <p className={styles.selfStudyEyebrow}>Trang làm bài</p>
+              <h2>Viết lời giải trên giấy số</h2>
+              <p>Mở bài làm đã có hoặc bắt đầu từ câu hỏi được duyệt. Bạn luôn kiểm tra công thức OCR trước khi xác nhận.</p>
+            </div>
+            <GradientButton href="/student/attempts">Vào trang làm bài <ArrowRight size={17} aria-hidden="true" /></GradientButton>
+          </OrganicCard>
           <LearningPulse data={data} />
           <KnowledgeGarden regions={data.knowledgeRegions} subjectId={data.subject.id} />
           <div className={styles.closingGrid}>
