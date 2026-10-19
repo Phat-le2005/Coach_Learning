@@ -1,0 +1,7 @@
+# Optional CPU-first mathematical formula OCR. No PyTorch, CUDA or Mathpix API.
+# Install only on a trusted self-hosted development machine.
+-r requirements.txt
+Pillow>=10,<12
+rapid-latex-ocr==0.0.9
+onnxruntime>=1.18,<2
+numpy<2
