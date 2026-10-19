@@ -3,6 +3,8 @@
 -r requirements.txt
 Pillow>=10,<12
 rapid-latex-ocr==0.0.9
+# RapidLaTeXOCR imports requests but does not declare it in its wheel metadata.
+requests>=2.31,<3
 onnxruntime>=1.18,<2
 numpy<2
 psutil>=6,<8

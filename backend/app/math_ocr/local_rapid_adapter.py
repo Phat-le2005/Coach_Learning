@@ -73,6 +73,11 @@ def _get_cpu_model(model_dir: str) -> Any:
             decoder_path=models / "decoder.onnx",
             tokenizer_json=models / "tokenizer.json",
         )
+    except ImportError as exc:
+        raise ApplicationError(
+            503, "OCR_LOCAL_DEPENDENCY_MISSING",
+            "Optional OCR CPU dependencies are incomplete.",
+        ) from exc
     except Exception as exc:
         raise ApplicationError(
             503, "OCR_LOCAL_MODEL_UNAVAILABLE",

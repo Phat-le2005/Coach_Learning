@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+from importlib.util import find_spec
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -13,6 +14,14 @@ from scripts.benchmark_ocr_cpu import character_error_rate, load_manifest, perce
 
 
 FIXTURES = Path(__file__).resolve().parents[2] / "data" / "fixtures" / "ocr_cpu_smoke"
+
+
+def test_optional_upstream_package_imports_when_installed() -> None:
+    if find_spec("rapid_latex_ocr") is None:
+        pytest.skip("Optional OCR CPU package is not installed in this test environment.")
+    from rapid_latex_ocr import LaTeXOCR
+
+    assert callable(LaTeXOCR)
 
 
 def test_smoke_manifest_references_five_real_png_files() -> None:
@@ -57,6 +66,27 @@ def test_incomplete_models_fail_before_constructor_or_download(
         rapid.inspect_cpu_model_files(tmp_path)
     assert exc.value.status_code == 503
     assert exc.value.code == "OCR_LOCAL_MODEL_UNAVAILABLE"
+
+
+def test_missing_upstream_transitive_dependency_has_specific_503(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path,
+) -> None:
+    import sys
+
+    for name, minimum in rapid._MIN_MODEL_BYTES.items():
+        with (tmp_path / name).open("wb") as file:
+            file.seek(minimum - 1)
+            file.write(b"x")
+    monkeypatch.setattr(rapid, "find_spec", lambda _name: SimpleNamespace(origin=str(tmp_path / "__init__.py")))
+    monkeypatch.setitem(sys.modules, "rapid_latex_ocr", None)
+    rapid._get_cpu_model.cache_clear()
+    try:
+        with pytest.raises(ApplicationError) as exc:
+            rapid.load_cpu_model(tmp_path)
+    finally:
+        rapid._get_cpu_model.cache_clear()
+    assert exc.value.status_code == 503
+    assert exc.value.code == "OCR_LOCAL_DEPENDENCY_MISSING"
 
 
 def test_model_constructor_receives_all_four_explicit_paths(

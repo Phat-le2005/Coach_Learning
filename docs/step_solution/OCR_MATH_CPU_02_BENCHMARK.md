@@ -1,14 +1,15 @@
 # OCR-MATH-CPU-02 — Real CPU inference and benchmark
 
-## Acceptance status: NOT_TESTED
+## Acceptance status: NOT_TESTED for handwriting; real CPU smoke completed
 
-The model has **not yet been run** in the isolated OCR environment. The machine
-had only about 1.29 GB available RAM during inspection on 2026-10-19. The user
-has asked to defer the checkpoint download and inference while code and tests
-are completed. No consented set of 20 handwritten formula images has been supplied.
-Contract tests and the five self-rendered smoke PNGs are not evidence of OCR
-accuracy. The benchmark JSON at `.tmp/ocr_cpu_benchmark_smoke.json` currently
-reports `NOT_TESTED` because RapidLaTeXOCR is not installed in that environment.
+On 2026-10-19, the user authorized installation and a real CPU run after freeing
+RAM. RapidLaTeXOCR and all four official checkpoints were installed outside the
+global Python environment. **Real ONNX inference ran on five self-rendered
+typeset images** and a separate 25-call repeat of those same images. The five
+images are technical smoke samples, not handwritten evidence. The user confirmed
+that no permitted set of 20 handwritten formulas is available yet. Therefore
+the overall handwritten-OCR acceptance state remains `NOT_TESTED`, despite the
+real model execution reported below. No fake predictor was used for measurements.
 
 ## Environment inspected
 
@@ -17,10 +18,10 @@ reports `NOT_TESTED` because RapidLaTeXOCR is not installed in that environment.
 | OS | Windows 10, build 19043, 64-bit |
 | CPU | Intel Core i7-1255U, 12 logical processors |
 | Physical RAM | 7.68 GiB |
-| Available RAM at first inspection | 1.29 GiB |
-| Free workspace disk | 148.73 GiB |
+| Available RAM before installation on 2026-10-19 | 2.23 GiB (1.29 GiB before the user freed RAM) |
+| Free workspace disk | 149.57 GiB |
 | Python | 3.12.3 |
-| OCR environment | `backend/.venv` in the OCR worktree; created, packages pending |
+| OCR environment | Isolated `backend/.venv` in the OCR worktree |
 
 System memory was read with `psutil.virtual_memory()` because Windows CIM and
 `systeminfo` were denied to this shell. Available RAM changes with other apps.
@@ -29,14 +30,26 @@ System memory was read with `psutil.virtual_memory()` because Windows CIM and
 
 - `backend/requirements-ocr-cpu.txt` pins RapidLaTeXOCR `0.0.9`, uses
   `onnxruntime` CPU, Pillow, NumPy `<2`, and `psutil` for memory sampling. No
-  PyTorch, CUDA or Mathpix is needed for `local_rapid`.
-- The installed versions of RapidLaTeXOCR and ONNX Runtime in the isolated
-  environment are **pending** until installation is performed.
+  PyTorch, CUDA or Mathpix was installed for `local_rapid`.
+- Installed versions in the isolated environment: RapidLaTeXOCR `0.0.9`,
+  ONNX Runtime `1.31.0`, Pillow `11.3.0`, NumPy `1.26.4`, psutil `7.2.2`,
+  requests `2.34.2`.
+- The upstream `rapid-latex-ocr==0.0.9` package imports `requests` but its
+  wheel metadata does not declare it. The first real model-load attempt failed
+  with `ModuleNotFoundError: requests`; we added `requests>=2.31,<3` to the
+  optional requirements. Missing transitive dependencies now return
+  `503 OCR_LOCAL_DEPENDENCY_MISSING`.
 - Official package: <https://pypi.org/project/rapid-latex-ocr/>
 - Official checkpoint source:
   <https://github.com/RapidAI/RapidLaTeXOCR/releases/tag/v0.0.0>
 - Four required files: `encoder.onnx`, `decoder.onnx`, `image_resizer.onnx`,
-  `tokenizer.json`. The model is not checked into Git.
+  `tokenizer.json`. They total 178,952,787 bytes (170.7 MiB) in the local
+  gitignored `.tmp/ocr_cpu_models/` directory; the model is not checked into Git.
+- Local SHA-256: encoder
+  `01bf5dc25539ca0cd5b1bd29296ea495977a6ba5f629dc4178277809d26e5e7d`,
+  decoder `bd695497bf1b22279b7626f5916c79226e1e244c84355f8da7edfd2d921d0072`,
+  resizer `e0b075c39700f64d50400f39c8fc186bbb3b5d84d31864008313f376603aca9d`,
+  tokenizer `1dc27b18d6a518d0d5ff3f4bb7bd98521fe80ad39e5b2a246d4109f1bb9d5019`.
 - `scripts.prepare_ocr_cpu_model` streams each file from the official release
   only when explicitly called with `--download`; it verifies minimum sizes,
   records local SHA-256 values, and stores files under gitignored `.tmp/`.
@@ -55,14 +68,33 @@ The summary reports mean and interpolated p95 latency and first/last RSS to
 inspect memory growth. A literal mismatch is a potential manual correction;
 actual human correction count remains unset until reviewed.
 
-| Group | Available images | Actual ONNX inference | Accuracy | Mean / p95 | Peak RSS |
-|---|---:|---|---|---|---|
-| Typeset technical smoke | 5 | NOT_TESTED | NOT_TESTED | NOT_TESTED | NOT_TESTED |
-| Permitted handwriting | 0 of required 20 | NOT_TESTED | NOT_TESTED | NOT_TESTED | NOT_TESTED |
+| Group | Distinct images / calls | Recognized | Literal exact LaTeX | Mean / p95 inference | Peak process RSS |
+|---|---:|---:|---:|---:|---:|
+| Typeset technical smoke | 5 / 5 | 5/5 | 1/5 (20%) | 0.509 / 0.706 seconds | 316.8 MiB during initialization; 313.0 MiB during inference |
+| Repeat stability check on the same five images | 5 / 25 | 25/25 | 5/25 (20%) | 0.477 / 0.650 seconds | 314.0 MiB during inference |
+| Permitted handwriting | 0 / 0 of required 20 distinct images | NOT_TESTED | NOT_TESTED | NOT_TESTED | NOT_TESTED |
 
-No recognition errors or success rates can be reported without model output.
-Acceptance thresholds for handwritten exact rate and p95 latency have not been
-agreed; the CLI requires these values before it can conclude PASS or FAIL.
+The five-image run initialized the model in 1.369 seconds, with RSS rising from
+54.3 to 270.7 MiB; mean literal character error rate was 0.420. The 25-call
+run initialized in 1.304 seconds. RSS after the first and last inference was
+280.0 and 280.1 MiB respectively. This short repeat showed no sustained RSS
+growth; it is not a long-running leak test or 25 independent accuracy samples.
+
+Observed literal mismatches, with reference followed by model output:
+
+| Sample | Reference | Real OCR output | Observation |
+|---|---|---|---|
+| SMOKE_001 | `x^2+3x+2` | `x^{2}+3x+2` | LaTeX formatting differs |
+| SMOKE_002 | `\frac{1}{x+1}` | `\frac{1}{x+1}` | Exact match |
+| SMOKE_003 | `\sqrt{x^2+1}` | `\sqrt{X^{2}+1}` | `x` recognized as uppercase `X` |
+| SMOKE_004 | `f'(x)=3x^2-6x` | `{}^{f}(x)=3x^{2}-6x` | Prime/derivative mark recognized incorrectly |
+| SMOKE_005 | `\int_0^1 x^2\,dx` | `\textstyle\int_{0}^{1}x^{2}\,d x` | LaTeX formatting differs |
+
+Literal exact match deliberately does not collapse semantically equivalent
+LaTeX forms. Four literal mismatches do not equal four confirmed human edits;
+actual human correction count remains unmeasured. Accuracy and latency
+thresholds for handwritten samples have not been agreed, so no handwritten
+`PASS` or `FAIL` can be concluded.
 
 ## EduMS integration checked
 
@@ -75,8 +107,14 @@ Uncalibrated local confidence is shown as unknown. A busy CPU returns
 `503 OCR_LOCAL_MODEL_UNAVAILABLE`. The edge-of-page single-dot raster bug was
 fixed so a pen point at normalized coordinate 1.0 remains visible.
 
-This is verified by code and tests, **not** by a live browser session with
-the real ONNX model and database. That end-to-end path remains open.
+The direct adapter path was also exercised with two simple pen strokes and an
+ignored highlighter stroke: PNG rasterization → real model → editable LaTeX
+suggestion returned, with uncalibrated confidence `0.0`. The crude X-like
+stroke was recognized as `\displaystyle{\mathcal{X}}_{\sim}`, so this test
+only demonstrates that the real adapter path executes; it is not a handwritten
+accuracy sample. A live browser session with authenticated student, database,
+ink save, confirmation modal and Solution Step was not run in this isolated
+worktree. That end-to-end path remains open.
 
 ## Commands and results so far
 
@@ -84,20 +122,24 @@ Run from `backend/` unless stated otherwise:
 
 | Command | Observed result |
 |---|---|
-| `python -m pytest -q tests/math_solutions/test_ocr_cpu_benchmark.py tests/math_solutions/test_local_rapid_adapter.py tests/math_solutions/test_local_render.py` | 15 passed |
-| `python -m pytest -q tests/math_solutions` | 127 passed, 5 skipped |
+| `.venv/Scripts/python.exe -m pip install -r requirements-ocr-cpu.txt` | PASS; installed optional CPU packages in isolated venv |
+| `.venv/Scripts/python.exe -m scripts.prepare_ocr_cpu_model --download` | PASS; four official files downloaded and SHA-256 inventory recorded under gitignored `.tmp/` |
+| `.venv/Scripts/python.exe -m pytest -q tests/math_solutions/test_ocr_cpu_benchmark.py tests/math_solutions/test_local_rapid_adapter.py tests/math_solutions/test_local_render.py` | 17 passed |
+| `.venv/Scripts/python.exe -m pytest -q tests/math_solutions` | 129 passed, 5 skipped |
 | `python -m pytest -q --maxfail=1 tests/curriculum/test_final_readiness_preflight.py` | 31 passed after restoring checkout files to their original LF bytes |
-| `python -m app.api.check_contract` | PASS |
-| `python -m app.api.v2.check_contract` | PASS |
-| `python -m scripts.benchmark_ocr_cpu --manifest data/fixtures/ocr_cpu_smoke/manifest.json --output ../.tmp/ocr_cpu_benchmark_smoke.json` | NOT_TESTED: RapidLaTeXOCR missing |
+| `.venv/Scripts/python.exe -m app.api.check_contract` | PASS |
+| `.venv/Scripts/python.exe -m app.api.v2.check_contract` | PASS |
+| `.venv/Scripts/python.exe -m pip check` | PASS, no broken requirements |
+| `.venv/Scripts/python.exe -m scripts.benchmark_ocr_cpu --manifest data/fixtures/ocr_cpu_smoke/manifest.json --model-dir ../.tmp/ocr_cpu_models --output ../.tmp/ocr_cpu_benchmark_smoke_real.json` | Real ONNX smoke completed; overall status `NOT_TESTED` because handwriting set is empty |
+| Same benchmark command with the gitignored 25-call repeat manifest | Real ONNX repeat completed; overall status `NOT_TESTED` because handwriting set is empty |
 | `npm.cmd run test` from `frontend/` | 124 passed |
 | `npm.cmd run typecheck` from `frontend/` | PASS |
 | `npm.cmd run build` from `frontend/` | BLOCKED: Turbopack rejects a test-only `node_modules` junction outside the worktree root |
 | `npm.cmd run build -- --webpack` from `frontend/` | PASS: compiled, typed, and generated all 16 static pages |
 
-The Python tests above used the globally installed Python environment while
-the isolated OCR environment awaits dependency installation. An attempted full
-backend `python -m pytest -q` run reached about 45% of 1904 tests, then was
+Earlier Python tests used the global environment; the current OCR/solution
+tests and API contracts above were rerun in the isolated OCR venv. An attempted
+full backend `python -m pytest -q` run reached about 45% of 1904 tests, then was
 stopped when the Python process reached about 4.1 GiB RSS and system available
 RAM fell below 0.4 GiB. It had reported several curriculum hash failures before
 the stop. The cause was this Windows worktree checkout converting tracked JSON
@@ -109,21 +151,14 @@ live browser OCR result is claimed.
 
 ## To complete the real benchmark
 
-1. Close memory-heavy applications and recheck that the system has enough
-   available RAM for model initialization and sequential inference.
-2. In the worktree `backend/`, install into the already created isolated venv:
-   `backend/.venv/Scripts/python.exe -m pip install -r requirements-ocr-cpu.txt`.
-3. Run `backend/.venv/Scripts/python.exe -m scripts.prepare_ocr_cpu_model --download`
-   from `backend/` only after the agreed resource check.
-4. Run the smoke benchmark with the five committed self-authored PNGs, then
-   follow `backend/data/fixtures/ocr_cpu_handwritten/README.md` to place at
+1. Follow `backend/data/fixtures/ocr_cpu_handwritten/README.md` to place at
    least 20 consented, de-identified handwritten formula PNGs and a reviewed
-   manifest under gitignored `.tmp/ocr_math_cpu_handwritten/`.
-5. Run the benchmark with `--manifest`, `--output`,
+   manifest under gitignored `.tmp/ocr_math_cpu_handwritten/` when available.
+2. Run the benchmark with `--manifest`, `--output`,
    `--min-handwritten-exact-rate`, and `--max-handwritten-p95-seconds` using
    thresholds agreed before evaluation. Inspect failures and actual human
    correction needs; repeat sequentially to inspect RSS growth.
-6. Run one backend worker with `MATH_OCR_PROVIDER=local_rapid` and
+3. Run one backend worker with `MATH_OCR_PROVIDER=local_rapid` and
    `MATH_OCR_MODEL_DIR=../.tmp/ocr_cpu_models`; verify the full Canvas → Ink
    Save → PNG → ONNX → editable confirmation → Solution Step path in a browser.
 
