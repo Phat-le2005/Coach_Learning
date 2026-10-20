@@ -50,6 +50,39 @@ def test_manifest_rejects_unverified_handwriting_and_path_traversal(tmp_path: Pa
         load_manifest(manifest)
 
 
+
+def test_manifest_rejects_duplicate_handwritten_image_bytes(tmp_path: Path) -> None:
+    # Different filenames do not make two distinct handwriting samples.
+    png_bytes = b"\\x89PNG\\r\\n\\x1a\\n" + b"same-image"
+    (tmp_path / "a.png").write_bytes(png_bytes)
+    (tmp_path / "b.png").write_bytes(png_bytes)
+    base = {
+        "group": "HANDWRITTEN", "reference_latex": "x+1",
+        "reference_verified": True, "usage_allowed": True,
+        "source": "consented human author",
+    }
+    manifest = tmp_path / "manifest.json"
+    manifest.write_text(json.dumps({"samples": [
+        {**base, "id": "HAND_001", "image": "a.png"},
+        {**base, "id": "HAND_002", "image": "b.png"},
+    ]}), encoding="utf-8")
+    with pytest.raises(ValueError, match="distinct image contents"):
+        load_manifest(manifest)
+
+
+def test_smoke_images_may_be_repeated_for_performance_checks(tmp_path: Path) -> None:
+    (tmp_path / "a.png").write_bytes(b"\\x89PNG\\r\\n\\x1a\\n")
+    base = {
+        "group": "SMOKE", "image": "a.png", "reference_latex": "x+1",
+        "reference_verified": True, "source": "synthetic technical smoke",
+    }
+    manifest = tmp_path / "manifest.json"
+    manifest.write_text(json.dumps({"samples": [
+        {**base, "id": "SMOKE_A"}, {**base, "id": "SMOKE_B"},
+    ]}), encoding="utf-8")
+    assert len(load_manifest(manifest)) == 2
+
+
 def test_literal_cer_and_interpolated_p95() -> None:
     assert character_error_rate("x^2", "x^3") == pytest.approx(1 / 3)
     assert character_error_rate("abc", "") == 1.0
