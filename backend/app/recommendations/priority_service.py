@@ -466,6 +466,9 @@ class LearningPriorityService:
             self.session.execute(
                 select(TeachingPlanItem.problem_type_id, TeachingPlanItem.priority)
                 .join(TeachingPlan, TeachingPlan.id == TeachingPlanItem.teaching_plan_id)
+                .join(ProblemType, ProblemType.id == TeachingPlanItem.problem_type_id)
+                .join(Topic, Topic.id == ProblemType.topic_id)
+                .join(Chapter, Chapter.id == Topic.chapter_id)
                 .join(
                     StudentEnrollment,
                     StudentEnrollment.classroom_id == TeachingPlan.classroom_id,
@@ -475,6 +478,8 @@ class LearningPriorityService:
                     StudentEnrollment.status == EnrollmentStatus.ACTIVE,
                     TeachingPlan.subject_id == subject_id,
                     TeachingPlan.status == TeachingPlanStatus.ACTIVE,
+                    Chapter.subject_id == subject_id,
+                    ProblemType.is_active.is_(True),
                 )
                 .order_by(
                     TeachingPlanItem.priority.desc(),

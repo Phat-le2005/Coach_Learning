@@ -148,6 +148,19 @@ export default async function StudentPage(props: {
           "Môn học được chọn không thuộc danh sách môn học của bạn."
         );
       }
+      if (error.status === 422) {
+        return error.code === "PRIORITY_CONTEXT_SUBJECT_MISMATCH"
+          ? state(
+              "error",
+              "Kế hoạch học cần được kiểm tra",
+              "Một dạng bài trong kế hoạch học không còn phù hợp với môn hiện tại. Hãy báo giáo viên hoặc quản trị viên."
+            )
+          : state(
+              "error",
+              "Yêu cầu học tập chưa hợp lệ",
+              "Backend không thể xử lý yêu cầu học tập này. Hãy thử lại hoặc báo quản trị viên."
+            );
+      }
       if (error.status === 503) {
         return state(
           "error",
