@@ -16,6 +16,13 @@ from scripts.benchmark_ocr_cpu import character_error_rate, load_manifest, perce
 FIXTURES = Path(__file__).resolve().parents[2] / "data" / "fixtures" / "ocr_cpu_smoke"
 
 
+def _real_png_fixture() -> bytes:
+    """Reuse the checked-in, real mathematical PNG without requiring Pillow."""
+    image_bytes = (FIXTURES / "images" / "x_squared.png").read_bytes()
+    assert image_bytes.startswith(bytes.fromhex("89504e470d0a1a0a"))
+    return image_bytes
+
+
 def test_optional_upstream_package_imports_when_installed() -> None:
     if find_spec("rapid_latex_ocr") is None:
         pytest.skip("Optional OCR CPU package is not installed in this test environment.")
@@ -33,7 +40,7 @@ def test_smoke_manifest_references_five_real_png_files() -> None:
 
 def test_manifest_rejects_unverified_handwriting_and_path_traversal(tmp_path: Path) -> None:
     image = tmp_path / "formula.png"
-    image.write_bytes(b"\x89PNG\r\n\x1a\n")
+    image.write_bytes(_real_png_fixture())
     row = {
         "id": "HAND_001", "group": "HANDWRITTEN", "image": "formula.png",
         "reference_latex": "x^2", "reference_verified": True,
@@ -50,10 +57,9 @@ def test_manifest_rejects_unverified_handwriting_and_path_traversal(tmp_path: Pa
         load_manifest(manifest)
 
 
-
 def test_manifest_rejects_duplicate_handwritten_image_bytes(tmp_path: Path) -> None:
     # Different filenames do not make two distinct handwriting samples.
-    png_bytes = b"\\x89PNG\\r\\n\\x1a\\n" + b"same-image"
+    png_bytes = _real_png_fixture()
     (tmp_path / "a.png").write_bytes(png_bytes)
     (tmp_path / "b.png").write_bytes(png_bytes)
     base = {
@@ -71,7 +77,7 @@ def test_manifest_rejects_duplicate_handwritten_image_bytes(tmp_path: Path) -> N
 
 
 def test_smoke_images_may_be_repeated_for_performance_checks(tmp_path: Path) -> None:
-    (tmp_path / "a.png").write_bytes(b"\\x89PNG\\r\\n\\x1a\\n")
+    (tmp_path / "a.png").write_bytes(_real_png_fixture())
     base = {
         "group": "SMOKE", "image": "a.png", "reference_latex": "x+1",
         "reference_verified": True, "source": "synthetic technical smoke",
