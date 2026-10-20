@@ -49,6 +49,7 @@ def load_manifest(path: Path) -> list[FormulaSample]:
         raise ValueError("Manifest must contain a samples array.")
     samples: list[FormulaSample] = []
     seen: set[str] = set()
+    handwritten_hashes: set[str] = set()
     for item in raw["samples"]:
         if not isinstance(item, dict):
             raise ValueError("Each sample must be an object.")
@@ -72,6 +73,11 @@ def load_manifest(path: Path) -> list[FormulaSample]:
         if not isinstance(image_name, str):
             raise ValueError(f"Sample {sample_id} needs a PNG image path.")
         image_path = _safe_image_path(path.parent, image_name)
+        if group == "HANDWRITTEN":
+            digest = hashlib.sha256(image_path.read_bytes()).hexdigest()
+            if digest in handwritten_hashes:
+                raise ValueError("HANDWRITTEN samples must have distinct image contents.")
+            handwritten_hashes.add(digest)
         seen.add(sample_id)
         samples.append(FormulaSample(sample_id, group, image_path, reference.strip(), source))
     return samples
