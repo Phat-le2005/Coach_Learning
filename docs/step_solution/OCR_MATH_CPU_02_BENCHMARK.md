@@ -234,6 +234,23 @@ preserves LF checkout bytes for `backend/data` JSON/CSV files on Windows. The
 full suite was not rerun because of the memory limit. No full-backend PASS or
 live browser OCR result is claimed.
 
+## OCR-MATH-FREE-02 benchmark integrity hardening (2026-10-20)
+
+The manifest validator now checks the SHA-256 content of every permitted
+HANDWRITTEN PNG and rejects duplicate image bytes even when entries use
+different IDs or paths. This prevents counting cloned files toward the
+minimum of 20 independent handwritten samples. Technical SMOKE images may
+still be repeated for explicitly labeled latency/stability checks; repeat
+calls do not constitute independent accuracy evidence.
+
+This integrity gate is a necessary but insufficient check: different crops,
+resizes, or re-encodings of the same original can have distinct file hashes.
+The reviewer must verify distinct underlying human-written formulas and
+document consent, labeling and collection conditions before accepting a run.
+Model weights and handwritten datasets remain outside Git; OCR remains
+disabled by default. Full handwriting accuracy and live browser acceptance
+are still NOT_TESTED until the required data and infrastructure exist.
+
 ## To complete the real benchmark
 
 1. Follow `backend/data/fixtures/ocr_cpu_handwritten/README.md` to place at
