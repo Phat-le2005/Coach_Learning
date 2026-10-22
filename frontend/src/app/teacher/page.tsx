@@ -1,8 +1,13 @@
-import { DashboardShell } from "@/components/app-shell/DashboardShell";
-import { PageState } from "@/components/app-shell/PageState";
+import type { Metadata } from "next";
 import { requirePageRole } from "@/lib/auth/page-session";
+import { TeacherDashboardClient } from "@/features/teacher/TeacherDashboardClient";
+
+export const metadata: Metadata = {
+  title: "Không gian Giảng dạy · EduMS",
+  description: "Cổng quản trị lớp học, kho tài liệu lý thuyết thực hành và giám sát bài làm học sinh.",
+};
 
 export default async function TeacherPage() {
   const session = await requirePageRole("TEACHER", "/teacher");
-  return <DashboardShell session={session} title="Không gian giảng dạy" description="Nền tảng xác thực đã sẵn sàng cho dữ liệu giáo viên."><PageState kind="empty" title="Dashboard đang chờ kết nối" description="FE-REAL-01 chỉ thiết lập shell và bảo vệ vai trò. Dữ liệu lớp học sẽ được tích hợp ở giai đoạn riêng." /></DashboardShell>;
+  return <TeacherDashboardClient teacherName={session.fullName || "Giáo viên Toán"} />;
 }

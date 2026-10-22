@@ -8,15 +8,19 @@ import styles from "../MathWorkspace.module.css";
 interface SyncStatusBadgeProps {
   status: SyncStatus;
   errorMessage?: string;
+  authExpired?: boolean;
   onRetry?: () => void;
   onResolveConflict?: () => void;
+  onExportDraft?: () => void;
 }
 
 export function SyncStatusBadge({
   status,
   errorMessage,
+  authExpired = false,
   onRetry,
   onResolveConflict,
+  onExportDraft,
 }: SyncStatusBadgeProps) {
   if (status === "saving") {
     return (
@@ -49,14 +53,19 @@ export function SyncStatusBadge({
     return (
       <div className={`${styles.statusBadge} ${styles.statusConflict}`} role="alert">
         <AlertTriangle className={styles.statusIcon} size={14} />
-        <span>Xung đột phiên bản</span>
+        <span>{errorMessage || "Xung đột phiên bản"}</span>
+        {onExportDraft && (
+          <button type="button" className={styles.statusActionBtn} onClick={onExportDraft}>
+            Sao lưu bản nháp
+          </button>
+        )}
         {onResolveConflict && (
           <button
             type="button"
             className={styles.statusActionBtn}
             onClick={onResolveConflict}
           >
-            Tải bản mới nhất
+            Bỏ bản nháp và tải bản máy chủ
           </button>
         )}
       </div>
@@ -68,6 +77,9 @@ export function SyncStatusBadge({
       <div className={`${styles.statusBadge} ${styles.statusError}`} role="alert">
         <AlertCircle className={styles.statusIcon} size={14} />
         <span>{errorMessage || "Lỗi lưu trữ"}</span>
+        {authExpired ? (
+          <a className={styles.statusActionBtn} href="/login?reason=expired" target="_blank" rel="noopener noreferrer">{"\u0110\u0103ng nh\u1eadp l\u1ea1i"}</a>
+        ) : null}
         {onRetry && (
           <button type="button" className={styles.statusActionBtn} onClick={onRetry}>
             Thử lại

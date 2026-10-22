@@ -4,6 +4,9 @@ import test from "node:test";
 import { accountMenuReducer, initialAccountMenuState } from "../src/lib/auth/account-menu-state";
 import { BrowserAuthError, endBrowserSession, logoutAndRedirect } from "../src/lib/auth/browser";
 import { hasLoginFieldErrors, validateLoginFields } from "../src/lib/auth/login-validation";
+import { verifiedLoginRole } from "../src/lib/auth/login-session";
+import type { UserRead } from "../src/lib/api/contracts";
+import type { SessionPayload } from "../src/lib/auth/session-codec";
 
 test("login fields report clear errors before a request is sent", () => {
   assert.deepEqual(validateLoginFields("", ""), {
@@ -53,4 +56,21 @@ test("logout rejects an invalid response and never redirects", async () => {
 test("logout propagates BFF failure for retry instead of reporting success", async () => {
   const failure = new BrowserAuthError("service unavailable", 503, "API_UNAVAILABLE");
   await assert.rejects(endBrowserSession(async () => { throw failure; }), (error: unknown) => error === failure);
+});
+
+test("login redirect requires a live backend session matching the signed UI cookie", async () => {
+  const session: SessionPayload = {
+    v: 1, userId: "user-1", email: "student@example.com", fullName: "Student",
+    role: "STUDENT", expiresAt: Date.now() + 60_000,
+  };
+  const user: UserRead = {
+    id: "user-1", email: "student@example.com", full_name: "Student", role: "STUDENT",
+    is_active: true, created_at: "2026-01-01T00:00:00Z", updated_at: "2026-01-01T00:00:00Z",
+  };
+  const lookup = async () => user;
+  assert.equal(await verifiedLoginRole(session, "access", lookup), "STUDENT");
+  assert.equal(await verifiedLoginRole(session, null, lookup), null);
+  assert.equal(await verifiedLoginRole(session, "revoked", async () => { throw new Error("401"); }), null);
+  assert.equal(await verifiedLoginRole(session, "wrong-user", async () => ({ ...user, id: "user-2" })), null);
+  assert.equal(await verifiedLoginRole(session, "wrong-role", async () => ({ ...user, role: "ADMIN" })), null);
 });

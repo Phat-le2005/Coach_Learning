@@ -1,0 +1,149 @@
+1
+00:00:00,000 --> 00:00:05,249
+EduMS là hệ thống quản lý học tập và hỗ trợ ôn thi đại học dành cho học sinh lớp 12.
+
+2
+00:00:05,249 --> 00:00:10,497
+Hệ thống kết nối chương trình học, luyện tập, phát hiện lỗ hổng và theo dõi tiến bộ cá nhân.
+
+3
+00:00:10,497 --> 00:00:17,495
+Người dùng đăng nhập bằng tài khoản thật; mật khẩu và phiên đăng nhập được backend xác thực an toàn.
+
+4
+00:00:17,495 --> 00:00:24,493
+Quyền STUDENT, TEACHER, PARENT và ADMIN được kiểm tra tại server trước khi cho phép truy cập dữ liệu.
+
+5
+00:00:24,493 --> 00:00:31,491
+Student Home hiển thị việc cần làm hôm nay, tiến độ học và nội dung cần ưu tiên của từng học sinh.
+
+6
+00:00:31,491 --> 00:00:39,656
+Ưu tiên được suy ra từ evidence học tập, mastery và prerequisite; hệ thống không tự tạo điểm số giả.
+
+7
+00:00:39,656 --> 00:00:43,738
+Bản demo Toán 12 có 6 chương, 25 chủ đề và 75 dạng bài đã phát hành.
+
+8
+00:00:43,738 --> 00:00:47,820
+Cây tri thức dùng thân, cành và lá để biểu diễn chương, chủ đề và dạng bài.
+
+9
+00:00:47,820 --> 00:00:54,818
+Học sinh mới vẫn xem được toàn bộ nội dung; phần chưa học là NOT_STARTED, không bị hiểu nhầm là yếu.
+
+10
+00:00:54,818 --> 00:00:59,484
+Chọn một chiếc lá để xem dạng bài và bắt đầu phiên luyện tập phù hợp.
+
+11
+00:00:59,484 --> 00:01:04,732
+Câu trắc nghiệm và đúng–sai được backend chấm bằng quy tắc xác định, không cần gọi AI.
+
+12
+00:01:04,732 --> 00:01:12,313
+Practice Workspace hỗ trợ chọn đáp án, nhập công thức, viết bằng bút cảm ứng và trình bày lời giải trên cùng màn hình.
+
+13
+00:01:12,313 --> 00:01:17,562
+Học sinh có thể nhập tọa độ điểm, vectơ hoặc công thức để dựng mô hình hình học Oxyz.
+
+14
+00:01:17,562 --> 00:01:22,227
+Trình xem 3D biểu diễn trục tọa độ, điểm, vectơ, mặt phẳng và các đại lượng liên quan.
+
+15
+00:01:22,227 --> 00:01:27,476
+Camera có thể xoay và đổi góc nhìn để học sinh quan sát quan hệ hình học trực quan hơn.
+
+16
+00:01:27,476 --> 00:01:32,141
+Mô hình 3D chỉ hỗ trợ quan sát; đáp án vẫn do dữ liệu và quy tắc chấm xác định.
+
+17
+00:01:32,141 --> 00:01:37,389
+Lời giải tự luận được tách thành từng bước như tính đạo hàm, lập điều kiện và kết luận.
+
+18
+00:01:37,389 --> 00:01:42,055
+Các bước được đối chiếu với tiêu chí chấm; lỗi sai được chỉ đúng vị trí để học sinh sửa lại.
+
+19
+00:01:42,055 --> 00:01:47,304
+AI chỉ hỗ trợ khi rule-based chưa đủ; trường hợp chưa chắc chắn sẽ chuyển giáo viên kiểm tra.
+
+20
+00:01:47,304 --> 00:01:53,135
+Trong lớp được phân quyền, giáo viên theo dõi câu hiện tại, thời gian làm bài, số hint và trạng thái trả lời.
+
+21
+00:01:53,135 --> 00:01:58,967
+Nét viết gần nhất có thể được hiển thị để giáo viên nhận ra học sinh đang mắc ở bước nào.
+
+22
+00:01:58,967 --> 00:02:04,799
+Giáo viên không làm bài thay học sinh; mọi truy cập phải đúng quan hệ lớp học và có dấu vết audit.
+
+23
+00:02:04,799 --> 00:02:11,214
+Teacher Dashboard tổng hợp tiến độ theo chương, chủ đề, dạng bài và từng học sinh trong lớp.
+
+24
+00:02:11,214 --> 00:02:17,045
+Heatmap giúp nhận ra nhóm đang tiến bộ, nhóm cần hỗ trợ và kiến thức cả lớp thường làm sai.
+
+25
+00:02:17,045 --> 00:02:24,626
+Bộ lọc phân biệt chưa học, đang luyện, yếu và đến hạn ôn; chưa có evidence không bị gán thành WEAK.
+
+26
+00:02:24,626 --> 00:02:30,457
+Giáo viên tải tài liệu lý thuyết PDF và khai báo nguồn trước khi hệ thống bắt đầu xử lý.
+
+27
+00:02:30,457 --> 00:02:36,872
+Nội dung được trích xuất, chia cấu trúc và ánh xạ với chapter, topic, concept trong curriculum.
+
+28
+00:02:36,872 --> 00:02:42,121
+Từ cấu trúc đã kiểm tra, hệ thống tạo bản nháp sơ đồ tư duy để giáo viên chỉnh sửa.
+
+29
+00:02:42,121 --> 00:02:46,787
+Sơ đồ chỉ được phát hành sau khi giáo viên duyệt nội dung, nguồn và quan hệ kiến thức.
+
+30
+00:02:46,787 --> 00:02:51,452
+Mastery Engine theo dõi riêng năng lực làm một dạng bài và mức hiểu các concept nền tảng.
+
+31
+00:02:51,452 --> 00:02:56,117
+Mỗi câu trả lời tạo bằng chứng; một lần đúng hoặc sai không quyết định mức độ thành thạo.
+
+32
+00:02:56,117 --> 00:03:00,783
+Digital Twin tạo snapshot từ dữ liệu quan hệ; đây không phải LLM hay nguồn dữ liệu riêng.
+
+33
+00:03:00,783 --> 00:03:06,615
+Recommendation Engine chọn bài theo prerequisite, điểm yếu, lịch ôn và độ khó phù hợp một cách deterministic.
+
+34
+00:03:06,615 --> 00:03:12,447
+Thi thử phân tích kết quả theo chương, dạng bài và concept thay vì chỉ đưa ra một điểm tổng.
+
+35
+00:03:12,447 --> 00:03:17,695
+Phụ huynh nhận tóm tắt; giáo viên theo dõi lớp; quản trị viên kiểm soát chương trình và dữ liệu.
+
+36
+00:03:17,695 --> 00:03:22,944
+Mỗi tính năng AI chỉ nhận phần context cần thiết và không được tự sửa dữ liệu học tập quan trọng.
+
+37
+00:03:22,944 --> 00:03:29,942
+EduMS là AI-Native: AI hỗ trợ giải thích, gợi ý và phân tích.
+Learning Core vẫn hoạt động khi AI API không khả dụng.
+

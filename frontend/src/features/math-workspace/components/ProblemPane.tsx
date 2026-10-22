@@ -3,6 +3,7 @@
 import React from "react";
 import { BookOpen, PanelLeftClose, PanelLeft, CheckCircle2 } from "lucide-react";
 import type { ProblemRead, SolutionAttemptRead } from "../types";
+import { MathRenderer } from "@/components/ui/MathRenderer";
 import styles from "../MathWorkspace.module.css";
 
 interface ProblemPaneProps {
@@ -64,7 +65,9 @@ export function ProblemPane({
           <>
             {/* Question Text */}
             <div className={styles.problemBody}>
-              <div className={styles.problemContentText}>{problem.content}</div>
+              <div className={styles.problemContentText}>
+                <MathRenderer content={problem.content} />
+              </div>
             </div>
 
             {/* Options (if multiple choice) */}
@@ -75,7 +78,9 @@ export function ProblemPane({
                   {problem.options.map((opt) => (
                     <div key={opt.id} className={styles.optionCard}>
                       <span className={styles.optionLabel}>{opt.label}</span>
-                      <div className={styles.optionContent}>{opt.content}</div>
+                      <div className={styles.optionContent}>
+                        <MathRenderer content={opt.content} />
+                      </div>
                     </div>
                   ))}
                 </div>

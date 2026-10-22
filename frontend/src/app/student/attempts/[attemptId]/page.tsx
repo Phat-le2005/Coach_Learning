@@ -114,7 +114,7 @@ export default async function StudentAttemptPage(props: AttemptPageProps) {
 
   return (
     <>
-      <SessionHeartbeat />
+      <SessionHeartbeat preserveUnsavedWork />
       <MathWorkspace
         attemptId={attemptId}
         initialAttempt={initialAttempt}

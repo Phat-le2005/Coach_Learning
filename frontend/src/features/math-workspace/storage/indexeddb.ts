@@ -78,9 +78,10 @@ class MathInkIndexedDb {
           isDirty,
           updatedAt: Date.now(),
         };
-        const req = store.put(record);
-        req.onsuccess = () => resolve();
-        req.onerror = () => reject(req.error);
+        store.put(record);
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+        tx.onabort = () => reject(tx.error);
       } catch (err) {
         reject(err);
       }

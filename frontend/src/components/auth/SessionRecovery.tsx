@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 import { PageState } from "@/components/app-shell/PageState";
 import { GradientButton } from "@/components/ui/GradientButton";
-import { authenticatedMutation, BrowserAuthError } from "@/lib/auth/browser";
+import { BrowserAuthError, refreshBrowserSession } from "@/lib/auth/browser";
 
 export function SessionRecovery() {
   const router = useRouter();
@@ -14,7 +14,7 @@ export function SessionRecovery() {
     let active = true;
     async function recover() {
       try {
-        await authenticatedMutation("/auth/refresh");
+        await refreshBrowserSession();
         if (active) router.refresh();
       } catch (error) {
         if (active && error instanceof BrowserAuthError && (error.status === 401 || error.status === 403)) window.location.assign("/login?reason=expired");

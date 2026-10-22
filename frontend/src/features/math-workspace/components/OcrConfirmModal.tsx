@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Sparkles, Check, X, AlertCircle, Loader2 } from "lucide-react";
 import type { OCRRecognizeResponse, StepKind } from "@/lib/api/contracts";
 import type { InkStroke } from "@/lib/api/contracts";
@@ -9,6 +9,8 @@ import styles from "../MathWorkspace.module.css";
 import { getOcrConfidenceDisplay } from "../utils/ocr-confidence";
 import { OcrInkPreview } from "./OcrInkPreview";
 import { OcrMathPreview } from "./OcrMathPreview";
+import { renderOcrLatexHtml } from "../utils/ocr-math-preview";
+import { CORRECTION_KEYS, insertCorrectionKey, toConfirmedLatex } from "../utils/ocr-correction";
 
 const STEP_KIND_LABELS: Record<StepKind, string> = {
   DERIVATIVE_CALCULATION: "Tính đạo hàm (Derivative Calculation)",
@@ -25,9 +27,9 @@ interface OcrConfirmModalProps {
   isOpen: boolean;
   onClose: () => void;
   ocrData: OCRRecognizeResponse | null;
+  manualMode?: boolean;
   isSubmitting: boolean;
   onConfirmStep: (stepType: StepKind, latex: string, explanation: string) => Promise<void>;
-  onRequestAlternatives: () => Promise<string[]>;
   sourceStrokes: InkStroke[];
   errorMessage?: string | null;
 }
@@ -36,36 +38,38 @@ export function OcrConfirmModal({
   isOpen,
   onClose,
   ocrData,
+  manualMode = false,
   isSubmitting,
   onConfirmStep,
-  onRequestAlternatives,
   sourceStrokes,
   errorMessage,
 }: OcrConfirmModalProps) {
   const [latex, setLatex] = useState("");
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const [stepType, setStepType] = useState<StepKind>("EXPLANATION");
   const [explanation, setExplanation] = useState("");
   const [localError, setLocalError] = useState<string | null>(null);
-  const [alternatives, setAlternatives] = useState<string[]>([]);
-  const [loadingAlternatives, setLoadingAlternatives] = useState(false);
-  const [alternativesRequested, setAlternativesRequested] = useState(false);
 
   useEffect(() => {
-    if (ocrData) {
-      setLatex(ocrData.latex || "");
-      setStepType(ocrData.suggested_step_type || "EXPLANATION");
-      setExplanation(ocrData.explanation_text || "");
+    if (ocrData || manualMode) {
+      setLatex(ocrData && renderOcrLatexHtml(ocrData.latex) ? ocrData.latex : "");
+      setStepType(ocrData?.suggested_step_type || "EXPLANATION");
+      setExplanation(ocrData?.explanation_text || "");
       setLocalError(null);
-      setAlternatives([]);
-      setAlternativesRequested(false);
     }
-  }, [ocrData]);
+  }, [ocrData, manualMode]);
 
-  if (!isOpen || !ocrData) {
+  if (!isOpen || (!ocrData && !manualMode)) {
     return null;
   }
 
-  const confidenceDisplay = getOcrConfidenceDisplay(ocrData.confidence);
+  const confidenceDisplay = getOcrConfidenceDisplay(ocrData?.confidence ?? 0);
+  const initialSuggestionValid = ocrData !== null && renderOcrLatexHtml(ocrData.latex) !== null;
+  const confirmedLatex = toConfirmedLatex(latex);
+  const previewValid = confirmedLatex !== null && renderOcrLatexHtml(confirmedLatex) !== null;
+  const reviewableCandidates = [
+    ...(initialSuggestionValid && ocrData ? [{ value: ocrData.latex, label: "Gợi ý ban đầu" }] : []),
+  ];
   const confidenceClass =
     confidenceDisplay.known && confidenceDisplay.percent !== null && confidenceDisplay.percent >= 90
       ? styles.confidenceHigh
@@ -79,9 +83,13 @@ export function OcrConfirmModal({
       setLocalError("Vui lòng nhập công thức toán học.");
       return;
     }
+    if (!previewValid) {
+      setLocalError("Công thức chưa hoàn chỉnh. Điền hết ô vuông và kiểm tra bản xem trước trước khi lưu.");
+      return;
+    }
     setLocalError(null);
     try {
-      await onConfirmStep(stepType, latex.trim(), explanation.trim());
+      await onConfirmStep(stepType, confirmedLatex!, explanation.trim());
     } catch (err: unknown) {
       if (err instanceof Error) {
         setLocalError(err.message);
@@ -91,19 +99,20 @@ export function OcrConfirmModal({
     }
   };
 
-  const handleRequestAlternatives = async () => {
-    if (loadingAlternatives || alternativesRequested || isSubmitting) return;
-    setLoadingAlternatives(true);
+  const handleInsertKey = (template: string) => {
+    const field = inputRef.current;
+    const result = insertCorrectionKey(
+      latex,
+      field?.selectionStart ?? latex.length,
+      field?.selectionEnd ?? latex.length,
+      template,
+    );
+    setLatex(result.value);
     setLocalError(null);
-    try {
-      const candidates = await onRequestAlternatives();
-      setAlternatives([...new Set(candidates.filter((candidate) => candidate.trim() && candidate !== ocrData.latex))].slice(0, 2));
-      setAlternativesRequested(true);
-    } catch {
-      setLocalError("Chưa lấy được cách đọc khác. Bạn vẫn có thể sửa công thức bằng tay hoặc thử lại.");
-    } finally {
-      setLoadingAlternatives(false);
-    }
+    window.requestAnimationFrame(() => {
+      field?.focus();
+      field?.setSelectionRange(result.selectionStart, result.selectionEnd);
+    });
   };
 
   return (
@@ -114,9 +123,9 @@ export function OcrConfirmModal({
           <div className={styles.modalTitle}>
             <Sparkles className={styles.sparkleIcon} size={20} />
             <span id="ocr-modal-title">Xác nhận nhận diện nét vẽ (OCR)</span>
-            <span className={`${styles.confidenceBadge} ${confidenceClass}`}>
+            {ocrData && <span className={`${styles.confidenceBadge} ${confidenceClass}`}>
               {confidenceDisplay.label}
-            </span>
+            </span>}
           </div>
           <button
             type="button"
@@ -138,8 +147,6 @@ export function OcrConfirmModal({
             </p>
           </div>
 
-          <OcrInkPreview strokes={sourceStrokes} />
-
           {(errorMessage || localError) && (
             <div className={styles.errorAlert} role="alert">
               <AlertCircle size={16} />
@@ -148,7 +155,7 @@ export function OcrConfirmModal({
           )}
 
           {/* Detected symbols chip list */}
-          {ocrData.detected_symbols && ocrData.detected_symbols.length > 0 && (
+          {ocrData?.detected_symbols && ocrData.detected_symbols.length > 0 && (
             <div className={styles.formGroup}>
               <span className={styles.formLabel}>Ký hiệu nhận diện được:</span>
               <div className={styles.symbolsList}>
@@ -162,9 +169,14 @@ export function OcrConfirmModal({
           )}
 
           <div className={styles.formGroup}>
-            <span className={styles.formLabel}>Chọn cách đọc gần đúng nhất rồi sửa nếu cần:</span>
+            <span className={styles.formLabel}>Gợi ý OCR — chọn nếu gần đúng, rồi sửa ngay bên dưới:</span>
             <div className={styles.ocrCandidates}>
-              {[ocrData.latex, ...alternatives].map((candidate, index) => (
+              {!initialSuggestionValid && (
+                <p className={styles.emptyPreviewText} role="status">
+                  OCR chưa đọc rõ nét viết này. Em có thể nhập lại bằng ô và bàn phím toán bên dưới.
+                </p>
+              )}
+              {reviewableCandidates.map(({ value: candidate, label }, index) => (
                 <button
                   key={`${index}-${candidate}`}
                   type="button"
@@ -173,42 +185,72 @@ export function OcrConfirmModal({
                   onClick={() => setLatex(candidate)}
                   disabled={isSubmitting}
                 >
-                  <span className={styles.ocrCandidateLabel}>{index === 0 ? "Gợi ý ban đầu" : `Cách đọc khác ${index}`}</span>
+                  <span className={styles.ocrCandidateLabel}>{label}</span>
                   <span className={styles.ocrCandidateFormula}><OcrMathPreview latex={candidate} /></span>
                 </button>
               ))}
             </div>
-            {!alternativesRequested && (
-              <button type="button" className={styles.ocrRetryButton} onClick={handleRequestAlternatives} disabled={loadingAlternatives || isSubmitting}>
-                {loadingAlternatives ? "Đang thử cách đọc khác..." : "Thử cách đọc khác"}
-              </button>
-            )}
-            {alternativesRequested && alternatives.length === 0 && <span className={styles.emptyPreviewText}>Không tìm thấy gợi ý khác; hãy sửa bằng tay nếu cần.</span>}
           </div>
 
-          {/* LaTeX formula input */}
+          <div className={styles.ocrComparison}>
+            <OcrInkPreview strokes={sourceStrokes} />
+            <div className={styles.ocrResultPreview}>
+              <span className={styles.formLabel}>Công thức sẽ lưu — đối chiếu với nét viết:</span>
+              <div className={styles.mathPreviewBox}>
+                <OcrMathPreview latex={confirmedLatex ?? ""} />
+              </div>
+            </div>
+          </div>
+
+          {/* Student correction workspace */}
           <div className={styles.formGroup}>
-            <label htmlFor="ocr-latex-input" className={styles.formLabel}>
-              Công thức LaTeX (có thể chỉnh sửa):
-            </label>
+            <div className={styles.ocrEditorHeading}>
+              <label htmlFor="ocr-latex-input" className={styles.formLabel}>Sửa công thức của em</label>
+              <button
+                type="button"
+                className={styles.ocrClearButton}
+                onClick={() => {
+                  setLatex("");
+                  setLocalError(null);
+                  window.requestAnimationFrame(() => inputRef.current?.focus());
+                }}
+                disabled={isSubmitting || !latex}
+              >
+                Xóa gợi ý, nhập lại
+              </button>
+            </div>
+            <p id="ocr-edit-help" className={styles.ocrEditorHelp}>
+              Gõ như trên giấy, ví dụ <code>y=x+2</code> hoặc <code>x^2</code>. Chạm vào vị trí cần sửa rồi bấm ký hiệu. Công thức LaTeX nâng cao vẫn dùng được.
+            </p>
             <textarea
               id="ocr-latex-input"
+              ref={inputRef}
               className={`${styles.formInput} ${styles.latexTextarea}`}
               rows={2}
               value={latex}
-              onChange={(e) => setLatex(e.target.value)}
-              placeholder="Nhập hoặc sửa công thức LaTeX..."
+              onChange={(event) => { setLatex(event.target.value); setLocalError(null); }}
+              placeholder="Ví dụ: y=x+2"
+              aria-describedby="ocr-edit-help ocr-template-help"
               disabled={isSubmitting}
               required
             />
-          </div>
-
-          {/* Live Math Preview */}
-          <div className={styles.formGroup}>
-            <span className={styles.formLabel}>Xem trước công thức:</span>
-            <div className={styles.mathPreviewBox}>
-              <OcrMathPreview latex={latex} />
+            <div className={styles.ocrCorrectionKeys} role="group" aria-label="Bàn phím toán để sửa công thức">
+              {CORRECTION_KEYS.map((key) => (
+                <button
+                  key={key.label}
+                  type="button"
+                  className={styles.ocrCorrectionKey}
+                  title={key.description}
+                  aria-label={key.description}
+                  onClick={() => handleInsertKey(key.insert)}
+                  disabled={isSubmitting}
+                >
+                  {key.label}
+                </button>
+              ))}
             </div>
+            <span id="ocr-template-help" className={styles.ocrEditorHelp}>Với căn, phân số và số mũ: thay từng ô □ bằng số hoặc biểu thức của em.</span>
+            {latex.includes("□") && <span className={styles.ocrIncompleteHint} role="status">Còn ô □ chưa điền — chưa thể lưu bước giải.</span>}
           </div>
 
           {/* Step Kind Selection */}
@@ -260,7 +302,7 @@ export function OcrConfirmModal({
             <button
               type="submit"
               className={styles.buttonPrimary}
-              disabled={isSubmitting || !latex.trim()}
+              disabled={isSubmitting || !previewValid}
             >
               {isSubmitting ? (
                 <>

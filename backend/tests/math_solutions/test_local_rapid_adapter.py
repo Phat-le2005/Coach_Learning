@@ -1,11 +1,14 @@
 """CPU-focused, no-download OCR provider contract tests."""
+from types import SimpleNamespace
 from uuid import uuid4
+
 import pytest
+from starlette.requests import Request
 
 from app.core.config import Settings
 from app.core.exceptions import ApplicationError
 from app.math_ink.schemas import InkPoint, InkStroke
-from app.math_ocr.dependencies import get_ocr_adapter
+from app.math_ocr.dependencies import get_ocr_adapter, get_request_ocr_adapter
 from app.math_ocr.local_rapid_adapter import LocalRapidOCRAdapter
 
 
@@ -117,3 +120,39 @@ def test_rapid_adapter_hides_internal_errors(monkeypatch):
         LocalRapidOCRAdapter(fail).recognize([sample()])
     assert exc.value.code == "OCR_LOCAL_MODEL_UNAVAILABLE"
     assert "private token" not in exc.value.message
+
+def test_request_provider_uses_mounted_app_settings(monkeypatch):
+    app_settings = Settings(
+        _env_file=None, app_env="development", database_name="edums_test",
+        database_user="tester", math_ocr_provider="local_rapid",
+    )
+    monkeypatch.setattr(
+        "app.math_ocr.dependencies.get_settings",
+        lambda: Settings(
+            _env_file=None, app_env="development", database_name="edums_test",
+            database_user="tester", math_ocr_provider="mock",
+        ),
+    )
+    app = SimpleNamespace(state=SimpleNamespace(settings=app_settings))
+    request = Request({"type": "http", "app": app})
+    assert isinstance(get_request_ocr_adapter(request), LocalRapidOCRAdapter)
+
+@pytest.mark.parametrize("model_latex", [
+    r"\bigvee\bigcap = \land + \vdash",
+    r"\widehat{\mathbf{v}}} = \mathcal{v}",
+])
+def test_rapid_adapter_abstains_on_hallucinated_or_malformed_latex(monkeypatch, model_latex):
+    import app.math_ocr.local_rapid_adapter as module
+    monkeypatch.setattr(module, "render_formula_png", lambda strokes: b"ink-image")
+    with pytest.raises(ApplicationError) as exc:
+        LocalRapidOCRAdapter(lambda raw: (model_latex, 0.8)).recognize([sample()])
+    assert exc.value.code == "OCR_NOT_RECOGNIZED"
+
+
+def test_rapid_adapter_abstains_on_renderable_operator_hallucination(monkeypatch):
+    import app.math_ocr.local_rapid_adapter as module
+    monkeypatch.setattr(module, "render_formula_png", lambda strokes: b"ink-image")
+    hallucination = r"{\lor\lnot\ \ {\times}\ \ +\ A}"
+    with pytest.raises(ApplicationError) as exc:
+        LocalRapidOCRAdapter(lambda raw: (hallucination, 0.8)).recognize([sample()])
+    assert exc.value.code == "OCR_NOT_RECOGNIZED"

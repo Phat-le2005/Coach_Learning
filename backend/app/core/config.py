@@ -1,6 +1,6 @@
 from functools import lru_cache
 from pathlib import Path
-from typing import Literal
+from typing import Any, Literal
 
 from pydantic import AnyHttpUrl, Field, SecretStr, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -20,7 +20,16 @@ class Settings(BaseSettings):
 
     app_name: str = "EduMS"
     app_env: Literal["development", "test", "production"] = "development"
-    debug: bool = False
+    debug: bool = Field(default=False, validation_alias="EDUMS_DEBUG")
+
+    @model_validator(mode="before")
+    @classmethod
+    def accept_programmatic_debug(cls, values: Any) -> Any:
+        # Preserve Settings(debug=...) for callers while ignoring unrelated
+        # process-wide DEBUG variables such as DEBUG=release.
+        if isinstance(values, dict) and "debug" in values and "EDUMS_DEBUG" not in values:
+            return {**values, "EDUMS_DEBUG": values["debug"]}
+        return values
 
     database_host: str = "localhost"
     database_port: int = Field(default=5432, ge=1, le=65535)

@@ -7,6 +7,8 @@ const nextConfig = {
       {
         source: "/api/v2/:path*",
         destination: `${backendUrl}/api/v2/:path*`,
+        // Browser Math Workspace requests carry this header so the secure BFF handles them.
+        missing: [{ type: "header", key: "x-edums-bff" }],
       },
     ];
   },

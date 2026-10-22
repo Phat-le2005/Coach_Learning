@@ -14,6 +14,19 @@ export function constantTimeEqual(left: string | null | undefined, right: string
 export function isTrustedMutationOrigin(origin: string | null, expectedOrigin: string, fetchSite: string | null): boolean {
   if (fetchSite === "cross-site") return false;
   if (!origin) return false;
-  try { return new URL(origin).origin === new URL(expectedOrigin).origin; }
-  catch { return false; }
+  try {
+    const originUrl = new URL(origin);
+    const expectedUrl = new URL(expectedOrigin);
+    if (originUrl.origin === expectedUrl.origin) return true;
+
+    const isLoopback = (host: string) => host === "localhost" || host === "127.0.0.1";
+    if (isLoopback(originUrl.hostname) && isLoopback(expectedUrl.hostname)) {
+      const originPort = originUrl.port || (originUrl.protocol === "https:" ? "443" : "80");
+      const expectedPort = expectedUrl.port || (expectedUrl.protocol === "https:" ? "443" : "80");
+      return originPort === expectedPort && originUrl.protocol === expectedUrl.protocol;
+    }
+    return false;
+  } catch {
+    return false;
+  }
 }

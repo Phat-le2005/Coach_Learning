@@ -8,6 +8,7 @@ CPU and memory spikes on low-spec demo machines.
 from __future__ import annotations
 
 import logging
+import re
 from functools import lru_cache
 from importlib.util import find_spec
 from pathlib import Path
@@ -100,6 +101,39 @@ def _predict_png(png: bytes) -> tuple[str, float]:
     return model(png)
 
 
+def _plausible_latex(latex: str, stroke_count: int) -> bool:
+    """Abstain on malformed or implausibly command-heavy model output.
+
+    This is a safety filter, not a mathematical correctness score. Students
+    still check every readable suggestion against their handwriting.
+    """
+    depth = 0
+    for char in latex:
+        if char == "{":
+            depth += 1
+        elif char == "}":
+            depth -= 1
+            if depth < 0:
+                return False
+    if depth:
+        return False
+    # Rendering successfully is not enough: a binary operator cannot start a
+    # mathematical expression. OCR may hallucinate logic symbols for plain ink.
+    compact = re.sub(r"\\\s|[{}\s]", "", latex)
+    binary_operator = r"(?:\\(?:lor|land|times|div|cdot|cup|cap)|[=+*/])"
+    if re.match(rf"^{binary_operator}", compact) or re.search(
+        rf"{binary_operator}{binary_operator}", compact
+    ):
+        return False
+    commands = re.findall(r"\\[A-Za-z]+", latex)
+    if len(commands) > max(5, stroke_count // 2 + 1):
+        return False
+    plain = re.sub(r"\\[A-Za-z]+", "", latex)
+    if len(commands) >= 3 and re.search(r"[A-Za-z0-9]", plain) is None:
+        return False
+    return True
+
+
 def _usable_latex(result: object) -> str | None:
     if not isinstance(result, tuple) or len(result) != 2 or not isinstance(result[0], str):
         return None
@@ -137,7 +171,6 @@ class LocalRapidOCRAdapter(MathOCRAdapter):
         *,
         include_alternatives: bool,
     ) -> OCRRecognizeResponse:
-        # Do not infer text from topic/number of strokes. Render actual drawing.
         if not _CPU_INFERENCE_LOCK.acquire(blocking=False):
             raise ApplicationError(
                 503, "OCR_LOCAL_BUSY",
@@ -156,7 +189,7 @@ class LocalRapidOCRAdapter(MathOCRAdapter):
                 ) from exc
 
             latex = _usable_latex(result)
-            if latex is None:
+            if latex is None or not _plausible_latex(latex, len(strokes)):
                 raise ApplicationError(
                     422, "OCR_NOT_RECOGNIZED", "No usable mathematical expression was recognized.",
                 )
@@ -165,7 +198,7 @@ class LocalRapidOCRAdapter(MathOCRAdapter):
                 try:
                     for variant_png in alternative_formula_pngs(image_bytes):
                         candidate = _usable_latex(self._predictor(variant_png))
-                        if candidate and candidate != latex and candidate not in alternatives:
+                        if candidate and _plausible_latex(candidate, len(strokes)) and candidate != latex and candidate not in alternatives:
                             alternatives.append(candidate)
                 except Exception:
                     # A failed optional retry must not discard the usable first suggestion.

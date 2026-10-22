@@ -3,14 +3,16 @@ import { NextResponse } from "next/server";
 
 import { getBackendBaseUrl } from "@/lib/api/client";
 import { mathWorkspaceProxyPath } from "@/lib/api/math-workspace-path";
+import { AUTH_COOKIES } from "@/lib/auth/constants";
 import { errorResponse, verifyMutationRequest } from "@/lib/auth/route-utils";
-import { readAccessToken, readSession } from "@/lib/auth/server";
+import { getSessionSecret } from "@/lib/auth/server";
+import { verifySession } from "@/lib/auth/session-codec";
 
 interface Context { params: Promise<{ path: string[] }> }
 
 async function forward(request: NextRequest, context: Context): Promise<NextResponse> {
-  const session = await readSession();
-  const accessToken = await readAccessToken();
+  const session = await verifySession(request.cookies.get(AUTH_COOKIES.session)?.value, getSessionSecret());
+  const accessToken = request.cookies.get(AUTH_COOKIES.access)?.value;
   if (!session || !accessToken) return errorResponse(401, "SESSION_EXPIRED", "Phiên đăng nhập đã hết hạn.");
   if (session.role !== "STUDENT") return errorResponse(403, "FORBIDDEN", "Bạn không có quyền truy cập bài làm học sinh.");
 

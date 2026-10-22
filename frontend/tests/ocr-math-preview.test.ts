@@ -16,3 +16,8 @@ test("unsupported or excessive OCR markup cannot create trusted links", () => {
   assert.equal(renderOcrLatexHtml("x".repeat(1001)), null);
   assert.equal(renderOcrLatexHtml(String.raw`\unknowncommand{x}`), null);
 });
+
+test("unrenderable OCR output is rejected before student confirmation", () => {
+  assert.equal(renderOcrLatexHtml(String.raw`\widehat{\mathbf{v}}} = \mathcal{v}`), null);
+  assert.ok(renderOcrLatexHtml("y=x+2"));
+});

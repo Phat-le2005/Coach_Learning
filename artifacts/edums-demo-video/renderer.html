@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EduMS Demo Video Renderer</title>
+  <style>
+    html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#071f1a;display:grid;place-items:center;font-family:Inter,"Segoe UI",Arial,sans-serif}
+    canvas{width:min(100vw,177.78vh);height:min(56.25vw,100vh);box-shadow:0 30px 90px #0008;background:#f5f3e9}
+    #status{position:fixed;left:18px;bottom:14px;color:#dcefe5;font:13px ui-monospace,monospace;background:#102e26cc;padding:8px 12px;border-radius:999px;z-index:2}
+  </style>
+</head>
+<body>
+  <canvas id="stage" width="1920" height="1080" aria-label="EduMS six minute product demo"></canvas>
+  <div id="status">Sẵn sàng dựng video</div>
+  <script>
+  (() => {
+    const W=1920,H=1080,DURATION=360,FPS=10;
+    const canvas=document.getElementById('stage');
+    const ctx=canvas.getContext('2d');
+    const status=document.getElementById('status');
+    const palette={deep:'#0b3028',forest:'#173f34',verdant:'#286955',mint:'#63c99a',mint2:'#9ce0bc',cream:'#f5f3e9',paper:'#fbfaf4',aqua:'#3bb9b0',sky:'#5ca9d6',violet:'#8578cf',amber:'#d8a143',coral:'#de7d6b',ink:'#173329',muted:'#60746a',line:'rgba(29,75,61,.14)'};
+    const images={};
+    const imageSources={login:'captures/login.png',home:'captures/student-home.png',galaxy:'captures/knowledge-galaxy.png'};
+    const scenes=[
+      {start:0,end:18,title:'Nơi tri thức đâm chồi',status:'EDUMS · PRODUCT EXPERIENCE'},
+      {start:18,end:42,title:'Đăng nhập an toàn',status:'LIVE DEMO'},
+      {start:42,end:68,title:'Không gian học tập cá nhân',status:'LIVE DEMO'},
+      {start:68,end:94,title:'Khu Rừng Tri Thức',status:'LIVE DEMO'},
+      {start:94,end:124,title:'Practice Workspace',status:'PRODUCT VISION · GIAO DIỆN MINH HỌA'},
+      {start:124,end:158,title:'Công thức & Hình học 3D',status:'PRODUCT VISION · 3D VIEWER'},
+      {start:158,end:184,title:'Đánh giá từng bước',status:'PROTOTYPE'},
+      {start:184,end:214,title:'Theo dõi phiên làm bài',status:'PRODUCT VISION · MONITORING UI'},
+      {start:214,end:248,title:'Tiến độ lớp học',status:'PRODUCT VISION · TEACHER DASHBOARD'},
+      {start:248,end:286,title:'PDF lý thuyết → Sơ đồ tư duy',status:'PRODUCT VISION · TEACHER REVIEW'},
+      {start:286,end:310,title:'Mastery & Repair',status:'BACKEND FOUNDATION'},
+      {start:310,end:330,title:'Luyện tập thích ứng & Thi thử',status:'PRODUCT VISION'},
+      {start:330,end:348,title:'Một hệ sinh thái đồng hành',status:'PRODUCT VISION'},
+      {start:348,end:360,title:'Learn · Understand · Improve',status:'EDUMS'},
+    ];
+    const captions=[
+      [0,18,'EduMS kết nối chương trình học, quá trình luyện tập và tiến bộ của từng học sinh.'],
+      [18,42,'Bốn vai trò được bảo vệ bằng xác thực và phân quyền tại backend.'],
+      [42,68,'Student Home tổng hợp hành động ưu tiên từ dữ liệu học tập thực tế.'],
+      [68,82,'Toán 12 được tổ chức thành 6 chương, 25 chủ đề và 75 dạng bài trong môi trường demo.'],
+      [82,94,'Học sinh mới vẫn nhìn thấy toàn bộ curriculum; nội dung chưa học mang trạng thái Chưa bắt đầu.'],
+      [94,109,'Chọn dạng bài để mở phiên luyện tập; trắc nghiệm được chấm bằng quy tắc tại backend.'],
+      [109,124,'Bút cảm ứng, bàn phím công thức và không gian lời giải cùng nằm trong một workspace.'],
+      [124,141,'Từ tọa độ và công thức, học sinh xem vector, điểm và mặt phẳng trong mô hình 3D có thể xoay.'],
+      [141,158,'Mọi thao tác hình học vẫn lưu cùng lời giải; mô hình 3D chỉ hỗ trợ quan sát, không tự quyết định đáp án.'],
+      [158,171,'Lời giải được tách theo bước, đối chiếu rubric và chỉ chuyển AI khi rule-based chưa đủ.'],
+      [171,184,'Một câu sai chỉ tạo evidence; giáo viên vẫn kiểm soát các trường hợp cần review.'],
+      [184,199,'Trong phiên được phép theo dõi, giáo viên xem câu hiện tại, thời gian, hint và nét viết gần nhất.'],
+      [199,214,'Giáo viên không sửa bài thay học sinh; hệ thống lưu audit và chỉ hiển thị dữ liệu đúng quan hệ lớp học.'],
+      [214,231,'Dashboard lớp tổng hợp mastery theo chương, dạng bài và học sinh để phát hiện nhóm cần hỗ trợ.'],
+      [231,248,'Bộ lọc tách chưa học khỏi yếu, hiển thị review due và tiến độ mà không tạo điểm số giả.'],
+      [248,266,'Giáo viên tải PDF lý thuyết, kiểm tra nguồn, trích xuất cấu trúc và ánh xạ curriculum.'],
+      [266,286,'Sơ đồ tư duy chỉ được phát hành sau bước giáo viên review nội dung và quan hệ kiến thức.'],
+      [286,298,'EduMS phân biệt ProblemType Mastery với Concept Mastery để tìm đúng nguyên nhân gốc.'],
+      [298,310,'Digital Twin tổng hợp evidence nhưng không trở thành một source of truth riêng.'],
+      [310,320,'Recommendation chọn bài theo prerequisite, review, bài học hiện tại và độ khó phù hợp.'],
+      [320,330,'Thi thử phân tích theo chương, dạng bài và concept, không chỉ trả một điểm tổng.'],
+      [330,339,'Phụ huynh nhận tóm tắt dễ hiểu; quản trị viên kiểm soát curriculum và chất lượng dữ liệu.'],
+      [339,348,'AI chỉ nhận context cần thiết; Learning Core vẫn hoạt động khi AI không khả dụng.'],
+      [348,360,'EduMS — AI-native, nhưng Learning Core vẫn hoạt động khi AI không khả dụng.'],
+    ];
+    const particles=Array.from({length:42},(_,i)=>({x:(i*173)%W,y:(i*97)%H,r:1+(i%4),speed:.08+(i%7)*.018,alpha:.12+(i%5)*.035}));
+    const ease=x=>x<.5?2*x*x:1-Math.pow(-2*x+2,2)/2;
+    const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
+    function rr(x,y,w,h,r,fill,stroke=null,lw=1){ctx.beginPath();ctx.roundRect(x,y,w,h,r);if(fill){ctx.fillStyle=fill;ctx.fill()}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=lw;ctx.stroke()}}
+    function line(x1,y1,x2,y2,color=palette.line,lw=2,dash=[]){ctx.beginPath();ctx.setLineDash(dash);ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.strokeStyle=color;ctx.lineWidth=lw;ctx.stroke();ctx.setLineDash([])}
+    function circle(x,y,r,fill,stroke=null,lw=1){ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle=fill;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=lw;ctx.stroke()}}
+    function text(value,x,y,size=32,color=palette.ink,weight=500,align='left',maxWidth){ctx.font=`${weight} ${size}px Inter,Segoe UI,Arial`;ctx.fillStyle=color;ctx.textAlign=align;ctx.textBaseline='alphabetic';if(maxWidth)ctx.fillText(value,x,y,maxWidth);else ctx.fillText(value,x,y)}
+    function wrap(value,x,y,maxWidth,lineHeight,size=30,color=palette.ink,weight=500,align='left'){
+      ctx.font=`${weight} ${size}px Inter,Segoe UI,Arial`;ctx.fillStyle=color;ctx.textAlign=align;ctx.textBaseline='alphabetic';const words=value.split(' ');let current='',yy=y;
+      for(const word of words){const test=current?`${current} ${word}`:word;if(ctx.measureText(test).width>maxWidth&&current){ctx.fillText(current,x,yy);current=word;yy+=lineHeight}else current=test}if(current)ctx.fillText(current,x,yy);return yy;
+    }
+    function badge(value,x,y,kind='live'){const colors={live:[palette.mint,'#11362d'],vision:[palette.violet,'white'],proto:[palette.amber,'#30240d'],core:[palette.aqua,'#0d302f']};const [bg,fg]=colors[kind]||colors.live;ctx.font='700 18px Inter,Segoe UI,Arial';const w=ctx.measureText(value).width+34;rr(x,y,w,38,19,bg);text(value,x+17,y+26,18,fg,700);return w}
+    function progress(x,y,w,value,color=palette.mint){rr(x,y,w,9,5,'#dfeae3');rr(x,y,w*clamp(value),9,5,color)}
+    function topNav(active='Tổng quan'){
+      rr(110,36,1700,76,32,'rgba(251,250,244,.93)','rgba(29,75,61,.12)');circle(153,73,21,palette.mint);text('EduMS',185,70,24,palette.ink,800);text('LEARNING GARDEN',185,91,12,palette.muted,700);
+      ['Tổng quan','Bản đồ tri thức','Luyện tập','Kết quả'].forEach((item,i)=>{const x=760+i*180;if(item===active)rr(x-22,51,160,44,22,'#e3f7eb');text(item,x,80,18,item===active?palette.forest:palette.muted,700)});rr(1728,51,54,44,14,palette.forest);text('S0',1755,79,16,'white',800,'center');
+    }
+    function titleBlock(scene){
+      const kind=scene.status.includes('LIVE')?'live':scene.status.includes('PROTOTYPE')?'proto':scene.status.includes('BACKEND')?'core':'vision';badge(scene.status,110,142,kind);text(scene.title,110,218,54,palette.ink,800);
+    }
+    function drawBg(t,dark=false){
+      const grad=ctx.createLinearGradient(0,0,W,H);if(dark){grad.addColorStop(0,'#071f1a');grad.addColorStop(.55,'#10392f');grad.addColorStop(1,'#173247')}else{grad.addColorStop(0,'#e9f7ef');grad.addColorStop(.5,palette.cream);grad.addColorStop(1,'#e2f0ef')}ctx.fillStyle=grad;ctx.fillRect(0,0,W,H);
+      particles.forEach((p,i)=>{const yy=(p.y+t*p.speed*60)%H;circle(p.x,yy,p.r,dark?`rgba(156,224,188,${p.alpha})`:`rgba(216,161,67,${p.alpha})`)});
+      ctx.globalAlpha=.22;circle(1600+Math.sin(t*.12)*80,130,280,dark?'#3bb9b0':'#b9ebe5');circle(210,920,340,dark?'#205344':'#dcefe5');ctx.globalAlpha=1;
+    }
+    function drawScreenshot(img,key,t,sceneStart,zoomFrom=1,zoomTo=1.04){
+      if(!img)return;const p=clamp((t-sceneStart)/(scenes.find(s=>s.start===sceneStart)?.end-sceneStart||1));const z=zoomFrom+(zoomTo-zoomFrom)*ease(p);const sw=img.width/z,sh=img.height/z;const sx=(img.width-sw)*(.5+.08*Math.sin(p*Math.PI));const sy=(img.height-sh)*.5;ctx.drawImage(img,sx,sy,sw,sh,0,0,W,H);
+      const gradient=ctx.createLinearGradient(0,0,0,H);gradient.addColorStop(0,'rgba(7,31,26,.05)');gradient.addColorStop(.65,'rgba(7,31,26,0)');gradient.addColorStop(1,'rgba(7,31,26,.2)');ctx.fillStyle=gradient;ctx.fillRect(0,0,W,H);
+    }
+    function cursor(x,y,click=false){ctx.save();ctx.translate(x,y);ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(0,31);ctx.lineTo(8,23);ctx.lineTo(17,39);ctx.lineTo(24,35);ctx.lineTo(15,19);ctx.lineTo(27,18);ctx.closePath();ctx.fillStyle='white';ctx.shadowColor='#102e26aa';ctx.shadowBlur=9;ctx.fill();ctx.strokeStyle=palette.forest;ctx.lineWidth=2;ctx.stroke();ctx.restore();if(click){ctx.globalAlpha=.45;circle(x,y,30,'transparent',palette.mint,4);ctx.globalAlpha=1}}
+    function footerCaption(t){
+      const item=captions.find(([a,b])=>t>=a&&t<b);if(!item)return;const [,b,value]=item;const fade=clamp(Math.min((t-item[0])/1.1,(b-t)/1.1));ctx.globalAlpha=fade;rr(250,934,1420,104,28,'rgba(7,31,26,.9)','rgba(156,224,188,.24)');wrap(value,960,980,1320,34,26,'white',600,'center');ctx.globalAlpha=1;
+    }
+    function drawCover(t){drawBg(t,true);ctx.globalAlpha=.55;for(let i=0;i<7;i++){const a=i*Math.PI*2/7+t*.05;line(960,525,960+Math.cos(a)*260,525+Math.sin(a)*190,'rgba(99,201,154,.35)',3);circle(960+Math.cos(a)*260,525+Math.sin(a)*190,13,i%2?palette.sky:palette.mint)}ctx.globalAlpha=1;circle(960,525,94,'rgba(99,201,154,.15)',palette.mint,3);circle(960,525,55,palette.mint);text('E',960,546,58,palette.deep,900,'center');badge('EDUMS · LEARNING GARDEN',110,90,'live');text('Hệ sinh thái học tập',960,280,68,'white',800,'center');text('cá nhân hóa cho học sinh lớp 12',960,357,48,'#c3edd5',600,'center');text('AI-Native · Evidence-Based · Human-Guided',960,735,24,'#9ce0bc',700,'center');progress(610,806,700,clamp(t/18),palette.mint)}
+    function drawLogin(t){drawScreenshot(images.login,'login',t,18,1,1.035);badge('LIVE DEMO',110,142,'live');const p=clamp((t-22)/13);cursor(1220+Math.sin(p*Math.PI)*180,520+p*170,t>35&&t<36.5);if(t>33){ctx.globalAlpha=clamp((t-33)/2);rr(1140,638,360,52,26,'rgba(99,201,154,.94)');text('Đang xác thực vai trò STUDENT…',1320,671,19,palette.deep,700,'center');ctx.globalAlpha=1}}
+    function drawHome(t){drawScreenshot(images.home,'home',t,42,1,1.055);badge('LIVE DEMO',110,142,'live');const p=clamp((t-47)/20);cursor(620+p*220,622-p*20,t>65&&t<66.5);if(t>58){ctx.globalAlpha=.88;rr(1330,690,420,150,28,'rgba(251,250,244,.94)');text('Hành động ưu tiên',1370,738,18,palette.muted,700);text('Giải bất phương trình',1370,783,27,palette.ink,800);badge('PREREQUISITE_REPAIR',1370,805,'core');ctx.globalAlpha=1}}
+    function drawGalaxy(t){drawScreenshot(images.galaxy,'galaxy',t,68,1,1.18);badge('LIVE DEMO',110,142,'live');const local=t-68;if(local>7){ctx.globalAlpha=clamp((local-7)/2);rr(1320,750,470,135,28,'rgba(251,250,244,.95)');text('Dạng bài được chọn',1360,795,17,palette.muted,700);text('Tham số và tính đơn điệu',1360,839,25,palette.ink,800);text('NOT_STARTED · 0 lượt luyện tập',1360,870,16,palette.verdant,700);ctx.globalAlpha=1}cursor(850+Math.sin(local*.23)*480,760+Math.cos(local*.18)*110,local%8<1)}
+    function workspaceShell(active='Luyện tập'){drawBg(0,false);topNav(active);rr(74,134,1772,856,34,'rgba(251,250,244,.94)','rgba(29,75,61,.13)');}
+    function teacherShell(active='Tổng quan'){
+      drawBg(0,false);rr(110,36,1700,76,32,'rgba(251,250,244,.95)','rgba(29,75,61,.12)');circle(153,73,21,palette.sky);text('EduMS Teacher',185,70,23,palette.ink,800);text('LEARNING GARDEN',185,91,12,palette.muted,700);
+      ['Tổng quan','Lớp học','Phiên học trực tiếp','Tài liệu'].forEach((item,i)=>{const x=680+i*220;if(item===active)rr(x-24,51,205,44,22,'#e3f7eb');text(item,x,80,17,item===active?palette.forest:palette.muted,700)});rr(1718,51,64,44,14,palette.forest);text('GV',1750,79,15,'white',800,'center');rr(74,134,1772,856,34,'rgba(251,250,244,.95)','rgba(29,75,61,.13)');
+    }
+    function drawPractice(t){workspaceShell();titleBlock(scenes[4]);rr(108,258,690,668,28,'#f7f7ef',palette.line);badge('DẠNG BÀI · TÍNH ĐƠN ĐIỆU',140,292,'core');text('Câu 3 / 10',686,320,18,palette.muted,700,'right');wrap('Cho hàm số  f(x) = x³ − 3mx² + 3(m² − 1)x + 1.',140,382,610,44,30,palette.ink,700);wrap('Tìm tất cả giá trị của m để hàm số đồng biến trên ℝ.',140,468,610,42,28,palette.ink,600);rr(140,550,610,70,18,'white',palette.line);text('A.  m ≤ −1',172,594,23,palette.ink,600);rr(140,638,610,70,18,'white',palette.line);text('B.  −1 ≤ m ≤ 1',172,682,23,palette.ink,600);rr(140,726,610,70,18,'#e3f7eb',palette.mint,2);text('C.  m ≥ 1',172,770,23,palette.forest,800);rr(140,814,610,70,18,'white',palette.line);text('D.  m ∈ ℝ',172,858,23,palette.ink,600);
+      rr(830,258,980,668,28,'white',palette.line);text('Không gian lời giải',872,312,25,palette.ink,800);['✎ Bút','T Công thức','△ Hình học','↶ Hoàn tác','⌫ Xóa'].forEach((x,i)=>{rr(872+i*170,336,154,48,16,i===0?'#dcefe5':'#f4f5ef',palette.line);text(x,949+i*170,367,16,palette.ink,700,'center')});line(872,418,1766,418,palette.line,2);
+      const p=clamp((t-98)/20);const lines=['f\'(x) = 3x² − 6mx + 3(m² − 1)','Để hàm số đồng biến:  f\'(x) ≥ 0, ∀x','Δ\' = 9m² − 9(m² − 1) = 9','Cần kiểm tra lại điều kiện…'];lines.forEach((s,i)=>{if(p>(i*.2)){ctx.globalAlpha=clamp((p-i*.2)/.14);text(s,910,478+i*90,29,i===3?palette.coral:palette.forest,600);ctx.globalAlpha=1}});cursor(1000+p*610,520+p*250,p>.8&&p<.86);rr(1430,846,330,58,20,palette.forest);text('Nộp lời giải',1595,883,21,'white',800,'center')}
+    function drawInkGeometry(t){
+      workspaceShell();titleBlock(scenes[5]);const local=t-124;
+      rr(108,258,570,668,28,'#f7f7ef',palette.line);badge('HÌNH HỌC OXYZ',140,292,'vision');
+      wrap('Nhập công thức hoặc viết trực tiếp để dựng mô hình hình học.',140,382,500,40,26,palette.ink,750);
+      rr(140,448,506,108,20,'white',palette.line);text('A = (1; 2; 0)',170,488,23,palette.forest,700);text('B = (4; −1; 3)   ·   M = (A + B) / 2',170,530,21,palette.forest,700);
+      text('Lớp hiển thị',140,604,20,palette.ink,800);['Vector AB','Điểm & nhãn','Mặt phẳng Oxy','Khoảng cách'].forEach((s,i)=>{const y=636+i*62;rr(140,y,506,48,16,i<3?'#e3f7eb':'white',palette.line);circle(168,y+24,9,i<3?palette.mint:'#d8e2dc');text(s,194,y+31,18,palette.ink,650)});
+      rr(708,258,1102,668,28,'#0d342c','rgba(156,224,188,.25)');text('Trình xem hình học 3D',750,312,25,'white',800);badge('XOAY CAMERA',1460,286,'core');text(`${Math.round((local*13)%360)}°`,1728,312,18,'#bfe8d4',800,'right');
+      const cx=1280,cy=630,scale=74,angle=local*.13,ca=Math.cos(angle),sa=Math.sin(angle);
+      const project=(p)=>{const rx=p[0]*ca-p[1]*sa,ry=p[0]*sa+p[1]*ca;return{x:cx+(rx-ry*.55)*scale,y:cy+((rx+ry)*.20-p[2])*scale}};
+      ctx.globalAlpha=.22;for(let i=-3;i<=4;i++){const a=project([i,-3,0]),b=project([i,4,0]),c=project([-3,i,0]),d=project([4,i,0]);line(a.x,a.y,b.x,b.y,'#8cd8bd',1);line(c.x,c.y,d.x,d.y,'#8cd8bd',1)}ctx.globalAlpha=1;
+      const O=project([0,0,0]),X=project([5,0,0]),Y=project([0,5,0]),Z=project([0,0,5]);line(O.x,O.y,X.x,X.y,palette.coral,3);line(O.x,O.y,Y.x,Y.y,palette.sky,3);line(O.x,O.y,Z.x,Z.y,palette.mint,3);text('x',X.x+12,X.y+5,19,'#ffc5b9',800);text('y',Y.x+12,Y.y+5,19,'#b9ddf3',800);text('z',Z.x+10,Z.y-8,19,'#bcebd4',800);
+      const A=project([1,2,0]),B=project([4,-1,3]),M=project([2.5,.5,1.5]),p=clamp(local/18);line(A.x,A.y,A.x+(B.x-A.x)*p,A.y+(B.y-A.y)*p,palette.aqua,8);circle(A.x,A.y,13,palette.mint);circle(B.x,B.y,13,palette.violet);if(p>.6)circle(M.x,M.y,11,palette.amber);text('A(1;2;0)',A.x-74,A.y+38,18,'white',800);text('B(4;−1;3)',B.x+18,B.y-12,18,'white',800);if(p>.6)text('M',M.x+16,M.y+28,18,'#f2dfb8',900);
+      rr(750,846,1018,48,16,'rgba(251,250,244,.09)','rgba(156,224,188,.22)');text('AB⃗ = (3; −3; 3)   ·   |AB| = 3√3   ·   M(5/2; 1/2; 3/2)',1259,878,20,'#dcefe5',700,'center');cursor(1450+Math.sin(local*.35)*120,490+Math.cos(local*.3)*70,local%9<1);
+    }
+    function drawEvaluation(t){workspaceShell();titleBlock(scenes[6]);rr(108,258,1060,668,28,'white',palette.line);text('Phân tích lời giải theo từng bước',152,318,28,palette.ink,800);const local=t-158;const rows=[['01','Tính đạo hàm','ĐÚNG',palette.mint],['02','Điều kiện đồng biến','ĐÚNG',palette.mint],['03','Xét biệt thức','CẦN SỬA',palette.coral],['04','Kết luận tham số','CHƯA XÁC NHẬN',palette.amber]];rows.forEach((r,i)=>{const y=355+i*118;ctx.globalAlpha=clamp((local-i*2)/2);rr(148,y,970,90,20,i===2?'#fff4f0':'#f7f7ef',palette.line);circle(190,y+45,25,r[3]);text(r[0],190,y+52,16,i===2?'white':palette.deep,800,'center');text(r[1],236,y+39,22,palette.ink,750);text(i===2?'Sai dấu khi xét điều kiện Δ ≤ 0':'Đã đối chiếu với rubric',236,y+67,16,palette.muted,500);badge(r[2],895,y+26,i===2?'proto':'live');ctx.globalAlpha=1});
+      rr(1202,258,608,668,28,'#103d33');badge('AI + RULE VALIDATION',1242,298,'core');text('Phản hồi gợi ý',1242,374,30,'white',800);wrap('Em đã xác định đúng hướng giải. Hãy kiểm tra lại điều kiện để tam thức bậc hai không âm với mọi x.',1242,430,500,37,24,'#dcefe5',600);rr(1242,594,500,154,24,'rgba(99,201,154,.12)','rgba(156,224,188,.3)');text('Misconception evidence',1278,638,18,'#9ce0bc',700);text('DISCRIMINANT_CONDITION',1278,684,20,'white',800);text('SUSPECTED · cần thêm bằng chứng',1278,720,16,'#f2dfb8',600);rr(1242,794,500,66,22,palette.mint);text('Sửa bước 3 và thử lại',1492,836,21,palette.deep,800,'center')}
+
+    function drawTeacherLive(t){
+      teacherShell('Phiên học trực tiếp');titleBlock(scenes[7]);const local=t-184;
+      rr(108,258,360,668,28,'white',palette.line);text('Học sinh đang làm bài',144,312,23,palette.ink,800);const students=[['Demo Student 01','Câu 3 · đang viết',palette.mint],['Nguyễn Minh Anh','Câu 5 · đã nộp',palette.sky],['Trần Gia Huy','Tạm dừng 02:14',palette.amber],['Lê Khánh Linh','Câu 4 · đang đọc',palette.aqua]];students.forEach((s,i)=>{const y=348+i*108;rr(136,y,304,88,18,i===0?'#e3f7eb':'#f6f7f2',palette.line);circle(166,y+44,12,s[2]);text(s[0],190,y+36,18,palette.ink,750);text(s[1],190,y+63,15,palette.muted,600)});badge('32 HỌC SINH · 18 ONLINE',136,816,'core');
+      rr(498,258,846,668,28,'#0d342c');circle(538,302,8,local%2<1?palette.mint:'#3f806a');text('LIVE · cập nhật 12 giây trước',558,309,16,'#bcebd4',700);text('Bài làm hiện tại · Tính đơn điệu',538,358,25,'white',800);rr(538,392,766,94,18,'rgba(251,250,244,.09)','rgba(156,224,188,.2)');wrap('Tìm m để f(x) = x³ − 3mx² + 3(m² − 1)x + 1 đồng biến trên ℝ.',566,430,710,31,20,'#e4f2eb',650);
+      text('Nét viết gần nhất',538,538,18,'#9ce0bc',700);const p=clamp(local/18);const ink=[['f\'(x) = 3x² − 6mx + 3(m² − 1)',588],['Điều kiện: f\'(x) ≥ 0, ∀x',650],['Δ\' ≤ 0 …',712]];ink.forEach((row,i)=>{if(p>i*.22){ctx.globalAlpha=clamp((p-i*.22)/.15);text(row[0],566,row[1],26,i===2?palette.amber:'white',600);ctx.globalAlpha=1}});rr(538,790,766,76,18,'rgba(99,201,154,.12)','rgba(156,224,188,.22)');text('Giáo viên chỉ quan sát · không sửa bài thay học sinh',921,836,17,'#c6e8d8',700,'center');
+      rr(1376,258,434,668,28,'white',palette.line);text('Tín hiệu phiên học',1412,312,23,palette.ink,800);const metrics=[['08:42','Thời gian'],['1','Hint đã dùng'],['3 / 10','Câu hiện tại'],['AUTO','Trạng thái lưu']];metrics.forEach((m,i)=>{const y=356+i*106;rr(1412,y,362,82,18,'#f4f7f2',palette.line);text(m[0],1440,y+37,26,i===1?palette.amber:palette.forest,850);text(m[1],1440,y+64,15,palette.muted,650)});badge('RELATIONSHIP AUTHORIZED',1412,812,'live');
+    }
+
+    function drawTeacherProgress(t){
+      teacherShell('Lớp học');titleBlock(scenes[8]);const local=t-214;
+      const stats=[['32','Học sinh'],['74%','Mastery lớp'],['7','Review due'],['5','Cần hỗ trợ']];stats.forEach((s,i)=>{const x=108+i*300;rr(x,262,270,112,22,'white',palette.line);text(s[0],x+28,312,34,i===2?palette.amber:palette.forest,900);text(s[1],x+28,346,16,palette.muted,650)});rr(1328,262,482,112,22,'#103d33');text('Lớp 12A1 · Toán 12',1362,309,24,'white',800);text('Năm học 2026–2027',1362,342,16,'#b9d8cb',600);
+      rr(108,404,1080,500,26,'white',palette.line);text('Bản đồ tiến độ theo dạng bài',148,452,24,palette.ink,800);const columns=['Đơn điệu','Cực trị','Tiệm cận','Đồ thị','Tối ưu'];columns.forEach((c,i)=>text(c,448+i*130,490,15,palette.muted,700,'center'));const names=['Demo Student 01','Nguyễn Minh Anh','Trần Gia Huy','Lê Khánh Linh','Phạm Bảo Ngọc'];const values=[[.52,.34,.72,.66,.22],[.88,.76,.81,.70,.63],[.41,.28,.35,.54,.19],[.79,.84,.68,.73,.58],[.61,.49,.77,.80,.46]];names.forEach((name,r)=>{const y=530+r*69;text(name,148,y+30,17,palette.ink,700);values[r].forEach((v,c)=>{const color=v>.75?palette.mint:v>.5?palette.aqua:v>.3?palette.amber:palette.coral;rr(406+c*130,y,84,48,14,`${color}${Math.round(120+v*120).toString(16)}`,palette.line);text(`${Math.round(v*100)}%`,448+c*130,y+31,15,v>.55?palette.deep:'white',800,'center')})});
+      rr(1220,404,590,500,26,'#103d33');text('Cần hỗ trợ hôm nay',1260,452,24,'white',800);const risks=[['Demo Student 01','Prerequisite: Bất phương trình',palette.coral],['Trần Gia Huy','Review due: Đạo hàm',palette.amber],['Hoàng Đức Minh','Chưa có evidence',palette.sky]];risks.forEach((r,i)=>{const y=492+i*112;rr(1260,y,510,88,18,'rgba(251,250,244,.09)','rgba(156,224,188,.18)');circle(1290,y+44,12,r[2]);text(r[0],1318,y+36,18,'white',750);text(r[1],1318,y+63,15,'#b9d8cb',600)});if(local>18)badge('FILTER: KHÔNG GỘP NOT_STARTED VÀ WEAK',1260,838,'proto');
+    }
+
+    function drawMastery(t){drawBg(t,true);topNav('Kết quả');titleBlock(scenes[10]);const cards=[{x:110,title:'ProblemType Mastery',name:'Tham số và tính đơn điệu',score:.48,color:palette.aqua},{x:690,title:'Concept Mastery',name:'Giải bất phương trình',score:.31,color:palette.coral},{x:1270,title:'Review Schedule',name:'Đạo hàm và dấu',score:.72,color:palette.amber}];cards.forEach((c,i)=>{rr(c.x,310,500,290,30,'rgba(251,250,244,.95)','rgba(156,224,188,.2)');text(c.title,c.x+36,360,18,palette.muted,700);wrap(c.name,c.x+36,418,420,38,28,palette.ink,800);progress(c.x+36,506,428,c.score,c.color);text(`${Math.round(c.score*100)}%`,c.x+36,560,34,c.color,900);text(i===1?'PREREQUISITE_REPAIR':i===2?'REVIEW_DUE':'WEAK_PROBLEM_TYPE',c.x+130,558,16,palette.muted,700)});line(360,650,960,780,'rgba(99,201,154,.42)',5,[10,10]);line(960,780,1510,650,'rgba(99,201,154,.42)',5,[10,10]);circle(360,650,25,palette.aqua);circle(960,780,31,palette.mint);circle(1510,650,25,palette.amber);text('Evidence',360,708,22,'white',700,'center');text('Digital Twin',960,842,28,'white',800,'center');text('Recommendation',1510,708,22,'white',700,'center')}
+    function drawAdaptive(t){workspaceShell();titleBlock(scenes[11]);const local=t-310;rr(108,270,560,628,28,'white',palette.line);text('Kế hoạch hôm nay',148,328,27,palette.ink,800);const tasks=[['01','Sửa prerequisite','Giải bất phương trình',palette.coral],['02','Luyện dạng chính','Tính đơn điệu có tham số',palette.aqua],['03','Ôn cách quãng','Quy tắc đạo hàm',palette.amber]];tasks.forEach((a,i)=>{const y=368+i*145;circle(180,y+46,27,a[3]);text(a[0],180,y+53,15,palette.deep,900,'center');text(a[1],224,y+38,18,palette.muted,700);text(a[2],224,y+72,22,palette.ink,800);rr(224,y+91,250,8,4,'#e2ebe5');rr(224,y+91,(80+i*50),8,4,a[3])});
+      rr(700,270,1110,628,28,'#103d33');text('Thi thử · Phân tích đa chiều',750,330,27,'white',800);const stats=[['7.4','Điểm tổng'],['68%','ProblemType'],['61%','Concept'],['42 phút','Thời gian']];stats.forEach((s,i)=>{rr(750+i*250,368,220,115,24,'rgba(251,250,244,.1)','rgba(156,224,188,.18)');text(s[0],860+i*250,422,35,i===0?'#f2dfb8':'white',900,'center');text(s[1],860+i*250,460,16,'#b9d8cb',600,'center')});text('Phân tích theo chương',750,548,21,'white',750);const bars=[['Đạo hàm',.58,palette.coral],['Vectơ',.76,palette.sky],['Tích phân',.69,palette.violet],['Xác suất',.84,palette.amber]];bars.forEach((b,i)=>{text(b[0],750,603+i*62,18,'#dcefe5',650);progress(900,586+i*62,690,b[1],b[2]);text(`${Math.round(b[1]*100)}%`,1620,603+i*62,18,'white',800)});if(local>17){badge('DỮ LIỆU MINH HỌA',1510,820,'proto')}}
+    function drawTeacher(t){teacherShell('Tài liệu');titleBlock(scenes[9]);const local=t-248;rr(108,260,520,670,28,'white',palette.line);text('Tài liệu giảng dạy',148,318,27,palette.ink,800);rr(148,358,440,130,22,'#f4f7f2',palette.line);text('Ứng dụng đạo hàm.pdf',184,404,21,palette.ink,800);text('42 trang · PDF · nguồn giáo viên',184,438,16,palette.muted,600);progress(184,462,360,clamp(local/8),palette.mint);['Trích xuất nội dung','Kiểm tra nguồn','Ánh xạ curriculum','Giáo viên xác nhận'].forEach((s,i)=>{const y=540+i*75;circle(170,y,15,local>5+i*3?palette.mint:'#d8e2dc');text(s,204,y+7,19,palette.ink,700)});
+      rr(662,260,1148,670,28,'#0d342c');text('Sơ đồ tư duy · Ứng dụng đạo hàm',706,318,27,'white',800);const center={x:1230,y:590};circle(center.x,center.y,84,palette.mint);wrap('Ứng dụng\nđạo hàm',center.x,center.y-8,140,27,22,palette.deep,900,'center');const nodes=[['Tính đơn điệu',930,410,palette.aqua],['Cực trị',1515,405,palette.violet],['Tiệm cận',925,760,palette.amber],['Khảo sát đồ thị',1510,760,palette.coral],['Tối ưu thực tế',1230,840,palette.sky]];nodes.forEach((n,i)=>{const p=clamp((local-12-i*2)/4);if(p<=0)return;ctx.globalAlpha=p;line(center.x,center.y,n[1],n[2],`${n[3]}99`,5);circle(n[1],n[2],54,n[3]);wrap(n[0],n[1],n[2]+7,150,23,18,i===2?palette.deep:'white',800,'center');ctx.globalAlpha=1});badge('TEACHER REVIEW REQUIRED',1395,864,'proto')}
+    function drawEcosystem(t){drawBg(t,true);titleBlock(scenes[12]);const blocks=[['STUDENT','Luyện tập · Mastery · Study Plan',220,palette.mint],['TEACHER','Heatmap · Live Session · Copilot',650,palette.sky],['PARENT','Weekly Summary · Đồng hành',1080,palette.violet],['ADMIN','Curriculum · Question Quality',1510,palette.amber]];blocks.forEach((b,i)=>{const y=350+(i%2)*250,x=b[2];circle(x,y,74,`${b[3]}33`,b[3],4);text(b[0],x,y+9,22,'white',900,'center');rr(x-180,y+105,360,88,22,'rgba(251,250,244,.1)','rgba(156,224,188,.2)');wrap(b[1],x,y+140,310,27,18,'#dcefe5',650,'center')});line(294,350,576,350,'rgba(99,201,154,.35)',4,[10,12]);line(724,350,1006,600,'rgba(99,201,154,.35)',4,[10,12]);line(1154,600,1436,600,'rgba(99,201,154,.35)',4,[10,12]);circle(960,500,54,palette.mint);text('DT',960,510,24,palette.deep,900,'center');text('Student Digital Twin',960,585,23,'white',800,'center');badge('DỮ LIỆU MINH HỌA',110,860,'proto')}
+    function drawClosing(t){drawBg(t,true);const p=clamp((t-348)/12);circle(960,405,72,'rgba(99,201,154,.18)',palette.mint,4);circle(960,405,42,palette.mint);text('E',960,422,45,palette.deep,900,'center');text('EduMS',960,560,74,'white',900,'center');text('Learn · Understand · Practice · Improve · Achieve',960,634,30,'#c3edd5',650,'center');text('AI-Native Learning, grounded in real educational evidence.',960,700,22,'#9ce0bc',600,'center');progress(610,790,700,p,palette.mint)}
+    function render(t){const scene=scenes.find(s=>t>=s.start&&t<s.end)||scenes.at(-1);ctx.clearRect(0,0,W,H);if(t<18)drawCover(t);else if(t<42)drawLogin(t);else if(t<68)drawHome(t);else if(t<94)drawGalaxy(t);else if(t<124)drawPractice(t);else if(t<158)drawInkGeometry(t);else if(t<184)drawEvaluation(t);else if(t<214)drawTeacherLive(t);else if(t<248)drawTeacherProgress(t);else if(t<286)drawTeacher(t);else if(t<310)drawMastery(t);else if(t<330)drawAdaptive(t);else if(t<348)drawEcosystem(t);else drawClosing(t);footerCaption(t);const transition=Math.min(t-scene.start,scene.end-t);if(transition<1){ctx.fillStyle=`rgba(7,31,26,${1-clamp(transition)})`;ctx.fillRect(0,0,W,H)}}
+    async function loadImages(){await Promise.all(Object.entries(imageSources).map(([key,src])=>new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>{images[key]=img;resolve()};img.onerror=reject;img.src=src})))}
+    function buildAudio(){const ac=new AudioContext();const dest=ac.createMediaStreamDestination();const master=ac.createGain();master.gain.value=.035;master.connect(dest);const notes=[110,164.81,220,293.66];notes.forEach((freq,i)=>{const osc=ac.createOscillator();const gain=ac.createGain();osc.type=i%2?'sine':'triangle';osc.frequency.value=freq;gain.gain.value=.12/(i+1);osc.connect(gain).connect(master);osc.start()});const lfo=ac.createOscillator(),lfoGain=ac.createGain();lfo.frequency.value=.08;lfoGain.gain.value=.015;lfo.connect(lfoGain).connect(master.gain);lfo.start();return{ac,dest}}
+    async function startRecording(){
+      const requestedDuration=Number(new URLSearchParams(location.search).get('recordDuration'));const recordDuration=Number.isFinite(requestedDuration)&&requestedDuration>0?Math.min(requestedDuration,DURATION):DURATION;
+      status.textContent='Đang chuẩn bị cảnh…';await loadImages();render(0);const video=canvas.captureStream(FPS);const {ac,dest}=buildAudio();await ac.resume();const combined=new MediaStream([...video.getVideoTracks(),...dest.stream.getAudioTracks()]);
+      const types=['video/webm;codecs=vp8,opus','video/webm'];const mimeType=types.find(type=>MediaRecorder.isTypeSupported(type))||'';const ext='webm';const recorder=new MediaRecorder(combined,{mimeType,videoBitsPerSecond:5000000,audioBitsPerSecond:96000});const chunks=[];recorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};
+      recorder.onstop=()=>{const blob=new Blob(chunks,{type:mimeType||'video/webm'});const name=recordDuration===DURATION?`EduMS_Demo_6_phut_V2.${ext}`:`EduMS_Demo_V2_test_${Math.round(recordDuration)}s.${ext}`;window.__videoBlob=blob;window.__videoMeta={name,size:blob.size,mimeType:blob.type};status.textContent=`DONE:${name}:${blob.size}`;document.title=`DONE:${name}`};
+      recorder.start();const started=performance.now();status.textContent='Đang dựng video';function frame(now){const elapsed=(now-started)/1000;render(Math.min(elapsed,DURATION-.001));const m=String(Math.floor(elapsed/60)).padStart(2,'0'),s=String(Math.floor(elapsed%60)).padStart(2,'0');status.textContent=`Đang dựng video ${m}:${s}`;if(elapsed<recordDuration)requestAnimationFrame(frame);else{recorder.stop();video.getTracks().forEach(track=>track.stop());dest.stream.getTracks().forEach(track=>track.stop())}}requestAnimationFrame(frame)
+    }
+    const params=new URLSearchParams(location.search);const previewTime=Number(params.get('preview')||0);loadImages().then(()=>render(clamp(previewTime,0,DURATION-.001)));if(params.get('autostart')==='1')setTimeout(startRecording,600);
+  })();
+  </script>
+</body>
+</html>

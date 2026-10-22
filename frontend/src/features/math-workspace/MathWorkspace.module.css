@@ -25,6 +25,7 @@
   display: flex;
   align-items: center;
   gap: 1rem;
+  min-width: 0;
 }
 
 .headerTitle {
@@ -38,7 +39,9 @@
 .statusBadge {
   display: inline-flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 0.375rem;
+  max-width: min(100%, 680px);
   padding: 0.25rem 0.625rem;
   border-radius: 9999px;
   font-size: 0.75rem;
@@ -710,6 +713,16 @@
   }
 }
 
+@media (max-width: 900px) {
+  .topHeader {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .headerLeft {
+    flex-wrap: wrap;
+  }
+}
+
 @media (max-width: 768px) {
   .mainLayout {
     flex-direction: column;
@@ -774,7 +787,7 @@
 
 .modalContainer {
   width: 100%;
-  max-width: 600px;
+  max-width: 760px;
   background-color: #ffffff;
   border-radius: 16px;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
@@ -1128,5 +1141,168 @@
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+/* Visible even when OCR fails before its confirmation dialog opens. */
+.ocrErrorBanner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.65rem 1.25rem;
+  color: #7f1d1d;
+  background: #fef2f2;
+  border-bottom: 1px solid #fecaca;
+  font-size: 0.875rem;
+}
+
+.ocrErrorBanner button {
+  flex-shrink: 0;
+  color: #7f1d1d;
+  background: #fff;
+  border: 1px solid #fca5a5;
+  border-radius: 0.5rem;
+  padding: 0.3rem 0.65rem;
+  cursor: pointer;
+}
+
+.ocrErrorBanner button:focus-visible {
+  outline: 2px solid #991b1b;
+  outline-offset: 2px;
+}
+
+/* Student-friendly correction surface for untrusted handwriting OCR. */
+.ocrEditorHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.ocrClearButton {
+  border: 0;
+  background: transparent;
+  color: #8b4c29;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.ocrClearButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ocrEditorHelp {
+  margin: 0;
+  color: #52685c;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.ocrEditorHelp code {
+  padding: 0.1rem 0.3rem;
+  border-radius: 4px;
+  background: #ecf4eb;
+  color: #174b36;
+}
+
+.ocrCorrectionKeys {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0.4rem;
+  margin-top: 0.4rem;
+}
+
+.ocrCorrectionKey {
+  min-width: 0;
+  min-height: 2.75rem;
+  border: 1px solid #cbdccf;
+  border-radius: 9px;
+  background: #f4f9f3;
+  color: #1b523b;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.ocrCorrectionKey:hover:not(:disabled) {
+  border-color: #6caa83;
+  background: #e5f2e8;
+}
+
+.ocrCorrectionKey:focus-visible,
+.ocrClearButton:focus-visible {
+  outline: 3px solid #39755b;
+  outline-offset: 2px;
+}
+
+.ocrCorrectionKey:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ocrIncompleteHint {
+  color: #9a5421;
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+.ocrComparison {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  align-items: stretch;
+}
+
+.ocrComparison > *,
+.ocrResultPreview {
+  min-width: 0;
+}
+
+.ocrResultPreview {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 0.4rem;
+}
+
+.ocrComparison .inkPreviewSvg,
+.ocrComparison .mathPreviewBox {
+  height: 130px;
+  min-height: 130px;
+}
+
+@media (max-width: 620px) {
+  .modalOverlay {
+    padding: 0.4rem;
+  }
+
+  .modalBody {
+    padding: 0.9rem;
+    max-height: 82dvh;
+  }
+
+  .modalTitle {
+    flex-wrap: wrap;
+  }
+
+  .ocrCorrectionKeys {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .ocrComparison {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ocrEditorHeading {
+    align-items: flex-start;
+  }
+
+  .modalFooter {
+    flex-wrap: wrap;
   }
 }

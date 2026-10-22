@@ -37,6 +37,21 @@ def test_database_settings_come_from_environment(monkeypatch: pytest.MonkeyPatch
     assert configured.database_url.username == "custom_user"
 
 
+def test_ambient_debug_does_not_break_edums_settings(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("DEBUG", "release")
+    monkeypatch.delenv("EDUMS_DEBUG", raising=False)
+    defaults = Settings(
+        _env_file=None, app_env="development", database_name="test_db", database_user="test_user",
+    )
+    assert defaults.debug is False
+
+    monkeypatch.setenv("EDUMS_DEBUG", "true")
+    configured = Settings(
+        _env_file=None, app_env="development", database_name="test_db", database_user="test_user",
+    )
+    assert configured.debug is True
+
+
 def test_default_test_environment_has_required_database_settings() -> None:
     configured = Settings(_env_file=None)
 

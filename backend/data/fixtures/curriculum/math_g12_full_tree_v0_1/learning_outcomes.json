@@ -1,0 +1,240 @@
+[
+  {
+    "code": "LO_M12_ANTIDERIVATIVE_CONCEPT_PROPERTIES",
+    "description": "Nhận biết và vận dụng khái niệm, tính chất nguyên hàm.",
+    "grade_level": 12,
+    "order_index": 10,
+    "source_reference": "GDPT2018 Grade 12 official scope binding: M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL"
+  },
+  {
+    "code": "LO_M12_ANTIDERIVATIVE_ELEMENTARY",
+    "description": "Tính nguyên hàm của một số hàm số sơ cấp.",
+    "grade_level": 12,
+    "order_index": 20,
+    "source_reference": "GDPT2018 Grade 12 official scope binding: M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL"
+  },
+  {
+    "code": "LO_M12_AREA_VOLUME_APPLICATION",
+    "description": "Vận dụng tích phân để tính diện tích và thể tích.",
+    "grade_level": 12,
+    "order_index": 50,
+    "source_reference": "GDPT2018 Grade 12 official scope binding: M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL"
+  },
+  {
+    "code": "LO_M12_BAYES",
+    "description": "Vận dụng công thức Bayes để tính xác suất hậu nghiệm.",
+    "grade_level": 12,
+    "order_index": 30,
+    "source_reference": "GDPT2018 Grade 12 official scope binding: M12_CORE_PROBABILITY_CONDITIONAL"
+  },
+  {
+    "code": "LO_M12_CONDITIONAL_PROBABILITY",
+    "description": "Tính và vận dụng xác suất có điều kiện trong các tình huống thuộc chương trình lớp 12.",
+    "grade_level": 12,
+    "order_index": 10,
+    "source_reference": "GDPT2018 Grade 12 official scope binding: M12_CORE_PROBABILITY_CONDITIONAL"
+  },
+  {
+    "code": "LO_M12_DEFINITE_INTEGRAL_CALCULATION",
+    "description": "Tính tích phân xác định trong các trường hợp thuộc phạm vi chương trình.",
+    "grade_level": 12,
+    "order_index": 40,
+    "source_reference": "GDPT2018 Grade 12 official scope binding: M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL"
+  },
+  {
+    "code": "LO_M12_DEFINITE_INTEGRAL_PROPERTIES",
+    "description": "Vận dụng định nghĩa và tính chất của tích phân xác định.",
+    "grade_level": 12,
+    "order_index": 30,
+    "source_reference": "GDPT2018 Grade 12 official scope binding: M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL"
+  },
+  {
+    "code": "LO_M12_GROUPED_DISPERSION_CALCULATE",
+    "description": "Tính được khoảng biến thiên, khoảng tứ phân vị, phương sai và độ lệch chuẩn của mẫu số liệu ghép nhóm.",
+    "grade_level": 12,
+    "order_index": 10,
+    "source_reference": "TT 32/2018/TT-BGDĐT - Lớp 12 - Thống kê - Các số đặc trưng của mẫu số liệu ghép nhóm"
+  },
+  {
+    "code": "LO_M12_GROUPED_DISPERSION_CONCLUDE",
+    "description": "Rút ra được kết luận đơn giản từ các số đặc trưng đo mức độ phân tán.",
+    "grade_level": 12,
+    "order_index": 30,
+    "source_reference": "TT 32/2018/TT-BGDĐT - Lớp 12 - Thống kê - Các số đặc trưng của mẫu số liệu ghép nhóm"
+  },
+  {
+    "code": "LO_M12_GROUPED_DISPERSION_CONNECT",
+    "description": "Nhận biết và vận dụng mối liên hệ của thống kê với thực tiễn và các môn học khác ở lớp 12.",
+    "grade_level": 12,
+    "order_index": 40,
+    "source_reference": "TT 32/2018/TT-BGDĐT - Lớp 12 - Thống kê - Các số đặc trưng của mẫu số liệu ghép nhóm"
+  },
+  {
+    "code": "LO_M12_GROUPED_DISPERSION_EXPLAIN",
+    "description": "Giải thích được ý nghĩa và vai trò của các số đặc trưng đo mức độ phân tán trong thực tiễn.",
+    "grade_level": 12,
+    "order_index": 20,
+    "source_reference": "TT 32/2018/TT-BGDĐT - Lớp 12 - Thống kê - Các số đặc trưng của mẫu số liệu ghép nhóm"
+  },
+  {
+    "code": "LO_M12_OXYZ_ANGLE_DISTANCE",
+    "description": "Vận dụng phương pháp tọa độ để xác định góc, khoảng cách và hình chiếu trong không gian.",
+    "grade_level": 12,
+    "order_index": 30,
+    "source_reference": "GDPT2018 Grade 12 official scope binding: M12_CORE_GEOMETRY_COORDINATE_3D"
+  },
+  {
+    "code": "LO_M12_OXYZ_APPLICATION",
+    "description": "Vận dụng vectơ và phương pháp tọa độ trong không gian để giải bài toán thực tiễn.",
+    "grade_level": 12,
+    "order_index": 50,
+    "source_reference": "GDPT2018 Grade 12 official scope binding: M12_CORE_GEOMETRY_COORDINATE_3D"
+  },
+  {
+    "code": "LO_M12_OXYZ_LINE",
+    "description": "Lập, nhận biết và vận dụng phương trình đường thẳng trong không gian Oxyz.",
+    "grade_level": 12,
+    "order_index": 20,
+    "source_reference": "GDPT2018 Grade 12 official scope binding: M12_CORE_GEOMETRY_COORDINATE_3D"
+  },
+  {
+    "code": "LO_M12_OXYZ_PLANE",
+    "description": "Lập, nhận biết và vận dụng phương trình mặt phẳng trong hệ tọa độ Oxyz.",
+    "grade_level": 12,
+    "order_index": 10,
+    "source_reference": "GDPT2018 Grade 12 official scope binding: M12_CORE_GEOMETRY_COORDINATE_3D"
+  },
+  {
+    "code": "LO_M12_OXYZ_SPHERE",
+    "description": "Lập và vận dụng phương trình mặt cầu; xác định tâm, bán kính và quan hệ cơ bản với mặt phẳng.",
+    "grade_level": 12,
+    "order_index": 40,
+    "source_reference": "GDPT2018 Grade 12 official scope binding: M12_CORE_GEOMETRY_COORDINATE_3D"
+  },
+  {
+    "code": "LO_M12_PRACTICAL_INTEGRAL_APPLICATION",
+    "description": "Vận dụng nguyên hàm, tích phân trong bài toán thực tiễn.",
+    "grade_level": 12,
+    "order_index": 60,
+    "source_reference": "GDPT2018 Grade 12 official scope binding: M12_CORE_CALCULUS_ANTIDERIVATIVE_INTEGRAL"
+  },
+  {
+    "code": "LO_M12_PROBABILITY_TREE",
+    "description": "Biểu diễn và giải bài toán xác suất bằng sơ đồ hình cây trong tình huống phù hợp.",
+    "grade_level": 12,
+    "order_index": 40,
+    "source_reference": "GDPT2018 Grade 12 official scope binding: M12_CORE_PROBABILITY_CONDITIONAL"
+  },
+  {
+    "code": "LO_M12_TOTAL_PROBABILITY",
+    "description": "Vận dụng công thức xác suất toàn phần để tính xác suất của biến cố.",
+    "grade_level": 12,
+    "order_index": 20,
+    "source_reference": "GDPT2018 Grade 12 official scope binding: M12_CORE_PROBABILITY_CONDITIONAL"
+  },
+  {
+    "code": "LO_M12_VECTOR_COORDINATES",
+    "description": "Nhận biết và xác định tọa độ điểm, tọa độ vectơ trong hệ trục Oxyz.",
+    "grade_level": 12,
+    "order_index": 20,
+    "source_reference": "TT 32/2018/TT-BGDĐT - Lớp 12 - Phương pháp tọa độ trong không gian"
+  },
+  {
+    "code": "LO_M12_VECTOR_COORDINATE_EXPRESSIONS",
+    "description": "Sử dụng biểu thức tọa độ của các phép toán vectơ để giải bài toán.",
+    "grade_level": 12,
+    "order_index": 40,
+    "source_reference": "TT 32/2018/TT-BGDĐT - Lớp 12 - Phương pháp tọa độ trong không gian"
+  },
+  {
+    "code": "LO_M12_VECTOR_LENGTH",
+    "description": "Xác định độ dài vectơ và khoảng cách giữa hai điểm từ tọa độ.",
+    "grade_level": 12,
+    "order_index": 30,
+    "source_reference": "TT 32/2018/TT-BGDĐT - Lớp 12 - Phương pháp tọa độ trong không gian"
+  },
+  {
+    "code": "LO_M12_VECTOR_OPERATIONS",
+    "description": "Nhận biết và thực hiện các phép toán cơ bản với vectơ trong không gian.",
+    "grade_level": 12,
+    "order_index": 10,
+    "source_reference": "TT 32/2018/TT-BGDĐT - Lớp 12 - Phương pháp tọa độ trong không gian"
+  },
+  {
+    "code": "LO_M12_VECTOR_REAL_WORLD",
+    "description": "Vận dụng tọa độ vectơ để giải một số bài toán có liên quan đến thực tiễn.",
+    "grade_level": 12,
+    "order_index": 50,
+    "source_reference": "TT 32/2018/TT-BGDĐT - Lớp 12 - Phương pháp tọa độ trong không gian"
+  },
+  {
+    "code": "M12_DERIV_LO_01",
+    "description": "Nhận biết khoảng đồng biến và nghịch biến của hàm số dựa trên dấu của đạo hàm cấp một.",
+    "grade_level": 12,
+    "order_index": 10,
+    "source_reference": "TT 32/2018/TT-BGDĐT - Chương trình môn Toán - trang 105"
+  },
+  {
+    "code": "M12_DERIV_LO_02",
+    "description": "Biểu diễn được tính đồng biến và nghịch biến trong bảng biến thiên.",
+    "grade_level": 12,
+    "order_index": 20,
+    "source_reference": "TT 32/2018/TT-BGDĐT - Chương trình môn Toán - trang 105"
+  },
+  {
+    "code": "M12_DERIV_LO_03",
+    "description": "Nhận biết tính đơn điệu, điểm cực trị và giá trị cực trị từ bảng biến thiên hoặc đồ thị.",
+    "grade_level": 12,
+    "order_index": 30,
+    "source_reference": "TT 32/2018/TT-BGDĐT - Chương trình môn Toán - trang 106"
+  },
+  {
+    "code": "M12_DERIV_LO_04",
+    "description": "Nhận biết giá trị lớn nhất và nhỏ nhất của hàm số trên một tập xác định cho trước.",
+    "grade_level": 12,
+    "order_index": 40,
+    "source_reference": "TT 32/2018/TT-BGDĐT - Chương trình môn Toán - trang 106"
+  },
+  {
+    "code": "M12_DERIV_LO_05",
+    "description": "Xác định giá trị lớn nhất và nhỏ nhất bằng đạo hàm trong các trường hợp đơn giản.",
+    "grade_level": 12,
+    "order_index": 50,
+    "source_reference": "TT 32/2018/TT-BGDĐT - Chương trình môn Toán - trang 106"
+  },
+  {
+    "code": "M12_DERIV_LO_06",
+    "description": "Nhận biết hình ảnh hình học của tiệm cận đứng, ngang và xiên.",
+    "grade_level": 12,
+    "order_index": 60,
+    "source_reference": "TT 32/2018/TT-BGDĐT - Chương trình môn Toán - trang 106"
+  },
+  {
+    "code": "M12_DERIV_LO_07",
+    "description": "Mô tả quy trình tổng quát khảo sát hàm số gồm miền xác định, biến thiên, cực trị, tiệm cận, bảng biến thiên và đồ thị.",
+    "grade_level": 12,
+    "order_index": 70,
+    "source_reference": "TT 32/2018/TT-BGDĐT - Chương trình môn Toán - trang 106"
+  },
+  {
+    "code": "M12_DERIV_LO_08",
+    "description": "Khảo sát và vẽ đồ thị các họ hàm được chương trình quy định: hàm bậc ba, hàm phân thức bậc nhất trên bậc nhất và hàm phân thức bậc hai trên bậc nhất.",
+    "grade_level": 12,
+    "order_index": 80,
+    "source_reference": "TT 32/2018/TT-BGDĐT - Chương trình môn Toán - trang 106"
+  },
+  {
+    "code": "M12_DERIV_LO_09",
+    "description": "Nhận biết trục đối xứng hoặc tâm đối xứng của các đồ thị thuộc các họ hàm được quy định.",
+    "grade_level": 12,
+    "order_index": 90,
+    "source_reference": "TT 32/2018/TT-BGDĐT - Chương trình môn Toán - trang 106"
+  },
+  {
+    "code": "M12_DERIV_LO_10",
+    "description": "Vận dụng đạo hàm và khảo sát hàm số để giải quyết một số vấn đề thực tiễn.",
+    "grade_level": 12,
+    "order_index": 100,
+    "source_reference": "TT 32/2018/TT-BGDĐT - Chương trình môn Toán - trang 106-107"
+  }
+]

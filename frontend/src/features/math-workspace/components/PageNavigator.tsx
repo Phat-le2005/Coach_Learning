@@ -11,6 +11,7 @@ interface PageNavigatorProps {
   onSelectPage: (index: number) => void;
   onAddPage: () => void;
   onDeleteCurrentPage: () => void;
+  canDeleteCurrentPage: boolean;
 }
 
 export function PageNavigator({
@@ -19,11 +20,11 @@ export function PageNavigator({
   onSelectPage,
   onAddPage,
   onDeleteCurrentPage,
+  canDeleteCurrentPage,
 }: PageNavigatorProps) {
   const isFirstPage = currentPageIndex === 0;
   const isLastPage = currentPageIndex === pageCount - 1;
   const canAddPage = pageCount < MAX_PAGES;
-  const canDeletePage = pageCount > 1;
 
   return (
     <nav className={styles.pageNavigator} aria-label="Điều hướng các trang giải bài">
@@ -84,7 +85,7 @@ export function PageNavigator({
           <span>Thêm trang</span>
         </button>
 
-        {canDeletePage && (
+        {canDeleteCurrentPage && (
           <button
             type="button"
             className={styles.deletePageButton}

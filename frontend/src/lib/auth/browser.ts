@@ -1,3 +1,5 @@
+import { createSingleFlight, refreshSessionWithCurrentCheck } from "../api/session-refresh";
+
 interface ErrorEnvelope { error?: { code?: string; message?: string; details?: unknown } }
 
 export class BrowserAuthError extends Error {
@@ -34,6 +36,20 @@ export async function authenticatedMutation(path: "/auth/login" | "/auth/refresh
   });
   return parseResponse(response);
 }
+
+/** One refresh rotation per browser profile, including tabs that become visible together. */
+export const refreshBrowserSession = createSingleFlight(async (): Promise<void> => {
+  const withLock = typeof navigator !== "undefined" && navigator.locks
+    ? async (task: () => Promise<void>): Promise<void> => {
+      await navigator.locks.request("edums-auth-refresh", async () => { await task(); });
+    }
+    : undefined;
+  await refreshSessionWithCurrentCheck(
+    async () => (await fetch("/auth/me", { credentials: "same-origin", cache: "no-store" })).ok,
+    async () => { await authenticatedMutation("/auth/refresh"); },
+    withLock,
+  );
+});
 
 type AuthMutation = typeof authenticatedMutation;
 

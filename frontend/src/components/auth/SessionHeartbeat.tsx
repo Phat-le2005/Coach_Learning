@@ -3,9 +3,9 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-import { authenticatedMutation, BrowserAuthError, endBrowserSession } from "@/lib/auth/browser";
+import { BrowserAuthError, refreshBrowserSession, endBrowserSession } from "@/lib/auth/browser";
 
-export function SessionHeartbeat() {
+export function SessionHeartbeat({ preserveUnsavedWork = false }: { preserveUnsavedWork?: boolean }) {
   const router = useRouter();
   useEffect(() => {
     let cancelled = false;
@@ -16,15 +16,16 @@ export function SessionHeartbeat() {
       try {
         const response = await fetch("/auth/me", { cache: "no-store", credentials: "same-origin" });
         if (response.status === 403) {
+          if (preserveUnsavedWork) return;
           await endBrowserSession();
           if (!cancelled) window.location.assign("/login?reason=expired");
           return;
         }
         if (response.status !== 401) return;
-        await authenticatedMutation("/auth/refresh");
-        if (!cancelled) router.refresh();
+        await refreshBrowserSession();
+        if (!cancelled && !preserveUnsavedWork) router.refresh();
       } catch (error) {
-        if (!cancelled && error instanceof BrowserAuthError && (error.status === 401 || error.status === 403)) {
+        if (!cancelled && !preserveUnsavedWork && error instanceof BrowserAuthError && (error.status === 401 || error.status === 403)) {
           window.location.assign("/login?reason=expired");
         }
       } finally {
@@ -35,6 +36,6 @@ export function SessionHeartbeat() {
     const onVisibility = () => { if (document.visibilityState === "visible") void validate(); };
     document.addEventListener("visibilitychange", onVisibility);
     return () => { cancelled = true; document.removeEventListener("visibilitychange", onVisibility); };
-  }, [router]);
+  }, [router, preserveUnsavedWork]);
   return null;
 }
