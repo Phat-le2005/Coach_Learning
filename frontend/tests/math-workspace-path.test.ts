@@ -16,3 +16,24 @@ test("Math Workspace BFF permits only the owner-scoped routes needed by the canv
   assert.equal(mathWorkspaceProxyPath(["<attemptId>", "ink"], "GET"), null);
   assert.equal(mathWorkspaceProxyPath([id, "..", "auth"], "GET"), null);
 });
+
+
+test("Math Workspace BFF rejects traversal, extra route fragments, and unsupported methods", () => {
+  const forbidden: Array<[string[], string]> = [
+    [[id, "ink", "pages", "00"], "PUT"],
+    [[id, "ink", "pages", "-1"], "GET"],
+    [[id, "ink", "pages", "29", "extra"], "PUT"],
+    [[id, "ink", "pages", "0", "..", "steps"], "POST"],
+    [[id, "ocr", "recognize", ".."], "POST"],
+    [[id, "steps"], "DELETE"],
+    [[id, "ink"], "POST"],
+    [[id, "submit"], "POST"],
+    [[id, "steps", "other"], "POST"],
+    [["wrong-id", "ink"], "GET"],
+  ];
+  for (const [parts, method] of forbidden) {
+    assert.equal(mathWorkspaceProxyPath(parts, method), null, JSON.stringify({parts, method}));
+  }
+  assert.equal(mathWorkspaceProxyPath([id, "ink", "pages", "29"], "PUT"),
+               `/api/v2/math-solutions/attempts/${id}/ink/pages/29`);
+});
