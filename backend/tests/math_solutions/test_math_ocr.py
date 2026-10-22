@@ -330,3 +330,142 @@ def test_ocr_invariant_never_mutates_steps_or_mastery(
         select(func.count()).select_from(LearningEvidenceEvent)
     )
     assert evidence_count_after == evidence_count_before
+
+
+def _workspace_png_ink_payload(*, revision: int, pen_id: UUID, highlight_id: UUID | None = None) -> dict:
+    """Serialized browser Canvas stroke payload sent through the Math Ink API."""
+    strokes = [{
+        "id": str(pen_id), "tool": "PEN", "color": "#112233", "width": 2,
+        "points": [{"x": 0.1, "y": 0.2, "pressure": 0.5},
+                   {"x": 0.2, "y": 0.3, "pressure": 0.5}],
+    }]
+    if highlight_id is not None:
+        strokes.append({
+            "id": str(highlight_id), "tool": "HIGHLIGHTER", "color": "#ffff00",
+            "width": 12, "points": [{"x": 0.15, "y": 0.25}],
+        })
+    return {
+        "expected_document_revision": revision,
+        "client_action_id": str(uuid4()),
+        "strokes": strokes,
+    }
+
+
+def test_workspace_saved_ink_ocr_requires_manual_confirmation_and_persists_step(
+    db_client: TestClient, db_session: Session, settings: Settings, ocr_fixture,
+):
+    """API vertical slice: Canvas JSON -> durable ink -> OCR -> manual step -> reload.
+
+    The test adapter is deterministic and intentionally does NOT prove model accuracy
+    or exercise a live Next.js/browser session.
+    """
+    aid = ocr_fixture["attempt_id"]
+    url = f"/api/v2/math-solutions/attempts/{aid}"
+    owner = auth_header(db_session, settings, ocr_fixture["student"])
+    other = auth_header(db_session, settings, ocr_fixture["outsider"])
+    teacher = auth_header(db_session, settings, ocr_fixture["teacher"])
+    pen, highlight = uuid4(), uuid4()
+
+    before = db_client.get(url, headers=owner)
+    assert before.status_code == 200
+    starting_revision = before.json()["attempt_revision_number"]
+    assert before.json()["steps"] == []
+
+    save = db_client.put(
+        f"{url}/ink/pages/0",
+        headers=owner,
+        json=_workspace_png_ink_payload(revision=0, pen_id=pen, highlight_id=highlight),
+    )
+    assert save.status_code == 200, save.text
+    assert save.json()["document_revision"] == 1
+    assert save.headers.get("cache-control") == "no-store"
+
+    # Browser reload reads persisted ink, not a transient client-only draft.
+    read_back = db_client.get(f"{url}/ink/pages/0", headers=owner)
+    assert read_back.status_code == 200
+    assert read_back.json()["document_revision"] == 1
+    assert {s["id"] for s in read_back.json()["strokes"]} == {str(pen), str(highlight)}
+    assert read_back.headers.get("cache-control") == "no-store"
+
+    # Unauthenticated, teacher, and other students may not read or change ink.
+    assert db_client.get(f"{url}/ink/pages/0").status_code == 401
+    assert db_client.get(f"{url}/ink/pages/0", headers=teacher).status_code == 403
+    assert db_client.get(f"{url}/ink/pages/0", headers=other).status_code == 404
+    assert db_client.post(f"{url}/steps", headers=other, json={
+        "expected_attempt_revision": starting_revision, "client_action_id": str(uuid4()),
+        "step_type": "EXPLANATION", "content_latex": "x+1",
+    }).status_code == 404
+
+    evidence_before = db_session.scalar(select(func.count()).select_from(LearningEvidenceEvent))
+    suggestion = db_client.post(
+        f"{url}/ocr/recognize", headers=owner,
+        json={"page_index": 0, "stroke_ids": [str(pen)]},
+    )
+    assert suggestion.status_code == 200, suggestion.text
+    assert suggestion.json()["latex"]
+    assert suggestion.headers.get("cache-control") == "no-store"
+
+    # The recognition request does NOT create a solution step or learning evidence.
+    after_ocr = db_client.get(url, headers=owner)
+    assert after_ocr.status_code == 200
+    assert after_ocr.json()["steps"] == []
+    assert after_ocr.json()["attempt_revision_number"] == starting_revision
+    assert db_session.scalar(select(func.count()).select_from(LearningEvidenceEvent)) == evidence_before
+
+    # The student actively edits and confirms the suggestion, then saves a step.
+    corrected = r"\\frac{1}{x+1}"
+    action_id = str(uuid4())
+    mutation = {
+        "expected_attempt_revision": starting_revision,
+        "client_action_id": action_id, "step_type": "EXPLANATION",
+        "content_latex": corrected, "explanation_text": "Đã đối chiếu nét viết",
+    }
+    confirmed = db_client.post(f"{url}/steps", headers=owner, json=mutation)
+    assert confirmed.status_code == 201, confirmed.text
+    assert confirmed.json()["attempt_revision_number"] == starting_revision + 1
+    assert len(confirmed.json()["steps"]) == 1
+    assert confirmed.json()["steps"][0]["content_latex"] == corrected
+
+    # Retry after a network timeout must not duplicate the confirmed step.
+    retry = db_client.post(f"{url}/steps", headers=owner, json=mutation)
+    assert retry.status_code == 201
+    assert retry.json()["attempt_revision_number"] == starting_revision + 1
+    assert len(retry.json()["steps"]) == 1
+
+    reload = db_client.get(url, headers=owner)
+    assert reload.status_code == 200
+    assert len(reload.json()["steps"]) == 1
+    assert reload.json()["steps"][0]["content_latex"] == corrected
+    assert db_session.scalar(select(func.count()).select_from(LearningEvidenceEvent)) == evidence_before
+
+
+def test_workspace_conflicting_ink_save_preserves_server_document_and_blocks_stale_ocr(
+    db_client: TestClient, db_session: Session, settings: Settings, ocr_fixture,
+):
+    """A failed optimistic save never makes unpersisted Canvas strokes OCR-visible."""
+    aid = ocr_fixture["attempt_id"]
+    url = f"/api/v2/math-solutions/attempts/{aid}"
+    owner = auth_header(db_session, settings, ocr_fixture["student"])
+    old_pen, newer_pen = uuid4(), uuid4()
+
+    first = db_client.put(f"{url}/ink/pages/0", headers=owner,
+                          json=_workspace_png_ink_payload(revision=0, pen_id=old_pen))
+    assert first.status_code == 200
+
+    stale = db_client.put(f"{url}/ink/pages/0", headers=owner,
+                          json=_workspace_png_ink_payload(revision=0, pen_id=newer_pen))
+    assert stale.status_code == 409
+    assert stale.json()["error"]["code"] == "INK_REVISION_CONFLICT"
+
+    persisted = db_client.get(f"{url}/ink/pages/0", headers=owner)
+    assert persisted.status_code == 200
+    assert persisted.json()["document_revision"] == 1
+    assert [s["id"] for s in persisted.json()["strokes"]] == [str(old_pen)]
+
+    unsaved_ocr = db_client.post(f"{url}/ocr/recognize", headers=owner,
+                                 json={"page_index": 0, "stroke_ids": [str(newer_pen)]})
+    assert unsaved_ocr.status_code == 422
+    assert unsaved_ocr.json()["error"]["code"] == "NO_STROKES_FOR_OCR"
+    assert db_client.post(f"{url}/ocr/recognize", headers=owner,
+                          json={"page_index": 0, "stroke_ids": [str(old_pen)]}).status_code == 200
+    assert db_client.get(url, headers=owner).json()["steps"] == []

@@ -238,12 +238,23 @@ export function MathWorkspace({
         }
       }
 
+      // An edit during the save invalidates this OCR request. Never recognize stale ink.
+      if (latestStrokesRef.current.get(currentPageIndex) !== currentPageMemory.strokes) {
+        setOcrError("Nét vẽ đã thay đổi. Vui lòng nhận diện lại sau khi lưu.");
+        return;
+      }
+
       // 2. Call OCR recognition
       const resp = await apiClient.recognizeMathInk(accessToken, attemptId, {
         page_index: currentPageIndex,
         stroke_ids: penStrokes.map((stroke) => stroke.id),
       });
 
+      // Do not display suggestions for ink modified while the OCR provider was running.
+      if (latestStrokesRef.current.get(currentPageIndex) !== currentPageMemory.strokes) {
+        setOcrError("Nét vẽ đã thay đổi trong lúc nhận diện. Hãy thử lại.");
+        return;
+      }
       setOcrData(resp);
       setOcrSourcePageIndex(currentPageIndex);
       setOcrSourceStrokes(penStrokes);
@@ -287,7 +298,10 @@ export function MathWorkspace({
       setOcrError(null);
 
       try {
-        const expectedRev = attempt?.current_revision ?? 1;
+        if (!attempt || attempt.status === "SUBMITTED" || attempt.status === "EVALUATED") {
+          throw new Error("Bài làm chưa sẵn sàng hoặc đã nộp. Vui lòng tải lại.");
+        }
+        const expectedRev = attempt.current_revision;
         const updatedAttempt = await apiClient.createMathStep(accessToken, attemptId, {
           expected_attempt_revision: expectedRev,
           client_action_id: generateUuid(),
