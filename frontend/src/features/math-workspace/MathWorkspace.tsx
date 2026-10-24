@@ -18,15 +18,16 @@ import { generateUuid } from "./utils/ink-math";
 import { mathInkStorage } from "./storage/indexeddb";
 import { ensureLatestInkSaved } from "./utils/ocr-sync";
 import { getOcrPenStrokes } from "./utils/ocr-ink";
-import { recognizeHandwrittenMath } from "./utils/handwritten-ocr";
+import { segmentPageInk } from "./utils/page-ocr";
+import type { PageOcrRegion } from "./utils/page-ocr";
 import { canSafelyRebaseInkDraft, restoreDirtyPageDrafts } from "./utils/draft-recovery";
 import { WorkspaceToolbar } from "./components/WorkspaceToolbar";
 import { PageNavigator } from "./components/PageNavigator";
 import { ProblemPane } from "./components/ProblemPane";
 import { MathCanvas } from "./components/MathCanvas";
 import { SyncStatusBadge } from "./components/SyncStatusBadge";
-import { OcrConfirmModal } from "./components/OcrConfirmModal";
-import type { OCRRecognizeResponse, StepKind } from "@/lib/api/contracts";
+import { PageOcrReviewModal } from "./components/PageOcrReviewModal";
+import type { AIReviewRead, AIReviewAvailabilityRead, StepKind } from "@/lib/api/contracts";
 import styles from "./MathWorkspace.module.css";
 
 interface PageMemory {
@@ -97,13 +98,17 @@ export function MathWorkspace({
 
   // OCR recognition & confirmation state
   const [isRecognizingOCR, setIsRecognizingOCR] = useState(false);
-  const [ocrModalOpen, setOcrModalOpen] = useState(false);
-  const [ocrData, setOcrData] = useState<OCRRecognizeResponse | null>(null);
-  const [ocrManualMode, setOcrManualMode] = useState(false);
-  const [ocrSourceStrokes, setOcrSourceStrokes] = useState<InkStroke[]>([]);
-  const [isSubmittingStep, setIsSubmittingStep] = useState(false);
+  const [pageOcrReview, setPageOcrReview] = useState<{
+    pageIndex: number; regions: PageOcrRegion[]; pageStrokes: InkStroke[];
+  } | null>(null);
   const [ocrError, setOcrError] = useState<string | null>(null);
 
+  const [aiReview, setAIReview] = useState<AIReviewRead | null>(null);
+  const [aiReviewAvailability, setAIReviewAvailability] = useState<AIReviewAvailabilityRead | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isReviewing, setIsReviewing] = useState(false);
+  const [gradingError, setGradingError] = useState<string | null>(null);
+  const submitActionRef = useRef<{ revision: number; actionId: string } | null>(null);
   // Debounce save timer ref
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const revisionRef = useRef(initialDocument?.document_revision ?? 0);
@@ -111,6 +116,7 @@ export function MathWorkspace({
     new Map([[0, initialPage?.strokes ?? []]]),
   );
   const saveQueueRef = useRef<Promise<void>>(Promise.resolve());
+  const pendingDeleteRef = useRef<{ stepId: string; revision: number; actionId: string } | null>(null);
   const locallyEditedPagesRef = useRef(new Set<number>());
   const recoveredDraftRevisionsRef = useRef(new Map<number, number>());
   const transientPageIndexesRef = useRef(new Set<number>());
@@ -125,6 +131,14 @@ export function MathWorkspace({
     future: [],
     isDirty: false,
   };
+
+  useEffect(() => {
+    let active = true;
+    apiClient.getMathAIReviewAvailability(accessToken, attemptId)
+      .then((value) => { if (active) setAIReviewAvailability(value); })
+      .catch(() => { if (active) setAIReviewAvailability(null); });
+    return () => { active = false; };
+  }, [apiClient, accessToken, attemptId]);
 
   // 1. Initial data fetch if not passed via props
   useEffect(() => {
@@ -357,18 +371,13 @@ export function MathWorkspace({
     }
   }, [accessToken, apiClient, attemptId, currentPageIndex, currentPageMemory, flushSavePage]);
 
-  // OCR Recognition Workflow (Human-in-the-loop Invariant)
+  // Persist the page before reviewing it; recognition only suggests step content.
   const handleTriggerOCR = useCallback(async () => {
     const penStrokes = getOcrPenStrokes(currentPageMemory.strokes);
-    if (penStrokes.length === 0) {
-      return;
-    }
-
+    if (penStrokes.length === 0 || pageOcrReview) return;
     setOcrError(null);
     setIsRecognizingOCR(true);
-
     try {
-      // 1. If currently dirty, flush to server first so recognition has latest strokes
       if (currentPageMemory.isDirty) {
         if (saveTimeoutRef.current) {
           clearTimeout(saveTimeoutRef.current);
@@ -378,94 +387,148 @@ export function MathWorkspace({
           flushSavePage(currentPageIndex, currentPageMemory.strokes),
         );
         if (!saved) {
-          setOcrError(
-            authExpired
-              ? "Phiên đăng nhập đã hết hạn. Giữ trang này mở, mở tab khác đăng nhập lại rồi bấm Thử lại để lưu nét vẽ."
-              : "Không thể nhận diện vì nét vẽ chưa được lưu lên máy chủ. Vui lòng lưu lại trước khi thử OCR."
-          );
+          setOcrError(authExpired
+            ? "Phiên đăng nhập đã hết hạn. Giữ trang này mở, đăng nhập lại ở tab khác rồi thử lại."
+            : "Chưa thể lưu nét viết lên máy chủ. Hãy thử lưu lại trước khi trích xuất trang.");
           return;
         }
       }
-
-      // CoMER reads saved pen geometry only, without exercise-text hints.
-      const resp = await recognizeHandwrittenMath(penStrokes);
-
-      setOcrData(resp);
-      setOcrManualMode(false);
-      setOcrSourceStrokes(penStrokes);
-      setOcrModalOpen(true);
-    } catch (err: unknown) {
-      if (err instanceof ApiResponseError || err instanceof ApiNetworkError) {
-        setOcrError(
-          err instanceof ApiResponseError && (err.status === 401 || err.code === "INVALID_TOKEN")
-            ? "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại để lưu nét viết."
-            : "Không thể lưu nét viết lên máy chủ. Vui lòng kiểm tra kết nối rồi thử lại.",
-        );
-      } else {
-        setOcrData(null);
-        setOcrManualMode(true);
-        setOcrSourceStrokes(penStrokes);
-        setOcrModalOpen(true);
-        setOcrError(
-          err instanceof Error && err.message === "OCR_NOT_RECOGNIZED"
-            ? "Model chưa đọc được nét viết này. Em có thể nhập công thức theo nét viết gốc."
-            : "Không tải được model nhận diện trên trình duyệt. Em vẫn có thể nhập công thức theo nét viết gốc.",
-        );
-      }
+      const regions = segmentPageInk(penStrokes);
+      if (!regions.length) return;
+      setPageOcrReview({ pageIndex: currentPageIndex, regions, pageStrokes: currentPageMemory.strokes });
+    } catch (error: unknown) {
+      setOcrError(error instanceof ApiResponseError && error.status === 401
+        ? "Phiên đăng nhập đã hết hạn. Đăng nhập lại để lưu nét viết."
+        : "Không thể lưu nét viết lên máy chủ. Hãy kiểm tra kết nối rồi thử lại.");
     } finally {
       setIsRecognizingOCR(false);
     }
-  }, [
-    currentPageMemory.strokes,
-    currentPageMemory.isDirty,
-    currentPageIndex,
-    flushSavePage,
-    apiClient,
-    accessToken,
-    attemptId,
-    authExpired,
-  ]);
+  }, [currentPageMemory.strokes, currentPageMemory.isDirty, currentPageIndex,
+    flushSavePage, authExpired, pageOcrReview]);
 
   const handleConfirmStep = useCallback(
-    async (stepType: StepKind, latex: string, explanation: string) => {
-      setIsSubmittingStep(true);
-      setOcrError(null);
-
-      try {
-        const expectedRev = attempt?.current_revision ?? 1;
-        const updatedAttempt = await apiClient.createMathStep(accessToken, attemptId, {
-          expected_attempt_revision: expectedRev,
-          client_action_id: generateUuid(),
-          step_type: stepType,
-          content_latex: latex,
-          explanation_text: explanation || null,
-        });
-
-        setAttempt(updatedAttempt);
-        setOcrModalOpen(false);
-        setOcrData(null);
-        setOcrManualMode(false);
-        setOcrSourceStrokes([]);
-      } catch (err: unknown) {
-        if (err instanceof ApiResponseError) {
-          setOcrError(err.message);
-          throw err;
-        } else if (err instanceof ApiNetworkError) {
-          const msg = "Không thể lưu bước giải: mất kết nối mạng.";
-          setOcrError(msg);
-          throw new Error(msg);
-        } else {
-          const msg = "Không thể lưu bước giải.";
-          setOcrError(msg);
-          throw new Error(msg);
-        }
-      } finally {
-        setIsSubmittingStep(false);
+    async (stepType: StepKind, latex: string | null, explanation: string, actionId: string) => {
+      if (pendingDeleteRef.current) {
+        throw new Error("Một thao tác xóa bước chưa nhận được kết quả. Hãy thử xóa lại hoặc tải lại bài giải trước khi thêm bước mới.");
       }
+      const updatedAttempt = await apiClient.createMathStep(accessToken, attemptId, {
+        expected_attempt_revision: attempt?.current_revision ?? 1,
+        client_action_id: actionId,
+        step_type: stepType,
+        content_latex: latex,
+        explanation_text: explanation || null,
+      });
+      setAttempt(updatedAttempt);
     },
     [attempt?.current_revision, apiClient, accessToken, attemptId],
   );
 
+  const handleDeleteStep = useCallback(async (stepId: string) => {
+    if (!attempt || !["DRAFT", "IN_PROGRESS"].includes(attempt.status)) {
+      throw new Error("Bài giải này không còn cho phép xóa bước.");
+    }
+    let revision = attempt.current_revision;
+    const previous = pendingDeleteRef.current;
+    if (previous && previous.stepId !== stepId) {
+      // Resolve an ambiguous previous delete before starting a different one.
+      const latest = await apiClient.getMathAttempt(accessToken, attemptId);
+      setAttempt(latest);
+      pendingDeleteRef.current = null;
+      revision = latest.current_revision;
+    }
+    const pending = pendingDeleteRef.current ?? { stepId, revision, actionId: generateUuid() };
+    pendingDeleteRef.current = pending;
+    try {
+      const updated = await apiClient.deleteMathStep(accessToken, attemptId, stepId, {
+        expected_attempt_revision: pending.revision,
+        client_action_id: pending.actionId,
+      });
+      setAttempt(updated);
+      pendingDeleteRef.current = null;
+    } catch (error: unknown) {
+      if (error instanceof ApiNetworkError || (error instanceof ApiResponseError && error.status >= 500)) {
+        // A replay with this exact key and revision is safe even if the first response was lost.
+        throw error;
+      }
+      pendingDeleteRef.current = null;
+      if (error instanceof ApiResponseError && (error.status === 404 || error.status === 409)) {
+        const latest = await apiClient.getMathAttempt(accessToken, attemptId);
+        setAttempt(latest);
+        if (!latest.steps?.some((step) => step.id === stepId)) return;
+      }
+      throw error;
+    }
+  }, [attempt, apiClient, accessToken, attemptId]);
+
+  const handleSubmitSolution = useCallback(async () => {
+    if (!attempt || isSubmitting || !["DRAFT", "IN_PROGRESS"].includes(attempt.status)) return;
+    setIsSubmitting(true);
+    setGradingError(null);
+    try {
+      if (pendingDeleteRef.current || pageOcrReview) throw new Error("Hãy hoàn tất thao tác sửa bước và xác nhận OCR trước khi nộp.");
+      if (!attempt.steps?.length) throw new Error("Hãy xác nhận ít nhất một bước giải trước khi nộp.");
+      if (syncStatus === "conflict" || syncStatus === "offline" || authExpired) {
+        throw new Error("Nét viết chưa đồng bộ. Hãy lưu lại trước khi nộp bài.");
+      }
+      if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+      await saveQueueRef.current;
+      for (const [pageIndex, page] of pagesMap) {
+        if (page.isDirty && !await flushSavePage(pageIndex, page.strokes)) {
+          throw new Error("Không thể lưu toàn bộ trang viết. Hãy thử lại trước khi nộp.");
+        }
+      }
+      const dirty = await mathInkStorage.listDirtyPages(attemptId);
+      if (dirty.length) throw new Error("Vẫn còn trang viết chưa đồng bộ. Hãy thử lưu lại.");
+      const pending = submitActionRef.current ?? { revision: attempt.current_revision, actionId: generateUuid() };
+      submitActionRef.current = pending;
+      const submitted = await apiClient.submitMathAttempt(accessToken, attemptId, {
+        expected_attempt_revision: pending.revision, client_action_id: pending.actionId,
+      });
+      setAttempt(submitted);
+      submitActionRef.current = null;
+    } catch (error: unknown) {
+      if (error instanceof ApiResponseError && (error.status === 401 || error.status === 409)) {
+        const latest = await apiClient.getMathAttempt(accessToken, attemptId).catch(() => null);
+        if (latest) {
+          setAttempt(latest);
+          if (latest.status === "SUBMITTED") { submitActionRef.current = null; return; }
+        }
+      }
+      setGradingError(error instanceof ApiResponseError ? error.message
+        : error instanceof Error ? error.message : "Không thể nộp bài. Hãy thử lại.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [attempt, isSubmitting, pageOcrReview, syncStatus, authExpired, pagesMap,
+    flushSavePage, attemptId, apiClient, accessToken]);
+
+  const handleAIReview = useCallback(async () => {
+    if (isReviewing || attempt?.status !== "SUBMITTED" || aiReviewAvailability?.available !== true) return;
+    setIsReviewing(true);
+    setGradingError(null);
+    try {
+      const result = await apiClient.reviewMathAttempt(accessToken, attemptId);
+      if (result.attempt_id !== attemptId || result.step_grades.length !== attempt.steps?.length) {
+        throw new Error("Phản hồi AI không khớp bài làm đã nộp.");
+      }
+      setAIReview(result);
+    } catch (error: unknown) {
+      const code = error instanceof ApiResponseError ? error.code : "";
+      const message = code === "GRADING_ANSWER_REQUIRED"
+        ? "Câu hỏi này chưa có đáp án được duyệt; hiện chưa thể chấm bằng AI."
+        : code === "REAL_AI_PROVIDER_REQUIRED" || code === "AI_CONFIGURATION_ERROR"
+          ? "Gemini chưa được cấu hình trên máy chủ. Hãy liên hệ người quản trị."
+          : code === "AI_RATE_LIMIT_EXCEEDED"
+            ? "Đã hết lượt Gemini hiện tại. Hãy thử lại sau."
+            : error instanceof ApiResponseError && error.status === 401
+              ? "Phiên đăng nhập đã hết hạn. Hãy đăng nhập lại rồi thử tiếp."
+              : error instanceof ApiResponseError ? error.message
+                : error instanceof Error ? error.message : "Chưa thể nhận xét bài giải. Hãy thử lại.";
+      setGradingError(message);
+    } finally {
+      setIsReviewing(false);
+    }
+  }, [isReviewing, attempt, aiReviewAvailability, apiClient, accessToken, attemptId]);
   // Keep stroke persistence separate from history updates. Undo/redo must not
   // append another history entry or erase the redo stack.
   const queueInkSave = useCallback((pageIndex: number, newStrokes: InkStroke[]) => {
@@ -839,12 +902,12 @@ export function MathWorkspace({
         onZoomIn={() => setZoomLevel((z) => Math.min(2.0, z + 0.1))}
         onZoomOut={() => setZoomLevel((z) => Math.max(0.6, z - 0.1))}
         onResetZoom={() => setZoomLevel(1.0)}
-        onTriggerOCR={handleTriggerOCR}
+        onTriggerOCR={attempt?.status === "SUBMITTED" ? undefined : handleTriggerOCR}
         isRecognizingOCR={isRecognizingOCR}
         strokeCount={getOcrPenStrokes(currentPageMemory.strokes).length}
       />
 
-      {ocrError && !ocrModalOpen ? (
+      {ocrError && !pageOcrReview ? (
         <div className={styles.ocrErrorBanner} role="alert">
           <span>{ocrError}</span>
           <button type="button" onClick={() => setOcrError(null)}>
@@ -861,6 +924,14 @@ export function MathWorkspace({
           attempt={attempt}
           isCollapsed={isProblemPaneCollapsed}
           onToggleCollapse={() => setIsProblemPaneCollapsed((c) => !c)}
+          onDeleteStep={handleDeleteStep}
+          onSubmitSolution={handleSubmitSolution}
+          onAIReview={handleAIReview}
+          aiReview={aiReview}
+          aiReviewAvailability={aiReviewAvailability}
+          gradingError={gradingError}
+          isSubmitting={isSubmitting}
+          isReviewing={isReviewing}
         />
 
         {/* Right Column: A4 Writing Canvas (65% or expanded) */}
@@ -882,17 +953,16 @@ export function MathWorkspace({
         </section>
       </main>
 
-      {/* OCR Confirmation Dialog (Human-in-the-loop Invariant) */}
-      <OcrConfirmModal
-        isOpen={ocrModalOpen}
-        onClose={() => { setOcrModalOpen(false); setOcrManualMode(false); }}
-        manualMode={ocrManualMode}
-        ocrData={ocrData}
-        isSubmitting={isSubmittingStep}
-        onConfirmStep={handleConfirmStep}
-        sourceStrokes={ocrSourceStrokes}
-        errorMessage={ocrError}
-      />
+      {pageOcrReview ? (
+        <PageOcrReviewModal
+          attemptId={attemptId}
+          pageIndex={pageOcrReview.pageIndex}
+          regions={pageOcrReview.regions}
+          pageStrokes={pageOcrReview.pageStrokes}
+          onClose={() => setPageOcrReview(null)}
+          onConfirmStep={handleConfirmStep}
+        />
+      ) : null}
     </div>
   );
 }

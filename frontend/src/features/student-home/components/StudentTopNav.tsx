@@ -22,7 +22,8 @@ export function StudentTopNav({
   subjectId,
 }: StudentTopNavProps) {
   const isKnowledge = currentRoute.startsWith("/student/knowledge");
-  const isHome = currentRoute === "/student" || (!isKnowledge && currentRoute.startsWith("/student"));
+  const isAttempts = currentRoute.startsWith("/student/attempts");
+  const isHome = currentRoute === "/student" || (!isKnowledge && !isAttempts && currentRoute.startsWith("/student"));
 
   const knowledgeHref = subjectId
     ? `/student/knowledge?subject_id=${encodeURIComponent(subjectId)}`
@@ -32,9 +33,8 @@ export function StudentTopNav({
 
   const navItems = [
     { label: "Tổng quan", href: homeHref, current: isHome },
-    { label: "Bản đồ tri thức", href: knowledgeHref, current: isKnowledge },
-    { label: "Nhiệm vụ", href: isHome ? "#learning-pulse" : `${homeHref}#learning-pulse`, current: false },
-    { label: "Bài tập ưu tiên", href: isHome ? "#priority-path" : `${homeHref}#priority-path`, current: false },
+    { label: "Vũ trụ tri thức", href: knowledgeHref, current: isKnowledge },
+    { label: "Bài làm & Luyện tập", href: "/student/attempts", current: isAttempts },
   ];
 
   return (

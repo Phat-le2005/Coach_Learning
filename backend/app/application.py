@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.router import api_router
 from app.api.v2.application import create_v2_app
+from app.api.v3.application import create_v3_app
 from app.api.version import API_VERSION
 from app.core.config import Settings, get_settings
 from app.core.errors import ErrorResponse, register_exception_handlers
@@ -56,4 +57,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     # Keep test/runtime dependency replacements consistent across the mount boundary.
     v2_application.dependency_overrides = application.dependency_overrides
     application.mount("/api/v2", v2_application)
+    v3_application = create_v3_app(configuration)
+    v3_application.dependency_overrides = application.dependency_overrides
+    application.mount("/api/v3", v3_application)
     return application

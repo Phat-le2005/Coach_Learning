@@ -177,6 +177,7 @@ def test_grade12_calculus_monotonicity_vertical_slice_full_lifecycle(db_session:
         create_idempotency_key="vs-attempt-1",
         question_id=question.id,
         practice_session_id=practice.id,
+        rubric_id=rubric.id,
     )
     attempt_id = UUID(created_attempt["id"])
 
@@ -259,6 +260,12 @@ def test_grade12_calculus_monotonicity_vertical_slice_full_lifecycle(db_session:
     # -------------------------------------------------------------------------
     # PHASES 2 - 5: Automated Evaluation, Misconception Disentanglement & Decision 1
     # -------------------------------------------------------------------------
+    math_service.submit(
+        actor_user_id=student_user.id,
+        attempt_id=attempt_id,
+        expected_attempt_revision=6,
+        client_action_id=uuid4(),
+    )
     decision_1 = evaluator_service.evaluate_attempt(attempt_id)
 
     # Phase 2: Derivative verified valid
@@ -315,6 +322,7 @@ def test_grade12_calculus_monotonicity_vertical_slice_full_lifecycle(db_session:
         create_idempotency_key="vs-attempt-2-recheck",
         question_id=question.id,
         practice_session_id=practice.id,
+        rubric_id=rubric.id,
     )
     recheck_attempt_id = UUID(recheck_attempt["id"])
 
@@ -389,6 +397,12 @@ def test_grade12_calculus_monotonicity_vertical_slice_full_lifecycle(db_session:
         ),
     )
 
+    math_service.submit(
+        actor_user_id=student_user.id,
+        attempt_id=recheck_attempt_id,
+        expected_attempt_revision=6,
+        client_action_id=uuid4(),
+    )
     decision_2 = evaluator_service.evaluate_attempt(recheck_attempt_id)
     assert decision_2.final_score >= 0.85
     assert decision_2.is_correct is True

@@ -22,8 +22,8 @@ import { requirePageRole } from "@/lib/auth/page-session";
 import { readAccessToken } from "@/lib/auth/server";
 
 export const metadata: Metadata = {
-  title: "Khu Rừng Tri Thức · EduMS",
-  description: "Bản đồ tri thức và đo lường năng lực học tập của học sinh trong EduMS.",
+  title: "Vũ Trụ Tri Thức · EduMS",
+  description: "Bản đồ Vũ trụ tri thức và đo lường năng lực học tập của học sinh trong EduMS.",
 };
 
 function state(kind: "empty" | "unauthorized" | "error", title: string, description: string) {

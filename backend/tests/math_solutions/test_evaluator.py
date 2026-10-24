@@ -3,6 +3,8 @@ import pytest
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.core.exceptions import ApplicationError
+from app.learning_evidence.models import LearningEvidenceEvent
 from app.math_solutions.evaluator_service import MathEvaluatorService
 from app.math_solutions.misconception_classifier import MisconceptionClassifier
 from app.math_solutions.models import (
@@ -220,6 +222,21 @@ def test_e2e_vertical_slice_monotonicity_evaluation(db_session: Session):
     db_session.add(question)
     db_session.flush()
 
+    rubric = SolutionRubric(
+        question_id=question.id,
+        title="Reviewed polynomial monotonicity rubric",
+        status="APPROVED",
+        approved_by=teacher_user.id,
+        criteria=[
+            {"id": "domain", "step_type": "ASSUMPTION", "weight": 0.10},
+            {"id": "derivative", "step_type": "DERIVATIVE_CALCULATION", "weight": 0.30},
+            {"id": "roots", "step_type": "ROOT_FINDING", "weight": 0.20},
+            {"id": "signs", "step_type": "SIGN_TABLE", "weight": 0.25},
+            {"id": "conclusion", "step_type": "CONCLUSION", "weight": 0.15},
+        ],
+    )
+    db_session.add(rubric)
+    db_session.flush()
     practice = PracticeSession(
         student_id=profile.id,
         subject_id=subject.id,
@@ -238,6 +255,7 @@ def test_e2e_vertical_slice_monotonicity_evaluation(db_session: Session):
         create_idempotency_key="eval-attempt-slice",
         question_id=question.id,
         practice_session_id=practice.id,
+        rubric_id=rubric.id,
     )
     attempt_id = UUID(attempt_dict["id"])
 
@@ -346,6 +364,44 @@ def test_e2e_vertical_slice_monotonicity_evaluation(db_session: Session):
         assert ev.math_validity in ("VALID", "INVALID", "UNDETERMINED", "NEEDS_REVIEW")
 
 
+    # Unknown handwritten/explanation content must not be converted into a
+    # zero or a final score; no evidence is emitted for this submitted work.
+    from app.learning_evidence.models import LearningEvidenceEvent
+
+    evidence_before = len(db_session.scalars(select(LearningEvidenceEvent)).all())
+    unresolved = service.create(
+        student_user.id,
+        source_kind="CANONICAL",
+        context_type="SELF_PRACTICE",
+        mode="INDEPENDENT_SOLUTION",
+        create_idempotency_key="eval-attempt-unresolved",
+        question_id=question.id,
+        practice_session_id=practice.id,
+        rubric_id=rubric.id,
+    )
+    unresolved_id = UUID(unresolved["id"])
+    updated = service.add_step(
+        student_user.id,
+        unresolved_id,
+        expected_attempt_revision=unresolved["attempt_revision_number"],
+        client_action_id=uuid4(),
+        draft=SolutionStepDraft(step_type="EXPLANATION", explanation_text="Needs human review."),
+    )
+    service.submit(
+        student_user.id,
+        unresolved_id,
+        expected_attempt_revision=updated["attempt_revision_number"],
+        client_action_id=uuid4(),
+    )
+    with pytest.raises(ApplicationError) as exc:
+        eval_service.evaluate_attempt(unresolved_id)
+    assert exc.value.code == "GRADING_REVIEW_REQUIRED"
+    assert db_session.get(SolutionAttempt, unresolved_id).status == "SUBMITTED"
+    assert db_session.scalar(
+        select(EvaluationDecision).where(EvaluationDecision.attempt_id == unresolved_id)
+    ) is None
+    assert len(db_session.scalars(select(LearningEvidenceEvent)).all()) == evidence_before
+
 def test_evaluation_rolls_back_if_learning_evidence_write_fails(db_session: Session):
     """Never publish a grading decision without its linked learning evidence."""
     from unittest.mock import patch
@@ -385,6 +441,15 @@ def test_evaluation_rolls_back_if_learning_evidence_write_fails(db_session: Sess
     )
     db_session.add(question)
     db_session.flush()
+    rubric = SolutionRubric(
+        question_id=question.id,
+        title="Reviewed derivative rubric",
+        status="APPROVED",
+        approved_by=teacher_user.id,
+        criteria=[{"id": "derivative", "step_type": "DERIVATIVE_CALCULATION", "weight": 1.0}],
+    )
+    db_session.add(rubric)
+    db_session.flush()
     practice = PracticeSession(
         student_id=student.id,
         subject_id=subject.id,
@@ -403,6 +468,7 @@ def test_evaluation_rolls_back_if_learning_evidence_write_fails(db_session: Sess
         create_idempotency_key="eval-atomicity-test",
         question_id=question.id,
         practice_session_id=practice.id,
+        rubric_id=rubric.id,
     )
     attempt_id = UUID(created["id"])
     updated = service.add_step(

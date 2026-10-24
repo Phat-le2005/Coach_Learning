@@ -140,3 +140,57 @@ test("student workspace starts from a real approved problem through canonical AP
   assert.equal(calls[3].body?.question_id, "question-1");
   assert.equal(calls[3].body?.practice_session_id, "session-1");
 });
+
+test("deleting a saved math step sends the revision and idempotency key to the scoped v2 route", async () => {
+  const calls: Array<{ path: string; method: string; body: unknown }> = [];
+  const api = createApiClient({ baseUrl: "https://api.example.test", fetcher: async (input, init) => {
+    calls.push({
+      path: new URL(String(input)).pathname,
+      method: init?.method ?? "GET",
+      body: init?.body ? JSON.parse(String(init.body)) : null,
+    });
+    return Response.json({
+      id: "attempt-1", question_id: "question-1", status: "IN_PROGRESS",
+      attempt_revision_number: 6, started_at: "2026-10-23T00:00:00Z", steps: [],
+    });
+  } });
+  const token = { expected_attempt_revision: 5, client_action_id: "a1234567-89ab-4cde-8012-3456789abcde" };
+  const result = await api.deleteMathStep("student-token", "attempt-1", "step-2", token);
+  assert.equal(result.current_revision, 6);
+  assert.deepEqual(result.steps, []);
+  assert.deepEqual(calls, [{
+    path: "/api/v2/math-solutions/attempts/attempt-1/steps/step-2/delete",
+    method: "POST", body: token,
+  }]);
+});
+
+test("student submits a confirmed attempt then receives only provisional AI step feedback", async () => {
+  const calls: Array<{ path: string; method: string; body: unknown }> = [];
+  const api = createApiClient({ baseUrl: "https://api.example.test", fetcher: async (input, init) => {
+    const path = new URL(String(input)).pathname;
+    calls.push({ path, method: init?.method ?? "GET", body: init?.body ? JSON.parse(String(init.body)) : null });
+    if (path.endsWith("/submit")) return Response.json({
+      id: "attempt-1", question_id: "question-1", status: "SUBMITTED",
+      attempt_revision_number: 3, started_at: "2026-10-24T00:00:00Z", steps: [],
+    });
+    return Response.json({ attempt_id: "attempt-1", is_final: false, needs_teacher_review: false,
+      step_grades: [{ step_index: 1, verdict: "VALID", score: 0.8,
+        confidence: 0.92, feedback: "The step matches the reviewed answer." }] });
+  } });
+  const token = { expected_attempt_revision: 2, client_action_id: "a1234567-89ab-4cde-8012-3456789abcde" };
+  assert.equal((await api.submitMathAttempt("student-token", "attempt-1", token)).status, "SUBMITTED");
+  const review = await api.reviewMathAttempt("student-token", "attempt-1");
+  assert.equal(review.is_final, false);
+  assert.equal(review.step_grades[0].score, 0.8);
+  assert.deepEqual(calls, [
+    { path: "/api/v2/math-solutions/attempts/attempt-1/submit", method: "POST", body: token },
+    { path: "/api/v3/math-solutions/attempts/attempt-1/ai-review", method: "POST", body: null },
+  ]);
+});
+
+test("frontend rejects AI feedback that claims a final grade", async () => {
+  const api = createApiClient({ baseUrl: "https://api.example.test", fetcher: async () =>
+    Response.json({ attempt_id: "attempt-1", is_final: true, needs_teacher_review: false,
+      step_grades: [{ step_index: 1, verdict: "VALID", score: 1, confidence: 0.9, feedback: "OK" }] }) });
+  await assert.rejects(api.reviewMathAttempt("student-token", "attempt-1"), ApiContractError);
+});

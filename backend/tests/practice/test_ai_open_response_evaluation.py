@@ -413,3 +413,28 @@ def test_ai_evaluate_attempt_api_forbidden_for_other_student(
 
     assert response.status_code == 403
     assert response.json()["error"]["code"] == "ACCESS_DENIED"
+
+@pytest.mark.anyio
+async def test_runtime_ai_grading_rejects_mock_and_missing_answer(
+    db_session: Session,
+    practice_students: tuple[User, User],
+    practice_content: PracticeContent,
+    settings: Settings,
+) -> None:
+    from app.ai.gemini_provider import GeminiProvider
+
+    student, _ = practice_students
+    attempt = _create_open_response_attempt(PracticeService(db_session), student, practice_content)
+    runtime_settings = settings.model_copy(update={"app_env": "development"})
+    mock_gateway = AIGateway(provider=MockAIProvider(), settings=runtime_settings)
+    with pytest.raises(ApplicationError) as error:
+        await AIOpenResponseEvaluationService(db_session, mock_gateway).evaluate_attempt(attempt.id)
+    assert error.value.code == "REAL_AI_PROVIDER_REQUIRED"
+
+    real_gateway = AIGateway(provider=GeminiProvider("test-only-key"), settings=runtime_settings)
+    with pytest.raises(ApplicationError) as error:
+        await AIOpenResponseEvaluationService(db_session, real_gateway).evaluate_attempt(attempt.id)
+    assert error.value.code == "GRADING_ANSWER_REQUIRED"
+    db_session.refresh(attempt)
+    assert attempt.evaluation_status == EvaluationStatus.NEEDS_EVALUATION
+    assert attempt.score is None

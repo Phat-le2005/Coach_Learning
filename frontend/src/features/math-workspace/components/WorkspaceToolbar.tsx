@@ -248,18 +248,18 @@ export function WorkspaceToolbar({
               title={
                 strokeCount === 0
                   ? "Vẽ công thức lên trang để nhận diện"
-                  : "Nhận diện nét vẽ thành công thức toán học (OCR)"
+                  : "Chia trang viết thành các bước giải để em kiểm tra"
               }
             >
               {isRecognizingOCR ? (
                 <>
                   <Loader2 className={styles.spinIcon} size={15} />
-                  <span>Đang nhận diện...</span>
+                  <span>Đang lưu trang...</span>
                 </>
               ) : (
                 <>
                   <Sparkles size={15} />
-                  <span>Nhận diện AI</span>
+                  <span>Trích xuất trang</span>
                 </>
               )}
             </button>

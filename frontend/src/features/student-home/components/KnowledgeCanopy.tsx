@@ -1,9 +1,7 @@
 "use client";
 
-import { motion } from "motion/react";
 import { useId, useState } from "react";
-
-import { useHydratedReducedMotion } from "@/lib/use-hydrated-reduced-motion";
+import { Sparkles } from "lucide-react";
 
 import { getRegionStateCopy } from "../copy";
 import type { KnowledgeRegionViewModel, StudentHomeActionType } from "../types";
@@ -17,198 +15,356 @@ export interface KnowledgeCanopyProps {
   targetName?: string;
 }
 
-const leaves = [
-  { x: 118, y: 150, rotation: -28 },
-  { x: 205, y: 80, rotation: -12 },
-  { x: 329, y: 64, rotation: 10 },
-  { x: 447, y: 137, rotation: 28 },
-  { x: 397, y: 244, rotation: 20 },
-  { x: 170, y: 253, rotation: -20 },
+// 6 node coordinates & dedicated text coordinates with zero overlapping:
+// Center is (300, 230), Radius = 145px
+const NODE_CONFIGS = [
+  // Node 1 (Top, 12h): Text strictly ABOVE star (gap = 8px)
+  {
+    x: 300,
+    y: 85,
+    titleX: 300,
+    titleY: 42,
+    subX: 300,
+    subY: 58,
+  },
+  // Node 2 (Top-Right, 2h): Text strictly ABOVE star (gap = 13px)
+  {
+    x: 426,
+    y: 158,
+    titleX: 430,
+    titleY: 114,
+    subX: 430,
+    subY: 130,
+  },
+  // Node 3 (Bottom-Right, 4h): Text strictly BELOW star (gap = 18px)
+  {
+    x: 426,
+    y: 302,
+    titleX: 430,
+    titleY: 340,
+    subX: 430,
+    subY: 356,
+  },
+  // Node 4 (Bottom, 6h): Text strictly BELOW star (gap = 20px)
+  {
+    x: 300,
+    y: 375,
+    titleX: 300,
+    titleY: 413,
+    subX: 300,
+    subY: 429,
+  },
+  // Node 5 (Bottom-Left, 8h): Text strictly BELOW star (gap = 18px)
+  {
+    x: 174,
+    y: 302,
+    titleX: 170,
+    titleY: 340,
+    subX: 170,
+    subY: 356,
+  },
+  // Node 6 (Top-Left, 10h): Text strictly ABOVE star (gap = 13px)
+  {
+    x: 174,
+    y: 158,
+    titleX: 170,
+    titleY: 114,
+    subX: 170,
+    subY: 130,
+  },
 ];
 
-const branches = [
-  "M278 278 C236 229 181 187 118 150",
-  "M282 270 C257 188 234 124 205 80",
-  "M286 260 C292 177 306 108 329 64",
-  "M291 275 C341 218 392 174 447 137",
-  "M289 291 C339 280 369 263 397 244",
-  "M275 292 C237 287 202 270 170 253",
+const CHAPTER_THEMES = [
+  { fill: "#d8a143", stroke: "#fef08a", halo: "rgba(216, 161, 67, 0.45)" }, // Gold (Khảo sát hàm số)
+  { fill: "#5ca9d6", stroke: "#bae6fd", halo: "rgba(92, 169, 214, 0.45)" }, // Sky (Tọa độ Oxyz)
+  { fill: "#8578cf", stroke: "#ddd6fe", halo: "rgba(133, 120, 207, 0.45)" }, // Violet (Tích phân)
+  { fill: "#3bb9b0", stroke: "#a7f3d0", halo: "rgba(59, 185, 176, 0.45)" }, // Mint/Aqua (Xác suất)
+  { fill: "#de7d6b", stroke: "#fecdd3", halo: "rgba(222, 125, 107, 0.45)" }, // Coral (Thống kê)
+  { fill: "#63c99a", stroke: "#d1fae5", halo: "rgba(99, 201, 154, 0.45)" }, // Emerald (PP số)
 ];
 
-const foliage = [
-  { cx: 151, cy: 124, r: 78 },
-  { cx: 226, cy: 85, r: 82 },
-  { cx: 319, cy: 82, r: 88 },
-  { cx: 405, cy: 122, r: 82 },
-  { cx: 417, cy: 202, r: 68 },
-  { cx: 166, cy: 211, r: 70 },
-];
-
-function normalizedTarget(value: string) {
-  return value.toLocaleLowerCase("vi").replace(/^vùng\s+/u, "").trim();
+function formatLabel(label: string): string {
+  if (label.length <= 20) return label;
+  // Clean word break if too long
+  const truncated = label.slice(0, 19);
+  const lastSpace = truncated.lastIndexOf(" ");
+  return lastSpace > 10 ? `${truncated.slice(0, lastSpace)}…` : `${truncated}…`;
 }
 
 export function KnowledgeCanopy({
   regions,
   subjectName,
-  ghost = false,
-  actionType,
   targetName,
 }: KnowledgeCanopyProps) {
-  const reducedMotion = useHydratedReducedMotion();
   const titleId = useId();
-  const instanceId = useId().replaceAll(":", "");
-  const [activeId, setActiveId] = useState<string | null>(null);
-  const visibleRegions = regions.slice(0, leaves.length);
-  const normalizedActionTarget = targetName ? normalizedTarget(targetName) : "";
-  let targetIndex = normalizedActionTarget
-    ? visibleRegions.findIndex((region) => {
-        const regionTarget = normalizedTarget(region.label);
-        return normalizedActionTarget.includes(regionTarget) || regionTarget.includes(normalizedActionTarget);
-      })
-    : -1;
+  const [activeRegion, setActiveRegion] = useState<KnowledgeRegionViewModel | null>(null);
 
-  if (targetIndex < 0 && actionType === "CONTINUE_REPAIR") {
-    targetIndex = visibleRegions.findIndex((region) => region.state === "weak");
-  }
-  if (targetIndex < 0 && actionType === "REVIEW_DUE") {
-    targetIndex = visibleRegions.findIndex((region) => region.state === "review");
-  }
+  const visibleRegions = regions.slice(0, 6);
+  const centerX = 300;
+  const centerY = 230;
 
-  const modeClass = actionType === "CONTINUE_REPAIR"
-    ? styles.canopyRepair
-    : actionType === "REVIEW_DUE" ? styles.canopyReview : "";
+  // Interconnected constellation links between consecutive nodes
+  const constellationLinks = NODE_CONFIGS.map((pt, index) => {
+    const nextPt = NODE_CONFIGS[(index + 1) % NODE_CONFIGS.length];
+    return `M ${pt.x} ${pt.y} L ${nextPt.x} ${nextPt.y}`;
+  });
 
   return (
-    <div className={[styles.canopyWrap, ghost ? styles.canopyGhost : "", modeClass].filter(Boolean).join(" ")}>
-      <svg className={styles.canopy} viewBox="0 0 560 420" role="group" aria-labelledby={titleId}>
-        <title id={titleId}>{`Cây tri thức của ${subjectName}`}</title>
+    <div className={styles.canopyWrap} data-testid="galaxy-radar-widget">
+      <svg
+        className={styles.canopy}
+        viewBox="0 0 600 460"
+        role="group"
+        aria-labelledby={titleId}
+      >
+        <title id={titleId}>{`Vũ trụ tri thức của ${subjectName}`}</title>
         <defs>
-          <linearGradient id={`${instanceId}-trunk`} x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#8ec7a4" />
-            <stop offset="48%" stopColor="#4f9678" />
-            <stop offset="100%" stopColor="#286955" />
-          </linearGradient>
-          <radialGradient id={`${instanceId}-ground`} cx="50%" cy="35%" r="65%">
-            <stop offset="0%" stopColor="rgba(156, 224, 188, 0.34)" />
-            <stop offset="100%" stopColor="rgba(59, 185, 176, 0)" />
-          </radialGradient>
-          <filter id={`${instanceId}-tree-glow`} x="-80%" y="-80%" width="260%" height="260%">
-            <feGaussianBlur stdDeviation="6" result="blur" />
-            <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+          <filter id="radarGlow" x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
           </filter>
+          <filter id="intenseCoreGlow" x="-80%" y="-80%" width="260%" height="260%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="12" result="blur1" />
+            <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur2" />
+            <feMerge>
+              <feMergeNode in="blur1" />
+              <feMergeNode in="blur2" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+          <radialGradient id="centerNucleusGradient" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#63c99a" stopOpacity="1" />
+            <stop offset="45%" stopColor="#286955" stopOpacity="0.85" />
+            <stop offset="85%" stopColor="#102e26" stopOpacity="0.5" />
+            <stop offset="100%" stopColor="#0a1d18" stopOpacity="0" />
+          </radialGradient>
         </defs>
 
-        <ellipse className={styles.treeGroundGlow} cx="282" cy="367" rx="184" ry="38" fill={`url(#${instanceId}-ground)`} />
-        <g className={styles.treeFoliage} aria-hidden="true">
-          {foliage.map((cloud) => <circle {...cloud} key={`${cloud.cx}-${cloud.cy}`} />)}
+        {/* Multi-layered Glowing Orbit Tracks */}
+        <circle cx={centerX} cy={centerY} r="205" className={styles.orbitTrackOuter} />
+        <circle cx={centerX} cy={centerY} r="145" className={styles.orbitTrackMain} />
+        <circle cx={centerX} cy={centerY} r="85" className={styles.orbitTrackInner} />
+
+        {/* Pulsating energy ripple around center core */}
+        <circle cx={centerX} cy={centerY} className={styles.corePulseRing} />
+
+        {/* Constellation Connection Beams between Chapter Stars */}
+        <g aria-hidden="true">
+          {constellationLinks.map((path, idx) => {
+            const isHighlighted =
+              activeRegion &&
+              (idx === visibleRegions.findIndex((r) => r.id === activeRegion.id) ||
+                (idx + 1) % 6 === visibleRegions.findIndex((r) => r.id === activeRegion.id));
+
+            return (
+              <path
+                key={idx}
+                d={path}
+                className={`${styles.constellationBeam} ${
+                  isHighlighted ? styles.constellationBeamActive : ""
+                }`}
+                filter="url(#radarGlow)"
+              />
+            );
+          })}
+
+          {/* Radial Spokes connecting Center Core to Constellation Stars */}
+          {NODE_CONFIGS.map((pt, idx) => (
+            <line
+              key={`spoke-${idx}`}
+              x1={centerX}
+              y1={centerY}
+              x2={pt.x}
+              y2={pt.y}
+              className={styles.spokeLine}
+            />
+          ))}
         </g>
 
-        <motion.path
-          className={styles.treeTrunk}
-          d="M284 371 C271 332 274 300 281 267 C288 231 286 201 281 164"
-          stroke={`url(#${instanceId}-trunk)`}
-          initial={{ pathLength: 0, opacity: 0 }}
-          animate={{ pathLength: 1, opacity: ghost ? 0.32 : 0.94 }}
-          transition={{ duration: reducedMotion ? 0 : 0.9, ease: [0.22, 1, 0.36, 1] }}
-        />
-
-        <g className={styles.canopyRoots} aria-hidden="true">
-          <path className={actionType === "CONTINUE_REPAIR" ? styles.rootRepair : undefined} d="M284 360 C247 361 210 375 169 398" />
-          <path d="M284 360 C316 366 350 380 389 402" />
-          <path d="M282 358 C279 375 280 391 281 410" />
-          <path d="M275 363 C253 378 239 393 226 410" />
-          {actionType === "CONTINUE_REPAIR" ? <path className={styles.rootRecovery} d="M284 360 C249 362 213 375 176 396" /> : null}
-        </g>
-
-        {branches.slice(0, visibleRegions.length).map((path, index) => (
-          <motion.path
-            className={`${styles.canopyBranch} ${index === targetIndex ? styles.branchTarget : ""}`}
-            d={path}
-            key={path}
-            initial={{ pathLength: 0, opacity: 0 }}
-            animate={{ pathLength: 1, opacity: ghost ? 0.2 : 0.68 }}
-            transition={{ duration: reducedMotion ? 0 : 0.72, delay: reducedMotion ? 0 : 0.18 + index * 0.07 }}
+        {/* Central Core: Subject Heart Nucleus */}
+        <g
+          className={styles.coreNode}
+          role="button"
+          tabIndex={0}
+          aria-label={`Môn học ${subjectName}`}
+        >
+          {/* Outer glowing halo */}
+          <circle
+            cx={centerX}
+            cy={centerY}
+            r="52"
+            fill="url(#centerNucleusGradient)"
+            filter="url(#intenseCoreGlow)"
           />
-        ))}
-
-        <g className={styles.treeTrunkRings} aria-hidden="true">
-          <path d="M278 309 Q284 315 290 308" />
-          <path d="M276 333 Q284 339 292 331" />
+          {/* Main Core Body */}
+          <circle
+            cx={centerX}
+            cy={centerY}
+            r="40"
+            fill="#0f2b23"
+            stroke="#63c99a"
+            strokeWidth="3"
+            filter="url(#radarGlow)"
+          />
+          {/* Subject Name - CRISP WHITE & BOLD */}
+          <text
+            x={centerX}
+            y={centerY - 3}
+            fill="#ffffff"
+            fontWeight="800"
+            fontSize="13px"
+            textAnchor="middle"
+            letterSpacing="0.03em"
+            filter="drop-shadow(0 2px 4px rgba(0,0,0,0.9))"
+            pointerEvents="none"
+          >
+            {subjectName}
+          </text>
+          {/* Subtitle - RADIANT MINT */}
+          <text
+            x={centerX}
+            y={centerY + 14}
+            fill="#a9e6c3"
+            fontWeight="700"
+            fontSize="9px"
+            textAnchor="middle"
+            letterSpacing="0.08em"
+            pointerEvents="none"
+          >
+            VŨ TRỤ TRI THỨC
+          </text>
         </g>
 
+        {/* Orbiting Constellation Chapter Star Nodes */}
         {visibleRegions.map((region, index) => {
-          const leaf = leaves[index];
-          const active = activeId === region.id;
-          const currentTarget = index === targetIndex;
-          const rotation = `rotate(${leaf.rotation} ${leaf.x} ${leaf.y})`;
-          const stateLabel = getRegionStateCopy(region.state);
-          const progressLabel = region.progress === undefined ? "Chưa đo lường" : `${region.progress}% hoàn thành`;
+          const cfg = NODE_CONFIGS[index];
+          const theme = CHAPTER_THEMES[index % CHAPTER_THEMES.length];
+          const isSelected =
+            activeRegion?.id === region.id ||
+            (targetName && targetName.includes(region.label));
 
           return (
-            <motion.g
-              className={`${styles.canopyNode} ${styles[`canopyNode_${region.state}`]} ${currentTarget ? styles.canopyNodeTarget : ""}`}
+            <g
+              key={region.id}
+              className={styles.chapterNode}
               role="button"
               tabIndex={0}
-              aria-label={`${region.label}: ${stateLabel}, ${progressLabel}`}
-              key={region.id}
-              onMouseEnter={() => setActiveId(region.id)}
-              onMouseLeave={() => setActiveId(null)}
-              onFocus={() => setActiveId(region.id)}
-              onBlur={() => setActiveId(null)}
-              onKeyDown={(event) => {
-                if (event.key === "Enter" || event.key === " ") {
-                  event.preventDefault();
-                  setActiveId(active ? null : region.id);
-                }
-              }}
-              initial={{ opacity: 0, scale: 0.82 }}
-              animate={{ opacity: ghost ? 0.42 : 1, scale: active ? 1.045 : 1 }}
-              transition={{ duration: reducedMotion ? 0 : 0.38, delay: reducedMotion ? 0 : 0.35 + index * 0.07 }}
-              style={{ transformOrigin: `${leaf.x}px ${leaf.y}px` }}
+              aria-label={`${region.label}: ${getRegionStateCopy(region.state)}`}
+              onMouseEnter={() => setActiveRegion(region)}
+              onMouseLeave={() => setActiveRegion(null)}
+              onClick={() => setActiveRegion(region)}
             >
-              <ellipse className={styles.canopyNodeHalo} cx={leaf.x} cy={leaf.y} rx="38" ry="27" transform={rotation} />
-              <ellipse className={styles.canopyNodeBody} cx={leaf.x} cy={leaf.y} rx="29" ry="19" transform={rotation} filter={`url(#${instanceId}-tree-glow)`} />
-              <path className={styles.canopyNodeVein} d={`M${leaf.x - 18} ${leaf.y + 4} Q${leaf.x} ${leaf.y} ${leaf.x + 18} ${leaf.y - 3}`} transform={rotation} />
-              {region.state === "not_started" ? (
-                <g className={styles.canopyNodeLock} aria-hidden="true">
-                  <rect x={leaf.x - 5} y={leaf.y - 2} width="10" height="8" rx="2" />
-                  <path d={`M${leaf.x - 3} ${leaf.y - 2}v-3a3 3 0 0 1 6 0v3`} />
-                </g>
-              ) : <circle className={styles.canopyNodeDot} cx={leaf.x + 12} cy={leaf.y - 5} r="3.5" />}
-              {active ? (
-                <g className={styles.canopyTooltip} aria-hidden="true">
-                  <rect x={leaf.x - 78} y={leaf.y - 82} width="156" height="52" rx="14" />
-                  <text x={leaf.x} y={leaf.y - 63} textAnchor="middle">
-                    <tspan className={styles.tooltipTitle} x={leaf.x}>{region.label.length > 22 ? `${region.label.slice(0, 21)}…` : region.label}</tspan>
-                    <tspan className={styles.tooltipMeta} x={leaf.x} dy="15">{stateLabel} · {progressLabel}</tspan>
-                  </text>
-                </g>
-              ) : null}
-            </motion.g>
+              {/* Invisible stable pointer hit-area (guarantees zero flicker on mouse hover) */}
+              <circle
+                cx={cfg.x}
+                cy={cfg.y}
+                r="38"
+                fill="transparent"
+                pointerEvents="all"
+              />
+
+              {/* Outer Glowing Halo - Expands smoothly on hover */}
+              <circle
+                cx={cfg.x}
+                cy={cfg.y}
+                r={isSelected ? 30 : 23}
+                fill={theme.halo}
+                stroke={theme.stroke}
+                strokeWidth={isSelected ? 2.5 : 1.2}
+                strokeOpacity={isSelected ? 1 : 0.6}
+                className={styles.nodeHalo}
+                filter="url(#radarGlow)"
+                pointerEvents="none"
+              />
+
+              {/* Main Star Body - Expands smoothly in-place */}
+              <circle
+                cx={cfg.x}
+                cy={cfg.y}
+                r={isSelected ? 19 : 16}
+                fill={theme.fill}
+                stroke="#ffffff"
+                strokeWidth="2.5"
+                className={styles.nodeBody}
+                filter="url(#radarGlow)"
+                pointerEvents="none"
+              />
+
+              {/* Chapter Index Number in Star Center */}
+              <text
+                x={cfg.x}
+                y={cfg.y + 4.5}
+                fill="#ffffff"
+                fontSize="11.5px"
+                fontWeight="800"
+                textAnchor="middle"
+                pointerEvents="none"
+              >
+                {index + 1}
+              </text>
+
+              {/* Star Sparkle Deco above Node */}
+              <text
+                x={cfg.x + 13}
+                y={cfg.y - 12}
+                className={styles.starSparkle}
+                fontSize="11"
+              >
+                ✦
+              </text>
+
+              {/* Chapter Name Label (Strictly calculated coordinates, ZERO overlap with circles!) */}
+              <text
+                x={cfg.titleX}
+                y={cfg.titleY}
+                className={styles.nodeLabel}
+              >
+                {formatLabel(region.label)}
+              </text>
+
+              {/* Progress / Mastery Level Sub-label (VIBRANT MINT, ZERO overlap!) */}
+              <text
+                x={cfg.subX}
+                y={cfg.subY}
+                className={styles.nodeSubLabel}
+              >
+                {region.progress !== undefined
+                  ? `${region.progress}% vững · ${getRegionStateCopy(region.state)}`
+                  : "Chưa đo điểm"}
+              </text>
+            </g>
           );
         })}
-
-        {!ghost ? (
-          <g className={styles.canopyParticles} aria-hidden="true">
-            {[
-              { cx: 102, cy: 222, duration: 12 },
-              { cx: 468, cy: 210, duration: 13 },
-            ].map((particle, index) => (
-              <motion.circle
-                key={`${particle.cx}-${particle.cy}`}
-                cx={particle.cx}
-                cy={particle.cy}
-                r={index === 1 ? 3 : 2.4}
-                animate={reducedMotion ? undefined : { y: [0, -9, 3, 0], x: [0, 4, -2, 0], opacity: [0.25, 0.82, 0.4, 0.25] }}
-                transition={{ duration: particle.duration, repeat: Infinity, ease: "easeInOut" }}
-              />
-            ))}
-          </g>
-        ) : null}
       </svg>
-      <div className={styles.canopyCaption}>
-        <span /> {ghost ? "Đang chờ dữ liệu bản đồ tri thức" : "Cây tri thức đang lớn lên cùng bạn"} <span />
+
+      {/* Dynamic Glowing Status Pill below Radar */}
+      <div
+        className={`${styles.tooltipWrap} ${
+          activeRegion ? styles.tooltipWrapActive : ""
+        }`}
+      >
+        {activeRegion ? (
+          <span className="flex items-center justify-center gap-2">
+            <Sparkles size={15} className="text-amber-300 animate-pulse" />
+            <strong className="text-white">{activeRegion.label}:</strong>
+            <span className="text-emerald-400 font-bold">
+              {getRegionStateCopy(activeRegion.state)}
+            </span>
+            {activeRegion.progress !== undefined ? (
+              <span className="bg-emerald-950/80 px-2 py-0.5 rounded-full text-xs text-emerald-300 border border-emerald-500/30">
+                {activeRegion.progress}%
+              </span>
+            ) : null}
+          </span>
+        ) : (
+          <span className="flex items-center justify-center gap-1.5 opacity-90">
+            <Sparkles size={14} className="text-emerald-400" />
+            <span>Chạm hoặc rê chuột vào 6 chòm sao để xem độ thành thạo</span>
+          </span>
+        )}
       </div>
     </div>
   );

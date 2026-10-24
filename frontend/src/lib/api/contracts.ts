@@ -526,12 +526,24 @@ export interface OCRRecognizeResponse {
   alternative_latex: string[];
 }
 
-export interface StepMutationRequest {
+export interface AttemptMutationToken {
   expected_attempt_revision: number;
   client_action_id: string;
+}
+
+export interface StepMutationRequest extends AttemptMutationToken {
   step_type: StepKind;
   content_latex?: string | null;
   explanation_text?: string | null;
+}
+
+export interface SolutionStepRead {
+  id: string;
+  step_index: number;
+  step_type: StepKind;
+  content_latex: string | null;
+  explanation_text: string | null;
+  step_revision_number: number;
 }
 
 export interface SolutionAttemptRead {
@@ -542,8 +554,82 @@ export interface SolutionAttemptRead {
   current_revision: number;
   created_at: string;
   updated_at?: string;
+  steps?: SolutionStepRead[];
 }
 
+export interface AIReviewAvailabilityRead {
+  available: boolean;
+  reason_code: string | null;
+}
+
+export function parseAIReviewAvailabilityRead(value: unknown, path = "ai_review_availability"): AIReviewAvailabilityRead {
+  const source = record(value, path);
+  return {
+    available: boolean(source.available, `${path}.available`),
+    reason_code: source.reason_code === null ? null : string(source.reason_code, `${path}.reason_code`),
+  };
+}
+
+export interface VariationTableDraft {
+  recognized: boolean;
+  x_row: string;
+  derivative_row: string;
+  function_row: string;
+  uncertainties: string[];
+}
+
+export function parseVariationTableDraft(value: unknown, path = "variation_table"): VariationTableDraft {
+  const source = record(value, path);
+  return {
+    recognized: boolean(source.recognized, `${path}.recognized`),
+    x_row: string(source.x_row, `${path}.x_row`),
+    derivative_row: string(source.derivative_row, `${path}.derivative_row`),
+    function_row: string(source.function_row, `${path}.function_row`),
+    uncertainties: array(source.uncertainties, `${path}.uncertainties`, string),
+  };
+}
+
+export interface AIStepSuggestionRead {
+  step_index: number;
+  verdict: "VALID" | "INVALID" | "NEEDS_REVIEW";
+  score: number | null;
+  confidence: number;
+  feedback: string;
+}
+
+export interface AIReviewRead {
+  attempt_id: string;
+  step_grades: AIStepSuggestionRead[];
+  needs_teacher_review: boolean;
+  is_final: false;
+}
+
+export function parseAIReviewRead(value: unknown, path = "ai_review"): AIReviewRead {
+  const source = record(value, path);
+  if (source.is_final !== false) throw new ApiContractError("AI review must be provisional", `${path}.is_final`);
+  const steps = array(source.step_grades, `${path}.step_grades`, (item, stepPath): AIStepSuggestionRead => {
+    const row = record(item, stepPath);
+    const verdict = string(row.verdict, `${stepPath}.verdict`);
+    if (verdict !== "VALID" && verdict !== "INVALID" && verdict !== "NEEDS_REVIEW") {
+      throw new ApiContractError("Unknown AI step verdict", `${stepPath}.verdict`);
+    }
+    const score = row.score === null ? null : number(row.score, `${stepPath}.score`);
+    const confidence = number(row.confidence, `${stepPath}.confidence`);
+    if ((score !== null && (score < 0 || score > 1)) || confidence < 0 || confidence > 1) {
+      throw new ApiContractError("AI grade outside 0..1", stepPath);
+    }
+    if ((verdict === "NEEDS_REVIEW") !== (score === null)) {
+      throw new ApiContractError("AI verdict and score conflict", stepPath);
+    }
+    return { step_index: integer(row.step_index, `${stepPath}.step_index`), verdict, score,
+      confidence, feedback: nonEmptyString(row.feedback, `${stepPath}.feedback`) };
+  });
+  if (steps.length === 0 || new Set(steps.map((step) => step.step_index)).size !== steps.length) {
+    throw new ApiContractError("AI review must contain unique steps", `${path}.step_grades`);
+  }
+  return { attempt_id: nonEmptyString(source.attempt_id, `${path}.attempt_id`), step_grades: steps,
+    needs_teacher_review: boolean(source.needs_teacher_review, `${path}.needs_teacher_review`), is_final: false };
+}
 export interface MathAttemptsPageRead {
   items: SolutionAttemptRead[];
   total: number;
@@ -654,6 +740,21 @@ export function parseSolutionAttemptRead(value: unknown, path = "attempt"): Solu
     current_revision: rev,
     created_at: typeof source.created_at === "string" ? source.created_at : (typeof source.started_at === "string" ? source.started_at : ""),
     updated_at: typeof source.updated_at === "string" ? source.updated_at : undefined,
+    steps: source.steps === undefined ? undefined : array(source.steps, `${path}.steps`, (value, stepPath) => {
+      const step = record(value, stepPath);
+      const kind = string(step.step_type, `${stepPath}.step_type`);
+      if (!STEP_KINDS.includes(kind as StepKind)) {
+        throw new ApiContractError(`Invalid step type: ${kind}`, `${stepPath}.step_type`);
+      }
+      return {
+        id: nonEmptyString(step.id, `${stepPath}.id`),
+        step_index: integer(step.step_index, `${stepPath}.step_index`),
+        step_type: kind as StepKind,
+        content_latex: step.content_latex === null ? null : string(step.content_latex, `${stepPath}.content_latex`),
+        explanation_text: step.explanation_text === null ? null : string(step.explanation_text, `${stepPath}.explanation_text`),
+        step_revision_number: integer(step.step_revision_number, `${stepPath}.step_revision_number`),
+      };
+    }),
   };
 }
 

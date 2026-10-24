@@ -5,7 +5,8 @@ import { useMemo, useState } from "react";
 import { KnowledgeDetailDrawer, type SelectedKnowledgeItem } from "./components/KnowledgeDetailDrawer";
 import { KnowledgeForestFilters } from "./components/KnowledgeForestFilters";
 import { KnowledgeForestHeader } from "./components/KnowledgeForestHeader";
-import { KnowledgeForestTree } from "./components/KnowledgeForestTree";
+import { KnowledgeWorldFallback } from "./components/KnowledgeWorldFallback";
+import { KnowledgeWorld3D } from "./components/KnowledgeWorld3D";
 import { filterKnowledgeForest } from "./filter";
 import type {
   KnowledgeForestViewModel,
@@ -20,10 +21,10 @@ export interface KnowledgeForestProps {
 }
 
 export function KnowledgeForest({ data, initialSelectedId }: KnowledgeForestProps) {
+  const [viewMode, setViewMode] = useState<"3D" | "2D">("3D");
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<KnowledgeStatusFilter>("ALL");
 
-  // Concepts are intentionally absent from the tree until API v1 exposes real PT mappings.
   const initialResolved = useMemo(() => {
     if (!initialSelectedId) return null;
     for (const chapter of data.chapters) {
@@ -65,11 +66,10 @@ export function KnowledgeForest({ data, initialSelectedId }: KnowledgeForestProp
     }
   };
 
-  return (
-    <main className={styles.pageContainer}>
-      <KnowledgeForestHeader data={data} />
-
-      {data.availableSubjects.length === 0 ? (
+  if (data.availableSubjects.length === 0) {
+    return (
+      <main className={styles.pageContainer}>
+        <KnowledgeForestHeader data={data} />
         <div className={styles.emptyCard} data-testid="empty-no-subjects">
           <h3 className={styles.emptyTitle}>Chưa có môn tự học được phát hành</h3>
           <p className={styles.emptyDesc}>
@@ -77,8 +77,78 @@ export function KnowledgeForest({ data, initialSelectedId }: KnowledgeForestProp
             tự học. EduMS không hiển thị curriculum staging để thay thế.
           </p>
         </div>
-      ) : data.hasCurriculum ? (
+      </main>
+    );
+  }
+
+  if (!data.hasCurriculum) {
+    return (
+      <main className={styles.pageContainer}>
+        <KnowledgeForestHeader data={data} />
+        <div className={styles.emptyCard} data-testid="empty-no-curriculum">
+          <h3 className={styles.emptyTitle}>Chưa có chương trình học cho môn này</h3>
+          <p className={styles.emptyDesc}>
+            Môn học &ldquo;{data.subject.name}&rdquo; hiện chưa có dữ liệu chương, chủ đề và dạng bài
+            được phát hành trong hệ thống.
+          </p>
+        </div>
+      </main>
+    );
+  }
+
+  return (
+    <main className={styles.pageContainer} style={{ padding: viewMode === "3D" ? 0 : undefined }}>
+      {viewMode === "3D" ? (
+        <KnowledgeWorld3D
+          data={data}
+          viewMode={viewMode}
+          onViewModeChange={setViewMode}
+          selectedId={selectedItem?.kind === "problem_type" ? selectedItem.data.id : undefined}
+          onSelectProblemType={handleSelectProblemType}
+          onClearSelection={handleCloseDetail}
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          statusFilter={statusFilter}
+          onStatusFilterChange={setStatusFilter}
+          onResetFilters={handleResetFilters}
+        />
+      ) : (
         <>
+          <KnowledgeForestHeader data={data} />
+          {/* Mode Switcher Banner in 2D Mode */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: "16px",
+              padding: "10px 16px",
+              background: "rgba(16, 46, 38, 0.04)",
+              borderRadius: "12px",
+              border: "1px solid rgba(16, 46, 38, 0.08)",
+            }}
+          >
+            <span style={{ fontSize: "13px", fontWeight: "600", color: "#102e26" }}>
+              Đang ở chế độ xem: <strong>Quần đảo Tri thức 2D</strong>
+            </span>
+            <button
+              onClick={() => setViewMode("3D")}
+              style={{
+                background: "#23a67a",
+                color: "#ffffff",
+                border: "none",
+                borderRadius: "8px",
+                padding: "6px 14px",
+                fontSize: "12px",
+                fontWeight: "700",
+                cursor: "pointer",
+                boxShadow: "0 2px 8px rgba(35, 166, 122, 0.3)",
+              }}
+            >
+              Chuyển sang Thế giới 3D ✦
+            </button>
+          </div>
+
           <KnowledgeForestFilters
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
@@ -88,7 +158,8 @@ export function KnowledgeForest({ data, initialSelectedId }: KnowledgeForestProp
             isFiltered={isFiltered}
             onResetFilters={handleResetFilters}
           />
-          <KnowledgeForestTree
+
+          <KnowledgeWorldFallback
             chapters={data.chapters}
             subjectName={data.subject.name}
             selectedId={selectedItem?.kind === "problem_type" ? selectedItem.data.id : undefined}
@@ -99,18 +170,10 @@ export function KnowledgeForest({ data, initialSelectedId }: KnowledgeForestProp
             statusFilter={statusFilter}
             onResetFilters={handleResetFilters}
           />
-        </>
-      ) : (
-        <div className={styles.emptyCard} data-testid="empty-no-curriculum">
-          <h3 className={styles.emptyTitle}>Chưa có chương trình học cho môn này</h3>
-          <p className={styles.emptyDesc}>
-            Môn học &ldquo;{data.subject.name}&rdquo; hiện chưa có dữ liệu chương, chủ đề và dạng bài
-            được phát hành trong hệ thống.
-          </p>
-        </div>
-      )}
 
-      <KnowledgeDetailDrawer item={selectedItem} onClose={handleCloseDetail} />
+          <KnowledgeDetailDrawer item={selectedItem} onClose={handleCloseDetail} />
+        </>
+      )}
     </main>
   );
 }

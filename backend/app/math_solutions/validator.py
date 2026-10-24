@@ -161,6 +161,11 @@ class DeterministicMathValidator:
                 self._target_derivative = None
                 self._target_roots = None
 
+    @property
+    def supports_polynomial_target(self) -> bool:
+        """Automatic grading is currently verified only for one-variable polynomials."""
+        return self._target_expr is not None and bool(self._target_expr.is_polynomial(self.x))
+
     def validate_step(
         self,
         step_type: str,
@@ -181,7 +186,10 @@ class DeterministicMathValidator:
             return self._validate_conclusion(content_latex, explanation_text)
 
         if step_type == "ASSUMPTION":
-            if content_latex and ("D = \\mathbb{R}" in content_latex or "D = R" in content_latex or "R" in content_latex):
+            normalized = re.sub(r"\s+", "", content_latex or "")
+            if self.supports_polynomial_target and normalized in {
+                r"D=\mathbb{R}", "D=R",
+            }:
                 return ValidationResult(
                     validity=MathValidity.VALID,
                     score=1.0,
@@ -189,12 +197,12 @@ class DeterministicMathValidator:
                     error_detected=False,
                 )
             return ValidationResult(
-                validity=MathValidity.VALID,
-                score=1.0,
-                confidence=0.9,
+                validity=MathValidity.NEEDS_REVIEW,
+                score=None,
+                confidence=0.0,
                 error_detected=False,
+                error_description="The stated domain needs review.",
             )
-
         if not content_latex and not artifact_payload:
             return ValidationResult(
                 validity=MathValidity.UNDETERMINED,

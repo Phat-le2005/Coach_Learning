@@ -1,5 +1,5 @@
-/* ==========================================================================
-   Knowledge Forest · Interactive Knowledge Map Styles
+﻿/* ==========================================================================
+   Knowledge Forest Â· Interactive Knowledge Map Styles
    ========================================================================== */
 
 .pageContainer {
@@ -910,7 +910,7 @@
 }
 
 /* ==========================================================================
-   Living Knowledge Tree · organic SVG camera
+   Living Knowledge Tree Â· organic SVG camera
    ========================================================================== */
 .pageContainer { width: min(100%, 1600px); overflow-x: clip; }
 .livingTreeSection { position: relative; display: grid; gap: 12px; }
@@ -1000,7 +1000,7 @@
 @media (prefers-reduced-motion: reduce) { .leafShape { transition: none !important; } }
 
 /* ==========================================================================
-   Galaxy Constellation — Cosmic Knowledge Graph Engine
+   Galaxy Constellation â€” Cosmic Knowledge Graph Engine
    ========================================================================== */
 
 @keyframes galaxyBeamFlow {
@@ -1127,3 +1127,579 @@
   font-weight: 500;
   opacity: 0.9;
 }
+
+/* ==========================================================================
+   Topic Grid Showcase â€” Clean, Structured Chapter View (Zero-Lag Mode)
+   ========================================================================== */
+
+.topicGridContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 24px;
+  margin-top: 18px;
+}
+
+.topicChapterCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-radius: 28px;
+  background: linear-gradient(155deg, rgba(255, 255, 255, 0.98) 0%, rgba(246, 250, 247, 0.94) 100%);
+  border: 1px solid rgba(220, 235, 228, 0.9);
+  padding: 24px;
+  box-shadow: 0 10px 32px rgba(16, 46, 38, 0.06);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.3s ease;
+  overflow: hidden;
+}
+
+.topicChapterCard:hover {
+  transform: translateY(-6px);
+  border-color: rgba(99, 201, 154, 0.6);
+  box-shadow: 0 22px 50px rgba(16, 46, 38, 0.12);
+}
+
+.topicChapterHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.topicChapterBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.topicChapterTitle {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.35;
+  margin: 0 0 14px;
+}
+
+.topicChapterIllustBox {
+  position: relative;
+  width: 100%;
+  height: 110px;
+  margin-bottom: 18px;
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(16, 46, 38, 0.02) 0%, rgba(16, 46, 38, 0.07) 100%);
+  border: 1px solid rgba(99, 201, 154, 0.16);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
+}
+
+.topicChapterCard:hover .topicChapterIllustBox {
+  transform: translateY(-2px);
+  border-color: rgba(99, 201, 154, 0.35);
+}
+
+.topicIllustSvg {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.topicChapterCard:hover .topicIllustSvg {
+  transform: scale(1.03);
+}
+
+.topicChapterMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.topicChapterProgress {
+  width: 100%;
+  height: 7px;
+  border-radius: var(--radius-pill);
+  background: rgba(16, 46, 38, 0.08);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.topicChapterFill {
+  height: 100%;
+  border-radius: var(--radius-pill);
+  transition: width 0.6s ease;
+}
+
+.topicListSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.topicItemBox {
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(16, 46, 38, 0.08);
+  padding: 12px 14px;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.topicItemBox:hover {
+  background: #ffffff;
+  border-color: rgba(99, 201, 154, 0.35);
+}
+
+.topicItemHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.topicItemTitle {
+  font-size: 0.86rem;
+  font-weight: 750;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.topicItemCount {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+
+.ptChipsWrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ptChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 10px;
+  font-size: 0.72rem;
+  font-weight: 650;
+  border: 1px solid rgba(16, 46, 38, 0.1);
+  background: rgba(16, 46, 38, 0.03);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ptChip:hover {
+  transform: translateY(-1px);
+  border-color: rgba(99, 201, 154, 0.5);
+  box-shadow: 0 3px 8px rgba(16, 46, 38, 0.08);
+  color: var(--text-primary);
+}
+
+.ptChipMastered {
+  background: rgba(216, 161, 67, 0.12);
+  border-color: rgba(216, 161, 67, 0.35);
+  color: #92400e;
+}
+
+.ptChipLearning {
+  background: rgba(59, 185, 176, 0.12);
+  border-color: rgba(59, 185, 176, 0.35);
+  color: #0f766e;
+}
+
+.ptChipReview {
+  background: rgba(222, 125, 107, 0.14);
+  border-color: rgba(222, 125, 107, 0.38);
+  color: #991b1b;
+}
+
+.ptChipNotStarted {
+  background: rgba(156, 163, 175, 0.1);
+  border-color: rgba(156, 163, 175, 0.25);
+  color: var(--text-tertiary);
+}
+
+/* ==========================================================================
+   Luminous Cosmic Odyssey â€” Bright, Creative, Ultra-Smooth Knowledge Nexus
+   ========================================================================== */
+
+.luminousCosmicCanvas {
+  position: relative;
+  width: 100%;
+  border-radius: 36px;
+  padding: clamp(24px, 3.5vw, 44px);
+  background:
+    radial-gradient(circle at 12% 15%, rgba(16, 185, 129, 0.14) 0%, transparent 45%),
+    radial-gradient(circle at 88% 22%, rgba(2, 132, 199, 0.12) 0%, transparent 40%),
+    radial-gradient(circle at 50% 88%, rgba(124, 58, 237, 0.08) 0%, transparent 50%),
+    linear-gradient(175deg, #ffffff 0%, #f6faf8 50%, #f0f6f3 100%);
+  border: 1.5px solid rgba(220, 235, 228, 0.95);
+  box-shadow: 0 20px 60px rgba(16, 46, 38, 0.06), inset 0 1px 1px rgba(255, 255, 255, 1);
+  overflow: hidden;
+  margin-top: 14px;
+}
+
+.cosmicNavWrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 2;
+}
+
+.cosmicNavPills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 2px 8px;
+  max-width: 100%;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(99, 201, 154, 0.3) transparent;
+}
+
+.cosmicNavBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  font-size: 0.82rem;
+  font-weight: 750;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1.5px solid rgba(220, 235, 228, 0.9);
+  color: #173f34;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+  box-shadow: 0 4px 14px rgba(16, 46, 38, 0.04);
+}
+
+.cosmicNavBtn:hover {
+  transform: translateY(-2px);
+  border-color: rgba(99, 201, 154, 0.6);
+  box-shadow: 0 8px 20px rgba(16, 46, 38, 0.08);
+}
+
+.cosmicNavBtnActive {
+  background: linear-gradient(135deg, #102e26 0%, #1b5344 100%);
+  color: #ffffff !important;
+  border-color: #102e26;
+  box-shadow: 0 8px 24px rgba(16, 46, 38, 0.25);
+}
+
+.constellationJourneyGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 26px;
+  position: relative;
+  z-index: 1;
+}
+
+.constellationIslandCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1.5px solid rgba(220, 235, 228, 0.9);
+  padding: 26px;
+  box-shadow: 0 12px 36px rgba(16, 46, 38, 0.06);
+  transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.38s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.3s ease;
+  cursor: pointer;
+  backdrop-filter: blur(14px);
+  overflow: hidden;
+}
+
+.constellationIslandCard:hover {
+  transform: translateY(-8px) translateZ(0);
+  border-color: rgba(99, 201, 154, 0.7);
+  box-shadow: 0 24px 60px rgba(16, 46, 38, 0.14);
+}
+
+.islandAuraGlow {
+  position: absolute;
+  top: -45px;
+  right: -45px;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  filter: blur(40px);
+  pointer-events: none;
+  opacity: 0.55;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+.constellationIslandCard:hover .islandAuraGlow {
+  transform: scale(1.35);
+  opacity: 0.9;
+}
+
+.islandIllustBox {
+  position: relative;
+  width: 100%;
+  height: 115px;
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(16, 46, 38, 0.02) 0%, rgba(16, 46, 38, 0.07) 100%);
+  border: 1px solid rgba(99, 201, 154, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  margin-bottom: 18px;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
+}
+
+.constellationIslandCard:hover .islandIllustBox {
+  transform: translateY(-2px);
+  border-color: rgba(99, 201, 154, 0.4);
+}
+
+.islandTitle {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #102e26;
+  line-height: 1.35;
+  margin: 0 0 12px;
+  transition: color 0.3s ease;
+}
+
+.constellationIslandCard:hover .islandTitle {
+  color: #047857;
+}
+
+.islandTopicPills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+
+.islandTopicPillItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #173f34;
+  background: rgba(16, 46, 38, 0.04);
+  padding: 3px 9px;
+  border-radius: 8px;
+  border: 1px solid rgba(16, 46, 38, 0.07);
+}
+
+.islandFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(16, 46, 38, 0.07);
+  font-size: 0.78rem;
+  font-weight: 750;
+  color: #047857;
+}
+
+.islandArrowBtn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(16, 46, 38, 0.05);
+  color: #047857;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background 0.25s ease, color 0.25s ease;
+}
+
+.constellationIslandCard:hover .islandArrowBtn {
+  transform: translateX(4px);
+  background: #10b981;
+  color: #ffffff;
+}
+
+/* Focused Chapter Station Styles */
+.stationContainer {
+  display: grid;
+  grid-template-columns: minmax(320px, 390px) 1fr;
+  gap: 30px;
+  align-items: start;
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 900px) {
+  .stationContainer {
+    grid-template-columns: 1fr;
+  }
+}
+
+.stationHeroCard {
+  position: relative;
+  border-radius: 32px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1.5px solid rgba(99, 201, 154, 0.35);
+  padding: 28px;
+  box-shadow: 0 16px 45px rgba(16, 46, 38, 0.08);
+  backdrop-filter: blur(16px);
+  overflow: hidden;
+}
+
+.stationHeroBackBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 750;
+  color: #047857;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  margin-bottom: 18px;
+  transition: all 0.2s ease;
+}
+
+.stationHeroBackBtn:hover {
+  transform: translateX(-3px);
+  background: rgba(16, 185, 129, 0.22);
+}
+
+.stationHeroIllustBox {
+  width: 100%;
+  height: 140px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(16, 46, 38, 0.02) 0%, rgba(16, 46, 38, 0.07) 100%);
+  border: 1.5px solid rgba(99, 201, 154, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  margin: 16px 0 20px;
+}
+
+.stationStatsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(16, 46, 38, 0.08);
+}
+
+.stationStatItem {
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(16, 46, 38, 0.03);
+  border: 1px solid rgba(16, 46, 38, 0.06);
+}
+
+.stationStatNum {
+  font-size: 1.15rem;
+  font-weight: 850;
+  color: #102e26;
+  margin: 0;
+}
+
+.stationStatLabel {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #52675d;
+  margin: 2px 0 0;
+}
+
+.stationSatellitesList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.satelliteTopicCard {
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1.5px solid rgba(220, 235, 228, 0.9);
+  padding: 22px 24px;
+  box-shadow: 0 8px 24px rgba(16, 46, 38, 0.05);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.satelliteTopicCard:hover {
+  transform: translateY(-2px);
+  border-color: rgba(99, 201, 154, 0.5);
+  box-shadow: 0 12px 30px rgba(16, 46, 38, 0.08);
+}
+
+.problemTypeStarChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  border-radius: 14px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  border: 1px solid rgba(16, 46, 38, 0.1);
+  background: #ffffff;
+  color: #1f2937;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 6px rgba(16, 46, 38, 0.04);
+}
+
+.problemTypeStarChip:hover {
+  transform: translateY(-2px);
+  border-color: rgba(99, 201, 154, 0.7);
+  box-shadow: 0 6px 16px rgba(16, 46, 38, 0.12);
+  color: #047857;
+}
+
+.ptStarMastered {
+  background: rgba(217, 119, 6, 0.1);
+  border-color: rgba(217, 119, 6, 0.35);
+  color: #92400e;
+}
+
+.ptStarLearning {
+  background: rgba(13, 148, 136, 0.1);
+  border-color: rgba(13, 148, 136, 0.35);
+  color: #0f766e;
+}
+
+.ptStarReview {
+  background: rgba(225, 29, 72, 0.1);
+  border-color: rgba(225, 29, 72, 0.35);
+  color: #991b1b;
+}
+
+.ptStarNotStarted {
+  background: rgba(156, 163, 175, 0.08);
+  border-color: rgba(156, 163, 175, 0.2);
+  color: #4b5563;
+}
+
+

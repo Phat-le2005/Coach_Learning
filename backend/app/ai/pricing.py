@@ -10,6 +10,7 @@ class ModelPricing:
 
 # Dedicated pricing configuration decoupled from business logic
 DEFAULT_MODEL_PRICING: dict[str, ModelPricing] = {
+    "gemini-3.6-flash": ModelPricing(input_cost_per_million=1.50, output_cost_per_million=7.50),
     "gemini-2.5-flash": ModelPricing(input_cost_per_million=0.075, output_cost_per_million=0.30),
     "gemini-2.5-standard": ModelPricing(input_cost_per_million=0.50, output_cost_per_million=2.00),
     "gemini-2.5-pro": ModelPricing(input_cost_per_million=1.25, output_cost_per_million=5.00),

@@ -1,4 +1,4 @@
-import { BookOpen, ClipboardCheck, House, Sparkles, Waypoints } from "lucide-react";
+import { BookOpen, Edit3, House, Orbit } from "lucide-react";
 import Link from "next/link";
 
 import styles from "../StudentHome.module.css";
@@ -10,7 +10,8 @@ export interface StudentBottomNavProps {
 
 export function StudentBottomNav({ currentRoute = "/student", subjectId }: StudentBottomNavProps) {
   const isKnowledge = currentRoute.startsWith("/student/knowledge");
-  const isHome = currentRoute === "/student" || (!isKnowledge && currentRoute.startsWith("/student"));
+  const isAttempts = currentRoute.startsWith("/student/attempts");
+  const isHome = currentRoute === "/student" || (!isKnowledge && !isAttempts && currentRoute.startsWith("/student"));
 
   const knowledgeHref = subjectId
     ? `/student/knowledge?subject_id=${encodeURIComponent(subjectId)}`
@@ -19,11 +20,10 @@ export function StudentBottomNav({ currentRoute = "/student", subjectId }: Stude
   const homeHref = subjectId ? `/student?subject_id=${encodeURIComponent(subjectId)}` : "/student";
 
   const items = [
-    { label: "Home", href: homeHref, icon: House, current: isHome },
-    { label: "Bản đồ", href: knowledgeHref, icon: Waypoints, current: isKnowledge },
+    { label: "Tổng quan", href: homeHref, icon: House, current: isHome },
+    { label: "Vũ trụ", href: knowledgeHref, icon: Orbit, current: isKnowledge },
+    { label: "Luyện tập", href: "/student/attempts", icon: Edit3, current: isAttempts },
     { label: "Nhiệm vụ", href: isHome ? "#learning-pulse" : `${homeHref}#learning-pulse`, icon: BookOpen, current: false },
-    { label: "Ưu tiên", href: isHome ? "#priority-path" : `${homeHref}#priority-path`, icon: ClipboardCheck, current: false },
-    { label: "Coach", href: isHome ? "#coach" : `${homeHref}#coach`, icon: Sparkles, current: false },
   ];
 
   return (

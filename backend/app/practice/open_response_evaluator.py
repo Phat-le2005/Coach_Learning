@@ -7,6 +7,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.ai.dependencies import create_ai_provider
+from app.ai.mock_provider import MockAIProvider
 from app.ai.gateway import AIGateway
 from app.ai.prompt_registry import PromptRegistry, default_prompt_registry
 from app.ai.types import AIMessage, AIRole, AITaskType
@@ -110,6 +111,13 @@ class AIOpenResponseEvaluationService:
                 f"Only OPEN_RESPONSE questions can be evaluated. Found: {question.question_type.value}",
             )
 
+        # Runtime grading must never silently use the test provider or a
+        # missing answer. Legacy mock-only unit tests are isolated to APP_ENV=test.
+        if self.gateway.settings.app_env != "test":
+            if isinstance(self.gateway.provider, MockAIProvider):
+                raise ApplicationError(503, "REAL_AI_PROVIDER_REQUIRED", "A real AI provider is required for grading.")
+            if not isinstance(question.correct_answer, str) or not question.correct_answer.strip():
+                raise ApplicationError(409, "GRADING_ANSWER_REQUIRED", "A reviewed answer is required before AI grading.")
         # 3. Retrieve curriculum metadata and construct strict whitelists
         concepts = self.session.scalars(
             select(Concept)
