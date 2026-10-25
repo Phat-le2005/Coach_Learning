@@ -1,11 +1,6 @@
 """Student-owned, read-only Gemini step review API."""
 
 from typing import Annotated, Literal
-from base64 import b64decode
-from binascii import Error as Base64Error
-from struct import unpack
-from io import BytesIO
-from PIL import Image, UnidentifiedImageError
 from uuid import UUID
 
 from fastapi import APIRouter, Depends
@@ -13,7 +8,6 @@ from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy.orm import Session
 
 from app.ai.dependencies import get_ai_gateway_singleton
-from app.ai.gemini_provider import GeminiProvider
 from app.ai.gateway import AIGateway
 from app.ai.rate_limiter import AIRateLimiter, get_ai_rate_limiter
 from app.auth.dependencies import get_auth_settings, require_role
@@ -80,72 +74,6 @@ def get_ai_review_availability(
             return AIReviewAvailabilityRead(available=False, reason_code=exc.code)
         raise
     return AIReviewAvailabilityRead(available=True)
-
-
-class VariationTableOcrRequest(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-    image_base64: str = Field(min_length=100, max_length=2_800_000)
-
-
-class VariationTableDraft(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-    recognized: bool
-    x_row: str = Field(max_length=400)
-    derivative_row: str = Field(max_length=400)
-    function_row: str = Field(max_length=400)
-    uncertainties: list[str] = Field(max_length=12)
-
-
-def _decode_ink_png(value: str) -> bytes:
-    try:
-        image = b64decode(value, validate=True)
-    except (ValueError, Base64Error) as exc:
-        raise ApplicationError(422, "INVALID_INK_IMAGE", "The ink image must be base64 PNG.") from exc
-    if len(image) > 2_000_000 or len(image) < 33 or image[:8] != b"\x89PNG\r\n\x1a\n" or image[12:16] != b"IHDR":
-        raise ApplicationError(422, "INVALID_INK_IMAGE", "A PNG smaller than 2 MB is required.")
-    width, height = unpack(">II", image[16:24])
-    if not (16 <= width <= 4096 and 16 <= height <= 4096 and width * height <= 4_000_000):
-        raise ApplicationError(422, "INVALID_INK_IMAGE", "Invalid image dimensions.")
-    try:
-        with Image.open(BytesIO(image)) as png:
-            if png.format != "PNG" or png.size != (width, height):
-                raise ValueError("PNG dimensions do not match IHDR")
-            png.verify()
-    except (ValueError, OSError, UnidentifiedImageError) as exc:
-        raise ApplicationError(422, "INVALID_INK_IMAGE", "PNG image could not be verified.") from exc
-    return image
-
-
-@router.post("/attempts/{attempt_id}/variation-table-ocr", response_model=VariationTableDraft)
-async def recognize_variation_table(
-    attempt_id: UUID,
-    data: VariationTableOcrRequest,
-    current_user: Annotated[User, Depends(require_role(Role.STUDENT))],
-    session: Annotated[Session, Depends(get_db)],
-    settings: Annotated[Settings, Depends(get_auth_settings)],
-    limiter: Annotated[AIRateLimiter, Depends(get_ai_rate_limiter)],
-) -> VariationTableDraft:
-    attempt = MathSolutionService(session).get(current_user.id, attempt_id)
-    if attempt["status"] not in {"DRAFT", "IN_PROGRESS"}:
-        raise ApplicationError(409, "SOLUTION_NOT_EDITABLE", "This solution is already submitted.")
-    image = _decode_ink_png(data.image_base64)
-    if settings.ai_provider.lower().strip() != "gemini":
-        raise ApplicationError(503, "REAL_AI_PROVIDER_REQUIRED", "Gemini must be configured for table recognition.")
-    limiter.check_rate_limit(
-        current_user.id, minute_limit=settings.ai_rate_limit_per_minute,
-        daily_limit=settings.ai_daily_requests_limit_per_student,
-    )
-    provider = get_ai_gateway_singleton(settings).provider
-    if not isinstance(provider, GeminiProvider):
-        raise ApplicationError(503, "REAL_AI_PROVIDER_REQUIRED", "Gemini must be configured for table recognition.")
-    return await provider.generate_image_structured(
-        "Transcribe ONLY the visible handwritten variation/sign table. Preserve left-to-right column order. "
-        "x_row lists x boundaries, derivative_row lists y' signs and zeros, function_row lists y values and arrows. "
-        "Do not solve the math, infer missing values, or use the problem statement. Use ? for unreadable marks. "
-        "If the image is not a variation/sign table, set recognized=false and leave rows empty. "
-        "List uncertain symbols in uncertainties. This is OCR assistance, not grading.",
-        image, VariationTableDraft, settings.ai_model_fast,
-    )
 
 
 @router.post("/attempts/{attempt_id}/ai-review", response_model=AIReviewRead)

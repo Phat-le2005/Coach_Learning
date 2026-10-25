@@ -15,6 +15,7 @@ import {
   ZoomOut,
   RotateCcw,
   Sparkles,
+  Table2,
   Loader2,
 } from "lucide-react";
 import type { DrawingTool, PaperGrid } from "../types";
@@ -46,8 +47,10 @@ interface WorkspaceToolbarProps {
   onZoomOut: () => void;
   onResetZoom: () => void;
   onTriggerOCR?: () => void;
+  onOpenVariationTable?: () => void;
   isRecognizingOCR?: boolean;
   strokeCount?: number;
+  isReadOnly?: boolean;
 }
 
 export function WorkspaceToolbar({
@@ -71,8 +74,10 @@ export function WorkspaceToolbar({
   onZoomOut,
   onResetZoom,
   onTriggerOCR,
+  onOpenVariationTable,
   isRecognizingOCR = false,
   strokeCount = 0,
+  isReadOnly = false,
 }: WorkspaceToolbarProps) {
   return (
     <div className={styles.toolbar} role="toolbar" aria-label="Thanh công cụ vẽ">
@@ -229,6 +234,7 @@ export function WorkspaceToolbar({
           type="button"
           className={`${styles.iconButton} ${styles.dangerButton}`}
           onClick={onClearPage}
+          disabled={isReadOnly}
           title="Xóa trắng trang hiện tại"
         >
           <Trash2 size={17} />
@@ -266,6 +272,19 @@ export function WorkspaceToolbar({
           </div>
         </>
       )}
+
+      {onOpenVariationTable ? (
+        <>
+          <div className={styles.divider} />
+          <div className={styles.toolGroup}>
+            <button type="button" className={styles.ocrButton} onClick={onOpenVariationTable}
+              title={"Tạo bảng biến thiên bằng cách điền các ô"}>
+              <Table2 size={16} aria-hidden="true" />
+              <span>{"Bảng biến thiên"}</span>
+            </button>
+          </div>
+        </>
+      ) : null}
 
       <div className={styles.divider} />
 

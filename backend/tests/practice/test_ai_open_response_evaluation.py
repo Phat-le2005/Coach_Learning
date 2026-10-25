@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from fastapi.testclient import TestClient
 
 from app.ai.gateway import AIGateway
+from app.ai.dependencies import get_ai_gateway
 from app.ai.mock_provider import MockAIProvider
 from app.core.config import Settings
 from app.core.exceptions import ApplicationError
@@ -373,12 +374,18 @@ def test_ai_evaluate_attempt_api_authorized(
     practice_students: tuple[User, User],
     practice_bearer: any,
     practice_content: PracticeContent,
+    settings: Settings,
 ) -> None:
     student, _ = practice_students
     practice_service = PracticeService(db_session)
     attempt = _create_open_response_attempt(practice_service, student, practice_content)
 
     headers = practice_bearer(student)
+    # The API integration test must use a test gateway even when the developer
+    # has configured Gemini in backend/.env for manual local testing.
+    db_client.app.dependency_overrides[get_ai_gateway] = lambda: AIGateway(
+        provider=MockAIProvider(), settings=settings,
+    )
     response = db_client.post(
         f"/practice/attempts/{attempt.id}/ai-evaluate",
         headers=headers,

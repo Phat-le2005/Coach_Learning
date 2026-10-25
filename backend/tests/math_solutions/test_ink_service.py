@@ -8,6 +8,7 @@ from app.math_ink.prune_operations import prune_expired_operations
 from app.math_ink.schemas import InkPageWrite, InkStroke, InkPoint
 from app.math_ink.service import MathInkService
 from app.math_solutions.service import MathSolutionService
+from app.math_solutions.schemas import SolutionStepDraft
 from app.questions.models import Question, QuestionStatus, QuestionType
 from app.practice.models import PracticeSession, PracticeSessionStatus, PracticeSessionType
 from app.students.models import StudentProfile
@@ -73,4 +74,22 @@ def test_ink_save_replay_stale_and_ownership(db_session):
     with pytest.raises(ApplicationError) as err:
         ink.save_page(owner.id, aid, 0, payload)
     assert err.value.code == "INK_REVISION_CONFLICT"
+
+    # Quarantining a source preserves the student's existing work for reading
+    # while preventing additional ink or assessed steps.
+    question.status = QuestionStatus.REVIEW
+    db_session.commit()
+    solution = MathSolutionService(db_session)
+    assert solution.get_attempt_problem(owner.id, aid).is_read_only is True
+    assert len(ink.get_page(owner.id, aid, 0).strokes) == 1
+    with pytest.raises(ApplicationError) as err:
+        ink.save_page(owner.id, aid, 0, payload.model_copy(update={
+            "expected_document_revision": 1, "client_action_id": uuid4(),
+        }))
+    assert err.value.code == "QUESTION_REVIEW_REQUIRED"
+    with pytest.raises(ApplicationError) as err:
+        solution.add_step(owner.id, aid, expected_attempt_revision=1,
+                          client_action_id=uuid4(),
+                          draft=SolutionStepDraft(step_type="EXPLANATION", content_latex="x=1"))
+    assert err.value.code == "QUESTION_REVIEW_REQUIRED"
 

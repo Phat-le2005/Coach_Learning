@@ -2,7 +2,7 @@
 
 from datetime import datetime
 from enum import StrEnum
-from typing import Any
+from typing import Any, Literal
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
@@ -51,11 +51,49 @@ class SolutionAttemptStatus(StrEnum):
     ABANDONED = "ABANDONED"
 
 
+class VariationTablePoint(BaseModel):
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+    x: str = Field(min_length=1, max_length=80)
+    derivative: Literal["", "0", "undefined", "?"] = ""
+    y: str = Field(default="", max_length=80)
+
+
+class VariationTableInterval(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    sign: Literal["+", "-", "0", "?"]
+    trend: Literal["UP", "DOWN", "FLAT", "UNKNOWN"]
+
+
+class VariationTablePayload(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    version: Literal[1]
+    points: list[VariationTablePoint] = Field(min_length=2, max_length=12)
+    intervals: list[VariationTableInterval] = Field(min_length=1, max_length=11)
+
+    @model_validator(mode="after")
+    def validate_columns(self) -> "VariationTablePayload":
+        if len(self.intervals) != len(self.points) - 1:
+            raise ValueError("A variation table needs one interval between adjacent x points.")
+        if len({point.x for point in self.points}) != len(self.points):
+            raise ValueError("x boundaries must be distinct.")
+        expected = {"+": "UP", "-": "DOWN", "0": "FLAT", "?": "UNKNOWN"}
+        for interval in self.intervals:
+            if interval.trend != expected[interval.sign]:
+                raise ValueError("The derivative sign conflicts with the drawn variation.")
+        return self
+
+
 class MathArtifactDraft(BaseModel):
     model_config = ConfigDict(extra="forbid", hide_input_in_errors=True)
 
     artifact_type: ArtifactKind
     payload: dict[str, Any]
+
+    @model_validator(mode="after")
+    def validate_variation_table(self) -> "MathArtifactDraft":
+        if self.artifact_type == ArtifactKind.VARIATION_TABLE:
+            self.payload = VariationTablePayload.model_validate(self.payload).model_dump(mode="json")
+        return self
 
 
 class SolutionStepDraft(BaseModel):
@@ -70,6 +108,8 @@ class SolutionStepDraft(BaseModel):
 
     @model_validator(mode="after")
     def require_content(self) -> "SolutionStepDraft":
+        if self.artifact and self.artifact.artifact_type == ArtifactKind.VARIATION_TABLE and self.step_type != StepKind.VARIATION_TABLE:
+            raise ValueError("A variation table artifact requires a variation table step.")
         if not (
             (self.content_latex or "").strip()
             or (self.explanation_text or "").strip()

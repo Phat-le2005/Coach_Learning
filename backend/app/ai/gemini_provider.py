@@ -1,7 +1,6 @@
 """Gemini REST provider. Keys stay server-side; provider failures never synthesize grades."""
 
 from collections.abc import AsyncIterator
-from base64 import b64encode
 import json
 import re
 from typing import TypeVar
@@ -32,7 +31,7 @@ class GeminiProvider(AIProvider):
 
     async def _request(
         self, messages: list[AIMessage], model: str, *, temperature: float,
-        timeout: float, json_mode: bool = False, image_bytes: bytes | None = None,
+        timeout: float, json_mode: bool = False,
     ) -> str:
         if not _MODEL_ID.fullmatch(model):
             raise AIConfigurationError("Invalid Gemini model identifier.")
@@ -43,8 +42,6 @@ class GeminiProvider(AIProvider):
         ]
         if not contents:
             raise AIConfigurationError("Gemini request has no user content.")
-        if image_bytes is not None:
-            contents[-1]["parts"].append({"inlineData": {"mimeType": "image/png", "data": b64encode(image_bytes).decode("ascii")}})
         body: dict[str, object] = {
             "contents": contents,
             "generationConfig": {"temperature": temperature},
@@ -100,21 +97,6 @@ class GeminiProvider(AIProvider):
             return schema.model_validate_json(raw)
         except ValueError as exc:
             raise AIOutputValidationError("Gemini output failed the required schema; no grade was recorded.") from exc
-
-    async def generate_image_structured(
-        self, prompt: str, image_bytes: bytes, schema: type[T], model: str,
-        *, timeout: float = 45.0,
-    ) -> T:
-        """Transcribe one PNG; the caller must treat output as an unverified suggestion."""
-        schema_text = json.dumps(schema.model_json_schema(), separators=(",", ":"))
-        raw = await self._request(
-            [AIMessage(role="user", content=f"{prompt}\nReturn JSON matching: {schema_text}")],
-            model, temperature=0.0, timeout=timeout, json_mode=True, image_bytes=image_bytes,
-        )
-        try:
-            return schema.model_validate_json(raw)
-        except ValueError as exc:
-            raise AIOutputValidationError("Gemini image transcription did not match the expected schema.") from exc
 
     async def stream(
         self, messages: list[AIMessage], model: str, *, temperature: float = 0.7,

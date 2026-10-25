@@ -9,6 +9,7 @@ export function mathWorkspaceProxyPath(parts: readonly string[], method: string)
     (method === "GET" && /^ink\/pages\/(?:[0-9]|[12][0-9])$/.test(tail)) ||
     (method === "PUT" && /^ink\/pages\/(?:[0-9]|[12][0-9])$/.test(tail)) ||
     (method === "POST" && ["ocr/recognize", "steps", "submit"].includes(tail)) ||
+    (method === "PATCH" && parts.length === 3 && parts[1] === "steps" && UUID.test(parts[2] ?? "")) ||
     (method === "POST" && parts.length === 4 && parts[1] === "steps"
       && UUID.test(parts[2] ?? "") && parts[3] === "delete");
   return allowed ? `/api/v2/math-solutions/attempts/${parts.join("/")}` : null;

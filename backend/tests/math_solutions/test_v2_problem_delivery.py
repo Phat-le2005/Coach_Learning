@@ -397,6 +397,63 @@ def test_practice_next_problem_delivers_canonical_question(
         assert "is_correct" not in opt
 
 
+def test_practice_next_problem_skips_broken_pdf_text_without_deleting_question(
+    db_client: TestClient, db_session: Session, delivery_domain: DeliveryDomain, auth_headers
+) -> None:
+    source = delivery_domain.canonical_question
+    source.content = "Trích xuất lỗi\n1\n2\nx\ny\n\n=\n3\n4\n5\n6"
+    clean = Question(
+        subject_id=source.subject_id,
+        content="Câu hỏi đã có nội dung hiển thị rõ ràng.",
+        question_type=QuestionType.MULTIPLE_CHOICE,
+        difficulty=0.5,
+        correct_answer="A",
+        source_type="TEST",
+        exam_weight=1.0,
+        status=QuestionStatus.APPROVED,
+        created_by=delivery_domain.teacher.id,
+        concept_links=[QuestionConcept(concept_id=source.concept_links[0].concept_id, weight=1.0)],
+        learning_outcome_links=[QuestionLearningOutcome(learning_outcome_id=source.learning_outcome_links[0].learning_outcome_id)],
+        problem_type_links=[QuestionProblemType(problem_type_id=source.problem_type_links[0].problem_type_id, weight=1.0)],
+    )
+    db_session.add(clean)
+    db_session.commit()
+
+    headers = auth_headers(delivery_domain.student_a)
+    url = f"/api/v2/math-solutions/practice-sessions/{delivery_domain.practice_session.id}/next-problem"
+    response = db_client.get(url, headers=headers)
+    assert response.status_code == 200
+    assert response.json()["question_id"] == str(clean.id)
+    assert db_session.get(Question, source.id).status == QuestionStatus.APPROVED
+
+    manual_create = db_client.post(
+        "/api/v2/math-solutions/attempts",
+        json={
+            "source_kind": "CANONICAL",
+            "context_type": "SELF_PRACTICE",
+            "mode": "INDEPENDENT_SOLUTION",
+            "create_idempotency_key": "broken-source-direct-create",
+            "question_id": str(source.id),
+            "practice_session_id": str(delivery_domain.practice_session.id),
+        },
+        headers=headers,
+    )
+    assert manual_create.status_code == 422
+    assert manual_create.json()["error"]["code"] == "QUESTION_PRESENTATION_REVIEW_REQUIRED"
+
+
+def test_practice_next_problem_reports_when_every_question_needs_source_review(
+    db_client: TestClient, db_session: Session, delivery_domain: DeliveryDomain, auth_headers
+) -> None:
+    delivery_domain.canonical_question.content += "\n"
+    db_session.commit()
+    headers = auth_headers(delivery_domain.student_a)
+    url = f"/api/v2/math-solutions/practice-sessions/{delivery_domain.practice_session.id}/next-problem"
+    response = db_client.get(url, headers=headers)
+    assert response.status_code == 404
+    assert response.json()["error"]["code"] == "NO_PRESENTABLE_QUESTIONS"
+
+
 def test_practice_next_problem_excludes_attempted_and_returns_404_when_exhausted(
     db_client: TestClient, delivery_domain: DeliveryDomain, auth_headers
 ) -> None:

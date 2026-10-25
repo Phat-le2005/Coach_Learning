@@ -27,7 +27,8 @@ import { ProblemPane } from "./components/ProblemPane";
 import { MathCanvas } from "./components/MathCanvas";
 import { SyncStatusBadge } from "./components/SyncStatusBadge";
 import { PageOcrReviewModal } from "./components/PageOcrReviewModal";
-import type { AIReviewRead, AIReviewAvailabilityRead, StepKind } from "@/lib/api/contracts";
+import { VariationTableModal } from "./components/VariationTableModal";
+import type { AIReviewRead, AIReviewAvailabilityRead, StepKind, VariationTablePayload } from "@/lib/api/contracts";
 import styles from "./MathWorkspace.module.css";
 
 interface PageMemory {
@@ -102,6 +103,7 @@ export function MathWorkspace({
     pageIndex: number; regions: PageOcrRegion[]; pageStrokes: InkStroke[];
   } | null>(null);
   const [ocrError, setOcrError] = useState<string | null>(null);
+  const [variationTableEditor, setVariationTableEditor] = useState<{ stepId?: string; initial?: VariationTablePayload } | null>(null);
 
   const [aiReview, setAIReview] = useState<AIReviewRead | null>(null);
   const [aiReviewAvailability, setAIReviewAvailability] = useState<AIReviewAvailabilityRead | null>(null);
@@ -422,6 +424,27 @@ export function MathWorkspace({
     },
     [attempt?.current_revision, apiClient, accessToken, attemptId],
   );
+
+  const handleSaveVariationTable = useCallback(async (payload: VariationTablePayload, actionId: string) => {
+    if (!attempt || !["DRAFT", "IN_PROGRESS"].includes(attempt.status)) {
+      throw new Error("Bài giải đã nộp nên không thể sửa bảng.");
+    }
+    if (pendingDeleteRef.current) {
+      throw new Error("Hãy hoàn tất thao tác xóa bước trước khi lưu bảng.");
+    }
+    const mutation = {
+      expected_attempt_revision: attempt.current_revision,
+      client_action_id: actionId,
+      step_type: "VARIATION_TABLE" as const,
+      content_latex: null,
+      explanation_text: null,
+      artifact: { artifact_type: "VARIATION_TABLE", payload },
+    };
+    const updated = variationTableEditor?.stepId
+      ? await apiClient.updateMathStep(accessToken, attemptId, variationTableEditor.stepId, mutation)
+      : await apiClient.createMathStep(accessToken, attemptId, mutation);
+    setAttempt(updated);
+  }, [attempt, variationTableEditor, apiClient, accessToken, attemptId]);
 
   const handleDeleteStep = useCallback(async (stepId: string) => {
     if (!attempt || !["DRAFT", "IN_PROGRESS"].includes(attempt.status)) {
@@ -823,7 +846,9 @@ export function MathWorkspace({
   // 7. Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement
+        || e.target instanceof HTMLSelectElement
+        || (e.target instanceof HTMLElement && e.target.closest('[role="dialog"]'))) {
         return;
       }
 
@@ -878,6 +903,7 @@ export function MathWorkspace({
           onAddPage={handleAddPage}
           onDeleteCurrentPage={handleDeleteCurrentPage}
           canDeleteCurrentPage={canDeleteCurrentPage}
+          isReadOnly={problem?.is_read_only}
         />
       </header>
 
@@ -893,18 +919,21 @@ export function MathWorkspace({
         onSelectHighlighterWidth={setHighlighterWidth}
         paperGrid={paperGrid}
         onSelectPaperGrid={setPaperGrid}
-        canUndo={currentPageMemory.past.length > 0}
+        canUndo={!problem?.is_read_only && currentPageMemory.past.length > 0}
         onUndo={handleUndo}
-        canRedo={currentPageMemory.future.length > 0}
+        canRedo={!problem?.is_read_only && currentPageMemory.future.length > 0}
         onRedo={handleRedo}
         onClearPage={handleClearPage}
         zoomLevel={zoomLevel}
         onZoomIn={() => setZoomLevel((z) => Math.min(2.0, z + 0.1))}
         onZoomOut={() => setZoomLevel((z) => Math.max(0.6, z - 0.1))}
         onResetZoom={() => setZoomLevel(1.0)}
-        onTriggerOCR={attempt?.status === "SUBMITTED" ? undefined : handleTriggerOCR}
+        onTriggerOCR={attempt?.status === "SUBMITTED" || problem?.is_read_only ? undefined : handleTriggerOCR}
+        onOpenVariationTable={attempt && ["DRAFT", "IN_PROGRESS"].includes(attempt.status) && !pageOcrReview && !problem?.is_read_only
+          ? () => setVariationTableEditor({}) : undefined}
         isRecognizingOCR={isRecognizingOCR}
         strokeCount={getOcrPenStrokes(currentPageMemory.strokes).length}
+        isReadOnly={problem?.is_read_only}
       />
 
       {ocrError && !pageOcrReview ? (
@@ -925,6 +954,7 @@ export function MathWorkspace({
           isCollapsed={isProblemPaneCollapsed}
           onToggleCollapse={() => setIsProblemPaneCollapsed((c) => !c)}
           onDeleteStep={handleDeleteStep}
+          onEditVariationTable={(stepId, initial) => setVariationTableEditor({ stepId, initial })}
           onSubmitSolution={handleSubmitSolution}
           onAIReview={handleAIReview}
           aiReview={aiReview}
@@ -948,14 +978,18 @@ export function MathWorkspace({
             highlighterWidth={highlighterWidth}
             paperGrid={paperGrid}
             zoomLevel={zoomLevel}
-            isReadOnly={attempt?.status === "SUBMITTED"}
+            isReadOnly={attempt?.status === "SUBMITTED" || problem?.is_read_only}
           />
         </section>
       </main>
 
+      {variationTableEditor ? (
+        <VariationTableModal initial={variationTableEditor.initial} onSave={handleSaveVariationTable}
+          onClose={() => setVariationTableEditor(null)} />
+      ) : null}
+
       {pageOcrReview ? (
         <PageOcrReviewModal
-          attemptId={attemptId}
           pageIndex={pageOcrReview.pageIndex}
           regions={pageOcrReview.regions}
           pageStrokes={pageOcrReview.pageStrokes}

@@ -12,6 +12,7 @@ interface PageNavigatorProps {
   onAddPage: () => void;
   onDeleteCurrentPage: () => void;
   canDeleteCurrentPage: boolean;
+  isReadOnly?: boolean;
 }
 
 export function PageNavigator({
@@ -21,6 +22,7 @@ export function PageNavigator({
   onAddPage,
   onDeleteCurrentPage,
   canDeleteCurrentPage,
+  isReadOnly = false,
 }: PageNavigatorProps) {
   const isFirstPage = currentPageIndex === 0;
   const isLastPage = currentPageIndex === pageCount - 1;
@@ -78,14 +80,14 @@ export function PageNavigator({
           type="button"
           className={styles.addPageButton}
           onClick={onAddPage}
-          disabled={!canAddPage}
+          disabled={!canAddPage || isReadOnly}
           title={canAddPage ? "Thêm trang mới (Tối đa 30 trang)" : "Đã đạt giới hạn tối đa 30 trang"}
         >
           <Plus size={16} />
           <span>Thêm trang</span>
         </button>
 
-        {canDeleteCurrentPage && (
+        {canDeleteCurrentPage && !isReadOnly && (
           <button
             type="button"
             className={styles.deletePageButton}

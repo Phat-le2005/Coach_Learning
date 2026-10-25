@@ -545,6 +545,63 @@
   white-space: pre-wrap;
 }
 
+.questionSourceWarning {
+  border: 1px solid #e8b98d;
+  border-radius: 12px;
+  background: #fffaf2;
+  color: #573c21;
+  padding: 1rem;
+  line-height: 1.6;
+}
+
+.questionSourceWarning h3 {
+  margin: 0 0 0.55rem;
+  font-size: 1rem;
+}
+
+.questionSourceWarning p {
+  margin: 0.5rem 0;
+}
+
+.questionSourceWarning code {
+  overflow-wrap: anywhere;
+}
+
+.questionSourceWarning a {
+  display: inline-block;
+  margin-top: 0.35rem;
+  color: #145c49;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.questionSourceWarning a:focus-visible,
+.questionRawDetails summary:focus-visible {
+  outline: 2px solid #145c49;
+  outline-offset: 3px;
+}
+
+.questionRawDetails {
+  margin-top: 0.9rem;
+  border-top: 1px solid #e8b98d;
+  padding-top: 0.65rem;
+}
+
+.questionRawDetails summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.questionRawDetails pre {
+  max-height: 14rem;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font: inherit;
+  font-size: 0.8rem;
+}
+
 .optionsSection {
   margin-top: 1.5rem;
   padding-top: 1.25rem;
@@ -1629,4 +1686,53 @@
   white-space: pre-wrap;
   font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
   line-height: 1.65;
+}
+
+/* Student-entered variation table: columns stay aligned and arrows are drawn from chosen signs. */
+.variationModal {
+  width: min(1100px, 100%);
+  max-height: min(92dvh, 900px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid #b9d1c0;
+  border-radius: 20px;
+  background: #fffefa;
+  color: #17392d;
+  box-shadow: 0 28px 70px rgba(13, 43, 32, 0.24);
+}
+.variationHeader, .variationFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+}
+.variationHeader {
+  background: linear-gradient(105deg, #eaf5e9, #fff9e9);
+  border-bottom: 1px solid #d9e7d9;
+}
+.variationHeader h2 { margin: 0; font-size: 1.25rem; }
+.variationHeader p { margin: .35rem 0 0; line-height: 1.5; }
+.variationBody { overflow: auto; padding: 1rem 1.25rem; }
+.variationBody .pageReviewNotice { margin: 0 0 1rem; }
+.variationFooter { border-top: 1px solid #d9e7d9; background: #fffefa; }
+.variationControls { display: flex; flex-wrap: wrap; gap: .65rem; margin-top: 1rem; }
+.variationTableScroll { width: 100%; max-width: 100%; overflow-x: auto; border: 1px solid #bdd7c6; border-radius: 12px; background: #fff; }
+.variationTable { border-collapse: collapse; width: 100%; min-width: max-content; color: #183b31; }
+.variationTable tr + tr { border-top: 1px solid #c9ddcf; }
+.variationTable th { position: sticky; left: 0; z-index: 1; min-width: 65px; padding: .6rem; background: #e9f3e9; border-right: 2px solid #91b69d; text-align: center; font-size: 1.05rem; }
+.variationTable td { height: 65px; padding: .35rem; text-align: center; vertical-align: middle; }
+.variationPointCell { min-width: 104px; border-right: 1px dashed #dae6db; font-weight: 650; }
+.variationIntervalCell { min-width: 112px; color: #26735c; }
+.variationTable input, .variationTable select { box-sizing: border-box; width: 100%; max-width: 105px; min-height: 38px; padding: .35rem .45rem; border: 1px solid #c4d6c9; border-radius: 7px; background: #fffefa; color: #183b31; font: inherit; text-align: center; }
+.variationTable input:focus-visible, .variationTable select:focus-visible, .variationModal button:focus-visible { outline: 3px solid #257c61; outline-offset: 2px; }
+.variationArrow { display: block; width: 100px; height: 50px; margin: auto; }
+.variationUnknown { color: #8a735b; font-size: 1.1rem; }
+.savedSteps .variationTable td { height: 50px; }
+@media (max-width: 600px) {
+  .variationHeader, .variationFooter { padding: .8rem; }
+  .variationHeader { align-items: flex-start; }
+  .variationBody { padding: .8rem; }
+  .variationModal { max-height: 96dvh; }
 }

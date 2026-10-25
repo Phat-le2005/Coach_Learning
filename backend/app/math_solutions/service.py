@@ -46,6 +46,7 @@ from app.practice.models import (
 )
 from app.practice.service import PracticeService
 from app.questions.models import Question, QuestionStatus, QuestionType
+from app.questions.presentation_quality import question_has_broken_math_extraction
 from app.students.models import StudentProfile
 from app.teacher_materials.models import TeacherMaterial, TeacherMaterialItem
 
@@ -291,6 +292,8 @@ class MathSolutionService:
                 raise _fail(422, "QUESTION_NOT_APPROVED", "The canonical question is not approved.")
             if context_type == "SELF_PRACTICE" and q.subject_id != practice.subject_id:
                 raise _fail(422, "SUBJECT_MISMATCH", "Question and practice subject must match.")
+            if context_type == "SELF_PRACTICE" and question_has_broken_math_extraction(q):
+                raise _fail(422, "QUESTION_PRESENTATION_REVIEW_REQUIRED", "Question text or options need source presentation review.")
             if asg is not None and q.subject_id != assignment.subject_id:
                 raise _fail(422, "SUBJECT_MISMATCH", "Question and assignment subject must match.")
         if rubric_id is not None:
@@ -360,6 +363,10 @@ class MathSolutionService:
                 return prior.response_snapshot
             if attempt.status not in ("DRAFT", "IN_PROGRESS"):
                 raise _fail(409, "SOLUTION_LOCKED", "Solution cannot be modified after submission.")
+            if attempt.source_kind == "CANONICAL" and attempt.question_id is not None:
+                source_question = self.session.get(Question, attempt.question_id)
+                if source_question is None or source_question.status != QuestionStatus.APPROVED:
+                    raise _fail(409, "QUESTION_REVIEW_REQUIRED", "Question needs source review; this solution is read-only.")
             if attempt.context_type == "CLASSROOM_ASSIGNMENT":
                 if attempt.assignment_id is not None:
                     assignment = self.session.get(Assignment, attempt.assignment_id)
@@ -592,13 +599,12 @@ class MathSolutionService:
             question = self.session.scalar(
                 select(Question)
                 .options(selectinload(Question.options))
-                .where(
-                    Question.id == attempt.question_id,
-                    Question.status == QuestionStatus.APPROVED,
-                )
+                .where(Question.id == attempt.question_id)
             )
             if question is None:
-                raise _fail(404, "QUESTION_NOT_FOUND", "Question not found or is not approved.")
+                raise _fail(404, "QUESTION_NOT_FOUND", "Question not found.")
+            if question.status != QuestionStatus.APPROVED:
+                is_read_only = True
             order_index = None
             if attempt.assignment_student_question_id is not None:
                 asq = self.session.get(AssignmentStudentQuestion, attempt.assignment_student_question_id)
@@ -719,8 +725,25 @@ class MathSolutionService:
                 )
             )
         )
-        question = self.session.scalar(stmt.limit(1))
+        question = None
+        skipped_broken = False
+        offset = 0
+        while True:
+            candidates = self.session.scalars(stmt.limit(100).offset(offset)).all()
+            if not candidates:
+                break
+            for candidate in candidates:
+                if question_has_broken_math_extraction(candidate):
+                    skipped_broken = True
+                    continue
+                question = candidate
+                break
+            if question is not None:
+                break
+            offset += len(candidates)
         if question is None:
+            if skipped_broken:
+                raise _fail(404, "NO_PRESENTABLE_QUESTIONS", "Available questions need source presentation review.")
             group_stmt = practice_svc._eligible_groups(practice_session, exclude_attempted=True)
             has_groups = self.session.scalar(select(group_stmt.subquery()).limit(1)) is not None
             if has_groups:

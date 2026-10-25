@@ -138,3 +138,25 @@ def test_uncertain_step_requires_teacher_review(monkeypatch):
     attempt, session, gateway = fixture_case(monkeypatch, response)
     review = asyncio.run(AnswerGroundedAIService(session, gateway).review_attempt(attempt.id))
     assert review.needs_teacher_review is True
+
+def test_confirmed_variation_artifact_is_included_as_student_evidence(monkeypatch):
+    response = {"steps": [
+        {"step_index": 1, "verdict": "NEEDS_REVIEW", "score": None, "confidence": 0.4,
+         "student_quote": "\"trend\":\"UP\"", "answer_quote": "3x^2", "feedback": "Review the table against the full answer."},
+        {"step_index": 2, "verdict": "VALID", "score": 1.0, "confidence": 0.9,
+         "student_quote": "(0,2)", "answer_quote": "(0,2)", "feedback": "Interval matches."},
+    ]}
+    attempt, session, gateway = fixture_case(monkeypatch, response)
+    session.steps[0].step_type = "VARIATION_TABLE"
+    session.revisions[0] = SimpleNamespace(content_latex=None, explanation_text=None,
+        artifact_snapshot={"artifact_type": "VARIATION_TABLE", "payload": {
+            "version": 1,
+            "points": [{"x": "left", "derivative": "", "y": ""},
+                       {"x": "right", "derivative": "", "y": ""}],
+            "intervals": [{"sign": "+", "trend": "UP"}],
+        }})
+    review = asyncio.run(AnswerGroundedAIService(session, gateway).review_attempt(attempt.id))
+    assert gateway.calls == 1
+    assert "Student-entered variation table" in gateway.messages[1].content
+    assert review.step_grades[0].verdict == "NEEDS_REVIEW"
+    assert review.needs_teacher_review

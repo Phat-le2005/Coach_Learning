@@ -10,8 +10,6 @@ import type { PageOcrRegion } from '../utils/page-ocr';
 import { recognizeHandwrittenMath } from '../utils/handwritten-ocr';
 import { toConfirmedLatex, insertCorrectionKey, CORRECTION_KEYS } from '../utils/ocr-correction';
 import { renderOcrLatexHtml } from '../utils/ocr-math-preview';
-import { renderInkRegionPng } from '../utils/table-ink-image';
-import { createBrowserMathApiClient } from '@/lib/api/browser-math';
 import { OcrInkPreview } from './OcrInkPreview';
 import { OcrMathPreview } from './OcrMathPreview';
 import styles from '../MathWorkspace.module.css';
@@ -31,7 +29,6 @@ interface ReviewRow {
 }
 
 interface PageOcrReviewModalProps {
-  attemptId: string;
   pageIndex: number;
   regions: PageOcrRegion[];
   pageStrokes: InkStroke[];
@@ -55,14 +52,12 @@ function newRow(region: PageOcrRegion): ReviewRow {
     touched: false, actionId: generateUuid(), error: null, retryOnly: false };
 }
 
-export function PageOcrReviewModal({ attemptId, pageIndex, regions, pageStrokes, onClose, onConfirmStep }: PageOcrReviewModalProps) {
+export function PageOcrReviewModal({ pageIndex, regions, pageStrokes, onClose, onConfirmStep }: PageOcrReviewModalProps) {
   const [rows, setRows] = useState<ReviewRow[]>(() => regions.map(newRow));
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [processing, setProcessing] = useState(true);
   const [saving, setSaving] = useState(false);
   const [cutPercent, setCutPercent] = useState(50);
-  const [tableEndIndex, setTableEndIndex] = useState(0);
-  const [tableBusy, setTableBusy] = useState(false);
   const [reviewError, setReviewError] = useState<string | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -145,51 +140,6 @@ export function PageOcrReviewModal({ attemptId, pageIndex, regions, pageStrokes,
     }
   };
 
-  const recognizeTable = async () => {
-    if (!row || saving || tableBusy || row.status === 'saved' || row.retryOnly) return;
-    const end = Math.max(selectedIndex, tableEndIndex);
-    const span = rows.slice(selectedIndex, end + 1);
-    if (span.some((item) => item.status === 'saved' || item.retryOnly)) {
-      setReviewError('Vùng bảng đã có bước được lưu. Hãy chọn các vùng chưa lưu.');
-      return;
-    }
-    setTableBusy(true);
-    setReviewError(null);
-    try {
-      let merged = rows.map((item) => item.region);
-      for (let index = selectedIndex; index < end; index += 1) {
-        merged = mergePageOcrRegions(merged, selectedIndex, pageStrokes);
-      }
-      const image = renderInkRegionPng(merged[selectedIndex].strokes);
-      const result = await createBrowserMathApiClient().recognizeMathVariationTable('', attemptId, image);
-      if (!result.recognized) {
-        setReviewError('Gemini chưa nhận ra bảng trong các vùng đã chọn. Em có thể chọn thêm vùng hoặc nhập bảng bằng tay.');
-        return;
-      }
-      const explanation = `Bảng biến thiên (bản đọc cần xác nhận):\nx: ${result.x_row || '?'}\ny′: ${result.derivative_row || '?'}\ny: ${result.function_row || '?'}`;
-      setRows((current) => [
-        ...current.slice(0, selectedIndex),
-        { ...current[selectedIndex], region: merged[selectedIndex], status: 'manual',
-          stepType: 'VARIATION_TABLE', latex: '', explanation, touched: true,
-          error: result.uncertainties.length
-            ? `Ký hiệu chưa rõ: ${result.uncertainties.join(', ')}. Hãy sửa trong lời giải thích trước khi xác nhận.`
-            : 'Đối chiếu từng cột, dấu và mũi tên với nét viết trước khi xác nhận.', },
-        ...current.slice(end + 1),
-      ]);
-      setTableEndIndex(selectedIndex);
-    } catch (error: unknown) {
-      setReviewError(error instanceof ApiResponseError && error.status === 401
-        ? 'Phiên đăng nhập hết hạn. Hãy đăng nhập lại rồi thử nhận dạng bảng.'
-        : error instanceof ApiResponseError && error.code === 'REAL_AI_PROVIDER_REQUIRED'
-          ? 'Máy chủ chưa cấu hình Gemini cho nhận dạng bảng.'
-          : error instanceof ApiResponseError && error.status === 429
-            ? 'Đã hết lượt Gemini. Hãy thử lại sau hoặc nhập bảng bằng tay.'
-            : error instanceof Error ? error.message : 'Không thể nhận dạng bảng. Hãy thử lại.');
-    } finally {
-      setTableBusy(false);
-    }
-  };
-
   const mergeNext = () => {
     if (!row || processing || saving || row.status === 'saved' || row.retryOnly
       || selectedIndex >= rows.length - 1 || rows[selectedIndex + 1].status === 'saved'
@@ -261,7 +211,7 @@ export function PageOcrReviewModal({ attemptId, pageIndex, regions, pageStrokes,
   };
 
   const closeReview = () => {
-    if (saving || tableBusy) return;
+    if (saving) return;
     if (rows.some((item) => (item.touched || item.retryOnly) && item.status !== 'saved' && item.status !== 'skipped')
       && !window.confirm('Các bước chưa lưu sẽ mất phần chỉnh sửa. Nét viết trên trang vẫn được giữ. Đóng phần trích xuất?')) return;
     if (activeRunRef.current) activeRunRef.current.cancelled = true;
@@ -298,10 +248,10 @@ export function PageOcrReviewModal({ attemptId, pageIndex, regions, pageStrokes,
             <h2 id='page-ocr-title'>Trích xuất trang {pageIndex + 1}</h2>
             <p>Hệ thống gợi ý các vùng nét viết. Em có thể gộp, tách, sửa và xác nhận từng bước.</p>
           </div>
-          <button type='button' className={styles.buttonSecondary} onClick={closeReview} disabled={saving || tableBusy}>Đóng</button>
+          <button type='button' className={styles.buttonSecondary} onClick={closeReview} disabled={saving}>Đóng</button>
         </header>
         <div className={styles.pageReviewNotice}>
-          OCR chỉ là gợi ý. Các vùng đã nhận diện không tự chấm bài. Đối chiếu với nét viết trước khi lưu từng bước.
+          OCR chỉ là gợi ý cho công thức viết tay, không tự chấm bài. Với bảng biến thiên, hãy dùng nút “Bảng biến thiên” trên thanh công cụ để điền vào ô và vẽ mũi tên tự động.
         </div>
         <div className={styles.pageReviewProgress} role='status' aria-live='polite'>
           <span>{savedCount}/{rows.length} vùng đã lưu thành bước giải</span>
@@ -318,9 +268,9 @@ export function PageOcrReviewModal({ attemptId, pageIndex, regions, pageStrokes,
                 type='button'
                 key={item.region.id}
                 className={index === selectedIndex ? styles.pageReviewRowActive : styles.pageReviewRow}
-                onClick={() => { setSelectedIndex(index); setTableEndIndex(index); setReviewError(null); setCutPercent(50); }}
+                onClick={() => { setSelectedIndex(index); setReviewError(null); setCutPercent(50); }}
                 aria-current={index === selectedIndex ? 'step' : undefined}
-                disabled={saving || tableBusy}
+                disabled={saving}
               >
                 <strong>Vùng {index + 1}</strong>
                 <span>{item.status === 'saved' ? 'Đã lưu' : item.status === 'skipped' ? 'Đã bỏ qua'
@@ -352,53 +302,38 @@ export function PageOcrReviewModal({ attemptId, pageIndex, regions, pageStrokes,
               {reviewError ? <p className={styles.ocrErrorBanner} role='alert'>{reviewError}</p> : null}
               <div className={styles.pageReviewActions}>
                 <button type='button' className={styles.buttonSecondary} onClick={() => void retryRecognition()}
-                  disabled={processing || saving || tableBusy || row.status === 'saved' || row.retryOnly}>Nhận diện lại vùng</button>
+                  disabled={processing || saving || row.status === 'saved' || row.retryOnly}>Nhận diện lại vùng</button>
                 <button type='button' className={styles.buttonSecondary} onClick={mergeNext}
-                  disabled={processing || saving || tableBusy || row.status === 'saved' || row.retryOnly || selectedIndex >= rows.length - 1
+                  disabled={processing || saving || row.status === 'saved' || row.retryOnly || selectedIndex >= rows.length - 1
                     || rows[selectedIndex + 1].status === 'saved' || rows[selectedIndex + 1].retryOnly}>Gộp với vùng sau</button>
-              </div>
-              <div className={styles.pageReviewSplit}>
-                <label htmlFor='table-end-region'>Bảng biến thiên trải từ vùng {selectedIndex + 1} đến vùng</label>
-                <select id='table-end-region' className={styles.formSelect} value={Math.max(selectedIndex, tableEndIndex)}
-                  onChange={(event) => setTableEndIndex(Number(event.target.value))}
-                  disabled={processing || saving || tableBusy || row.status === 'saved'}>
-                  {rows.slice(selectedIndex).map((_, offset) => <option key={selectedIndex + offset} value={selectedIndex + offset}>
-                    Vùng {selectedIndex + offset + 1}
-                  </option>)}
-                </select>
-                <button type='button' className={styles.buttonSecondary} onClick={() => void recognizeTable()}
-                  disabled={processing || saving || tableBusy || row.status === 'saved' || row.retryOnly}>
-                  {tableBusy ? 'Đang đọc bảng...' : 'Nhận dạng bảng bằng Gemini'}
-                </button>
-                <small>Chỉ gửi ảnh các vùng đã chọn. Gợi ý x, y′, y cần em đối chiếu và sửa trước khi lưu.</small>
               </div>
               <div className={styles.pageReviewSplit}>
                 <label htmlFor='page-ocr-cut'>Vạch tách vùng: {cutPercent}% chiều cao vùng</label>
                 <input id='page-ocr-cut' type='range' min='10' max='90' value={cutPercent}
                   onChange={(event) => setCutPercent(Number(event.target.value))}
-                  disabled={processing || saving || tableBusy || row.status === 'saved' || row.retryOnly || row.region.strokes.length < 2} />
+                  disabled={processing || saving || row.status === 'saved' || row.retryOnly || row.region.strokes.length < 2} />
                 <button type='button' className={styles.buttonSecondary} onClick={splitHere}
-                  disabled={processing || saving || tableBusy || row.status === 'saved' || row.retryOnly || row.region.strokes.length < 2}>Tách tại vạch</button>
+                  disabled={processing || saving || row.status === 'saved' || row.retryOnly || row.region.strokes.length < 2}>Tách tại vạch</button>
               </div>
               <label className={styles.formGroup}>
                 <span className={styles.formLabel}>Sửa công thức của em</span>
                 <textarea ref={textareaRef} className={styles.formInput} rows={3} value={row.latex}
                   onChange={(event) => changeRow({ latex: event.target.value, touched: true })}
                   placeholder='Ví dụ: y = x^2 + 2'
-                  disabled={saving || tableBusy || row.status === 'saved' || row.retryOnly} />
+                  disabled={saving || row.status === 'saved' || row.retryOnly} />
               </label>
               <div className={styles.ocrCorrectionKeys} role='group' aria-label='Bàn phím toán'>
                 {CORRECTION_KEYS.map((key) => (
                   <button type='button' key={key.label} className={styles.ocrCorrectionKey}
                     title={key.description} onClick={() => insertKey(key.insert)}
-                    disabled={saving || tableBusy || row.status === 'saved' || row.retryOnly}>{key.label}</button>
+                    disabled={saving || row.status === 'saved' || row.retryOnly}>{key.label}</button>
                 ))}
               </div>
               <label className={styles.formGroup}>
                 <span className={styles.formLabel}>Loại bước giải</span>
                 <select className={styles.formSelect} value={row.stepType}
                   onChange={(event) => changeRow({ stepType: event.target.value as StepKind, touched: true })}
-                  disabled={saving || tableBusy || row.status === 'saved' || row.retryOnly}>
+                  disabled={saving || row.status === 'saved' || row.retryOnly}>
                   {STEP_KINDS.map((kind) => <option key={kind} value={kind}>{STEP_LABELS[kind]}</option>)}
                 </select>
               </label>
@@ -407,16 +342,16 @@ export function PageOcrReviewModal({ attemptId, pageIndex, regions, pageStrokes,
                 <textarea className={styles.formInput} rows={2} value={row.explanation}
                   onChange={(event) => changeRow({ explanation: event.target.value, touched: true })}
                   placeholder='Ví dụ: Hàm số đồng biến trên khoảng...'
-                  disabled={saving || tableBusy || row.status === 'saved' || row.retryOnly} />
+                  disabled={saving || row.status === 'saved' || row.retryOnly} />
               </label>
               <div className={styles.pageReviewFooter}>
                 <button type='button' className={styles.buttonSecondary}
                   onClick={() => changeRow({ status: row.status === 'skipped' ? 'manual' : 'skipped' })}
-                  disabled={saving || processing || tableBusy || row.status === 'saved' || row.retryOnly}>
+                  disabled={saving || processing || row.status === 'saved' || row.retryOnly}>
                   {row.status === 'skipped' ? 'Xem lại vùng' : 'Bỏ qua vùng'}
                 </button>
                 <button type='button' className={styles.buttonPrimary} onClick={() => void saveStep()}
-                  disabled={saving || tableBusy || earlierUnreviewed || row.status === 'saved' || row.status === 'skipped'}>
+                  disabled={saving || earlierUnreviewed || row.status === 'saved' || row.status === 'skipped'}>
                   {saving ? 'Đang lưu...' : row.status === 'saved' ? 'Đã lưu' : row.retryOnly ? 'Lưu lại' : 'Xác nhận bước này'}
                 </button>
               </div>

@@ -1160,3 +1160,54 @@ def test_v2_workspace_never_leaks_correct_answers_or_rubrics(
             assert "explanation" not in data
             assert "rubric" not in data
             assert "criteria" not in data
+
+def test_student_can_create_and_correct_a_structured_variation_table(
+    db_client: TestClient, db_session: Session, v2_domain: V2Domain, auth_headers,
+) -> None:
+    headers = auth_headers(v2_domain.student)
+    created = db_client.post(
+        "/api/v2/math-solutions/attempts",
+        json=create_payload(v2_domain, key="structured-variation-table"), headers=headers,
+    )
+    assert created.status_code == 201
+    attempt = created.json()
+    url = f"/api/v2/math-solutions/attempts/{attempt['id']}"
+    payload = {
+        "version": 1,
+        "points": [
+            {"x": "left", "derivative": "", "y": ""},
+            {"x": "middle", "derivative": "0", "y": "peak"},
+            {"x": "right", "derivative": "", "y": ""},
+        ],
+        "intervals": [{"sign": "+", "trend": "UP"}, {"sign": "-", "trend": "DOWN"}],
+    }
+    step_request = mutation(attempt["attempt_revision_number"], step_type="VARIATION_TABLE",
+        content_latex=None, explanation_text=None,
+        artifact={"artifact_type": "VARIATION_TABLE", "payload": payload})
+    saved = db_client.post(f"{url}/steps", json=step_request, headers=headers)
+    assert saved.status_code == 201, saved.text
+    step = saved.json()["steps"][0]
+    assert step["artifact"] == {"artifact_type": "VARIATION_TABLE", "payload": payload}
+    assert step["content_latex"] is None
+    assert step["explanation_text"] is None
+
+    corrected = {**payload, "points": [dict(point) for point in payload["points"]]}
+    corrected["points"][1]["y"] = "corrected peak"
+    changed = db_client.patch(f"{url}/steps/{step['id']}",
+        json=mutation(saved.json()["attempt_revision_number"], step_type="VARIATION_TABLE",
+            content_latex=None, explanation_text=None,
+            artifact={"artifact_type": "VARIATION_TABLE", "payload": corrected}),
+        headers=headers)
+    assert changed.status_code == 200, changed.text
+    assert changed.json()["steps"][0]["artifact"]["payload"] == corrected
+    fetched = db_client.get(url, headers=headers)
+    assert fetched.status_code == 200
+    assert fetched.json()["steps"][0]["artifact"]["payload"] == corrected
+    outsider = db_client.patch(f"{url}/steps/{step['id']}",
+        json=mutation(changed.json()["attempt_revision_number"], step_type="VARIATION_TABLE",
+            artifact={"artifact_type": "VARIATION_TABLE", "payload": corrected}),
+        headers=auth_headers(v2_domain.outsider))
+    assert outsider.status_code in {403, 404}
+    assert db_session.scalar(select(func.count()).select_from(StepRevision).where(
+        StepRevision.step_id == UUID(step["id"]))) == 2
+    assert db_session.scalar(select(func.count()).select_from(StepEvaluation)) == 0

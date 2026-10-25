@@ -23,3 +23,12 @@ test("Math Workspace BFF permits only the owner-scoped routes needed by the canv
   assert.equal(mathWorkspaceProxyPath(["<attemptId>", "ink"], "GET"), null);
   assert.equal(mathWorkspaceProxyPath([id, "..", "auth"], "GET"), null);
 });
+
+test("student can patch only a UUID step through the Math Workspace BFF", () => {
+  const attempt = "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa";
+  const step = "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb";
+  assert.equal(mathWorkspaceProxyPath([attempt, "steps", step], "PATCH"),
+    `/api/v2/math-solutions/attempts/${attempt}/steps/${step}`);
+  assert.equal(mathWorkspaceProxyPath([attempt, "steps", "not-a-uuid"], "PATCH"), null);
+  assert.equal(mathWorkspaceProxyPath([attempt, "steps", step, "delete"], "PATCH"), null);
+});

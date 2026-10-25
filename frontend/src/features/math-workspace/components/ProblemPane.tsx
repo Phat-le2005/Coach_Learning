@@ -1,12 +1,17 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import { BookOpen, PanelLeftClose, PanelLeft, Trash2 } from "lucide-react";
 import type { ProblemRead, SolutionAttemptRead } from "../types";
-import type { AIReviewRead, AIReviewAvailabilityRead } from "@/lib/api/contracts";
+import type { AIReviewRead, AIReviewAvailabilityRead, SolutionStepRead, VariationTablePayload } from "@/lib/api/contracts";
+import { parseVariationTablePayload } from "@/lib/api/contracts";
 import { MathRenderer } from "@/components/ui/MathRenderer";
 import { ApiNetworkError, ApiResponseError } from "@/lib/api/client";
 import { OcrMathPreview } from "./OcrMathPreview";
+import { VariationTableGrid } from "./VariationTableModal";
+import { problemNeedsSourceReview } from "../utils/question-presentation";
+import { getSolutionSubmissionState } from "../utils/solution-submission";
 import styles from "../MathWorkspace.module.css";
 
 interface ProblemPaneProps {
@@ -15,6 +20,7 @@ interface ProblemPaneProps {
   isCollapsed: boolean;
   onToggleCollapse: () => void;
   onDeleteStep: (stepId: string) => Promise<void>;
+  onEditVariationTable: (stepId: string, payload: VariationTablePayload) => void;
   onSubmitSolution: () => Promise<void>;
   onAIReview: () => Promise<void>;
   aiReview: AIReviewRead | null;
@@ -24,12 +30,19 @@ interface ProblemPaneProps {
   isReviewing: boolean;
 }
 
+function variationPayload(step: SolutionStepRead): VariationTablePayload | null {
+  if (step.artifact?.artifact_type !== "VARIATION_TABLE") return null;
+  try { return parseVariationTablePayload(step.artifact.payload); }
+  catch { return null; }
+}
+
 export function ProblemPane({
   problem,
   attempt,
   isCollapsed,
   onToggleCollapse,
   onDeleteStep,
+  onEditVariationTable,
   onSubmitSolution,
   onAIReview,
   aiReview,
@@ -41,7 +54,9 @@ export function ProblemPane({
   const [confirmStepId, setConfirmStepId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
-  const canDelete = attempt?.status === "DRAFT" || attempt?.status === "IN_PROGRESS";
+  const needsSourceReview = problem ? problemNeedsSourceReview(problem.content, problem.options) : false;
+  const submission = getSolutionSubmissionState(problem, attempt, needsSourceReview);
+  const canDelete = submission.canEdit;
 
   const confirmDelete = async () => {
     if (!confirmStepId || isDeleting) return;
@@ -107,28 +122,51 @@ export function ProblemPane({
       <div className={styles.problemContentScroll}>
         {problem ? (
           <>
-            {/* Question Text */}
-            <div className={styles.problemBody}>
-              <div className={styles.problemContentText}>
-                <MathRenderer content={problem.content} />
-              </div>
-            </div>
-
-            {/* Options (if multiple choice) */}
-            {problem.options && problem.options.length > 0 && (
-              <div className={styles.optionsSection}>
-                <h3 className={styles.optionsTitle}>Các phương án lựa chọn:</h3>
-                <div className={styles.optionsList}>
-                  {problem.options.map((opt) => (
-                    <div key={opt.id} className={styles.optionCard}>
-                      <span className={styles.optionLabel}>{opt.label}</span>
-                      <div className={styles.optionContent}>
-                        <MathRenderer content={opt.content} />
-                      </div>
-                    </div>
+            {problem.is_read_only && attempt?.status !== "SUBMITTED" ? (
+              <section className={styles.questionSourceWarning} role="alert">
+                Câu hỏi này đang chờ kiểm tra nguồn. Bài làm cũ được giữ để xem lại; hiện không thể tiếp tục hoặc nộp bài này.
+              </section>
+            ) : null}
+            {needsSourceReview ? (
+              <section className={styles.questionSourceWarning} role="alert">
+                <h3>Đề bài cần kiểm tra lại bản gốc</h3>
+                <p>Ký hiệu toán trong bản trích xuất bị sai thứ tự hoặc thiếu nét. Hệ thống không thể ghép lại công thức và các đáp án một cách đáng tin cậy. Em hãy chọn bài khác; bài này cần được đối chiếu với nguồn trước khi sử dụng.</p>
+                <p>Mã câu hỏi: <code>{problem.id}</code></p>
+                <Link href="/student/attempts">Quay về danh sách bài làm</Link>
+                <details className={styles.questionRawDetails}>
+                  <summary>Xem văn bản trích xuất gốc để báo lỗi</summary>
+                  <pre>{problem.content}</pre>
+                  {problem.options.map((option) => (
+                    <pre key={option.id}>{option.label}. {option.content}</pre>
                   ))}
+                </details>
+              </section>
+            ) : (
+              <>
+                {/* Question Text */}
+                <div className={styles.problemBody}>
+                  <div className={styles.problemContentText}>
+                    <MathRenderer content={problem.content} />
+                  </div>
                 </div>
-              </div>
+
+                {/* Options (if multiple choice) */}
+                {problem.options && problem.options.length > 0 && (
+                  <div className={styles.optionsSection}>
+                    <h3 className={styles.optionsTitle}>Các phương án lựa chọn:</h3>
+                    <div className={styles.optionsList}>
+                      {problem.options.map((opt) => (
+                        <div key={opt.id} className={styles.optionCard}>
+                          <span className={styles.optionLabel}>{opt.label}</span>
+                          <div className={styles.optionContent}>
+                            <MathRenderer content={opt.content} />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </>
             )}
 
             {/* Attempt info footer */}
@@ -146,14 +184,45 @@ export function ProblemPane({
                 </div>
               </div>
             )}
+            {attempt && (submission.showSubmitButton || submission.submitted) ? (
+              <section className={styles.aiReviewPanel} aria-label="Nộp bài giải">
+                <h3>{submission.showSubmitButton ? "Hoàn tất bài giải" : "Trạng thái nộp bài"}</h3>
+                {submission.showSubmitButton ? (
+                  <>
+                    <p>
+                      {problem.question_type === "OPEN_RESPONSE"
+                        ? "Kiểm tra các bước OCR rồi nộp bài để nhận góp ý khi có đáp án tham chiếu đã duyệt."
+                        : "Nộp bài sẽ lưu và khóa các bước đã xác nhận. Bài giải nhiều bước của dạng này chưa được chấm tự động."}
+                    </p>
+                    {problem.question_type === "OPEN_RESPONSE" && aiReviewAvailability?.available === false ? (
+                      <p className={styles.aiReviewNotice}>Chưa có đáp án tham chiếu được duyệt. Em vẫn có thể nộp bài; phần nhận xét AI sẽ chờ đáp án.</p>
+                    ) : null}
+                    <button type="button" className={styles.aiReviewButton}
+                      onClick={() => void onSubmitSolution()}
+                      disabled={isSubmitting || !submission.canSubmit}>
+                      {isSubmitting ? "Đang nộp bài..." : "Nộp bài giải"}
+                    </button>
+                    {!attempt.steps?.length ? <p>Hãy xác nhận ít nhất một bước giải trước khi nộp.</p> : null}
+                  </>
+                ) : attempt.status === "SUBMITTED" ? (
+                  <p role="status">Bài giải đã được nộp và lưu trên máy chủ.</p>
+                ) : null}
+                {gradingError ? <p role="alert" className={styles.aiReviewError}>{gradingError}</p> : null}
+              </section>
+            ) : null}
             {attempt?.steps && attempt.steps.length > 0 ? (
               <section className={styles.savedSteps} aria-label="Các bước giải đã lưu">
                 <h3>Các bước giải đã xác nhận</h3>
                 <ol>
-                  {[...attempt.steps].sort((a, b) => a.step_index - b.step_index).map((step) => (
-                    <li key={step.id}>
+                  {[...attempt.steps].sort((a, b) => a.step_index - b.step_index).map((step) => {
+                    const table = variationPayload(step);
+                    return <li key={step.id}>
                       <div className={styles.savedStepHeader}>
                         <strong>Bước {step.step_index}</strong>
+                        {canDelete && table ? (
+                          <button type="button" className={styles.buttonSecondary}
+                            onClick={() => onEditVariationTable(step.id, table)}>Sửa bảng</button>
+                        ) : null}
                         {canDelete ? (
                           <button type="button" className={styles.deleteStepButton}
                             onClick={() => { setConfirmStepId(step.id); setDeleteError(null); }}
@@ -163,7 +232,8 @@ export function ProblemPane({
                           </button>
                         ) : null}
                       </div>
-                      {step.content_latex ? <OcrMathPreview latex={step.content_latex} /> : null}
+                      {table ? <VariationTableGrid value={table} />
+                        : step.content_latex ? <OcrMathPreview latex={step.content_latex} /> : null}
                       {step.explanation_text ? <p className={step.step_type === "VARIATION_TABLE" ? styles.variationTableStep : undefined}>{step.explanation_text}</p> : null}
                       {confirmStepId === step.id ? (
                         <div className={styles.deleteStepConfirm}>
@@ -180,53 +250,39 @@ export function ProblemPane({
                           </div>
                         </div>
                       ) : null}
-                    </li>
-                  ))}
+                    </li>;
+                  })}
                 </ol>
               </section>
             ) : null}
-            {attempt && problem.question_type === "OPEN_RESPONSE" ? (
+            {attempt?.status === "SUBMITTED" && problem.question_type === "OPEN_RESPONSE" && !needsSourceReview ? (
               <section className={styles.aiReviewPanel} aria-label="Nhận xét từng bước giải">
                 <h3>Đối chiếu lời giải với đáp án</h3>
-                {canDelete ? (
+                <p>AI chỉ gợi ý điểm từng bước. Bài thiếu đáp án sẽ chờ giáo viên xem.</p>
+                {aiReviewAvailability?.available === false ? (
+                  <p className={styles.aiReviewNotice}>Bài này chưa có đáp án tham chiếu đã duyệt. Bài làm đã nộp được giữ lại, nhưng chưa thể nhờ Gemini chấm từng bước. Giáo viên cần bổ sung đáp án trước.</p>
+                ) : aiReviewAvailability === null ? (
+                  <p className={styles.aiReviewNotice}>Chưa kiểm tra được đáp án tham chiếu. Hãy tải lại trang khi kết nối ổn định.</p>
+                ) : !aiReview ? (
+                  <button type="button" className={styles.aiReviewButton}
+                    onClick={() => void onAIReview()} disabled={isReviewing}>
+                    {isReviewing ? "Đang đối chiếu..." : "Nhận xét bằng Gemini"}
+                  </button>
+                ) : (
                   <>
-                    <p>Kiểm tra lại mọi bước OCR rồi nộp bài để nhận góp ý.</p>
-                    <button type="button" className={styles.aiReviewButton}
-                      onClick={() => void onSubmitSolution()}
-                      disabled={isSubmitting || !attempt.steps?.length}>
-                      {isSubmitting ? "Đang nộp bài..." : "Nộp bài giải"}
-                    </button>
+                    <p className={styles.aiReviewNotice}>Kết quả tham khảo, chưa phải điểm chính thức.</p>
+                    <ol className={styles.aiReviewList}>
+                      {aiReview.step_grades.map((grade) => (
+                        <li key={grade.step_index}>
+                          <strong>Bước {grade.step_index}: {grade.verdict === "VALID" ? "Hợp lý" : grade.verdict === "INVALID" ? "Cần sửa" : "Cần xem lại"}</strong>
+                          {grade.score !== null ? <span>Gợi ý: {Math.round(grade.score * 100)}%</span> : null}
+                          <p>{grade.feedback}</p>
+                        </li>
+                      ))}
+                    </ol>
+                    {aiReview.needs_teacher_review ? <p>Ít nhất một bước cần giáo viên xem lại.</p> : null}
                   </>
-                ) : attempt.status === "SUBMITTED" ? (
-                  <>
-                    <p>AI chỉ gợi ý điểm từng bước. Bài thiếu đáp án sẽ chờ giáo viên xem.</p>
-                    {aiReviewAvailability?.available === false ? (
-                      <p className={styles.aiReviewNotice}>Bài này chưa có đáp án tham chiếu đã duyệt. Bài làm đã nộp được giữ lại, nhưng chưa thể nhờ Gemini chấm từng bước. Giáo viên cần bổ sung đáp án trước.</p>
-                    ) : aiReviewAvailability === null ? (
-                      <p className={styles.aiReviewNotice}>Chưa kiểm tra được đáp án tham chiếu. Hãy tải lại trang khi kết nối ổn định.</p>
-                    ) : !aiReview ? (
-                      <button type="button" className={styles.aiReviewButton}
-                        onClick={() => void onAIReview()} disabled={isReviewing}>
-                        {isReviewing ? "Đang đối chiếu..." : "Nhận xét bằng Gemini"}
-                      </button>
-                    ) : (
-                      <>
-                        <p className={styles.aiReviewNotice}>Kết quả tham khảo, chưa phải điểm chính thức.</p>
-                        <ol className={styles.aiReviewList}>
-                          {aiReview.step_grades.map((grade) => (
-                            <li key={grade.step_index}>
-                              <strong>Bước {grade.step_index}: {grade.verdict === "VALID" ? "Hợp lý" : grade.verdict === "INVALID" ? "Cần sửa" : "Cần xem lại"}</strong>
-                              {grade.score !== null ? <span>Gợi ý: {Math.round(grade.score * 100)}%</span> : null}
-                              <p>{grade.feedback}</p>
-                            </li>
-                          ))}
-                        </ol>
-                        {aiReview.needs_teacher_review ? <p>Ít nhất một bước cần giáo viên xem lại.</p> : null}
-                      </>
-                    )}
-                  </>
-                ) : null}
-                {gradingError ? <p role="alert" className={styles.aiReviewError}>{gradingError}</p> : null}
+                )}
               </section>
             ) : null}
           </>

@@ -531,10 +531,64 @@ export interface AttemptMutationToken {
   client_action_id: string;
 }
 
+export interface VariationTablePoint {
+  x: string;
+  derivative: "" | "0" | "undefined" | "?";
+  y: string;
+}
+
+export interface VariationTableInterval {
+  sign: "+" | "-" | "0" | "?";
+  trend: "UP" | "DOWN" | "FLAT" | "UNKNOWN";
+}
+
+export interface VariationTablePayload {
+  version: 1;
+  points: VariationTablePoint[];
+  intervals: VariationTableInterval[];
+}
+
+export interface MathArtifactRead {
+  artifact_type: string;
+  payload: Record<string, unknown> | VariationTablePayload;
+}
+
+export function parseVariationTablePayload(value: unknown, path = "variation_table"): VariationTablePayload {
+  const source = record(value, path);
+  if (source.version !== 1) throw new ApiContractError("Unknown variation table version", `${path}.version`);
+  const points = array(source.points, `${path}.points`, (item, itemPath): VariationTablePoint => {
+    const point = record(item, itemPath);
+    return {
+      x: nonEmptyString(point.x, `${itemPath}.x`),
+      derivative: oneOf(point.derivative, `${itemPath}.derivative`, ["", "0", "undefined", "?"] as const),
+      y: string(point.y, `${itemPath}.y`),
+    };
+  });
+  const intervals = array(source.intervals, `${path}.intervals`, (item, itemPath): VariationTableInterval => {
+    const interval = record(item, itemPath);
+    return {
+      sign: oneOf(interval.sign, `${itemPath}.sign`, ["+", "-", "0", "?"] as const),
+      trend: oneOf(interval.trend, `${itemPath}.trend`, ["UP", "DOWN", "FLAT", "UNKNOWN"] as const),
+    };
+  });
+  if (points.length < 2 || points.length > 12 || intervals.length !== points.length - 1) {
+    throw new ApiContractError("Variation table columns do not align", path);
+  }
+  if (new Set(points.map((point) => point.x.trim())).size !== points.length) {
+    throw new ApiContractError("Variation table x boundaries must be distinct", path);
+  }
+  const expected = { "+": "UP", "-": "DOWN", "0": "FLAT", "?": "UNKNOWN" } as const;
+  if (intervals.some((interval) => interval.trend !== expected[interval.sign])) {
+    throw new ApiContractError("Variation table sign and trend conflict", path);
+  }
+  return { version: 1, points, intervals };
+}
+
 export interface StepMutationRequest extends AttemptMutationToken {
   step_type: StepKind;
   content_latex?: string | null;
   explanation_text?: string | null;
+  artifact?: MathArtifactRead | null;
 }
 
 export interface SolutionStepRead {
@@ -544,6 +598,7 @@ export interface SolutionStepRead {
   content_latex: string | null;
   explanation_text: string | null;
   step_revision_number: number;
+  artifact?: MathArtifactRead | null;
 }
 
 export interface SolutionAttemptRead {
@@ -567,25 +622,6 @@ export function parseAIReviewAvailabilityRead(value: unknown, path = "ai_review_
   return {
     available: boolean(source.available, `${path}.available`),
     reason_code: source.reason_code === null ? null : string(source.reason_code, `${path}.reason_code`),
-  };
-}
-
-export interface VariationTableDraft {
-  recognized: boolean;
-  x_row: string;
-  derivative_row: string;
-  function_row: string;
-  uncertainties: string[];
-}
-
-export function parseVariationTableDraft(value: unknown, path = "variation_table"): VariationTableDraft {
-  const source = record(value, path);
-  return {
-    recognized: boolean(source.recognized, `${path}.recognized`),
-    x_row: string(source.x_row, `${path}.x_row`),
-    derivative_row: string(source.derivative_row, `${path}.derivative_row`),
-    function_row: string(source.function_row, `${path}.function_row`),
-    uncertainties: array(source.uncertainties, `${path}.uncertainties`, string),
   };
 }
 
@@ -753,6 +789,11 @@ export function parseSolutionAttemptRead(value: unknown, path = "attempt"): Solu
         content_latex: step.content_latex === null ? null : string(step.content_latex, `${stepPath}.content_latex`),
         explanation_text: step.explanation_text === null ? null : string(step.explanation_text, `${stepPath}.explanation_text`),
         step_revision_number: integer(step.step_revision_number, `${stepPath}.step_revision_number`),
+        artifact: step.artifact === undefined || step.artifact === null ? null : (() => {
+          const artifact = record(step.artifact, `${stepPath}.artifact`);
+          return { artifact_type: string(artifact.artifact_type, `${stepPath}.artifact.artifact_type`),
+            payload: record(artifact.payload, `${stepPath}.artifact.payload`) };
+        })(),
       };
     }),
   };

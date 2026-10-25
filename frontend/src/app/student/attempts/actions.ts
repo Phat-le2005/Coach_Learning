@@ -38,6 +38,9 @@ export async function startWorkspaceAction(
       if (error.code === "NO_QUESTIONS_AVAILABLE" || error.code === "NO_AVAILABLE_QUESTION") {
         return { error: "Môn này chưa có câu hỏi đã duyệt phù hợp để mở trang làm bài." };
       }
+      if (error.code === "NO_PRESENTABLE_QUESTIONS" || error.code === "QUESTION_PRESENTATION_REVIEW_REQUIRED") {
+        return { error: "Các câu hỏi hiện có cần được đối chiếu bản gốc để sửa cách hiển thị công thức trước khi giao cho học sinh." };
+      }
       if (error.code === "QUESTION_GROUP_NOT_SUPPORTED") {
         return { error: "Hiện chỉ có nhóm câu hỏi; trang viết bài cá nhân chưa hỗ trợ dạng này." };
       }

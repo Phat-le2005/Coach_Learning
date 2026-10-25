@@ -46,3 +46,5 @@ async function forward(request: NextRequest, context: Context): Promise<NextResp
 export async function GET(request: NextRequest, context: Context) { return forward(request, context); }
 export async function PUT(request: NextRequest, context: Context) { return forward(request, context); }
 export async function POST(request: NextRequest, context: Context) { return forward(request, context); }
+
+export async function PATCH(request: NextRequest, context: Context) { return forward(request, context); }

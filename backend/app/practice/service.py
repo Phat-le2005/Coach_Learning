@@ -459,6 +459,8 @@ class PracticeService:
                     QuickCheckQuestion.quick_check_id == practice_session.id,
                     Question.status == QuestionStatus.APPROVED,
                     standalone_question_only(),
+                    or_(Question.question_type == QuestionType.OPEN_RESPONSE,
+                        Question.correct_answer.is_not(None)),
                 )
                 .order_by(QuickCheckQuestion.order_index)
             )
@@ -478,6 +480,8 @@ class PracticeService:
                 Question.subject_id == practice_session.subject_id,
                 Question.status == QuestionStatus.APPROVED,
                 standalone_question_only(),
+                or_(Question.question_type == QuestionType.OPEN_RESPONSE,
+                    Question.correct_answer.is_not(None)),
                 Question.problem_type_links.any(),
                 Question.concept_links.any(),
                 Question.learning_outcome_links.any(),
@@ -527,6 +531,8 @@ class PracticeService:
                     Question.subject_id != QuestionGroup.subject_id,
                     Question.status != QuestionStatus.APPROVED,
                     Question.question_type != QuestionType.TRUE_FALSE,
+                    Question.correct_answer.is_(None),
+                    func.upper(func.trim(Question.correct_answer)).not_in(("TRUE", "FALSE")),
                     ~Question.problem_type_links.any(),
                     ~Question.concept_links.any(),
                     ~Question.learning_outcome_links.any(),

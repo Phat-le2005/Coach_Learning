@@ -274,7 +274,9 @@ def test_effective_review_boundaries_and_counts_are_locked() -> None:
 def test_exact_six_coverage_gaps_rights_and_no_source_pdf() -> None:
     report = VectorQuestionMaterializationValidator().validate()
     coverage = _load_list("coverage_report.json")
-    repository_root = Path(__file__).resolve().parents[3]
+    # This dataset must not ship PDFs. A developer may keep an unrelated,
+    # untracked OCR test PDF at the workspace root; that is outside this bundle.
+    dataset_root = DEFAULT_VECTOR_MATERIALIZATION_PATH.parents[1]
 
     assert report.problem_type_gaps == tuple(EXPECTED_COUNTS["problem_type_gaps"])
     assert [
@@ -284,8 +286,7 @@ def test_exact_six_coverage_gaps_rights_and_no_source_pdf() -> None:
     ] == EXPECTED_COUNTS["problem_type_gaps"]
     assert not any(
         path.suffix.lower() == ".pdf"
-        for path in repository_root.rglob("*")
-        if ".venv" not in path.parts
+        for path in dataset_root.rglob("*")
     )
     assert report.rights_status == "REVIEW_REQUIRED"
 

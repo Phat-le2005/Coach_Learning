@@ -194,3 +194,39 @@ test("frontend rejects AI feedback that claims a final grade", async () => {
       step_grades: [{ step_index: 1, verdict: "VALID", score: 1, confidence: 0.9, feedback: "OK" }] }) });
   await assert.rejects(api.reviewMathAttempt("student-token", "attempt-1"), ApiContractError);
 });
+test("review readiness explains missing approved answers without requesting a grade", async () => {
+  const calls: string[] = [];
+  const api = createApiClient({ baseUrl: "https://api.example.test", fetcher: async (input, init) => {
+    calls.push(`${init?.method} ${new URL(String(input)).pathname}`);
+    return Response.json({ available: false, reason_code: "GRADING_ANSWER_REQUIRED" });
+  } });
+  const result = await api.getMathAIReviewAvailability("student-token", "attempt-1");
+  assert.deepEqual(result, { available: false, reason_code: "GRADING_ANSWER_REQUIRED" });
+  assert.deepEqual(calls, ["GET /api/v3/math-solutions/attempts/attempt-1/ai-review"]);
+});
+
+
+test("editing a student variation table uses scoped PATCH with structured artifact", async () => {
+  let method = "";
+  let path = "";
+  let sent: unknown;
+  const api = createApiClient({ baseUrl: "https://api.example.test", fetcher: async (input, init) => {
+    method = init?.method ?? "";
+    path = new URL(String(input)).pathname;
+    sent = JSON.parse(String(init?.body));
+    return Response.json({ id: "attempt-1", question_id: "question-1", status: "IN_PROGRESS",
+      attempt_revision_number: 5, started_at: "2026-10-25T00:00:00Z", steps: [] });
+  } });
+  const artifact = { artifact_type: "VARIATION_TABLE", payload: {
+    version: 1 as const,
+    points: [{ x: "left", derivative: "" as const, y: "" }, { x: "right", derivative: "" as const, y: "" }],
+    intervals: [{ sign: "+" as const, trend: "UP" as const }],
+  } };
+  await api.updateMathStep("student-token", "attempt-1", "step-1", {
+    expected_attempt_revision: 4, client_action_id: "a1234567-89ab-4cde-8012-3456789abcde",
+    step_type: "VARIATION_TABLE", content_latex: null, explanation_text: null, artifact,
+  });
+  assert.equal(method, "PATCH");
+  assert.equal(path, "/api/v2/math-solutions/attempts/attempt-1/steps/step-1");
+  assert.deepEqual((sent as {artifact: unknown}).artifact, artifact);
+});

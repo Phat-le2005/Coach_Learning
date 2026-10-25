@@ -2,7 +2,6 @@ import type {
   AttemptMutationToken,
   AIReviewRead,
   AIReviewAvailabilityRead,
-  VariationTableDraft,
   ConceptMasteryRead,
   InkDocumentRead,
   InkPageRead,
@@ -23,7 +22,6 @@ import type {
 import {
   parseAIReviewRead,
   parseAIReviewAvailabilityRead,
-  parseVariationTableDraft,
   parseConceptMastery,
   parseInkDocumentRead,
   parseInkPageRead,
@@ -77,8 +75,9 @@ export const API_PATHS = {
   mathAttemptProblem: (id: string) => `/api/v2/math-solutions/attempts/${encodeURIComponent(id)}/problem`,
   mathAttemptSubmit: (id: string) => `/api/v2/math-solutions/attempts/${encodeURIComponent(id)}/submit`,
   mathAttemptAIReview: (id: string) => `/api/v3/math-solutions/attempts/${encodeURIComponent(id)}/ai-review`,
-  mathAttemptVariationTableOcr: (id: string) => `/api/v3/math-solutions/attempts/${encodeURIComponent(id)}/variation-table-ocr`,
   mathAttemptSteps: (id: string) => `/api/v2/math-solutions/attempts/${encodeURIComponent(id)}/steps`,
+  mathAttemptStepUpdate: (attemptId: string, stepId: string) =>
+    `/api/v2/math-solutions/attempts/${encodeURIComponent(attemptId)}/steps/${encodeURIComponent(stepId)}`,
   mathAttemptStepDelete: (attemptId: string, stepId: string) =>
     `/api/v2/math-solutions/attempts/${encodeURIComponent(attemptId)}/steps/${encodeURIComponent(stepId)}/delete`,
   mathInkDocument: (id: string) => `/api/v2/math-solutions/attempts/${encodeURIComponent(id)}/ink`,
@@ -242,6 +241,10 @@ export function createApiClient({ baseUrl, fetcher = fetch }: ApiClientOptions) 
         accessToken,
       );
     },
+    updateMathStep(accessToken: string, attemptId: string, stepId: string, payload: StepMutationRequest): Promise<SolutionAttemptRead> {
+      return request(API_PATHS.mathAttemptStepUpdate(attemptId, stepId), parseSolutionAttemptRead,
+        { method: "PATCH", body: JSON.stringify(payload) }, accessToken);
+    },
     submitMathAttempt(accessToken: string, attemptId: string, payload: AttemptMutationToken): Promise<SolutionAttemptRead> {
       return request(API_PATHS.mathAttemptSubmit(attemptId), parseSolutionAttemptRead,
         { method: "POST", body: JSON.stringify(payload) }, accessToken);
@@ -249,10 +252,6 @@ export function createApiClient({ baseUrl, fetcher = fetch }: ApiClientOptions) 
     getMathAIReviewAvailability(accessToken: string, attemptId: string): Promise<AIReviewAvailabilityRead> {
       return request(API_PATHS.mathAttemptAIReview(attemptId), parseAIReviewAvailabilityRead,
         { method: "GET" }, accessToken);
-    },
-    recognizeMathVariationTable(accessToken: string, attemptId: string, imageBase64: string): Promise<VariationTableDraft> {
-      return request(API_PATHS.mathAttemptVariationTableOcr(attemptId), parseVariationTableDraft,
-        { method: "POST", body: JSON.stringify({ image_base64: imageBase64 }) }, accessToken);
     },
     reviewMathAttempt(accessToken: string, attemptId: string): Promise<AIReviewRead> {
       return request(API_PATHS.mathAttemptAIReview(attemptId), parseAIReviewRead,
