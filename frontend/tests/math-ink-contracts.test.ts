@@ -170,6 +170,21 @@ test("parseSolutionAttemptRead parses attempt status and revision", () => {
   assert.equal(result.current_revision, 1);
 });
 
+test("attempt snapshot retains ordered confirmed steps and rejects malformed step data", () => {
+  const base = {
+    id: "attempt-1", question_id: "question-1", status: "IN_PROGRESS",
+    attempt_revision_number: 3, started_at: "2026-10-23T00:00:00Z",
+  };
+  const step = {
+    id: "step-1", step_index: 1, step_type: "EXPLANATION",
+    content_latex: "y=x^2", explanation_text: null, step_revision_number: 1,
+  };
+  const parsed = parseSolutionAttemptRead({ ...base, steps: [step] });
+  assert.equal(parsed.steps?.[0].content_latex, "y=x^2");
+  assert.equal(parsed.steps?.[0].step_index, 1);
+  assert.throws(() => parseSolutionAttemptRead({ ...base, steps: [{ ...step, step_type: "UNKNOWN" }] }), ApiContractError);
+});
+
 test("parseSolutionAttemptRead parses attempt_revision_number from v2 contract", () => {
   const input = {
     id: "f0000000-0000-0000-0000-000000000007",

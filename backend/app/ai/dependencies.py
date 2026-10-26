@@ -2,8 +2,10 @@ from functools import lru_cache
 from fastapi import Depends
 
 from app.ai.gateway import AIGateway
+from app.ai.gemini_provider import GeminiProvider
 from app.ai.mock_provider import MockAIProvider
 from app.ai.provider import AIProvider
+from app.ai.exceptions import AIConfigurationError
 from app.core.config import Settings, get_settings
 
 
@@ -12,9 +14,9 @@ def create_ai_provider(settings: Settings) -> AIProvider:
     provider_name = settings.ai_provider.lower().strip()
     if provider_name == "mock":
         return MockAIProvider()
-    # EduMS does NOT run local models. Other providers (Gemini, OpenAI) can be registered here.
-    # By default, falls back to MockAIProvider if provider is unrecognized.
-    return MockAIProvider()
+    if provider_name == "gemini":
+        return GeminiProvider(settings.ai_api_key.get_secret_value())
+    raise AIConfigurationError("Unknown AI provider. Choose mock or gemini explicitly.")
 
 
 _GATEWAY_CACHE: dict[int, AIGateway] = {}

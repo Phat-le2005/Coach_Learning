@@ -13,6 +13,7 @@ from app.math_ink.models import MathInkDocument, MathInkOperation, MathInkPage
 from app.math_ink.prune_operations import prune_expired_operations
 from app.math_ink.schemas import InkDocumentRead, InkPageRead, InkPageSummary, InkPageWrite, InkSaveRead
 from app.math_solutions.service import MathSolutionService, _utc
+from app.questions.models import Question, QuestionStatus
 
 
 class MathInkService:
@@ -25,6 +26,10 @@ class MathInkService:
     def _editable(self, attempt) -> None:
         if attempt.status not in ("DRAFT", "IN_PROGRESS"):
             raise ApplicationError(409, "INK_LOCKED", "This solution is read only.")
+        if attempt.source_kind == "CANONICAL" and attempt.question_id is not None:
+            question = self.session.get(Question, attempt.question_id)
+            if question is None or question.status != QuestionStatus.APPROVED:
+                raise ApplicationError(409, "QUESTION_REVIEW_REQUIRED", "Question needs source review; ink is read only.")
         if attempt.context_type != "CLASSROOM_ASSIGNMENT":
             return
         assignment = self.session.get(Assignment, attempt.assignment_id) if attempt.assignment_id else None

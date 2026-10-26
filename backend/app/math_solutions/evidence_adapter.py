@@ -10,9 +10,11 @@ from app.assignments.models import (
     AssignmentMaterialItem,
     AssignmentMaterialItemConcept,
     AssignmentMaterialItemProblemType,
+    StudentAssignment,
     AssignmentStudentQuestion,
     StudentAssignmentMaterialItem,
 )
+from app.assignments.scoring import recalculate_student_assignment_score
 from app.core.exceptions import ApplicationError
 from app.learning_evidence.models import (
     LearningEvidenceConcept,
@@ -190,20 +192,37 @@ class MathSolutionEvidenceAdapter:
         decision.learning_evidence_event_id = evidence_event.id
         self.session.flush()
 
-        # 3. Anti-Double-Counting synchronization with Classroom Assignment items
+        # 3. Synchronize the one classroom item represented by this decision.
+        # The Assignment submission owns the transaction when commit=False.
         if attempt.assignment_student_question_id:
             asq = self.session.get(AssignmentStudentQuestion, attempt.assignment_student_question_id)
-            if asq:
-                asq.score = decision.final_score
-                asq.is_correct = decision.is_correct
+            if asq is None:
+                raise ApplicationError(409, "GRADING_ASSIGNMENT_ITEM_MISSING", "Assigned question is missing.")
+            asq.score = decision.final_score
+            asq.is_correct = decision.is_correct
+            if asq.answered_at is None:
                 asq.answered_at = occurred_at
         elif attempt.student_assignment_material_item_id:
             smi = self.session.get(StudentAssignmentMaterialItem, attempt.student_assignment_material_item_id)
-            if smi:
-                smi.score = decision.final_score
-                smi.is_correct = decision.is_correct
+            if smi is None:
+                raise ApplicationError(409, "GRADING_ASSIGNMENT_ITEM_MISSING", "Assigned material item is missing.")
+            smi.score = decision.final_score
+            smi.is_correct = decision.is_correct
+            smi.evaluation_status = EvaluationStatus.EVALUATED
+            smi.evaluation_details = {
+                "evaluation": "math_solution",
+                "decision_id": str(decision.id),
+            }
+            smi.graded_at = occurred_at
+            if smi.answered_at is None:
                 smi.answered_at = occurred_at
 
+        if attempt.student_assignment_id:
+            student_assignment = self.session.get(StudentAssignment, attempt.student_assignment_id)
+            if student_assignment is None:
+                raise ApplicationError(409, "GRADING_ASSIGNMENT_MISSING", "Student assignment is missing.")
+            recalculate_student_assignment_score(student_assignment, finalize=False)
+            self.session.flush()
         # 4. Spaced repetition schedule (ReviewPolicy 2.0 days)
         primary_pt = next((pt for pt in problem_types if pt.is_primary), None) or (
             problem_types[0] if problem_types else None

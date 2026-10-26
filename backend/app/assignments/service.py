@@ -1,3 +1,4 @@
+from collections import Counter
 from datetime import datetime, timezone
 import logging
 from uuid import UUID
@@ -60,6 +61,7 @@ from app.questions.models import (
     QuestionOption,
     QuestionProblemType,
     QuestionStatus,
+    QuestionType,
 )
 from app.students.models import StudentProfile
 from app.subjects.models import Subject
@@ -68,6 +70,9 @@ from app.planning.models import TeachingPlan
 from app.teacher_materials.models import MaterialItemExtractionStatus, MaterialMappingStatus, TeacherMaterialItem, TeacherMaterialStatus
 from app.assignments.material_snapshot import snapshot_material_item
 from app.assignments.scoring import recalculate_student_assignment_score
+from app.assignments.teacher_grading_schemas import (
+    CanonicalQuestionGradeRead, CanonicalQuestionGradeRequest,
+)
 from app.users.models import User
 
 logger = logging.getLogger(__name__)
@@ -857,6 +862,24 @@ class AssignmentService:
         if sa.status in (StudentAssignmentStatus.SUBMITTED, StudentAssignmentStatus.GRADED):
             raise ApplicationError(409, "ASSIGNMENT_ALREADY_SUBMITTED", "Assignment has already been submitted.")
 
+        from app.math_solutions.models import SolutionAttempt
+
+        submitted_solutions = list(self.session.scalars(
+            select(SolutionAttempt).where(
+                SolutionAttempt.student_assignment_id == sa.id,
+                SolutionAttempt.status == "SUBMITTED",
+            )
+        ).all())
+        submitted_question_items = {
+            attempt.assignment_student_question_id
+            for attempt in submitted_solutions
+            if attempt.source_kind == "CANONICAL"
+        }
+        submitted_material_items = {
+            attempt.student_assignment_material_item_id
+            for attempt in submitted_solutions
+            if attempt.source_kind == "TEACHER_MATERIAL"
+        }
         canonical_answers = {ans.question_id: ans for ans in submission.answers if ans.question_id is not None}
         material_answers = {ans.teacher_material_item_id: ans for ans in submission.answers if ans.teacher_material_item_id is not None}
 
@@ -869,7 +892,19 @@ class AssignmentService:
             question = sq.question
             submitted = canonical_answers.get(question.id)
             answer = submitted.student_answer if submitted else ""
-            evaluation = self.evaluator.evaluate(question, answer)
+            if (
+                question.question_type == QuestionType.OPEN_RESPONSE
+                and sq.id in submitted_question_items
+            ):
+                # A second text answer would make the graded submission ambiguous.
+                if answer.strip():
+                    raise ApplicationError(
+                        409, "ASSIGNMENT_ANSWER_SOURCE_CONFLICT",
+                        "Submit either the confirmed step solution or a text answer.",
+                    )
+                evaluation = AnswerEvaluation(None, None, EvaluationStatus.NEEDS_EVALUATION)
+            else:
+                evaluation = self.evaluator.evaluate(question, answer)
             sq.student_answer = answer
             sq.is_correct = evaluation.is_correct
             sq.score = evaluation.score
@@ -934,6 +969,11 @@ class AssignmentService:
                 raise ApplicationError(409, "MATERIAL_SNAPSHOT_MISSING", "Published material snapshot is missing.")
             submitted = material_answers.get(snapshot.teacher_material_item_id)
             answer = submitted.student_answer if submitted else ""
+            if sm.id in submitted_material_items and answer.strip():
+                raise ApplicationError(
+                    409, "ASSIGNMENT_ANSWER_SOURCE_CONFLICT",
+                    "Submit either the confirmed step solution or a text answer.",
+                )
             if snapshot.evaluation_mode.value == "OBJECTIVE_AUTO" and snapshot.question_type is not None:
                 evaluation = self.evaluator.evaluate_values(
                     snapshot.question_type,
@@ -976,8 +1016,14 @@ class AssignmentService:
 
         sa.status = StudentAssignmentStatus.SUBMITTED
         sa.submitted_at = now
-        overall_score = recalculate_student_assignment_score(sa, finalize=False)
-        self.session.commit()
+        try:
+            self._grade_submitted_solutions(sa, results)
+            overall_score = recalculate_student_assignment_score(sa, finalize=False)
+            self.session.commit()
+        except Exception:
+            self.session.rollback()
+            raise
+        correct_count = sum(item.is_correct is True for item in results)
         logger.info(
             "Student %s submitted assignment %s with score %s (%d/%d correct)",
             student.id,
@@ -995,6 +1041,180 @@ class AssignmentService:
             correct_count=correct_count,
             submitted_at=now,
             results=results,
+        )
+
+    def _grade_submitted_solutions(
+        self,
+        assigned: StudentAssignment,
+        results: list[QuestionResultItem],
+    ) -> None:
+        """Score submitted step work in the same transaction as Assignment submit.
+
+        Missing rubrics and unverified mathematics remain pending for teacher review.
+        Duplicate solution attempts for one item are never picked arbitrarily.
+        """
+        from app.math_solutions.evaluator_service import MathEvaluatorService
+        from app.math_solutions.models import SolutionAttempt
+
+        attempts = list(self.session.scalars(
+            select(SolutionAttempt).where(
+                SolutionAttempt.student_assignment_id == assigned.id,
+                SolutionAttempt.status == "SUBMITTED",
+            ).order_by(SolutionAttempt.id)
+        ))
+        targets = Counter(
+            attempt.assignment_student_question_id or attempt.student_assignment_material_item_id
+            for attempt in attempts
+        )
+        pending_codes = {
+            "GRADING_RUBRIC_REQUIRED",
+            "GRADING_RUBRIC_UNAVAILABLE",
+            "GRADING_RUBRIC_UNSUPPORTED",
+            "GRADING_SOURCE_MISMATCH",
+            "GRADING_SOURCE_UNAVAILABLE",
+            "GRADING_TARGET_UNSUPPORTED",
+            "GRADING_REVIEW_REQUIRED",
+        }
+        evaluator = MathEvaluatorService(self.session)
+        for attempt in attempts:
+            target_id = (
+                attempt.assignment_student_question_id
+                or attempt.student_assignment_material_item_id
+            )
+            if targets[target_id] != 1 or attempt.rubric_id is None:
+                continue
+            try:
+                decision = evaluator.evaluate_attempt(attempt.id, commit=False)
+            except ApplicationError as exc:
+                if exc.code not in pending_codes:
+                    raise
+                logger.info(
+                    "Assigned math solution remains pending teacher review "
+                    "(attempt_id=%s, reason=%s)",
+                    attempt.id, exc.code,
+                )
+                continue
+
+            for result in results:
+                if (
+                    attempt.source_kind == "CANONICAL"
+                    and result.question_id == attempt.question_id
+                ) or (
+                    attempt.source_kind == "TEACHER_MATERIAL"
+                    and result.teacher_material_item_id is not None
+                    and any(
+                        item.id == attempt.student_assignment_material_item_id
+                        and item.teacher_material_item_id == result.teacher_material_item_id
+                        for item in assigned.student_material_items
+                    )
+                ):
+                    result.score = decision.final_score
+                    result.is_correct = decision.is_correct
+                    break
+
+    def grade_canonical_item(
+        self,
+        teacher_user_id: UUID,
+        assignment_id: UUID,
+        student_id: UUID,
+        student_question_item_id: UUID,
+        data: CanonicalQuestionGradeRequest,
+    ) -> CanonicalQuestionGradeRead:
+        """Teacher resolves a pending assigned open response without a step score."""
+        teacher = self._teacher_for_user(teacher_user_id)
+        assigned = self.session.scalar(
+            select(StudentAssignment)
+            .where(
+                StudentAssignment.assignment_id == assignment_id,
+                StudentAssignment.student_id == student_id,
+            )
+            .with_for_update()
+        )
+        if assigned is None:
+            raise ApplicationError(404, "STUDENT_ASSIGNMENT_NOT_FOUND", "Student assignment was not found.")
+        self._require_teacher_in_classroom(teacher.id, assigned.assignment.classroom_id)
+        item = self.session.scalar(
+            select(AssignmentStudentQuestion)
+            .options(
+                selectinload(AssignmentStudentQuestion.question).selectinload(Question.concept_links),
+                selectinload(AssignmentStudentQuestion.question).selectinload(Question.problem_type_links),
+            )
+            .where(
+                AssignmentStudentQuestion.id == student_question_item_id,
+                AssignmentStudentQuestion.student_assignment_id == assigned.id,
+            )
+        )
+        if item is None:
+            raise ApplicationError(404, "ASSIGNMENT_QUESTION_NOT_FOUND", "Assigned question was not found.")
+        if item.question.question_type != QuestionType.OPEN_RESPONSE:
+            raise ApplicationError(409, "QUESTION_NOT_OPEN_RESPONSE", "Only open responses use teacher review here.")
+        if assigned.status != StudentAssignmentStatus.SUBMITTED or item.answered_at is None:
+            raise ApplicationError(409, "QUESTION_NOT_PENDING", "The question is not submitted for review.")
+        previous = self.session.scalar(
+            select(LearningEvidenceEvent.id).where(
+                LearningEvidenceEvent.source_kind == LearningEvidenceSourceKind.ASSIGNMENT_CANONICAL_QUESTION,
+                LearningEvidenceEvent.source_entity_id == item.id,
+            )
+        )
+        if item.score is not None or item.is_correct is not None or previous is not None:
+            raise ApplicationError(409, "QUESTION_ALREADY_EVALUATED", "The question has already been evaluated.")
+
+        now = datetime.now(timezone.utc)
+        item.score = data.score
+        item.is_correct = data.is_correct
+        question = item.question
+        try:
+            self.evidence_publisher.publish(
+                LearningEvidencePayload(
+                    student_id=assigned.student_id,
+                    subject_id=assigned.assignment.subject_id,
+                    classroom_id=assigned.assignment.classroom_id,
+                    teaching_plan_id=assigned.assignment.teaching_plan_id,
+                    assignment_id=assigned.assignment_id,
+                    source_kind=LearningEvidenceSourceKind.ASSIGNMENT_CANONICAL_QUESTION,
+                    source_entity_id=item.id,
+                    is_correct=data.is_correct,
+                    score=data.score,
+                    difficulty=question.difficulty if question.difficulty is not None else 0.5,
+                    response_time_seconds=None,
+                    hint_count=0,
+                    evaluation_status=EvaluationStatus.EVALUATED,
+                    occurred_at=now,
+                    concepts=tuple(
+                        WeightedConceptEvidence(mapping.concept_id, mapping.weight)
+                        for mapping in question.concept_links
+                    ),
+                    problem_types=tuple(
+                        WeightedProblemTypeEvidence(
+                            mapping.problem_type_id, mapping.weight or 1.0,
+                            is_primary=mapping.is_primary,
+                        )
+                        for mapping in question.problem_type_links
+                    ),
+                    metadata={
+                        "question_id": str(question.id),
+                        "grading_source": "TEACHER",
+                        "graded_by": str(teacher_user_id),
+                        "feedback": data.feedback,
+                    },
+                ),
+                self.session,
+            )
+            assignment_score = recalculate_student_assignment_score(assigned, finalize=True)
+            self.session.commit()
+        except Exception:
+            self.session.rollback()
+            raise
+        return CanonicalQuestionGradeRead(
+            item_id=item.id,
+            question_id=question.id,
+            score=data.score,
+            is_correct=data.is_correct,
+            feedback=data.feedback,
+            graded_by=teacher_user_id,
+            graded_at=now,
+            assignment_score=assignment_score,
+            assignment_status=assigned.status,
         )
 
     def grade_material_item(
@@ -1054,9 +1274,13 @@ class AssignmentService:
         sm.graded_at = now
         sm.evaluation_status = EvaluationStatus.EVALUATED
         sm.evaluation_details = {"evaluation": "teacher"}
-        self._publish_material_evidence(sa, sm, now, "TEACHER")
-        assignment_score = recalculate_student_assignment_score(sa, finalize=True)
-        self.session.commit()
+        try:
+            self._publish_material_evidence(sa, sm, now, "TEACHER")
+            assignment_score = recalculate_student_assignment_score(sa, finalize=True)
+            self.session.commit()
+        except Exception:
+            self.session.rollback()
+            raise
         return MaterialItemGradeRead(
             item_id=sm.id,
             evaluation_status=sm.evaluation_status.value,

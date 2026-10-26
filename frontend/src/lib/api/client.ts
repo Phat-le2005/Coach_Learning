@@ -1,4 +1,7 @@
 import type {
+  AttemptMutationToken,
+  AIReviewRead,
+  AIReviewAvailabilityRead,
   ConceptMasteryRead,
   InkDocumentRead,
   InkPageRead,
@@ -17,6 +20,8 @@ import type {
   UserRead,
 } from "./contracts";
 import {
+  parseAIReviewRead,
+  parseAIReviewAvailabilityRead,
   parseConceptMastery,
   parseInkDocumentRead,
   parseInkPageRead,
@@ -68,7 +73,13 @@ export const API_PATHS = {
   mathPracticeNextProblem: (id: string) => `/api/v2/math-solutions/practice-sessions/${encodeURIComponent(id)}/next-problem`,
   mathAttempt: (id: string) => `/api/v2/math-solutions/attempts/${encodeURIComponent(id)}`,
   mathAttemptProblem: (id: string) => `/api/v2/math-solutions/attempts/${encodeURIComponent(id)}/problem`,
+  mathAttemptSubmit: (id: string) => `/api/v2/math-solutions/attempts/${encodeURIComponent(id)}/submit`,
+  mathAttemptAIReview: (id: string) => `/api/v3/math-solutions/attempts/${encodeURIComponent(id)}/ai-review`,
   mathAttemptSteps: (id: string) => `/api/v2/math-solutions/attempts/${encodeURIComponent(id)}/steps`,
+  mathAttemptStepUpdate: (attemptId: string, stepId: string) =>
+    `/api/v2/math-solutions/attempts/${encodeURIComponent(attemptId)}/steps/${encodeURIComponent(stepId)}`,
+  mathAttemptStepDelete: (attemptId: string, stepId: string) =>
+    `/api/v2/math-solutions/attempts/${encodeURIComponent(attemptId)}/steps/${encodeURIComponent(stepId)}/delete`,
   mathInkDocument: (id: string) => `/api/v2/math-solutions/attempts/${encodeURIComponent(id)}/ink`,
   mathInkPage: (id: string, pageIndex: number) => `/api/v2/math-solutions/attempts/${encodeURIComponent(id)}/ink/pages/${pageIndex}`,
   mathOcrRecognize: (id: string) => `/api/v2/math-solutions/attempts/${encodeURIComponent(id)}/ocr/recognize`,
@@ -225,6 +236,30 @@ export function createApiClient({ baseUrl, fetcher = fetch }: ApiClientOptions) 
     createMathStep(accessToken: string, attemptId: string, payload: StepMutationRequest): Promise<SolutionAttemptRead> {
       return request(
         API_PATHS.mathAttemptSteps(attemptId),
+        parseSolutionAttemptRead,
+        { method: "POST", body: JSON.stringify(payload) },
+        accessToken,
+      );
+    },
+    updateMathStep(accessToken: string, attemptId: string, stepId: string, payload: StepMutationRequest): Promise<SolutionAttemptRead> {
+      return request(API_PATHS.mathAttemptStepUpdate(attemptId, stepId), parseSolutionAttemptRead,
+        { method: "PATCH", body: JSON.stringify(payload) }, accessToken);
+    },
+    submitMathAttempt(accessToken: string, attemptId: string, payload: AttemptMutationToken): Promise<SolutionAttemptRead> {
+      return request(API_PATHS.mathAttemptSubmit(attemptId), parseSolutionAttemptRead,
+        { method: "POST", body: JSON.stringify(payload) }, accessToken);
+    },
+    getMathAIReviewAvailability(accessToken: string, attemptId: string): Promise<AIReviewAvailabilityRead> {
+      return request(API_PATHS.mathAttemptAIReview(attemptId), parseAIReviewAvailabilityRead,
+        { method: "GET" }, accessToken);
+    },
+    reviewMathAttempt(accessToken: string, attemptId: string): Promise<AIReviewRead> {
+      return request(API_PATHS.mathAttemptAIReview(attemptId), parseAIReviewRead,
+        { method: "POST" }, accessToken);
+    },
+    deleteMathStep(accessToken: string, attemptId: string, stepId: string, payload: AttemptMutationToken): Promise<SolutionAttemptRead> {
+      return request(
+        API_PATHS.mathAttemptStepDelete(attemptId, stepId),
         parseSolutionAttemptRead,
         { method: "POST", body: JSON.stringify(payload) },
         accessToken,

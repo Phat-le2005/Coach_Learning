@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, Compass, Sprout, TreePine } from "lucide-react";
+import { ChevronDown, Compass, Orbit, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { ChangeEvent } from "react";
@@ -32,7 +32,7 @@ export function KnowledgeForestHeader({ data }: KnowledgeForestHeaderProps) {
             Trang chủ
           </Link>
           <span aria-hidden="true">/</span>
-          <span>Bản đồ tri thức</span>
+          <span>Vũ trụ tri thức</span>
         </nav>
 
         {data.availableSubjects.length > 1 ? (
@@ -61,15 +61,15 @@ export function KnowledgeForestHeader({ data }: KnowledgeForestHeaderProps) {
       </div>
 
       <div className={styles.titleRow}>
-        <h1 className={styles.mainTitle}>Khu Rừng Tri Thức</h1>
+        <h1 className={styles.mainTitle}>Vũ Trụ Tri Thức</h1>
         {data.accessMode === "SELF_STUDY_DISCOVERY" ? (
           <span className={styles.subjectBadge}>
-            <Sprout size={14} aria-hidden="true" />
+            <Orbit size={14} aria-hidden="true" />
             Tự học chủ động · {data.subject.name}
           </span>
         ) : data.availableSubjects.length > 1 ? (
           <span className={styles.subjectBadge}>
-            <TreePine size={14} aria-hidden="true" />
+            <Sparkles size={14} aria-hidden="true" />
             {data.subject.name}
           </span>
         ) : null}
@@ -77,8 +77,8 @@ export function KnowledgeForestHeader({ data }: KnowledgeForestHeaderProps) {
 
       <p className={styles.subtitle}>
         {data.accessMode === "SELF_STUDY_DISCOVERY"
-          ? "Khám phá chương, chủ đề và dạng bài đã được phát hành mà không cần lớp học. Các trạng thái chưa học là dữ liệu thật; chưa có điểm số nào được giả lập."
-          : "Bản đồ năng lực học tập cá nhân hóa được kết nối trực tiếp từ dữ liệu thực tế. Khám phá từng vùng kiến thức, củng cố gốc rễ và theo dõi tiến trình làm chủ môn học."}
+          ? "Khám phá các chòm sao, chủ đề và dạng bài đã được phát hành theo nhịp của bạn. Các trạng thái chưa học là dữ liệu thật; chưa có điểm số nào được giả lập."
+          : "Bản đồ năng lực học tập cá nhân hóa được kết nối trực tiếp từ dữ liệu thực tế. Khám phá từng chòm sao kiến thức, kích hoạt ngôi sao dạng bài và theo dõi tiến trình làm chủ môn học."}
       </p>
 
       {/* Stats Bar */}

@@ -311,6 +311,14 @@ class QuestionService:
             raise self._not_editable()
 
     def _validate_ready(self, question: Question) -> None:
+        from app.questions.data_reconciliation import DATA_ROOT, _review_exclusions
+        from app.questions.presentation_quality import question_has_broken_math_extraction
+
+        excluded_sources, _ = _review_exclusions(DATA_ROOT)
+        if question.source_reference in excluded_sources:
+            raise self._not_ready("Source review has not verified this question for use.")
+        if question_has_broken_math_extraction(question):
+            raise self._not_ready("Question text or options need source presentation review.")
         if not question.concept_links:
             raise self._not_ready("A question must be linked to at least one concept.")
         answer = question.correct_answer.strip().upper() if question.correct_answer else None

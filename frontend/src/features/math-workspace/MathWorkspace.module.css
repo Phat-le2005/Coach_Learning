@@ -545,6 +545,63 @@
   white-space: pre-wrap;
 }
 
+.questionSourceWarning {
+  border: 1px solid #e8b98d;
+  border-radius: 12px;
+  background: #fffaf2;
+  color: #573c21;
+  padding: 1rem;
+  line-height: 1.6;
+}
+
+.questionSourceWarning h3 {
+  margin: 0 0 0.55rem;
+  font-size: 1rem;
+}
+
+.questionSourceWarning p {
+  margin: 0.5rem 0;
+}
+
+.questionSourceWarning code {
+  overflow-wrap: anywhere;
+}
+
+.questionSourceWarning a {
+  display: inline-block;
+  margin-top: 0.35rem;
+  color: #145c49;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.questionSourceWarning a:focus-visible,
+.questionRawDetails summary:focus-visible {
+  outline: 2px solid #145c49;
+  outline-offset: 3px;
+}
+
+.questionRawDetails {
+  margin-top: 0.9rem;
+  border-top: 1px solid #e8b98d;
+  padding-top: 0.65rem;
+}
+
+.questionRawDetails summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.questionRawDetails pre {
+  max-height: 14rem;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font: inherit;
+  font-size: 0.8rem;
+}
+
 .optionsSection {
   margin-top: 1.5rem;
   padding-top: 1.25rem;
@@ -796,6 +853,295 @@
   flex-direction: column;
   border: 1px solid #e2e8f0;
   animation: modalEnter 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.pageReviewModal {
+  width: min(1120px, 100%);
+  max-height: min(92dvh, 900px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid #bed2c0;
+  border-radius: 22px;
+  background: #fffefa;
+  color: #17392d;
+  box-shadow: 0 24px 64px rgba(13, 43, 32, 0.22);
+}
+
+.pageReviewHeader,
+.pageReviewProgress,
+.pageReviewEditorTitle,
+.pageReviewActions,
+.pageReviewFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.pageReviewHeader {
+  padding: 1rem 1.25rem;
+  background: linear-gradient(110deg, #eaf6e8, #fbf9ed);
+}
+
+.pageReviewHeader h2,
+.pageReviewEditorTitle h3 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.pageReviewHeader p {
+  margin: 0.3rem 0 0;
+  color: #52685c;
+  line-height: 1.45;
+}
+
+.pageReviewNotice {
+  margin: 0 1.25rem 0.7rem;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid #c5dbcb;
+  border-radius: 10px;
+  background: #f0f8ef;
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+.pageReviewProgress {
+  padding: 0 1.25rem 0.75rem;
+  font-weight: 700;
+}
+
+.pageReviewContent {
+  display: grid;
+  grid-template-columns: minmax(170px, 220px) minmax(0, 1fr);
+  min-height: 0;
+  border-top: 1px solid #e0e8df;
+}
+
+.pageReviewList,
+.pageReviewEditor {
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.pageReviewList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.8rem;
+  border-right: 1px solid #e0e8df;
+  background: #f4f8f2;
+}
+
+.pageReviewRow,
+.pageReviewRowActive {
+  display: grid;
+  gap: 0.2rem;
+  width: 100%;
+  padding: 0.7rem;
+  border: 1px solid #d3e0d4;
+  border-radius: 10px;
+  background: #fffefa;
+  color: #234735;
+  text-align: left;
+  cursor: pointer;
+}
+
+.pageReviewRowActive {
+  border-color: #39755b;
+  background: #e7f3e7;
+  box-shadow: inset 3px 0 #39755b;
+}
+
+.pageReviewRow small,
+.pageReviewEditorTitle span {
+  color: #617569;
+}
+
+.pageReviewEditor {
+  display: grid;
+  align-content: start;
+  gap: 0.9rem;
+  padding: 1.15rem;
+}
+
+.pageReviewWarning {
+  margin: 0;
+  color: #8b4c29;
+  font-size: 0.85rem;
+}
+
+.pageReviewActions,
+.pageReviewFooter {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.pageReviewSplit {
+  display: grid;
+  gap: 0.4rem;
+  padding: 0.7rem;
+  border: 1px solid #d3e0d4;
+  border-radius: 10px;
+}
+
+.pageReviewSplit input {
+  width: 100%;
+  accent-color: #39755b;
+}
+
+.pageReviewFooter {
+  position: sticky;
+  bottom: -1.15rem;
+  padding: 0.8rem 0;
+  background: #fffefa;
+}
+
+.pageReviewModal button:focus-visible,
+.pageReviewModal input:focus-visible {
+  outline: 3px solid #39755b;
+  outline-offset: 2px;
+}
+
+.savedSteps {
+  padding: 1rem;
+  border-top: 1px solid #d3e0d4;
+}
+
+.savedSteps h3 {
+  margin: 0 0 0.7rem;
+  font-size: 0.95rem;
+}
+
+.savedSteps ol {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.savedSteps li {
+  padding: 0.6rem;
+  border: 1px solid #d3e0d4;
+  border-radius: 9px;
+  background: #fffefa;
+}
+
+.savedSteps li strong,
+.savedSteps li .renderedFormula {
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+.savedSteps li p {
+  margin: 0.3rem 0 0;
+  overflow-wrap: anywhere;
+}
+
+.savedStepHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.deleteStepButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.45rem;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background: transparent;
+  color: #9a4d3b;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.deleteStepButton:hover:not(:disabled) {
+  border-color: #e7b6aa;
+  background: #fff2ee;
+}
+
+.deleteStepConfirm {
+  margin-top: 0.6rem;
+  padding: 0.7rem;
+  border: 1px solid #e7b6aa;
+  border-radius: 9px;
+  background: #fff8f5;
+  color: #66352c;
+  font-size: 0.84rem;
+}
+
+.deleteStepConfirm p {
+  margin: 0 0 0.55rem;
+}
+
+.deleteStepConfirm > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.deleteStepConfirmButton {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #a54d3c;
+  border-radius: 8px;
+  background: #a54d3c;
+  color: #fff;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.deleteStepButton:focus-visible,
+.deleteStepConfirmButton:focus-visible {
+  outline: 3px solid #a54d3c;
+  outline-offset: 2px;
+}
+
+.deleteStepButton:disabled,
+.deleteStepConfirmButton:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.deleteStepConfirm .deleteStepError {
+  color: #9f2f25;
+  font-weight: 600;
+}
+
+@media (max-width: 720px) {
+  .pageReviewOverlay {
+    padding: 0;
+  }
+
+  .pageReviewModal {
+    max-height: 100dvh;
+    height: 100dvh;
+    border-radius: 0;
+  }
+
+  .pageReviewContent {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  .pageReviewList {
+    flex-direction: row;
+    overflow-x: auto;
+    border-right: 0;
+    border-bottom: 1px solid #e0e8df;
+  }
+
+  .pageReviewRow,
+  .pageReviewRowActive {
+    flex: 0 0 125px;
+  }
+
+  .pageReviewHeader,
+  .pageReviewEditor {
+    padding: 0.75rem;
+  }
 }
 
 @keyframes modalEnter {
@@ -1305,4 +1651,88 @@
   .modalFooter {
     flex-wrap: wrap;
   }
+}
+
+.aiReviewPanel {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid #bfd5c4;
+  border-radius: 14px;
+  background: #f6faf5;
+  color: #244637;
+}
+.aiReviewPanel h3 { margin: 0 0 0.5rem; font-size: 1rem; }
+.aiReviewPanel p { line-height: 1.5; }
+.aiReviewButton {
+  padding: 0.65rem 1rem;
+  border-radius: 10px;
+  border: 1px solid #286b4d;
+  background: #23674b;
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+}
+.aiReviewButton:disabled { opacity: 0.55; cursor: not-allowed; }
+.aiReviewButton:focus-visible { outline: 3px solid #e5ab54; outline-offset: 2px; }
+.aiReviewNotice { font-weight: 700; }
+.aiReviewList { padding-left: 1.3rem; }
+.aiReviewList li { margin: 0.75rem 0; }
+.aiReviewList li span { margin-left: 0.5rem; font-size: 0.85rem; }
+.aiReviewError { color: #a4332d; }
+@media (max-width: 768px) {
+  .problemPane:has(.aiReviewPanel) { max-height: min(60vh, 580px); }
+}
+.variationTableStep {
+  white-space: pre-wrap;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  line-height: 1.65;
+}
+
+/* Student-entered variation table: columns stay aligned and arrows are drawn from chosen signs. */
+.variationModal {
+  width: min(1100px, 100%);
+  max-height: min(92dvh, 900px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid #b9d1c0;
+  border-radius: 20px;
+  background: #fffefa;
+  color: #17392d;
+  box-shadow: 0 28px 70px rgba(13, 43, 32, 0.24);
+}
+.variationHeader, .variationFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+}
+.variationHeader {
+  background: linear-gradient(105deg, #eaf5e9, #fff9e9);
+  border-bottom: 1px solid #d9e7d9;
+}
+.variationHeader h2 { margin: 0; font-size: 1.25rem; }
+.variationHeader p { margin: .35rem 0 0; line-height: 1.5; }
+.variationBody { overflow: auto; padding: 1rem 1.25rem; }
+.variationBody .pageReviewNotice { margin: 0 0 1rem; }
+.variationFooter { border-top: 1px solid #d9e7d9; background: #fffefa; }
+.variationControls { display: flex; flex-wrap: wrap; gap: .65rem; margin-top: 1rem; }
+.variationTableScroll { width: 100%; max-width: 100%; overflow-x: auto; border: 1px solid #bdd7c6; border-radius: 12px; background: #fff; }
+.variationTable { border-collapse: collapse; width: 100%; min-width: max-content; color: #183b31; }
+.variationTable tr + tr { border-top: 1px solid #c9ddcf; }
+.variationTable th { position: sticky; left: 0; z-index: 1; min-width: 65px; padding: .6rem; background: #e9f3e9; border-right: 2px solid #91b69d; text-align: center; font-size: 1.05rem; }
+.variationTable td { height: 65px; padding: .35rem; text-align: center; vertical-align: middle; }
+.variationPointCell { min-width: 104px; border-right: 1px dashed #dae6db; font-weight: 650; }
+.variationIntervalCell { min-width: 112px; color: #26735c; }
+.variationTable input, .variationTable select { box-sizing: border-box; width: 100%; max-width: 105px; min-height: 38px; padding: .35rem .45rem; border: 1px solid #c4d6c9; border-radius: 7px; background: #fffefa; color: #183b31; font: inherit; text-align: center; }
+.variationTable input:focus-visible, .variationTable select:focus-visible, .variationModal button:focus-visible { outline: 3px solid #257c61; outline-offset: 2px; }
+.variationArrow { display: block; width: 100px; height: 50px; margin: auto; }
+.variationUnknown { color: #8a735b; font-size: 1.1rem; }
+.savedSteps .variationTable td { height: 50px; }
+@media (max-width: 600px) {
+  .variationHeader, .variationFooter { padding: .8rem; }
+  .variationHeader { align-items: flex-start; }
+  .variationBody { padding: .8rem; }
+  .variationModal { max-height: 96dvh; }
 }

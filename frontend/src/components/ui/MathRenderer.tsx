@@ -88,10 +88,15 @@ export function MathRenderer({ content, className = "", inline = false }: MathRe
   const renderedHtml = useMemo(() => {
     if (!content) return "";
 
-    // If whole content looks like raw LaTeX without $ wrappers (e.g. \frac{1}{2} or y' = 3x^2)
+    // A sentence containing '=' is not a standalone formula. Render whole-input
+    // KaTeX only for compact formula-like values without prose or PDF line breaks.
     const trimmed = content.trim();
     if (
       (trimmed.startsWith("\\") || trimmed.includes("=") || trimmed.includes("^") || trimmed.includes("_")) &&
+      trimmed.length <= 200 &&
+      !/[\r\n]/.test(trimmed) &&
+      !/[\u00c0-\u1ef9]/iu.test(trimmed) &&
+      !/\b[A-Za-z]{4,}\s+[A-Za-z]{4,}\b/.test(trimmed) &&
       !trimmed.includes("$") &&
       !trimmed.includes("\\[")
     ) {
@@ -112,11 +117,14 @@ export function MathRenderer({ content, className = "", inline = false }: MathRe
     return segments
       .map((segment) => {
         if (segment.type === "text") {
-          return segment.value
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/\n/g, "<br/>");
+          // PDF text extraction often inserts soft wraps inside one sentence.
+          // Preserve paragraph breaks while joining single source line wraps.
+          return segment.value.replace(/\r\n?/g, "\n").split(/\n{2,}/).map((paragraph) =>
+            paragraph.replace(/[ \t]*\n[ \t]*/g, " ")
+              .replace(/&/g, "&amp;")
+              .replace(/</g, "&lt;")
+              .replace(/>/g, "&gt;"),
+          ).join("<br/><br/>");
         }
 
         const isDisplay = segment.type === "display_math";
@@ -127,7 +135,8 @@ export function MathRenderer({ content, className = "", inline = false }: MathRe
             strict: false,
           });
         } catch {
-          return `<span>${segment.value}</span>`;
+          const safe = segment.value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+          return `<span>${safe}</span>`;
         }
       })
       .join("");

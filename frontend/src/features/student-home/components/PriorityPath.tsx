@@ -1,9 +1,8 @@
 "use client";
 
-import { ArrowRight, Route } from "lucide-react";
+import { ArrowRight, CheckCircle2, ChevronRight, Sparkles } from "lucide-react";
 import { motion } from "motion/react";
 
-import { OrganicCard } from "@/components/ui/OrganicCard";
 import { fadeUp, staggerContainer } from "@/lib/motion";
 
 import { getPriorityReasonCopy } from "../copy";
@@ -20,55 +19,136 @@ export function PriorityPath({ priorities, onSelectPriority }: PriorityPathProps
   return (
     <section className={styles.prioritySection} id="priority-path" aria-labelledby="priority-title">
       <SectionHeading
-        eyebrow="Bước tiếp theo"
-        title="Lộ trình ưu tiên"
-        description="Tập trung vào những mắt xích tạo ra thay đổi lớn nhất."
+        eyebrow="Bước tiếp theo theo dữ liệu thật"
+        title="Lộ trình kiến thức ưu tiên"
+        description="Được tính toán từ các mắt xích bạn cần củng cố nhất để tối ưu điểm số."
       />
-      <OrganicCard className={styles.priorityCard} variant="solid">
-        <span className={styles.priorityCardIcon} aria-hidden="true"><Route size={21} /></span>
+
+      <div className={styles.priorityContainerNew}>
+        {/* Subtle Ambient Corner Glow */}
+        <span
+          style={{
+            position: "absolute",
+            top: "-60px",
+            left: "-60px",
+            width: "220px",
+            height: "220px",
+            borderRadius: "50%",
+            background: "rgba(99, 201, 154, 0.35)",
+            filter: "blur(50px)",
+            pointerEvents: "none",
+            opacity: 0.4,
+          }}
+          aria-hidden="true"
+        />
+
         {priorities.length === 0 ? (
-          <div className={styles.priorityEmpty}>
-            <h3>Chưa có ưu tiên học tập</h3>
-            <p>Backend chưa xác định mục tiêu tiếp theo cho phiên hiện tại.</p>
+          <div style={{ textAlign: "center", padding: "48px 16px" }}>
+            <CheckCircle2 size={38} style={{ margin: "0 auto 12px", color: "#10b981" }} />
+            <h3 style={{ fontSize: "1.1rem", fontWeight: 750, color: "var(--text-primary)", margin: "0 0 6px" }}>
+              Mọi mục tiêu đã hoàn thành!
+            </h3>
+            <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", margin: 0 }}>
+              Bạn đã hoàn thành tốt các bài tập ưu tiên. Hãy mở Vũ trụ tri thức để khám phá thêm.
+            </p>
           </div>
         ) : null}
-        <motion.ol
-          className={styles.priorityList}
-          variants={staggerContainer}
-          initial={false}
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-        >
-          {priorities.map((priority, index) => (
-            <motion.li
-              className={index === 0 ? styles.priorityItemActive : styles.priorityItem}
-              variants={fadeUp}
-              key={priority.id}
-            >
-              <span className={`${styles.priorityNode} ${index === 0 ? styles.priorityNodeCurrent : index === 1 ? styles.priorityNodeNext : styles.priorityNodeLater}`}>
-                {index + 1}
-              </span>
-              <div className={styles.priorityCopy}>
-                <small>{getPriorityReasonCopy(priority.reasonCode)}</small>
-                <h3>{priority.targetName}</h3>
-                <p>
-                  {priority.mastery === undefined
-                    ? "Chưa có đủ bằng chứng để đo độ vững"
-                    : `Độ vững hiện tại ${priority.mastery}%`}
-                </p>
-              </div>
-              <button
-                type="button"
-                className={styles.priorityAction}
-                onClick={() => onSelectPriority?.(priority)}
-                aria-label={`Xem chi tiết ${priority.targetName}`}
-              >
-                <ArrowRight size={18} />
-              </button>
-            </motion.li>
-          ))}
-        </motion.ol>
-      </OrganicCard>
+
+        {priorities.length > 0 ? (
+          <motion.ol
+            className={styles.priorityListNew}
+            variants={staggerContainer}
+            initial={false}
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+          >
+            {/* Vertical Guide Rail linking steps */}
+            <div className={styles.priorityRailNew} aria-hidden="true" />
+
+            {priorities.map((priority, index) => {
+              const isFirst = index === 0;
+              const mastery = priority.mastery ?? 0;
+
+              return (
+                <motion.li
+                  variants={fadeUp}
+                  key={priority.id}
+                  style={{ position: "relative", zIndex: 1, listStyle: "none" }}
+                >
+                  <div
+                    onClick={() => onSelectPriority?.(priority)}
+                    className={`${styles.priorityItemNew} ${isFirst ? styles.priorityItemHero : ""}`}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        onSelectPriority?.(priority);
+                      }
+                    }}
+                  >
+                    {/* Left: Step Node & Copy */}
+                    <div className={styles.priorityItemLeft}>
+                      {/* Step Number Circle */}
+                      <div className={`${styles.priorityNodeNum} ${isFirst ? styles.priorityNodeNumHero : ""}`}>
+                        {index + 1}
+                      </div>
+
+                      {/* Content Body */}
+                      <div className={styles.priorityItemBody}>
+                        <div className={styles.priorityBadgeRow}>
+                          {isFirst ? (
+                            <span className={styles.priorityHeroPill}>
+                              <Sparkles size={11} />
+                              Ưu tiên số 1 hôm nay
+                            </span>
+                          ) : null}
+                          <span className={styles.priorityReasonBadge}>
+                            {getPriorityReasonCopy(priority.reasonCode)}
+                          </span>
+                        </div>
+
+                        <h4 className={styles.priorityItemTitle}>
+                          {priority.targetName}
+                        </h4>
+
+                        <div className={styles.priorityItemMeta}>
+                          <span>
+                            Độ vững: <strong style={{ color: "var(--text-secondary)" }}>{priority.mastery !== undefined ? `${priority.mastery}%` : "Chưa đo"}</strong>
+                          </span>
+                          {/* Mini Progress Bar */}
+                          <div className={styles.priorityMiniBar}>
+                            <div
+                              className={styles.priorityMiniFill}
+                              style={{ width: `${Math.max(6, mastery)}%` }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Right Action Button */}
+                    <div style={{ flexShrink: 0 }}>
+                      {isFirst ? (
+                        <button
+                          type="button"
+                          className={styles.priorityActionBtn}
+                        >
+                          Luyện tập ngay
+                          <ArrowRight size={13} style={{ color: "#6ee7b7" }} />
+                        </button>
+                      ) : (
+                        <div className={styles.priorityArrowIcon}>
+                          <ChevronRight size={18} />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </motion.li>
+              );
+            })}
+          </motion.ol>
+        ) : null}
+      </div>
     </section>
   );
 }

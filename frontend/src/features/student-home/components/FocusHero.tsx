@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Route } from "lucide-react";
+import { ArrowRight, Orbit, PenTool } from "lucide-react";
 import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
 import type { ChangeEvent } from "react";
@@ -41,13 +41,10 @@ export function FocusHero({ data, onOpenActionDetail }: FocusHeroProps) {
       initial="hidden"
       animate="visible"
     >
+      {/* Magical Cosmic Hero Decor */}
       <div className={styles.heroDecor} aria-hidden="true">
         <span className={styles.heroAurora} />
-        <span className={styles.heroMist} />
         <span className={styles.heroHorizon} />
-        <span className={styles.heroCloud} />
-        <span className={styles.heroLeafOne} />
-        <span className={styles.heroLeafTwo} />
         <span className={styles.heroSpark}>✦</span>
         <span className={styles.heroFireflyOne} />
         <span className={styles.heroFireflyTwo} />
@@ -83,7 +80,7 @@ export function FocusHero({ data, onOpenActionDetail }: FocusHeroProps) {
         </h1>
         <p className={styles.heroDescription}>
           {isSelfStudyOnboarding
-            ? "Chọn một chương và khám phá từng dạng bài theo nhịp của bạn. Mọi tiến độ chỉ bắt đầu khi có hoạt động học thật."
+            ? "Khám phá các chòm sao, chủ đề và từng dạng bài theo nhịp của bạn. Mọi tiến độ sẽ được đo lường chính xác khi có hoạt động học thật."
             : action.description}
         </p>
         {!isSelfStudyOnboarding && action.targetName ? (
@@ -104,15 +101,15 @@ export function FocusHero({ data, onOpenActionDetail }: FocusHeroProps) {
               <ArrowRight size={18} aria-hidden="true" />
             </GradientButton>
           ) : (
-            <GradientButton onClick={onOpenActionDetail}>
-              {action.primaryLabel}
-              <ArrowRight size={18} aria-hidden="true" />
+            <GradientButton href="/student/attempts">
+              <PenTool size={17} aria-hidden="true" />
+              Làm bài trên giấy số
             </GradientButton>
           )}
           {!isSelfStudyOnboarding ? (
             <GradientButton href={knowledgeHref} variant="secondary">
-              <Route size={17} aria-hidden="true" />
-              Bản đồ tri thức
+              <Orbit size={17} aria-hidden="true" />
+              Vũ trụ tri thức
             </GradientButton>
           ) : null}
         </div>

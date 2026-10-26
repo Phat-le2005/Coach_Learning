@@ -1,216 +1,229 @@
 .canopyWrap {
   position: relative;
-  width: min(100%, 570px);
+  width: 100%;
+  max-width: 600px;
   margin-inline: auto;
-  padding-top: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .canopyWrap::before {
   position: absolute;
   top: 5%;
-  left: 8%;
-  width: 84%;
-  height: 82%;
+  left: 5%;
+  width: 90%;
+  height: 90%;
   content: "";
   pointer-events: none;
   border-radius: 50%;
-  opacity: 0.72;
-  filter: blur(40px);
-  background: radial-gradient(circle, rgb(99 201 154 / 18%), rgb(92 169 214 / 7%) 48%, transparent 70%);
+  opacity: 0.75;
+  background: radial-gradient(circle, rgba(99, 201, 154, 0.22) 0%, rgba(92, 169, 214, 0.12) 45%, rgba(133, 120, 207, 0.08) 65%, transparent 75%);
+  filter: blur(28px);
+  animation: cosmic-aura-pulse 8s ease-in-out infinite alternate;
 }
 
 .canopy {
   position: relative;
   width: 100%;
+  height: auto;
   overflow: visible;
+  filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.35));
 }
 
-.treeGroundGlow { opacity: 0.9; }
-
-.treeFoliage circle {
-  fill: rgb(99 201 154 / 5%);
-  stroke: rgb(195 237 213 / 7%);
-  stroke-width: 1;
-}
-
-.treeFoliage circle:nth-child(2n) { fill: rgb(59 185 176 / 5%); }
-.treeFoliage circle:nth-child(3n) { fill: rgb(203 230 244 / 4%); }
-
-.treeTrunk {
+/* Orbit tracks */
+.orbitTrackOuter {
   fill: none;
-  stroke-width: 15;
-  stroke-linecap: round;
-  filter: drop-shadow(0 12px 15px rgb(3 23 18 / 24%));
+  stroke: rgba(99, 201, 154, 0.15);
+  stroke-dasharray: 6 10;
+  animation: orbit-rotate 120s linear infinite;
+  transform-origin: 300px 230px;
 }
 
-.canopyBranch {
+.orbitTrackMain {
   fill: none;
-  stroke: rgb(169 221 190 / 68%);
-  stroke-width: 4;
-  stroke-linecap: round;
-  filter: drop-shadow(0 3px 5px rgb(7 34 28 / 22%));
-  transition: stroke 240ms ease, stroke-width 240ms ease;
+  stroke: rgba(99, 201, 154, 0.28);
+  stroke-dasharray: 4 6;
+  animation: orbit-rotate-reverse 80s linear infinite;
+  transform-origin: 300px 230px;
 }
 
-.branchTarget {
-  stroke: rgb(222 231 151 / 82%);
-  stroke-width: 5;
-}
-
-.canopyRoots path {
+.orbitTrackInner {
   fill: none;
-  stroke: rgb(185 235 229 / 28%);
-  stroke-width: 2;
-  stroke-linecap: round;
+  stroke: rgba(92, 169, 214, 0.2);
+  stroke-dasharray: 3 5;
+  animation: orbit-rotate 60s linear infinite;
+  transform-origin: 300px 230px;
 }
 
-.canopyRepair .rootRepair {
-  stroke: rgb(226 170 77 / 68%);
-  stroke-width: 4;
-}
-
-.canopyRepair .rootRecovery {
-  stroke: rgb(104 214 159 / 88%);
-  stroke-width: 1.6;
-  stroke-dasharray: 5 8;
-}
-
-.canopyReview .branchTarget { stroke: rgb(226 170 77 / 82%); }
-
-.treeTrunkRings path {
+/* Constellation connecting beams */
+.constellationBeam {
   fill: none;
-  stroke: rgb(221 244 225 / 24%);
-  stroke-width: 2;
-  stroke-linecap: round;
+  stroke: #3bb9b0;
+  stroke-width: 1.8;
+  stroke-opacity: 0.55;
+  stroke-dasharray: 5 5;
+  animation: beam-flow 20s linear infinite;
+  transition: stroke-opacity 0.25s ease, stroke-width 0.25s ease;
 }
 
-.canopyNode {
+.constellationBeamActive {
+  stroke: #63c99a;
+  stroke-opacity: 0.95;
+  stroke-width: 2.8;
+  filter: drop-shadow(0 0 6px #63c99a);
+}
+
+.spokeLine {
+  stroke: rgba(99, 201, 154, 0.22);
+  stroke-width: 1.2;
+  stroke-dasharray: 2 4;
+}
+
+/* Center core nucleus */
+.coreNode {
   cursor: pointer;
   outline: none;
 }
 
-.canopyNodeHalo {
-  fill: rgb(255 255 255 / 2%);
-  stroke: rgb(255 255 255 / 9%);
-  stroke-width: 1;
-  transform-origin: center;
-  transition: fill 160ms ease, stroke 160ms ease, transform 160ms ease;
-}
-
-.canopyNode:focus-visible .canopyNodeHalo {
-  stroke: var(--sky-200);
-  stroke-width: 3;
-}
-
-.canopyNodeBody {
-  fill: var(--mint-500);
-  stroke: rgb(245 250 238 / 56%);
-  stroke-width: 1.4;
-  transition: filter 240ms ease, opacity 240ms ease;
-}
-
-.canopyNodeVein {
+.corePulseRing {
   fill: none;
-  stroke: rgb(250 252 240 / 55%);
-  stroke-width: 1.2;
-  stroke-linecap: round;
+  stroke: rgba(99, 201, 154, 0.35);
+  stroke-width: 1.5;
+  animation: core-ripple 3.5s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+  transform-origin: 300px 230px;
 }
 
-.canopyNodeDot { fill: rgb(255 250 218 / 92%); }
-.canopyNode_mastered .canopyNodeBody { fill: #68d69f; }
-.canopyNode_developing .canopyNodeBody { fill: #42c5bc; }
-.canopyNode_weak .canopyNodeBody { fill: #e2aa4d; }
-.canopyNode_review .canopyNodeBody { fill: #9386dc; }
-
-.canopyNode_not_started .canopyNodeBody {
-  fill: #7f918a;
-  opacity: 0.62;
-  filter: none;
+/* Chapter constellation star nodes - STABLE, ZERO JITTER */
+.chapterNode {
+  cursor: pointer;
+  outline: none;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
 }
 
-.canopyNodeTarget .canopyNodeHalo {
-  fill: rgb(222 231 151 / 12%);
-  stroke: rgb(255 240 174 / 58%);
-  animation: target-breathe 3.4s ease-in-out infinite;
+.nodeHalo {
+  transition: r 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              stroke-width 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              fill-opacity 0.35s ease,
+              stroke-opacity 0.35s ease;
+  animation: star-halo-pulse 3.5s ease-in-out infinite alternate;
 }
 
-.canopyNodeLock rect {
-  fill: rgb(246 247 235 / 76%);
-  stroke: none;
+.chapterNode:hover .nodeHalo,
+.chapterNode:focus-visible .nodeHalo {
+  fill-opacity: 0.55;
+  stroke-opacity: 1;
 }
 
-.canopyNodeLock path {
-  fill: none;
-  stroke: rgb(45 66 58 / 78%);
-  stroke-width: 1.4;
-  stroke-linecap: round;
+.nodeBody {
+  transition: r 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              stroke-width 0.35s ease,
+              filter 0.35s ease;
 }
 
-.canopyNode:hover .canopyNodeHalo,
-.canopyNode:focus .canopyNodeHalo {
-  fill: rgb(195 237 213 / 10%);
-  stroke: rgb(195 237 213 / 42%);
-  transform: scale(1.04);
+/* High contrast crystal clear typography with zero overlap */
+.nodeLabel {
+  font-family: inherit;
+  font-size: 11.5px;
+  font-weight: 750;
+  fill: #ffffff;
+  text-anchor: middle;
+  pointer-events: none;
+  user-select: none;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 10px rgba(16, 46, 38, 0.9));
+  transition: fill 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.canopyTooltip rect {
-  fill: rgb(16 46 38 / 96%);
-  stroke: rgb(255 255 255 / 14%);
-}
-
-.canopyTooltip text { fill: var(--text-inverse); }
-
-.tooltipTitle {
-  font-size: 10px;
+.nodeSubLabel {
+  font-family: inherit;
+  font-size: 9.5px;
   font-weight: 700;
+  fill: #63c99a;
+  text-anchor: middle;
+  pointer-events: none;
+  user-select: none;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.9));
+  transition: fill 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.tooltipMeta {
-  fill: rgb(232 244 234 / 74%);
-  font-size: 8px;
-  font-weight: 550;
+.chapterNode:hover .nodeLabel {
+  fill: #e6fffa;
+  filter: drop-shadow(0 0 12px rgba(99, 201, 154, 0.95)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.95));
 }
 
-.canopyParticles circle { fill: var(--amber-200); }
-
-.canopyCaption {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-top: -12px;
-  color: rgb(244 245 234 / 58%);
-  font-size: 0.7rem;
-  letter-spacing: 0.03em;
+.chapterNode:hover .nodeSubLabel {
+  fill: #a7f3d0;
+  filter: drop-shadow(0 0 8px rgba(99, 201, 154, 0.85));
 }
 
-.canopyCaption span {
-  width: 18px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgb(195 237 213 / 42%));
+.starSparkle {
+  fill: #fef08a;
+  filter: drop-shadow(0 0 4px #fef08a);
+  animation: sparkle-twinkle 2.5s ease-in-out infinite;
+  pointer-events: none;
 }
 
-.canopyCaption span:last-child { transform: scaleX(-1); }
-
-.canopyGhost {
-  filter: saturate(0.55);
-  opacity: 0.76;
+/* Floating glass status pill */
+.tooltipWrap {
+  margin-top: 0.5rem;
+  padding: 0.55rem 1.25rem;
+  background: rgba(16, 46, 38, 0.88);
+  border: 1px solid rgba(99, 201, 154, 0.45);
+  border-radius: 9999px;
+  text-align: center;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: #eefaf2;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(14px);
+  transition: background 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, box-shadow;
 }
 
-@keyframes target-breathe {
-  0%, 100% { opacity: 0.55; transform: scale(0.96); }
-  50% { opacity: 1; transform: scale(1.08); }
+.tooltipWrapActive {
+  border-color: rgba(99, 201, 154, 0.85);
+  background: rgba(20, 60, 48, 0.95);
+  box-shadow: 0 12px 32px rgba(99, 201, 154, 0.35);
+  transform: translateY(-2px);
 }
 
-@media (max-width: 1199px) {
-  .canopyWrap { width: min(100%, 500px); }
+@keyframes cosmic-aura-pulse {
+  0% { transform: scale(0.94); opacity: 0.55; }
+  100% { transform: scale(1.06); opacity: 0.85; }
 }
 
-@media (max-width: 767px) {
-  .canopyWrap { width: min(100%, 400px); }
-  .canopyCaption { margin-top: -14px; }
+@keyframes orbit-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .canopyNodeTarget .canopyNodeHalo { animation: none; }
+@keyframes orbit-rotate-reverse {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+
+@keyframes beam-flow {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: 100; }
+}
+
+@keyframes core-ripple {
+  0% { r: 48px; opacity: 0.8; stroke-width: 2px; }
+  100% { r: 84px; opacity: 0; stroke-width: 0.5px; }
+}
+
+@keyframes star-halo-pulse {
+  0% { fill-opacity: 0.25; stroke-opacity: 0.55; }
+  100% { fill-opacity: 0.48; stroke-opacity: 0.95; }
+}
+
+@keyframes sparkle-twinkle {
+  0%, 100% { transform: scale(0.85); opacity: 0.6; }
+  50% { transform: scale(1.2); opacity: 1; }
 }

@@ -55,11 +55,12 @@ class Settings(BaseSettings):
     mathpix_app_key: SecretStr = SecretStr("")
     math_ocr_timeout_seconds: float = Field(default=12.0, ge=1.0, le=30.0)
 
+
     ai_provider: str = Field(default="mock", min_length=1)
     ai_api_key: SecretStr = SecretStr("")
-    ai_model_fast: str = Field(default="gemini-2.5-flash", min_length=1)
-    ai_model_standard: str = Field(default="gemini-2.5-standard", min_length=1)
-    ai_model_reasoning: str = Field(default="gemini-2.5-pro", min_length=1)
+    ai_model_fast: str = Field(default="gemini-3.6-flash", min_length=1)
+    ai_model_standard: str = Field(default="gemini-3.6-flash", min_length=1)
+    ai_model_reasoning: str = Field(default="gemini-3.6-flash", min_length=1)
     ai_embedding_model: str = Field(default="text-embedding-004", min_length=1)
     ai_timeout_seconds: float = Field(default=30.0, ge=0.5, le=300.0)
     ai_max_retries: int = Field(default=2, ge=0, le=5)

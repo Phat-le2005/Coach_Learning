@@ -397,6 +397,63 @@ def test_practice_next_problem_delivers_canonical_question(
         assert "is_correct" not in opt
 
 
+def test_practice_next_problem_skips_broken_pdf_text_without_deleting_question(
+    db_client: TestClient, db_session: Session, delivery_domain: DeliveryDomain, auth_headers
+) -> None:
+    source = delivery_domain.canonical_question
+    source.content = "Trích xuất lỗi\n1\n2\nx\ny\n\n=\n3\n4\n5\n6"
+    clean = Question(
+        subject_id=source.subject_id,
+        content="Câu hỏi đã có nội dung hiển thị rõ ràng.",
+        question_type=QuestionType.MULTIPLE_CHOICE,
+        difficulty=0.5,
+        correct_answer="A",
+        source_type="TEST",
+        exam_weight=1.0,
+        status=QuestionStatus.APPROVED,
+        created_by=delivery_domain.teacher.id,
+        concept_links=[QuestionConcept(concept_id=source.concept_links[0].concept_id, weight=1.0)],
+        learning_outcome_links=[QuestionLearningOutcome(learning_outcome_id=source.learning_outcome_links[0].learning_outcome_id)],
+        problem_type_links=[QuestionProblemType(problem_type_id=source.problem_type_links[0].problem_type_id, weight=1.0)],
+    )
+    db_session.add(clean)
+    db_session.commit()
+
+    headers = auth_headers(delivery_domain.student_a)
+    url = f"/api/v2/math-solutions/practice-sessions/{delivery_domain.practice_session.id}/next-problem"
+    response = db_client.get(url, headers=headers)
+    assert response.status_code == 200
+    assert response.json()["question_id"] == str(clean.id)
+    assert db_session.get(Question, source.id).status == QuestionStatus.APPROVED
+
+    manual_create = db_client.post(
+        "/api/v2/math-solutions/attempts",
+        json={
+            "source_kind": "CANONICAL",
+            "context_type": "SELF_PRACTICE",
+            "mode": "INDEPENDENT_SOLUTION",
+            "create_idempotency_key": "broken-source-direct-create",
+            "question_id": str(source.id),
+            "practice_session_id": str(delivery_domain.practice_session.id),
+        },
+        headers=headers,
+    )
+    assert manual_create.status_code == 422
+    assert manual_create.json()["error"]["code"] == "QUESTION_PRESENTATION_REVIEW_REQUIRED"
+
+
+def test_practice_next_problem_reports_when_every_question_needs_source_review(
+    db_client: TestClient, db_session: Session, delivery_domain: DeliveryDomain, auth_headers
+) -> None:
+    delivery_domain.canonical_question.content += "\n"
+    db_session.commit()
+    headers = auth_headers(delivery_domain.student_a)
+    url = f"/api/v2/math-solutions/practice-sessions/{delivery_domain.practice_session.id}/next-problem"
+    response = db_client.get(url, headers=headers)
+    assert response.status_code == 404
+    assert response.json()["error"]["code"] == "NO_PRESENTABLE_QUESTIONS"
+
+
 def test_practice_next_problem_excludes_attempted_and_returns_404_when_exhausted(
     db_client: TestClient, delivery_domain: DeliveryDomain, auth_headers
 ) -> None:
@@ -1503,3 +1560,93 @@ def test_postgres_concurrency_prepare_two_transactions(postgres_engine: Engine) 
         reloaded = db.get(StudentAssignment, student_assignment_id)
         assert reloaded.status == StudentAssignmentStatus.IN_PROGRESS
 
+
+
+def test_v3_gemini_review_is_owner_scoped_provisional_and_answer_grounded(
+    db_client: TestClient, db_app, db_session: Session,
+    delivery_domain: DeliveryDomain, auth_headers,
+) -> None:
+    from types import SimpleNamespace
+    from app.math_solutions.ai_review_router import get_step_ai_gateway
+    from app.math_solutions.answer_grounded_ai import AIGradeOutput
+    from app.math_solutions.models import EvaluationDecision, StepEvaluation
+
+    delivery_domain.canonical_question.question_type = QuestionType.OPEN_RESPONSE
+    delivery_domain.canonical_question.correct_answer = "x+1"
+    db_session.commit()
+    headers_a = auth_headers(delivery_domain.student_a)
+    headers_b = auth_headers(delivery_domain.student_b)
+    created = db_client.post("/api/v2/math-solutions/attempts", headers=headers_a, json={
+        "source_kind": "CANONICAL", "context_type": "SELF_PRACTICE",
+        "mode": "INDEPENDENT_SOLUTION", "create_idempotency_key": "gemini-review-test",
+        "question_id": str(delivery_domain.canonical_question.id),
+        "practice_session_id": str(delivery_domain.practice_session.id),
+    })
+    assert created.status_code == 201, created.text
+    attempt_id = created.json()["id"]
+    step = db_client.post(f"/api/v2/math-solutions/attempts/{attempt_id}/steps", headers=headers_a, json={
+        "expected_attempt_revision": 1, "client_action_id": str(uuid4()),
+        "step_type": "CUSTOM", "content_latex": "x+1",
+    })
+    assert step.status_code == 201, step.text
+    submitted = db_client.post(f"/api/v2/math-solutions/attempts/{attempt_id}/submit", headers=headers_a, json={
+        "expected_attempt_revision": step.json()["attempt_revision_number"],
+        "client_action_id": str(uuid4()),
+    })
+    assert submitted.status_code == 200, submitted.text
+
+    url = f"/api/v3/math-solutions/attempts/{attempt_id}/ai-review"
+    assert db_client.post(url).status_code == 401
+    assert db_client.post(url, headers=auth_headers(delivery_domain.teacher)).status_code == 403
+    missing_provider = db_client.post(url, headers=headers_a)
+    assert missing_provider.status_code == 503
+    assert missing_provider.json()["error"]["code"] == "REAL_AI_PROVIDER_REQUIRED"
+
+    class Gateway:
+        provider = object()
+        calls = 0
+
+        async def generate_structured(self, **kwargs):
+            self.calls += 1
+            return SimpleNamespace(data=AIGradeOutput.model_validate({"steps": [{
+                "step_index": 1, "verdict": "VALID", "score": 1.0,
+                "confidence": 0.94, "student_quote": "x+1",
+                "answer_quote": "x+1", "feedback": "This step matches the reference.",
+            }]}))
+
+    gateway = Gateway()
+    db_app.dependency_overrides[get_step_ai_gateway] = lambda: gateway
+    assert db_client.post(url, headers=headers_b).status_code == 404
+    assert gateway.calls == 0
+    reviewed = db_client.post(url, headers=headers_a)
+    assert reviewed.status_code == 200, reviewed.text
+    assert reviewed.headers["cache-control"] == "no-store"
+    assert reviewed.json() == {
+        "attempt_id": attempt_id, "is_final": False, "needs_teacher_review": False,
+        "step_grades": [{"step_index": 1, "verdict": "VALID", "score": 1.0,
+                         "confidence": 0.94, "feedback": "This step matches the reference."}],
+    }
+    assert gateway.calls == 1
+    assert db_session.scalar(select(EvaluationDecision.id).where(EvaluationDecision.attempt_id == UUID(attempt_id))) is None
+    assert db_session.scalar(select(StepEvaluation.id)) is None
+
+    delivery_domain.canonical_question.correct_answer = None
+    db_session.commit()
+    no_answer = db_client.post(url, headers=headers_a)
+    assert no_answer.status_code == 409
+    assert no_answer.json()["error"]["code"] == "GRADING_ANSWER_REQUIRED"
+    assert gateway.calls == 1
+    from app.ai.exceptions import AIRateLimitError
+    from app.ai.rate_limiter import get_ai_rate_limiter
+
+    class DenyLimiter:
+        def check_rate_limit(self, user_id, **kwargs):
+            raise AIRateLimitError("AI request budget reached.")
+
+    delivery_domain.canonical_question.correct_answer = "x+1"
+    db_session.commit()
+    db_app.dependency_overrides[get_ai_rate_limiter] = lambda: DenyLimiter()
+    limited = db_client.post(url, headers=headers_a)
+    assert limited.status_code == 429
+    assert limited.json()["error"]["code"] == "AI_RATE_LIMIT_EXCEEDED"
+    assert gateway.calls == 1

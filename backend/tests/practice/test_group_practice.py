@@ -141,6 +141,21 @@ def test_eligible_group_is_first_item_and_hides_answers(
     assert "answer_evidence" not in serialized
 
 
+def test_group_missing_child_answer_is_not_offered(
+    db_session: Session,
+    practice_students: tuple[User, User],
+    practice_user_factory,
+    practice_content: PracticeContent,
+) -> None:
+    student, _ = practice_students
+    grouped = create_group(db_session, practice_content, _teacher(practice_user_factory, "no-key"))
+    grouped.children[0].correct_answer = None
+    db_session.commit()
+    service = PracticeService(db_session, evidence_publisher=RecordingPublisher())
+    practice = _practice(service, student, practice_content)
+    assert db_session.scalar(service._eligible_groups(practice, exclude_attempted=False)) is None
+
+
 @pytest.mark.parametrize(
     "case",
     [

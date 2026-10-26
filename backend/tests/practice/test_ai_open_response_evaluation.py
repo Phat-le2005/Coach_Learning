@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from fastapi.testclient import TestClient
 
 from app.ai.gateway import AIGateway
+from app.ai.dependencies import get_ai_gateway
 from app.ai.mock_provider import MockAIProvider
 from app.core.config import Settings
 from app.core.exceptions import ApplicationError
@@ -373,12 +374,18 @@ def test_ai_evaluate_attempt_api_authorized(
     practice_students: tuple[User, User],
     practice_bearer: any,
     practice_content: PracticeContent,
+    settings: Settings,
 ) -> None:
     student, _ = practice_students
     practice_service = PracticeService(db_session)
     attempt = _create_open_response_attempt(practice_service, student, practice_content)
 
     headers = practice_bearer(student)
+    # The API integration test must use a test gateway even when the developer
+    # has configured Gemini in backend/.env for manual local testing.
+    db_client.app.dependency_overrides[get_ai_gateway] = lambda: AIGateway(
+        provider=MockAIProvider(), settings=settings,
+    )
     response = db_client.post(
         f"/practice/attempts/{attempt.id}/ai-evaluate",
         headers=headers,
@@ -413,3 +420,28 @@ def test_ai_evaluate_attempt_api_forbidden_for_other_student(
 
     assert response.status_code == 403
     assert response.json()["error"]["code"] == "ACCESS_DENIED"
+
+@pytest.mark.anyio
+async def test_runtime_ai_grading_rejects_mock_and_missing_answer(
+    db_session: Session,
+    practice_students: tuple[User, User],
+    practice_content: PracticeContent,
+    settings: Settings,
+) -> None:
+    from app.ai.gemini_provider import GeminiProvider
+
+    student, _ = practice_students
+    attempt = _create_open_response_attempt(PracticeService(db_session), student, practice_content)
+    runtime_settings = settings.model_copy(update={"app_env": "development"})
+    mock_gateway = AIGateway(provider=MockAIProvider(), settings=runtime_settings)
+    with pytest.raises(ApplicationError) as error:
+        await AIOpenResponseEvaluationService(db_session, mock_gateway).evaluate_attempt(attempt.id)
+    assert error.value.code == "REAL_AI_PROVIDER_REQUIRED"
+
+    real_gateway = AIGateway(provider=GeminiProvider("test-only-key"), settings=runtime_settings)
+    with pytest.raises(ApplicationError) as error:
+        await AIOpenResponseEvaluationService(db_session, real_gateway).evaluate_attempt(attempt.id)
+    assert error.value.code == "GRADING_ANSWER_REQUIRED"
+    db_session.refresh(attempt)
+    assert attempt.evaluation_status == EvaluationStatus.NEEDS_EVALUATION
+    assert attempt.score is None

@@ -5,19 +5,19 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.core.exceptions import ApplicationError
+from app.math_solutions.assignment_grading import require_pending_assignment_item
+from app.math_solutions.grading_context import resolve_grading_context
 from app.math_solutions.misconception_classifier import MisconceptionClassifier
 from app.math_solutions.models import (
     EvaluationDecision,
     MathArtifact,
     SolutionAttempt,
-    SolutionRubric,
     SolutionStep,
     StepEvaluation,
     StepRevision,
 )
 from app.math_solutions.rubric_evaluator import SolutionRubricEvaluator
 from app.math_solutions.validator import DeterministicMathValidator
-from app.questions.models import Question
 
 
 class MathEvaluatorService:
@@ -29,7 +29,7 @@ class MathEvaluatorService:
     def __init__(self, session: Session) -> None:
         self.session = session
 
-    def evaluate_attempt(self, attempt_id: UUID) -> EvaluationDecision:
+    def evaluate_attempt(self, attempt_id: UUID, *, commit: bool = True) -> EvaluationDecision:
         attempt = self.session.get(SolutionAttempt, attempt_id)
         if not attempt:
             raise ApplicationError(404, "ATTEMPT_NOT_FOUND", "Solution attempt not found.")
@@ -41,15 +41,16 @@ class MathEvaluatorService:
         if existing_decision is not None:
             return existing_decision
 
-        # Determine target problem expression if Canonical Question
-        target_latex: str | None = None
-        if attempt.question_id is not None:
-            question = self.session.get(Question, attempt.question_id)
-            if question and question.content:
-                # E.g. y = \frac{1}{3}x^3 - x^2 - 3x + 1 or x^3 - 3x
-                target_latex = question.content
-
-        validator = DeterministicMathValidator(target_function_latex=target_latex)
+        context = resolve_grading_context(self.session, attempt)
+        if attempt.context_type == "CLASSROOM_ASSIGNMENT":
+            require_pending_assignment_item(self.session, attempt)
+        rubric = context.rubric
+        validator = DeterministicMathValidator(target_function_latex=context.problem_content)
+        if not validator.supports_polynomial_target:
+            raise ApplicationError(
+                409, "GRADING_TARGET_UNSUPPORTED",
+                "The problem is outside the verified polynomial grading scope.",
+            )
         classifier = MisconceptionClassifier(session=self.session)
 
         # Load active steps in order
@@ -58,6 +59,8 @@ class MathEvaluatorService:
             .where(SolutionStep.attempt_id == attempt_id, SolutionStep.is_deleted.is_(False))
             .order_by(SolutionStep.step_index.asc())
         ).all()
+        if not active_steps:
+            raise ApplicationError(409, "EMPTY_SOLUTION", "No active solution steps are available for grading.")
 
         step_validities_for_rubric = []
         evaluations_to_save: list[StepEvaluation] = []
@@ -72,7 +75,7 @@ class MathEvaluatorService:
                 .order_by(StepRevision.step_revision_number.desc())
             )
             if not latest_revision:
-                continue
+                raise ApplicationError(409, "STEP_REVISION_MISSING", "A solution step has no revision to grade.")
 
             # Check if revision has artifact
             artifact = self.session.scalar(
@@ -131,43 +134,31 @@ class MathEvaluatorService:
                 "raw_score": val_result.score,
             })
 
-        # 3. Tier 3: Rubric Evaluation
-        rubric: SolutionRubric | None = None
-        if attempt.question_id:
-            rubric = self.session.scalar(
-                select(SolutionRubric).where(
-                    SolutionRubric.question_id == attempt.question_id,
-                    SolutionRubric.status == "APPROVED",
-                ).order_by(SolutionRubric.rubric_version.desc())
+        # An unresolved step is neither correct nor incorrect. It must not
+        # produce a final score or learning evidence until it is reviewed.
+        if any(item["validity"] in ("UNDETERMINED", "NEEDS_REVIEW") for item in step_validities_for_rubric):
+            raise ApplicationError(
+                409, "GRADING_REVIEW_REQUIRED",
+                "At least one solution step requires review before a final score.",
             )
 
+        # 3. Tier 3: Rubric Evaluation
         rubric_evaluator = SolutionRubricEvaluator(rubric=rubric)
         final_score, rubric_matches = rubric_evaluator.evaluate(step_validities_for_rubric)
 
-        # Determine is_correct
-        # An unverified mathematical step cannot justify a definitive correct
-        # decision, even when partial rubric credit exceeds the score threshold.
-        has_unverified_steps = any(
-            item["validity"] in ("UNDETERMINED", "NEEDS_REVIEW")
-            for item in step_validities_for_rubric
-        )
-        is_correct = (
-            final_score >= 0.85
-            and len(detected_misconceptions) == 0
-            and not has_unverified_steps
-        )
+        # A definitive score is only recorded when every step was verified.
+        is_correct = final_score >= 0.85 and len(detected_misconceptions) == 0
 
         # Save all step evaluations
         for step_eval in evaluations_to_save:
-            if rubric:
-                step_eval.rubric_id = rubric.id
+            step_eval.rubric_id = rubric.id
             self.session.add(step_eval)
 
         # Create EvaluationDecision
         decision = EvaluationDecision(
             id=uuid4(),
             attempt_id=attempt.id,
-            rubric_id=rubric.id if rubric else None,
+            rubric_id=rubric.id,
             decision_source="AUTOMATED_CONSENSUS",
             final_score=final_score,
             is_correct=is_correct,
@@ -182,19 +173,22 @@ class MathEvaluatorService:
         attempt.status = "EVALUATED"
         attempt.total_score = final_score
         attempt.is_correct = is_correct
+        attempt.evaluated_at = decision.decided_at
 
         self.session.flush()
 
         # Evaluation, evidence, mastery and review schedule must be committed
         # atomically. Never persist a final decision without its evidence.
-        try:
-            from app.math_solutions.evidence_adapter import MathSolutionEvidenceAdapter
+        from app.math_solutions.evidence_adapter import MathSolutionEvidenceAdapter
 
-            adapter = MathSolutionEvidenceAdapter(self.session)
-            adapter.emit_evidence_for_decision(decision.id)
-            self.session.commit()
-        except Exception:
-            self.session.rollback()
-            raise
-
+        if commit:
+            try:
+                MathSolutionEvidenceAdapter(self.session).emit_evidence_for_decision(decision.id)
+                self.session.commit()
+            except Exception:
+                self.session.rollback()
+                raise
+        else:
+            # The assignment submit transaction owns the commit and rollback.
+            MathSolutionEvidenceAdapter(self.session).emit_evidence_for_decision(decision.id)
         return decision
