@@ -30,3 +30,4 @@ Desktop.ini
 
 # Local build/download workspace
 .tmp/
+*.sql
