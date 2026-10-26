@@ -1,12 +1,12 @@
 /**
- * 3D Spatial Layout Mathematics for EduMS — Living Knowledge World
+ * 3D Spatial Layout Mathematics for EduMS — Living Cosmic Knowledge World
  *
- * Establishes a majestic stylized ancient tree coordinate system where:
- * - Level 0: Knowledge Core at the center of the trunk.
- * - Level 1: Chapters branch upward & outward in an amphitheater canopy fan.
- * - Level 2: Topics cluster as luminous celestial platforms.
- * - Level 3: Problem Types fan out in an elevated crown of glowing gem crystals.
- * - Level 4: Prerequisite Bézier arcs link interconnected competencies.
+ * Cosmic Decision Field & Neural Orbit coordinate system:
+ * - Level 0: Central Singularity Core & Accretion Swirl (0, 0, 0).
+ * - Level 1: 7 Chapters arranged uniformly along a 360° orbital ring in 3D space.
+ * - Level 2: Topics radiating outward along electric dendritic lightning paths.
+ * - Level 3: Problem Types branching out into deep space as glowing crystal embers.
+ * - Level 4: Prerequisite Bézier arcs connecting competencies across the galaxy.
  */
 
 import type {
@@ -52,6 +52,7 @@ export interface Chapter3DLayout {
   totalProblemTypes: number;
   masteredCount: number;
   completionPercent: number;
+  orbitalAngle: number;
 }
 
 export interface PrerequisiteArc3D {
@@ -65,6 +66,7 @@ export interface PrerequisiteArc3D {
 export interface LivingWorld3DLayout {
   corePosition: Point3D;
   trunkSpline: Point3D[];
+  ringRadius: number;
   chapters: Chapter3DLayout[];
   nodeMap: Map<string, Node3DLayout>;
   nodeByCodeMap: Map<string, Node3DLayout>;
@@ -72,15 +74,15 @@ export interface LivingWorld3DLayout {
   overviewCamera: { position: Point3D; target: Point3D };
 }
 
-// 7 thematic palettes harmonized with EduMS Deep Forest & Emerald styling
+// 7 vibrant cosmic neon palettes matching the reference video & visualization
 export const CHAPTER_3D_THEMES = [
-  { color: "#23A67A", glow: "rgba(35, 166, 122, 0.6)", name: "Ứng dụng Đạo hàm" },
-  { color: "#38BDF8", glow: "rgba(56, 189, 248, 0.6)", name: "Mũ & Logarit" },
-  { color: "#818CF8", glow: "rgba(129, 140, 248, 0.6)", name: "Vectơ không gian" },
-  { color: "#F59E0B", glow: "rgba(245, 158, 11, 0.6)", name: "Thống kê số liệu" },
-  { color: "#A855F7", glow: "rgba(168, 85, 247, 0.6)", name: "Nguyên hàm & Tích phân" },
-  { color: "#0D9488", glow: "rgba(13, 148, 136, 0.6)", name: "Tọa độ Oxyz" },
-  { color: "#FB7185", glow: "rgba(251, 113, 133, 0.6)", name: "Xác suất có điều kiện" },
+  { color: "#00f0ff", glow: "rgba(0, 240, 255, 0.85)", name: "Ứng dụng Đạo hàm" }, // Ch 1: Electric Cyan
+  { color: "#38bdf8", glow: "rgba(56, 189, 248, 0.85)", name: "Mũ & Logarit" }, // Ch 2: Sky Blue
+  { color: "#a855f7", glow: "rgba(168, 85, 247, 0.85)", name: "Vectơ không gian" }, // Ch 3: Cosmic Violet
+  { color: "#fbbf24", glow: "rgba(251, 191, 36, 0.85)", name: "Thống kê số liệu" }, // Ch 4: Amber Gold
+  { color: "#ec4899", glow: "rgba(236, 72, 153, 0.85)", name: "Nguyên hàm & Tích phân" }, // Ch 5: Neon Magenta
+  { color: "#10b981", glow: "rgba(16, 185, 129, 0.85)", name: "Tọa độ Oxyz" }, // Ch 6: Emerald Green
+  { color: "#f97316", glow: "rgba(249, 115, 22, 0.85)", name: "Xác suất có điều kiện" }, // Ch 7: Vivid Coral
 ];
 
 export const MASTERY_3D_COLORS: Record<string, { base: string; emissive: string; glow: string }> = {
@@ -110,9 +112,9 @@ export const MASTERY_3D_COLORS: Record<string, { base: string; emissive: string;
     glow: "rgba(245, 158, 11, 0.95)",
   },
   NOT_STARTED: {
-    base: "#E2F8F0",
-    emissive: "#38A185",
-    glow: "rgba(139, 229, 194, 0.7)",
+    base: "#67e8f9",
+    emissive: "#0891b2",
+    glow: "rgba(103, 232, 249, 0.75)",
   },
 };
 
@@ -133,98 +135,156 @@ export function getShortChapterName(fullName: string, index: number): string {
 }
 
 /**
- * Computes deterministic, balanced 3D coordinates for all entities in the Knowledge World.
+ * Generates deterministic jittered lightning points between start and end.
+ * Creates an electric, dendritic fractal trajectory.
+ */
+function generateLightningSpline(
+  start: Point3D,
+  end: Point3D,
+  segments: number = 7,
+  jitterAmplitude: number = 1.8,
+  seed: number = 1
+): Point3D[] {
+  const points: Point3D[] = [start];
+  const dx = end.x - start.x;
+  const dy = end.y - start.y;
+  const dz = end.z - start.z;
+  const len = Math.hypot(dx, dz) || 1;
+
+  // Tangent perpendicular in X-Z plane
+  const nx = -dz / len;
+  const nz = dx / len;
+
+  for (let i = 1; i < segments; i++) {
+    const t = i / segments;
+    // Envelope is 0 at both ends and peaks in the middle
+    const envelope = Math.sin(t * Math.PI);
+    const phase = seed * 17.13 + i * 29.47;
+    const dispH = Math.sin(phase) * jitterAmplitude * envelope;
+    const dispV = Math.cos(phase * 1.4) * (jitterAmplitude * 0.45) * envelope;
+
+    points.push({
+      x: start.x + dx * t + nx * dispH,
+      y: start.y + dy * t + dispV,
+      z: start.z + dz * t + nz * dispH,
+    });
+  }
+
+  points.push(end);
+  return points;
+}
+
+// 7 Chapter Angles matching the cosmic reference layout
+// Ch 1: Top-Left (-40°)
+// Ch 2: Mid-Left (-90°)
+// Ch 3: Bottom-Left (-140°)
+// Ch 4: Bottom Center (180°)
+// Ch 5: Bottom-Right (135°)
+// Ch 6: Mid-Right (85°)
+// Ch 7: Top-Right (35°)
+const CHAPTER_ANGLES_DEG = [-40, -90, -140, 180, 135, 85, 35];
+
+/**
+ * Computes deterministic, balanced 3D coordinates for all entities in the Cosmic Knowledge World.
  */
 export function computeLivingWorld3DLayout(chapters: KnowledgeChapterNode[]): LivingWorld3DLayout {
-  const corePosition: Point3D = { x: 0, y: 10, z: 0 };
-  const trunkSpline: Point3D[] = [
-    { x: 0, y: -7, z: 0 },
-    { x: 0.8, y: 0, z: -0.5 },
-    { x: -0.8, y: 7, z: 0.5 },
-    { x: 0, y: 15, z: 0 },
-    { x: 0, y: 26, z: 0 },
-  ];
+  const corePosition: Point3D = { x: 0, y: 0, z: 0 };
+  const orbitalRingRadius = 38.0;
 
   const nodeMap = new Map<string, Node3DLayout>();
   const nodeByCodeMap = new Map<string, Node3DLayout>();
   const chapterLayouts: Chapter3DLayout[] = [];
 
   const chapterCount = Math.max(1, chapters.length);
-  // Distribute chapters in a wide amphitheater arc (-135 deg to +135 deg) facing the camera
-  const startAngleDeg = -135;
-  const sweepAngleDeg = 270;
 
   chapters.forEach((chapter, chapterIdx) => {
     const theme = CHAPTER_3D_THEMES[chapterIdx % CHAPTER_3D_THEMES.length];
-    const fraction = chapterCount === 1 ? 0.5 : chapterIdx / (chapterCount - 1);
-    const angleRad = ((startAngleDeg + sweepAngleDeg * fraction) * Math.PI) / 180;
+    
+    // Determine angle around the 360° orbital loop
+    const angleDeg =
+      chapterCount === 7
+        ? CHAPTER_ANGLES_DEG[chapterIdx]
+        : -40 + (chapterIdx / chapterCount) * 360;
+    const angleRad = (angleDeg * Math.PI) / 180;
 
-    // Radius staggered for spatial depth: 44 to 52
-    const chapterRadius = 44 + (chapterIdx % 2 === 0 ? 0 : 7);
-    // Elevation waves gently between 18 and 26 units
-    const chapterElevation = 20 + Math.sin(chapterIdx * 1.4) * 5;
+    // Position of Chapter Nexus on the Orbital Ring
+    const chapterX = orbitalRingRadius * Math.sin(angleRad);
+    const chapterZ = -orbitalRingRadius * Math.cos(angleRad);
+    const chapterY = Math.sin(chapterIdx * 1.5) * 1.2;
+    const chapterPos: Point3D = { x: chapterX, y: chapterY, z: chapterZ };
 
-    const chapterX = chapterRadius * Math.sin(angleRad);
-    const chapterZ = chapterRadius * Math.cos(angleRad);
-    const chapterPos: Point3D = { x: chapterX, y: chapterElevation, z: chapterZ };
+    // Lightning fractal spline from central core to Chapter Nexus
+    const branchSpline = generateLightningSpline(
+      corePosition,
+      chapterPos,
+      8,
+      2.6,
+      chapterIdx + 1
+    );
 
-    // Spline curve for the main chapter branch extending upward and outward from the trunk
-    const branchTrunkAttach: Point3D = { x: 0, y: 13 + (chapterIdx % 3) * 3, z: 0 };
-    const branchMid: Point3D = {
-      x: chapterX * 0.42,
-      y: (branchTrunkAttach.y + chapterElevation) * 0.5 + 4.5,
-      z: chapterZ * 0.42,
-    };
-    const branchSpline: Point3D[] = [branchTrunkAttach, branchMid, chapterPos];
-
-    // Compute topics along this branch
+    // Compute Topics radiating outward from Chapter Nexus
     const topicLayouts: Topic3DLayout[] = [];
     let chapterTotalPts = 0;
     let chapterMasteredPts = 0;
 
     const topicCount = Math.max(1, chapter.topics.length);
     chapter.topics.forEach((topic, topicIdx) => {
-      // Fan topics outward in a stepped halo around the chapter joint
-      const topicFraction = topicCount === 1 ? 0 : (topicIdx - (topicCount - 1) / 2) / Math.max(1, topicCount);
-      const topicOffsetAngle = angleRad + topicFraction * 0.85;
-      const topicDist = 16 + (topicIdx % 2) * 5.5;
-      const topicY = chapterElevation + 2.5 + (topicIdx - topicCount / 2) * 2.2;
+      // Fan topics radially outward into space
+      const topicSpread =
+        topicCount === 1 ? 0 : (topicIdx - (topicCount - 1) / 2) * 0.28;
+      const topicAngle = angleRad + topicSpread;
+      const topicDist = 20 + (topicIdx % 2) * 4.0;
 
-      const topicX = chapterX + topicDist * Math.sin(topicOffsetAngle);
-      const topicZ = chapterZ + topicDist * Math.cos(topicOffsetAngle);
+      const topicX = (orbitalRingRadius + topicDist) * Math.sin(topicAngle);
+      const topicZ = -(orbitalRingRadius + topicDist) * Math.cos(topicAngle);
+      const topicY = chapterY + (topicIdx - topicCount / 2) * 2.2 + Math.sin(topicIdx * 2.0) * 1.2;
       const topicPos: Point3D = { x: topicX, y: topicY, z: topicZ };
 
-      const subBranchMid: Point3D = {
-        x: (chapterX + topicX) * 0.5,
-        y: Math.max(chapterElevation, topicY) + 2.0,
-        z: (chapterZ + topicZ) * 0.5,
-      };
-      const subBranchSpline: Point3D[] = [chapterPos, subBranchMid, topicPos];
+      // Sub-branch lightning spline from Chapter to Topic
+      const subBranchSpline = generateLightningSpline(
+        chapterPos,
+        topicPos,
+        6,
+        1.8,
+        chapterIdx * 10 + topicIdx + 2
+      );
 
-      // Compute problem type nodes in an elevated, spacious crown around the topic
+      // Compute Problem Types fanning out into space in a wide, spacious crescent canopy
       const nodeLayouts: Node3DLayout[] = [];
       const ptCount = topic.problemTypes.length;
+
+      // Vectors for topic local coordinate frame (radial out & tangent sideways)
+      const radialX = Math.sin(topicAngle);
+      const radialZ = -Math.cos(topicAngle);
+      const tangentX = Math.cos(topicAngle);
+      const tangentZ = Math.sin(topicAngle);
 
       topic.problemTypes.forEach((pt, ptIdx) => {
         chapterTotalPts += 1;
         if (pt.state === "MASTERED") chapterMasteredPts += 1;
 
-        // Spread nodes radially with wide angular spacing so they NEVER clump or overlap
-        const spreadAngle =
-          topicOffsetAngle + (ptCount === 1 ? 0 : ((ptIdx - (ptCount - 1) / 2) * 1.35) / Math.max(1, ptCount));
-        const orbitRadius = 7.5 + (ptIdx % 2) * 2.6;
-        // Elevate nodes upwards like blossoming celestial crystals
-        const nodeY = topicY + 2.4 + Math.sin(ptIdx * 1.4) * 2.2;
+        // Wide lateral crescent fan: spreads sideways around the topic
+        const fraction =
+          ptCount === 1 ? 0 : (ptIdx - (ptCount - 1) / 2) / Math.max(1, ptCount - 1);
+        const lateralOffset = fraction * (14.0 + Math.min(ptCount, 6) * 2.4);
+        const forwardOffset =
+          12.0 + (1.0 - Math.abs(fraction) * 0.45) * 6.0 + (ptIdx % 2) * 2.8;
+        const elevY =
+          topicY + (ptIdx % 2 === 0 ? 2.2 : -1.6) + Math.sin(ptIdx * 2.2) * 1.6;
 
-        const nodeX = topicX + orbitRadius * Math.sin(spreadAngle);
-        const nodeZ = topicZ + orbitRadius * Math.cos(spreadAngle);
+        const nodeX = topicPos.x + radialX * forwardOffset + tangentX * lateralOffset;
+        const nodeZ = topicPos.z + radialZ * forwardOffset + tangentZ * lateralOffset;
+        const nodeY = elevY;
         const nodePos: Point3D = { x: nodeX, y: nodeY, z: nodeZ };
 
-        const branchletSpline: Point3D[] = [
+        // Branchlet lightning spline from Topic to Problem Type Node
+        const branchletSpline = generateLightningSpline(
           topicPos,
-          { x: (topicX + nodeX) * 0.5, y: Math.max(topicY, nodeY) + 1.2, z: (topicZ + nodeZ) * 0.5 },
           nodePos,
-        ];
+          5,
+          1.2,
+          chapterIdx * 100 + topicIdx * 10 + ptIdx + 3
+        );
 
         const nodeLayout: Node3DLayout = {
           data: pt,
@@ -245,7 +305,7 @@ export function computeLivingWorld3DLayout(chapters: KnowledgeChapterNode[]): Li
         position: topicPos,
         chapterId: chapter.id,
         themeColor: theme.color,
-        radius: 5.0,
+        radius: 4.5,
         subBranchSpline,
         nodes: nodeLayouts,
       });
@@ -265,17 +325,17 @@ export function computeLivingWorld3DLayout(chapters: KnowledgeChapterNode[]): Li
       totalProblemTypes: chapterTotalPts,
       masteredCount: chapterMasteredPts,
       completionPercent,
+      orbitalAngle: angleRad,
     });
   });
 
-  // Level 4: Prerequisite Bézier Arcs (only where both source and target exist in layout)
+  // Level 4: Prerequisite Bézier Arcs (rising above the galaxy plane)
   const prerequisiteArcs: PrerequisiteArc3D[] = [];
   VERIFIED_PREREQUISITE_EDGES.forEach((edge) => {
     const srcNode = nodeByCodeMap.get(edge.sourceCode);
     const tgtNode = nodeByCodeMap.get(edge.targetCode);
     if (!srcNode || !tgtNode) return;
 
-    // Compute arched control point rising gracefully above both endpoints
     const midX = (srcNode.position.x + tgtNode.position.x) * 0.5;
     const midZ = (srcNode.position.z + tgtNode.position.z) * 0.5;
     const dist = Math.hypot(
@@ -283,7 +343,8 @@ export function computeLivingWorld3DLayout(chapters: KnowledgeChapterNode[]): Li
       srcNode.position.y - tgtNode.position.y,
       srcNode.position.z - tgtNode.position.z
     );
-    const archHeight = Math.max(srcNode.position.y, tgtNode.position.y) + Math.min(22, Math.max(5, dist * 0.38));
+    const archHeight =
+      Math.max(srcNode.position.y, tgtNode.position.y) + Math.min(22, Math.max(6, dist * 0.35));
 
     prerequisiteArcs.push({
       sourceCode: edge.sourceCode,
@@ -296,14 +357,23 @@ export function computeLivingWorld3DLayout(chapters: KnowledgeChapterNode[]): Li
 
   return {
     corePosition,
-    trunkSpline,
+    trunkSpline: branchSplineDefault(corePosition),
+    ringRadius: orbitalRingRadius,
     chapters: chapterLayouts,
     nodeMap,
     nodeByCodeMap,
     prerequisiteArcs,
     overviewCamera: {
-      position: { x: 0, y: 55, z: 135 },
-      target: { x: 0, y: 18, z: 0 },
+      position: { x: 0, y: 95, z: 105 },
+      target: { x: 0, y: 0, z: -5 },
     },
   };
+}
+
+function branchSplineDefault(core: Point3D): Point3D[] {
+  return [
+    { x: 0, y: -4, z: 0 },
+    core,
+    { x: 0, y: 6, z: 0 },
+  ];
 }
