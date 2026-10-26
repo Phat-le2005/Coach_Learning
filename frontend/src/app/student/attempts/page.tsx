@@ -1,72 +1,159 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 import { PageState } from "@/components/app-shell/PageState";
 import { SessionHeartbeat } from "@/components/auth/SessionHeartbeat";
 import { SessionRecovery } from "@/components/auth/SessionRecovery";
+import { GradientButton } from "@/components/ui/GradientButton";
 import { getWorkspaceSubjects } from "@/features/math-workspace/entry-service";
-import { createBackendApiClient } from "@/lib/api/client";
+import {
+  parseAttemptsPageParam,
+  parseAttemptsStatusParam,
+  toStudentAttemptsViewModel,
+} from "@/features/student-attempts/adapter";
+import { StudentAttemptsView } from "@/features/student-attempts/StudentAttemptsView";
+import { ApiNetworkError, ApiResponseError, createBackendApiClient } from "@/lib/api/client";
 import { requirePageRole } from "@/lib/auth/page-session";
 import { readAccessToken } from "@/lib/auth/server";
 
-import { StartWorkspaceForm } from "./StartWorkspaceForm";
 import styles from "./attempts.module.css";
 
-export const metadata: Metadata = { title: "Bài làm của tôi · EduMS" };
+export const metadata: Metadata = {
+  title: "Không gian bài làm · EduMS",
+  description: "Nơi lưu giữ từng bước giải trên giấy số và hành trình tiến bộ của học sinh EduMS.",
+};
 
-export default async function StudentAttemptsPage() {
-  await requirePageRole("STUDENT", "/student/attempts");
+function renderPageState(
+  kind: "unauthorized" | "error",
+  title: string,
+  description: string
+) {
+  return (
+    <main className={styles.errorFallbackShell}>
+      <div className={styles.errorFallbackInner}>
+        <PageState
+          kind={kind}
+          title={title}
+          description={description}
+          action={
+            kind === "error" ? (
+              <GradientButton href="/student/attempts">Thử lại</GradientButton>
+            ) : (
+              <GradientButton href="/student">Về Khu vườn học tập</GradientButton>
+            )
+          }
+        />
+      </div>
+    </main>
+  );
+}
+
+export interface StudentAttemptsPageProps {
+  searchParams?: Promise<{
+    page?: string;
+    status?: string;
+    subject_id?: string;
+  }>;
+}
+
+export default async function StudentAttemptsPage(props: StudentAttemptsPageProps) {
+  const session = await requirePageRole("STUDENT", "/student/attempts");
   const accessToken = await readAccessToken();
   if (!accessToken) return <SessionRecovery />;
 
+  const resolvedSearchParams = props.searchParams ? await props.searchParams : undefined;
+  const requestedPage = parseAttemptsPageParam(resolvedSearchParams?.page);
+  const activeStatusFilter = parseAttemptsStatusParam(resolvedSearchParams?.status);
+  const requestedSubjectId = resolvedSearchParams?.subject_id?.trim() || undefined;
+
   try {
     const client = createBackendApiClient();
-    const [attemptsResult, subjectsResult] = await Promise.allSettled([
-      client.listMathAttempts(accessToken),
-      getWorkspaceSubjects(accessToken),
-    ]);
-    if (attemptsResult.status === "rejected") throw attemptsResult.reason;
-    const attempts = attemptsResult.value;
-    const subjects = subjectsResult.status === "fulfilled" ? subjectsResult.value : [];
+    const PAGE_SIZE = 12;
+
+    const [attemptsResult, inProgressResult, draftResult, subjectsResult] =
+      await Promise.allSettled([
+        client.listMathAttempts(accessToken, {
+          page: requestedPage,
+          size: PAGE_SIZE,
+          status: activeStatusFilter !== "ALL" ? activeStatusFilter : undefined,
+        }),
+        client.listMathAttempts(accessToken, {
+          page: 1,
+          size: 4,
+          status: "IN_PROGRESS",
+        }),
+        client.listMathAttempts(accessToken, {
+          page: 1,
+          size: 4,
+          status: "DRAFT",
+        }),
+        getWorkspaceSubjects(accessToken),
+      ]);
+
+    if (attemptsResult.status === "rejected") {
+      throw attemptsResult.reason;
+    }
+
+    let attemptsPage = attemptsResult.value;
+    // Clamp out-of-range page request to the last valid backend page
+    if (attemptsPage.total_pages > 0 && requestedPage > attemptsPage.total_pages) {
+      attemptsPage = await client.listMathAttempts(accessToken, {
+        page: attemptsPage.total_pages,
+        size: PAGE_SIZE,
+        status: activeStatusFilter !== "ALL" ? activeStatusFilter : undefined,
+      });
+    }
+
+    const subjectsLoaded = subjectsResult.status === "fulfilled";
+    const subjects = subjectsLoaded ? subjectsResult.value : [];
+
+    const viewModel = toStudentAttemptsViewModel({
+      displayName: session.fullName,
+      email: session.email,
+      subjects,
+      subjectsLoaded,
+      defaultSubjectId: requestedSubjectId ?? subjects[0]?.id,
+      activeStatusFilter,
+      attemptsPage,
+      inProgressPage:
+        inProgressResult.status === "fulfilled" ? inProgressResult.value : null,
+      draftPage: draftResult.status === "fulfilled" ? draftResult.value : null,
+    });
 
     return (
-      <main className={styles.page}>
+      <>
         <SessionHeartbeat />
-        <nav className={styles.breadcrumb} aria-label="Đường dẫn">
-          <Link href="/student">Trang học sinh</Link><span aria-hidden="true">/</span><span>Bài làm của tôi</span>
-        </nav>
-        <header className={styles.header}>
-          <span className={styles.eyebrow}>Learning Forest · Không gian giải Toán</span>
-          <h1>Bài làm của tôi</h1>
-          <p>Viết lời giải trên giấy số, lưu nét viết và xem gợi ý nhận diện công thức trước khi xác nhận.</p>
-        </header>
-        <section className={styles.panel} aria-labelledby="start-heading">
-          <h2 id="start-heading">Bắt đầu bài mới</h2>
-          <p>Hệ thống chỉ chọn câu hỏi thực đã được duyệt. Nếu chưa có câu hỏi phù hợp, bạn sẽ nhận thông báo rõ ràng.</p>
-          {subjectsResult.status === "fulfilled"
-            ? <StartWorkspaceForm subjects={subjects} />
-            : <p>Chưa tải được danh sách môn học để bắt đầu bài mới. Bạn vẫn có thể mở các bài làm cũ bên dưới.</p>}
-        </section>
-        <section className={styles.panel} aria-labelledby="history-heading">
-          <h2 id="history-heading">Các lượt làm gần đây</h2>
-          {attempts.items.length === 0 ? (
-            <p>Bạn chưa có lượt làm bài nào. Hãy chọn môn học ở trên để bắt đầu.</p>
-          ) : (
-            <ul className={styles.attemptList}>
-              {attempts.items.map((attempt) => (
-                <li key={attempt.id}>
-                  <Link href={`/student/attempts/${attempt.id}`}>
-                    <span>Bài làm {attempt.created_at ? new Date(attempt.created_at).toLocaleString("vi-VN") : attempt.id.slice(0, 8)}</span>
-                    <span className={styles.status}>{attempt.status}</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
-      </main>
+        <StudentAttemptsView data={viewModel} />
+      </>
     );
-  } catch {
-    return <main className={styles.page}><PageState kind="error" title="Chưa tải được bài làm" description="Không thể kết nối dữ liệu bài làm. Vui lòng kiểm tra backend rồi tải lại trang." action={<Link href="/student/attempts">Thử lại</Link>} /></main>;
+  } catch (error) {
+    if (error instanceof ApiResponseError) {
+      if (error.status === 401) return <SessionRecovery />;
+      if (error.status === 403) {
+        return renderPageState(
+          "unauthorized",
+          "Không có quyền truy cập bài làm",
+          "Tài khoản hiện tại không được cấp quyền đọc danh sách bài làm học sinh."
+        );
+      }
+      if (error.status === 503) {
+        return renderPageState(
+          "error",
+          "Không gian bài làm tạm thời bận",
+          "Dịch vụ lưu trữ bài làm đang bảo trì hoặc quá tải. Vui lòng thử lại sau ít phút."
+        );
+      }
+    }
+    if (error instanceof ApiNetworkError) {
+      return renderPageState(
+        "error",
+        "Chưa kết nối được dịch vụ bài làm",
+        "Không thể kết nối tới EduMS API. Vui lòng kiểm tra backend và kết nối mạng rồi tải lại trang."
+      );
+    }
+    return renderPageState(
+      "error",
+      "Chưa tải được bài làm",
+      "Không thể đọc dữ liệu bài làm đúng contract. Vui lòng kiểm tra backend rồi tải lại trang."
+    );
   }
 }

@@ -160,3 +160,30 @@ def test_confirmed_variation_artifact_is_included_as_student_evidence(monkeypatc
     assert "Student-entered variation table" in gateway.messages[1].content
     assert review.step_grades[0].verdict == "NEEDS_REVIEW"
     assert review.needs_teacher_review
+
+
+def test_problem_content_restatement_is_valid_evidence(monkeypatch):
+    response = {"steps": [
+        {"step_index": 1, "verdict": "VALID", "score": 1.0, "confidence": 0.95,
+         "student_quote": "y=x^3", "answer_quote": "y=x^3", "feedback": "Restates problem correctly."},
+        {"step_index": 2, "verdict": "VALID", "score": 1.0, "confidence": 0.91,
+         "student_quote": "(0,2)", "answer_quote": "(0,2)", "feedback": "Interval matches."},
+    ]}
+    attempt, session, gateway = fixture_case(monkeypatch, response)
+    session.revisions[0] = SimpleNamespace(content_latex="y=x^3", explanation_text=None)
+    review = asyncio.run(AnswerGroundedAIService(session, gateway).review_attempt(attempt.id))
+    assert review.step_grades[0].verdict == "VALID"
+    assert review.step_grades[0].score == 1.0
+
+
+def test_quote_with_normalized_whitespace_and_delimiters_is_accepted(monkeypatch):
+    response = {"steps": [
+        {"step_index": 1, "verdict": "VALID", "score": 1.0, "confidence": 0.95,
+         "student_quote": "3x^2", "answer_quote": "y'=3x^2", "feedback": "Matches derivative."},
+        {"step_index": 2, "verdict": "VALID", "score": 1.0, "confidence": 0.91,
+         "student_quote": "(0, 2)", "answer_quote": "(0,2)", "feedback": "Matches with spacing."},
+    ]}
+    attempt, session, gateway = fixture_case(monkeypatch, response)
+    session.revisions[1] = SimpleNamespace(content_latex="increasing on (0, 2)", explanation_text=None)
+    review = asyncio.run(AnswerGroundedAIService(session, gateway).review_attempt(attempt.id))
+    assert review.step_grades[1].verdict == "VALID"

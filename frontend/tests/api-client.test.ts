@@ -194,6 +194,38 @@ test("frontend rejects AI feedback that claims a final grade", async () => {
       step_grades: [{ step_index: 1, verdict: "VALID", score: 1, confidence: 0.9, feedback: "OK" }] }) });
   await assert.rejects(api.reviewMathAttempt("student-token", "attempt-1"), ApiContractError);
 });
+
+test("paper upload sends multipart bytes without a fake JSON response", async () => {
+  let contentType: string | null = null;
+  let uploadedName = "";
+  const api = createApiClient({ baseUrl: "https://api.example.test", fetcher: async (input, init) => {
+    assert.equal(new URL(String(input)).pathname, "/api/v3/math-solutions/attempts/attempt-1/paper");
+    contentType = new Headers(init?.headers).get("Content-Type");
+    uploadedName = (init?.body as FormData).get("file") instanceof File
+      ? ((init?.body as FormData).get("file") as File).name : "";
+    return Response.json({ id: "paper-1", file_name: "work.png", content_type: "image/png",
+      size_bytes: 4, sha256: "a".repeat(64), created_at: "2026-10-26T00:00:00Z" }, { status: 201 });
+  } });
+  const file = new File([new Uint8Array([1, 2, 3, 4])], "work.png", { type: "image/png" });
+  const result = await api.uploadMathPaper("student-token", "attempt-1", file);
+  assert.equal(contentType, null);
+  assert.equal(uploadedName, "work.png");
+  assert.equal(result.id, "paper-1");
+});
+
+test("paper OCR returns editable suggestions without creating solution steps", async () => {
+  let called = "";
+  const api = createApiClient({ baseUrl: "https://api.example.test", fetcher: async (input, init) => {
+    called = `${init?.method} ${new URL(String(input)).pathname}`;
+    return Response.json({ paper_id: "paper-1", file_sha256: "a".repeat(64), provider: "GEMINI",
+      suggestions: [{ page_number: 1, kind: "TABLE", text: "x: -1, 3\ny': +, -, +", uncertain: true, box_2d: [100, 200, 300, 400] }] });
+  } });
+  const result = await api.recognizeMathPaper("student-token", "attempt-1", "paper-1");
+  assert.equal(called, "POST /api/v3/math-solutions/attempts/attempt-1/paper/paper-1/ocr");
+  assert.equal(result.suggestions[0].kind, "TABLE");
+  assert.equal(result.suggestions[0].uncertain, true);
+  assert.deepEqual(result.suggestions[0].box_2d, [100, 200, 300, 400]);
+});
 test("review readiness explains missing approved answers without requesting a grade", async () => {
   const calls: string[] = [];
   const api = createApiClient({ baseUrl: "https://api.example.test", fetcher: async (input, init) => {

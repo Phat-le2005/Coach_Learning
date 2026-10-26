@@ -609,20 +609,27 @@ export interface SolutionAttemptRead {
   current_revision: number;
   created_at: string;
   updated_at?: string;
+  context_type?: string;
+  submitted_at?: string;
   steps?: SolutionStepRead[];
 }
 
 export interface AIReviewAvailabilityRead {
   available: boolean;
   reason_code: string | null;
+  cached_review?: AIReviewRead | null;
 }
 
 export function parseAIReviewAvailabilityRead(value: unknown, path = "ai_review_availability"): AIReviewAvailabilityRead {
   const source = record(value, path);
-  return {
+  const result: AIReviewAvailabilityRead = {
     available: boolean(source.available, `${path}.available`),
     reason_code: source.reason_code === null ? null : string(source.reason_code, `${path}.reason_code`),
   };
+  if (source.cached_review) {
+    result.cached_review = parseAIReviewRead(source.cached_review, `${path}.cached_review`);
+  }
+  return result;
 }
 
 export interface AIStepSuggestionRead {

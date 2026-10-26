@@ -1,0 +1,1802 @@
+/* ==========================================================================
+   EDUMS — LIVING STUDY GARDEN (ATTEMPTS PAGE DESIGN & MOTION SYSTEM)
+   "A peaceful place where every learning attempt has its own story."
+   Harmonized with Student Home (#092D25, #23A67A, #8BE5C2, #F7F7EE, #B8E3DE, #E8BF6A)
+   at a calmer, quieter study density.
+   ========================================================================== */
+
+.canvas {
+  position: relative;
+  min-height: 100vh;
+  padding: 16px clamp(16px, 3vw, 40px) 0;
+  overflow-x: clip;
+  isolation: isolate;
+}
+
+.main {
+  width: min(100%, var(--container-max, 1220px));
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(22px, 3vw, 32px);
+}
+
+/* ==========================================================================
+   GLOBAL STUDY GARDEN BACKDROP (Calmer density than Student Home)
+   ========================================================================== */
+.studyBackdropRoot {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+  background:
+    radial-gradient(ellipse 84% 40% at 50% 0%, rgba(184, 227, 222, 0.52) 0%, transparent 68%),
+    radial-gradient(circle at 12% 30%, rgba(139, 229, 194, 0.18) 0%, transparent 44%),
+    radial-gradient(circle at 88% 54%, rgba(232, 191, 106, 0.11) 0%, transparent 40%),
+    linear-gradient(
+      180deg,
+      #e3f2ee 0%,
+      #f0f7f3 22%,
+      #f7f7ee 52%,
+      #eff5ee 80%,
+      #e4f0e7 100%
+    );
+}
+
+.studySunlightLayer {
+  position: absolute;
+  inset: -10% -8% 0 -8%;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.studySunRayPrimary,
+.studySunRaySecondary {
+  position: absolute;
+  top: -16%;
+  height: 105vh;
+  transform-origin: top center;
+  will-change: transform, opacity;
+}
+
+.studySunRayPrimary {
+  right: 14%;
+  width: 24vw;
+  min-width: 220px;
+  background: linear-gradient(
+    180deg,
+    rgba(247, 247, 238, 0.46) 0%,
+    rgba(232, 191, 106, 0.12) 40%,
+    transparent 95%
+  );
+  filter: blur(28px);
+  transform: rotate(20deg);
+  animation: studySunbeamBreathe 20s ease-in-out infinite alternate;
+}
+
+.studySunRaySecondary {
+  left: 10%;
+  width: 18vw;
+  min-width: 170px;
+  background: linear-gradient(
+    180deg,
+    rgba(184, 227, 222, 0.3) 0%,
+    rgba(139, 229, 194, 0.08) 48%,
+    transparent 94%
+  );
+  filter: blur(28px);
+  transform: rotate(-15deg);
+  animation: studySunbeamBreathe 26s -8s ease-in-out infinite alternate;
+}
+
+.studyHorizonLayer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.studyHorizonSvg {
+  position: absolute;
+  top: 16vh;
+  left: -4%;
+  width: 108%;
+  height: 42vh;
+  min-height: 260px;
+  opacity: 0.34;
+}
+
+.studyEdgeBoughLeft,
+.studyEdgeBoughRight {
+  position: absolute;
+  width: clamp(120px, 13vw, 205px);
+  height: auto;
+  opacity: 0.28;
+  will-change: transform;
+}
+
+.studyEdgeBoughLeft {
+  top: 32vh;
+  left: -24px;
+  transform-origin: 0% 35%;
+  animation: studyBoughSwayLeft 11.5s ease-in-out infinite alternate;
+}
+
+.studyEdgeBoughRight {
+  top: 58vh;
+  right: -24px;
+  transform-origin: 100% 35%;
+  animation: studyBoughSwayRight 13s -4s ease-in-out infinite alternate;
+}
+
+.studyMarginLeavesLayer {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+}
+
+.studyFallingLeafDrop {
+  position: absolute;
+  top: -8vh;
+  opacity: 0;
+  will-change: transform, opacity;
+  animation: studyLeafFall var(--leaf-dur, 24s) var(--leaf-del, 0s) linear infinite;
+}
+
+.studyFallingLeafPendulum {
+  width: 100%;
+  height: 100%;
+  will-change: transform;
+  animation: studyLeafPendulum var(--leaf-sway, 4.6s) ease-in-out infinite alternate;
+}
+
+.studyFallingLeafFlutter {
+  width: 100%;
+  height: 100%;
+  will-change: transform;
+  animation: studyLeafFlutter 2.8s ease-in-out infinite alternate;
+}
+
+.backdropPaused .studySunRayPrimary,
+.backdropPaused .studySunRaySecondary,
+.backdropPaused .studyEdgeBoughLeft,
+.backdropPaused .studyEdgeBoughRight,
+.backdropPaused .studyFallingLeafDrop,
+.backdropPaused .studyFallingLeafPendulum,
+.backdropPaused .studyFallingLeafFlutter {
+  animation-play-state: paused !important;
+}
+
+/* ==========================================================================
+   SECTION A — STUDY WELCOME HERO (Compact so Launch Panel stays on 1st screen)
+   ========================================================================== */
+.hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(320px, 0.96fr);
+  align-items: center;
+  gap: clamp(20px, 3.2vw, 42px);
+  min-height: 276px;
+  padding: clamp(26px, 3.4vw, 42px) clamp(26px, 3.8vw, 48px);
+  overflow: hidden;
+  color: #f7f7ee;
+  border: 1px solid rgba(184, 227, 222, 0.34);
+  border-radius: 40px 40px 32px 40px;
+  background:
+    radial-gradient(circle at 82% 16%, rgba(184, 227, 222, 0.26) 0%, transparent 36%),
+    radial-gradient(circle at 18% 88%, rgba(232, 191, 106, 0.12) 0%, transparent 36%),
+    linear-gradient(132deg, #092d25 0%, #124638 48%, #1d6450 82%, #265d62 100%);
+  box-shadow: 0 26px 72px rgba(9, 45, 37, 0.18), inset 0 1px 0 rgba(247, 247, 238, 0.16);
+}
+
+.heroCopy {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.breadcrumb {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: rgba(247, 247, 238, 0.76);
+}
+
+.breadcrumbLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #8be5c2;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: color 0.18s ease, opacity 0.18s ease;
+}
+
+.breadcrumbLink:hover {
+  color: #f7f7ee;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.breadcrumbSep {
+  opacity: 0.45;
+}
+
+.breadcrumbCurrent {
+  color: rgba(247, 247, 238, 0.92);
+}
+
+.heroBadgeRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.heroSanctuaryBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+  padding: 2px 12px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #e8bf6a;
+  background: rgba(232, 191, 106, 0.14);
+  border: 1px solid rgba(232, 191, 106, 0.3);
+}
+
+.heroStatPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+  padding: 2px 11px;
+  border-radius: 999px;
+  font-size: 0.73rem;
+  font-weight: 650;
+  color: #dff4ec;
+  background: rgba(247, 247, 238, 0.1);
+  border: 1px solid rgba(184, 227, 222, 0.24);
+}
+
+.heroTitle {
+  margin: 2px 0 0;
+  font-size: clamp(1.95rem, 3.4vw, 2.75rem);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+  color: #f7f7ee;
+}
+
+.heroSubtitle {
+  margin: 0;
+  max-width: 540px;
+  font-size: clamp(0.95rem, 1.2vw, 1.05rem);
+  line-height: 1.6;
+  color: rgba(247, 247, 238, 0.84);
+}
+
+.heroQuickActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.heroJumpBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 18px;
+  border-radius: 999px;
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #092d25;
+  text-decoration: none;
+  background: linear-gradient(135deg, #8be5c2 0%, #b8e3de 100%);
+  box-shadow: 0 10px 24px rgba(9, 45, 37, 0.24);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.heroJumpBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px rgba(9, 45, 37, 0.3);
+}
+
+.heroSecondaryLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 42px;
+  padding: 0 16px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 650;
+  color: #f7f7ee;
+  text-decoration: none;
+  background: rgba(247, 247, 238, 0.1);
+  border: 1px solid rgba(247, 247, 238, 0.22);
+  transition: background 0.18s ease, transform 0.18s ease;
+}
+
+.heroSecondaryLink:hover {
+  background: rgba(247, 247, 238, 0.16);
+  transform: translateY(-1px);
+}
+
+/* Right-side Hero Animated Study Garden Diorama */
+.heroDioramaWrap {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 224px;
+  border-radius: 28px;
+  overflow: hidden;
+  border: 1px solid rgba(184, 227, 222, 0.24);
+  background: linear-gradient(
+    180deg,
+    rgba(184, 227, 222, 0.16) 0%,
+    rgba(35, 166, 122, 0.12) 56%,
+    rgba(9, 45, 37, 0.42) 100%
+  );
+  box-shadow: inset 0 1px 0 rgba(247, 247, 238, 0.18);
+}
+
+.heroDioramaSvg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.dioramaSunGlow {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: studySunPulse 10s ease-in-out infinite alternate;
+}
+
+.dioramaCloudOne {
+  animation: dioramaCloudDrift 42s -8s linear infinite;
+}
+
+.dioramaCloudTwo {
+  animation: dioramaCloudDrift 54s -29s linear infinite;
+}
+
+/* Occasional distant bird pair gliding on a gentle Bezier curve inside the diorama sky */
+.dioramaBirdArc {
+  animation: studyDistantBirdArc 36s -5s ease-in-out infinite;
+}
+
+.dioramaBirdWing {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  animation: studyBirdWingBeat 2.4s ease-in-out infinite;
+}
+
+.dioramaBirdWingDelayed {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  animation: studyBirdWingBeat 2.5s -0.6s ease-in-out infinite;
+}
+
+.dioramaTreeCanopy {
+  transform-box: fill-box;
+  transform-origin: 50% 92%;
+  animation: studyTreeSway 8.4s ease-in-out infinite alternate;
+}
+
+.dioramaLeafCluster {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: studyLeafRustle 4.8s ease-in-out infinite alternate;
+}
+
+.dioramaFloatingLeafOne {
+  animation: dioramaLeafGlideOne 13s -2s ease-in-out infinite;
+}
+
+.dioramaFloatingLeafTwo {
+  animation: dioramaLeafGlideTwo 16s -9s ease-in-out infinite;
+}
+
+.heroPaused .dioramaSunGlow,
+.heroPaused .dioramaCloudOne,
+.heroPaused .dioramaCloudTwo,
+.heroPaused .dioramaBirdArc,
+.heroPaused .dioramaBirdWing,
+.heroPaused .dioramaBirdWingDelayed,
+.heroPaused .dioramaTreeCanopy,
+.heroPaused .dioramaLeafCluster,
+.heroPaused .dioramaFloatingLeafOne,
+.heroPaused .dioramaFloatingLeafTwo {
+  animation-play-state: paused !important;
+}
+
+/* ==========================================================================
+   SECTION B — START NEW ATTEMPT: STUDY LAUNCH PANEL
+   ========================================================================== */
+.launchSection {
+  scroll-margin-top: 104px;
+}
+
+.launchCard {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(250px, 0.78fr);
+  align-items: center;
+  gap: clamp(20px, 3vw, 36px);
+  padding: clamp(24px, 3.2vw, 36px);
+  border-radius: 34px;
+  border: 1px solid rgba(35, 166, 122, 0.22);
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.92) 0%,
+    rgba(247, 247, 238, 0.9) 62%,
+    rgba(228, 245, 236, 0.85) 100%
+  );
+  box-shadow:
+    0 20px 54px rgba(9, 45, 37, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(18px);
+  transition: transform 0.24s ease, box-shadow 0.24s ease, border-color 0.24s ease;
+}
+
+.launchCard:hover {
+  transform: translateY(-2px);
+  border-color: rgba(35, 166, 122, 0.34);
+  box-shadow:
+    0 24px 62px rgba(9, 45, 37, 0.11),
+    inset 0 1px 0 rgba(255, 255, 255, 0.98);
+}
+
+.launchMain {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.launchHeaderRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.launchIconDual {
+  position: relative;
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  color: #092d25;
+  background: linear-gradient(135deg, rgba(139, 229, 194, 0.52), rgba(184, 227, 222, 0.62));
+  border: 1px solid rgba(35, 166, 122, 0.26);
+  box-shadow: 0 10px 22px rgba(35, 166, 122, 0.14);
+}
+
+.launchSproutAccent {
+  position: absolute;
+  right: -5px;
+  bottom: -5px;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  color: #f7f7ee;
+  background: #23a67a;
+  border: 2px solid #f7f7ee;
+}
+
+.launchEyebrow {
+  margin: 0 0 4px;
+  font-size: 0.74rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #1c7c5c;
+}
+
+.launchTitle {
+  margin: 0;
+  font-size: clamp(1.32rem, 2vw, 1.62rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #092d25;
+}
+
+.launchDescription {
+  margin: 0;
+  font-size: 0.94rem;
+  line-height: 1.6;
+  color: #466056;
+}
+
+.launchUnavailableNotice {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #4d6259;
+  background: rgba(9, 45, 37, 0.04);
+  border: 1px solid rgba(9, 45, 37, 0.1);
+}
+
+/* Right-side Animated Open Notebook & Pen Illustration */
+.launchIllustrationWrap {
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding: 12px;
+  border-radius: 26px;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(184, 227, 222, 0.36) 0%,
+    rgba(247, 247, 238, 0.5) 72%,
+    transparent 100%
+  );
+}
+
+.launchNotebookSvg {
+  width: min(100%, 248px);
+  height: auto;
+  overflow: visible;
+}
+
+.notebookPenGroup {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: notebookPenFloat 5.6s ease-in-out infinite alternate;
+}
+
+.notebookSprigGroup {
+  transform-box: fill-box;
+  transform-origin: bottom left;
+  animation: notebookSprigSway 6.8s ease-in-out infinite alternate;
+}
+
+.sectionPaused .notebookPenGroup,
+.sectionPaused .notebookSprigGroup {
+  animation-play-state: paused !important;
+}
+
+/* ==========================================================================
+   SECTION C — CONTINUE LEARNING (Prioritized DRAFT & IN_PROGRESS)
+   ========================================================================== */
+.continueSection {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.sectionHeaderRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.sectionEyebrow {
+  margin: 0 0 4px;
+  font-size: 0.74rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #1c7c5c;
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: clamp(1.25rem, 1.9vw, 1.52rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #092d25;
+}
+
+.sectionSubtitle {
+  margin: 4px 0 0;
+  font-size: 0.9rem;
+  color: #4f685e;
+}
+
+.continueCountPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 0 13px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #0e6f68;
+  background: rgba(20, 158, 146, 0.12);
+  border: 1px solid rgba(20, 158, 146, 0.26);
+}
+
+.continuePrimaryCard {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: clamp(20px, 2.6vw, 28px);
+  border-radius: 28px;
+  border: 1.5px solid rgba(35, 166, 122, 0.34);
+  background:
+    radial-gradient(circle at 92% 15%, rgba(139, 229, 194, 0.25) 0%, transparent 42%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(242, 250, 245, 0.92) 100%);
+  box-shadow:
+    0 18px 46px rgba(9, 45, 37, 0.08),
+    0 0 0 4px rgba(139, 229, 194, 0.14);
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+
+.continuePrimaryCard:hover {
+  transform: translateY(-2px);
+  border-color: rgba(35, 166, 122, 0.52);
+  box-shadow:
+    0 22px 52px rgba(9, 45, 37, 0.11),
+    0 0 0 5px rgba(139, 229, 194, 0.2);
+}
+
+.continueCardInfo {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  min-width: 0;
+  flex: 1 1 320px;
+}
+
+.continueDocIcon {
+  flex-shrink: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  color: #092d25;
+  background: linear-gradient(135deg, rgba(139, 229, 194, 0.48), rgba(184, 227, 222, 0.45));
+  border: 1px solid rgba(35, 166, 122, 0.26);
+  transition: transform 0.24s ease;
+}
+
+.continuePrimaryCard:hover .continueDocIcon {
+  transform: rotate(-5deg) scale(1.05);
+}
+
+.continueTextGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.continueBadgeLine {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.continueCardTitle {
+  margin: 0;
+  font-size: 1.08rem;
+  font-weight: 760;
+  color: #092d25;
+  line-height: 1.35;
+}
+
+.continueMetaRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.83rem;
+  color: #50695f;
+}
+
+.continueMetaItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.continueResumeBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 0 22px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #f7f7ee;
+  text-decoration: none;
+  background: linear-gradient(135deg, #092d25 0%, #19684f 100%);
+  box-shadow: 0 12px 26px rgba(9, 45, 37, 0.18);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+.continueResumeBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 15px 30px rgba(9, 45, 37, 0.24);
+}
+
+.continueSecondaryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: 12px;
+}
+
+.continueSecondaryCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 18px;
+  border-radius: 20px;
+  text-decoration: none;
+  color: inherit;
+  background: rgba(255, 255, 255, 0.84);
+  border: 1px solid rgba(35, 166, 122, 0.18);
+  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+
+.continueSecondaryCard:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(35, 166, 122, 0.34);
+}
+
+.continueSecondaryTitle {
+  margin: 4px 0 2px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #092d25;
+}
+
+.continueSecondaryMeta {
+  margin: 0;
+  font-size: 0.79rem;
+  color: #567066;
+}
+
+.continueSecondaryArrow {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #166a50;
+}
+
+/* ==========================================================================
+   SECTION D — MY ATTEMPTS LIBRARY
+   ========================================================================== */
+.librarySection {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: clamp(22px, 3vw, 34px);
+  border-radius: 34px;
+  border: 1px solid rgba(9, 45, 37, 0.1);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.86) 0%,
+    rgba(247, 247, 238, 0.86) 100%
+  );
+  box-shadow: 0 20px 56px rgba(9, 45, 37, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(16px);
+}
+
+.toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(9, 45, 37, 0.08);
+}
+
+.toolbarTopRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.searchBox {
+  position: relative;
+  flex: 1 1 280px;
+  max-width: 440px;
+}
+
+.searchIcon {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  transform: translateY(-50%);
+  color: #5a746a;
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 38px 0 40px;
+  border-radius: 14px;
+  border: 1px solid rgba(9, 45, 37, 0.16);
+  background: rgba(255, 255, 255, 0.94);
+  color: #092d25;
+  font-size: 0.9rem;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.searchInput::placeholder {
+  color: #6d857b;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #23a67a;
+  box-shadow: 0 0 0 3px rgba(35, 166, 122, 0.18);
+}
+
+.searchClearBtn {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  color: #526b61;
+  background: rgba(9, 45, 37, 0.06);
+  cursor: pointer;
+}
+
+.searchClearBtn:hover {
+  background: rgba(9, 45, 37, 0.12);
+  color: #092d25;
+}
+
+.toolbarControlsRight {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.sortControlWrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sortLabel {
+  font-size: 0.82rem;
+  font-weight: 650;
+  color: #4f685e;
+}
+
+.sortSelect {
+  min-height: 42px;
+  padding: 0 12px;
+  border-radius: 13px;
+  border: 1px solid rgba(9, 45, 37, 0.16);
+  background: rgba(255, 255, 255, 0.94);
+  color: #092d25;
+  font-size: 0.86rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.viewToggleGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 4px;
+  border-radius: 13px;
+  background: rgba(9, 45, 37, 0.06);
+  border: 1px solid rgba(9, 45, 37, 0.08);
+}
+
+.viewToggleBtn {
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  color: #546e63;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.16s ease, color 0.16s ease;
+}
+
+.viewToggleBtnActive {
+  color: #092d25;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(9, 45, 37, 0.1);
+}
+
+/* Status Filter Pills */
+.statusFilterRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.filterPill,
+.filterPillActive {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 14px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 680;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+}
+
+.filterPill {
+  color: #466056;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(9, 45, 37, 0.12);
+}
+
+.filterPill:hover {
+  color: #092d25;
+  background: rgba(139, 229, 194, 0.22);
+  border-color: rgba(35, 166, 122, 0.28);
+}
+
+.filterPillActive {
+  color: #092d25;
+  background: linear-gradient(135deg, rgba(139, 229, 194, 0.52), rgba(184, 227, 222, 0.52));
+  border: 1px solid rgba(35, 166, 122, 0.38);
+  box-shadow: 0 4px 12px rgba(9, 45, 37, 0.06);
+}
+
+.librarySummaryBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 0.84rem;
+  color: #50695f;
+}
+
+.librarySummaryBar strong {
+  color: #092d25;
+}
+
+/* Library Grid & List Layouts */
+.libraryGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.libraryList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.attemptCard {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px;
+  border-radius: 22px;
+  background: #fdfdf9;
+  border: 1px solid rgba(9, 45, 37, 0.11);
+  box-shadow: 0 8px 24px rgba(9, 45, 37, 0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.attemptCardRow {
+  flex-direction: row;
+  align-items: center;
+  padding: 16px 20px;
+}
+
+.attemptCard:hover {
+  transform: translateY(-2px);
+  border-color: rgba(35, 166, 122, 0.34);
+  box-shadow: 0 14px 32px rgba(9, 45, 37, 0.08);
+}
+
+.attemptCardTop {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.attemptDocBadge {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  color: #15533f;
+  background: rgba(139, 229, 194, 0.24);
+  border: 1px solid rgba(35, 166, 122, 0.2);
+}
+
+.attemptBody {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.attemptStatusLine {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.codeTag {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.73rem;
+  font-weight: 650;
+  padding: 2px 8px;
+  border-radius: 7px;
+  color: #4f675d;
+  background: rgba(9, 45, 37, 0.05);
+}
+
+.attemptTitle {
+  margin: 0;
+  font-size: 0.98rem;
+  font-weight: 740;
+  line-height: 1.4;
+  color: #092d25;
+}
+
+.attemptMetaList {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  font-size: 0.81rem;
+  color: #546d63;
+}
+
+.attemptMetaChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.attemptFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(9, 45, 37, 0.07);
+}
+
+.attemptCardRow .attemptFooter {
+  padding-top: 0;
+  border-top: 0;
+  flex-shrink: 0;
+}
+
+.stepCountBadge {
+  font-size: 0.78rem;
+  font-weight: 630;
+  color: #4d675c;
+}
+
+.openAttemptBtn,
+.openAttemptBtnPrimary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 38px;
+  padding: 0 16px;
+  border-radius: 999px;
+  font-size: 0.83rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.16s ease, background 0.16s ease, border-color 0.16s ease;
+}
+
+.openAttemptBtn {
+  color: #092d25;
+  background: rgba(139, 229, 194, 0.26);
+  border: 1px solid rgba(35, 166, 122, 0.28);
+}
+
+.openAttemptBtn:hover {
+  background: rgba(139, 229, 194, 0.44);
+  transform: translateX(1px);
+}
+
+.openAttemptBtnPrimary {
+  color: #f7f7ee;
+  background: #145a44;
+  border: 1px solid #092d25;
+}
+
+.openAttemptBtnPrimary:hover {
+  background: #092d25;
+  transform: translateX(1px);
+}
+
+/* Localized Accessible Status Pills (Icon + Explicit Text + Distinct Palette) */
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 26px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 730;
+  line-height: 1.2;
+}
+
+/* DRAFT -> Xám xanh trung tính */
+.tone_draft {
+  color: #415863;
+  background: rgba(74, 100, 112, 0.12);
+  border: 1px solid rgba(74, 100, 112, 0.26);
+}
+
+/* IN_PROGRESS -> Xanh ngọc */
+.tone_inProgress {
+  color: #0b6b63;
+  background: rgba(18, 156, 144, 0.14);
+  border: 1px solid rgba(18, 156, 144, 0.32);
+}
+
+/* SUBMITTED -> Xanh lá dịu */
+.tone_submitted {
+  color: #196847;
+  background: rgba(35, 166, 122, 0.15);
+  border: 1px solid rgba(35, 166, 122, 0.32);
+}
+
+/* EVALUATED -> Xanh lục ánh vàng dịu */
+.tone_evaluated {
+  color: #6b5014;
+  background: rgba(232, 191, 106, 0.25);
+  border: 1px solid rgba(206, 162, 72, 0.42);
+}
+
+/* ABANDONED -> Xám trầm */
+.tone_abandoned {
+  color: #596560;
+  background: rgba(89, 101, 96, 0.11);
+  border: 1px solid rgba(89, 101, 96, 0.24);
+}
+
+/* Empty States */
+.emptyLibraryState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+  padding: clamp(32px, 5vw, 52px) 20px;
+  border-radius: 26px;
+  background: rgba(247, 247, 238, 0.72);
+  border: 1px dashed rgba(35, 166, 122, 0.28);
+}
+
+.emptyIllustration {
+  width: 84px;
+  height: 84px;
+  border-radius: 24px;
+  display: grid;
+  place-items: center;
+  color: #1b6d52;
+  background: linear-gradient(135deg, rgba(139, 229, 194, 0.34), rgba(184, 227, 222, 0.34));
+}
+
+.emptyTitle {
+  margin: 0;
+  font-size: 1.14rem;
+  font-weight: 760;
+  color: #092d25;
+}
+
+.emptyDescription {
+  margin: 0;
+  max-width: 460px;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #50695f;
+}
+
+.emptyResetBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 40px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(35, 166, 122, 0.32);
+  background: #ffffff;
+  color: #092d25;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.emptyResetBtn:hover {
+  background: rgba(139, 229, 194, 0.24);
+}
+
+/* Accessible Pagination Bar */
+.paginationNav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(9, 45, 37, 0.08);
+}
+
+.paginationInfo {
+  font-size: 0.83rem;
+  color: #50695f;
+}
+
+.paginationControls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.pageLink,
+.pageLinkActive,
+.pageLinkDisabled {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-width: 38px;
+  min-height: 38px;
+  padding: 0 12px;
+  border-radius: 12px;
+  font-size: 0.83rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.pageLink {
+  color: #092d25;
+  background: #ffffff;
+  border: 1px solid rgba(9, 45, 37, 0.14);
+  transition: background 0.16s ease, border-color 0.16s ease;
+}
+
+.pageLink:hover {
+  background: rgba(139, 229, 194, 0.25);
+  border-color: rgba(35, 166, 122, 0.34);
+}
+
+.pageLinkActive {
+  color: #f7f7ee;
+  background: #092d25;
+  border: 1px solid #092d25;
+}
+
+.pageLinkDisabled {
+  color: #8aa097;
+  background: rgba(9, 45, 37, 0.04);
+  border: 1px solid rgba(9, 45, 37, 0.08);
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   SECTION E — CALM PAGE ENDING
+   ========================================================================== */
+.endingSection {
+  position: relative;
+  margin-top: 16px;
+  padding: 28px 20px 44px;
+  text-align: center;
+  overflow: hidden;
+}
+
+.endingGlow {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  width: min(560px, 86vw);
+  height: 110px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(232, 191, 106, 0.2) 0%,
+    rgba(139, 229, 194, 0.16) 52%,
+    transparent 76%
+  );
+  filter: blur(18px);
+  pointer-events: none;
+}
+
+.endingMeadowSvg {
+  width: min(100%, 960px);
+  height: 82px;
+  margin: 0 auto 10px;
+  display: block;
+  overflow: visible;
+}
+
+.endingFlowerSway {
+  transform-box: fill-box;
+  transform-origin: bottom center;
+  animation: endingFlowerSway 5.8s ease-in-out infinite alternate;
+}
+
+.endingFlowerSwayDelayed {
+  transform-box: fill-box;
+  transform-origin: bottom center;
+  animation: endingFlowerSway 6.6s -2.4s ease-in-out infinite alternate;
+}
+
+.endingCaption {
+  margin: 0 auto 14px;
+  max-width: 460px;
+  font-size: 0.86rem;
+  color: #4f685e;
+}
+
+.endingActions {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.endingTopBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 38px;
+  padding: 0 16px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 680;
+  color: #092d25;
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(35, 166, 122, 0.24);
+  transition: transform 0.18s ease, background 0.18s ease;
+}
+
+.endingTopBtn:hover {
+  transform: translateY(-1px);
+  background: #ffffff;
+}
+
+.sectionPaused .endingFlowerSway,
+.sectionPaused .endingFlowerSwayDelayed {
+  animation-play-state: paused !important;
+}
+
+/* Focus-visible accessibility across interactive controls */
+.breadcrumbLink:focus-visible,
+.heroJumpBtn:focus-visible,
+.heroSecondaryLink:focus-visible,
+.continueResumeBtn:focus-visible,
+.continueSecondaryCard:focus-visible,
+.searchClearBtn:focus-visible,
+.sortSelect:focus-visible,
+.viewToggleBtn:focus-visible,
+.filterPill:focus-visible,
+.filterPillActive:focus-visible,
+.openAttemptBtn:focus-visible,
+.openAttemptBtnPrimary:focus-visible,
+.emptyResetBtn:focus-visible,
+.pageLink:focus-visible,
+.endingTopBtn:focus-visible {
+  outline: 3px solid #e8bf6a;
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   KEYFRAMES (GPU Transform & Opacity Only)
+   ========================================================================== */
+@keyframes studySunbeamBreathe {
+  0% {
+    opacity: 0.36;
+    transform: rotate(18deg) scaleX(0.96);
+  }
+  100% {
+    opacity: 0.68;
+    transform: rotate(22deg) scaleX(1.04);
+  }
+}
+
+@keyframes studyBoughSwayLeft {
+  0% {
+    transform: rotate(-1.4deg);
+  }
+  100% {
+    transform: rotate(1.8deg) translate3d(2px, 3px, 0);
+  }
+}
+
+@keyframes studyBoughSwayRight {
+  0% {
+    transform: rotate(1.4deg);
+  }
+  100% {
+    transform: rotate(-1.8deg) translate3d(-2px, 3px, 0);
+  }
+}
+
+@keyframes studyLeafFall {
+  0% {
+    transform: translate3d(0, -4vh, 0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.72;
+  }
+  82% {
+    opacity: 0.58;
+  }
+  100% {
+    transform: translate3d(var(--leaf-drift, 32px), 110vh, 0);
+    opacity: 0;
+  }
+}
+
+@keyframes studyLeafPendulum {
+  0% {
+    transform: translate3d(-18px, 0, 0) rotate(-20deg);
+  }
+  100% {
+    transform: translate3d(20px, 0, 0) rotate(22deg);
+  }
+}
+
+@keyframes studyLeafFlutter {
+  0% {
+    transform: scaleY(1) rotate(-5deg);
+  }
+  100% {
+    transform: scaleY(0.72) rotate(9deg);
+  }
+}
+
+@keyframes studySunPulse {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.72;
+  }
+  100% {
+    transform: scale(1.05);
+    opacity: 0.96;
+  }
+}
+
+@keyframes dioramaCloudDrift {
+  0% {
+    transform: translate3d(-130px, 0, 0);
+  }
+  100% {
+    transform: translate3d(540px, 0, 0);
+  }
+}
+
+/* Smooth Bezier-like curved arc across the distant Hero diorama sky, then calm pause off-stage */
+@keyframes studyDistantBirdArc {
+  0% {
+    transform: translate3d(-60px, 22px, 0) rotate(-4deg);
+    opacity: 0;
+  }
+  6% {
+    opacity: 0.52;
+  }
+  28% {
+    transform: translate3d(175px, -12px, 0) rotate(-1deg);
+    opacity: 0.62;
+  }
+  52% {
+    transform: translate3d(420px, 6px, 0) rotate(4deg);
+    opacity: 0;
+  }
+  100% {
+    transform: translate3d(420px, 6px, 0) rotate(4deg);
+    opacity: 0;
+  }
+}
+
+@keyframes studyBirdWingBeat {
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+  25% {
+    transform: scaleY(-0.45);
+  }
+  50% {
+    transform: scaleY(0.95);
+  }
+  75% {
+    transform: scaleY(0.85);
+  }
+}
+
+@keyframes studyTreeSway {
+  0% {
+    transform: rotate(-1.5deg);
+  }
+  100% {
+    transform: rotate(1.8deg);
+  }
+}
+
+@keyframes studyLeafRustle {
+  0% {
+    transform: rotate(-2.2deg) translate3d(0, 0, 0);
+  }
+  100% {
+    transform: rotate(2.5deg) translate3d(1.5px, -1px, 0);
+  }
+}
+
+@keyframes dioramaLeafGlideOne {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.85;
+  }
+  75% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translate3d(-115px, 95px, 0) rotate(-38deg);
+    opacity: 0;
+  }
+}
+
+@keyframes dioramaLeafGlideTwo {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.78;
+  }
+  75% {
+    opacity: 0.62;
+  }
+  100% {
+    transform: translate3d(-92px, 82px, 0) rotate(32deg);
+    opacity: 0;
+  }
+}
+
+@keyframes notebookPenFloat {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  100% {
+    transform: translate3d(2px, -4px, 0) rotate(-1.8deg);
+  }
+}
+
+@keyframes notebookSprigSway {
+  0% {
+    transform: rotate(-2.4deg);
+  }
+  100% {
+    transform: rotate(2.8deg);
+  }
+}
+
+@keyframes endingFlowerSway {
+  0% {
+    transform: rotate(-3deg);
+  }
+  100% {
+    transform: rotate(3.4deg);
+  }
+}
+
+/* Explicit User Toggle Off ("Tĩnh") */
+:global([data-garden-motion="off"]) .studySunRayPrimary,
+:global([data-garden-motion="off"]) .studySunRaySecondary,
+:global([data-garden-motion="off"]) .studyEdgeBoughLeft,
+:global([data-garden-motion="off"]) .studyEdgeBoughRight,
+:global([data-garden-motion="off"]) .studyFallingLeafDrop,
+:global([data-garden-motion="off"]) .studyFallingLeafPendulum,
+:global([data-garden-motion="off"]) .studyFallingLeafFlutter,
+:global([data-garden-motion="off"]) .dioramaSunGlow,
+:global([data-garden-motion="off"]) .dioramaCloudOne,
+:global([data-garden-motion="off"]) .dioramaCloudTwo,
+:global([data-garden-motion="off"]) .dioramaBirdArc,
+:global([data-garden-motion="off"]) .dioramaBirdWing,
+:global([data-garden-motion="off"]) .dioramaBirdWingDelayed,
+:global([data-garden-motion="off"]) .dioramaTreeCanopy,
+:global([data-garden-motion="off"]) .dioramaLeafCluster,
+:global([data-garden-motion="off"]) .dioramaFloatingLeafOne,
+:global([data-garden-motion="off"]) .dioramaFloatingLeafTwo,
+:global([data-garden-motion="off"]) .notebookPenGroup,
+:global([data-garden-motion="off"]) .notebookSprigGroup,
+:global([data-garden-motion="off"]) .endingFlowerSway,
+:global([data-garden-motion="off"]) .endingFlowerSwayDelayed {
+  animation: none !important;
+}
+
+:global([data-garden-motion="off"]) .studyFallingLeafDrop,
+:global([data-garden-motion="off"]) .dioramaBirdArc,
+:global([data-garden-motion="off"]) .dioramaFloatingLeafOne,
+:global([data-garden-motion="off"]) .dioramaFloatingLeafTwo {
+  opacity: 0 !important;
+}
+
+:global([data-garden-motion="off"]) .launchCard:hover,
+:global([data-garden-motion="off"]) .continuePrimaryCard:hover,
+:global([data-garden-motion="off"]) .continueSecondaryCard:hover,
+:global([data-garden-motion="off"]) .attemptCard:hover,
+:global([data-garden-motion="off"]) .heroJumpBtn:hover,
+:global([data-garden-motion="off"]) .endingTopBtn:hover {
+  transform: none !important;
+}
+
+/* ==========================================================================
+   RESPONSIVE BREAKPOINTS (Tablet & Mobile)
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .hero {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .heroDioramaWrap {
+    height: 188px;
+  }
+
+  .launchCard {
+    grid-template-columns: 1fr;
+  }
+
+  .launchIllustrationWrap {
+    display: none;
+  }
+
+  .libraryGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 767px) {
+  .canvas {
+    padding: 12px 14px 0;
+  }
+
+  .hero {
+    padding: 22px 18px;
+    border-radius: 28px;
+    gap: 16px;
+  }
+
+  .heroDioramaWrap {
+    height: 154px;
+    border-radius: 20px;
+  }
+
+  .heroQuickActions {
+    width: 100%;
+  }
+
+  .heroJumpBtn,
+  .heroSecondaryLink {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+
+  .launchCard {
+    padding: 20px 18px;
+    border-radius: 26px;
+  }
+
+  .continuePrimaryCard {
+    padding: 18px;
+    border-radius: 24px;
+  }
+
+  .continueResumeBtn {
+    width: 100%;
+  }
+
+  .librarySection {
+    padding: 18px 16px;
+    border-radius: 26px;
+  }
+
+  .searchBox {
+    max-width: none;
+    flex-basis: 100%;
+  }
+
+  .toolbarControlsRight {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .attemptCardRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .attemptCardRow .attemptFooter {
+    padding-top: 12px;
+    border-top: 1px solid rgba(9, 45, 37, 0.07);
+  }
+
+  .endingSection {
+    padding-bottom: calc(92px + env(safe-area-inset-bottom));
+  }
+
+  .studyEdgeBoughLeft,
+  .studyEdgeBoughRight {
+    width: 84px;
+    opacity: 0.16;
+  }
+}

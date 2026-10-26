@@ -1,0 +1,3 @@
+{
+  "/api/v3/math-solutions/attempts/[attemptId]/paper/route": "app/api/v3/math-solutions/attempts/[attemptId]/paper/route.js"
+}

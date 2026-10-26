@@ -255,9 +255,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .interactive:hover,
-  .button:hover:not(:disabled),
-  .iconButton:hover {
+  :global(*:not([data-garden-motion="on"] *)) > .interactive:hover,
+  :global(*:not([data-garden-motion="on"] *)) > .button:hover:not(:disabled),
+  :global(*:not([data-garden-motion="on"] *)) > .iconButton:hover {
     transform: none;
   }
 }

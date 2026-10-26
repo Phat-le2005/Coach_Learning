@@ -69,6 +69,7 @@ class Settings(BaseSettings):
     ai_rag_top_k: int = Field(default=3, ge=1, le=10)
     ai_max_context_chars: int = Field(default=3000, ge=200, le=50000)
     teacher_material_storage_dir: Path = BACKEND_DIR / "var" / "teacher_materials"
+    math_paper_storage_dir: Path = BACKEND_DIR / "var" / "math_paper"
     teacher_material_max_bytes: int = Field(default=25 * 1024 * 1024, ge=1)
     question_acquisition_allowed_domains: str = ""
     question_acquisition_storage_dir: Path = BACKEND_DIR / "var" / "question_acquisition"

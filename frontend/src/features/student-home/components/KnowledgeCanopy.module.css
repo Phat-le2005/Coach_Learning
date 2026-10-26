@@ -10,17 +10,24 @@
 
 .canopyWrap::before {
   position: absolute;
-  top: 5%;
-  left: 5%;
-  width: 90%;
-  height: 90%;
+  top: 6%;
+  left: 6%;
+  width: 88%;
+  height: 88%;
   content: "";
   pointer-events: none;
   border-radius: 50%;
-  opacity: 0.75;
-  background: radial-gradient(circle, rgba(99, 201, 154, 0.22) 0%, rgba(92, 169, 214, 0.12) 45%, rgba(133, 120, 207, 0.08) 65%, transparent 75%);
-  filter: blur(28px);
-  animation: cosmic-aura-pulse 8s ease-in-out infinite alternate;
+  opacity: 0.72;
+  background: radial-gradient(
+    circle,
+    rgba(139, 229, 194, 0.24) 0%,
+    rgba(184, 227, 222, 0.14) 44%,
+    rgba(232, 191, 106, 0.08) 66%,
+    transparent 76%
+  );
+  filter: blur(26px);
+  will-change: transform, opacity;
+  animation: canopyAuraPulse 9s ease-in-out infinite alternate;
 }
 
 .canopy {
@@ -28,56 +35,65 @@
   width: 100%;
   height: auto;
   overflow: visible;
-  filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.35));
+  filter: drop-shadow(0 16px 32px rgba(9, 45, 37, 0.32));
 }
 
-/* Orbit tracks */
+/* Botanical-Celestial Orbit Tracks */
 .orbitTrackOuter {
   fill: none;
-  stroke: rgba(99, 201, 154, 0.15);
+  stroke: rgba(184, 227, 222, 0.22);
+  stroke-width: 1.2;
   stroke-dasharray: 6 10;
-  animation: orbit-rotate 120s linear infinite;
+  animation: orbitRotate 140s linear infinite;
   transform-origin: 300px 230px;
 }
 
 .orbitTrackMain {
   fill: none;
-  stroke: rgba(99, 201, 154, 0.28);
-  stroke-dasharray: 4 6;
-  animation: orbit-rotate-reverse 80s linear infinite;
+  stroke: rgba(139, 229, 194, 0.34);
+  stroke-width: 1.4;
+  stroke-dasharray: 4 7;
+  animation: orbitRotateReverse 95s linear infinite;
   transform-origin: 300px 230px;
 }
 
 .orbitTrackInner {
   fill: none;
-  stroke: rgba(92, 169, 214, 0.2);
-  stroke-dasharray: 3 5;
-  animation: orbit-rotate 60s linear infinite;
+  stroke: rgba(232, 191, 106, 0.25);
+  stroke-width: 1.1;
+  stroke-dasharray: 3 6;
+  animation: orbitRotate 72s linear infinite;
   transform-origin: 300px 230px;
+}
+
+.orbitBotanicalRing {
+  transform-origin: 300px 230px;
+  animation: orbitRotate 140s linear infinite;
+  pointer-events: none;
 }
 
 /* Constellation connecting beams */
 .constellationBeam {
   fill: none;
-  stroke: #3bb9b0;
-  stroke-width: 1.8;
-  stroke-opacity: 0.55;
-  stroke-dasharray: 5 5;
-  animation: beam-flow 20s linear infinite;
-  transition: stroke-opacity 0.25s ease, stroke-width 0.25s ease;
+  stroke: #8be5c2;
+  stroke-width: 1.7;
+  stroke-opacity: 0.48;
+  stroke-dasharray: 5 6;
+  animation: beamFlow 24s linear infinite;
+  transition: stroke-opacity 0.25s ease, stroke-width 0.25s ease, stroke 0.25s ease;
 }
 
 .constellationBeamActive {
-  stroke: #63c99a;
-  stroke-opacity: 0.95;
-  stroke-width: 2.8;
-  filter: drop-shadow(0 0 6px #63c99a);
+  stroke: #e8bf6a;
+  stroke-opacity: 0.96;
+  stroke-width: 2.6;
+  filter: drop-shadow(0 0 6px rgba(232, 191, 106, 0.65));
 }
 
 .spokeLine {
-  stroke: rgba(99, 201, 154, 0.22);
-  stroke-width: 1.2;
-  stroke-dasharray: 2 4;
+  stroke: rgba(139, 229, 194, 0.22);
+  stroke-width: 1.15;
+  stroke-dasharray: 2 5;
 }
 
 /* Center core nucleus */
@@ -88,9 +104,9 @@
 
 .corePulseRing {
   fill: none;
-  stroke: rgba(99, 201, 154, 0.35);
+  stroke: rgba(139, 229, 194, 0.36);
   stroke-width: 1.5;
-  animation: core-ripple 3.5s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+  animation: coreRipple 4.2s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
   transform-origin: 300px 230px;
 }
 
@@ -98,28 +114,24 @@
 .chapterNode {
   cursor: pointer;
   outline: none;
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: transform;
 }
 
 .nodeHalo {
-  transition: r 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-              stroke-width 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-              fill-opacity 0.35s ease,
-              stroke-opacity 0.35s ease;
-  animation: star-halo-pulse 3.5s ease-in-out infinite alternate;
+  transition: r 0.38s cubic-bezier(0.16, 1, 0.3, 1),
+    stroke-width 0.38s cubic-bezier(0.16, 1, 0.3, 1),
+    fill-opacity 0.32s ease,
+    stroke-opacity 0.32s ease;
+  animation: starHaloPulse 4s ease-in-out infinite alternate;
 }
 
 .chapterNode:hover .nodeHalo,
 .chapterNode:focus-visible .nodeHalo {
-  fill-opacity: 0.55;
+  fill-opacity: 0.58;
   stroke-opacity: 1;
 }
 
 .nodeBody {
-  transition: r 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-              stroke-width 0.35s ease,
-              filter 0.35s ease;
+  transition: r 0.38s cubic-bezier(0.16, 1, 0.3, 1), stroke-width 0.32s ease;
 }
 
 /* High contrast crystal clear typography with zero overlap */
@@ -127,103 +139,194 @@
   font-family: inherit;
   font-size: 11.5px;
   font-weight: 750;
-  fill: #ffffff;
+  fill: #f7f7ee;
   text-anchor: middle;
   pointer-events: none;
   user-select: none;
-  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 10px rgba(16, 46, 38, 0.9));
-  transition: fill 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-              filter 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  filter: drop-shadow(0 2px 5px rgba(9, 45, 37, 0.95));
+  transition: fill 0.3s ease;
 }
 
 .nodeSubLabel {
   font-family: inherit;
   font-size: 9.5px;
   font-weight: 700;
-  fill: #63c99a;
+  fill: #8be5c2;
   text-anchor: middle;
   pointer-events: none;
   user-select: none;
-  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.9));
-  transition: fill 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-              filter 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  filter: drop-shadow(0 1px 3px rgba(9, 45, 37, 0.92));
+  transition: fill 0.3s ease;
 }
 
 .chapterNode:hover .nodeLabel {
-  fill: #e6fffa;
-  filter: drop-shadow(0 0 12px rgba(99, 201, 154, 0.95)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.95));
+  fill: #ffffff;
 }
 
 .chapterNode:hover .nodeSubLabel {
-  fill: #a7f3d0;
-  filter: drop-shadow(0 0 8px rgba(99, 201, 154, 0.85));
+  fill: #e8bf6a;
 }
 
 .starSparkle {
-  fill: #fef08a;
-  filter: drop-shadow(0 0 4px #fef08a);
-  animation: sparkle-twinkle 2.5s ease-in-out infinite;
+  fill: #e8bf6a;
+  filter: drop-shadow(0 0 4px rgba(232, 191, 106, 0.8));
+  animation: sparkleTwinkle 3.2s ease-in-out infinite;
   pointer-events: none;
 }
 
-/* Floating glass status pill */
+/* Floating glass status pill below Radar */
 .tooltipWrap {
   margin-top: 0.5rem;
-  padding: 0.55rem 1.25rem;
-  background: rgba(16, 46, 38, 0.88);
-  border: 1px solid rgba(99, 201, 154, 0.45);
-  border-radius: 9999px;
+  padding: 0.52rem 1.2rem;
+  background: rgba(9, 45, 37, 0.78);
+  border: 1px solid rgba(139, 229, 194, 0.38);
+  border-radius: 999px;
   text-align: center;
-  font-size: 0.86rem;
+  font-size: 0.82rem;
   font-weight: 600;
-  color: #eefaf2;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+  color: #f7f7ee;
+  box-shadow: 0 10px 26px rgba(9, 45, 37, 0.3), inset 0 1px 0 rgba(247, 247, 238, 0.16);
   backdrop-filter: blur(14px);
-  transition: background 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-              border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: transform, box-shadow;
+  transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
 }
 
 .tooltipWrapActive {
-  border-color: rgba(99, 201, 154, 0.85);
-  background: rgba(20, 60, 48, 0.95);
-  box-shadow: 0 12px 32px rgba(99, 201, 154, 0.35);
+  border-color: rgba(232, 191, 106, 0.72);
+  background: rgba(9, 45, 37, 0.9);
   transform: translateY(-2px);
 }
 
-@keyframes cosmic-aura-pulse {
-  0% { transform: scale(0.94); opacity: 0.55; }
-  100% { transform: scale(1.06); opacity: 0.85; }
+.tooltipRow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 7px;
 }
 
-@keyframes orbit-rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+.tooltipIconGold {
+  color: #e8bf6a;
+  flex-shrink: 0;
 }
 
-@keyframes orbit-rotate-reverse {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(-360deg); }
+.tooltipIconMint {
+  color: #8be5c2;
+  flex-shrink: 0;
 }
 
-@keyframes beam-flow {
-  from { stroke-dashoffset: 0; }
-  to { stroke-dashoffset: 100; }
+.tooltipTitle {
+  color: #f7f7ee;
+  font-weight: 750;
 }
 
-@keyframes core-ripple {
-  0% { r: 48px; opacity: 0.8; stroke-width: 2px; }
-  100% { r: 84px; opacity: 0; stroke-width: 0.5px; }
+.tooltipState {
+  color: #8be5c2;
+  font-weight: 700;
 }
 
-@keyframes star-halo-pulse {
-  0% { fill-opacity: 0.25; stroke-opacity: 0.55; }
-  100% { fill-opacity: 0.48; stroke-opacity: 0.95; }
+.tooltipPercentBadge {
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 750;
+  color: #f7f7ee;
+  background: rgba(35, 166, 122, 0.34);
+  border: 1px solid rgba(139, 229, 194, 0.4);
 }
 
-@keyframes sparkle-twinkle {
-  0%, 100% { transform: scale(0.85); opacity: 0.6; }
-  50% { transform: scale(1.2); opacity: 1; }
+/* Pause state when Ambient Effects Off or Tab Hidden */
+.canopyPaused::before,
+.canopyPaused .orbitTrackOuter,
+.canopyPaused .orbitTrackMain,
+.canopyPaused .orbitTrackInner,
+.canopyPaused .orbitBotanicalRing,
+.canopyPaused .constellationBeam,
+.canopyPaused .corePulseRing,
+.canopyPaused .nodeHalo,
+.canopyPaused .starSparkle {
+  animation-play-state: paused !important;
+}
+
+@keyframes canopyAuraPulse {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.54;
+  }
+  100% {
+    transform: scale(1.05);
+    opacity: 0.82;
+  }
+}
+
+@keyframes orbitRotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes orbitRotateReverse {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+@keyframes beamFlow {
+  from {
+    stroke-dashoffset: 0;
+  }
+  to {
+    stroke-dashoffset: 110;
+  }
+}
+
+@keyframes coreRipple {
+  0% {
+    r: 46px;
+    opacity: 0.72;
+    stroke-width: 1.8px;
+  }
+  100% {
+    r: 82px;
+    opacity: 0;
+    stroke-width: 0.4px;
+  }
+}
+
+@keyframes starHaloPulse {
+  0% {
+    fill-opacity: 0.24;
+    stroke-opacity: 0.52;
+  }
+  100% {
+    fill-opacity: 0.46;
+    stroke-opacity: 0.92;
+  }
+}
+
+@keyframes sparkleTwinkle {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+:global([data-garden-motion="off"]) .canopyWrap::before,
+:global([data-garden-motion="off"]) .orbitTrackOuter,
+:global([data-garden-motion="off"]) .orbitTrackMain,
+:global([data-garden-motion="off"]) .orbitTrackInner,
+:global([data-garden-motion="off"]) .orbitBotanicalRing,
+:global([data-garden-motion="off"]) .constellationBeam,
+:global([data-garden-motion="off"]) .corePulseRing,
+:global([data-garden-motion="off"]) .nodeHalo,
+:global([data-garden-motion="off"]) .starSparkle {
+  animation: none !important;
 }

@@ -1,0 +1,3 @@
+{
+  "/api/v3/math-solutions/attempts/[attemptId]/ai-review/route": "app/api/v3/math-solutions/attempts/[attemptId]/ai-review/route.js"
+}
