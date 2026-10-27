@@ -1,0 +1,29 @@
+{
+  "folders": [{ "path": "." }],
+  "settings": {
+    "python.defaultInterpreterPath": "${workspaceFolder}/.conda/python.exe",
+    "python.envFile": "${workspaceFolder}/backend/.env",
+    "python.analysis.extraPaths": ["${workspaceFolder}/backend"],
+    "python.testing.pytestEnabled": true,
+    "python.testing.cwd": "${workspaceFolder}/backend",
+    "python.testing.pytestArgs": ["tests"],
+    "typescript.tsdk": "frontend/node_modules/typescript/lib",
+    "terminal.integrated.env.windows": {
+      "PYTHONUTF8": "1",
+      "PYTHONIOENCODING": "utf-8",
+      "PYTHONNOUSERSITE": "1"
+    },
+    "files.watcherExclude": {
+      "**/.conda/**": true,
+      "**/.local/**": true,
+      "**/.tmp/**": true
+    }
+  },
+  "extensions": {
+    "recommendations": [
+      "ms-python.python",
+      "ms-python.vscode-pylance",
+      "ms-python.debugpy"
+    ]
+  }
+}

@@ -15,3 +15,5 @@ python-multipart>=0.0.20,<1.0
 pgvector>=0.3.0,<1.0
 pypdf>=6,<7
 sympy>=1.13.3,<2.0
+# API v3 imports PIL at startup, even when server-side OCR is disabled.
+Pillow>=10,<12

@@ -5,6 +5,8 @@
 
 # Python
 .venv/
+.conda/
+.local/
 venv/
 __pycache__/
 *.py[cod]
@@ -31,3 +33,4 @@ Desktop.ini
 # Local build/download workspace
 .tmp/
 *.sql
+docs/samples

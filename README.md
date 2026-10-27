@@ -1,5 +1,11 @@
 # EduMS — Local development
 
+**Windows + Conda:** xem [hướng dẫn môi trường riêng cho project](docs/local-setup.md).
+`environment.yml` cung cấp Python 3.12, Node.js 22, PostgreSQL 16 và extension
+pgvector trong `.conda`; mở `Coach_Learning.code-workspace` để VS Code chọn đúng Python.
+Các mục foundation bên dưới mô tả cả lịch sử phát triển; đối chiếu mã nguồn và
+[README frontend](frontend/README.md) để xem luồng hiện tại.
+
 Hệ thống quản lý giáo dục và hỗ trợ thi tuyển sinh đại học, chạy trực tiếp trên máy local. Đã triển khai foundation 01–09 cùng versioned Curriculum, knowledge graph và Question classification. Xem [Foundation Audit](backend/FOUNDATION_AUDIT.md), [Curriculum Foundation](backend/CURRICULUM_FOUNDATION.md), [Authentication](backend/AUTHENTICATION.md), [Profile](backend/PROFILE_DOMAIN.md), [Academic](backend/ACADEMIC_DOMAIN.md), [Classroom](backend/CLASSROOM_DOMAIN.md), [Data Foundation](backend/DATA_FOUNDATION.md), [Question Bank](backend/QUESTION_BANK.md), [Question Import](backend/QUESTION_IMPORT.md), [Synthetic Students](backend/SYNTHETIC_STUDENTS.md) và đặc tả hợp đồng đóng băng [API v1 Specification](backend/API_V1.md) ([OpenAPI Contract v1.0.0](backend/contracts/openapi-v1.json)).
 
 ## Kiến trúc
@@ -8,7 +14,7 @@ Backend là Modular Monolith. Các domain account, profile, academic, Classroom 
 
 `GET /health` là liveness check, trả `{"status":"ok"}` mà không gọi database hoặc AI. Engine kết nối khi được sử dụng. Session được đóng sau request và rollback khi có lỗi; service phải commit giao dịch tường minh. Kiểm tra PostgreSQL bằng command riêng `python -m app.database.check`.
 
-Frontend dùng Next.js App Router và TypeScript strict. Sáu trang placeholder chỉ hiển thị tên khu vực. `src/lib/api/client.ts` có health client đọc URL từ environment, xử lý error envelope và validate response. Các trang chưa gọi client này.
+Frontend dùng Next.js 16 App Router, React 19 và TypeScript strict, có đăng nhập qua BFF, phân quyền, Student Home, Knowledge Forest và Math Workspace. Xem [README frontend](frontend/README.md) để biết cấu hình session, API và OCR trong trình duyệt.
 
 ## Cấu trúc và danh sách file tạo
 
@@ -138,14 +144,14 @@ CoachLearning/
         └── lib/api/client.ts
 ```
 
-`backend/.venv`, `backend/.env`, `frontend/.env.local`, `node_modules`, `.next` và test caches là dữ liệu local được ignore. `.env.example` không bị ignore. Dự án chưa tự khởi tạo Git repository.
+`.conda`, `.local`, `backend/.venv`, `backend/.env`, `frontend/.env.local`, `node_modules`, `.next` và test caches là dữ liệu local được ignore. `.env.example` được theo dõi trong Git.
 
 ## Yêu cầu và dependency
 
 - Python 3.12 trở lên; package backend chỉ cài trong virtual environment.
 - Node.js 20.9 trở lên và npm; môi trường kiểm chứng dùng Node.js 22.
-- PostgreSQL 13+ đã cài và chạy trực tiếp trên máy; profile backfill dùng built-in gen_random_uuid. Không có script tự cài database.
-- Backend: FastAPI, Uvicorn, SQLAlchemy 2, Alembic, Psycopg 3 binary, Pydantic 2, Pydantic Settings, Argon2-cffi, PyJWT, email-validator và python-multipart. Tests: pytest và HTTPX.
+- PostgreSQL cùng extension **vector**; cấu hình Conda và Docker của project dùng PostgreSQL 16. Gói Python `pgvector` không thay thế extension phía database. Helper `scripts/local_setup.py` quản lý cluster local riêng trong `.local/postgres`.
+- Backend: FastAPI, Uvicorn, SQLAlchemy 2, Alembic, Psycopg 3 binary, Pydantic 2, Pydantic Settings, Argon2-cffi, PyJWT, email-validator, python-multipart, pgvector, pypdf, SymPy và Pillow. Tests: pytest và HTTPX.
 - Frontend: Next.js 16, React 19, React DOM 19. Development: TypeScript, `@types/node`, `@types/react`, `@types/react-dom`.
 
 `requirements.txt` chứa dependency trực tiếp với giới hạn phiên bản; `requirements-lock.txt` chứa toàn bộ phiên bản đã cài. Frontend khóa phiên bản trong `package-lock.json`.
@@ -188,13 +194,13 @@ Nếu `psql` chưa có trong PATH, dùng SQL Shell, pgAdmin hoặc executable tr
 
 ## Environment variables
 
-Backend đọc `backend/.env` theo đường dẫn mã nguồn. Environment của process có độ ưu tiên cao hơn file; biến trùng tên, đặc biệt `DEBUG`, phải có giá trị đúng kiểu. Root `.env.example` chỉ là bản tham khảo tổng hợp, không được tự động load. Frontend đọc `frontend/.env.local`.
+Backend đọc `backend/.env` theo đường dẫn mã nguồn. Environment của process có độ ưu tiên cao hơn file; dùng `EDUMS_DEBUG` cho cấu hình debug của ứng dụng. Root `.env.example` chỉ là bản tham khảo tổng hợp, không được tự động load. Frontend đọc `frontend/.env.local`.
 
 | Biến | Giá trị template | Mục đích |
 | --- | --- | --- |
 | `APP_NAME` | `EduMS` | Tên ứng dụng/OpenAPI |
 | `APP_ENV` | `development` | `development`, `test`, `production` |
-| `DEBUG` | `true` | Development logging/reload; không bật traceback response |
+| `EDUMS_DEBUG` | `true` | Development logging/reload; không bật traceback response |
 | `DATABASE_HOST` | `localhost` | PostgreSQL host |
 | `DATABASE_PORT` | `5432` | PostgreSQL port |
 | `DATABASE_NAME` | `edums` | Database, phải được cấu hình |
@@ -209,7 +215,9 @@ Backend đọc `backend/.env` theo đường dẫn mã nguồn. Environment củ
 | `ACCESS_TOKEN_EXPIRE_MINUTES` | `15` | Access token TTL, từ 1–60 phút |
 | `REFRESH_TOKEN_EXPIRE_DAYS` | `7` | Session lifetime cố định, từ 1–30 ngày |
 | `SEED_DEMO_PASSWORD` | trống | Password local cho demo users; tối thiểu 12 ký tự |
-| `NEXT_PUBLIC_API_BASE_URL` | `http://127.0.0.1:8000` | Chỉ thuộc frontend; không chứa secret |
+| `API_BASE_URL` | `http://127.0.0.1:8000` | URL backend phía server của frontend BFF |
+| `AUTH_SESSION_SECRET` | trống | Secret ký session BFF, ít nhất 32 ký tự; tạo trong `.env.local` |
+| `SELF_STUDY_PUBLISHED_SUBJECT_CODES` | `MATH_G12` | Allowlist môn tự học của frontend |
 
 SQLAlchemy tạo URL bằng `URL.create` từ settings để xử lý ký tự đặc biệt trong credential. Trong env có thể đặt chuỗi mật khẩu trong dấu nháy. Không có database URL hard-code hoặc cấu hình database riêng ở Alembic.
 
@@ -223,7 +231,7 @@ Trên Windows PowerShell, sau khi đã tạo `.venv` và điền `backend/.env`,
 .\backend\run_dev.ps1
 ```
 
-Launcher này luôn dùng `backend/.venv/Scripts/python.exe`. Không chạy `uvicorn app.main:app --reload` trực tiếp nếu chưa activate virtual environment, vì Windows có thể gọi Uvicorn/Python toàn cục và báo thiếu package dù dependency đã được cài trong `.venv`.
+Launcher ưu tiên `.conda/python.exe` của project, rồi mới dùng `backend/.venv/Scripts/python.exe` nếu chưa có Conda. Không chạy `uvicorn app.main:app --reload` trực tiếp nếu chưa activate môi trường, vì Windows có thể gọi Uvicorn/Python toàn cục và báo thiếu package.
 
 Từ root:
 
@@ -264,7 +272,7 @@ python -m app
 
 Để tái lập bộ phiên bản đã cài, thay command install bằng `python -m pip install -r requirements-lock.txt`.
 
-`python -m app` đọc host/port từ settings và bật reload khi `APP_ENV=development`, `DEBUG=true`. Có thể dùng Uvicorn trực tiếp với host/port tương ứng cấu hình local:
+`python -m app` đọc host/port từ settings và bật reload khi `APP_ENV=development`, `EDUMS_DEBUG=true`. Có thể dùng Uvicorn trực tiếp với host/port tương ứng cấu hình local:
 
 ```text
 uvicorn app.main:app --reload --host 127.0.0.1 --port 8000 --no-access-log
@@ -279,7 +287,7 @@ Nếu PowerShell chặn activation, gọi Python trong venv trực tiếp, khôn
 .\.venv\Scripts\python.exe -m app
 ```
 
-Nếu process kế thừa `DEBUG` không phải boolean, đặt `$env:DEBUG = 'true'` trong terminal PowerShell của backend hoặc `export DEBUG=true` trên Linux/macOS trước khi chạy. Không cần thay đổi environment toàn máy.
+Backend dùng `EDUMS_DEBUG` và bỏ qua biến `DEBUG` của các công cụ khác. Không cần thay đổi environment toàn máy.
 
 Backend: http://127.0.0.1:8000/health. Swagger: http://127.0.0.1:8000/docs. OpenAPI: http://127.0.0.1:8000/openapi.json.
 
@@ -327,7 +335,7 @@ Revision thủ công: `python -m alembic revision -m "describe schema change"`. 
 
 ```powershell
 cd backend
-$env:DEBUG = 'true'
+$env:EDUMS_DEBUG = 'true'
 .\.venv\Scripts\python.exe -m app.seed
 ```
 
@@ -395,7 +403,7 @@ Mở http://localhost:3000:
 | `/parent` | Parent Dashboard |
 | `/admin` | Admin Dashboard |
 
-Các trang public chỉ là placeholder, chưa phải khu vực được bảo vệ hoặc dashboard nghiệp vụ.
+Các khu vực hiện tại có kiểm tra session/role. Backend kiểm tra quyền truy cập dữ liệu; frontend dùng HttpOnly cookie qua BFF. Cấu hình `AUTH_SESSION_SECRET` và `SELF_STUDY_PUBLISHED_SUBJECT_CODES` theo [README frontend](frontend/README.md).
 
 Health client sẵn có:
 
@@ -424,7 +432,7 @@ npm run typecheck
 npm run build
 ```
 
-Chưa thêm frontend test framework. Kiểm tra sáu route khi `npm run dev` đang chạy. Backend health có thể kiểm tra bằng:
+Frontend đã có test qua Node.js test runner (`npm test`). Backend health có thể kiểm tra bằng:
 
 ```text
 curl http://127.0.0.1:8000/health

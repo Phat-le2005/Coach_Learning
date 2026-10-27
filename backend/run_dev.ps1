@@ -2,24 +2,27 @@
 param()
 
 $ErrorActionPreference = "Stop"
+$env:PYTHONUTF8 = "1"
+$env:PYTHONIOENCODING = "utf-8"
+$env:PYTHONNOUSERSITE = "1"
+$OutputEncoding = [System.Text.UTF8Encoding]::new($false)
+[Console]::OutputEncoding = $OutputEncoding
 $backendDirectory = Split-Path -Parent $MyInvocation.MyCommand.Path
-$python = Join-Path $backendDirectory ".venv\Scripts\python.exe"
-
+$projectDirectory = Split-Path -Parent $backendDirectory
+$python = Join-Path $projectDirectory ".conda\python.exe"
 if (-not (Test-Path -LiteralPath $python -PathType Leaf)) {
-    throw "Backend virtual environment is missing. Run: python -m venv backend\.venv"
+    $python = Join-Path $backendDirectory ".venv\Scripts\python.exe"
 }
 
-# A machine-wide DEBUG value is often owned by another tool. Only boolean
-# values are valid for EduMS; discard an incompatible inherited value so the
-# backend can read DEBUG from backend/.env.
-$inheritedDebug = [Environment]::GetEnvironmentVariable("DEBUG", "Process")
-if (
-    $null -ne $inheritedDebug -and
-    $inheritedDebug.Trim().ToLowerInvariant() -notin @(
-        "0", "1", "false", "true", "no", "yes", "off", "on"
-    )
-) {
-    Remove-Item Env:DEBUG
+if (-not (Test-Path -LiteralPath $python -PathType Leaf)) {
+    throw "Project environment is missing. See docs/local-setup.md to create .conda."
+}
+
+# Conda's DLLs must be discoverable even when this launcher is used without activation.
+$originalPath = $env:PATH
+if ($python -eq (Join-Path $projectDirectory ".conda\python.exe")) {
+    $prefix = Join-Path $projectDirectory ".conda"
+    $env:PATH = "$prefix;$prefix\Library\bin;$prefix\Scripts;$env:PATH"
 }
 
 Push-Location $backendDirectory
@@ -31,4 +34,5 @@ try {
 }
 finally {
     Pop-Location
+    $env:PATH = $originalPath
 }
