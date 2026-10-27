@@ -1,4 +1,6 @@
-import type { CSSProperties } from "react";
+"use client";
+
+import { useEffect, useState, type CSSProperties } from "react";
 import styles from "./nature/ForestAtmosphere.module.css";
 
 type ParticleProps = {
@@ -26,13 +28,30 @@ const PARTICLES: ParticleProps[] = [
 ];
 
 export function ForestAtmosphere() {
-  return (
-    <div className={styles.atmosphere} aria-hidden="true">
-      {/* Flowing Celestial Aurora Waves */}
-      <span className={styles.auroraWaveOne} />
-      <span className={styles.auroraWaveTwo} />
+  const [paused, setPaused] = useState(false);
 
-      {/* Floating Stardust Particles & Twinkling Celestial Fireflies */}
+  useEffect(() => {
+    const onVisChange = () => setPaused(document.hidden);
+    onVisChange();
+    document.addEventListener("visibilitychange", onVisChange);
+    return () => document.removeEventListener("visibilitychange", onVisChange);
+  }, []);
+
+  return (
+    <div
+      className={styles.atmosphere}
+      data-paused={paused ? "true" : "false"}
+      aria-hidden="true"
+    >
+      <span
+        className={styles.auroraWaveOne}
+        style={paused ? { animationPlayState: "paused" } : undefined}
+      />
+      <span
+        className={styles.auroraWaveTwo}
+        style={paused ? { animationPlayState: "paused" } : undefined}
+      />
+
       <div className={styles.cosmicDust}>
         {PARTICLES.map((p, idx) => {
           const style: CSSProperties & { [key: string]: string } = {
@@ -42,6 +61,7 @@ export function ForestAtmosphere() {
             height: `${p.size}px`,
             "--particle-delay": p.delay,
             "--particle-duration": p.duration,
+            ...(paused ? { animationPlayState: "paused" } : {}),
           };
           return (
             <span

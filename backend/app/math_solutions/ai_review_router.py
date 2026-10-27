@@ -1,3 +1,6 @@
+import asyncio
+import json
+from pathlib import Path
 """Student-owned, read-only Gemini step review API."""
 
 from typing import Annotated, Literal
@@ -57,6 +60,50 @@ class AIReviewAvailabilityRead(BaseModel):
     model_config = ConfigDict(extra="forbid")
     available: bool
     reason_code: str | None = None
+    cached_review: AIReviewRead | None = None
+
+
+_CACHE_DIR = Path(__file__).resolve().parents[2] / "var"
+_CACHE_FILE = _CACHE_DIR / "ai_review_cache.json"
+
+
+def _load_cache_from_disk() -> dict[tuple[UUID, str], AIReviewRead]:
+    cache: dict[tuple[UUID, str], AIReviewRead] = {}
+    if not _CACHE_FILE.exists():
+        return cache
+    try:
+        with open(_CACHE_FILE, "r", encoding="utf-8") as f:
+            raw = json.load(f)
+        for item in raw:
+            aid = UUID(item["attempt_id"])
+            sha = item["content_sha256"]
+            review = AIReviewRead.model_validate(item["review"])
+            cache[(aid, sha)] = review
+    except Exception:
+        pass
+    return cache
+
+
+def _save_cache_to_disk(cache: dict[tuple[UUID, str], AIReviewRead]) -> None:
+    try:
+        _CACHE_DIR.mkdir(parents=True, exist_ok=True)
+        items = [
+            {
+                "attempt_id": str(aid),
+                "content_sha256": sha,
+                "review": review.model_dump(mode="json"),
+            }
+            for (aid, sha), review in cache.items()
+        ]
+        tmp_file = _CACHE_FILE.with_suffix(".tmp")
+        with open(tmp_file, "w", encoding="utf-8") as f:
+            json.dump(items, f, ensure_ascii=False, indent=2)
+        tmp_file.replace(_CACHE_FILE)
+    except Exception:
+        pass
+
+
+_REVIEW_CACHE: dict[tuple[UUID, str], AIReviewRead] = _load_cache_from_disk()
 
 
 @router.get("/attempts/{attempt_id}/ai-review", response_model=AIReviewAvailabilityRead)
@@ -68,12 +115,17 @@ def get_ai_review_availability(
     MathSolutionService(session).get(current_user.id, attempt_id)
     attempt = session.get(SolutionAttempt, attempt_id)
     try:
-        resolve_answer_reference(session, attempt, require_submitted=False)
+        ref = resolve_answer_reference(session, attempt, require_submitted=False)
     except ApplicationError as exc:
         if exc.code in {"GRADING_ANSWER_REQUIRED", "GRADING_SOURCE_MISMATCH", "GRADING_SOURCE_UNAVAILABLE"}:
             return AIReviewAvailabilityRead(available=False, reason_code=exc.code)
         raise
-    return AIReviewAvailabilityRead(available=True)
+    cached = _REVIEW_CACHE.get((attempt_id, ref.content_sha256))
+    return AIReviewAvailabilityRead(available=True, cached_review=cached)
+
+
+_IN_FLIGHT_REVIEWS: dict[tuple[UUID, str], asyncio.Task[AIReviewRead]] = {}
+_COALESCE_LOCK = asyncio.Lock()
 
 
 @router.post("/attempts/{attempt_id}/ai-review", response_model=AIReviewRead)
@@ -87,18 +139,46 @@ async def review_submitted_steps(
 ) -> AIReviewRead:
     # Ownership and trusted-answer checks happen before rate limiting or any provider call.
     MathSolutionService(session).get(current_user.id, attempt_id)
-    resolve_answer_reference(session, session.get(SolutionAttempt, attempt_id))
+    ref = resolve_answer_reference(session, session.get(SolutionAttempt, attempt_id))
     limiter.check_rate_limit(
         current_user.id,
         minute_limit=settings.ai_rate_limit_per_minute,
         daily_limit=settings.ai_daily_requests_limit_per_student,
     )
-    review = await AnswerGroundedAIService(session, gateway).review_attempt(attempt_id)
-    return AIReviewRead(
-        attempt_id=review.attempt_id,
-        step_grades=[StepSuggestionRead(
-            step_index=step.step_index, verdict=step.verdict, score=step.score,
-            confidence=step.confidence, feedback=step.feedback,
-        ) for step in review.step_grades],
-        needs_teacher_review=review.needs_teacher_review,
-    )
+    cache_key = (attempt_id, ref.content_sha256)
+
+    # 1. Immediate cache hit: 0 latency, 0 Gemini call
+    if cache_key in _REVIEW_CACHE:
+        return _REVIEW_CACHE[cache_key]
+
+    # 2. SingleFlight: coalesce concurrent in-flight requests into exactly one execution
+    task: asyncio.Task[AIReviewRead] | None = None
+    async with _COALESCE_LOCK:
+        if cache_key in _REVIEW_CACHE:
+            return _REVIEW_CACHE[cache_key]
+        if cache_key in _IN_FLIGHT_REVIEWS:
+            task = _IN_FLIGHT_REVIEWS[cache_key]
+        else:
+            async def _run() -> AIReviewRead:
+                review = await AnswerGroundedAIService(session, gateway).review_attempt(attempt_id)
+                res = AIReviewRead(
+                    attempt_id=review.attempt_id,
+                    step_grades=[StepSuggestionRead(
+                        step_index=step.step_index, verdict=step.verdict, score=step.score,
+                        confidence=step.confidence, feedback=step.feedback,
+                    ) for step in review.step_grades],
+                    needs_teacher_review=review.needs_teacher_review,
+                )
+                _REVIEW_CACHE[cache_key] = res
+                _save_cache_to_disk(_REVIEW_CACHE)
+                return res
+
+            task = asyncio.create_task(_run())
+            _IN_FLIGHT_REVIEWS[cache_key] = task
+
+    try:
+        return await asyncio.shield(task)
+    finally:
+        async with _COALESCE_LOCK:
+            if _IN_FLIGHT_REVIEWS.get(cache_key) is task and task.done():
+                _IN_FLIGHT_REVIEWS.pop(cache_key, None)

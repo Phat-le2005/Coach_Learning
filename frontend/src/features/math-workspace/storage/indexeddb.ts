@@ -39,13 +39,30 @@ class MathInkIndexedDb {
           };
 
           request.onsuccess = () => {
-            resolve(request.result);
+            const db = request.result;
+            db.onclose = () => {
+              this.dbPromise = null;
+            };
+            db.onversionchange = () => {
+              try {
+                db.close();
+              } catch {}
+              this.dbPromise = null;
+            };
+            resolve(db);
           };
 
           request.onerror = () => {
+            this.dbPromise = null;
+            resolve(null);
+          };
+
+          request.onblocked = () => {
+            this.dbPromise = null;
             resolve(null);
           };
         } catch {
+          this.dbPromise = null;
           resolve(null);
         }
       });
@@ -62,71 +79,80 @@ class MathInkIndexedDb {
     clientActionId: string,
     isDirty: boolean,
   ): Promise<void> {
-    const db = await this.getDb();
-    if (!db) return;
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const db = await this.getDb();
+      if (!db) return;
 
-    return new Promise((resolve, reject) => {
       try {
-        const tx = db.transaction(STORE_PAGES, "readwrite");
-        const store = tx.objectStore(STORE_PAGES);
-        const record: StoredPageDraft = {
-          attemptId,
-          pageIndex,
-          strokes,
-          documentRevision,
-          clientActionId,
-          isDirty,
-          updatedAt: Date.now(),
-        };
-        store.put(record);
-        tx.oncomplete = () => resolve();
-        tx.onerror = () => reject(tx.error);
-        tx.onabort = () => reject(tx.error);
-      } catch (err) {
-        reject(err);
+        await new Promise<void>((resolve, reject) => {
+          const tx = db.transaction(STORE_PAGES, "readwrite");
+          const store = tx.objectStore(STORE_PAGES);
+          const record: StoredPageDraft = {
+            attemptId,
+            pageIndex,
+            strokes,
+            documentRevision,
+            clientActionId,
+            isDirty,
+            updatedAt: Date.now(),
+          };
+          store.put(record);
+          tx.oncomplete = () => resolve();
+          tx.onerror = () => reject(tx.error);
+          tx.onabort = () => reject(tx.error);
+        });
+        return;
+      } catch {
+        this.dbPromise = null;
       }
-    });
+    }
   }
 
   async getPageDraft(
     attemptId: string,
     pageIndex: number,
   ): Promise<StoredPageDraft | null> {
-    const db = await this.getDb();
-    if (!db) return null;
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const db = await this.getDb();
+      if (!db) return null;
 
-    return new Promise((resolve, reject) => {
       try {
-        const tx = db.transaction(STORE_PAGES, "readonly");
-        const store = tx.objectStore(STORE_PAGES);
-        const req = store.get([attemptId, pageIndex]);
-        req.onsuccess = () => resolve((req.result as StoredPageDraft) || null);
-        req.onerror = () => reject(req.error);
-      } catch (err) {
-        reject(err);
+        return await new Promise<StoredPageDraft | null>((resolve, reject) => {
+          const tx = db.transaction(STORE_PAGES, "readonly");
+          const store = tx.objectStore(STORE_PAGES);
+          const req = store.get([attemptId, pageIndex]);
+          req.onsuccess = () => resolve((req.result as StoredPageDraft) || null);
+          req.onerror = () => reject(req.error);
+        });
+      } catch {
+        this.dbPromise = null;
       }
-    });
+    }
+    return null;
   }
 
   async listDirtyPages(attemptId: string): Promise<StoredPageDraft[]> {
-    const db = await this.getDb();
-    if (!db) return [];
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const db = await this.getDb();
+      if (!db) return [];
 
-    return new Promise((resolve, reject) => {
       try {
-        const tx = db.transaction(STORE_PAGES, "readonly");
-        const store = tx.objectStore(STORE_PAGES);
-        const index = store.index("by_attempt");
-        const req = index.getAll(attemptId);
-        req.onsuccess = () => {
-          const results = (req.result as StoredPageDraft[]) || [];
-          resolve(results.filter((item) => item.isDirty));
-        };
-        req.onerror = () => reject(req.error);
-      } catch (err) {
-        reject(err);
+        return await new Promise<StoredPageDraft[]>((resolve, reject) => {
+          const tx = db.transaction(STORE_PAGES, "readonly");
+          const store = tx.objectStore(STORE_PAGES);
+          const index = store.index("by_attempt");
+          const req = index.getAll(attemptId);
+          req.onsuccess = () => {
+            const results = (req.result as StoredPageDraft[]) || [];
+            resolve(results.filter((item) => item.isDirty));
+          };
+          req.onerror = () => reject(req.error);
+        });
+      } catch {
+        this.dbPromise = null;
       }
-    });
+    }
+    return [];
   }
 
   async markPageClean(
@@ -135,57 +161,61 @@ class MathInkIndexedDb {
     documentRevision: number,
     expectedActionId: string,
   ): Promise<boolean> {
-    const db = await this.getDb();
-    if (!db) return true; // The authoritative server save already succeeded.
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const db = await this.getDb();
+      if (!db) return true; // Authoritative save succeeded
 
-    // Read and conditionally write in ONE readwrite transaction, so an older
-    // in-flight save cannot mark a more recent ink draft as synchronized.
-    return new Promise((resolve, reject) => {
       try {
-        const tx = db.transaction(STORE_PAGES, "readwrite");
-        const store = tx.objectStore(STORE_PAGES);
-        const req = store.get([attemptId, pageIndex]);
-        let matched = false;
-        req.onsuccess = () => {
-          const draft = req.result as StoredPageDraft | undefined;
-          if (!draft || draft.clientActionId !== expectedActionId) return;
-          matched = true;
-          draft.isDirty = false;
-          draft.documentRevision = documentRevision;
-          draft.updatedAt = Date.now();
-          store.put(draft);
-        };
-        tx.oncomplete = () => resolve(matched);
-        tx.onerror = () => reject(tx.error);
-        tx.onabort = () => reject(tx.error);
-      } catch (err) {
-        reject(err);
+        return await new Promise<boolean>((resolve, reject) => {
+          const tx = db.transaction(STORE_PAGES, "readwrite");
+          const store = tx.objectStore(STORE_PAGES);
+          const req = store.get([attemptId, pageIndex]);
+          let matched = false;
+          req.onsuccess = () => {
+            const draft = req.result as StoredPageDraft | undefined;
+            if (!draft || draft.clientActionId !== expectedActionId) return;
+            matched = true;
+            draft.isDirty = false;
+            draft.documentRevision = documentRevision;
+            draft.updatedAt = Date.now();
+            store.put(draft);
+          };
+          tx.oncomplete = () => resolve(matched);
+          tx.onerror = () => reject(tx.error);
+          tx.onabort = () => reject(tx.error);
+        });
+      } catch {
+        this.dbPromise = null;
       }
-    });
+    }
+    return true;
   }
 
   async clearAttemptDrafts(attemptId: string): Promise<void> {
-    const db = await this.getDb();
-    if (!db) return;
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const db = await this.getDb();
+      if (!db) return;
 
-    return new Promise((resolve, reject) => {
       try {
-        const tx = db.transaction(STORE_PAGES, "readwrite");
-        const store = tx.objectStore(STORE_PAGES);
-        const index = store.index("by_attempt");
-        const req = index.getAllKeys(attemptId);
-        req.onsuccess = () => {
-          const keys = req.result;
-          for (const key of keys) {
-            store.delete(key);
-          }
-          resolve();
-        };
-        req.onerror = () => reject(req.error);
-      } catch (err) {
-        reject(err);
+        await new Promise<void>((resolve, reject) => {
+          const tx = db.transaction(STORE_PAGES, "readwrite");
+          const store = tx.objectStore(STORE_PAGES);
+          const index = store.index("by_attempt");
+          const req = index.getAllKeys(attemptId);
+          req.onsuccess = () => {
+            const keys = req.result;
+            for (const key of keys) {
+              store.delete(key);
+            }
+            resolve();
+          };
+          req.onerror = () => reject(req.error);
+        });
+        return;
+      } catch {
+        this.dbPromise = null;
       }
-    });
+    }
   }
 }
 

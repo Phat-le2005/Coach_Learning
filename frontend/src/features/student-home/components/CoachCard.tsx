@@ -1,173 +1,159 @@
 "use client";
 
 import { ArrowRight, BookOpenCheck, Lightbulb, PenTool, Shapes, Sparkles } from "lucide-react";
-import { motion } from "motion/react";
 import Link from "next/link";
-
-import { useHydratedReducedMotion } from "@/lib/use-hydrated-reduced-motion";
 
 import styles from "../StudentHome.module.css";
 import { SectionHeading } from "./SectionHeading";
+import { useGardenMotion, useGardenSectionInView } from "./nature/GardenMotionContext";
 
 const coachCapabilities = [
   {
     title: "Gợi ý hướng đi tiếp",
-    desc: "Bật mí nấc tiếp theo khi bạn bí ý tưởng, không giải hộ.",
+    desc: "Bật mí nấc suy luận tiếp theo khi bạn chững lại, tuyệt đối không giải hộ.",
     icon: Lightbulb,
     badge: "Từng bước",
-    color: "#f59e0b",
+    accent: "#E8BF6A",
   },
   {
     title: "Khái niệm & Công thức",
-    desc: "Tự động nhắc lại định lý và công thức then chốt liên quan.",
+    desc: "Nhắc lại đúng định lý và công thức nền tảng gắn liền với bài đang giải.",
     icon: BookOpenCheck,
     badge: "Lý thuyết",
-    color: "#38bdf8",
+    accent: "#B8E3DE",
   },
   {
     title: "Ví dụ mẫu tương tự",
-    desc: "Tham khảo dạng bài tương đương để hiểu rõ cách tư duy.",
+    desc: "Đối chiếu với một bài toán cùng cấu trúc để bạn tự nhận ra quy luật.",
     icon: Shapes,
-    badge: "Mẫu giải",
-    color: "#a855f7",
+    badge: "Mẫu tư duy",
+    accent: "#8BE5C2",
   },
 ];
 
 export function CoachCard() {
-  const reducedMotion = useHydratedReducedMotion();
+  const { shouldAnimate } = useGardenMotion();
+  const { ref, isInView } = useGardenSectionInView<HTMLElement>("180px 0px");
+  const active = shouldAnimate && isInView;
 
   return (
-    <section className={styles.coachSection} id="coach" aria-labelledby="coach-title">
-      <SectionHeading eyebrow="Quiet intelligence" title="Trợ lý AI Coach" />
+    <section
+      ref={ref}
+      className={`${styles.section} ${styles.wisdomSection} ${
+        !active ? styles.sectionAnimPaused : ""
+      }`}
+      id="coach"
+      aria-labelledby="coach-title"
+    >
+      <SectionHeading
+        eyebrow="Góc tĩnh tâm · Quiet Intelligence"
+        title="Trợ lý AI Coach dưới tán cây tri thức"
+        description="Một góc yên bình để suy ngẫm sâu hơn cùng người đồng hành AI tinh tế trên trang giấy số."
+      />
 
-      <div className={styles.coachCardNew}>
-        {/* Background Ambient Cosmic Aura */}
-        <span
-          style={{
-            position: "absolute",
-            top: "-80px",
-            right: "-80px",
-            width: "260px",
-            height: "260px",
-            borderRadius: "50%",
-            background: "radial-gradient(circle, #63c99a 0%, #5ca9d6 50%, transparent 70%)",
-            opacity: 0.35,
-            filter: "blur(50px)",
-            pointerEvents: "none",
-          }}
+      <div className={styles.wisdomSanctuaryCard}>
+        {/* Backlit Soft Sunlight & Ancient Shade Tree Canopy SVG */}
+        <span className={styles.wisdomBacklightGlow} aria-hidden="true" />
+        <svg
+          className={styles.wisdomShadeTreeSvg}
+          viewBox="0 0 920 380"
+          preserveAspectRatio="xMinYMin slice"
+          fill="none"
           aria-hidden="true"
-        />
+        >
+          {/* Ancient Tree Trunk & Overarching Shade Bough */}
+          <path
+            d="M-20 380C8 280 18 175 12 72C48 56 128 38 248 42C340 45 430 64 510 88"
+            stroke="#8BE5C2"
+            strokeOpacity="0.16"
+            strokeWidth="18"
+            strokeLinecap="round"
+          />
+          <path
+            d="M14 115C88 84 176 76 278 92M168 48C236 24 318 22 396 44"
+            stroke="#8BE5C2"
+            strokeOpacity="0.14"
+            strokeWidth="7"
+            strokeLinecap="round"
+          />
+          {/* Gently Swaying Shade Canopy Clusters */}
+          <g className={styles.wisdomCanopySway}>
+            <ellipse cx="130" cy="42" rx="115" ry="46" fill="#23A67A" fillOpacity="0.16" />
+            <ellipse cx="275" cy="36" rx="130" ry="48" fill="#8BE5C2" fillOpacity="0.12" />
+            <ellipse cx="420" cy="54" rx="105" ry="38" fill="#23A67A" fillOpacity="0.12" />
+            {/* Individual delicate hanging leaves */}
+            <path d="M210 92C202 108 206 122 218 128C224 114 220 100 210 92Z" fill="#8BE5C2" fillOpacity="0.32" />
+            <path d="M356 82C348 96 352 110 364 115C370 102 366 88 356 82Z" fill="#E8BF6A" fillOpacity="0.26" />
+            <path d="M476 96C468 108 472 120 482 125C488 114 484 102 476 96Z" fill="#8BE5C2" fillOpacity="0.28" />
+          </g>
+        </svg>
 
-        <div>
-          {/* Header Visual: Rotating Quantum AI Orb */}
+        {/* Left Column: Calm Jade Crystal Orb, Copy & Primary CTA */}
+        <div className={styles.wisdomIntroColumn}>
           <div className={styles.coachTopRow}>
-            <div className={styles.coachOrbNew}>
-              {/* Rotating outer orbit ring */}
-              <motion.span
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  borderRadius: "50%",
-                  border: "1px dashed rgba(99, 201, 154, 0.45)",
-                }}
-                animate={reducedMotion ? undefined : { rotate: 360 }}
-                transition={{ duration: 16, repeat: Infinity, ease: "linear" }}
-              >
-                <i
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                    width: "8px",
-                    height: "8px",
-                    borderRadius: "50%",
-                    background: "#fde047",
-                    boxShadow: "0 0 10px #fde047",
-                  }}
-                />
-              </motion.span>
-
-              {/* Inner pulsed ring */}
-              <span
-                style={{
-                  position: "absolute",
-                  inset: "8px",
-                  borderRadius: "50%",
-                  border: "1px solid rgba(56, 189, 248, 0.35)",
-                }}
-              />
-
-              {/* Center Core */}
-              <div className={styles.coachOrbCenter}>
-                <Sparkles size={20} style={{ color: "#fef08a" }} />
+            {/* Refined Jade Knowledge Crystal / Orb */}
+            <div className={styles.wisdomCrystalOrb} aria-hidden="true">
+              <span className={styles.wisdomOrbRingOuter} />
+              <span className={styles.wisdomOrbRingInner} />
+              <div className={styles.wisdomOrbCore}>
+                <Sparkles size={20} />
               </div>
             </div>
 
             <span className={styles.coachStatusBadge}>
-              <span
-                style={{
-                  width: "7px",
-                  height: "7px",
-                  borderRadius: "50%",
-                  background: "#34d399",
-                  boxShadow: "0 0 8px #34d399",
-                }}
-              />
+              <span className={styles.wisdomStatusDot} aria-hidden="true" />
               Sẵn sàng 24/7 trên giấy số
             </span>
           </div>
 
-          {/* Title & Copy */}
-          <p className={styles.coachSubtitle}>
-            Gợi mở thông minh
-          </p>
-          <h2 id="coach-title" className={styles.coachHeading}>
+          <p className={styles.coachSubtitle}>Gợi mở thông minh · Không giải hộ</p>
+          <h3 id="coach-title" className={styles.wisdomHeading}>
             Một gợi ý đúng lúc giúp bạn tự mình tìm ra bước tiếp theo.
-          </h2>
-          <p className={styles.coachDesc}>
-            Coach phân tích từng nét viết toán học của bạn qua AI OCR, phát hiện ngay chỗ nhầm lẫn và đưa ra gợi ý nâng bậc mà không giải hộ.
+          </h3>
+          <p className={styles.wisdomDesc}>
+            Dưới góc vườn tĩnh lặng này, AI Coach đọc từng bước biến đổi toán học bạn viết qua OCR,
+            nhận diện nhẹ nhàng điểm vướng mắc và mở lối tư duy để bạn tự làm chủ lời giải.
           </p>
 
-          {/* 3 Capability Cards */}
-          <div>
-            {coachCapabilities.map((item, idx) => {
-              const Icon = item.icon;
-              return (
-                <div key={idx} className={styles.coachItemRow}>
-                  <div
-                    className={styles.coachFeatureIcon}
-                    style={{ background: `${item.color}25`, color: item.color }}
-                  >
-                    <Icon size={16} />
-                  </div>
-                  <div style={{ minWidth: 0, flex: 1 }}>
-                    <div className={styles.coachFeatureHeader}>
-                      <h4 className={styles.coachFeatureTitle}>{item.title}</h4>
-                      <span className={styles.coachFeatureBadge}>
-                        {item.badge}
-                      </span>
-                    </div>
-                    <p className={styles.coachFeatureText}>
-                      {item.desc}
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
+          <div className={styles.wisdomCtaWrap}>
+            <Link href="/student/attempts" className={styles.wisdomCtaButton}>
+              <PenTool size={16} aria-hidden="true" />
+              Mở Trang làm bài & Trải nghiệm AI
+              <ArrowRight size={16} aria-hidden="true" />
+            </Link>
+            <p className={styles.wisdomFootnote}>
+              ✦ AI Coach tự động đồng hành theo từng dòng lời giải trên giấy A4
+            </p>
           </div>
         </div>
 
-        {/* Footer CTA Button */}
-        <div>
-          <Link href="/student/attempts" className={styles.coachCtaButton}>
-            <PenTool size={15} />
-            Mở Trang làm bài & Trải nghiệm AI
-            <ArrowRight size={15} />
-          </Link>
-          <p className={styles.coachFootnote}>
-            ✦ AI được kích hoạt tự động theo từng bước giải trên giấy A4
-          </p>
+        {/* Right Column: 3 Organic Capability Stones */}
+        <div className={styles.wisdomCapabilitiesColumn}>
+          {coachCapabilities.map((item, idx) => {
+            const Icon = item.icon;
+            return (
+              <div key={idx} className={styles.wisdomFeatureCard}>
+                <div
+                  className={styles.coachFeatureIcon}
+                  style={{
+                    background: `${item.accent}22`,
+                    color: item.accent,
+                    border: `1px solid ${item.accent}38`,
+                  }}
+                  aria-hidden="true"
+                >
+                  <Icon size={17} />
+                </div>
+                <div className={styles.wisdomFeatureCopy}>
+                  <div className={styles.coachFeatureHeader}>
+                    <h4 className={styles.coachFeatureTitle}>{item.title}</h4>
+                    <span className={styles.coachFeatureBadge}>{item.badge}</span>
+                  </div>
+                  <p className={styles.coachFeatureText}>{item.desc}</p>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>

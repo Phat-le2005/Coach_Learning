@@ -51,3 +51,33 @@ export async function startWorkspaceAction(
   }
   redirect(`/student/attempts/${attemptId}`);
 }
+
+/** Open the existing SAMPLE_TEST question only in a local development environment. */
+export async function startStepReviewDemoAction(
+  _previous: StartWorkspaceState,
+  _formData: FormData,
+): Promise<StartWorkspaceState> {
+  if (process.env.NODE_ENV === "production") return { error: "Bài thử chỉ có trong môi trường development." };
+  await requirePageRole("STUDENT", "/student/attempts");
+  const accessToken = await readAccessToken();
+  if (!accessToken) return { error: "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại." };
+  let attemptId: string;
+  try {
+    const subjects = await getWorkspaceSubjects(accessToken);
+    const math = subjects.find((subject) => subject.code === "MATH_G12");
+    if (!math) return { error: "Tài khoản chưa được phép học môn Toán 12." };
+    const client = createBackendApiClient();
+    const session = await client.createPracticeSession(accessToken, math.id);
+    const attempt = await client.createMathAttempt(
+      accessToken, session.id, "c0000000-0000-0000-0000-000000000001",
+    );
+    attemptId = attempt.id;
+    const review = await client.getMathAIReviewAvailability(accessToken, attempt.id);
+    if (!review.available) {
+      return { error: "Bài mẫu chưa có đáp án tham chiếu. Chạy python -m app.seed_step_review_demo trong backend rồi thử lại." };
+    }
+  } catch {
+    return { error: "Không mở được bài thử chấm từng bước. Kiểm tra backend và bài mẫu development." };
+  }
+  redirect(`/student/attempts/${attemptId}`);
+}

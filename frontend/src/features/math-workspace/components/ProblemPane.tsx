@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { BookOpen, PanelLeftClose, PanelLeft, Trash2 } from "lucide-react";
+import { BookOpen, PanelLeftClose, PanelLeft, Trash2, Sparkles } from "lucide-react";
 import type { ProblemRead, SolutionAttemptRead } from "../types";
 import type { AIReviewRead, AIReviewAvailabilityRead, SolutionStepRead, VariationTablePayload } from "@/lib/api/contracts";
 import { parseVariationTablePayload } from "@/lib/api/contracts";
@@ -23,6 +23,7 @@ interface ProblemPaneProps {
   onEditVariationTable: (stepId: string, payload: VariationTablePayload) => void;
   onSubmitSolution: () => Promise<void>;
   onAIReview: () => Promise<void>;
+  onOpenReviewWorkspace?: () => void;
   aiReview: AIReviewRead | null;
   aiReviewAvailability: AIReviewAvailabilityRead | null;
   gradingError: string | null;
@@ -45,6 +46,7 @@ export function ProblemPane({
   onEditVariationTable,
   onSubmitSolution,
   onAIReview,
+  onOpenReviewWorkspace,
   aiReview,
   aiReviewAvailability,
   gradingError,
@@ -173,46 +175,22 @@ export function ProblemPane({
             {attempt && (
               <div className={styles.attemptMeta}>
                 <div className={styles.metaRow}>
-                  <span className={styles.metaLabel}>Trạng thái lượt giải:</span>
+                  <span className={styles.metaLabel}>Trạng thái:</span>
                   <span className={styles.metaValue}>
                     {formatAttemptStatus(attempt.status)}
                   </span>
                 </div>
                 <div className={styles.metaRow}>
-                  <span className={styles.metaLabel}>Phiên bản bài làm:</span>
+                  <span className={styles.metaLabel}>Phiên bản:</span>
                   <span className={styles.metaValue}>v{attempt.current_revision}</span>
                 </div>
               </div>
             )}
-            {attempt && (submission.showSubmitButton || submission.submitted) ? (
-              <section className={styles.aiReviewPanel} aria-label="Nộp bài giải">
-                <h3>{submission.showSubmitButton ? "Hoàn tất bài giải" : "Trạng thái nộp bài"}</h3>
-                {submission.showSubmitButton ? (
-                  <>
-                    <p>
-                      {problem.question_type === "OPEN_RESPONSE"
-                        ? "Kiểm tra các bước OCR rồi nộp bài để nhận góp ý khi có đáp án tham chiếu đã duyệt."
-                        : "Nộp bài sẽ lưu và khóa các bước đã xác nhận. Bài giải nhiều bước của dạng này chưa được chấm tự động."}
-                    </p>
-                    {problem.question_type === "OPEN_RESPONSE" && aiReviewAvailability?.available === false ? (
-                      <p className={styles.aiReviewNotice}>Chưa có đáp án tham chiếu được duyệt. Em vẫn có thể nộp bài; phần nhận xét AI sẽ chờ đáp án.</p>
-                    ) : null}
-                    <button type="button" className={styles.aiReviewButton}
-                      onClick={() => void onSubmitSolution()}
-                      disabled={isSubmitting || !submission.canSubmit}>
-                      {isSubmitting ? "Đang nộp bài..." : "Nộp bài giải"}
-                    </button>
-                    {!attempt.steps?.length ? <p>Hãy xác nhận ít nhất một bước giải trước khi nộp.</p> : null}
-                  </>
-                ) : attempt.status === "SUBMITTED" ? (
-                  <p role="status">Bài giải đã được nộp và lưu trên máy chủ.</p>
-                ) : null}
-                {gradingError ? <p role="alert" className={styles.aiReviewError}>{gradingError}</p> : null}
-              </section>
-            ) : null}
+
+            {/* Confirmed Solution Steps - displayed prominently right after question */}
             {attempt?.steps && attempt.steps.length > 0 ? (
               <section className={styles.savedSteps} aria-label="Các bước giải đã lưu">
-                <h3>Các bước giải đã xác nhận</h3>
+                <h3>Các bước giải đã xác nhận ({attempt.steps.length} bước)</h3>
                 <ol>
                   {[...attempt.steps].sort((a, b) => a.step_index - b.step_index).map((step) => {
                     const table = variationPayload(step);
@@ -254,35 +232,33 @@ export function ProblemPane({
                   })}
                 </ol>
               </section>
-            ) : null}
-            {attempt?.status === "SUBMITTED" && problem.question_type === "OPEN_RESPONSE" && !needsSourceReview ? (
+            ) : (
+              <section className={styles.noStepsNotice}>
+                <p>Chưa có bước giải nào được xác nhận. Hãy viết bài hoặc tải ảnh chụp ở bên phải rồi xác nhận các bước.</p>
+              </section>
+            )}
+
+            {/* AI Review Launch Card */}
+            {aiReview ? (
               <section className={styles.aiReviewPanel} aria-label="Nhận xét từng bước giải">
-                <h3>Đối chiếu lời giải với đáp án</h3>
-                <p>AI chỉ gợi ý điểm từng bước. Bài thiếu đáp án sẽ chờ giáo viên xem.</p>
-                {aiReviewAvailability?.available === false ? (
-                  <p className={styles.aiReviewNotice}>Bài này chưa có đáp án tham chiếu đã duyệt. Bài làm đã nộp được giữ lại, nhưng chưa thể nhờ Gemini chấm từng bước. Giáo viên cần bổ sung đáp án trước.</p>
-                ) : aiReviewAvailability === null ? (
-                  <p className={styles.aiReviewNotice}>Chưa kiểm tra được đáp án tham chiếu. Hãy tải lại trang khi kết nối ổn định.</p>
-                ) : !aiReview ? (
-                  <button type="button" className={styles.aiReviewButton}
-                    onClick={() => void onAIReview()} disabled={isReviewing}>
-                    {isReviewing ? "Đang đối chiếu..." : "Nhận xét bằng Gemini"}
-                  </button>
-                ) : (
-                  <>
-                    <p className={styles.aiReviewNotice}>Kết quả tham khảo, chưa phải điểm chính thức.</p>
-                    <ol className={styles.aiReviewList}>
-                      {aiReview.step_grades.map((grade) => (
-                        <li key={grade.step_index}>
-                          <strong>Bước {grade.step_index}: {grade.verdict === "VALID" ? "Hợp lý" : grade.verdict === "INVALID" ? "Cần sửa" : "Cần xem lại"}</strong>
-                          {grade.score !== null ? <span>Gợi ý: {Math.round(grade.score * 100)}%</span> : null}
-                          <p>{grade.feedback}</p>
-                        </li>
-                      ))}
-                    </ol>
-                    {aiReview.needs_teacher_review ? <p>Ít nhất một bước cần giáo viên xem lại.</p> : null}
-                  </>
-                )}
+                <h3>Đã có nhận xét từng bước từ AI</h3>
+                <p className={styles.aiReviewNotice}>
+                  {aiReview.step_grades.filter((g) => g.verdict === "VALID").length}/{aiReview.step_grades.length} bước hợp lý
+                  {aiReview.step_grades.some((g) => g.verdict === "INVALID")
+                    ? ` · ${aiReview.step_grades.filter((g) => g.verdict === "INVALID").length} bước cần sửa`
+                    : ""}
+                  {aiReview.step_grades.some((g) => g.verdict === "NEEDS_REVIEW")
+                    ? ` · ${aiReview.step_grades.filter((g) => g.verdict === "NEEDS_REVIEW").length} bước cần xem lại`
+                    : ""}
+                </p>
+                <button
+                  type="button"
+                  className={styles.primaryGradeButton}
+                  onClick={() => (onOpenReviewWorkspace ? onOpenReviewWorkspace() : void onAIReview())}
+                >
+                  <Sparkles size={15} />
+                  Mở chế độ đối chiếu từng bước
+                </button>
               </section>
             ) : null}
           </>
@@ -292,6 +268,67 @@ export function ProblemPane({
           </div>
         )}
       </div>
+
+      {/* Sticky Bottom Footer: Always Visible Submit & Grade Bar */}
+      {problem && attempt && !needsSourceReview && !problem.is_read_only ? (
+        <div className={styles.problemPaneFooter}>
+          {attempt.status === "SUBMITTED" ? (
+            aiReview ? (
+              <div className={styles.footerReviewed}>
+                <div className={styles.footerStatusInfo}>
+                  <span className={styles.footerSuccessDot}>●</span>
+                  <span>Đã chấm xong ({aiReview.step_grades.filter((g) => g.verdict === "VALID").length}/{aiReview.step_grades.length} bước hợp lý)</span>
+                </div>
+                <button
+                  type="button"
+                  className={styles.primaryGradeButton}
+                  onClick={() => (onOpenReviewWorkspace ? onOpenReviewWorkspace() : void onAIReview())}
+                  disabled={isReviewing}
+                >
+                  <Sparkles size={15} />
+                  {isReviewing ? "Đang đối chiếu..." : "Xem nhận xét từng bước"}
+                </button>
+              </div>
+            ) : (
+              <div className={styles.footerSubmitAction}>
+                <button
+                  type="button"
+                  className={styles.primaryGradeButton}
+                  onClick={() => void onAIReview()}
+                  disabled={isReviewing || aiReviewAvailability?.available === false}
+                >
+                  <Sparkles size={16} />
+                  {isReviewing ? "Đang chấm bằng Gemini..." : "Chấm bài bằng AI"}
+                </button>
+                {aiReviewAvailability?.available === false ? (
+                  <small className={styles.footerNotice}>Chưa có đáp án tham chiếu được duyệt</small>
+                ) : (
+                  <small className={styles.footerHint}>Bài đã nộp. Bấm để Gemini chấm từng bước</small>
+                )}
+              </div>
+            )
+          ) : (
+            <div className={styles.footerSubmitAction}>
+              <button
+                type="button"
+                className={styles.primaryGradeButton}
+                onClick={() => void onSubmitSolution()}
+                disabled={isSubmitting || isReviewing || !submission.canSubmit}
+                title={!attempt.steps?.length ? "Hãy xác nhận ít nhất một bước giải để chấm bài" : "Nộp bài và chấm điểm tự động bằng AI"}
+              >
+                <Sparkles size={16} />
+                {isSubmitting ? "Đang nộp bài..." : isReviewing ? "Đang chấm bài..." : "Nộp & Chấm bài bằng AI"}
+              </button>
+              {!attempt.steps?.length ? (
+                <small className={styles.footerHint}>Xác nhận ít nhất 1 bước giải để chấm bài</small>
+              ) : (
+                <small className={styles.footerHint}>Đã có {attempt.steps.length} bước giải • Bấm để nộp & chấm tự động</small>
+              )}
+            </div>
+          )}
+          {gradingError ? <p role="alert" className={styles.aiReviewError}>{gradingError}</p> : null}
+        </div>
+      ) : null}
     </aside>
   );
 }

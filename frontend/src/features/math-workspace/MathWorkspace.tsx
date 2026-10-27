@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { Sparkles } from "lucide-react";
 import { ApiResponseError, ApiNetworkError } from "@/lib/api/client";
 import { createBrowserMathApiClient } from "@/lib/api/browser-math";
 import type {
@@ -22,12 +23,14 @@ import { segmentPageInk } from "./utils/page-ocr";
 import type { PageOcrRegion } from "./utils/page-ocr";
 import { canSafelyRebaseInkDraft, restoreDirtyPageDrafts } from "./utils/draft-recovery";
 import { WorkspaceToolbar } from "./components/WorkspaceToolbar";
+import { PaperUploadPanel } from "./components/PaperUploadPanel";
 import { PageNavigator } from "./components/PageNavigator";
 import { ProblemPane } from "./components/ProblemPane";
 import { MathCanvas } from "./components/MathCanvas";
 import { SyncStatusBadge } from "./components/SyncStatusBadge";
 import { PageOcrReviewModal } from "./components/PageOcrReviewModal";
 import { VariationTableModal } from "./components/VariationTableModal";
+import { AIReviewWorkspace } from "./components/ai-review/AIReviewWorkspace";
 import type { AIReviewRead, AIReviewAvailabilityRead, StepKind, VariationTablePayload } from "@/lib/api/contracts";
 import styles from "./MathWorkspace.module.css";
 
@@ -91,6 +94,7 @@ export function MathWorkspace({
   const [penWidth, setPenWidth] = useState(2);
   const [highlighterWidth, setHighlighterWidth] = useState(18);
   const [paperGrid, setPaperGrid] = useState<PaperGrid>("grid");
+  const [paperMode, setPaperMode] = useState(false);
 
   // Sync state
   const [syncStatus, setSyncStatus] = useState<SyncStatus>("saved");
@@ -105,10 +109,20 @@ export function MathWorkspace({
   const [ocrError, setOcrError] = useState<string | null>(null);
   const [variationTableEditor, setVariationTableEditor] = useState<{ stepId?: string; initial?: VariationTablePayload } | null>(null);
 
-  const [aiReview, setAIReview] = useState<AIReviewRead | null>(null);
+  const [aiReview, setAIReview] = useState<AIReviewRead | null>(() => {
+    if (typeof window === "undefined") return null;
+    try {
+      const raw = window.sessionStorage.getItem(`edums_ai_review_${attemptId}`);
+      return raw ? JSON.parse(raw) as AIReviewRead : null;
+    } catch {
+      return null;
+    }
+  });
   const [aiReviewAvailability, setAIReviewAvailability] = useState<AIReviewAvailabilityRead | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isReviewing, setIsReviewing] = useState(false);
+  const [isReviewWorkspaceOpen, setIsReviewWorkspaceOpen] = useState(false);
+  const [instantReviewOpen, setInstantReviewOpen] = useState(false);
   const [gradingError, setGradingError] = useState<string | null>(null);
   const submitActionRef = useRef<{ revision: number; actionId: string } | null>(null);
   // Debounce save timer ref
@@ -126,6 +140,14 @@ export function MathWorkspace({
 
   const apiClient = useRef(createBrowserMathApiClient()).current;
 
+  const pagesRecord = useMemo(() => {
+    const rec: Record<number, InkStroke[]> = {};
+    for (const [idx, page] of pagesMap.entries()) {
+      rec[idx] = page.strokes;
+    }
+    return rec;
+  }, [pagesMap]);
+
   // Current active page memory
   const currentPageMemory: PageMemory = pagesMap.get(currentPageIndex) ?? {
     strokes: [],
@@ -137,7 +159,17 @@ export function MathWorkspace({
   useEffect(() => {
     let active = true;
     apiClient.getMathAIReviewAvailability(accessToken, attemptId)
-      .then((value) => { if (active) setAIReviewAvailability(value); })
+      .then((value) => {
+        if (active) {
+          setAIReviewAvailability(value);
+          if (value.cached_review) {
+            setAIReview(value.cached_review);
+            try {
+              window.sessionStorage.setItem(`edums_ai_review_${attemptId}`, JSON.stringify(value.cached_review));
+            } catch {}
+          }
+        }
+      })
       .catch(() => { if (active) setAIReviewAvailability(null); });
     return () => { active = false; };
   }, [apiClient, accessToken, attemptId]);
@@ -483,58 +515,21 @@ export function MathWorkspace({
     }
   }, [attempt, apiClient, accessToken, attemptId]);
 
-  const handleSubmitSolution = useCallback(async () => {
-    if (!attempt || isSubmitting || !["DRAFT", "IN_PROGRESS"].includes(attempt.status)) return;
-    setIsSubmitting(true);
-    setGradingError(null);
-    try {
-      if (pendingDeleteRef.current || pageOcrReview) throw new Error("Hãy hoàn tất thao tác sửa bước và xác nhận OCR trước khi nộp.");
-      if (!attempt.steps?.length) throw new Error("Hãy xác nhận ít nhất một bước giải trước khi nộp.");
-      if (syncStatus === "conflict" || syncStatus === "offline" || authExpired) {
-        throw new Error("Nét viết chưa đồng bộ. Hãy lưu lại trước khi nộp bài.");
-      }
-      if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
-      await saveQueueRef.current;
-      for (const [pageIndex, page] of pagesMap) {
-        if (page.isDirty && !await flushSavePage(pageIndex, page.strokes)) {
-          throw new Error("Không thể lưu toàn bộ trang viết. Hãy thử lại trước khi nộp.");
-        }
-      }
-      const dirty = await mathInkStorage.listDirtyPages(attemptId);
-      if (dirty.length) throw new Error("Vẫn còn trang viết chưa đồng bộ. Hãy thử lưu lại.");
-      const pending = submitActionRef.current ?? { revision: attempt.current_revision, actionId: generateUuid() };
-      submitActionRef.current = pending;
-      const submitted = await apiClient.submitMathAttempt(accessToken, attemptId, {
-        expected_attempt_revision: pending.revision, client_action_id: pending.actionId,
-      });
-      setAttempt(submitted);
-      submitActionRef.current = null;
-    } catch (error: unknown) {
-      if (error instanceof ApiResponseError && (error.status === 401 || error.status === 409)) {
-        const latest = await apiClient.getMathAttempt(accessToken, attemptId).catch(() => null);
-        if (latest) {
-          setAttempt(latest);
-          if (latest.status === "SUBMITTED") { submitActionRef.current = null; return; }
-        }
-      }
-      setGradingError(error instanceof ApiResponseError ? error.message
-        : error instanceof Error ? error.message : "Không thể nộp bài. Hãy thử lại.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  }, [attempt, isSubmitting, pageOcrReview, syncStatus, authExpired, pagesMap,
-    flushSavePage, attemptId, apiClient, accessToken]);
-
-  const handleAIReview = useCallback(async () => {
-    if (isReviewing || attempt?.status !== "SUBMITTED" || aiReviewAvailability?.available !== true) return;
+  const executeAIReview = useCallback(async (targetAttempt: SolutionAttemptRead) => {
+    if (isReviewing || targetAttempt.status !== "SUBMITTED") return;
+    setInstantReviewOpen(false);
+    setIsReviewWorkspaceOpen(true);
     setIsReviewing(true);
     setGradingError(null);
     try {
       const result = await apiClient.reviewMathAttempt(accessToken, attemptId);
-      if (result.attempt_id !== attemptId || result.step_grades.length !== attempt.steps?.length) {
+      if (result.attempt_id !== attemptId || result.step_grades.length !== targetAttempt.steps?.length) {
         throw new Error("Phản hồi AI không khớp bài làm đã nộp.");
       }
       setAIReview(result);
+      try {
+        window.sessionStorage.setItem(`edums_ai_review_${attemptId}`, JSON.stringify(result));
+      } catch {}
     } catch (error: unknown) {
       const code = error instanceof ApiResponseError ? error.code : "";
       const message = code === "GRADING_ANSWER_REQUIRED"
@@ -551,7 +546,74 @@ export function MathWorkspace({
     } finally {
       setIsReviewing(false);
     }
-  }, [isReviewing, attempt, aiReviewAvailability, apiClient, accessToken, attemptId]);
+  }, [isReviewing, apiClient, accessToken, attemptId]);
+
+  const handleAIReview = useCallback(async () => {
+    if (!attempt) return;
+    await executeAIReview(attempt);
+  }, [attempt, executeAIReview]);
+
+  const handleOpenReviewWorkspace = useCallback(() => {
+    if (aiReview) {
+      setInstantReviewOpen(false);
+      setIsReviewWorkspaceOpen(true);
+    } else if (attempt) {
+      void executeAIReview(attempt);
+    }
+  }, [aiReview, attempt, executeAIReview]);
+
+  const handleSubmitSolution = useCallback(async (autoReview = true) => {
+    if (!attempt || isSubmitting || !["DRAFT", "IN_PROGRESS"].includes(attempt.status)) return;
+    setIsSubmitting(true);
+    setGradingError(null);
+    let successfullySubmitted: SolutionAttemptRead | null = null;
+    try {
+      if (pendingDeleteRef.current || pageOcrReview) throw new Error("Hãy hoàn tất thao tác sửa bước và xác nhận OCR trước khi nộp.");
+      if (!attempt.steps?.length) throw new Error("Hãy xác nhận ít nhất một bước giải trước khi nộp.");
+      if (syncStatus === "conflict" || syncStatus === "offline" || authExpired) {
+        throw new Error("Nét viết chưa đồng bộ. Hãy lưu lại trước khi nộp bài.");
+      }
+      if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+      await saveQueueRef.current;
+      for (const [pageIndex, page] of pagesMap) {
+        if (page.isDirty && !await flushSavePage(pageIndex, page.strokes)) {
+          throw new Error("Không thể lưu toàn bộ trang viết. Hãy thử lại trước khi nộp.");
+        }
+      }
+      const dirty = await mathInkStorage.listDirtyPages(attemptId).catch(() => []);
+      if (dirty.length) throw new Error("Vẫn còn trang viết chưa đồng bộ. Hãy thử lưu lại.");
+      const pending = submitActionRef.current ?? { revision: attempt.current_revision, actionId: generateUuid() };
+      submitActionRef.current = pending;
+      const submitted = await apiClient.submitMathAttempt(accessToken, attemptId, {
+        expected_attempt_revision: pending.revision, client_action_id: pending.actionId,
+      });
+      setAttempt(submitted);
+      successfullySubmitted = submitted;
+      submitActionRef.current = null;
+    } catch (error: unknown) {
+      if (error instanceof ApiResponseError && (error.status === 401 || error.status === 409)) {
+        const latest = await apiClient.getMathAttempt(accessToken, attemptId).catch(() => null);
+        if (latest) {
+          setAttempt(latest);
+          if (latest.status === "SUBMITTED") {
+            submitActionRef.current = null;
+            successfullySubmitted = latest;
+          }
+        }
+      }
+      if (!successfullySubmitted) {
+        setGradingError(error instanceof ApiResponseError ? error.message
+          : error instanceof Error ? error.message : "Không thể nộp bài. Hãy thử lại.");
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+
+    if (autoReview && successfullySubmitted && problem?.question_type === "OPEN_RESPONSE") {
+      void executeAIReview(successfullySubmitted);
+    }
+  }, [attempt, isSubmitting, pageOcrReview, syncStatus, authExpired, pagesMap,
+    flushSavePage, attemptId, apiClient, accessToken, problem?.question_type, executeAIReview]);
   // Keep stroke persistence separate from history updates. Undo/redo must not
   // append another history entry or erase the redo stack.
   const queueInkSave = useCallback((pageIndex: number, newStrokes: InkStroke[]) => {
@@ -894,6 +956,38 @@ export function MathWorkspace({
             onResolveConflict={handleResolveConflict}
             onExportDraft={handleExportDraft}
           />
+          {attempt && !problem?.is_read_only ? (
+            <button
+              type="button"
+              className={styles.headerGradeButton}
+              onClick={() => {
+                if (attempt.status === "SUBMITTED") {
+                  if (aiReview) {
+                    handleOpenReviewWorkspace();
+                  } else {
+                    void handleAIReview();
+                  }
+                } else {
+                  void handleSubmitSolution();
+                }
+              }}
+              disabled={isSubmitting || isReviewing || (attempt.status !== "SUBMITTED" && !attempt.steps?.length)}
+              title={attempt.status === "SUBMITTED" ? "Chấm bài bằng AI" : "Nộp bài và chấm tự động bằng AI"}
+            >
+              <Sparkles size={14} />
+              <span>
+                {isSubmitting
+                  ? "Đang nộp bài..."
+                  : isReviewing
+                    ? "Đang chấm bằng Gemini..."
+                    : attempt.status === "SUBMITTED"
+                      ? aiReview
+                        ? "Xem lại điểm AI"
+                        : "Chấm bài bằng AI"
+                      : "Nộp & Chấm bài"}
+              </span>
+            </button>
+          ) : null}
         </div>
 
         <PageNavigator
@@ -928,9 +1022,11 @@ export function MathWorkspace({
         onZoomIn={() => setZoomLevel((z) => Math.min(2.0, z + 0.1))}
         onZoomOut={() => setZoomLevel((z) => Math.max(0.6, z - 0.1))}
         onResetZoom={() => setZoomLevel(1.0)}
-        onTriggerOCR={attempt?.status === "SUBMITTED" || problem?.is_read_only ? undefined : handleTriggerOCR}
+        onTriggerOCR={paperMode || attempt?.status === "SUBMITTED" || problem?.is_read_only ? undefined : handleTriggerOCR}
         onOpenVariationTable={attempt && ["DRAFT", "IN_PROGRESS"].includes(attempt.status) && !pageOcrReview && !problem?.is_read_only
           ? () => setVariationTableEditor({}) : undefined}
+        onTogglePaper={() => setPaperMode((current) => !current)}
+        paperMode={paperMode}
         isRecognizingOCR={isRecognizingOCR}
         strokeCount={getOcrPenStrokes(currentPageMemory.strokes).length}
         isReadOnly={problem?.is_read_only}
@@ -957,6 +1053,7 @@ export function MathWorkspace({
           onEditVariationTable={(stepId, initial) => setVariationTableEditor({ stepId, initial })}
           onSubmitSolution={handleSubmitSolution}
           onAIReview={handleAIReview}
+          onOpenReviewWorkspace={handleOpenReviewWorkspace}
           aiReview={aiReview}
           aiReviewAvailability={aiReviewAvailability}
           gradingError={gradingError}
@@ -969,7 +1066,13 @@ export function MathWorkspace({
           className={`${styles.canvasPane} ${isProblemPaneCollapsed ? styles.canvasPaneExpanded : ""}`}
           aria-label="Không gian giấy A4 viết tay"
         >
-          <MathCanvas
+          {paperMode ? <PaperUploadPanel attemptId={attemptId} accessToken={accessToken}
+            apiClient={apiClient} isReadOnly={Boolean(problem?.is_read_only || attempt?.status === "SUBMITTED")}
+            onConfirmStep={(content, actionId) => handleConfirmStep("EXPLANATION", content.latex, content.explanation, actionId)}
+            onSubmitSolution={handleSubmitSolution}
+            isSubmitting={isSubmitting}
+            isReviewing={isReviewing}
+            hasConfirmedSteps={Boolean(attempt?.steps && attempt.steps.length > 0)} /> : <MathCanvas
             strokes={currentPageMemory.strokes}
             onStrokesChange={handleStrokesChange}
             currentTool={currentTool}
@@ -979,7 +1082,7 @@ export function MathWorkspace({
             paperGrid={paperGrid}
             zoomLevel={zoomLevel}
             isReadOnly={attempt?.status === "SUBMITTED" || problem?.is_read_only}
-          />
+          />}
         </section>
       </main>
 
@@ -995,6 +1098,24 @@ export function MathWorkspace({
           pageStrokes={pageOcrReview.pageStrokes}
           onClose={() => setPageOcrReview(null)}
           onConfirmStep={handleConfirmStep}
+        />
+      ) : null}
+
+      {isReviewWorkspaceOpen ? (
+        <AIReviewWorkspace
+          attemptId={attemptId}
+          accessToken={accessToken}
+          apiClient={apiClient}
+          problem={problem}
+          attempt={attempt}
+          aiReview={aiReview}
+          isRequesting={isReviewing}
+          errorMessage={gradingError}
+          pages={pagesRecord}
+          currentPageIndex={currentPageIndex}
+          instantOpen={instantReviewOpen}
+          onRetryReview={() => void handleAIReview()}
+          onClose={() => setIsReviewWorkspaceOpen(false)}
         />
       ) : null}
     </div>

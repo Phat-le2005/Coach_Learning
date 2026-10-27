@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Orbit, PenTool } from "lucide-react";
+import { ArrowRight, Compass, Leaf, Orbit, PenTool } from "lucide-react";
 import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
 import type { ChangeEvent } from "react";
@@ -9,9 +9,10 @@ import { GradientButton } from "@/components/ui/GradientButton";
 import { StatusPill } from "@/components/ui/StatusPill";
 import { fadeUp, staggerContainer } from "@/lib/motion";
 
-import type { StudentHomeViewModel } from "../types";
 import styles from "../StudentHome.module.css";
+import type { StudentHomeViewModel } from "../types";
 import { KnowledgeCanopy } from "./KnowledgeCanopy";
+import { HeroNatureScene } from "./nature/HeroNatureScene";
 
 export interface FocusHeroProps {
   data: StudentHomeViewModel;
@@ -41,14 +42,8 @@ export function FocusHero({ data, onOpenActionDetail }: FocusHeroProps) {
       initial="hidden"
       animate="visible"
     >
-      {/* Magical Cosmic Hero Decor */}
-      <div className={styles.heroDecor} aria-hidden="true">
-        <span className={styles.heroAurora} />
-        <span className={styles.heroHorizon} />
-        <span className={styles.heroSpark}>✦</span>
-        <span className={styles.heroFireflyOne} />
-        <span className={styles.heroFireflyTwo} />
-      </div>
+      {/* Living Nature Panorama: Clouds, Falling Leaves, Mountains, Swaying Canopy, Sunbeams */}
+      <HeroNatureScene />
 
       <motion.div className={styles.heroCopy} variants={fadeUp}>
         <div className={styles.heroMeta}>
@@ -73,7 +68,12 @@ export function FocusHero({ data, onOpenActionDetail }: FocusHeroProps) {
               {isSelfStudyOnboarding ? `Tự học · ${data.subject.name}` : data.subject.name}
             </StatusPill>
           )}
+          <span className={styles.heroGardenTag}>
+            <Leaf size={12} aria-hidden="true" />
+            Living Learning Garden
+          </span>
         </div>
+
         <p className={styles.greeting}>Chào {data.student.displayName}</p>
         <h1 id="student-focus-title">
           {isSelfStudyOnboarding ? `Mở lối vào ${data.subject.name}` : action.title}
@@ -83,12 +83,14 @@ export function FocusHero({ data, onOpenActionDetail }: FocusHeroProps) {
             ? "Khám phá các chòm sao, chủ đề và từng dạng bài theo nhịp của bạn. Mọi tiến độ sẽ được đo lường chính xác khi có hoạt động học thật."
             : action.description}
         </p>
+
         {!isSelfStudyOnboarding && action.targetName ? (
           <p className={styles.focusTarget}>
             <span aria-hidden="true" />
             Trọng tâm: <strong>{action.targetName}</strong>
           </p>
         ) : null}
+
         <div className={styles.heroActions}>
           {isSelfStudyOnboarding ? (
             <GradientButton href={knowledgeHref}>
@@ -106,11 +108,23 @@ export function FocusHero({ data, onOpenActionDetail }: FocusHeroProps) {
               Làm bài trên giấy số
             </GradientButton>
           )}
+
           {!isSelfStudyOnboarding ? (
             <GradientButton href={knowledgeHref} variant="secondary">
               <Orbit size={17} aria-hidden="true" />
               Vũ trụ tri thức
             </GradientButton>
+          ) : null}
+
+          {!isSelfStudyOnboarding ? (
+            <button
+              type="button"
+              onClick={onOpenActionDetail}
+              className={styles.heroDetailTrigger}
+            >
+              <Compass size={15} aria-hidden="true" />
+              Chi tiết bước học
+            </button>
           ) : null}
         </div>
       </motion.div>

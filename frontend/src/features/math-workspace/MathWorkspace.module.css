@@ -1036,6 +1036,7 @@
 .savedSteps li p {
   margin: 0.3rem 0 0;
   overflow-wrap: anywhere;
+  white-space: pre-wrap;
 }
 
 .savedStepHeader {
@@ -1730,9 +1731,396 @@
 .variationArrow { display: block; width: 100px; height: 50px; margin: auto; }
 .variationUnknown { color: #8a735b; font-size: 1.1rem; }
 .savedSteps .variationTable td { height: 50px; }
+
+.paperUploadPanel { width: 100%; min-height: 100%; padding: clamp(18px, 3vw, 36px); overflow-y: auto; background: #f4f8f3; color: #163b2d; }
+.paperUploadPanel h2 { margin: 0 0 8px; font-size: 1.5rem; }
+.paperUploadPanel h3 { margin: 0 0 8px; font-size: 1.05rem; }
+.paperUploadPanel p { line-height: 1.55; }
+.paperUploadLabel { display: inline-flex; align-items: center; min-height: 46px; padding: 10px 18px; border-radius: 12px; background: #1f694d; color: white; font-weight: 700; cursor: pointer; }
+.paperUploadLabel:focus-within, .paperUploadPanel button:focus-visible, .paperUploadPanel a:focus-visible { outline: 3px solid #69bda0; outline-offset: 3px; }
+.paperUploadLabel input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.paperNote { font-size: .9rem; color: #527264; }
+.paperError { padding: 12px; border-radius: 10px; background: #fff1ee; color: #a03823; }
+.paperFileList { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0; }
+.paperFileList > div { display: inline-flex; align-items: center; border: 1px solid #bad5c5; border-radius: 10px; overflow: hidden; background: #fff; }
+.paperFileList button { min-height: 38px; padding: 6px 11px; border: 0; background: transparent; color: #20553e; cursor: pointer; }
+.paperFileList button.paperFileActive { background: #d9efe2; font-weight: 700; }
+.paperPreview { min-height: 260px; max-height: 55vh; overflow: auto; display: grid; place-items: center; border: 1px solid #c7dbc9; border-radius: 16px; background: #fff; }
+.paperPreview img { display: block; max-width: 100%; height: auto; }
+.paperPreview a { padding: 18px; color: #1d5d45; font-weight: 700; }
+.paperStepEntry { margin-top: 20px; padding: 20px; border: 1px solid #c7dbc9; border-radius: 16px; background: #fff; }
+.paperStepEntry label { display: block; margin: 12px 0 6px; font-weight: 700; }
+.paperStepEntry textarea { box-sizing: border-box; width: 100%; min-height: 110px; padding: 12px; border: 1px solid #a9c9b7; border-radius: 10px; font: inherit; resize: vertical; }
+.paperStepEntry textarea:focus-visible { outline: 3px solid #69bda0; outline-offset: 2px; }
+.paperStepEntry button { margin-top: 12px; min-height: 42px; padding: 8px 18px; border: 0; border-radius: 10px; background: #1f694d; color: #fff; font: inherit; font-weight: 700; cursor: pointer; }
+.paperStepEntry button:disabled { opacity: .5; cursor: not-allowed; }
+.paperOcrControls { margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
+.paperOcrControls button, .paperOcrActions button { min-height: 42px; padding: 8px 14px; border: 1px solid #8fbbaa; border-radius: 10px; background: #e3f4e9; color: #174b37; font: inherit; font-weight: 700; cursor: pointer; }
+.paperOcrControls button:disabled, .paperOcrActions button:disabled { opacity: .55; cursor: not-allowed; }
+.paperOcrControls p { flex-basis: 100%; margin: 0; color: #436556; }
+.paperOcrReview { margin-top: 16px; padding: clamp(14px, 2vw, 22px); border: 1px solid #bad5c5; border-radius: 16px; background: #fff; }
+.paperOcrReviewHeading { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 12px; }
+.paperOcrReviewHeading h3 { margin: 0; }
+.paperOcrReviewHeading span { color: #426b55; font-weight: 700; }
+.paperOcrReview > p { margin: 6px 0 16px; color: #436556; }
+.paperOcrRow { margin-top: 8px; min-width: 0; border: 1px solid #d3e5d8; border-radius: 12px; background: #fbfdfb; overflow: hidden; }
+.paperOcrRowActive { border-color: #77b996; box-shadow: 0 4px 16px rgba(20, 85, 57, .07); }
+.paperOcrRowToggle { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; width: 100%; padding: 12px 14px; border: 0; background: transparent; color: #183c2e; font: inherit; text-align: left; cursor: pointer; }
+.paperOcrRowToggle:hover { background: #f1f9f3; }
+.paperOcrRowToggle:focus-visible, .paperOcrEditTrigger:focus-visible, .paperOcrEditTools button:focus-visible { outline: 3px solid #69bda0; outline-offset: -3px; }
+.paperOcrRowTitle { font-weight: 750; }
+.paperOcrRowTitle small { display: block; margin-top: 2px; color: #668072; font-size: .8rem; font-weight: 500; }
+.paperOcrRowStatus { color: #95602e; font-size: .88rem; white-space: nowrap; }
+.paperOcrRowSummary { grid-column: 1 / -1; min-width: 0; overflow-x: auto; color: #244937; white-space: nowrap; text-overflow: ellipsis; }
+.paperOcrRowSummary .renderedFormula { display: inline-block; margin-top: 3px; }
+.paperOcrEditor { padding: 4px 14px 14px; border-top: 1px solid #e4eee5; }
+.paperOcrKindLabel { display: block; margin: 10px 0; color: #426556; font-size: .9rem; font-weight: 700; }
+.paperOcrKindLabel select { display: inline-block; width: min(100%, 240px); min-height: 38px; margin-left: 10px; padding: 5px 9px; border: 1px solid #a9c9b7; border-radius: 9px; background: #fff; color: #173f31; font: inherit; }
+.paperOcrKindLabel select:focus-visible, .paperOcrSourceEditor textarea:focus-visible { outline: 3px solid #69bda0; outline-offset: 2px; }
+.paperFormulaSurface { position: relative; min-width: 0; padding: 12px 14px; border: 1px solid #bfd9c8; border-radius: 11px; background: #f5faf6; }
+.paperFormulaCaption { display: block; color: #527464; font-size: .82rem; font-weight: 700; }
+.paperFormulaDisplay { display: flex; align-items: center; min-height: 58px; overflow-x: auto; color: #153f30; font-size: 1.16rem; }
+.paperFormulaDisplay .renderedFormula { display: inline-block; padding: 3px 0; }
+.paperOcrEditTrigger { min-height: 34px; padding: 4px 0; border: 0; background: transparent; color: #256948; font: inherit; font-size: .9rem; font-weight: 700; text-decoration: underline; cursor: pointer; }
+.paperOcrSourceEditor { margin-top: 10px; }
+.paperOcrSourceEditor label { display: block; margin-bottom: 5px; color: #355d49; font-size: .9rem; font-weight: 650; }
+.paperOcrSourceEditor textarea { box-sizing: border-box; width: 100%; min-height: 56px; padding: 10px 12px; border: 1px solid #a9c9b7; border-radius: 9px; background: #fff; font: inherit; resize: vertical; white-space: pre-wrap; }
+.paperOcrSourceEditor .ocrCorrectionKeys { margin-top: 8px; }
+.paperOcrEditTools { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 4px; }
+.paperOcrEditTools button { min-height: 34px; padding: 4px 0; border: 0; background: transparent; color: #256948; font: inherit; font-size: .87rem; font-weight: 700; text-decoration: underline; cursor: pointer; }
+.paperOcrTextPreview { margin: 10px 0; white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; }
+.paperOcrOrderHint { margin: 10px 0; color: #8a5728; font-size: .9rem; }
+.paperOcrActions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+.paperOcrActions button:last-child { background: #1f694d; color: #fff; }
+@media (max-width: 600px) {
+  .paperOcrKindLabel select { display: block; margin: 5px 0 0; }
+  .paperOcrRowStatus { white-space: normal; text-align: right; }
+}
 @media (max-width: 600px) {
   .variationHeader, .variationFooter { padding: .8rem; }
   .variationHeader { align-items: flex-start; }
   .variationBody { padding: .8rem; }
   .variationModal { max-height: 96dvh; }
+}
+
+/* Interactive Paper Image & Bounding Box Overlay */
+.paperImageWrapper {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(18, 56, 38, 0.08);
+}
+
+.paperImage {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  user-select: none;
+}
+
+.paperOverlaySvg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: auto;
+}
+
+.bboxGroup {
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.bboxGroup:hover .bboxRect {
+  stroke: #10b981;
+  stroke-width: 3.5;
+  fill: rgba(16, 185, 129, 0.22);
+  filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.4));
+}
+
+.bboxRect {
+  fill: rgba(16, 185, 129, 0.12);
+  stroke: #10b981;
+  stroke-width: 2;
+  transition: all 0.2s ease;
+}
+
+.bboxGroupActive .bboxRect {
+  fill: rgba(245, 158, 11, 0.25);
+  stroke: #f59e0b;
+  stroke-width: 4;
+  filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.6));
+}
+
+.bboxBadge {
+  pointer-events: none;
+  font-family: inherit;
+}
+
+.bboxBadgeBg {
+  fill: #10b981;
+  transition: fill 0.2s ease;
+}
+
+.bboxGroupActive .bboxBadgeBg {
+  fill: #f59e0b;
+}
+
+.bboxBadgeText {
+  fill: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  user-select: none;
+}
+
+.paperBboxToolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 12px 0 6px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: #eaf4ed;
+  font-size: 0.9rem;
+  color: #1a4936;
+}
+
+.paperBboxToggleBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 4px 12px;
+  border: 1px solid #73b393;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #174b37;
+  font: inherit;
+  font-size: 0.86rem;
+  font-weight: 650;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.paperBboxToggleBtn:hover {
+  background: #f1f9f4;
+  border-color: #1f694d;
+}
+
+.paperBboxToggleBtnActive {
+  background: #1f694d;
+  color: #ffffff;
+  border-color: #1f694d;
+}
+
+.paperBboxHint {
+  font-size: 0.85rem;
+  color: #456b57;
+  margin: 0;
+}
+
+.paperOcrBboxBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: #d8efe3;
+  color: #174b37;
+  font-size: 0.78rem;
+  font-weight: 650;
+  margin-left: 8px;
+}
+
+/* Sticky Problem Pane Footer & Grade Button */
+.problemPaneFooter {
+  flex-shrink: 0;
+  padding: 0.85rem 1.25rem;
+  background: #ffffff;
+  border-top: 1px solid #e2e8f0;
+  box-shadow: 0 -4px 16px rgba(15, 23, 42, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 5;
+}
+
+.footerSubmitAction {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.primaryGradeButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  min-height: 44px;
+  padding: 0.6rem 1.25rem;
+  background: linear-gradient(135deg, #1f694d 0%, #15803d 100%);
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(31, 105, 77, 0.25);
+  transition: all 0.15s ease;
+}
+
+.primaryGradeButton:hover:not(:disabled) {
+  background: linear-gradient(135deg, #19563f 0%, #166534 100%);
+  box-shadow: 0 4px 12px rgba(31, 105, 77, 0.35);
+  transform: translateY(-1px);
+}
+
+.primaryGradeButton:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.primaryGradeButton:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.footerHint {
+  font-size: 0.78rem;
+  color: #64748b;
+  text-align: center;
+}
+
+.footerNotice {
+  font-size: 0.78rem;
+  color: #d97706;
+  text-align: center;
+}
+
+.footerReviewed {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.footerStatusInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  font-weight: 650;
+  color: #15803d;
+}
+
+.footerSuccessDot {
+  color: #16a34a;
+  font-size: 0.9rem;
+}
+
+.regradeButton {
+  min-height: 36px;
+  padding: 0.4rem 0.85rem;
+  background: #f1f5f9;
+  color: #334155;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.regradeButton:hover:not(:disabled) {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.headerGradeButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 32px;
+  padding: 0.25rem 0.75rem;
+  background: #1f694d;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 650;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-left: 0.75rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.15s ease;
+}
+
+.headerGradeButton:hover:not(:disabled) {
+  background: #19563f;
+}
+
+.headerGradeButton:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.paperSubmitBanner {
+  margin-top: 1.25rem;
+  padding: 1.1rem 1.25rem;
+  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+  border: 1px solid #a7f3d0;
+  border-radius: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.paperSubmitBannerText h4 {
+  margin: 0 0 0.25rem;
+  font-size: 0.95rem;
+  color: #065f46;
+}
+
+.paperSubmitBannerText p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #047857;
+}
+
+.noStepsNotice {
+  padding: 1.25rem;
+  border: 1px dashed #cbd5e1;
+  border-radius: 10px;
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 0.88rem;
+  text-align: center;
+  margin: 1rem 0;
+}
+
+.scoreBadge {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  background: #dcfce7;
+  color: #15803d;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.teacherReviewHint {
+  margin-top: 0.5rem;
+  font-size: 0.82rem;
+  color: #b45309;
 }

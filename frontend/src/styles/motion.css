@@ -30,9 +30,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  *:not([data-garden-motion="on"]):not([data-garden-motion="on"] *),
+  *:not([data-garden-motion="on"]):not([data-garden-motion="on"] *)::before,
+  *:not([data-garden-motion="on"]):not([data-garden-motion="on"] *)::after {
     scroll-behavior: auto !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;

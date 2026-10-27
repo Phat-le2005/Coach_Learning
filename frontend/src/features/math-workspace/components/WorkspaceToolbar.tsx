@@ -16,6 +16,7 @@ import {
   RotateCcw,
   Sparkles,
   Table2,
+  Upload,
   Loader2,
 } from "lucide-react";
 import type { DrawingTool, PaperGrid } from "../types";
@@ -48,6 +49,8 @@ interface WorkspaceToolbarProps {
   onResetZoom: () => void;
   onTriggerOCR?: () => void;
   onOpenVariationTable?: () => void;
+  onTogglePaper: () => void;
+  paperMode: boolean;
   isRecognizingOCR?: boolean;
   strokeCount?: number;
   isReadOnly?: boolean;
@@ -75,6 +78,8 @@ export function WorkspaceToolbar({
   onResetZoom,
   onTriggerOCR,
   onOpenVariationTable,
+  onTogglePaper,
+  paperMode,
   isRecognizingOCR = false,
   strokeCount = 0,
   isReadOnly = false,
@@ -285,6 +290,15 @@ export function WorkspaceToolbar({
           </div>
         </>
       ) : null}
+
+      <div className={styles.divider} />
+      <div className={styles.toolGroup}>
+        <button type="button" className={`${styles.ocrButton} ${paperMode ? styles.active : ""}`}
+          onClick={onTogglePaper} aria-pressed={paperMode} title="Tải ảnh hoặc PDF bài viết trên giấy">
+          <Upload size={16} aria-hidden="true" />
+          <span>{paperMode ? "Về giấy số" : "Tải bài giấy"}</span>
+        </button>
+      </div>
 
       <div className={styles.divider} />
 

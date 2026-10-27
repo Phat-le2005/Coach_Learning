@@ -57,7 +57,7 @@ export function KnowledgeWorld3D({
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const [showPrerequisites, setShowPrerequisites] = useState(false);
-  const [activeChapterId, setActiveChapterId] = useState<string | undefined>(undefined);
+  const [activeChapterId, setActiveChapterId] = useState<string | undefined>(data.chapters[0]?.id);
   const [showChapterExplorer, setShowChapterExplorer] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
@@ -77,6 +77,19 @@ export function KnowledgeWorld3D({
       screenX: number;
       screenY: number;
       completionPercent: number;
+      visible: boolean;
+    }>
+  >([]);
+
+  const [projectedTopics, setProjectedTopics] = useState<
+    Array<{
+      id: string;
+      name: string;
+      screenX: number;
+      screenY: number;
+      themeColor: string;
+      problemTypeCount: number;
+      topic: any;
       visible: boolean;
     }>
   >([]);
@@ -148,7 +161,7 @@ export function KnowledgeWorld3D({
     // --- Scene & Fog ---
     const scene = new THREE.Scene();
     sceneRef.current = scene;
-    scene.fog = new THREE.FogExp2(0x061e18, 0.0035);
+    scene.fog = new THREE.FogExp2(0x040614, 0.002);
 
     // --- Camera ---
     const width = container.clientWidth;
@@ -193,23 +206,23 @@ export function KnowledgeWorld3D({
     cameraControllerRef.current = cameraController;
 
     // --- Atmospheric Lights ---
-    const ambientLight = new THREE.AmbientLight(0x0f4236, 1.4);
+    const ambientLight = new THREE.AmbientLight(0x0e1330, 1.6);
     scene.add(ambientLight);
 
-    const dirLight = new THREE.DirectionalLight(0xd1fbf1, 1.5);
-    dirLight.position.set(45, 85, 55);
+    const dirLight = new THREE.DirectionalLight(0x67e8f9, 1.8);
+    dirLight.position.set(40, 80, 50);
     scene.add(dirLight);
 
-    const rimLight = new THREE.DirectionalLight(0x67bfd4, 0.9);
-    rimLight.position.set(-50, 45, -50);
+    const rimLight = new THREE.DirectionalLight(0xd946ef, 1.2);
+    rimLight.position.set(-50, 40, -50);
     scene.add(rimLight);
 
-    const coreLight = new THREE.PointLight(0x8be5c2, 3.2, 55);
+    const coreLight = new THREE.PointLight(0x67e8f9, 4.0, 70);
     coreLight.position.set(layout.corePosition.x, layout.corePosition.y, layout.corePosition.z);
     scene.add(coreLight);
 
     // --- 3D Scene Systems ---
-    const treeSystem: TreeSystem = createKnowledgeTree(layout.corePosition, layout.trunkSpline);
+    const treeSystem: TreeSystem = createKnowledgeTree(layout.corePosition, layout.trunkSpline, layout.ringRadius);
     scene.add(treeSystem.group);
 
     const branchesSystem: ChapterBranchesSystem = createChapterBranches(layout.chapters);
@@ -290,6 +303,9 @@ export function KnowledgeWorld3D({
       const elapsedTime = clock.getElapsedTime();
 
       treeSystem.update(elapsedTime);
+      const cometAngle = treeSystem.getCometAngle ? treeSystem.getCometAngle() : 0;
+      branchesSystem.update(elapsedTime, cometAngle);
+      topicSystem.update(elapsedTime);
       nodesSystem.update(elapsedTime);
       connectionsSystem.update(elapsedTime);
       cameraController.update();
@@ -332,50 +348,79 @@ export function KnowledgeWorld3D({
       });
       setProjectedChapters(projChapters);
 
-      // Project Problem Type Node Labels for Active Chapter (LOD in-scene labels)
+      // Project Topic Badges for Active Chapter (Clean, unstacked layout matching concept)
       const currentActiveCh = activeChapterIdRef.current;
       if (currentActiveCh) {
         const chLayout = layout.chapters.find((c) => c.data.id === currentActiveCh);
         if (chLayout) {
-          const projNodes: Array<{
+          const projTopics: Array<{
             id: string;
             name: string;
             screenX: number;
             screenY: number;
             themeColor: string;
-            pt: KnowledgeProblemTypeNode;
+            problemTypeCount: number;
+            topic: any;
             visible: boolean;
           }> = [];
 
           chLayout.topics.forEach((topic) => {
-            topic.nodes.forEach((node) => {
-              tempVec.set(node.position.x, node.position.y + 1.8, node.position.z);
+            tempVec.set(topic.position.x, topic.position.y + 3.2, topic.position.z);
+            tempVec.project(camera);
+            const inFront = tempVec.z < 1.0;
+            const screenX = (tempVec.x * 0.5 + 0.5) * container.clientWidth;
+            const screenY = (-tempVec.y * 0.5 + 0.5) * container.clientHeight;
+
+            projTopics.push({
+              id: topic.data.id,
+              name: topic.data.name,
+              screenX,
+              screenY,
+              themeColor: topic.themeColor,
+              problemTypeCount: topic.nodes.length,
+              topic: topic.data,
+              visible:
+                inFront &&
+                screenX >= 20 &&
+                screenX <= container.clientWidth - 20 &&
+                screenY >= 35 &&
+                screenY <= container.clientHeight - 35,
+            });
+          });
+          setProjectedTopics(projTopics);
+
+          // Only project selected node badge when a problem type is selected
+          if (selectedId) {
+            const selNode = layout.nodeMap.get(selectedId);
+            if (selNode) {
+              tempVec.set(selNode.position.x, selNode.position.y + 2.4, selNode.position.z);
               tempVec.project(camera);
               const inFront = tempVec.z < 1.0;
               const screenX = (tempVec.x * 0.5 + 0.5) * container.clientWidth;
               const screenY = (-tempVec.y * 0.5 + 0.5) * container.clientHeight;
-
-              projNodes.push({
-                id: node.data.id,
-                name: node.data.name,
-                screenX,
-                screenY,
-                themeColor: node.themeColor,
-                pt: node.data,
-                visible:
-                  inFront &&
-                  screenX >= 20 &&
-                  screenX <= container.clientWidth - 20 &&
-                  screenY >= 40 &&
-                  screenY <= container.clientHeight - 40,
-              });
-            });
-          });
-          setProjectedActiveNodes(projNodes);
+              setProjectedActiveNodes([
+                {
+                  id: selNode.data.id,
+                  name: selNode.data.name,
+                  screenX,
+                  screenY,
+                  themeColor: selNode.themeColor,
+                  pt: selNode.data,
+                  visible: inFront,
+                },
+              ]);
+            } else {
+              setProjectedActiveNodes([]);
+            }
+          } else {
+            setProjectedActiveNodes([]);
+          }
         } else {
+          setProjectedTopics([]);
           setProjectedActiveNodes([]);
         }
       } else {
+        setProjectedTopics([]);
         setProjectedActiveNodes([]);
       }
 
@@ -534,6 +579,31 @@ export function KnowledgeWorld3D({
               />
               <span className={styles.chapterBadgeTitle}>{ch.shortName}</span>
               <span className={styles.chapterBadgeProgress}>{ch.completionPercent}%</span>
+            </div>
+          );
+        })}
+
+        {/* Clean Topic Badges for Active Chapter (Matches Reference Concept) */}
+        {projectedTopics.map((item) => {
+          if (!item.visible) return null;
+          return (
+            <div
+              key={item.id}
+              className={styles.topicBadge3D}
+              style={{ left: item.screenX, top: item.screenY }}
+              onClick={() => {
+                if (item.topic.problemTypes && item.topic.problemTypes[0]) {
+                  onSelectProblemType(item.topic.problemTypes[0]);
+                }
+              }}
+              title={item.name}
+            >
+              <span
+                className={styles.topicBadgeDot}
+                style={{ backgroundColor: item.themeColor }}
+              />
+              <span className={styles.topicBadgeTitle}>{item.name}</span>
+              <span className={styles.topicBadgeCount}>{item.problemTypeCount} dạng</span>
             </div>
           );
         })}
