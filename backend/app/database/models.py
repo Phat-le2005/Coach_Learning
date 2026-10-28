@@ -63,6 +63,7 @@ from app.parents.models import ParentProfile, ParentStudentRelationship
 from app.mastery.models import StudentConceptMastery, StudentProblemTypeMastery
 from app.math_ink.models import MathInkDocument, MathInkPage, MathInkOperation
 from app.math_paper.models import MathPaperAttachment
+from app.math_canvas.models import MathCanvasExplanation, MathCanvasSnapshot
 from app.math_solutions.models import (
     SolutionAttempt, SolutionStep, StepRevision, MathArtifact, SolutionRubric,
     StepEvaluation, SolutionFeedback, EvaluationDecision, EvaluationOverride,
@@ -161,6 +162,7 @@ from app.knowledge_gap.models import (
 )
 
 __all__ = [
+    "MathCanvasExplanation", "MathCanvasSnapshot",
     "MathInkDocument", "MathInkPage", "MathInkOperation",
     "AdaptiveRepairDecision",
     "AdaptiveRepairItem",
