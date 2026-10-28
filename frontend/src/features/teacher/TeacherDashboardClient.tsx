@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
+import canvasStyles from "@/features/math-canvas/MathCanvas.module.css";
 import type { TeacherTab, TeacherMaterial } from "./types";
 import {
   DEFAULT_CLASSROOM,
@@ -42,6 +44,7 @@ export function TeacherDashboardClient({
 
   return (
     <div className={styles.dashboard}>
+      <Link href="/teacher/math-canvas" className={canvasStyles.teacherLink}>Math Canvas · Xem bài khám phá học sinh →</Link>
       <TeacherHeader
         teacherName={teacherName}
         classroomName={DEFAULT_CLASSROOM.name}
