@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import dynamic from "next/dynamic";
 import { Sparkles } from "lucide-react";
 import { ApiResponseError, ApiNetworkError } from "@/lib/api/client";
 import { createBrowserMathApiClient } from "@/lib/api/browser-math";
@@ -34,6 +35,11 @@ import { AIReviewWorkspace } from "./components/ai-review/AIReviewWorkspace";
 import type { AIReviewRead, AIReviewAvailabilityRead, StepKind, VariationTablePayload } from "@/lib/api/contracts";
 import styles from "./MathWorkspace.module.css";
 
+const MathCanvasPanel = dynamic(() => import("@/features/math-canvas/MathCanvasPanel").then((module) => module.MathCanvasPanel), {
+  ssr: false,
+  loading: () => <p role="status">Đang mở Math View…</p>,
+});
+
 interface PageMemory {
   strokes: InkStroke[];
   past: InkStroke[][];
@@ -65,6 +71,8 @@ export function MathWorkspace({
   // Layout & View
   const [isProblemPaneCollapsed, setIsProblemPaneCollapsed] = useState(false);
   const [zoomLevel, setZoomLevel] = useState(1.0);
+  const [graphOpen, setGraphOpen] = useState(false);
+  const [graphSelection, setGraphSelection] = useState<{ page: number; strokes: InkStroke[]; formula?: string }>({ page: 0, strokes: [] });
 
   // Document & Multi-page
   const [documentRevision, setDocumentRevision] = useState(
@@ -1030,6 +1038,7 @@ export function MathWorkspace({
         isRecognizingOCR={isRecognizingOCR}
         strokeCount={getOcrPenStrokes(currentPageMemory.strokes).length}
         isReadOnly={problem?.is_read_only}
+        onOpenGraph={() => { setGraphSelection({ page: currentPageIndex, strokes: [] }); setGraphOpen(true); }}
       />
 
       {ocrError && !pageOcrReview ? (
@@ -1049,6 +1058,7 @@ export function MathWorkspace({
           attempt={attempt}
           isCollapsed={isProblemPaneCollapsed}
           onToggleCollapse={() => setIsProblemPaneCollapsed((c) => !c)}
+          onVisualizeFormula={(formula) => { setGraphSelection({ page: currentPageIndex, strokes: [], formula }); setGraphOpen(true); }}
           onDeleteStep={handleDeleteStep}
           onEditVariationTable={(stepId, initial) => setVariationTableEditor({ stepId, initial })}
           onSubmitSolution={handleSubmitSolution}
@@ -1066,23 +1076,42 @@ export function MathWorkspace({
           className={`${styles.canvasPane} ${isProblemPaneCollapsed ? styles.canvasPaneExpanded : ""}`}
           aria-label="Không gian giấy A4 viết tay"
         >
-          {paperMode ? <PaperUploadPanel attemptId={attemptId} accessToken={accessToken}
-            apiClient={apiClient} isReadOnly={Boolean(problem?.is_read_only || attempt?.status === "SUBMITTED")}
-            onConfirmStep={(content, actionId) => handleConfirmStep("EXPLANATION", content.latex, content.explanation, actionId)}
-            onSubmitSolution={handleSubmitSolution}
-            isSubmitting={isSubmitting}
-            isReviewing={isReviewing}
-            hasConfirmedSteps={Boolean(attempt?.steps && attempt.steps.length > 0)} /> : <MathCanvas
-            strokes={currentPageMemory.strokes}
-            onStrokesChange={handleStrokesChange}
-            currentTool={currentTool}
-            penColor={penColor}
-            penWidth={penWidth}
-            highlighterWidth={highlighterWidth}
-            paperGrid={paperGrid}
-            zoomLevel={zoomLevel}
-            isReadOnly={attempt?.status === "SUBMITTED" || problem?.is_read_only}
-          />}
+          {paperMode ? (
+            <PaperUploadPanel
+              attemptId={attemptId}
+              accessToken={accessToken}
+              apiClient={apiClient}
+              isReadOnly={Boolean(problem?.is_read_only || attempt?.status === "SUBMITTED")}
+              onConfirmStep={(content, actionId) =>
+                handleConfirmStep("EXPLANATION", content.latex, content.explanation, actionId)
+              }
+              onSubmitSolution={handleSubmitSolution}
+              isSubmitting={isSubmitting}
+              isReviewing={isReviewing}
+              hasConfirmedSteps={Boolean(attempt?.steps && attempt.steps.length > 0)}
+            />
+          ) : (
+            <MathCanvas
+              strokes={currentPageMemory.strokes}
+              onStrokesChange={handleStrokesChange}
+              currentTool={currentTool}
+              penColor={penColor}
+              penWidth={penWidth}
+              highlighterWidth={highlighterWidth}
+              paperGrid={paperGrid}
+              zoomLevel={zoomLevel}
+              isReadOnly={attempt?.status === "SUBMITTED" || problem?.is_read_only}
+              selectedStrokeIds={
+                graphSelection.page === currentPageIndex
+                  ? graphSelection.strokes.map((stroke) => stroke.id)
+                  : []
+              }
+              onLassoSelect={(strokes) => {
+                setGraphSelection({ page: currentPageIndex, strokes });
+                setGraphOpen(true);
+              }}
+            />
+          )}
         </section>
       </main>
 
@@ -1090,6 +1119,22 @@ export function MathWorkspace({
         <VariationTableModal initial={variationTableEditor.initial} onSave={handleSaveVariationTable}
           onClose={() => setVariationTableEditor(null)} />
       ) : null}
+
+      {graphOpen ? <MathCanvasPanel
+        key={`${attemptId}:${currentPageIndex}:${graphSelection.formula ?? ""}:${graphSelection.page === currentPageIndex ? graphSelection.strokes.map((s) => s.id).join(",") : ""}`}
+        attemptId={attemptId} pageIndex={currentPageIndex}
+        selectedStrokes={graphSelection.page === currentPageIndex ? graphSelection.strokes : []}
+        initialFormula={graphSelection.page === currentPageIndex ? graphSelection.formula : undefined}
+        ensureInkSaved={async () => {
+          if (authExpired || syncStatus === "conflict" || syncStatus === "offline") throw new Error("Hãy đồng bộ nét viết trước khi lưu đồ thị.");
+          await saveQueueRef.current;
+          if (currentPageMemory.isDirty) {
+            const saved = await flushSavePage(currentPageIndex, latestStrokesRef.current.get(currentPageIndex) ?? currentPageMemory.strokes);
+            if (!saved) throw new Error("Nét viết chưa được lưu lên máy chủ. Hãy đồng bộ rồi thử lại.");
+          }
+          await saveQueueRef.current;
+        }}
+        onClose={() => setGraphOpen(false)} /> : null}
 
       {pageOcrReview ? (
         <PageOcrReviewModal

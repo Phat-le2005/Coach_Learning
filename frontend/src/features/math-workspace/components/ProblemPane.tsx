@@ -19,6 +19,7 @@ interface ProblemPaneProps {
   attempt: SolutionAttemptRead | null;
   isCollapsed: boolean;
   onToggleCollapse: () => void;
+  onVisualizeFormula?: (formula: string) => void;
   onDeleteStep: (stepId: string) => Promise<void>;
   onEditVariationTable: (stepId: string, payload: VariationTablePayload) => void;
   onSubmitSolution: () => Promise<void>;
@@ -42,6 +43,7 @@ export function ProblemPane({
   attempt,
   isCollapsed,
   onToggleCollapse,
+  onVisualizeFormula,
   onDeleteStep,
   onEditVariationTable,
   onSubmitSolution,
@@ -197,6 +199,8 @@ export function ProblemPane({
                     return <li key={step.id}>
                       <div className={styles.savedStepHeader}>
                         <strong>Bước {step.step_index}</strong>
+                        {!table && step.content_latex && onVisualizeFormula ? <button type="button" className={styles.buttonSecondary}
+                          onClick={() => onVisualizeFormula(step.content_latex!)}>Xem hình 2D/3D</button> : null}
                         {canDelete && table ? (
                           <button type="button" className={styles.buttonSecondary}
                             onClick={() => onEditVariationTable(step.id, table)}>Sửa bảng</button>
