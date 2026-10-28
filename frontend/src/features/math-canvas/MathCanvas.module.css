@@ -1,0 +1,44 @@
+.panel { position:fixed; z-index:85; top:90px; right:18px; bottom:18px; width:min(550px,calc(100vw - 32px)); overflow:auto; background:#fff; color:#172d3b; border:1px solid #d4e8e2; border-radius:20px; box-shadow:0 24px 80px #102e3a40; padding:20px; font-size:14px; }
+.heading { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:16px; }
+.heading h2,.heading h3 { margin:0 0 4px; font-size:21px; }
+.recommendation { background:#edf8f4; border:1px solid #c8e9dd; border-radius:12px; padding:14px; margin:14px 0; line-height:1.6; }
+.recommendation p { margin:5px 0 10px; color:#45665a; }
+.recommendation code { display:block; overflow-wrap:anywhere; color:#124f40; }
+.animateButton { align-self:flex-start; border:1px solid #cee1dc; border-radius:7px; padding:5px 8px; background:#f2faf7; color:#17614d; cursor:pointer; font:inherit; }
+.animateButton[aria-pressed="true"] { background:#167a60; color:white; }
+.viewportActions { position:absolute; top:10px; right:10px; display:flex; gap:5px; }
+.viewportActions button { background:#20344b; color:#dbeaf5; border:1px solid #48617c; border-radius:7px; padding:6px 9px; font-size:11px; cursor:pointer; }
+.panel button:focus-visible,.panel input:focus-visible { outline:3px solid #75bfff; outline-offset:2px; }
+.muted { color:#536a77; font-size:13px; line-height:1.6; margin:6px 0 12px; }
+.badge { display:inline-block; border-radius:20px; padding:4px 10px; background:#e5f8f0; color:#12634c; font-size:12px; font-weight:650; }
+.row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin:10px 0; }
+.button,.primary,.close { font:inherit; cursor:pointer; border:1px solid #cee1dc; border-radius:10px; padding:9px 13px; background:white; color:#214d43; }
+.primary { background:#167a60; color:white; border-color:#167a60; }
+.button:disabled,.primary:disabled { opacity:.55; cursor:wait; }
+.close { font-size:20px; padding:3px 10px; }
+.input,.note { display:block; width:100%; box-sizing:border-box; border:1px solid #bdd7cf; border-radius:10px; padding:12px; margin:7px 0 10px; background:#f9fcfb; color:#172d3b; font:inherit; }
+.input { font-family:ui-monospace,monospace; font-size:16px; }
+.note { min-height:66px; resize:vertical; }
+.error { padding:10px 12px; border-radius:10px; background:#fff0ed; color:#923927; line-height:1.5; }
+.success { color:#12634c; background:#e9f8ef; padding:10px; border-radius:10px; }
+.graphFrame { position:relative; border-radius:14px; overflow:hidden; background:#0b1627; margin:14px 0; }
+.graph { width:100%; height:310px; touch-action:none; }
+.graph canvas { display:block; }
+.graphLegend { position:absolute; bottom:9px; left:10px; right:10px; font-size:10px; color:#c8dfef; pointer-events:none; text-align:center; }
+.resetView { position:absolute; top:10px; right:10px; background:#20344b; color:#dbeaf5; border:1px solid #48617c; border-radius:7px; padding:6px 9px; font-size:11px; cursor:pointer; }
+.graphError { position:absolute; top:35%; left:16px; right:16px; padding:10px; color:white; background:#263e58e8; text-align:center; border-radius:10px; }
+.sliders { display:grid; grid-template-columns:1fr 1fr; gap:10px 18px; margin:14px 0; }
+.slider { display:flex; flex-direction:column; gap:6px; font-size:12px; }
+.slider span { display:flex; justify-content:space-between; gap:10px; }
+.slider input { width:100%; accent-color:#167a60; }
+.explanation { background:#f0f7fb; border:1px solid #d5e7f2; border-radius:12px; padding:14px; white-space:pre-wrap; line-height:1.7; }
+.section { border-top:1px solid #e0ece8; padding-top:16px; margin-top:18px; }
+.saved { display:block; text-align:left; width:100%; margin:8px 0; padding:12px; border-radius:10px; border:1px solid #deebe6; background:#f8fcfa; color:#254638; cursor:pointer; }
+.saved small { display:block; margin-top:6px; color:#657e74; }
+.reviewPage { max-width:1200px; margin:0 auto; padding:35px 24px 80px; color:#172d3b; }
+.reviewGrid { display:grid; grid-template-columns:290px minmax(0,1fr); gap:24px; align-items:start; }
+.card { background:white; border:1px solid #d6e5df; border-radius:16px; padding:20px; }
+.selected { border-color:#178268; background:#e5f8f0; }
+.source { width:100%; height:130px; border:1px solid #e1e9e5; border-radius:10px; background:#fcfdfa; }
+.teacherLink { display:block; padding:12px 24px; background:#e6f4ee; color:#12634c; text-align:right; font-size:14px; font-weight:600; }
+@media(max-width:700px) { .panel{top:70px;right:8px;bottom:8px;width:calc(100vw - 16px);padding:15px;box-sizing:border-box;} .reviewGrid{grid-template-columns:1fr;} .graph{height:280px;} .sliders{gap:10px;} }
