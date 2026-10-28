@@ -1,0 +1,12 @@
+{
+  "student_login": 200,
+  "live_ai_status": 503,
+  "save_status": 201,
+  "snapshot_id": "ae64689f-3f0f-4285-8d99-cbc400b7f753",
+  "replay_same_id": true,
+  "reload_contains_snapshot": true,
+  "teacher_login": 200,
+  "teacher_review_status": 200,
+  "teacher_sees_snapshot": true,
+  "ready_status": 200
+}

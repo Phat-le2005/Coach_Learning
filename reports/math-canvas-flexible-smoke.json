@@ -1,0 +1,9 @@
+{
+  "login_status": 200,
+  "save_status": 201,
+  "original_expression_preserved": true,
+  "function_dimension": "2D",
+  "saved_view_mode": "3D",
+  "teacher_login_status": 200,
+  "teacher_restores_spatial_curve": true
+}
