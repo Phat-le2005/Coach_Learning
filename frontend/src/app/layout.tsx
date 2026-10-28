@@ -17,8 +17,27 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="vi">
-      <body>{children}</body>
+    <html lang="vi" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                var origError = console.error;
+                console.error = function() {
+                  var first = arguments[0];
+                  if (typeof first === "string" && first.indexOf("onnxruntime") !== -1 && first.indexOf("Unknown CPU vendor") !== -1) {
+                    console.warn.apply(console, arguments);
+                    return;
+                  }
+                  origError.apply(console, arguments);
+                };
+              })();
+            `,
+          }}
+        />
+      </head>
+      <body suppressHydrationWarning>{children}</body>
     </html>
   );
 }
