@@ -3,17 +3,16 @@
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import { type GraphCamera, type GraphSettings, type MathExpression } from "./expression";
+import { defaultCamera, type GraphCamera, type GraphSettings, type MathExpression } from "./expression";
 import { describeGraphView, isSpatialView, resolveGraphView, sampleViewPoint } from "./presentation";
-import { sampleImplicitGeometry } from "./geometry";
+import { useImplicitGeometry } from "./useImplicitGeometry";
+import { fitGraphCamera, type GraphBounds } from "./fit-camera";
 import styles from "./MathCanvas.module.css";
 
 interface Props { model: MathExpression; settings: GraphSettings; initialCamera?: GraphCamera; onCameraChange?: (camera: GraphCamera) => void }
 type Camera = THREE.PerspectiveCamera | THREE.OrthographicCamera;
 interface SceneState { scene: THREE.Scene; camera: Camera; controls: OrbitControls; render: () => void; change: () => void }
-export function defaultCamera(dimension: "2D" | "3D"): GraphCamera {
-  return dimension === "3D" ? { position: [11, 9, 13], target: [0, 0, 0] } : { position: [0, 0, 16], target: [0, 0, 0] };
-}
+export { defaultCamera } from "./expression";
 
 function dispose(group: THREE.Object3D) {
   group.traverse((obj) => {
@@ -43,10 +42,31 @@ export function GraphView({ model, settings, initialCamera, onCameraChange }: Pr
   const [error, setError] = useState<string | null>(null);
   const [sampleCount, setSampleCount] = useState(0);
   const [truncated, setTruncated] = useState(false);
+  const [fitError, setFitError] = useState<string | null>(null);
+  const bounds = useRef<GraphBounds | null>(null);
+  const fittedCamera = useRef<GraphCamera | null>(null);
+  const initiallyFitted = useRef(false);
+  const implicit = useImplicitGeometry(model, settings);
   const [showAxes, setShowAxes] = useState(true), [showGrid, setShowGrid] = useState(true), [wireframe, setWireframe] = useState(false);
   const initial = useRef(initialCamera); initial.current = initialCamera;
   const domain = useRef(settings.domain); domain.current = settings.domain;
   const description = describeGraphView(model, settings);
+
+  const applyCamera = (saved: GraphCamera) => {
+    const state = sceneState.current; if (!state) return;
+    state.camera.position.fromArray(saved.position); state.controls.target.fromArray(saved.target); state.camera.zoom = saved.zoom ?? 1;
+    state.camera.updateProjectionMatrix(); state.controls.update(); state.change();
+  };
+  const fit = () => {
+    const state = sceneState.current, element = host.current;
+    if (!state || !element || !bounds.current || !element.clientHeight) return;
+    const saved = fitGraphCamera(bounds.current, {
+      position: state.camera.position.toArray() as GraphCamera["position"], target: state.controls.target.toArray() as GraphCamera["target"],
+    }, { spatial, aspect: element.clientWidth / element.clientHeight, halfHeight: Math.max(4, domain.current * 1.2) });
+    if (!saved) { setFitError("Hình vượt phạm vi quan sát. Thử thu hẹp miền hoặc đổi tham số."); return; }
+    if (!fittedCamera.current) fittedCamera.current = saved;
+    applyCamera(saved); setFitError(null);
+  };
 
   useEffect(() => {
     const element = host.current;
@@ -91,6 +111,7 @@ export function GraphView({ model, settings, initialCamera, onCameraChange }: Pr
       resize.disconnect(); controls.removeEventListener("change", change); controls.dispose();
       renderer.domElement.removeEventListener("webglcontextlost", lost); dispose(scene);
       renderer.dispose(); renderer.domElement.remove(); sceneState.current = null;
+      bounds.current = null; fittedCamera.current = null; initiallyFitted.current = false;
     };
   }, [mode, spatial]);
 
@@ -134,8 +155,9 @@ export function GraphView({ model, settings, initialCamera, onCameraChange }: Pr
     const state = sceneState.current; if (!state) return;
     const group = new THREE.Group(); let valid = 0, limited = false;
     if (model.kind === "implicit") {
-      const data = sampleImplicitGeometry(model, settings, mode === "LEVEL_SLICE_2D", spatial && model.dimension === "3D" ? 28 : 56);
-      const geometry = new THREE.BufferGeometry(); geometry.setAttribute("position", new THREE.Float32BufferAttribute(data.positions, 3));
+      const data = implicit.data;
+      if (!data) { setSampleCount(0); return; }
+      const geometry = new THREE.BufferGeometry(); geometry.setAttribute("position", new THREE.BufferAttribute(data.positions, 3));
       if (data.primitive === "triangles") {
         geometry.computeVertexNormals(); group.add(new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({ color: 0x58cfb8, side: THREE.DoubleSide, roughness: .55, wireframe })));
       } else group.add(new THREE.LineSegments(geometry, new THREE.LineBasicMaterial({ color: 0x62e4ce })));
@@ -167,15 +189,30 @@ export function GraphView({ model, settings, initialCamera, onCameraChange }: Pr
       }
       flush();
     }
-    setSampleCount(valid); setTruncated(limited); state.scene.add(group); state.render();
-    return () => { state.scene.remove(group); dispose(group); };
-  }, [model, settings, mode, spatial, wireframe]);
+    // Only include referenced vertices: unused samples near poles must not distort camera fitting.
+    const box = new THREE.Box3(), point = new THREE.Vector3();
+    group.traverse((object) => {
+      if (!(object instanceof THREE.Mesh || object instanceof THREE.Line)) return;
+      const position = object.geometry.getAttribute("position"), index = object.geometry.getIndex();
+      for (let i = 0; i < (index?.count ?? position.count); i++) {
+        point.fromBufferAttribute(position, index ? index.getX(i) : i);
+        if (Number.isFinite(point.x) && Number.isFinite(point.y) && Number.isFinite(point.z)) box.expandByPoint(point);
+      }
+    });
+    bounds.current = valid && !box.isEmpty() ? { min: box.min.toArray() as GraphBounds["min"], max: box.max.toArray() as GraphBounds["max"] } : null;
+    setSampleCount(valid); setTruncated(limited); setFitError(null); state.scene.add(group);
+    if (valid && !initiallyFitted.current) {
+      initiallyFitted.current = true;
+      if (!initial.current) fit();
+    }
+    state.render();
+    return () => { state.scene.remove(group); dispose(group); bounds.current = null; };
+  }, [model, settings, mode, spatial, wireframe, implicit.data]);
 
   const reset = () => {
     const state = sceneState.current; if (!state) return;
-    const saved = initialCamera ?? defaultCamera(spatial ? "3D" : "2D");
-    state.camera.position.fromArray(saved.position); state.controls.target.fromArray(saved.target); state.camera.zoom = saved.zoom ?? 1;
-    state.camera.updateProjectionMatrix(); state.controls.update(); state.change();
+    const saved = initialCamera ?? fittedCamera.current ?? defaultCamera(spatial ? "3D" : "2D");
+    applyCamera(saved); setFitError(null);
   };
   const zoom = (factor: number) => {
     const state = sceneState.current; if (!state) return;
@@ -193,9 +230,12 @@ export function GraphView({ model, settings, initialCamera, onCameraChange }: Pr
       <div className={styles.viewportActions}>
         <button type="button" aria-label="Phóng to đồ thị" onClick={() => zoom(1.25)}>+</button>
         <button type="button" aria-label="Thu nhỏ đồ thị" onClick={() => zoom(.8)}>−</button>
+        <button type="button" disabled={!sampleCount || implicit.pending} onClick={fit}>Vừa đồ thị</button>
         <button type="button" onClick={reset}>Đặt lại góc nhìn</button>
       </div>
-      {error ? <p role="alert" className={styles.graphError}>{error}</p> : sampleCount === 0 ? <p className={styles.graphError} role="status">Chưa thấy hình trong miền này. Thử đổi miền hoặc tham số; chi tiết quá nhỏ có thể chưa được lấy mẫu.</p> : null}
+      {implicit.pending && !error ? <span className={styles.graphPending} role={sampleCount ? undefined : "status"} aria-live={sampleCount ? "off" : "polite"}>Đang cập nhật hình…</span> : null}
+      {error ? <p role="alert" className={styles.graphError}>{error}</p> : implicit.error ? <div className={styles.graphError} role="alert"><p>{implicit.error}</p><button type="button" onClick={implicit.retry}>Thử lại</button></div>
+        : !implicit.pending && sampleCount === 0 ? <p className={styles.graphError} role="status">Chưa thấy hình trong miền này. Thử đổi miền hoặc tham số; chi tiết quá nhỏ có thể chưa được lấy mẫu.</p> : null}
     </div>
     <div className={styles.row} role="group" aria-label="Hiển thị đồ thị">
       <label><input type="checkbox" checked={showAxes} onChange={(e) => setShowAxes(e.target.checked)} /> Trục và tọa độ</label>
@@ -203,5 +243,6 @@ export function GraphView({ model, settings, initialCamera, onCameraChange }: Pr
       {spatial && (model.kind === "implicit" && model.dimension === "3D" || mode === "SURFACE_3D" || mode === "EXTRUDED_3D") ? <label><input type="checkbox" checked={wireframe} onChange={(e) => setWireframe(e.target.checked)} /> Khung lưới</label> : null}
     </div>
     {truncated ? <p className={styles.muted}>Hình đã đạt giới hạn chi tiết. Thu hẹp miền để xem rõ hơn.</p> : null}
+    {fitError ? <p className={styles.muted} role="status">{fitError}</p> : null}
   </div>;
 }
