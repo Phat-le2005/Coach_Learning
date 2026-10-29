@@ -1,31 +1,50 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import type { InkStroke } from "@/lib/api/contracts";
 import { OcrInkPreview } from "@/features/math-workspace/components/OcrInkPreview";
 import { recognizeHandwrittenMath } from "@/features/math-workspace/utils/handwritten-ocr";
 import { generateUuid } from "@/features/math-workspace/utils/ink-math";
 import { canvasRequest, type CanvasExplanation, type CanvasSnapshot } from "./api";
-import { DEFAULT_GRAPH, parseMathExpression, type MathExpression, type GraphSettings, type GraphCamera, type NumericGraphSetting } from "./expression";
-import { describeGraphView, isSpatialView, recommendGraph, resolveGraphView } from "./presentation";
-import { GraphView, defaultCamera } from "./GraphView";
+import { DEFAULT_GRAPH, defaultCamera, parseMathExpression, type MathExpression, type GraphSettings, type GraphCamera, type NumericGraphSetting } from "./expression";
+import { describeGraphView, isSpatialView, recommendGraph, resolveGraphView, type GraphRenderMode } from "./presentation";
+import { createExplorationDraft } from "./exploration";
+import { GraphScenePanel } from "./GraphScenePanel";
 import styles from "./MathCanvas.module.css";
+
+const GraphView = dynamic(() => import("./GraphView").then((module) => module.GraphView), {
+  ssr: false,
+  loading: () => <p className={styles.muted} role="status">Đang mở khung nhìn công thức…</p>,
+});
 
 interface Props { attemptId: string; pageIndex: number; selectedStrokes: InkStroke[]; initialFormula?: string; ensureInkSaved: () => Promise<void>; onClose: () => void }
 export function MathCanvasPanel({ attemptId, pageIndex, selectedStrokes, initialFormula = "", ensureInkSaved, onClose }: Props) {
-  const [source, setSource] = useState(initialFormula);
-  const [model, setModel] = useState<MathExpression | null>(null);
-  const [graphVisible, setGraphVisible] = useState(false);
-  const [settings, setSettings] = useState<GraphSettings>({ ...DEFAULT_GRAPH });
-  const [camera, setCamera] = useState<GraphCamera>(defaultCamera("3D"));
-  const [explanation, setExplanation] = useState<CanvasExplanation | null>(null);
+  const [mode,setMode]=useState<"scene"|"single">("scene");
+  const [single,setSingle]=useState<{snapshot?:CanvasSnapshot;formula?:string}|null>(null);
+  const props={attemptId,pageIndex,selectedStrokes,initialFormula,ensureInkSaved,onClose};
+  return <>
+    <GraphScenePanel {...props} active={mode==="scene"} onSingle={(snapshot,formula)=>{setSingle({snapshot,formula});setMode("single");}}/>
+    {single?<SingleFormulaPanel key={single.snapshot?.id??single.formula??"single"} {...props} initialFormula={single.formula??initialFormula} selectedStrokes={single.formula?[]:selectedStrokes} initialSnapshot={single.snapshot} active={mode==="single"} onScene={()=>setMode("scene")}/>:null}
+  </>;
+}
+
+function SingleFormulaPanel({ attemptId, pageIndex, selectedStrokes, initialFormula = "", ensureInkSaved, onClose, initialSnapshot, active, onScene }: Props & {initialSnapshot?:CanvasSnapshot;active:boolean;onScene:()=>void}) {
+  const [source, setSource] = useState(initialSnapshot?.source_latex||initialSnapshot?.expression||initialFormula);
+  const [model, setModel] = useState<MathExpression | null>(()=>initialSnapshot?parseMathExpression(initialSnapshot.expression):null);
+  const [graphVisible, setGraphVisible] = useState(!!initialSnapshot);
+  const [settings, setSettings] = useState<GraphSettings>(initialSnapshot?.settings??{ ...DEFAULT_GRAPH });
+  const [camera, setCamera] = useState<GraphCamera>(initialSnapshot?.camera??defaultCamera("3D"));
+  const [explanation, setExplanation] = useState<CanvasExplanation | null>(initialSnapshot?.explanation??null);
   const [busy, setBusy] = useState<"ocr" | "ai" | "save" | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [note, setNote] = useState("");
   const [snapshots, setSnapshots] = useState<CanvasSnapshot[]>([]);
   const [listError, setListError] = useState(false);
-  const [viewing, setViewing] = useState<CanvasSnapshot | null>(null);
+  const [viewing, setViewing] = useState<CanvasSnapshot | null>(initialSnapshot??null);
+  const [isSnapshotCopy, setIsSnapshotCopy] = useState(false);
+  const [resumedCamera, setResumedCamera] = useState<{ mode: GraphRenderMode; camera: GraphCamera } | null>(null);
   const [run, setRun] = useState(0);
   const [animating, setAnimating] = useState<string | null>(null);
   const [needsOcrConfirm, setNeedsOcrConfirm] = useState(false);
@@ -36,11 +55,12 @@ export function MathCanvasPanel({ attemptId, pageIndex, selectedStrokes, initial
   const endpoint = `attempts/${attemptId}`;
 
   useEffect(() => {
+    if (!active) return;
     let live = true;
-    canvasRequest<CanvasSnapshot[]>(`${endpoint}/snapshots`).then((rows) => { if (live) setSnapshots(rows); })
+    canvasRequest<CanvasSnapshot[]>(`${endpoint}/snapshots`).then((rows) => { if (live) setSnapshots(rows.filter((row)=>!row.settings.scene)); })
       .catch(() => { if (live) setListError(true); });
     return () => { live = false; };
-  }, [endpoint]);
+  }, [endpoint, active]);
 
   useEffect(() => {
     if (!selectedStrokes.length || viewing) return;
@@ -93,6 +113,7 @@ export function MathCanvasPanel({ attemptId, pageIndex, selectedStrokes, initial
   }, [animating, busy, viewing, model?.kind]);
 
   function changeSource(value: string) {
+    setIsSnapshotCopy((copy) => copy || !!viewing); setResumedCamera(null);
     analyzedSource.current = null;
     setAnimating(null); setNeedsOcrConfirm(false);
     editVersion.current++; setSource(value); setModel(null); setGraphVisible(false); setExplanation(null); setViewing(null); setSuccess(null); setError(null);
@@ -116,6 +137,7 @@ export function MathCanvasPanel({ attemptId, pageIndex, selectedStrokes, initial
     if (!model) return;
     const next = { ...settings, view_mode: viewMode };
     if (resolveGraphView(model, next) !== resolveGraphView(model, settings)) {
+      setResumedCamera(null);
       setCamera(defaultCamera(isSpatialView(resolveGraphView(model, next)) ? "3D" : "2D"));
       if (!viewing) setExplanation(null);
     }
@@ -136,7 +158,7 @@ export function MathCanvasPanel({ attemptId, pageIndex, selectedStrokes, initial
     try {
       await ensureInkSaved();
       const body = { expression: model.expression, settings, camera, page_index: pageIndex,
-        stroke_ids: selectedStrokes.map((s) => s.id), source_latex: source, note, explanation_id: explanation?.id ?? null };
+        stroke_ids: isSnapshotCopy ? [] : selectedStrokes.map((s) => s.id), source_latex: source, note, explanation_id: explanation?.id ?? null };
       const signature = JSON.stringify(body);
       if (pendingSave.current?.signature !== signature) pendingSave.current = { signature, action: generateUuid() };
       const saved = await canvasRequest<CanvasSnapshot>(`${endpoint}/snapshots`, { ...body, client_action_id: pendingSave.current!.action });
@@ -146,24 +168,34 @@ export function MathCanvasPanel({ attemptId, pageIndex, selectedStrokes, initial
     } catch (err) { setError(err instanceof Error ? err.message : "Chưa lưu được đồ thị."); }
     finally { setBusy(null); }
   }
+  function continueExploration() {
+    if (!viewing || !model) return;
+    const draft = createExplorationDraft(viewing, settings, camera);
+    editVersion.current++; analyzedSource.current = draft.source;
+    setSource(draft.source); setSettings(draft.settings); setCamera(draft.camera); setNote(draft.note);
+    setResumedCamera({ mode: resolveGraphView(model, settings), camera: draft.camera });
+    setIsSnapshotCopy(true); setViewing(null); setNeedsOcrConfirm(false); setAnimating(null);
+    setExplanation(null); setError(null); setSuccess("Đã mở một lượt khám phá mới. Kéo thanh tham số để tiếp tục quan sát.");
+  }
   const slider = (label: string, key: NumericGraphSetting, min = -5, max = 5, step = 0.1) =>
     <label className={styles.slider} key={key}><span>{label}<strong>{(settings[key] ?? 0).toFixed(1)}</strong></span>
       <input type="range" aria-label={label} min={min} max={max} step={step} value={settings[key] ?? 0}
         disabled={!!busy || !!viewing} onChange={(e) => changeSetting(key, Number(e.target.value))} /></label>;
 
   const recommendation = model ? recommendGraph(model) : null;
-  return <aside className={styles.panel} aria-label="Math View 3D — khám phá công thức">
+  const previewStrokes = viewing?.source_strokes ?? (isSnapshotCopy ? [] : selectedStrokes);
+  return <aside hidden={!active} className={styles.panel} aria-label="Math View 3D — khám phá công thức">
     <div className={styles.heading}><div><h2>Math View 3D</h2><span className={styles.badge}>Viết · Khoanh · Nhìn thấy toán học</span></div>
-      <button className={styles.close} type="button" aria-label="Đóng Math View" onClick={onClose}>×</button></div>
+      <div className={styles.row}><button type="button" className={styles.button} onClick={()=>{setAnimating(null);if(model)setResumedCamera({mode:resolveGraphView(model,settings),camera});onScene();}}>Bảng nhiều biểu thức</button><button className={styles.close} type="button" aria-label="Đóng Math View" onClick={onClose}>×</button></div></div>
     <p className={styles.muted}>Quan sát hình dạng và sự biến đổi của công thức. Thử dự đoán trước khi kéo thanh tham số.</p>
     <p className={styles.muted}>{selectedStrokes.length ? `Đã chọn ${selectedStrokes.length} nét bút ở trang ${pageIndex + 1}. Đối chiếu công thức nhận dạng với nét viết.` : "Khoanh công thức trên bảng, chọn một bước đã xác nhận, hoặc nhập công thức bên dưới."}</p>
-    {(viewing?.source_strokes.length ?? selectedStrokes.length) > 0 ? <OcrInkPreview strokes={viewing?.source_strokes ?? selectedStrokes} /> : null}
+    {previewStrokes.length > 0 ? <OcrInkPreview strokes={previewStrokes} /> : null}
     <label htmlFor="canvas-formula">Công thức</label>
     <input id="canvas-formula" className={styles.input} value={source} maxLength={500} disabled={busy === "ai" || busy === "save"}
       placeholder="z = x² + y²" autoComplete="off" spellCheck={false} onChange={(e) => changeSource(e.target.value)} />
     <div className={styles.row}>
       <button className={styles.primary} type="button" disabled={!source.trim() || busy === "ai" || busy === "save"} onClick={() => { setNeedsOcrConfirm(false); if (!model) analyze(); }}>{needsOcrConfirm ? "Xác nhận công thức nhận dạng" : "Cập nhật hình"}</button>
-      {selectedStrokes.length > 0 ? <button className={styles.button} type="button" disabled={!!busy} onClick={() => { setViewing(null); setRun((n) => n + 1); }}>Nhận dạng lại</button> : null}
+      {selectedStrokes.length > 0 ? <button className={styles.button} type="button" disabled={!!busy} onClick={() => { setViewing(null); setIsSnapshotCopy(false); setResumedCamera(null); setRun((n) => n + 1); }}>Nhận dạng lại</button> : null}
       {busy === "ocr" ? <span role="status">Đang nhận dạng nét viết… Có thể nhập công thức trực tiếp.</span> : null}
     </div>
     <p className={styles.muted}>Tự nhận diện sau khi nhập · sin, cos, căn, phân số · Tham số a–w (trừ e).</p>
@@ -181,10 +213,11 @@ export function MathCanvasPanel({ attemptId, pageIndex, selectedStrokes, initial
         <p>Giữ y = F(x) và cho z thay đổi tự do để tạo bề mặt kéo dài. Đây là một phép mở rộng được chọn riêng.</p>
         <button type="button" className={styles.button} disabled={busy === "save" || busy === "ai"} onClick={() => chooseView("EXTRUDED")}>Tạo bề mặt kéo dài</button>
       </details> : null}
-      {graphVisible ? <>
+      {graphVisible && active ? <>
       <p className={styles.muted} role="status">{describeGraphView(model, settings)}</p>
       <GraphView key={`${viewing?.id ?? model.expression}:${resolveGraphView(model, settings)}`} model={model} settings={settings}
-        initialCamera={viewing && resolveGraphView(model, viewing.settings) === resolveGraphView(model, settings) ? viewing.camera : undefined} onCameraChange={setCamera} />
+        initialCamera={viewing && resolveGraphView(model, viewing.settings) === resolveGraphView(model, settings) ? viewing.camera
+          : resumedCamera?.mode === resolveGraphView(model, settings) ? resumedCamera.camera : undefined} onCameraChange={setCamera} />
       <p className={styles.muted}>{model.kind === "implicit" ? "Hình là tập các điểm thỏa mãn phương trình. Đổi tham số để quan sát tập điểm thay đổi. Hình được lấy mẫu gần đúng trong miền đang chọn." : `Phép biến đổi: ${model.dimension === "3D" ? "Z = s·f(x−h, y−k) + v" : "Y = s·f(x−h) + v"}. Hệ số âm lật đồ thị qua mặt phẳng/trục ngang.`}</p>
       <div className={styles.sliders}>
         {model.parameters.map((p) => <div className={styles.slider} key={p}><label htmlFor={`graph-param-${p}`}><span>Tham số {p}<strong>{(settings.parameters[p] ?? 1).toFixed(2)}</strong></span></label>
@@ -203,7 +236,9 @@ export function MathCanvasPanel({ attemptId, pageIndex, selectedStrokes, initial
         <div className={styles.row}><button type="button" className={styles.button} disabled={!!busy} onClick={explain}>{busy === "ai" ? "AI đang giải thích…" : "AI giải thích sự biến đổi"}</button>
           <button type="button" className={styles.primary} disabled={!!busy || needsOcrConfirm} onClick={save}>{busy === "save" ? "Đang lưu…" : "Lưu vào bài học"}</button></div>
         {needsOcrConfirm ? <p className={styles.muted}>Đối chiếu nét viết và bấm xác nhận công thức nhận dạng trước khi lưu.</p> : null}
-      </> : <p className={styles.muted}>Đang xem bản lưu. Nhập hoặc khoanh công thức mới để tiếp tục khám phá.</p>}
+      </> : <div className={styles.section}><p className={styles.muted}>Đang xem bản lưu của bài học. Tiếp tục khám phá để thử các giá trị tham số mới.</p>
+        {viewing.note ? <p>{viewing.note}</p> : null}
+        <button type="button" className={styles.primary} disabled={!!busy} onClick={continueExploration}>Tiếp tục khám phá</button></div>}
       </> : null}
     </> : null}
     {error ? <p role="alert" className={styles.error}>{error}</p> : null}
@@ -212,7 +247,7 @@ export function MathCanvasPanel({ attemptId, pageIndex, selectedStrokes, initial
       {listError ? <p className={styles.error}>Chưa tải được bản lưu. Hãy đóng rồi mở lại Math Canvas để thử lại.</p> : null}
       {!snapshots.length && !listError ? <p className={styles.muted}>Chưa có bản trực quan hóa được lưu.</p> : null}
       {snapshots.map((snapshot) => <button type="button" className={styles.saved} key={snapshot.id} disabled={!!busy} onClick={() => {
-        editVersion.current++; setAnimating(null); setNeedsOcrConfirm(false); setViewing(snapshot); setSource(snapshot.source_latex || snapshot.expression); setModel(parseMathExpression(snapshot.expression));
+        editVersion.current++; setAnimating(null); setNeedsOcrConfirm(false); setIsSnapshotCopy(false); setResumedCamera(null); setViewing(snapshot); setSource(snapshot.source_latex || snapshot.expression); setModel(parseMathExpression(snapshot.expression));
         setGraphVisible(true);
         setSettings(snapshot.settings); setCamera(snapshot.camera); setExplanation(snapshot.explanation); setError(null); setSuccess(null);
       }}>{snapshot.expression}<small>{describeGraphView(parseMathExpression(snapshot.expression), snapshot.settings)} · Trang {snapshot.page_index + 1} · {new Date(snapshot.created_at).toLocaleString("vi-VN")}</small></button>)}
