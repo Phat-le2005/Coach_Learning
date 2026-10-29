@@ -160,7 +160,7 @@ def test_save_and_teacher_review_restore_spatial_curve_without_rewriting_formula
 def test_legacy_graph_hash_remains_compatible_with_default_presentation():
     from app.math_canvas.service import fingerprint,spec_hash
     spec=GraphSpec(expression="z=x^2+y^2",settings={"parameters":{}})
-    legacy=spec.settings.model_dump(mode="json",exclude={"view_mode","slice_y"})
+    legacy=spec.settings.model_dump(mode="json",exclude={"view_mode","slice_y","scene"})
     assert spec_hash(spec)==fingerprint({"expression":spec.expression,"settings":legacy})
     changed=spec.model_copy(update={"settings":spec.settings.model_copy(update={"view_mode":"2D","slice_y":1})})
     assert spec_hash(changed)!=spec_hash(spec)
@@ -200,3 +200,49 @@ def test_implicit_equations_reject_function_transforms_and_extrusion():
     for settings in [{"scale": 2}, {"shift_x": 1}, {"view_mode": "EXTRUDED"}]:
         with pytest.raises(ValidationError):
             GraphSpec(expression="x^2+y^2=4", settings={"parameters": {}, **settings})
+
+
+def graph_scene(expressions, combine="AND"):
+    return {"version": 2, "dimension": "2D", "combine": combine, "rows": [
+        {"id": f"row-{index}", "expression": expression, "visible": True, "color": "#2563eb"}
+        for index, expression in enumerate(expressions)]}
+
+
+@pytest.mark.parametrize("expressions,parameters", [
+    (["y>=x^2", "y<=1"], {}), (["0<=x<=2", "y=sin(x)"], {}),
+    (["y=f(g(x))", "f(x)=a*x^2+1", "g(x)=sin(x)"], {"a": 2}),
+    (["f(x)=1", "y=f(1/x)"], {}), (["x^2+y^2<=r^2", "x>=0"], {"r": 2}),
+])
+def test_versioned_scene_validation(expressions, parameters):
+    spec = GraphSpec(expression="y=0", settings={"parameters": parameters, "scene": graph_scene(expressions)})
+    assert spec.settings.scene.version == 2
+
+
+@pytest.mark.parametrize("expressions", [
+    ["y=__import__(x)"], ["y=x.real"], ["y=x//2"], ["y=>x"], ["x=y=1"], ["y=f(x)"],
+    ["f(x)=g(x)", "g(x)=f(x)"], ["f(x)=x", "f(x)=x^2"], ["z=x^2+y^2"], ["f(x)=y"],
+    ["f(x)=x+x+x+x", "g(x)=f(f(f(f(f(x)))))"],
+])
+def test_scenes_reject_unsafe_ambiguous_or_unbounded_inputs(expressions):
+    with pytest.raises(ValidationError):
+        GraphSpec(expression="y=0", settings={"parameters": {}, "scene": graph_scene(expressions)})
+
+
+def test_scene_shared_parameters_and_legacy_transforms_are_not_silently_accepted():
+    for settings in [{"parameters": {}}, {"parameters": {"a": 2}, "scale": 2}, {"parameters": {"a": 2}, "view_mode": "3D"}]:
+        with pytest.raises(ValidationError):
+            GraphSpec(expression="y=0", settings={**settings, "scene": graph_scene(["y>=a*x^2"])})
+
+
+def test_scene_snapshot_replay_and_teacher_restore_all_rows(db_session, canvas_case):
+    case = canvas_case
+    payload = SnapshotCreate(**{**case.payload.model_dump(), "expression": "y=0", "settings": {
+        "parameters": {"a": 2}, "scene": graph_scene(["f(x)=a*x^2", "y>=f(x)", "y<=3"]), "view_mode": "2D"}})
+    service = MathCanvasService(db_session)
+    saved = service.save(case.owner.id, case.aid, payload)
+    assert service.save(case.owner.id, case.aid, payload).id == saved.id
+    restored = service.list_teacher(case.teacher.id)[0]
+    assert restored.settings.scene.model_dump() == payload.settings.scene.model_dump()
+    assert restored.settings.parameters == {"a": 2}
+    with pytest.raises(ApplicationError):
+        service.list_student(case.outsider.id, case.aid)

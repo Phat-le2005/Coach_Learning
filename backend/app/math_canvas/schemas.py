@@ -6,6 +6,7 @@ from typing import Literal
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+from app.math_canvas.scene_schema import GraphSceneDocument
 
 FUNCTIONS = {"sin", "cos", "tan", "sqrt", "abs", "exp", "log", "ln"}
 
@@ -67,6 +68,7 @@ class GraphSettings(StrictModel):
     domain: float = Field(default=3, ge=1, le=10)
     view_mode: Literal["AUTO", "2D", "3D", "EXTRUDED"] = "AUTO"
     slice_y: float = Field(default=0, ge=-5, le=5)
+    scene: GraphSceneDocument | None = None
 
     @field_validator("parameters")
     @classmethod
@@ -82,6 +84,14 @@ class GraphSpec(StrictModel):
 
     @model_validator(mode="after")
     def valid_expression(self):
+        if self.settings.scene is not None:
+            if self.expression != "y=0":
+                raise ValueError("Version 2 scenes use the compatibility expression y=0.")
+            if set(self.settings.parameters) != self.settings.scene.parameter_names():
+                raise ValueError("Shared parameters must match all scene expressions.")
+            if self.settings.view_mode not in {"AUTO", "2D"} or self.settings.scale != 1 or any((self.settings.offset, self.settings.shift_x, self.settings.shift_y, self.settings.slice_y)):
+                raise ValueError("Planar scenes use their own expressions without legacy view transforms.")
+            return self
         dimension, parameters = classify_expression(self.expression)
         if set(self.settings.parameters) != parameters:
             raise ValueError("Parameter values must match the mathematical expression.")

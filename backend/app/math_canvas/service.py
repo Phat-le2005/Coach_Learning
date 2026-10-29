@@ -22,6 +22,8 @@ def fingerprint(data: dict) -> str:
 
 def spec_hash(spec: GraphSpec) -> str:
     settings = spec.settings.model_dump(mode="json")
+    if settings.get("scene") is None:
+        settings.pop("scene", None)
     # Preserve existing explanation hashes for legacy/default display settings.
     if settings["view_mode"] == "AUTO":
         settings.pop("view_mode")
@@ -56,7 +58,10 @@ class MathCanvasService:
 
     def save(self, user_id: UUID, attempt_id: UUID, data: SnapshotCreate) -> SnapshotRead:
         attempt = self.owned_attempt(user_id, attempt_id, lock=True)
-        digest = fingerprint(data.model_dump(mode="json"))
+        request_data = data.model_dump(mode="json")
+        if request_data["settings"].get("scene") is None:
+            request_data["settings"].pop("scene", None)
+        digest = fingerprint(request_data)
         existing = self.session.scalar(select(MathCanvasSnapshot).where(MathCanvasSnapshot.attempt_id == attempt_id,
             MathCanvasSnapshot.client_action_id == data.client_action_id))
         if existing:
