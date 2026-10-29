@@ -1,0 +1,26 @@
+{
+  "frontend": "http://localhost:3000",
+  "backend": "http://127.0.0.1:8000",
+  "checks": {
+    "student_bff_login": true,
+    "implicit_equation_saved": true,
+    "idempotent_replay": true,
+    "parameter_restored": true,
+    "slice_restored": true,
+    "zoom_restored": true,
+    "csrf_required": true,
+    "executable_syntax_rejected": true,
+    "student_cannot_read_teacher_route": true,
+    "continued_exploration_preserves_original": true,
+    "teacher_bff_login": true,
+    "teacher_restores_same_graph": true,
+    "teacher_page_available": true,
+    "coach_backend_ready": true,
+    "correct_backend_application": true
+  },
+  "attempt_id": "b7bb5f25-e9de-48d3-9ae9-42d49bcff0fb",
+  "snapshot_id": "c119609f-4a98-475b-9282-9beb09573de8",
+  "all_checks_passed": true,
+  "visual_browser_verified": false,
+  "visual_browser_note": "Browser discovery returned: The browser access host is unavailable. Browser Web Worker and WebGL interaction were not visually verified."
+}

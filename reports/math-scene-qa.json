@@ -1,0 +1,43 @@
+{
+  "date": "2026-10-29",
+  "scope": "Math View V2 planar multi-expression board, with existing single-formula 3D preserved",
+  "frontend": "http://localhost:3000",
+  "backend": "http://127.0.0.1:8000",
+  "automated": {
+    "frontend_tests_passed": 237,
+    "frontend_tests_failed": 0,
+    "backend_math_canvas_and_schema_tests_passed": 58,
+    "backend_tests_failed": 0,
+    "typescript_check": "passed",
+    "next_production_build": "passed",
+    "canonical_frontend_documents_accepted_by_server": 84,
+    "live_bff_checks_passed": 16,
+    "live_bff_report": "reports/math-scene-smoke.json",
+    "parser_corpus_report": "reports/math-scene-parser-parity.json"
+  },
+  "direct_desktop_ui_observations": [
+    "Two expression rows render together",
+    "Strict parabola boundary is visibly dashed; inclusive straight boundary is solid",
+    "AND shading shows the common parabolic region",
+    "Reload and reopen restore expressions, region mode and student observation",
+    "Named function f(x)=a*x^2 is referenced by another row",
+    "Changing shared parameter a from 1 to 2 changes the curve and region",
+    "Hiding the function reference curve retains its use in the dependent inequality",
+    "Zoom controls change the viewport",
+    "Saving a two-row board with an observation displays success and a new saved entry",
+    "Single-formula Three.js renders z=a*(x^2+y^2)",
+    "Mouse wheel zoom and pointer drag rotation change the 3D view",
+    "Returning to the board preserves its rows, visibility, parameter and zoom"
+  ],
+  "evidence_boundaries": {
+    "teacher_snapshot_restore": "verified through live BFF/database response and frontend build; teacher UI not directly reviewed",
+    "new_multi_expression_scope": "2D equations, inequalities and unary function composition",
+    "multiple_3D_surfaces_or_inequality_volumes": "not implemented",
+    "geometry": "bounded numerical sampling, not a symbolic solution set",
+    "tablet_stylus_and_physical_touch": "not verified on a physical device",
+    "handwriting_accuracy": "not measured across student handwriting samples",
+    "school_device_performance": "not benchmarked; no FPS claim",
+    "classroom_acceptance": "requires teacher-led pilot",
+    "deployment": "local development services; no production deployment claim"
+  }
+}
