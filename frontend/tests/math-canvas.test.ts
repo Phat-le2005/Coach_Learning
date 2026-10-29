@@ -1,5 +1,11 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { Worker as NodeWorker } from "node:worker_threads";
+import { resolve } from "node:path";
+import { PerspectiveCamera, OrthographicCamera, Vector3 } from "three";
+import { GraphSamplingQueue, type SamplingInput, type SamplingRequest, type SamplingResponse } from "../src/features/math-canvas/sampling-protocol.js";
+import { fitGraphCamera } from "../src/features/math-canvas/fit-camera.js";
+import { createExplorationDraft } from "../src/features/math-canvas/exploration.js";
 import { parseMathExpression, sampleGraph, sampleImplicit, DEFAULT_GRAPH } from "../src/features/math-canvas/expression.js";
 import { sampleImplicitGeometry } from "../src/features/math-canvas/geometry.js";
 import { selectLassoStrokes } from "../src/features/math-workspace/utils/lasso.js";
@@ -162,4 +168,87 @@ test("BFF restricts canvas operations by role, UUID, method and explicit path", 
   assert.equal(mathCanvasProxyPath(["attempts","..","snapshots"],"POST","STUDENT"), null);
   assert.equal(mathCanvasProxyPath(["attempts",id,"snapshots"],"DELETE","STUDENT"), null);
   assert.ok(mathCanvasProxyPath(["teacher","snapshots"],"GET","TEACHER"));
+});
+
+test("rapid slider changes coalesce and obsolete worker replies cannot replace the latest graph", () => {
+  const sent: SamplingRequest[] = [], delivered: number[] = [], errors: string[] = [];
+  const queue = new GraphSamplingQueue((request) => sent.push(request), (result) => delivered.push(result.positions[0]), (error) => errors.push(error));
+  const input: SamplingInput = { model: parseMathExpression("x²+y²+z²=r²"), settings: { ...DEFAULT_GRAPH, parameters: { r: 1 } }, slice: false, resolution: 16 };
+  queue.request(input);
+  queue.request({ ...input, settings: { ...input.settings, parameters: { r: 2 } } });
+  queue.request({ ...input, settings: { ...input.settings, parameters: { r: 3 } } });
+  assert.equal(sent.length, 1);
+  const data = (value: number) => ({ positions: new Float32Array([value,0,0]), primitive: "triangles" as const, truncated: false });
+  queue.accept({ id: sent[0].id, data: data(1) });
+  assert.equal(sent.length, 2); assert.equal(sent[1].settings.parameters.r, 3); assert.deepEqual(delivered, []);
+  queue.accept({ id: sent[0].id, error: "obsolete" });
+  queue.accept({ id: sent[1].id, data: data(3) });
+  assert.deepEqual(delivered, [3]); assert.deepEqual(errors, []);
+  queue.dispose(); queue.request(input); queue.accept({ id: sent[1].id, data: data(4) });
+  assert.equal(sent.length, 2); assert.deepEqual(delivered, [3]);
+});
+
+test("worker failures are reported for the current input and the queue accepts a corrected formula", () => {
+  const sent: SamplingRequest[] = [], errors: string[] = [];
+  const queue = new GraphSamplingQueue((request) => sent.push(request), () => {}, (error) => errors.push(error));
+  const input: SamplingInput = { model: parseMathExpression("x=2"), settings: DEFAULT_GRAPH, slice: false, resolution: 16 };
+  queue.request(input); queue.accept({ id: sent[0].id, error: "sampling failed" });
+  queue.request(input);
+  assert.deepEqual(errors, ["sampling failed"]); assert.equal(sent.length, 2);
+  queue.dispose();
+});
+
+test("the real sampling worker transfers finite sphere and section geometry from a separate thread", { timeout: 10000 }, async (t) => {
+  const worker = new NodeWorker(resolve(__dirname, "../../tests/fixtures/math-sampling-worker.cjs"), {
+    workerData: { entry: resolve(__dirname, "../src/features/math-canvas/implicit.worker.js") },
+  });
+  t.after(() => worker.terminate());
+  const request = (input: SamplingRequest) => new Promise<SamplingResponse>((accept, reject) => {
+    worker.once("message", accept); worker.once("error", reject); worker.postMessage(input);
+  });
+  const input: SamplingRequest = { id: 1, model: parseMathExpression("x²+y²+z²=r²"), settings: { ...DEFAULT_GRAPH, parameters: { r: 2 } }, slice: false, resolution: 16 };
+  const sphere = await request(input);
+  assert.ok("data" in sphere); assert.equal(sphere.id, 1); assert.ok(sphere.data.positions instanceof Float32Array);
+  assert.ok(sphere.data.positions.length > 100);
+  for (let i = 0; i < sphere.data.positions.length; i += 3) {
+    const [x,z,y] = sphere.data.positions.slice(i,i+3); assert.ok(Math.abs(x*x+y*y+z*z-4) < .002);
+  }
+  const section = await request({ ...input, id: 2, slice: true, settings: { ...input.settings, slice_y: 1, view_mode: "2D" } });
+  assert.ok("data" in section); assert.equal(section.data.primitive, "segments"); assert.ok(section.data.positions.length > 0);
+  for (let i = 0; i < section.data.positions.length; i += 3) {
+    const [x,z,depth] = section.data.positions.slice(i,i+3); assert.ok(Math.abs(x*x+z*z-3) < .002); assert.equal(depth, 0);
+  }
+});
+
+test("camera fitting contains all sampled bounds in wide and narrow perspective viewports", () => {
+  const bounds = { min: [-3,0,-3] as [number,number,number], max: [3,18,3] as [number,number,number] };
+  for (const aspect of [16/9, .65]) {
+    const fitted = fitGraphCamera(bounds, { position: [11,9,13], target: [0,0,0] }, { spatial: true, aspect, halfHeight: 4 });
+    assert.ok(fitted);
+    const camera = new PerspectiveCamera(42, aspect, .1, 500); camera.position.fromArray(fitted.position); camera.lookAt(new Vector3(...fitted.target)); camera.updateMatrixWorld();
+    for (const x of [-3,3]) for (const y of [0,18]) for (const z of [-3,3]) {
+      const point = new Vector3(x,y,z).project(camera);
+      assert.ok(Math.abs(point.x) <= 1 && Math.abs(point.y) <= 1 && Math.abs(point.z) <= 1);
+    }
+  }
+  assert.equal(fitGraphCamera({ min: [-1,0,-1], max: [1,100000,1] }, { position: [11,9,13], target: [0,0,0] }, { spatial: true, aspect: 1, halfHeight: 4 }), null);
+});
+
+test("planar camera fitting preserves coordinate scale and makes a translated curve visible", () => {
+  const fitted = fitGraphCamera({ min: [-3,12,0], max: [3,21,0] }, { position: [0,0,16], target: [0,0,0] }, { spatial: false, aspect: .75, halfHeight: 4 });
+  assert.ok(fitted);
+  const camera = new OrthographicCamera(-3,3,4,-4,.1,500); camera.position.fromArray(fitted.position); camera.zoom = fitted.zoom!;
+  camera.lookAt(new Vector3(...fitted.target)); camera.updateProjectionMatrix(); camera.updateMatrixWorld();
+  for (const x of [-3,3]) for (const y of [12,21]) {
+    const point = new Vector3(x,y,0).project(camera); assert.ok(Math.abs(point.x) <= 1 && Math.abs(point.y) <= 1);
+  }
+});
+
+test("resuming exploration retains the equation and current view without mutating saved values", () => {
+  const settings = { ...DEFAULT_GRAPH, parameters: { r: 2 }, view_mode: "2D" as const, slice_y: 1 };
+  const camera = { position: [0,0,16] as [number,number,number], target: [0,0,0] as [number,number,number], zoom: 1.5 };
+  const draft = createExplorationDraft({ expression: "x^2+y^2+z^2=r^2", note: "Observe the section" }, settings, camera);
+  assert.equal(draft.source, "x^2+y^2+z^2=r^2"); assert.equal(draft.settings.slice_y, 1); assert.equal(draft.camera.zoom, 1.5);
+  draft.settings.parameters.r = 3; draft.camera.position[0] = 4;
+  assert.equal(settings.parameters.r, 2); assert.equal(camera.position[0], 0);
 });
