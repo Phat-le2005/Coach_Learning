@@ -245,3 +245,60 @@ test("temporal order vs visual reading order: strokes within a region keep chron
     ["den", "num", "f_bar"],
   );
 });
+
+// ---------------------------------------------------------------------------
+// 4. Adversarial Regression Tests: Counter-Examples Hardening
+// ---------------------------------------------------------------------------
+
+test("adversarial: minus sign between two lines does NOT cause interlinear merge into a single fraction", () => {
+  // Line 1: y' = 3x^2 (at y=120, height=20)
+  // Minus/dash between lines at y=145 (height=3, width=20)
+  // Line 2: x = 2 (at y=155, height=20)
+  const ink = [
+    stroke("l1_a", 0.1, 0.12, 0.18, 0.02),
+    stroke("minus_dash", 0.15, 0.145, 0.03, 0.003), // 20px dash between lines
+    stroke("l2_a", 0.1, 0.155, 0.18, 0.02),
+  ];
+  const regions = segmentPageInk_v2(ink);
+  // Must NOT merge Line 1, minus, and Line 2 into 1 single region!
+  assert.ok(regions.length >= 2, `Expected at least 2 distinct regions, got ${regions.length}`);
+  const r1 = regions[0].strokes.map((s) => s.id);
+  const rLast = regions[regions.length - 1].strokes.map((s) => s.id);
+  assert.ok(r1.includes("l1_a"), "First region should contain Line 1");
+  assert.ok(rLast.includes("l2_a"), "Last region should contain Line 2");
+  assert.ok(!r1.includes("l2_a"), "Line 1 and Line 2 must not be merged together!");
+});
+
+test("adversarial: single-column equations with wide space before equals sign are NOT split into two columns", () => {
+  // 3 lines of equations with space before equals sign:
+  // f'(x)              = 3x^2 - 6x   (x: 100-180 and 420-580, y=100)
+  // y'                 = 0           (x: 100-140 and 420-480, y=160)
+  // x                  = 2           (x: 100-130 and 420-470, y=220)
+  const ink = [
+    stroke("eq1_lhs", 100 / 794, 100 / 1123, 80 / 794, 25 / 1123),
+    stroke("eq1_rhs", 420 / 794, 100 / 1123, 160 / 794, 25 / 1123),
+    stroke("eq2_lhs", 100 / 794, 160 / 1123, 40 / 794, 25 / 1123),
+    stroke("eq2_rhs", 420 / 794, 160 / 1123, 60 / 794, 25 / 1123),
+    stroke("eq3_lhs", 100 / 794, 220 / 1123, 30 / 794, 25 / 1123),
+    stroke("eq3_rhs", 420 / 794, 220 / 1123, 50 / 794, 25 / 1123),
+  ];
+  const regions = segmentPageInk_v2(ink);
+  // Must preserve 3 horizontal equations, NOT split into 6 LHS/RHS halves!
+  assert.equal(regions.length, 3, `Expected 3 horizontal lines, got ${regions.length}`);
+  assert.deepEqual(regions[0].strokes.map((s) => s.id), ["eq1_lhs", "eq1_rhs"]);
+  assert.deepEqual(regions[1].strokes.map((s) => s.id), ["eq2_lhs", "eq2_rhs"]);
+  assert.deepEqual(regions[2].strokes.map((s) => s.id), ["eq3_lhs", "eq3_rhs"]);
+});
+
+test("adversarial: equals sign '=' with two parallel horizontal strokes does not trigger fraction binding", () => {
+  // An equals sign consists of two horizontal strokes of equal length close together
+  const ink = [
+    stroke("eq_top", 0.2, 0.12, 0.04, 0.003),
+    stroke("eq_bottom", 0.2, 0.128, 0.04, 0.003),
+    stroke("other_line", 0.2, 0.18, 0.15, 0.02),
+  ];
+  const regions = segmentPageInk_v2(ink);
+  assert.equal(regions.length, 2);
+  assert.deepEqual(regions[0].strokes.map((s) => s.id), ["eq_top", "eq_bottom"]);
+  assert.deepEqual(regions[1].strokes.map((s) => s.id), ["other_line"]);
+});
