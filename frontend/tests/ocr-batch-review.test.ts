@@ -102,6 +102,97 @@ test("canStartBatchReview enforces sequence order and non-empty batch", () => {
   assert.equal(canStartBatchReview(validRows).canStart, true);
 });
 
+test("BLOCKER A regression: editing latex after approval invalidates approval in both draft and adapter", () => {
+  // 1. Row is created and approved with x=1
+  const row = makeRow("r1", "approved", "x=1", "ROOT_FINDING");
+  assert.equal(row.status, "approved");
+  assert.equal(row.draft.reviewStatus, "APPROVED");
+  assert.equal(buildApprovedIntents([row]).length, 1);
+
+  // 2. Student edits formula to x=2 -> draft transitions to NEEDS_REVIEW
+  const editedDraft = editOcrReviewDraft(row.draft, { contentLatex: "x=2" });
+  assert.equal(editedDraft.reviewStatus, "NEEDS_REVIEW");
+
+  // In simulated stale UI state where row.status is still "approved" but draft is NEEDS_REVIEW:
+  const staleRow: ReviewRowLike = {
+    ...row,
+    draft: editedDraft,
+    status: "approved", // stale UI label!
+  };
+
+  // 3. Adapter MUST reject/exclude this row because draft.reviewStatus is NOT APPROVED!
+  const intents = buildApprovedIntents([staleRow]);
+  assert.equal(intents.length, 0, "buildApprovedIntents must not include draft that is NEEDS_REVIEW even if row.status is approved");
+
+  const canStart = canStartBatchReview([staleRow]);
+  assert.equal(canStart.canStart, false, "canStartBatchReview must reject batch when draft.reviewStatus is NEEDS_REVIEW");
+
+  // 4. Student approves again
+  const reapprovedDraft = approveOcrDraft(editedDraft);
+  const validRow: ReviewRowLike = {
+    ...staleRow,
+    draft: reapprovedDraft,
+    status: "approved",
+  };
+  assert.equal(buildApprovedIntents([validRow]).length, 1);
+  assert.equal(buildApprovedIntents([validRow])[0].contentLatex, "x=2");
+  assert.equal(canStartBatchReview([validRow]).canStart, true);
+});
+
+test("BLOCKER B regression: paused batch with frozen requests replays exact immutable snapshot on resume, ignoring external mutations", async () => {
+  const store = new MemoryStore();
+  const lock = new FakeLock();
+  let failFirstTime = true;
+  const receivedRequests: StepMutationRequest[] = [];
+  const steps: any[] = [];
+
+  const api: BatchApi = {
+    async getAttempt(id) {
+      return { id, question_id: null, created_at: "2026-10-31", status: "DRAFT", current_revision: 1 + steps.length, steps: clone(steps) };
+    },
+    async addStep(id, req) {
+      receivedRequests.push(clone(req));
+      if (failFirstTime) {
+        throw new Error("Network timeout while committing step 1");
+      }
+      const step = { id: "step-1", step_index: 1, step_type: req.step_type, content_latex: req.content_latex ?? null, explanation_text: null, step_revision_number: 1 };
+      steps.push(step);
+      return {
+        id,
+        question_id: null,
+        created_at: "2026-10-31",
+        status: "IN_PROGRESS",
+        current_revision: 2,
+        steps: clone(steps),
+      };
+    },
+  };
+
+  const rows = [makeRow("1", "approved", "x=1", "ROOT_FINDING")];
+  const mgr = new SequentialBatchManager(api, store, lock);
+
+  // 1. Initial attempt freezes "x=1" and fails on network
+  const res1 = await mgr.start("att-freeze", "b-freeze", buildApprovedIntents(rows));
+  assert.equal(res1.status, "PAUSED");
+  assert.equal(receivedRequests.length, 1);
+  assert.equal(receivedRequests[0].content_latex, "x=1");
+
+  // 2. Frozen snapshot is persisted on disk
+  assert.equal(store.saved?.entries[0].frozen?.content_latex, "x=1");
+
+  // 3. Even if someone mutates the mutable row draft object to "x=2":
+  rows[0].draft.contentLatex = "x=2";
+
+  // 4. Resume MUST replay the exact frozen snapshot ("x=1"), not the mutated content!
+  failFirstTime = false;
+  const res2 = await mgr.resume("att-freeze");
+  assert.equal(res2.status, "COMPLETE");
+  assert.equal(receivedRequests.length, 2);
+  // Both attempts sent the exact same frozen content "x=1" with same actionId
+  assert.equal(receivedRequests[1].content_latex, "x=1");
+  assert.equal(receivedRequests[1].client_action_id, receivedRequests[0].client_action_id);
+});
+
 test("syncRowsFromJournal updates COMMITTED steps to saved and sets serverStepId", () => {
   const rows: ReviewRowLike[] = [
     makeRow("1", "approved"),

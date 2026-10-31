@@ -273,20 +273,24 @@ export function MathWorkspace({
   }, [attemptId]);
 
   // PR3-C: Recover unfinished batch journal from previous tab session or reload (F5 recovery)
-  useEffect(() => {
-    let active = true;
+  const checkPendingBatch = useCallback(async () => {
     if (typeof window === "undefined" || !attemptId) return;
-    const store = new IndexedDbBatchJournal();
-    store.load(attemptId).then((journal) => {
-      if (!active) return;
+    try {
+      const store = new IndexedDbBatchJournal();
+      const journal = await store.load(attemptId);
       if (journal && journal.state !== "COMPLETE" && journal.state !== "ABANDONED") {
         setPendingBatch(journal);
+      } else {
+        setPendingBatch(null);
       }
-    }).catch(() => {
-      // IndexedDB may be disabled or blocked
-    });
-    return () => { active = false; };
+    } catch (err: unknown) {
+      setRecoveryMessage(err instanceof Error ? err.message : "Lỗi đọc dữ liệu đợt lưu từ bộ nhớ trình duyệt.");
+    }
   }, [attemptId]);
+
+  useEffect(() => {
+    void checkPendingBatch();
+  }, [checkPendingBatch]);
 
   const handleResumePendingBatch = async () => {
     if (batchResuming || !attemptId || !accessToken || !apiClient) return;
@@ -1247,13 +1251,20 @@ export function MathWorkspace({
           pageIndex={pageOcrReview.pageIndex}
           regions={pageOcrReview.regions}
           pageStrokes={pageOcrReview.pageStrokes}
-          onClose={() => setPageOcrReview(null)}
+          onClose={() => {
+            setPageOcrReview(null);
+            void checkPendingBatch();
+          }}
           onConfirmStep={handleConfirmStep}
           attemptId={attemptId}
           accessToken={accessToken}
           apiClient={apiClient}
           onBatchComplete={(fresh) => {
             setAttempt(fresh);
+            setPendingBatch(null);
+          }}
+          onBatchUpdate={(journal) => {
+            setPendingBatch(journal);
           }}
         />
       ) : null}

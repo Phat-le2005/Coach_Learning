@@ -52,6 +52,7 @@ interface PageOcrReviewModalProps {
   accessToken?: string;
   apiClient?: ApiClient;
   onBatchComplete?: (freshAttempt: SolutionAttemptRead) => void;
+  onBatchUpdate?: (journal: BatchJournal | null) => void;
 }
 
 const STEP_LABELS: Record<StepKind, string> = {
@@ -88,6 +89,7 @@ export function PageOcrReviewModal({
   accessToken,
   apiClient,
   onBatchComplete,
+  onBatchUpdate,
 }: PageOcrReviewModalProps) {
   const [rows, setRows] = useState<ReviewRow[]>(() => regions.map((region) => newRow(region, pageIndex)));
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -103,8 +105,14 @@ export function PageOcrReviewModal({
   const activeRunRef = useRef<{ cancelled: boolean } | null>(null);
   const row = rows[selectedIndex];
   const savedCount = rows.filter((item) => item.status === 'saved').length;
-  const approvedCount = rows.filter((item) => item.status === 'approved').length;
+  const approvedCount = rows.filter((item) => item.status === 'approved' && item.draft.reviewStatus === 'APPROVED').length;
   const earlierUnreviewed = rows.slice(0, selectedIndex).some((item) => item.status !== 'saved' && item.status !== 'skipped');
+
+  // Invariants: Snapshot immutability after pause and full lock during batch saving
+  const isRowFrozenInPausedBatch = Boolean(
+    row && pausedJournal?.entries.some((e) => e.actionId === row.actionId && e.frozen !== null)
+  );
+  const isRowContentLocked = saving || batchSaving || row?.status === 'saved' || row?.retryOnly || isRowFrozenInPausedBatch;
 
   useEffect(() => {
     const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
@@ -262,11 +270,15 @@ export function PageOcrReviewModal({
   };
 
   const insertKey = (template: string) => {
-    if (!row || row.retryOnly) return;
+    if (!row || row.retryOnly || isRowContentLocked) return;
     const field = textareaRef.current;
     const result = insertCorrectionKey(row.draft.contentLatex, field?.selectionStart ?? row.draft.contentLatex.length,
       field?.selectionEnd ?? row.draft.contentLatex.length, template);
-    changeRow({ draft: editOcrReviewDraft(row.draft, { contentLatex: result.value }), touched: true });
+    changeRow({
+      draft: editOcrReviewDraft(row.draft, { contentLatex: result.value }),
+      status: 'manual',
+      touched: true,
+    });
     window.requestAnimationFrame(() => {
       field?.focus();
       field?.setSelectionRange(result.selectionStart, result.selectionEnd);
@@ -380,10 +392,12 @@ export function PageOcrReviewModal({
           message: `Đã lưu thành công tất cả ${intents.length} bước lên máy chủ!`,
         });
         setPausedJournal(null);
+        onBatchUpdate?.(null);
         onBatchComplete?.(result.attempt);
       } else if (result.status === 'PAUSED') {
         setRows((current) => syncRowsFromJournal(current, result.journal));
         setPausedJournal(result.journal);
+        onBatchUpdate?.(result.journal);
         const committedCount = result.journal.entries.filter((e) => e.state === 'COMMITTED').length;
         setBatchProgress({
           current: committedCount,
@@ -428,10 +442,12 @@ export function PageOcrReviewModal({
           message: `Đã lưu thành công tất cả ${total} bước!`,
         });
         setPausedJournal(null);
+        onBatchUpdate?.(null);
         onBatchComplete?.(result.attempt);
       } else if (result.status === 'PAUSED') {
         setRows((current) => syncRowsFromJournal(current, result.journal));
         setPausedJournal(result.journal);
+        onBatchUpdate?.(result.journal);
         const total = result.journal.entries.length;
         const committed = result.journal.entries.filter((e) => e.state === 'COMMITTED').length;
         setBatchProgress({
@@ -451,17 +467,21 @@ export function PageOcrReviewModal({
   };
 
   const closeReview = () => {
-    if (saving) return;
+    if (saving || batchSaving) return;
     if (rows.some((item) => (item.touched || item.retryOnly) && item.status !== 'saved' && item.status !== 'skipped')
       && !window.confirm('Các bước chưa lưu sẽ mất phần chỉnh sửa. Nét viết trên trang vẫn được giữ. Đóng phần trích xuất?')) return;
     if (activeRunRef.current) activeRunRef.current.cancelled = true;
+    onBatchUpdate?.(pausedJournal);
     onClose();
   };
 
   const handleDialogKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.key === 'Escape') {
       event.preventDefault();
-      closeReview();
+      if (!saving && !batchSaving) {
+        closeReview();
+      }
+      return;
     }
     if (event.key !== 'Tab') return;
     const buttons = Array.from(dialogRef.current?.querySelectorAll<HTMLElement>(
@@ -598,21 +618,27 @@ export function PageOcrReviewModal({
                 <button type='button' className={styles.buttonSecondary} onClick={splitHere}
                   disabled={processing || saving || row.status === 'saved' || row.retryOnly || row.region.strokes.length < 2}>Tách tại vạch</button>
               </div>
+              {isRowFrozenInPausedBatch ? (
+                <p className={styles.pageReviewWarning} role='status'>
+                  Bước này đã được gửi lên máy chủ trong đợt lưu trước và đã bị khóa để giữ nguyên tính bất biến. Bấm &ldquo;Lưu tiếp đợt này&rdquo; để tiếp tục.
+                </p>
+              ) : null}
               <label className={styles.formGroup}>
                 <span className={styles.formLabel}>Sửa công thức của em</span>
                 <textarea ref={textareaRef} className={styles.formInput} rows={3} value={row.draft.contentLatex}
                   onChange={(event) => changeRow({
                     draft: editOcrReviewDraft(row.draft, { contentLatex: event.target.value }),
+                    status: 'manual',
                     touched: true,
                   })}
                   placeholder='Ví dụ: y = x^2 + 2'
-                  disabled={saving || row.status === 'saved' || row.retryOnly} />
+                  disabled={isRowContentLocked} />
               </label>
               <div className={styles.ocrCorrectionKeys} role='group' aria-label='Bàn phím toán'>
                 {CORRECTION_KEYS.map((key) => (
                   <button type='button' key={key.label} className={styles.ocrCorrectionKey}
                     title={key.description} onClick={() => insertKey(key.insert)}
-                    disabled={saving || row.status === 'saved' || row.retryOnly}>{key.label}</button>
+                    disabled={isRowContentLocked}>{key.label}</button>
                 ))}
               </div>
               <label className={styles.formGroup}>
@@ -620,9 +646,10 @@ export function PageOcrReviewModal({
                 <select className={styles.formSelect} value={row.draft.selectedStepKind ?? ''}
                   onChange={(event) => changeRow({
                     draft: selectOcrDraftKind(row.draft, event.target.value as StepKind),
+                    status: 'manual',
                     touched: true,
                   })}
-                  disabled={saving || row.status === 'saved' || row.retryOnly}>
+                  disabled={isRowContentLocked}>
                   <option value='' disabled>Chưa xác định — vui lòng chọn</option>
                   {STEP_KINDS.map((kind) => <option key={kind} value={kind}>{STEP_LABELS[kind]}</option>)}
                 </select>
@@ -641,10 +668,11 @@ export function PageOcrReviewModal({
                 <textarea className={styles.formInput} rows={2} value={row.draft.explanationText}
                   onChange={(event) => changeRow({
                     draft: editOcrReviewDraft(row.draft, { explanationText: event.target.value }),
+                    status: 'manual',
                     touched: true,
                   })}
                   placeholder='Ví dụ: Hàm số đồng biến trên khoảng...'
-                  disabled={saving || row.status === 'saved' || row.retryOnly} />
+                  disabled={isRowContentLocked} />
               </label>
               <div className={styles.pageReviewFooter}>
                 <button type='button' className={styles.buttonSecondary}

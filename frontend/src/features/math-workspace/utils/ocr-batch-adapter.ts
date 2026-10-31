@@ -22,10 +22,10 @@ export interface ReviewRowLike {
 }
 
 export function buildApprovedIntents(rows: readonly ReviewRowLike[]): ApprovedStepIntent[] {
+  // A row is truly approved ONLY if BOTH row.status === "approved"
+  // AND its draft model is definitively approved (r.draft.reviewStatus === "APPROVED")!
   const approvedRows = rows.filter(
-    (r) =>
-      r.status === "approved" ||
-      (r.draft.reviewStatus === "APPROVED" && r.status !== "saved" && r.status !== "skipped"),
+    (r) => r.status === "approved" && r.draft.reviewStatus === "APPROVED",
   );
   return approvedRows.map((r) => {
     const raw = r.draft.contentLatex.trim();
@@ -43,20 +43,19 @@ export function buildApprovedIntents(rows: readonly ReviewRowLike[]): ApprovedSt
 }
 
 export function canStartBatchReview(rows: readonly ReviewRowLike[]): { canStart: boolean; reason?: string } {
-  const pendingToSave = rows.filter(
-    (r) =>
-      r.status === "approved" ||
-      (r.draft.reviewStatus === "APPROVED" && r.status !== "saved" && r.status !== "skipped"),
-  );
+  // A row is approved only when its draft model is strictly APPROVED and UI status is approved
+  const isRowApproved = (r: ReviewRowLike) =>
+    r.status === "approved" && r.draft.reviewStatus === "APPROVED";
+
+  const pendingToSave = rows.filter(isRowApproved);
   if (pendingToSave.length === 0) {
     return { canStart: false, reason: "Chưa có bước nào được duyệt để lưu." };
   }
 
-  // Find the index of the last row that is to be saved
+  // Find the index of the last approved row that is to be saved
   let lastApprovedIndex = -1;
   for (let i = rows.length - 1; i >= 0; i--) {
-    const r = rows[i];
-    if (r.status === "approved" || (r.draft.reviewStatus === "APPROVED" && r.status !== "saved" && r.status !== "skipped")) {
+    if (isRowApproved(rows[i])) {
       lastApprovedIndex = i;
       break;
     }
@@ -66,10 +65,9 @@ export function canStartBatchReview(rows: readonly ReviewRowLike[]): { canStart:
   for (let i = 0; i <= lastApprovedIndex; i++) {
     const r = rows[i];
     const isReady =
-      r.status === "approved" ||
+      isRowApproved(r) ||
       r.status === "saved" ||
       r.status === "skipped" ||
-      r.draft.reviewStatus === "APPROVED" ||
       r.draft.reviewStatus === "SKIPPED";
     if (!isReady) {
       return {
