@@ -226,7 +226,7 @@ test("abstains on malformed LaTeX with unbalanced braces", () => {
   const malformed: StepClassificationInput[] = [
     { contentLatex: "\\frac{3x^2 - 6x}{" },
     { contentLatex: "y' = 3x^{2" },
-    { contentLatex: "x \\in \\{0, 2" },
+    { contentLatex: "x \\in {0, 2" },
   ];
 
   for (const inp of malformed) {
@@ -313,4 +313,16 @@ test("adversarial: single words like 'tăng' or 'cực trị' alone do not trigg
   // A sentence like "x tăng thì y giảm" or "tìm cực trị" is not a definitive conclusion
   const res = classifyMathStep({ explanationText: "x tăng thì hàm số biến thiên" });
   assert.notEqual(res.predictedType, "CONCLUSION");
+});
+
+// ---------------------------------------------------------------------------
+// 18. Escaped LaTeX Braces and Advanced Equation Context
+// ---------------------------------------------------------------------------
+test("escaped LaTeX braces in systems of equations do not falsely fail brace balance", () => {
+  const systemOfEq = classifyMathStep({
+    contentLatex: "\\left\\{ \\begin{array}{l} x = 0 \\\\ x = 2 \\end{array} \\right.",
+    explanationText: "Nghiệm của phương trình đạo hàm bằng 0",
+  });
+  assert.equal(systemOfEq.status, "DETERMINED");
+  assert.equal(systemOfEq.predictedType, "ROOT_FINDING");
 });

@@ -25,10 +25,22 @@ const MAX_SAFE_INPUT_LENGTH = 4000;
 function checkBraceBalance(text: string): boolean {
   let depth = 0;
   for (let i = 0; i < text.length; i++) {
-    if (text[i] === "{") depth++;
-    else if (text[i] === "}") {
-      depth--;
-      if (depth < 0) return false;
+    if (text[i] === "{" || text[i] === "}") {
+      let backslashCount = 0;
+      let j = i - 1;
+      while (j >= 0 && text[j] === "\\") {
+        backslashCount++;
+        j--;
+      }
+      if (backslashCount % 2 === 1) {
+        // Escaped literal brace (e.g. \{ or \left\{), skip group depth counting
+        continue;
+      }
+      if (text[i] === "{") depth++;
+      else if (text[i] === "}") {
+        depth--;
+        if (depth < 0) return false;
+      }
     }
   }
   return depth === 0;
@@ -197,14 +209,15 @@ export function classifyMathStep(
   }
 
   // Sub-case C: Explicit root finding text context: "Giải phương trình", "Cho y' = 0", "Nghiệm của"
-  const rootTextRegex = /\b(?:giải phương trình|tìm nghiệm|cho (?:y'|f'\(x\))\s*=\s*0|phương trình có nghiệm)\b/i;
+  const rootTextRegex =
+    /(?:^|[^\p{L}\p{N}])(?:giải phương trình|tìm nghiệm|cho (?:y'|f'\(x\))\s*=\s*0|phương trình có nghiệm|nghiệm của phương trình)(?:$|[^\p{L}\p{N}])/iu;
   const matchRootText = expl.match(rootTextRegex);
   if (matchRootText) {
     return {
       status: "DETERMINED",
       predictedType: "ROOT_FINDING",
       ruleId: "RULE_ROOT_FINDING_TEXT_CONTEXT",
-      matchedEvidence: matchRootText[0],
+      matchedEvidence: matchRootText[0].trim(),
     };
   }
 
