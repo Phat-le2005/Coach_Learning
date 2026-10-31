@@ -288,6 +288,99 @@ test("BLOCKER 2 regression: server content mismatch MUST NOT return COMPLETE", a
   assert.equal(res.status, "PAUSED");
 });
 
+test("TEST A: content mismatch after server commit MUST NOT become abandonable", async () => {
+  const { manager, api } = setup();
+  const original = api.addStep.bind(api);
+  api.addStep = async (id, req) => {
+    const res = await original(id, req);
+    // Server stored a different content_latex than requested
+    const step = res.steps![res.steps!.length - 1];
+    step.content_latex = "DIFFERENT_SERVER_CONTENT";
+    return res;
+  };
+  const res = await manager.start("attempt", "b", approved(1));
+  assert.equal(res.status, "PAUSED");
+
+  // Invariant: An operation that committed on server MUST NOT be abandonable!
+  await assert.rejects(() => manager.abandonRejected("attempt"), /BATCH_NOT_SAFE_TO_ABANDON/);
+
+  // Calling resume() must not erase the unsafe status
+  const resumed = await manager.resume("attempt");
+  assert.equal(resumed.status, "PAUSED");
+
+  // Calling abandonRejected() again must STILL fail!
+  await assert.rejects(() => manager.abandonRejected("attempt"), /BATCH_NOT_SAFE_TO_ABANDON/);
+
+  // No second step with a new action ID may be created through an unsafe abandonment path
+  await assert.rejects(() => manager.start("attempt", "new-batch", approved(1)), /BATCH_PENDING_RECOVERY_REQUIRED/);
+});
+
+test("TEST B: content mismatch after browser refresh remains fail-closed", async () => {
+  const { api, store, lock } = setup();
+  const original = api.addStep.bind(api);
+  api.addStep = async (id, req) => {
+    const res = await original(id, req);
+    const step = res.steps![res.steps!.length - 1];
+    step.content_latex = "SERVER_TAMPERED";
+    return res;
+  };
+
+  const mgr1 = new SequentialBatchManager(api, store, lock);
+  const res = await mgr1.start("attempt", "b", approved(1));
+  assert.equal(res.status, "PAUSED");
+
+  // Simulate F5: new manager instance reading from store
+  const mgr2 = new SequentialBatchManager(api, store, lock);
+  await assert.rejects(() => mgr2.abandonRejected("attempt"), /BATCH_NOT_SAFE_TO_ABANDON/);
+
+  // Resume remains fail-closed
+  const resumeRes = await mgr2.resume("attempt");
+  assert.equal(resumeRes.status, "PAUSED");
+  await assert.rejects(() => mgr2.abandonRejected("attempt"), /BATCH_NOT_SAFE_TO_ABANDON/);
+});
+
+test("TEST C: definitive validation rejection before commit allows safe abandonment", async () => {
+  const { manager, api } = setup();
+  const original = api.addStep.bind(api);
+  let reject = true;
+  api.addStep = async (id, req) => {
+    // Step 0 commits cleanly
+    if (req.client_action_id === "action-0") return original(id, req);
+    // Step 1 fails with genuine HTTP 422 before commit (no mutation on server)
+    if (reject && req.client_action_id === "action-1") throw { status: 422, code: "INVALID_DRAFT" };
+    return original(id, req);
+  };
+
+  const out = await manager.start("attempt", "b", approved(2));
+  assert.equal(out.status, "PAUSED");
+  assert.equal(api.attempt.steps?.length, 1); // step 0 committed
+
+  // Explicit abandonment is permitted because step 1 was definitively rejected before commit
+  const abandoned = await manager.abandonRejected("attempt");
+  assert.equal(abandoned?.state, "ABANDONED");
+
+  // Earlier committed step 0 remains on the server and is not deleted
+  assert.equal(api.attempt.steps?.length, 1);
+  assert.equal(api.attempt.steps![0].id, "step-1");
+});
+
+test("TEST D: ACTION_KEY_REUSED regression remains un-abandonable after resume and reload", async () => {
+  const { api, store, lock } = setup();
+  api.addStep = async () => { throw { status: 409, code: "ACTION_KEY_REUSED" }; };
+
+  const mgr1 = new SequentialBatchManager(api, store, lock);
+  assert.equal((await mgr1.start("attempt", "b", approved(1))).status, "PAUSED");
+  await assert.rejects(() => mgr1.abandonRejected("attempt"), /BATCH_NOT_SAFE_TO_ABANDON/);
+
+  // Resume does not bypass
+  await mgr1.resume("attempt");
+  await assert.rejects(() => mgr1.abandonRejected("attempt"), /BATCH_NOT_SAFE_TO_ABANDON/);
+
+  // Reload does not bypass
+  const mgr2 = new SequentialBatchManager(api, store, lock);
+  await assert.rejects(() => mgr2.abandonRejected("attempt"), /BATCH_NOT_SAFE_TO_ABANDON/);
+});
+
 test("GET failure before preparing next item pauses without sending it", async () => {
   const { manager, api, store } = setup();
   const get = api.getAttempt.bind(api);
@@ -374,7 +467,7 @@ test("T14: external mutation of request object in api.addStep does not corrupt f
   assert.equal(res.journal?.message, "BATCH_SERVER_CONTENT_MISMATCH");
   // Frozen request in journal remained untouched
   assert.equal(store.saved?.entries[0].frozen?.content_latex, "x=0");
-  assert.equal(store.saved?.entries[0].state, "REJECTED");
+  assert.equal(store.saved?.entries[0].state, "UNKNOWN");
   assert.equal(store.saved?.entries[0].errorCode, "CONTENT_MISMATCH");
 });
 

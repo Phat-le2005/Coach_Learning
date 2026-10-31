@@ -84,6 +84,8 @@ function statusAndCode(error: unknown): { status: number | undefined; code: stri
     code: typeof e.code === "string" ? e.code : undefined };
 }
 
+const SAFE_ABANDON_ERROR_CODES = new Set(["INVALID_DRAFT", "HTTP_422", "VALIDATION_ERROR"]);
+
 function normalizeContractString(val: string | null | undefined): string | null {
   if (val === undefined || val === null) return null;
   const trimmed = val.trim();
@@ -150,8 +152,10 @@ export class SequentialBatchManager {
     return result ?? { status: "LOCKED" };
   }
 
-  /** Explicit abandonment is allowed only when no request has an uncertain outcome.
-   * Already committed steps remain on the server. The caller must not include them in a new batch.
+  /** Explicit abandonment is allowed only when no request has an uncertain outcome
+   * and all rejected entries are definitively uncommitted (e.g. HTTP 422 validation error).
+   * Operations that may have committed (UNKNOWN, CONTENT_MISMATCH) or terminal errors
+   * (ACTION_KEY_REUSED) must NEVER be abandoned.
    */
   async abandonRejected(attemptId: string): Promise<BatchJournal | null> {
     return this.lock.runExclusive(attemptId, async () => {
@@ -160,18 +164,49 @@ export class SequentialBatchManager {
       if (journal.attemptId !== attemptId) throw new Error("BATCH_ATTEMPT_MISMATCH");
       if (!isValidBatchJournal(journal)) throw new Error("BATCH_JOURNAL_CORRUPT");
 
-      const hasTerminalActionKeyReused = journal.entries.some(
-        (entry) => entry.errorCode === "ACTION_KEY_REUSED" || entry.error?.includes("ACTION_KEY_REUSED")
-      );
-      if (
-        journal.state !== "PAUSED" ||
-        hasTerminalActionKeyReused ||
-        journal.message === "BATCH_SEND_ACTION_KEY_REUSED" ||
-        !journal.entries.some((entry) => entry.state === "REJECTED") ||
-        journal.entries.some((entry) => entry.state === "SENDING" || entry.state === "UNKNOWN")
-      ) {
+      // 1. Must be in PAUSED state
+      if (journal.state !== "PAUSED") {
         throw new Error("BATCH_NOT_SAFE_TO_ABANDON");
       }
+
+      // 2. Must not contain any operation whose outcome is uncertain or potentially committed
+      if (journal.entries.some((entry) => entry.state === "SENDING" || entry.state === "UNKNOWN")) {
+        throw new Error("BATCH_NOT_SAFE_TO_ABANDON");
+      }
+
+      // 3. Must not have non-abandonable fatal codes
+      const hasUnsafeError = journal.entries.some(
+        (entry) =>
+          entry.errorCode === "CONTENT_MISMATCH" ||
+          entry.errorCode === "ACTION_KEY_REUSED" ||
+          entry.error?.includes("CONTENT_MISMATCH") ||
+          entry.error?.includes("ACTION_KEY_REUSED") ||
+          journal.message === "BATCH_SERVER_CONTENT_MISMATCH" ||
+          journal.message === "BATCH_SEND_ACTION_KEY_REUSED"
+      );
+      if (hasUnsafeError) {
+        throw new Error("BATCH_NOT_SAFE_TO_ABANDON");
+      }
+
+      // 4. Must have at least one REJECTED entry
+      const rejectedEntries = journal.entries.filter((entry) => entry.state === "REJECTED");
+      if (rejectedEntries.length === 0) {
+        throw new Error("BATCH_NOT_SAFE_TO_ABANDON");
+      }
+
+      // 5. Allowlist: all rejected entries must be definitively uncommitted (e.g. HTTP 422)
+      const isDefinitiveUncommittedRejection = (entry: BatchEntry): boolean => {
+        if (entry.serverStepId !== null || entry.serverRevision !== null) return false;
+        if (entry.errorCode && SAFE_ABANDON_ERROR_CODES.has(entry.errorCode)) return true;
+        if (entry.error && (entry.error.includes("422") || entry.error.includes("INVALID_DRAFT"))) return true;
+        return false;
+      };
+
+      if (!rejectedEntries.every(isDefinitiveUncommittedRejection)) {
+        throw new Error("BATCH_NOT_SAFE_TO_ABANDON");
+      }
+
+      // 6. Authoritative server reconciliation for all COMMITTED entries
       const server = await this.api.getAttempt(attemptId);
       if (!Array.isArray(server.steps) || server.id !== attemptId) {
         throw new Error("BATCH_RECONCILIATION_REQUIRED");
@@ -228,6 +263,8 @@ export class SequentialBatchManager {
     for (let i = 0; i < journal.entries.length; i++) {
       const entry = journal.entries[i];
       if (entry.state === "COMMITTED") continue;
+      if (entry.errorCode === "CONTENT_MISMATCH") return this.pause(journal, "BATCH_SERVER_CONTENT_MISMATCH");
+      if (entry.errorCode === "ACTION_KEY_REUSED") return this.pause(journal, "BATCH_SEND_ACTION_KEY_REUSED");
       if (entry.state === "REJECTED") return this.pause(journal, "BATCH_REJECTED_REQUIRES_REVIEW");
 
       if (entry.frozen === null) {
@@ -285,7 +322,11 @@ export class SequentialBatchManager {
       if (additions.length !== 1) return this.pause(journal, "BATCH_UNVERIFIABLE_STEP_ID");
       const addedStep = additions[0];
       if (!verifyStepContentMatches(addedStep, request)) {
-        entry.state = "REJECTED";
+        // Step committed on server, but content does not match the frozen request.
+        // This is Case B: potentially committed with corrupt/mismatched content.
+        // It MUST be classified as UNKNOWN with persistent CONTENT_MISMATCH,
+        // and MUST NEVER be classified as safely abandonable REJECTED!
+        entry.state = "UNKNOWN";
         entry.error = "BATCH_SERVER_CONTENT_MISMATCH";
         entry.errorCode = "CONTENT_MISMATCH";
         return this.pause(journal, "BATCH_SERVER_CONTENT_MISMATCH");
@@ -330,6 +371,9 @@ export class SequentialBatchManager {
         return this.pause(journal, "BATCH_SERVER_RECONCILIATION_REQUIRED");
       }
       if (entry.frozen && !verifyStepContentMatches(serverStep, entry.frozen)) {
+        entry.state = "UNKNOWN";
+        entry.error = "BATCH_SERVER_CONTENT_MISMATCH";
+        entry.errorCode = "CONTENT_MISMATCH";
         return this.pause(journal, "BATCH_SERVER_CONTENT_MISMATCH");
       }
     }
