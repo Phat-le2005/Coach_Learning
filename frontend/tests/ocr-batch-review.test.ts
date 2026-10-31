@@ -593,3 +593,42 @@ test("ADVERSARIAL 12: Không ghi đè công thức và loại bước do học s
   assert.equal(retryDraft.stepKindSource, "MANUAL");
 });
 
+
+test("BUG-001 regression: createBatchApi defaults accessToken to empty string for BFF HttpOnly cookie auth", async () => {
+  const seenTokens: string[] = [];
+  const bffClient: any = {
+    async getMathAttempt(token: string, id: string) {
+      seenTokens.push(token);
+      return { id, status: "DRAFT", current_revision: 1, steps: [] };
+    },
+    async createMathStep(token: string, id: string, req: StepMutationRequest) {
+      seenTokens.push(token);
+      return {
+        id,
+        status: "IN_PROGRESS",
+        current_revision: 2,
+        steps: [
+          {
+            id: "s1",
+            step_index: 1,
+            step_type: req.step_type,
+            content_latex: req.content_latex,
+            explanation_text: null,
+            step_revision_number: 1,
+          },
+        ],
+      };
+    },
+  };
+
+  const bffBatchApi = createBatchApi(bffClient);
+  await bffBatchApi.getAttempt("att-bff");
+  await bffBatchApi.addStep("att-bff", {
+    expected_attempt_revision: 1,
+    client_action_id: "action-bff",
+    step_type: "EXPLANATION",
+    content_latex: "x=1",
+    explanation_text: null,
+  });
+  assert.deepEqual(seenTokens, ["", ""]);
+});

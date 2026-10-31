@@ -122,6 +122,7 @@ export function MathWorkspace({
 
   // PR3-C: Batch recovery state
   const [pendingBatch, setPendingBatch] = useState<BatchJournal | null>(null);
+  const [batchJournalLoadError, setBatchJournalLoadError] = useState<string | null>(null);
   const [batchResuming, setBatchResuming] = useState(false);
   const [recoveryMessage, setRecoveryMessage] = useState<string | null>(null);
 
@@ -278,13 +279,18 @@ export function MathWorkspace({
     try {
       const store = new IndexedDbBatchJournal();
       const journal = await store.load(attemptId);
+      setBatchJournalLoadError(null);
       if (journal && journal.state !== "COMPLETE" && journal.state !== "ABANDONED") {
         setPendingBatch(journal);
       } else {
         setPendingBatch(null);
+        setRecoveryMessage(null);
       }
     } catch (err: unknown) {
-      setRecoveryMessage(err instanceof Error ? err.message : "Lỗi đọc dữ liệu đợt lưu từ bộ nhớ trình duyệt.");
+      const code = err instanceof Error ? err.message : "BATCH_JOURNAL_READ_FAILED";
+      setPendingBatch(null);
+      setBatchJournalLoadError(code);
+      setRecoveryMessage(`Lỗi đọc dữ liệu đợt lưu từ bộ nhớ trình duyệt (${code}). Đã tạm khóa tạo bước mới để bảo toàn dữ liệu máy chủ.`);
     }
   }, [attemptId]);
 
@@ -292,8 +298,22 @@ export function MathWorkspace({
     void checkPendingBatch();
   }, [checkPendingBatch]);
 
+  const handleSyncAuthoritativeAttempt = async () => {
+    if (batchResuming || !attemptId || !apiClient) return;
+    setBatchResuming(true);
+    try {
+      const fresh = await apiClient.getMathAttempt(accessToken, attemptId);
+      setAttempt(fresh);
+      await checkPendingBatch();
+    } catch (err: unknown) {
+      setRecoveryMessage(err instanceof Error ? err.message : "Không thể tải lại trạng thái bài giải từ máy chủ.");
+    } finally {
+      setBatchResuming(false);
+    }
+  };
+
   const handleResumePendingBatch = async () => {
-    if (batchResuming || !attemptId || !accessToken || !apiClient) return;
+    if (batchResuming || !attemptId || !apiClient) return;
     setBatchResuming(true);
     setRecoveryMessage("Đang đối soát và lưu tiếp các bước giải...");
     try {
@@ -305,10 +325,19 @@ export function MathWorkspace({
       if (res.status === "COMPLETE") {
         setAttempt(res.attempt);
         setPendingBatch(null);
+        setBatchJournalLoadError(null);
         setRecoveryMessage(null);
       } else if (res.status === "PAUSED") {
         setPendingBatch(res.journal);
         const committed = res.journal.entries.filter((e) => e.state === "COMMITTED").length;
+        if (committed > 0) {
+          try {
+            const fresh = await apiClient.getMathAttempt(accessToken, attemptId);
+            setAttempt(fresh);
+          } catch {
+            // Keep current attempt state if offline
+          }
+        }
         setRecoveryMessage(`Tạm dừng: ${res.journal.message} (${committed}/${res.journal.entries.length} bước đã lưu).`);
       } else {
         setRecoveryMessage("Không thể lấy quyền thao tác độc quyền (Web Lock). Tab khác đang thao tác.");
@@ -321,7 +350,7 @@ export function MathWorkspace({
   };
 
   const handleAbandonPendingBatch = async () => {
-    if (batchResuming || !attemptId || !accessToken || !apiClient) return;
+    if (batchResuming || !attemptId || !apiClient) return;
     if (!window.confirm("Hủy bỏ đợt lưu các bước lỗi này? Các bước đã lưu trên máy chủ vẫn được giữ nguyên.")) return;
     setBatchResuming(true);
     try {
@@ -329,8 +358,15 @@ export function MathWorkspace({
       const store = new IndexedDbBatchJournal();
       const lock = new BrowserBatchLock();
       const manager = new SequentialBatchManager(batchApi, store, lock);
-      await manager.abandonRejected(attemptId);
+      const abandoned = await manager.abandonRejected(attemptId);
+      if (!abandoned) {
+        setRecoveryMessage("Không thể lấy quyền thao tác độc quyền (Web Lock). Tab khác đang thao tác.");
+        return;
+      }
+      const freshAttempt = await apiClient.getMathAttempt(accessToken, attemptId);
+      setAttempt(freshAttempt);
       setPendingBatch(null);
+      setBatchJournalLoadError(null);
       setRecoveryMessage(null);
     } catch (err: unknown) {
       alert(err instanceof Error ? err.message : "Không thể hủy bỏ đợt lưu.");
@@ -491,8 +527,12 @@ export function MathWorkspace({
   // Persist the page before reviewing it; recognition only suggests step content.
   const handleTriggerOCR = useCallback(async () => {
     const penStrokes = getOcrPenStrokes(currentPageMemory.strokes);
-    if (pendingBatch) {
-      setOcrError("Đợt lưu trước chưa hoàn tất. Hãy phục hồi hoặc hủy đợt lưu an toàn trước khi trích xuất bước mới.");
+    if (pendingBatch || batchJournalLoadError) {
+      setOcrError(
+        batchJournalLoadError
+          ? `Không thể trích xuất bước mới: nhật ký đợt lưu trong trình duyệt bị hỏng hoặc không đọc được (${batchJournalLoadError}).`
+          : "Đợt lưu trước chưa hoàn tất. Hãy phục hồi hoặc hủy đợt lưu an toàn trước khi trích xuất bước mới."
+      );
       return;
     }
     if (penStrokes.length === 0 || pageOcrReview) return;
@@ -525,11 +565,13 @@ export function MathWorkspace({
       setIsRecognizingOCR(false);
     }
   }, [currentPageMemory.strokes, currentPageMemory.isDirty, currentPageIndex,
-    flushSavePage, authExpired, pageOcrReview, pendingBatch]);
+    flushSavePage, authExpired, pageOcrReview, pendingBatch, batchJournalLoadError]);
 
   const handleConfirmStep = useCallback(
     async (stepType: StepKind, latex: string | null, explanation: string, actionId: string) => {
-      if (pendingBatch) throw new Error("Đợt lưu hàng loạt chưa hoàn tất; hãy phục hồi trước khi lưu bước riêng.");
+      if (pendingBatch || batchJournalLoadError) {
+        throw new Error("Đợt lưu hàng loạt chưa hoàn tất hoặc nhật ký trình duyệt đang lỗi; hãy xử lý trước khi lưu bước riêng.");
+      }
       if (pendingDeleteRef.current) {
         throw new Error("Một thao tác xóa bước chưa nhận được kết quả. Hãy thử xóa lại hoặc tải lại bài giải trước khi thêm bước mới.");
       }
@@ -542,11 +584,13 @@ export function MathWorkspace({
       });
       setAttempt(updatedAttempt);
     },
-    [attempt?.current_revision, apiClient, accessToken, attemptId, pendingBatch],
+    [attempt?.current_revision, apiClient, accessToken, attemptId, pendingBatch, batchJournalLoadError],
   );
 
   const handleSaveVariationTable = useCallback(async (payload: VariationTablePayload, actionId: string) => {
-    if (pendingBatch) throw new Error("Đợt lưu hàng loạt chưa hoàn tất; hãy phục hồi trước khi sửa bài giải.");
+    if (pendingBatch || batchJournalLoadError) {
+      throw new Error("Đợt lưu hàng loạt chưa hoàn tất hoặc nhật ký trình duyệt đang lỗi; hãy phục hồi trước khi sửa bài giải.");
+    }
     if (!attempt || !["DRAFT", "IN_PROGRESS"].includes(attempt.status)) {
       throw new Error("Bài giải đã nộp nên không thể sửa bảng.");
     }
@@ -565,10 +609,12 @@ export function MathWorkspace({
       ? await apiClient.updateMathStep(accessToken, attemptId, variationTableEditor.stepId, mutation)
       : await apiClient.createMathStep(accessToken, attemptId, mutation);
     setAttempt(updated);
-  }, [attempt, variationTableEditor, apiClient, accessToken, attemptId, pendingBatch]);
+  }, [attempt, variationTableEditor, apiClient, accessToken, attemptId, pendingBatch, batchJournalLoadError]);
 
   const handleDeleteStep = useCallback(async (stepId: string) => {
-    if (pendingBatch) throw new Error("Đợt lưu hàng loạt chưa hoàn tất; hãy phục hồi trước khi xóa bước.");
+    if (pendingBatch || batchJournalLoadError) {
+      throw new Error("Đợt lưu hàng loạt chưa hoàn tất hoặc nhật ký trình duyệt đang lỗi; hãy phục hồi trước khi xóa bước.");
+    }
     if (!attempt || !["DRAFT", "IN_PROGRESS"].includes(attempt.status)) {
       throw new Error("Bài giải này không còn cho phép xóa bước.");
     }
@@ -1091,7 +1137,7 @@ export function MathWorkspace({
         />
       </header>
 
-      {/* PR3-C: Unfinished Batch Recovery Banner */}
+      {/* PR3-C: Unfinished Batch Recovery Banner & Corrupted Journal Fail-Closed Banner */}
       {pendingBatch ? (
         <div className={styles.batchRecoveryBanner} role="alert">
           <div className={styles.batchRecoveryInfo}>
@@ -1122,6 +1168,25 @@ export function MathWorkspace({
                 Hủy đợt lưu
               </button>
             ) : null}
+          </div>
+        </div>
+      ) : batchJournalLoadError ? (
+        <div className={styles.batchRecoveryBanner} role="alert">
+          <div className={styles.batchRecoveryInfo}>
+            <strong>Phát hiện dữ liệu lịch sử lưu hàng loạt bị hỏng ({batchJournalLoadError})</strong>
+            <p>
+              {recoveryMessage ?? `Lỗi đọc dữ liệu đợt lưu (${batchJournalLoadError}).`} Dữ liệu gốc trong trình duyệt và các bước giải trên máy chủ vẫn được giữ nguyên.
+            </p>
+          </div>
+          <div className={styles.batchRecoveryActions}>
+            <button
+              type="button"
+              className={styles.buttonSecondary}
+              onClick={() => void handleSyncAuthoritativeAttempt()}
+              disabled={batchResuming}
+            >
+              {batchResuming ? "Đang đối soát..." : "Đối soát máy chủ"}
+            </button>
           </div>
         </div>
       ) : null}

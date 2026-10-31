@@ -4,7 +4,7 @@ import { toConfirmedLatex } from "./ocr-correction";
 import type { OcrReviewDraft } from "./ocr-review-draft";
 import type { ApprovedStepIntent, BatchApi, BatchJournal } from "./batch-manager";
 
-export function createBatchApi(apiClient: ApiClient, accessToken: string): BatchApi {
+export function createBatchApi(apiClient: ApiClient, accessToken = ""): BatchApi {
   return {
     getAttempt: (attemptId: string): Promise<SolutionAttemptRead> =>
       apiClient.getMathAttempt(accessToken, attemptId),
