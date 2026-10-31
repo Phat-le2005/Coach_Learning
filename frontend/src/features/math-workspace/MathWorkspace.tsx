@@ -33,6 +33,9 @@ import { PageOcrReviewModal } from "./components/PageOcrReviewModal";
 import { VariationTableModal } from "./components/VariationTableModal";
 import { AIReviewWorkspace } from "./components/ai-review/AIReviewWorkspace";
 import type { AIReviewRead, AIReviewAvailabilityRead, StepKind, VariationTablePayload } from "@/lib/api/contracts";
+import { SequentialBatchManager, type BatchJournal } from "./utils/batch-manager";
+import { IndexedDbBatchJournal, BrowserBatchLock } from "./utils/batch-journal";
+import { createBatchApi } from "./utils/ocr-batch-adapter";
 import styles from "./MathWorkspace.module.css";
 
 const MathCanvasPanel = dynamic(() => import("@/features/math-canvas/MathCanvasPanel").then((module) => module.MathCanvasPanel), {
@@ -116,6 +119,11 @@ export function MathWorkspace({
   } | null>(null);
   const [ocrError, setOcrError] = useState<string | null>(null);
   const [variationTableEditor, setVariationTableEditor] = useState<{ stepId?: string; initial?: VariationTablePayload } | null>(null);
+
+  // PR3-C: Batch recovery state
+  const [pendingBatch, setPendingBatch] = useState<BatchJournal | null>(null);
+  const [batchResuming, setBatchResuming] = useState(false);
+  const [recoveryMessage, setRecoveryMessage] = useState<string | null>(null);
 
   const [aiReview, setAIReview] = useState<AIReviewRead | null>(() => {
     if (typeof window === "undefined") return null;
@@ -263,6 +271,69 @@ export function MathWorkspace({
     });
     return () => { active = false; };
   }, [attemptId]);
+
+  // PR3-C: Recover unfinished batch journal from previous tab session or reload (F5 recovery)
+  useEffect(() => {
+    let active = true;
+    if (typeof window === "undefined" || !attemptId) return;
+    const store = new IndexedDbBatchJournal();
+    store.load(attemptId).then((journal) => {
+      if (!active) return;
+      if (journal && journal.state !== "COMPLETE" && journal.state !== "ABANDONED") {
+        setPendingBatch(journal);
+      }
+    }).catch(() => {
+      // IndexedDB may be disabled or blocked
+    });
+    return () => { active = false; };
+  }, [attemptId]);
+
+  const handleResumePendingBatch = async () => {
+    if (batchResuming || !attemptId || !accessToken || !apiClient) return;
+    setBatchResuming(true);
+    setRecoveryMessage("Đang đối soát và lưu tiếp các bước giải...");
+    try {
+      const batchApi = createBatchApi(apiClient, accessToken);
+      const store = new IndexedDbBatchJournal();
+      const lock = new BrowserBatchLock();
+      const manager = new SequentialBatchManager(batchApi, store, lock);
+      const res = await manager.resume(attemptId);
+      if (res.status === "COMPLETE") {
+        setAttempt(res.attempt);
+        setPendingBatch(null);
+        setRecoveryMessage(null);
+      } else if (res.status === "PAUSED") {
+        setPendingBatch(res.journal);
+        const committed = res.journal.entries.filter((e) => e.state === "COMMITTED").length;
+        setRecoveryMessage(`Tạm dừng: ${res.journal.message} (${committed}/${res.journal.entries.length} bước đã lưu).`);
+      } else {
+        setRecoveryMessage("Không thể lấy quyền thao tác độc quyền (Web Lock). Tab khác đang thao tác.");
+      }
+    } catch (err: unknown) {
+      setRecoveryMessage(err instanceof Error ? err.message : "Lỗi khi phục hồi đợt lưu.");
+    } finally {
+      setBatchResuming(false);
+    }
+  };
+
+  const handleAbandonPendingBatch = async () => {
+    if (batchResuming || !attemptId || !accessToken || !apiClient) return;
+    if (!window.confirm("Hủy bỏ đợt lưu các bước lỗi này? Các bước đã lưu trên máy chủ vẫn được giữ nguyên.")) return;
+    setBatchResuming(true);
+    try {
+      const batchApi = createBatchApi(apiClient, accessToken);
+      const store = new IndexedDbBatchJournal();
+      const lock = new BrowserBatchLock();
+      const manager = new SequentialBatchManager(batchApi, store, lock);
+      await manager.abandonRejected(attemptId);
+      setPendingBatch(null);
+      setRecoveryMessage(null);
+    } catch (err: unknown) {
+      alert(err instanceof Error ? err.message : "Không thể hủy bỏ đợt lưu.");
+    } finally {
+      setBatchResuming(false);
+    }
+  };
 
   // 2. Perform server save
   const flushSavePage = useCallback(
@@ -1009,6 +1080,41 @@ export function MathWorkspace({
         />
       </header>
 
+      {/* PR3-C: Unfinished Batch Recovery Banner */}
+      {pendingBatch ? (
+        <div className={styles.batchRecoveryBanner} role="alert">
+          <div className={styles.batchRecoveryInfo}>
+            <strong>Phát hiện đợt lưu bước giải chưa hoàn tất</strong>
+            <p>
+              {pendingBatch.entries.filter((e) => e.state === "COMMITTED").length}/{pendingBatch.entries.length} bước đã được xác nhận trên máy chủ.
+              {pendingBatch.message ? ` (Trạng thái: ${pendingBatch.message})` : ""}
+              {recoveryMessage ? ` — ${recoveryMessage}` : ""}
+            </p>
+          </div>
+          <div className={styles.batchRecoveryActions}>
+            <button
+              type="button"
+              className={styles.buttonPrimary}
+              onClick={() => void handleResumePendingBatch()}
+              disabled={batchResuming}
+            >
+              {batchResuming ? "Đang xử lý..." : "Lưu tiếp (Resume)"}
+            </button>
+            {pendingBatch.entries.some((e) => e.state === "REJECTED") &&
+            !pendingBatch.entries.some((e) => e.state === "SENDING" || e.state === "UNKNOWN" || e.errorCode === "ACTION_KEY_REUSED" || e.errorCode === "CONTENT_MISMATCH") ? (
+              <button
+                type="button"
+                className={styles.buttonSecondary}
+                onClick={() => void handleAbandonPendingBatch()}
+                disabled={batchResuming}
+              >
+                Hủy đợt lưu
+              </button>
+            ) : null}
+          </div>
+        </div>
+      ) : null}
+
       {/* Floating or Top Toolbar */}
       <WorkspaceToolbar
         currentTool={currentTool}
@@ -1143,6 +1249,12 @@ export function MathWorkspace({
           pageStrokes={pageOcrReview.pageStrokes}
           onClose={() => setPageOcrReview(null)}
           onConfirmStep={handleConfirmStep}
+          attemptId={attemptId}
+          accessToken={accessToken}
+          apiClient={apiClient}
+          onBatchComplete={(fresh) => {
+            setAttempt(fresh);
+          }}
         />
       ) : null}
 

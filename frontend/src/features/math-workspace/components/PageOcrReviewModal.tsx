@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
-import type { InkStroke, StepKind } from '@/lib/api/contracts';
+import type { InkStroke, StepKind, SolutionAttemptRead } from '@/lib/api/contracts';
 import { STEP_KINDS } from '@/lib/api/contracts';
-import { ApiNetworkError, ApiResponseError } from '@/lib/api/client';
+import { ApiNetworkError, ApiResponseError, type ApiClient } from '@/lib/api/client';
 import { generateUuid } from '../utils/ink-math';
 import { mergePageOcrRegions, splitPageOcrRegion } from '../utils/page-ocr';
 import type { PageOcrRegion } from '../utils/page-ocr';
@@ -12,15 +12,24 @@ import {
   createOcrReviewDraft, applyOcrToDraft, editOcrReviewDraft,
   selectOcrDraftKind, approveOcrDraft, skipOcrDraft,
   mergeOcrReviewDrafts, splitOcrReviewDraft, reorderOcrReviewDrafts,
+  canApproveOcrDraft,
   type OcrReviewDraft,
 } from '../utils/ocr-review-draft';
 import { toConfirmedLatex, insertCorrectionKey, CORRECTION_KEYS } from '../utils/ocr-correction';
 import { renderOcrLatexHtml } from '../utils/ocr-math-preview';
 import { OcrInkPreview } from './OcrInkPreview';
 import { OcrMathPreview } from './OcrMathPreview';
+import { SequentialBatchManager, type BatchJournal } from '../utils/batch-manager';
+import { IndexedDbBatchJournal, BrowserBatchLock } from '../utils/batch-journal';
+import {
+  createBatchApi,
+  buildApprovedIntents,
+  canStartBatchReview,
+  syncRowsFromJournal,
+} from '../utils/ocr-batch-adapter';
 import styles from '../MathWorkspace.module.css';
 
-type ReviewStatus = 'pending' | 'recognizing' | 'ready' | 'manual' | 'saved' | 'skipped';
+type ReviewStatus = 'pending' | 'recognizing' | 'ready' | 'manual' | 'approved' | 'saved' | 'skipped';
 
 interface ReviewRow {
   region: PageOcrRegion;
@@ -30,6 +39,7 @@ interface ReviewRow {
   actionId: string;
   error: string | null;
   retryOnly: boolean;
+  serverStepId?: string | null;
 }
 
 interface PageOcrReviewModalProps {
@@ -38,6 +48,10 @@ interface PageOcrReviewModalProps {
   pageStrokes: InkStroke[];
   onClose: () => void;
   onConfirmStep: (stepType: StepKind, latex: string | null, explanation: string, actionId: string) => Promise<void>;
+  attemptId?: string;
+  accessToken?: string;
+  apiClient?: ApiClient;
+  onBatchComplete?: (freshAttempt: SolutionAttemptRead) => void;
 }
 
 const STEP_LABELS: Record<StepKind, string> = {
@@ -64,11 +78,24 @@ function newRow(region: PageOcrRegion, pageIndex: number): ReviewRow {
   };
 }
 
-export function PageOcrReviewModal({ pageIndex, regions, pageStrokes, onClose, onConfirmStep }: PageOcrReviewModalProps) {
+export function PageOcrReviewModal({
+  pageIndex,
+  regions,
+  pageStrokes,
+  onClose,
+  onConfirmStep,
+  attemptId,
+  accessToken,
+  apiClient,
+  onBatchComplete,
+}: PageOcrReviewModalProps) {
   const [rows, setRows] = useState<ReviewRow[]>(() => regions.map((region) => newRow(region, pageIndex)));
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [processing, setProcessing] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [batchSaving, setBatchSaving] = useState(false);
+  const [batchProgress, setBatchProgress] = useState<{ current: number; total: number; message: string } | null>(null);
+  const [pausedJournal, setPausedJournal] = useState<BatchJournal | null>(null);
   const [cutPercent, setCutPercent] = useState(50);
   const [reviewError, setReviewError] = useState<string | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -76,6 +103,7 @@ export function PageOcrReviewModal({ pageIndex, regions, pageStrokes, onClose, o
   const activeRunRef = useRef<{ cancelled: boolean } | null>(null);
   const row = rows[selectedIndex];
   const savedCount = rows.filter((item) => item.status === 'saved').length;
+  const approvedCount = rows.filter((item) => item.status === 'approved').length;
   const earlierUnreviewed = rows.slice(0, selectedIndex).some((item) => item.status !== 'saved' && item.status !== 'skipped');
 
   useEffect(() => {
@@ -289,6 +317,139 @@ export function PageOcrReviewModal({ pageIndex, regions, pageStrokes, onClose, o
     }
   };
 
+  const approveCurrentDraft = () => {
+    if (!row || row.status === 'saved' || row.status === 'skipped') return;
+    if (!canApproveOcrDraft(row.draft)) {
+      setReviewError('Chưa xác định được loại bước hoặc công thức đang để trống. Hãy chọn loại bước trước khi duyệt.');
+      return;
+    }
+    const approved = approveOcrDraft(row.draft);
+    changeRow({ draft: approved, status: 'approved', error: null });
+    const next = rows.findIndex((item, index) => index > selectedIndex && item.status !== 'saved' && item.status !== 'skipped' && item.status !== 'approved');
+    if (next >= 0) setSelectedIndex(next);
+  };
+
+  const unapproveCurrentDraft = () => {
+    if (!row || row.status !== 'approved') return;
+    changeRow({
+      draft: { ...row.draft, reviewStatus: 'NEEDS_REVIEW' },
+      status: 'manual',
+      error: null,
+    });
+  };
+
+  const saveBatchSteps = async () => {
+    if (batchSaving || saving) return;
+    const check = canStartBatchReview(rows);
+    if (!check.canStart) {
+      setReviewError(check.reason ?? 'Chưa thể lưu đợt bước giải.');
+      return;
+    }
+    if (!attemptId || !accessToken || !apiClient) {
+      setReviewError('Thiếu thông tin phiên làm bài để lưu hàng loạt.');
+      return;
+    }
+    const intents = buildApprovedIntents(rows);
+    if (intents.length === 0) {
+      setReviewError('Chưa có bước nào được duyệt để lưu.');
+      return;
+    }
+
+    setBatchSaving(true);
+    setReviewError(null);
+    setBatchProgress({
+      current: 0,
+      total: intents.length,
+      message: `Đang khởi tạo đợt lưu ${intents.length} bước...`,
+    });
+
+    try {
+      const batchApi = createBatchApi(apiClient, accessToken);
+      const store = new IndexedDbBatchJournal();
+      const lock = new BrowserBatchLock();
+      const manager = new SequentialBatchManager(batchApi, store, lock);
+      const batchId = generateUuid();
+
+      const result = await manager.start(attemptId, batchId, intents);
+
+      if (result.status === 'COMPLETE') {
+        setRows((current) => syncRowsFromJournal(current, result.journal));
+        setBatchProgress({
+          current: intents.length,
+          total: intents.length,
+          message: `Đã lưu thành công tất cả ${intents.length} bước lên máy chủ!`,
+        });
+        setPausedJournal(null);
+        onBatchComplete?.(result.attempt);
+      } else if (result.status === 'PAUSED') {
+        setRows((current) => syncRowsFromJournal(current, result.journal));
+        setPausedJournal(result.journal);
+        const committedCount = result.journal.entries.filter((e) => e.state === 'COMMITTED').length;
+        setBatchProgress({
+          current: committedCount,
+          total: intents.length,
+          message: `Đã lưu ${committedCount}/${intents.length} bước. Đợt lưu tạm dừng: ${result.journal.message}`,
+        });
+        setReviewError(
+          `Đợt lưu tạm dừng (${committedCount}/${intents.length} bước đã lưu). ${result.journal.message}. Các bước đã lưu được giữ nguyên trên máy chủ. Em có thể bấm "Lưu tiếp đợt này" để tiếp tục.`
+        );
+      } else {
+        setReviewError('Không thể lấy quyền thao tác độc quyền (Web Lock). Tab khác đang lưu bài giải.');
+      }
+    } catch (err: unknown) {
+      setReviewError(err instanceof Error ? err.message : 'Không lưu được đợt bước giải.');
+    } finally {
+      setBatchSaving(false);
+    }
+  };
+
+  const resumeBatchSteps = async () => {
+    if (batchSaving || saving || !attemptId || !accessToken || !apiClient) return;
+    setBatchSaving(true);
+    setReviewError(null);
+    setBatchProgress({
+      current: 0,
+      total: rows.length,
+      message: 'Đang đối soát và lưu tiếp các bước...',
+    });
+    try {
+      const batchApi = createBatchApi(apiClient, accessToken);
+      const store = new IndexedDbBatchJournal();
+      const lock = new BrowserBatchLock();
+      const manager = new SequentialBatchManager(batchApi, store, lock);
+
+      const result = await manager.resume(attemptId);
+      if (result.status === 'COMPLETE') {
+        setRows((current) => syncRowsFromJournal(current, result.journal));
+        const total = result.journal.entries.length;
+        setBatchProgress({
+          current: total,
+          total,
+          message: `Đã lưu thành công tất cả ${total} bước!`,
+        });
+        setPausedJournal(null);
+        onBatchComplete?.(result.attempt);
+      } else if (result.status === 'PAUSED') {
+        setRows((current) => syncRowsFromJournal(current, result.journal));
+        setPausedJournal(result.journal);
+        const total = result.journal.entries.length;
+        const committed = result.journal.entries.filter((e) => e.state === 'COMMITTED').length;
+        setBatchProgress({
+          current: committed,
+          total,
+          message: `Đã lưu ${committed}/${total} bước. Tạm dừng: ${result.journal.message}`,
+        });
+        setReviewError(`Đợt lưu tạm dừng: ${result.journal.message}. Em có thể bấm "Lưu tiếp đợt này" để thử lại.`);
+      } else {
+        setReviewError('Không thể lấy khóa thao tác độc quyền. Tab khác đang thao tác.');
+      }
+    } catch (err: unknown) {
+      setReviewError(err instanceof Error ? err.message : 'Lỗi khi lưu tiếp đợt.');
+    } finally {
+      setBatchSaving(false);
+    }
+  };
+
   const closeReview = () => {
     if (saving) return;
     if (rows.some((item) => (item.touched || item.retryOnly) && item.status !== 'saved' && item.status !== 'skipped')
@@ -333,26 +494,38 @@ export function PageOcrReviewModal({ pageIndex, regions, pageStrokes, onClose, o
           OCR chỉ là gợi ý cho công thức viết tay, không tự chấm bài. Với bảng biến thiên, hãy dùng nút “Bảng biến thiên” trên thanh công cụ để điền vào ô và vẽ mũi tên tự động.
         </div>
         <div className={styles.pageReviewProgress} role='status' aria-live='polite'>
-          <span>{savedCount}/{rows.length} vùng đã lưu thành bước giải</span>
+          <span>{savedCount}/{rows.length} vùng đã lưu · {approvedCount} bước đã duyệt</span>
           {processing ? (
             <button type='button' className={styles.buttonSecondary} onClick={stopRecognition}>
               Đang nhận diện {rows.filter((item) => item.status !== 'pending').length}/{rows.length} · Dừng
             </button>
           ) : null}
         </div>
+        {batchProgress ? (
+          <div className={styles.pageReviewBatchProgress} role='status'>
+            {batchProgress.message}
+          </div>
+        ) : null}
         <div className={styles.pageReviewContent}>
           <nav className={styles.pageReviewList} aria-label='Các vùng nét viết trên trang'>
             {rows.map((item, index) => (
               <button
                 type='button'
                 key={item.draft.localId}
-                className={index === selectedIndex ? styles.pageReviewRowActive : styles.pageReviewRow}
+                className={
+                  index === selectedIndex
+                    ? styles.pageReviewRowActive
+                    : item.status === 'approved'
+                      ? styles.pageReviewRowApproved
+                      : styles.pageReviewRow
+                }
                 onClick={() => { setSelectedIndex(index); setReviewError(null); setCutPercent(50); }}
                 aria-current={index === selectedIndex ? 'step' : undefined}
-                disabled={saving}
+                disabled={saving || batchSaving}
               >
                 <strong>Vùng {index + 1}</strong>
                 <span>{item.status === 'saved' ? 'Đã lưu' : item.status === 'skipped' ? 'Đã bỏ qua'
+                  : item.status === 'approved' ? 'Đã duyệt'
                   : item.status === 'recognizing' ? 'Đang nhận diện' : item.status === 'pending' ? 'Chờ nhận diện'
                     : item.status === 'manual' ? 'Cần tự kiểm tra' : 'Chờ xác nhận'}</span>
                 <small>{item.region.strokes.length} nét viết</small>
@@ -380,13 +553,20 @@ export function PageOcrReviewModal({ pageIndex, regions, pageStrokes, onClose, o
               {earlierUnreviewed ? <p className={styles.pageReviewWarning}>Duyệt các vùng phía trên trước để lưu đúng thứ tự bài giải.</p> : null}
               {reviewError ? <p className={styles.ocrErrorBanner} role='alert'>{reviewError}</p> : null}
               <div className={styles.pageReviewActions}>
+                {row.status === 'approved' ? (
+                  <button type='button' className={styles.buttonSecondary} onClick={unapproveCurrentDraft}
+                    disabled={saving || batchSaving}>Hủy duyệt bước này</button>
+                ) : row.status !== 'saved' && row.status !== 'skipped' ? (
+                  <button type='button' className={styles.buttonSecondary} onClick={approveCurrentDraft}
+                    disabled={saving || batchSaving}>Duyệt bước này (Approve)</button>
+                ) : null}
                 <button type='button' className={styles.buttonSecondary} onClick={() => void retryRecognition()}
-                  disabled={processing || saving || row.status === 'saved' || row.retryOnly}>Nhận diện lại vùng</button>
+                  disabled={processing || saving || batchSaving || row.status === 'saved' || row.retryOnly}>Nhận diện lại vùng</button>
                 <button type='button' className={styles.buttonSecondary} onClick={mergeNext}
-                  disabled={processing || saving || row.status === 'saved' || row.retryOnly || selectedIndex >= rows.length - 1
+                  disabled={processing || saving || batchSaving || row.status === 'saved' || row.retryOnly || selectedIndex >= rows.length - 1
                     || rows[selectedIndex + 1].status === 'saved' || rows[selectedIndex + 1].retryOnly}>Gộp vùng nét</button>
                 <button type='button' className={styles.buttonSecondary} onClick={mergeNextLogicalStep}
-                  disabled={processing || saving || row.retryOnly || ['saved', 'skipped', 'pending', 'recognizing'].includes(row.status)
+                  disabled={processing || saving || batchSaving || row.retryOnly || ['saved', 'skipped', 'pending', 'recognizing'].includes(row.status)
                     || selectedIndex >= rows.length - 1 || rows[selectedIndex + 1].retryOnly
                     || ['saved', 'skipped', 'pending', 'recognizing'].includes(rows[selectedIndex + 1].status)}>
                   Gộp hai bước logic
@@ -394,17 +574,17 @@ export function PageOcrReviewModal({ pageIndex, regions, pageStrokes, onClose, o
               </div>
               <div className={styles.pageReviewActions}>
                 <button type='button' className={styles.buttonSecondary} onClick={splitLogicalStep}
-                  disabled={processing || saving || row.retryOnly || ['saved', 'skipped', 'pending', 'recognizing'].includes(row.status)}>
+                  disabled={processing || saving || batchSaving || row.retryOnly || ['saved', 'skipped', 'pending', 'recognizing'].includes(row.status)}>
                   Tách thành hai bước tại con trỏ
                 </button>
                 <button type='button' className={styles.buttonSecondary} onClick={() => moveLogicalStep(-1)}
-                  disabled={processing || saving || selectedIndex === 0 || row.retryOnly
+                  disabled={processing || saving || batchSaving || selectedIndex === 0 || row.retryOnly
                     || ['saved', 'skipped', 'pending', 'recognizing'].includes(row.status)
                     || ['saved', 'skipped', 'pending', 'recognizing'].includes(rows[selectedIndex - 1]?.status)}>
                   Đưa lên
                 </button>
                 <button type='button' className={styles.buttonSecondary} onClick={() => moveLogicalStep(1)}
-                  disabled={processing || saving || selectedIndex >= rows.length - 1 || row.retryOnly
+                  disabled={processing || saving || batchSaving || selectedIndex >= rows.length - 1 || row.retryOnly
                     || ['saved', 'skipped', 'pending', 'recognizing'].includes(row.status)
                     || ['saved', 'skipped', 'pending', 'recognizing'].includes(rows[selectedIndex + 1]?.status)}>
                   Đưa xuống
@@ -474,13 +654,26 @@ export function PageOcrReviewModal({ pageIndex, regions, pageStrokes, onClose, o
                       ? { ...row.draft, reviewStatus: 'NEEDS_REVIEW' }
                       : skipOcrDraft(row.draft),
                   })}
-                  disabled={saving || processing || row.status === 'saved' || row.retryOnly}>
+                  disabled={saving || batchSaving || processing || row.status === 'saved' || row.retryOnly}>
                   {row.status === 'skipped' ? 'Xem lại vùng' : 'Bỏ qua vùng'}
                 </button>
-                <button type='button' className={styles.buttonPrimary} onClick={() => void saveStep()}
-                  disabled={saving || earlierUnreviewed || row.status === 'saved' || row.status === 'skipped'}>
-                  {saving ? 'Đang lưu...' : row.status === 'saved' ? 'Đã lưu' : row.retryOnly ? 'Lưu lại' : 'Xác nhận bước này'}
-                </button>
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  <button type='button' className={styles.buttonSecondary} onClick={() => void saveStep()}
+                    disabled={saving || batchSaving || earlierUnreviewed || row.status === 'saved' || row.status === 'skipped'}>
+                    {saving ? 'Đang lưu...' : row.status === 'saved' ? 'Đã lưu' : row.retryOnly ? 'Lưu lại' : 'Lưu ngay bước này'}
+                  </button>
+                  {pausedJournal ? (
+                    <button type='button' className={styles.buttonPrimary} onClick={() => void resumeBatchSteps()}
+                      disabled={saving || batchSaving}>
+                      {batchSaving ? 'Đang xử lý...' : 'Lưu tiếp đợt này (Resume)'}
+                    </button>
+                  ) : (
+                    <button type='button' className={styles.buttonPrimary} onClick={() => void saveBatchSteps()}
+                      disabled={saving || batchSaving || approvedCount === 0}>
+                      {batchSaving ? 'Đang lưu đợt...' : `Lưu tất cả bước đã duyệt (${approvedCount})`}
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           ) : null}
