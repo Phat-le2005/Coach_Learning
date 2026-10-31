@@ -8,6 +8,12 @@ import { generateUuid } from '../utils/ink-math';
 import { mergePageOcrRegions, splitPageOcrRegion } from '../utils/page-ocr';
 import type { PageOcrRegion } from '../utils/page-ocr';
 import { recognizeHandwrittenMath } from '../utils/handwritten-ocr';
+import {
+  createOcrReviewDraft, applyOcrToDraft, editOcrReviewDraft,
+  selectOcrDraftKind, approveOcrDraft, skipOcrDraft,
+  mergeOcrReviewDrafts, splitOcrReviewDraft, reorderOcrReviewDrafts,
+  type OcrReviewDraft,
+} from '../utils/ocr-review-draft';
 import { toConfirmedLatex, insertCorrectionKey, CORRECTION_KEYS } from '../utils/ocr-correction';
 import { renderOcrLatexHtml } from '../utils/ocr-math-preview';
 import { OcrInkPreview } from './OcrInkPreview';
@@ -19,9 +25,7 @@ type ReviewStatus = 'pending' | 'recognizing' | 'ready' | 'manual' | 'saved' | '
 interface ReviewRow {
   region: PageOcrRegion;
   status: ReviewStatus;
-  latex: string;
-  explanation: string;
-  stepType: StepKind;
+  draft: OcrReviewDraft;
   touched: boolean;
   actionId: string;
   error: string | null;
@@ -47,13 +51,21 @@ const STEP_LABELS: Record<StepKind, string> = {
   CUSTOM: 'Bước tự do',
 };
 
-function newRow(region: PageOcrRegion): ReviewRow {
-  return { region, status: 'pending', latex: '', explanation: '', stepType: 'EXPLANATION',
-    touched: false, actionId: generateUuid(), error: null, retryOnly: false };
+function newRow(region: PageOcrRegion, pageIndex: number): ReviewRow {
+  return {
+    region, status: 'pending',
+    draft: createOcrReviewDraft({
+      localId: generateUuid(),
+      pageIndex,
+      regionIds: [region.id],
+      strokeIds: region.strokes.map((stroke) => stroke.id),
+    }),
+    touched: false, actionId: generateUuid(), error: null, retryOnly: false,
+  };
 }
 
 export function PageOcrReviewModal({ pageIndex, regions, pageStrokes, onClose, onConfirmStep }: PageOcrReviewModalProps) {
-  const [rows, setRows] = useState<ReviewRow[]>(() => regions.map(newRow));
+  const [rows, setRows] = useState<ReviewRow[]>(() => regions.map((region) => newRow(region, pageIndex)));
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [processing, setProcessing] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -86,7 +98,7 @@ export function PageOcrReviewModal({ pageIndex, regions, pageStrokes, onClose, o
           setRows((current) => current.map((candidate) => candidate.region.id === item.id
             ? candidate.touched
               ? { ...candidate, status: 'manual' }
-              : { ...candidate, status: 'ready', latex: result.latex, stepType: result.suggested_step_type }
+              : { ...candidate, status: 'ready', draft: applyOcrToDraft(candidate.draft, result.latex) }
             : candidate));
         } catch (error: unknown) {
           if (run.cancelled) break;
@@ -130,7 +142,7 @@ export function PageOcrReviewModal({ pageIndex, regions, pageStrokes, onClose, o
       setRows((current) => current.map((item) => item.region.id === id && item.status === 'recognizing'
         ? item.touched
           ? { ...item, status: 'manual' }
-          : { ...item, status: 'ready', latex: result.latex, stepType: result.suggested_step_type }
+          : { ...item, status: 'ready', draft: applyOcrToDraft(item.draft, result.latex) }
         : item));
     } catch (error: unknown) {
       setRows((current) => current.map((item) => item.region.id === id
@@ -145,7 +157,7 @@ export function PageOcrReviewModal({ pageIndex, regions, pageStrokes, onClose, o
       || selectedIndex >= rows.length - 1 || rows[selectedIndex + 1].status === 'saved'
       || rows[selectedIndex + 1].retryOnly) return;
     const merged = mergePageOcrRegions(rows.map((item) => item.region), selectedIndex, pageStrokes)[selectedIndex];
-    setRows((current) => [...current.slice(0, selectedIndex), newRow(merged), ...current.slice(selectedIndex + 2)]);
+    setRows((current) => [...current.slice(0, selectedIndex), newRow(merged, pageIndex), ...current.slice(selectedIndex + 2)]);
     setReviewError('Đã gộp hai vùng. Bấm Nhận diện lại hoặc nhập công thức cho vùng mới.');
   };
 
@@ -157,17 +169,76 @@ export function PageOcrReviewModal({ pageIndex, regions, pageStrokes, onClose, o
       setReviewError('Vị trí này chưa tách được nét viết. Hãy kéo vạch chia sang chỗ khác.');
       return;
     }
-    setRows((current) => [...current.slice(0, selectedIndex), newRow(divided[selectedIndex]),
-      newRow(divided[selectedIndex + 1]), ...current.slice(selectedIndex + 1)]);
+    setRows((current) => [...current.slice(0, selectedIndex), newRow(divided[selectedIndex], pageIndex),
+      newRow(divided[selectedIndex + 1], pageIndex), ...current.slice(selectedIndex + 1)]);
     setReviewError('Đã tách vùng. Em có thể nhận diện lại từng vùng.');
+  };
+
+  // Logical step composition is separate from geometric segmentation.
+  // Combining drafts never silently creates a valid mathematical step.
+  const mergeNextLogicalStep = () => {
+    const next = rows[selectedIndex + 1];
+    if (!row || !next || processing || saving || row.retryOnly || next.retryOnly
+      || ['saved', 'skipped', 'pending', 'recognizing'].includes(row.status)
+      || ['saved', 'skipped', 'pending', 'recognizing'].includes(next.status)) return;
+    const mergedRegion = mergePageOcrRegions(rows.map((item) => item.region), selectedIndex, pageStrokes)[selectedIndex];
+    const mergedDraft = mergeOcrReviewDrafts(row.draft, next.draft, generateUuid());
+    setRows((current) => [
+      ...current.slice(0, selectedIndex),
+      { ...newRow(mergedRegion, pageIndex), draft: mergedDraft, status: 'manual', touched: true },
+      ...current.slice(selectedIndex + 2),
+    ]);
+    setReviewError('Đã ghép hai bước tạm thời. Nội dung chưa được xác nhận: hãy sửa LaTeX và chọn lại loại bước trước khi lưu.');
+  };
+
+  // Split at an explicit student-selected cursor position, never by guessing a math boundary.
+  const splitLogicalStep = () => {
+    if (!row || processing || saving || row.retryOnly || ['saved', 'skipped', 'pending', 'recognizing'].includes(row.status)) return;
+    if (row.draft.explanationText.trim()) {
+      setReviewError('Bước đang có lời giải thích. Hãy xử lý phần giải thích trước khi tách thành hai bước.');
+      return;
+    }
+    const text = row.draft.contentLatex;
+    const cut = textareaRef.current?.selectionStart ?? -1;
+    if (cut <= 0 || cut >= text.length || !text.slice(0, cut).trim() || !text.slice(cut).trim()) {
+      setReviewError('Hãy đặt con trỏ trong ô LaTeX tại ranh giới của hai bước rồi chọn Tách bước.');
+      return;
+    }
+    const [first, second] = splitOcrReviewDraft(
+      row.draft,
+      { localId: generateUuid(), contentLatex: text.slice(0, cut).trim() },
+      { localId: generateUuid(), contentLatex: text.slice(cut).trim() },
+    );
+    const firstRegion = { ...row.region, id: first.localId };
+    const secondRegion = { ...row.region, id: second.localId };
+    setRows((current) => [
+      ...current.slice(0, selectedIndex),
+      { ...newRow(firstRegion, pageIndex), draft: first, status: 'manual', touched: true },
+      { ...newRow(secondRegion, pageIndex), draft: second, status: 'manual', touched: true },
+      ...current.slice(selectedIndex + 1),
+    ]);
+    setReviewError('Hai bước tạm thời cùng tham chiếu nét gốc. Hãy kiểm tra LaTeX và loại của từng bước trước khi lưu.');
+  };
+
+  const moveLogicalStep = (offset: -1 | 1) => {
+    const target = selectedIndex + offset;
+    if (!row || processing || saving || target < 0 || target >= rows.length
+      || ['saved', 'skipped', 'pending', 'recognizing'].includes(row.status)
+      || ['saved', 'skipped', 'pending', 'recognizing'].includes(rows[target].status)
+      || row.retryOnly || rows[target].retryOnly) return;
+    const orderedDrafts = reorderOcrReviewDrafts(rows.map((item) => item.draft), selectedIndex, target);
+    const byId = new Map(rows.map((item) => [item.draft.localId, item] as const));
+    setRows(orderedDrafts.map((draft) => byId.get(draft.localId)!));
+    setSelectedIndex(target);
+    setReviewError(null);
   };
 
   const insertKey = (template: string) => {
     if (!row || row.retryOnly) return;
     const field = textareaRef.current;
-    const result = insertCorrectionKey(row.latex, field?.selectionStart ?? row.latex.length,
-      field?.selectionEnd ?? row.latex.length, template);
-    changeRow({ latex: result.value, touched: true });
+    const result = insertCorrectionKey(row.draft.contentLatex, field?.selectionStart ?? row.draft.contentLatex.length,
+      field?.selectionEnd ?? row.draft.contentLatex.length, template);
+    changeRow({ draft: editOcrReviewDraft(row.draft, { contentLatex: result.value }), touched: true });
     window.requestAnimationFrame(() => {
       field?.focus();
       field?.setSelectionRange(result.selectionStart, result.selectionEnd);
@@ -181,17 +252,25 @@ export function PageOcrReviewModal({ pageIndex, regions, pageStrokes, onClose, o
       return;
     }
     const regionId = row.region.id;
-    const latex = row.latex.trim() ? toConfirmedLatex(row.latex) : null;
-    if ((row.latex.trim() && (!latex || !renderOcrLatexHtml(latex))) || (!latex && !row.explanation.trim())) {
+    const selectedKind = row.draft.selectedStepKind;
+    if (!selectedKind) {
+      setReviewError('Chưa xác định được loại bước. Hãy chọn loại bước trước khi lưu.');
+      return;
+    }
+    const latex = row.draft.contentLatex.trim() ? toConfirmedLatex(row.draft.contentLatex) : null;
+    if ((row.draft.contentLatex.trim() && (!latex || !renderOcrLatexHtml(latex))) || (!latex && !row.draft.explanationText.trim())) {
       setReviewError('Hãy sửa công thức hợp lệ hoặc nhập lời giải thích trước khi lưu.');
       return;
     }
+    // Approve the exact draft being submitted before any async mutation.
+    // Never perform a potentially throwing validation inside setState after a server commit.
+    const approvedDraft = approveOcrDraft(row.draft);
     setSaving(true);
     setReviewError(null);
     try {
-      await onConfirmStep(row.stepType, latex, row.explanation.trim(), row.actionId);
+      await onConfirmStep(selectedKind, latex, approvedDraft.explanationText.trim(), row.actionId);
       setRows((current) => current.map((item) => item.region.id === regionId
-        ? { ...item, status: 'saved', error: null, retryOnly: false } : item));
+        ? { ...item, draft: approvedDraft, status: 'saved', error: null, retryOnly: false } : item));
       const next = rows.findIndex((item, index) => index > selectedIndex && item.status !== 'saved' && item.status !== 'skipped');
       if (next >= 0) setSelectedIndex(next);
     } catch (error: unknown) {
@@ -266,7 +345,7 @@ export function PageOcrReviewModal({ pageIndex, regions, pageStrokes, onClose, o
             {rows.map((item, index) => (
               <button
                 type='button'
-                key={item.region.id}
+                key={item.draft.localId}
                 className={index === selectedIndex ? styles.pageReviewRowActive : styles.pageReviewRow}
                 onClick={() => { setSelectedIndex(index); setReviewError(null); setCutPercent(50); }}
                 aria-current={index === selectedIndex ? 'step' : undefined}
@@ -291,9 +370,9 @@ export function PageOcrReviewModal({ pageIndex, regions, pageStrokes, onClose, o
                 <div className={styles.ocrResultPreview}>
                   <span className={styles.formLabel}>Công thức sẽ lưu</span>
                   <div className={styles.mathPreviewBox}>
-                    {row.stepType === 'VARIATION_TABLE' && row.explanation.trim()
-                      ? <pre className={styles.variationTableStep}>{row.explanation}</pre>
-                      : <OcrMathPreview latex={row.latex.trim() ? toConfirmedLatex(row.latex) ?? '' : ''} />}
+                    {row.draft.selectedStepKind === 'VARIATION_TABLE' && row.draft.explanationText.trim()
+                      ? <pre className={styles.variationTableStep}>{row.draft.explanationText}</pre>
+                      : <OcrMathPreview latex={row.draft.contentLatex.trim() ? toConfirmedLatex(row.draft.contentLatex) ?? '' : ''} />}
                   </div>
                 </div>
               </div>
@@ -305,7 +384,31 @@ export function PageOcrReviewModal({ pageIndex, regions, pageStrokes, onClose, o
                   disabled={processing || saving || row.status === 'saved' || row.retryOnly}>Nhận diện lại vùng</button>
                 <button type='button' className={styles.buttonSecondary} onClick={mergeNext}
                   disabled={processing || saving || row.status === 'saved' || row.retryOnly || selectedIndex >= rows.length - 1
-                    || rows[selectedIndex + 1].status === 'saved' || rows[selectedIndex + 1].retryOnly}>Gộp với vùng sau</button>
+                    || rows[selectedIndex + 1].status === 'saved' || rows[selectedIndex + 1].retryOnly}>Gộp vùng nét</button>
+                <button type='button' className={styles.buttonSecondary} onClick={mergeNextLogicalStep}
+                  disabled={processing || saving || row.retryOnly || ['saved', 'skipped', 'pending', 'recognizing'].includes(row.status)
+                    || selectedIndex >= rows.length - 1 || rows[selectedIndex + 1].retryOnly
+                    || ['saved', 'skipped', 'pending', 'recognizing'].includes(rows[selectedIndex + 1].status)}>
+                  Gộp hai bước logic
+                </button>
+              </div>
+              <div className={styles.pageReviewActions}>
+                <button type='button' className={styles.buttonSecondary} onClick={splitLogicalStep}
+                  disabled={processing || saving || row.retryOnly || ['saved', 'skipped', 'pending', 'recognizing'].includes(row.status)}>
+                  Tách thành hai bước tại con trỏ
+                </button>
+                <button type='button' className={styles.buttonSecondary} onClick={() => moveLogicalStep(-1)}
+                  disabled={processing || saving || selectedIndex === 0 || row.retryOnly
+                    || ['saved', 'skipped', 'pending', 'recognizing'].includes(row.status)
+                    || ['saved', 'skipped', 'pending', 'recognizing'].includes(rows[selectedIndex - 1]?.status)}>
+                  Đưa lên
+                </button>
+                <button type='button' className={styles.buttonSecondary} onClick={() => moveLogicalStep(1)}
+                  disabled={processing || saving || selectedIndex >= rows.length - 1 || row.retryOnly
+                    || ['saved', 'skipped', 'pending', 'recognizing'].includes(row.status)
+                    || ['saved', 'skipped', 'pending', 'recognizing'].includes(rows[selectedIndex + 1]?.status)}>
+                  Đưa xuống
+                </button>
               </div>
               <div className={styles.pageReviewSplit}>
                 <label htmlFor='page-ocr-cut'>Vạch tách vùng: {cutPercent}% chiều cao vùng</label>
@@ -317,8 +420,11 @@ export function PageOcrReviewModal({ pageIndex, regions, pageStrokes, onClose, o
               </div>
               <label className={styles.formGroup}>
                 <span className={styles.formLabel}>Sửa công thức của em</span>
-                <textarea ref={textareaRef} className={styles.formInput} rows={3} value={row.latex}
-                  onChange={(event) => changeRow({ latex: event.target.value, touched: true })}
+                <textarea ref={textareaRef} className={styles.formInput} rows={3} value={row.draft.contentLatex}
+                  onChange={(event) => changeRow({
+                    draft: editOcrReviewDraft(row.draft, { contentLatex: event.target.value }),
+                    touched: true,
+                  })}
                   placeholder='Ví dụ: y = x^2 + 2'
                   disabled={saving || row.status === 'saved' || row.retryOnly} />
               </label>
@@ -331,22 +437,43 @@ export function PageOcrReviewModal({ pageIndex, regions, pageStrokes, onClose, o
               </div>
               <label className={styles.formGroup}>
                 <span className={styles.formLabel}>Loại bước giải</span>
-                <select className={styles.formSelect} value={row.stepType}
-                  onChange={(event) => changeRow({ stepType: event.target.value as StepKind, touched: true })}
+                <select className={styles.formSelect} value={row.draft.selectedStepKind ?? ''}
+                  onChange={(event) => changeRow({
+                    draft: selectOcrDraftKind(row.draft, event.target.value as StepKind),
+                    touched: true,
+                  })}
                   disabled={saving || row.status === 'saved' || row.retryOnly}>
+                  <option value='' disabled>Chưa xác định — vui lòng chọn</option>
                   {STEP_KINDS.map((kind) => <option key={kind} value={kind}>{STEP_LABELS[kind]}</option>)}
                 </select>
               </label>
+              {row.draft.stepKindSource === 'UNRESOLVED' ? (
+                <p className={styles.pageReviewWarning} role='status'>
+                  Bộ phân loại chưa đủ căn cứ xác định loại bước. Em hãy chọn thủ công trước khi xác nhận.
+                </p>
+              ) : row.draft.stepKindSource === 'SUGGESTED' ? (
+                <p className={styles.pageReviewWarning}>
+                  Loại bước đang là gợi ý tự động; em có thể chọn lại nếu cần.
+                </p>
+              ) : null}
               <label className={styles.formGroup}>
                 <span className={styles.formLabel}>Lời giải thích (có thể dùng thay công thức)</span>
-                <textarea className={styles.formInput} rows={2} value={row.explanation}
-                  onChange={(event) => changeRow({ explanation: event.target.value, touched: true })}
+                <textarea className={styles.formInput} rows={2} value={row.draft.explanationText}
+                  onChange={(event) => changeRow({
+                    draft: editOcrReviewDraft(row.draft, { explanationText: event.target.value }),
+                    touched: true,
+                  })}
                   placeholder='Ví dụ: Hàm số đồng biến trên khoảng...'
                   disabled={saving || row.status === 'saved' || row.retryOnly} />
               </label>
               <div className={styles.pageReviewFooter}>
                 <button type='button' className={styles.buttonSecondary}
-                  onClick={() => changeRow({ status: row.status === 'skipped' ? 'manual' : 'skipped' })}
+                  onClick={() => changeRow({
+                    status: row.status === 'skipped' ? 'manual' : 'skipped',
+                    draft: row.status === 'skipped'
+                      ? { ...row.draft, reviewStatus: 'NEEDS_REVIEW' }
+                      : skipOcrDraft(row.draft),
+                  })}
                   disabled={saving || processing || row.status === 'saved' || row.retryOnly}>
                   {row.status === 'skipped' ? 'Xem lại vùng' : 'Bỏ qua vùng'}
                 </button>
