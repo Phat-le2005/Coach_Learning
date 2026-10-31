@@ -76,9 +76,16 @@ export function isValidBatchJournal(value: unknown): value is BatchJournal {
       }
     }
 
-    // Error and errorCode field validation (backward compatible with undefined/null)
+    // Error, errorCode and httpStatus field validation (backward compatible with undefined/null)
     if (entry.error !== null && typeof entry.error !== "string") return false;
     if (entry.errorCode !== undefined && entry.errorCode !== null && typeof entry.errorCode !== "string") return false;
+    if (
+      entry.httpStatus !== undefined &&
+      entry.httpStatus !== null &&
+      (!Number.isSafeInteger(entry.httpStatus) || (entry.httpStatus as number) < 100 || (entry.httpStatus as number) > 599)
+    ) {
+      return false;
+    }
 
     // Invariant: entry state vs frozen, beforeStepIds, serverStepId, serverRevision
     switch (entry.state) {

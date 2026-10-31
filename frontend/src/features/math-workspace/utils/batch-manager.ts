@@ -34,6 +34,7 @@ export interface BatchEntry {
   serverRevision: number | null;
   error: string | null;
   errorCode?: string | null;
+  httpStatus?: number | null;
 }
 
 export interface BatchJournal {
@@ -131,7 +132,7 @@ export class SequentialBatchManager {
           content: { step_type: x.stepType, content_latex: x.contentLatex,
             explanation_text: x.explanationText, artifact: null },
           state: "QUEUED", frozen: null, beforeStepIds: null,
-          serverStepId: null, serverRevision: null, error: null, errorCode: null })),
+          serverStepId: null, serverRevision: null, error: null, errorCode: null, httpStatus: null })),
       };
       // Write-ahead: no POST can occur until the entire initial plan is persisted.
       await this.store.save(copyJournal(journal));
@@ -194,10 +195,18 @@ export class SequentialBatchManager {
         throw new Error("BATCH_NOT_SAFE_TO_ABANDON");
       }
 
-      // 5. Allowlist: all rejected entries must be definitively uncommitted (e.g. HTTP 422)
+      // 5. Allowlist: all rejected entries must be definitively uncommitted (verified HTTP 422)
       const isDefinitiveUncommittedRejection = (entry: BatchEntry): boolean => {
         if (entry.serverStepId !== null || entry.serverRevision !== null) return false;
-        if (entry.errorCode && SAFE_ABANDON_ERROR_CODES.has(entry.errorCode)) return true;
+        // Non-abandonable fatal conditions
+        if (entry.errorCode === "ACTION_KEY_REUSED" || entry.errorCode === "CONTENT_MISMATCH") return false;
+        // Strictly require verified HTTP 422 status
+        if (entry.httpStatus === 422) return true;
+        // Backward compatibility for journals created without httpStatus:
+        // accept ONLY explicit "HTTP_422" machine code (which only came from status 422)
+        if ((entry.httpStatus === undefined || entry.httpStatus === null) && entry.errorCode === "HTTP_422") {
+          return true;
+        }
         return false;
       };
 
@@ -300,6 +309,7 @@ export class SequentialBatchManager {
         // Network/HTTP error: preserve frozen request for retry
         const { status, code } = statusAndCode(error);
         entry.error = reason(error);
+        entry.httpStatus = status ?? null;
         entry.errorCode = code ?? (status !== undefined ? `HTTP_${status}` : "UNKNOWN");
         entry.state = status === undefined || status >= 500 || status === 401 || status === 429
           ? "UNKNOWN" : "REJECTED";
@@ -335,6 +345,7 @@ export class SequentialBatchManager {
       entry.state = "COMMITTED";
       entry.error = null;
       entry.errorCode = null;
+      entry.httpStatus = null;
       journal.nextRevision = response.current_revision;
       journal.state = "PREPARED";
       journal.message = null;

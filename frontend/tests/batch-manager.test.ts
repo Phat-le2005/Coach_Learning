@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import type { SolutionAttemptRead, StepMutationRequest } from "../src/lib/api/contracts.js";
 import { SequentialBatchManager, type BatchApi, type BatchJournal, type BatchJournalStore, type BatchLock, type ApprovedStepIntent } from "../src/features/math-workspace/utils/batch-manager.js";
 import { isValidBatchJournal, validateBatchJournal } from "../src/features/math-workspace/utils/batch-journal.js";
+import { ApiResponseError } from "../src/lib/api/client.js";
 
 const clone = <T>(x: T): T => JSON.parse(JSON.stringify(x)) as T;
 const approved = (count: number): ApprovedStepIntent[] => Array.from({ length: count }, (_, i) => ({
@@ -476,6 +477,79 @@ test("ISSUE 2 regression: non-422 errors containing '422' or 'INVALID_DRAFT' in 
   assert.equal(res4.status, "PAUSED");
   // Must NOT allow abandonment merely because '422' substring is in error message
   await assert.rejects(() => manager.abandonRejected("attempt"), /BATCH_NOT_SAFE_TO_ABANDON/);
+});
+
+test("COMPATIBILITY 1: real ApiResponseError with HTTP 422 and code HTTP_ERROR allows safe abandonment", async () => {
+  const { manager, api } = setup();
+  api.addStep = async () => {
+    throw new ApiResponseError("Unprocessable entity in step draft", 422, "HTTP_ERROR", "validation");
+  };
+  const res = await manager.start("attempt", "b_422", approved(1));
+  assert.equal(res.status, "PAUSED");
+
+  // Definitive uncommitted validation rejection: abandonment must be allowed!
+  const abandoned = await manager.abandonRejected("attempt");
+  assert.equal(abandoned?.state, "ABANDONED");
+});
+
+test("COMPATIBILITY 2: HTTP 409 or 500 carrying code INVALID_DRAFT MUST NOT allow abandonment", async () => {
+  const { manager, api, store } = setup();
+
+  // Case A: HTTP 409 with code "INVALID_DRAFT"
+  api.addStep = async () => {
+    throw new ApiResponseError("Revision conflict occurred during draft evaluation", 409, "INVALID_DRAFT", "conflict");
+  };
+  const res409 = await manager.start("attempt", "b_409", approved(1));
+  assert.equal(res409.status, "PAUSED");
+  await assert.rejects(() => manager.abandonRejected("attempt"), /BATCH_NOT_SAFE_TO_ABANDON/);
+
+  // Case B: HTTP 500 with code "INVALID_DRAFT"
+  store.saved = null;
+  api.calls = [];
+  api.addStep = async () => {
+    throw new ApiResponseError("Internal server error in draft validation module", 500, "INVALID_DRAFT", "http");
+  };
+  const res500 = await manager.start("attempt", "b_500", approved(1));
+  assert.equal(res500.status, "PAUSED");
+  await assert.rejects(() => manager.abandonRejected("attempt"), /BATCH_NOT_SAFE_TO_ABANDON/);
+});
+
+test("COMPATIBILITY 3: older journals lacking httpStatus fail closed unless errorCode is explicit HTTP_422", async () => {
+  const { manager, store } = setup();
+
+  // Older journal without httpStatus field, errorCode is "INVALID_DRAFT" (unverified status):
+  store.saved = {
+    schemaVersion: 1,
+    batchId: "b_old",
+    attemptId: "attempt",
+    createdAt: Date.now(),
+    nextRevision: 1,
+    state: "PAUSED",
+    message: "BATCH_SEND_INVALID_DRAFT",
+    entries: [
+      {
+        draftId: "d-0",
+        actionId: "a-0",
+        content: { step_type: "EXPLANATION", content_latex: "x=0", explanation_text: null, artifact: null },
+        state: "REJECTED",
+        frozen: null,
+        beforeStepIds: null,
+        serverStepId: null,
+        serverRevision: null,
+        error: "Invalid draft syntax",
+        errorCode: "INVALID_DRAFT",
+        // httpStatus is missing (undefined)
+      },
+    ],
+  };
+
+  // Must fail closed because status was not verified as 422!
+  await assert.rejects(() => manager.abandonRejected("attempt"), /BATCH_NOT_SAFE_TO_ABANDON/);
+
+  // If older journal had explicit machine-code "HTTP_422":
+  store.saved.entries[0].errorCode = "HTTP_422";
+  const abandoned = await manager.abandonRejected("attempt");
+  assert.equal(abandoned?.state, "ABANDONED");
 });
 
 test("GET failure before preparing next item pauses without sending it", async () => {
