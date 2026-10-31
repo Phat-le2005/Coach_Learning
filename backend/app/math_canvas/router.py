@@ -45,7 +45,7 @@ async def explain(attempt_id: UUID, data: GraphSpec, user: Student, session: Dat
     settings: Annotated[Settings, Depends(get_auth_settings)],
     limiter: Annotated[AIRateLimiter, Depends(get_ai_rate_limiter)]):
     MathCanvasService(session).owned_attempt(user.id, attempt_id)
-    if data.settings.scene is not None:
+    if data.settings.scene is not None or data.settings.lab is not None:
         raise ApplicationError(503, "CANVAS_SCENE_AI_UNAVAILABLE", "Giải thích AI cho bảng nhiều biểu thức chưa được bật. Bạn vẫn có thể khám phá và lưu bảng.")
     if settings.ai_provider != "gemini":
         raise ApplicationError(503, "CANVAS_AI_UNAVAILABLE", "AI giải thích chưa được cấu hình. Bạn vẫn có thể khám phá và lưu đồ thị.")

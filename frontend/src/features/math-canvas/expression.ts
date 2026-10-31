@@ -21,6 +21,7 @@ export interface GraphSettings {
   view_mode?: "AUTO" | "2D" | "3D" | "EXTRUDED";
   slice_y?: number;
   scene?: import("./scene").GraphSceneDocument | null;
+  lab?: import("./lab-spec").LabDocument | null;
 }
 export type NumericGraphSetting = "scale" | "offset" | "shift_x" | "shift_y" | "domain" | "slice_y";
 export interface GraphCamera { position: [number, number, number]; target: [number, number, number]; zoom?: number }

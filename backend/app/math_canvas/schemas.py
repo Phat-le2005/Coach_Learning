@@ -7,6 +7,7 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 from app.math_canvas.scene_schema import GraphSceneDocument
+from app.math_canvas.lab_schema import LabDocument
 
 FUNCTIONS = {"sin", "cos", "tan", "sqrt", "abs", "exp", "log", "ln"}
 
@@ -69,6 +70,7 @@ class GraphSettings(StrictModel):
     view_mode: Literal["AUTO", "2D", "3D", "EXTRUDED"] = "AUTO"
     slice_y: float = Field(default=0, ge=-5, le=5)
     scene: GraphSceneDocument | None = None
+    lab: LabDocument | None = None
 
     @field_validator("parameters")
     @classmethod
@@ -84,6 +86,15 @@ class GraphSpec(StrictModel):
 
     @model_validator(mode="after")
     def valid_expression(self):
+        if self.settings.lab is not None:
+            if self.settings.scene is not None or self.expression != "y=0":
+                raise ValueError("Explorations use y=0 and cannot also contain a planar scene.")
+            parameters = self.settings.lab.parameter_names()
+            if len(parameters) > 6 or set(self.settings.parameters) != parameters:
+                raise ValueError("Exploration parameters must match the mathematical document.")
+            if self.settings.view_mode != self.settings.lab.dimension or self.settings.scale != 1 or any((self.settings.offset, self.settings.shift_x, self.settings.shift_y, self.settings.slice_y)):
+                raise ValueError("Exploration view settings must match its dimension without legacy transforms.")
+            return self
         if self.settings.scene is not None:
             if self.expression != "y=0":
                 raise ValueError("Version 2 scenes use the compatibility expression y=0.")

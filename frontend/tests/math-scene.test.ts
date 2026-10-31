@@ -4,7 +4,7 @@ import { Worker } from "node:worker_threads";
 import { resolve } from "node:path";
 import { compileGraphScene, layerContains, SCENE_COLORS, type GraphSceneDocument } from "../src/features/math-canvas/scene.js";
 import { sampleScene, connectContourSegments, type SceneDrawing } from "../src/features/math-canvas/scene-geometry.js";
-import { appendSceneRow, parseSceneDraft } from "../src/features/math-canvas/scene-draft.js";
+import { appendSceneRow, importSceneFormula, parseSceneDraft } from "../src/features/math-canvas/scene-draft.js";
 
 const document=(expressions:string[],combine:GraphSceneDocument["combine"]="OVERLAY"):GraphSceneDocument=>({version:2,dimension:"2D",combine,rows:expressions.map((expression,i)=>({id:`row-${i}`,expression,visible:true,color:SCENE_COLORS[i]}))});
 const compile=(expressions:string[],combine:GraphSceneDocument["combine"]="OVERLAY")=>compileGraphScene(document(expressions,combine));
@@ -82,6 +82,33 @@ test("new selected formulas append to a draft without replacing earlier rows",()
   assert.equal(next!.length,3);assert.equal(next![0].expression,"y=x²");assert.equal(rows.length,2);
   assert.equal(appendSceneRow(document(Array.from({length:8},()=>"y=x")).rows,{...rows[0],id:"new"}),null);
   const empty=document(["y=x",""]).rows;assert.equal(appendSceneRow(empty,{...rows[0],id:"new"})!.length,2);
+});
+
+test("reopening recognized LaTeX reuses the same row and retrying OCR corrects it in place",()=>{
+  const rows=document([String.raw`y = t ^ { 2 } - 1`,"y=x"]).rows;
+  const reopened=importSceneFormula(rows,{...rows[0],id:"new",expression:"y=t²-1"})!;
+  assert.equal(reopened.rows.length,2);assert.equal(reopened.sourceRowId,rows[0].id);
+  const retried=importSceneFormula(reopened.rows,{...rows[0],id:"retry",expression:"y=x^2-1"},reopened.sourceRowId)!;
+  assert.equal(retried.rows.length,2);assert.equal(retried.rows[0].id,rows[0].id);
+  assert.equal(retried.rows[0].expression,"y=x^2-1");assert.deepEqual(retried.rows[1],rows[1]);
+  assert.equal(rows[0].expression,String.raw`y = t ^ { 2 } - 1`,"the existing draft is not mutated");
+  const full=document(Array.from({length:8},(_,i)=>`y=x+${i}`)).rows;
+  assert.equal(importSceneFormula(full,{...full[0],id:"retry",expression:"y=x²-1"},full[0].id)!.rows.length,8);
+  assert.equal(importSceneFormula(full,{...full[0],id:"new",expression:"y=sin(x)"}),null);
+});
+
+test("parameter-only y formulas explain the horizontal line without silently changing OCR",()=>{
+  const scene=compile([String.raw`y = t ^ { 2 } - 1`]);
+  assert.deepEqual(scene.errors,{});assert.deepEqual(scene.parameters,["t"]);
+  assert.equal(scene.layers[0].label,"Đường thẳng ngang");assert.match(scene.layers[0].hint!,/t là tham số/);
+  for(const x of [-2,0,2])assert.equal(layerContains(scene.layers[0],x,0,{t:1}),true);
+  assert.equal(layerContains(scene.layers[0],2,3,{t:1}),false);
+  const parabola=compile(["y=x²-1"]);
+  assert.equal(parabola.layers[0].hint,undefined);assert.deepEqual(parabola.parameters,[]);
+  assert.equal(layerContains(parabola.layers[0],2,3,{}),true);
+  assert.equal(compile(["y=x+t"]).layers[0].hint,undefined);
+  assert.equal(compile(["y²=t"]).layers[0].hint,undefined);
+  assert.equal(compile(["y=y+t"]).layers[0].hint,undefined);
 });
 test("draft recovery accepts bounded editor values and rejects malformed local data",()=>{
   const draft={rows:document(["y>=x²","y<=1"]).rows,combine:"AND",parameters:{a:2},domain:3,camera:{position:[0,0,16],target:[0,0,0],zoom:1},note:"observe"};

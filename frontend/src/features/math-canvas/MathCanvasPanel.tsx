@@ -17,15 +17,18 @@ const GraphView = dynamic(() => import("./GraphView").then((module) => module.Gr
   ssr: false,
   loading: () => <p className={styles.muted} role="status">Đang mở khung nhìn công thức…</p>,
 });
+const MathLab = dynamic(() => import("./MathLab").then((module) => module.MathLab), { ssr: false });
 
 interface Props { attemptId: string; pageIndex: number; selectedStrokes: InkStroke[]; initialFormula?: string; ensureInkSaved: () => Promise<void>; onClose: () => void }
 export function MathCanvasPanel({ attemptId, pageIndex, selectedStrokes, initialFormula = "", ensureInkSaved, onClose }: Props) {
-  const [mode,setMode]=useState<"scene"|"single">("scene");
+  const [mode,setMode]=useState<"scene"|"single"|"lab">("scene");
+  const [labSnapshot,setLabSnapshot]=useState<CanvasSnapshot|undefined>();
   const [single,setSingle]=useState<{snapshot?:CanvasSnapshot;formula?:string}|null>(null);
   const props={attemptId,pageIndex,selectedStrokes,initialFormula,ensureInkSaved,onClose};
   return <>
-    <GraphScenePanel {...props} active={mode==="scene"} onSingle={(snapshot,formula)=>{setSingle({snapshot,formula});setMode("single");}}/>
+    <GraphScenePanel {...props} active={mode==="scene"} onLab={(snapshot)=>{setLabSnapshot(snapshot);setMode("lab");}} onSingle={(snapshot,formula)=>{setSingle({snapshot,formula});setMode("single");}}/>
     {single?<SingleFormulaPanel key={single.snapshot?.id??single.formula??"single"} {...props} initialFormula={single.formula??initialFormula} selectedStrokes={single.formula?[]:selectedStrokes} initialSnapshot={single.snapshot} active={mode==="single"} onScene={()=>setMode("scene")}/>:null}
+    {mode==="lab"?<aside className={`${styles.panel} ${styles.labPanel}`} aria-label="Math Lab trong bài học"><div className={styles.labPanelNav}><button className={styles.button} onClick={()=>setMode("scene")}>← Bảng biểu thức</button><button className={styles.close} aria-label="Đóng phòng khám phá" onClick={onClose}>×</button></div><MathLab key={labSnapshot?.id??"draft"} attemptId={attemptId} pageIndex={pageIndex} ensureInkSaved={ensureInkSaved} initialSnapshot={labSnapshot}/></aside>:null}
   </>;
 }
 
@@ -57,7 +60,7 @@ function SingleFormulaPanel({ attemptId, pageIndex, selectedStrokes, initialForm
   useEffect(() => {
     if (!active) return;
     let live = true;
-    canvasRequest<CanvasSnapshot[]>(`${endpoint}/snapshots`).then((rows) => { if (live) setSnapshots(rows.filter((row)=>!row.settings.scene)); })
+    canvasRequest<CanvasSnapshot[]>(`${endpoint}/snapshots`).then((rows) => { if (live) setSnapshots(rows.filter((row)=>!row.settings.scene&&!row.settings.lab)); })
       .catch(() => { if (live) setListError(true); });
     return () => { live = false; };
   }, [endpoint, active]);

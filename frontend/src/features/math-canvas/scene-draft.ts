@@ -1,5 +1,5 @@
 import type { GraphCamera } from "./expression";
-import type { GraphSceneDocument, SceneRow } from "./scene";
+import { compileGraphScene, normalizeRelation, type GraphSceneDocument, type SceneRow } from "./scene";
 
 export interface SceneDraft { rows:SceneRow[]; combine:GraphSceneDocument["combine"]; parameters:Record<string,number>; domain:number; camera:GraphCamera; note:string }
 /** Restore only bounded editor data. No cookies, credentials, or source stroke claims are cached. */
@@ -22,4 +22,21 @@ export function appendSceneRow(rows:SceneRow[], row:SceneRow):SceneRow[]|null {
   const empty=rows.findIndex((item)=>!item.expression.trim());
   if(empty>=0)return rows.map((item,index)=>index===empty?row:item);
   return rows.length<8?[...rows,row]:null;
+}
+
+/** Reopening a selection reuses its formula; retrying OCR updates its original row. */
+export function importSceneFormula(rows:SceneRow[], row:SceneRow, sourceRowId:string|null=null):{rows:SceneRow[];sourceRowId:string}|null {
+  const source=rows.find((item)=>item.id===sourceRowId);
+  if(source)return {rows:rows.map((item)=>item.id===source.id?{...item,expression:row.expression}:item),sourceRowId:source.id};
+  const key=(expression:string)=>{
+    try{
+      const compiled=compileGraphScene({version:2,dimension:"2D",combine:"OVERLAY",rows:[{...row,expression}]});
+      const layer=compiled.layers[0];
+      return layer?JSON.stringify({definition:layer.definition,relations:layer.relations}):normalizeRelation(expression);
+    }catch{return expression.trim();}
+  };
+  const existing=rows.find((item)=>key(item.expression)===key(row.expression));
+  if(existing)return {rows,sourceRowId:existing.id};
+  const next=appendSceneRow(rows,row);
+  return next?{rows:next,sourceRowId:row.id}:null;
 }

@@ -24,6 +24,8 @@ def spec_hash(spec: GraphSpec) -> str:
     settings = spec.settings.model_dump(mode="json")
     if settings.get("scene") is None:
         settings.pop("scene", None)
+    if settings.get("lab") is None:
+        settings.pop("lab", None)
     # Preserve existing explanation hashes for legacy/default display settings.
     if settings["view_mode"] == "AUTO":
         settings.pop("view_mode")
@@ -61,6 +63,8 @@ class MathCanvasService:
         request_data = data.model_dump(mode="json")
         if request_data["settings"].get("scene") is None:
             request_data["settings"].pop("scene", None)
+        if request_data["settings"].get("lab") is None:
+            request_data["settings"].pop("lab", None)
         digest = fingerprint(request_data)
         existing = self.session.scalar(select(MathCanvasSnapshot).where(MathCanvasSnapshot.attempt_id == attempt_id,
             MathCanvasSnapshot.client_action_id == data.client_action_id))
@@ -81,7 +85,7 @@ class MathCanvasService:
         if len(selected) != len(ids):
             raise ApplicationError(409, "CANVAS_SELECTION_STALE", "Nét đã chọn đã thay đổi. Hãy khoanh và lưu lại.")
         row = MathCanvasSnapshot(attempt_id=attempt_id, student_id=attempt.student_id, client_action_id=data.client_action_id,
-            request_hash=digest, expression=data.expression, dimension=classify_expression(data.expression)[0],
+            request_hash=digest, expression=data.expression, dimension=data.settings.lab.dimension if data.settings.lab is not None else classify_expression(data.expression)[0],
             settings=data.settings.model_dump(mode="json"), camera=data.camera.model_dump(mode="json"), page_index=data.page_index,
             source_latex=data.source_latex, source_strokes=[s.model_dump(mode="json") for s in selected],
             source_ink_revision=page.document_revision, note=data.note, explanation_id=data.explanation_id)

@@ -160,10 +160,25 @@ def test_save_and_teacher_review_restore_spatial_curve_without_rewriting_formula
 def test_legacy_graph_hash_remains_compatible_with_default_presentation():
     from app.math_canvas.service import fingerprint,spec_hash
     spec=GraphSpec(expression="z=x^2+y^2",settings={"parameters":{}})
-    legacy=spec.settings.model_dump(mode="json",exclude={"view_mode","slice_y","scene"})
+    legacy=spec.settings.model_dump(mode="json",exclude={"view_mode","slice_y","scene","lab"})
     assert spec_hash(spec)==fingerprint({"expression":spec.expression,"settings":legacy})
     changed=spec.model_copy(update={"settings":spec.settings.model_copy(update={"view_mode":"2D","slice_y":1})})
     assert spec_hash(changed)!=spec_hash(spec)
+
+
+def test_spatial_lab_snapshot_replay_and_teacher_restore(db_session, canvas_case):
+    case=canvas_case; service=MathCanvasService(db_session)
+    lab={"version":1,"kind":"PARAMETRIC","dimension":"3D","coordinates":["cos(t)","sin(t)","a*t"],"interval":[-6,6],"progress":.25}
+    data=SnapshotCreate(expression="y=0",settings={"lab":lab,"parameters":{"a":2},"view_mode":"3D"},client_action_id=uuid4(),page_index=0,
+        camera={"position":[9,8,12],"target":[0,0,1]},note="Bước xoắn thay đổi")
+    saved=service.save(case.owner.id,case.aid,data)
+    assert saved.dimension=="3D" and saved.settings.lab.kind=="PARAMETRIC"
+    assert service.save(case.owner.id,case.aid,data).id==saved.id
+    restored=service.list_teacher(case.teacher.id)[0]
+    assert restored.settings.lab.model_dump(mode="json")==lab and restored.camera==data.camera
+    assert restored.note==data.note and restored.source_strokes==[]
+    assert db_session.scalar(select(func.count()).select_from(StudentConceptMastery))==0
+    with pytest.raises(ApplicationError): service.save(case.outsider.id,case.aid,data)
 
 
 @pytest.mark.parametrize("expression,params,dimension", [

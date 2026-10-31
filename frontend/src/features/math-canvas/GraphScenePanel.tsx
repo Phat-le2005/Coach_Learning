@@ -3,22 +3,24 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { InkStroke } from "@/lib/api/contracts";
 import { recognizeHandwrittenMath } from "@/features/math-workspace/utils/handwritten-ocr";
 import { OcrInkPreview } from "@/features/math-workspace/components/OcrInkPreview";
+import { OcrMathPreview } from "@/features/math-workspace/components/OcrMathPreview";
 import { generateUuid } from "@/features/math-workspace/utils/ink-math";
 import { canvasRequest, type CanvasSnapshot } from "./api";
 import { DEFAULT_GRAPH, type GraphCamera } from "./expression";
 import { compileGraphScene, SCENE_COLORS, type GraphSceneDocument, type SceneRow } from "./scene";
 import { GraphSceneView } from "./GraphSceneView";
-import { appendSceneRow, parseSceneDraft } from "./scene-draft";
+import { importSceneFormula, parseSceneDraft } from "./scene-draft";
+import { LAB_TITLES } from "./lab-spec";
 import styles from "./MathCanvas.module.css";
 
-export interface ScenePanelProps { attemptId:string; pageIndex:number; selectedStrokes:InkStroke[]; initialFormula?:string; ensureInkSaved:()=>Promise<void>; onClose:()=>void; active:boolean; onSingle:(snapshot?:CanvasSnapshot, formula?:string)=>void }
+export interface ScenePanelProps { attemptId:string; pageIndex:number; selectedStrokes:InkStroke[]; initialFormula?:string; ensureInkSaved:()=>Promise<void>; onClose:()=>void; active:boolean; onSingle:(snapshot?:CanvasSnapshot, formula?:string)=>void; onLab:(snapshot?:CanvasSnapshot)=>void }
 const createRow=(expression="", index=0):SceneRow=>({id:generateUuid(),expression,visible:true,color:SCENE_COLORS[index%SCENE_COLORS.length]});
 const seedCamera:GraphCamera={position:[0,0,16],target:[0,0,0],zoom:1};
 const examples=[{label:"Hai đồ thị",rows:["y=x²","y=2x+1"],combine:"OVERLAY" as const},{label:"Miền chung",rows:["y>=x²","y<=2x+1"],combine:"AND" as const},{label:"Hàm hợp",rows:["f(x)=x²+1","g(x)=sin(x)","y=f(g(x))"],combine:"OVERLAY" as const},{label:"Trong đường tròn",rows:["x²+y²<=r²","x>=0"],combine:"AND" as const}];
-export function GraphScenePanel({attemptId,pageIndex,selectedStrokes,initialFormula="",ensureInkSaved,onClose,active,onSingle}:ScenePanelProps){
+export function GraphScenePanel({attemptId,pageIndex,selectedStrokes,initialFormula="",ensureInkSaved,onClose,active,onSingle,onLab}:ScenePanelProps){
   const draftKey=`edums_math_scene_v2:${attemptId}:${pageIndex}`;
   const [recovered]=useState(()=>{try{return typeof window!=="undefined"?parseSceneDraft(window.sessionStorage.getItem(draftKey)):null;}catch{return null;}});
-  const [rows,setRows]=useState<SceneRow[]>(()=>{const previous=recovered?.rows??[createRow()];return initialFormula&&!previous.some((row)=>row.expression===initialFormula)?appendSceneRow(previous,createRow(initialFormula,previous.length))??previous:previous;}),[settledRows,setSettledRows]=useState(rows);
+  const [rows,setRows]=useState<SceneRow[]>(()=>{const previous=recovered?.rows??[createRow()];return initialFormula?importSceneFormula(previous,createRow(initialFormula,previous.length))?.rows??previous:previous;}),[settledRows,setSettledRows]=useState(rows);
   const [combine,setCombine]=useState<GraphSceneDocument["combine"]>(recovered?.combine??"OVERLAY"),[parameters,setParameters]=useState<Record<string,number>>(recovered?.parameters??{}),[domain,setDomain]=useState(recovered?.domain??3);
   const [camera,setCamera]=useState<GraphCamera>(recovered?.camera??seedCamera),[viewKey,setViewKey]=useState(0);
   const [note,setNote]=useState(recovered?.note??""),[snapshots,setSnapshots]=useState<CanvasSnapshot[]>([]),[viewing,setViewing]=useState<CanvasSnapshot|null>(null);
@@ -41,7 +43,7 @@ export function GraphScenePanel({attemptId,pageIndex,selectedStrokes,initialForm
     if(!selectedStrokes.length)return;let live=true;const version=editVersion.current;setBusy("ocr");setError(null);
     let timer:ReturnType<typeof setTimeout>;
     const deadline=new Promise<never>((_,reject)=>{timer=setTimeout(()=>reject(new Error("timeout")),45000);});
-    Promise.race([recognizeHandwrittenMath(selectedStrokes),deadline]).then((result)=>{if(!live||editVersion.current!==version)return;const row=createRow(result.latex,latestRows.current.length),next=appendSceneRow(latestRows.current,row);if(!next){setError("Bảng đã đủ 8 dòng. Xóa một dòng trống hoặc không cần dùng rồi nhận dạng lại.");return;}sourceRow.current=row.id;setRows(next);setNeedsConfirmation(true);}).catch(()=>{if(live&&editVersion.current===version)setError("Chưa đọc được nét viết. Em có thể nhập công thức trực tiếp rồi tiếp tục.");}).finally(()=>{clearTimeout(timer);if(live&&editVersion.current===version)setBusy(null);});
+    Promise.race([recognizeHandwrittenMath(selectedStrokes),deadline]).then((result)=>{if(!live||editVersion.current!==version)return;const imported=importSceneFormula(latestRows.current,createRow(result.latex,latestRows.current.length),sourceRow.current);if(!imported){setError("Bảng đã đủ 8 dòng. Xóa một dòng trống hoặc không cần dùng rồi nhận dạng lại.");return;}sourceRow.current=imported.sourceRowId;setRows(imported.rows);setFocusId(imported.sourceRowId);setNeedsConfirmation(true);}).catch(()=>{if(live&&editVersion.current===version)setError("Chưa đọc được nét viết. Em có thể nhập công thức trực tiếp rồi tiếp tục.");}).finally(()=>{clearTimeout(timer);if(live&&editVersion.current===version)setBusy(null);});
     return()=>{live=false;clearTimeout(timer);};
     // The parent keys each panel by its original stroke selection.
   },[ocrRun]);
@@ -52,6 +54,7 @@ export function GraphScenePanel({attemptId,pageIndex,selectedStrokes,initialForm
   const removeRow=(id:string)=>{editing();if(sourceRow.current===id){sourceRow.current=null;setNeedsConfirmation(false);}setRows((current)=>current.length===1?[{...current[0],expression:""}]:current.filter((row)=>row.id!==id));};
   const applyExample=(example:typeof examples[number])=>{editing();sourceRow.current=null;setNeedsConfirmation(false);setRows(example.rows.map((source,index)=>createRow(source,index)));setCombine(example.combine);setParameters({});setDomain(3);setCamera(seedCamera);setViewKey((n)=>n+1);};
   const openSnapshot=(snapshot:CanvasSnapshot)=>{
+    if(snapshot.settings.lab){onLab(snapshot);return;}
     if(!snapshot.settings.scene){onSingle(snapshot);return;}
     editVersion.current++;sourceRow.current=null;setBusy(null);setNeedsConfirmation(false);setError(null);setSuccess(null);
     setRows(snapshot.settings.scene.rows.map((row)=>({...row})));setSettledRows(snapshot.settings.scene.rows.map((row)=>({...row})));setCombine(snapshot.settings.scene.combine);
@@ -71,13 +74,20 @@ export function GraphScenePanel({attemptId,pageIndex,selectedStrokes,initialForm
     }catch(err){setError(err instanceof Error?err.message:"Chưa lưu được bảng đồ thị.");}finally{setBusy(null);}
   }
   const locked=busy==="save"||!!viewing;
+  const recognizedRow=rows.find((row)=>row.id===sourceRow.current);
   return <aside hidden={!active} className={`${styles.panel} ${styles.scenePanel}`} aria-label="Math View — bảng đồ thị nhiều biểu thức">
     <header className={styles.sceneHeading}><div><span className={styles.eyebrow}>KHÁM PHÁ TOÁN HỌC</span><h2>Math View</h2><p>So sánh đồ thị · Quan sát miền thỏa mãn · Thử thay đổi tham số</p></div><div className={styles.row}>
-      <button type="button" className={styles.button} onClick={()=>onSingle()}>Một công thức · 3D</button><button type="button" className={styles.close} aria-label="Đóng Math View" onClick={onClose}>×</button></div></header>
+      <button type="button" className={styles.primary} onClick={()=>onLab()}>Phòng khám phá mới</button><button type="button" className={styles.button} onClick={()=>onSingle()}>Một công thức · 3D</button><button type="button" className={styles.close} aria-label="Đóng Math View" onClick={onClose}>×</button></div></header>
     <div className={styles.sceneLayout}>
       <section className={styles.expressionPane} aria-label="Danh sách biểu thức">
         <div className={styles.expressionTitle}><strong>Biểu thức</strong><span>{rows.length}/8 dòng</span></div>
         <p className={styles.muted}>Mỗi dòng một công thức. Bấm Enter để thêm dòng.</p><span className={styles.rowHint}>{draftSaved?"Bản nháp được giữ trong phiên làm việc này.":"Bấm Lưu bảng để giữ vào bài học."}</span>
+        {needsConfirmation&&recognizedRow?<div className={styles.ocrReview} role="status">
+          <strong>Kiểm tra công thức nhận dạng</strong><OcrMathPreview latex={recognizedRow.expression}/>
+          <p>Đối chiếu với nét viết, đặc biệt các chữ như x và t. Sửa trực tiếp ở dòng được chọn nếu chưa đúng.</p>
+          <OcrInkPreview strokes={selectedStrokes}/>
+          <label className={styles.confirmOcr}><input type="checkbox" checked={false} onChange={()=>setNeedsConfirmation(false)}/> Công thức này đúng với nét viết của em.</label>
+        </div>:null}
         {rows.map((row,index)=><div key={row.id} className={`${styles.expressionCard} ${compiled.errors[row.id]?styles.expressionInvalid:""}`}>
           <div className={styles.expressionTop}><label><input type="checkbox" aria-label={`Hiện dòng ${index+1}`} checked={row.visible} disabled={locked} onChange={(event)=>changeRow(row.id,{visible:event.target.checked})}/> Dòng {index+1}</label>
             <input type="color" className={styles.rowColor} aria-label={`Màu dòng ${index+1}`} value={row.color} disabled={locked} onChange={(event)=>changeRow(row.id,{color:event.target.value})}/>
@@ -87,6 +97,7 @@ export function GraphScenePanel({attemptId,pageIndex,selectedStrokes,initialForm
             onChange={(event)=>changeRow(row.id,{expression:event.target.value})} onKeyDown={(event)=>{if(event.key==="Enter"){event.preventDefault();addRow();}}}/>
           {compiled.errors[row.id]?<p id={`error-${row.id}`} className={styles.rowError}>{compiled.errors[row.id]}{compiled.errors[row.id].includes("3D")?<button type="button" className={styles.button} onClick={()=>onSingle(undefined,row.expression)}>Xem 3D</button>:null}</p>
             :row.expression.trim()?<span className={styles.rowHint}>{compiled.layers.find((layer)=>layer.id===row.id)?.label??"Đang nhận diện…"}</span>:null}
+          {compiled.layers.find((layer)=>layer.id===row.id)?.hint?<p className={styles.rowNotice}>{compiled.layers.find((layer)=>layer.id===row.id)!.hint}</p>:null}
         </div>)}
         <button type="button" className={`${styles.button} ${styles.addExpression}`} disabled={rows.length>=8||locked} onClick={addRow}>+ Thêm dòng biểu thức</button>
         <label className={styles.modeLabel}>Cách tô miền<select value={combine} disabled={locked} onChange={(event)=>{editing();setCombine(event.target.value as GraphSceneDocument["combine"]);}}>
@@ -95,11 +106,10 @@ export function GraphScenePanel({attemptId,pageIndex,selectedStrokes,initialForm
         {!viewing?<details className={styles.examples}><summary>Khám phá từ ví dụ</summary><p className={styles.muted}>Chọn ví dụ sẽ thay các dòng hiện tại.</p><div className={styles.row}>{examples.map((example)=><button type="button" className={styles.button} key={example.label} disabled={busy==="save"} onClick={()=>applyExample(example)}>{example.label}</button>)}</div></details>:null}
         {selectedStrokes.length?<details className={styles.examples}><summary>Nét viết đã chọn</summary><OcrInkPreview strokes={selectedStrokes}/><p className={styles.muted}>Đối chiếu công thức nhận dạng trước khi lưu.</p><button type="button" className={styles.button} disabled={!!busy||!!viewing} onClick={()=>{editing();setOcrRun((n)=>n+1);}}>Nhận dạng lại</button></details>:null}
         {busy==="ocr"?<p className={styles.muted} role="status">Đang đọc nét viết… Em vẫn có thể nhập công thức.</p>:null}
-        {needsConfirmation?<label className={styles.confirmOcr}><input type="checkbox" checked={false} onChange={()=>setNeedsConfirmation(false)}/> Em đã đối chiếu công thức với nét viết.</label>:null}
         <div className={styles.section}><h3>Bảng đã lưu ({snapshots.length})</h3>{listError?<p className={styles.rowError}>Chưa tải được bản lưu. <button type="button" className={styles.button} onClick={()=>setListRun((n)=>n+1)}>Thử lại</button></p>:null}
           {!snapshots.length&&!listError?<p className={styles.muted}>Chưa có bảng đồ thị được lưu.</p>:null}
           {snapshots.map((snapshot)=><button type="button" className={styles.saved} key={snapshot.id} disabled={busy==="save"} onClick={()=>openSnapshot(snapshot)}>
-            <strong>{snapshot.settings.scene?`Bảng ${snapshot.settings.scene.rows.length} biểu thức`:snapshot.expression}</strong><small>Trang {snapshot.page_index+1} · {new Date(snapshot.created_at).toLocaleString("vi-VN")}</small></button>)}
+            <strong>{snapshot.settings.lab?LAB_TITLES[snapshot.settings.lab.kind]:snapshot.settings.scene?`Bảng ${snapshot.settings.scene.rows.length} biểu thức`:snapshot.expression}</strong><small>Trang {snapshot.page_index+1} · {new Date(snapshot.created_at).toLocaleString("vi-VN")}</small></button>)}
         </div>
       </section>
       <section className={styles.sceneWork} aria-label="Đồ thị và tham số">
