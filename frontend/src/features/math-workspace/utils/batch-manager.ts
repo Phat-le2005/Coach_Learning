@@ -198,7 +198,6 @@ export class SequentialBatchManager {
       const isDefinitiveUncommittedRejection = (entry: BatchEntry): boolean => {
         if (entry.serverStepId !== null || entry.serverRevision !== null) return false;
         if (entry.errorCode && SAFE_ABANDON_ERROR_CODES.has(entry.errorCode)) return true;
-        if (entry.error && (entry.error.includes("422") || entry.error.includes("INVALID_DRAFT"))) return true;
         return false;
       };
 
@@ -371,9 +370,9 @@ export class SequentialBatchManager {
         return this.pause(journal, "BATCH_SERVER_RECONCILIATION_REQUIRED");
       }
       if (entry.frozen && !verifyStepContentMatches(serverStep, entry.frozen)) {
-        entry.state = "UNKNOWN";
-        entry.error = "BATCH_SERVER_CONTENT_MISMATCH";
-        entry.errorCode = "CONTENT_MISMATCH";
+        // Content discrepancy discovered after commit is a batch-level reconciliation problem.
+        // Keep the committed entry identity, serverStepId, and serverRevision intact
+        // so the journal schema remains completely valid and recoverable.
         return this.pause(journal, "BATCH_SERVER_CONTENT_MISMATCH");
       }
     }

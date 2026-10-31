@@ -381,6 +381,103 @@ test("TEST D: ACTION_KEY_REUSED regression remains un-abandonable after resume a
   await assert.rejects(() => mgr2.abandonRejected("attempt"), /BATCH_NOT_SAFE_TO_ABANDON/);
 });
 
+test("ISSUE 1 regression: final reconciliation content discrepancy preserves valid journal schema across reload", async () => {
+  const { api, store, lock } = setup();
+  const originalGet = api.getAttempt.bind(api);
+  let serverContentTampered = true;
+
+  api.getAttempt = async () => {
+    const att = await originalGet();
+    // Simulate authoritative GET returning altered content
+    if (serverContentTampered && att.steps && att.steps.length > 0) {
+      const step = { ...att.steps[0] };
+      step.content_latex = "TEMPORARILY_ALTERED_ON_SERVER";
+      att.steps = [step];
+    }
+    return att;
+  };
+
+  const mgr1 = new SequentialBatchManager(api, store, lock);
+  const res = await mgr1.start("attempt", "b", approved(1));
+
+  // 1. Manager pauses without reporting COMPLETE
+  assert.equal(res.status, "PAUSED");
+  assert.equal(res.journal?.message, "BATCH_SERVER_CONTENT_MISMATCH");
+
+  // 2. Persisted journal MUST be valid schema, not corrupted
+  assert.notEqual(store.saved, null);
+  assert.equal(isValidBatchJournal(store.saved), true);
+
+  // 3. New manager instance as after F5
+  const mgr2 = new SequentialBatchManager(api, store, lock);
+
+  // 4. Confirm journal loads successfully without throwing BATCH_JOURNAL_CORRUPT
+  const resumeRes = await mgr2.resume("attempt");
+  assert.equal(resumeRes.status, "PAUSED");
+  assert.equal(resumeRes.journal.message, "BATCH_SERVER_CONTENT_MISMATCH");
+
+  // 5. Verify batch remains safely paused and cannot be abandoned
+  await assert.rejects(() => mgr2.abandonRejected("attempt"), /BATCH_NOT_SAFE_TO_ABANDON/);
+
+  // 6. Verify no new ADD_STEP is sent
+  assert.equal(api.calls.length, 1);
+
+  // 7. Simulate restored server content: reconciliation succeeds without creating duplicate steps
+  serverContentTampered = false;
+  const recovered = await mgr2.resume("attempt");
+  assert.equal(recovered.status, "COMPLETE");
+  assert.equal(api.calls.length, 1);
+  assert.equal(api.attempt.steps?.length, 1);
+});
+
+test("ISSUE 2 regression: non-422 errors containing '422' or 'INVALID_DRAFT' in message must NOT allow abandonment", async () => {
+  const { manager, api, store } = setup();
+
+  // Case A: 500 error containing '422' in error message
+  api.addStep = async () => {
+    throw new Error("Internal database deadlock at block 422: retry later");
+  };
+  const res1 = await manager.start("attempt", "b1", approved(1));
+  assert.equal(res1.status, "PAUSED");
+  // Must NOT allow abandonment
+  await assert.rejects(() => manager.abandonRejected("attempt"), /BATCH_NOT_SAFE_TO_ABANDON/);
+
+  // Case B: 500 error containing 'INVALID_DRAFT' in text message but HTTP status 500
+  store.saved = null;
+  api.calls = [];
+  api.addStep = async () => {
+    throw { status: 500, message: "Server crashed while evaluating INVALID_DRAFT rule" };
+  };
+  const res2 = await manager.start("attempt", "b2", approved(1));
+  assert.equal(res2.status, "PAUSED");
+  // Must NOT allow abandonment
+  await assert.rejects(() => manager.abandonRejected("attempt"), /BATCH_NOT_SAFE_TO_ABANDON/);
+
+  // Case C: 409 error containing '422' in message
+  store.saved = null;
+  api.calls = [];
+  api.addStep = async () => {
+    throw { status: 409, message: "Concurrent edit conflict on line 422" };
+  };
+  const res3 = await manager.start("attempt", "b3", approved(1));
+  assert.equal(res3.status, "PAUSED");
+  // Must NOT allow abandonment
+  await assert.rejects(() => manager.abandonRejected("attempt"), /BATCH_NOT_SAFE_TO_ABANDON/);
+
+  // Case D: HTTP 400 error containing '422' in Error.message (rejected state, but NOT a 422 validation rejection!)
+  store.saved = null;
+  api.calls = [];
+  api.addStep = async () => {
+    const err = new Error("Field id 422 is not supported in this schema");
+    (err as any).status = 400;
+    throw err;
+  };
+  const res4 = await manager.start("attempt", "b4", approved(1));
+  assert.equal(res4.status, "PAUSED");
+  // Must NOT allow abandonment merely because '422' substring is in error message
+  await assert.rejects(() => manager.abandonRejected("attempt"), /BATCH_NOT_SAFE_TO_ABANDON/);
+});
+
 test("GET failure before preparing next item pauses without sending it", async () => {
   const { manager, api, store } = setup();
   const get = api.getAttempt.bind(api);
