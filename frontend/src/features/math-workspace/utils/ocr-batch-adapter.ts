@@ -13,6 +13,11 @@ export function createBatchApi(apiClient: ApiClient, accessToken: string): Batch
   };
 }
 
+/** A paused batch owns its frozen and queued intents; review mutations must wait for recovery. */
+export function canMutateReviewState(saving: boolean, batchSaving: boolean, pausedJournal: BatchJournal | null): boolean {
+  return !saving && !batchSaving && pausedJournal === null;
+}
+
 export interface ReviewRowLike {
   draft: OcrReviewDraft;
   actionId: string;

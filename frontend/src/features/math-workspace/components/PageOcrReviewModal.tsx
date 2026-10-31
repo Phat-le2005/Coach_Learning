@@ -26,6 +26,7 @@ import {
   buildApprovedIntents,
   canStartBatchReview,
   syncRowsFromJournal,
+  canMutateReviewState,
 } from '../utils/ocr-batch-adapter';
 import styles from '../MathWorkspace.module.css';
 
@@ -112,7 +113,8 @@ export function PageOcrReviewModal({
   const isRowFrozenInPausedBatch = Boolean(
     row && pausedJournal?.entries.some((e) => e.actionId === row.actionId && e.frozen !== null)
   );
-  const isRowContentLocked = saving || batchSaving || row?.status === 'saved' || row?.retryOnly || isRowFrozenInPausedBatch;
+  const reviewMutationLocked = !canMutateReviewState(saving, batchSaving, pausedJournal);
+  const isRowContentLocked = reviewMutationLocked || row?.status === 'saved' || row?.retryOnly || isRowFrozenInPausedBatch;
 
   useEffect(() => {
     const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
@@ -157,6 +159,7 @@ export function PageOcrReviewModal({
   }, [regions]);
 
   const changeRow = (changes: Partial<ReviewRow>) => {
+    if (reviewMutationLocked) return;
     setRows((current) => current.map((item, index) => index === selectedIndex ? { ...item, ...changes } : item));
     setReviewError(null);
   };
@@ -170,7 +173,7 @@ export function PageOcrReviewModal({
   };
 
   const retryRecognition = async () => {
-    if (!row || processing || saving || row.status === 'saved') return;
+    if (!row || processing || reviewMutationLocked || row.status === 'saved') return;
     const id = row.region.id;
     changeRow({ status: 'recognizing', error: null, touched: false });
     try {
@@ -189,7 +192,7 @@ export function PageOcrReviewModal({
   };
 
   const mergeNext = () => {
-    if (!row || processing || saving || row.status === 'saved' || row.retryOnly
+    if (!row || processing || reviewMutationLocked || row.status === 'saved' || row.retryOnly
       || selectedIndex >= rows.length - 1 || rows[selectedIndex + 1].status === 'saved'
       || rows[selectedIndex + 1].retryOnly) return;
     const merged = mergePageOcrRegions(rows.map((item) => item.region), selectedIndex, pageStrokes)[selectedIndex];
@@ -198,7 +201,7 @@ export function PageOcrReviewModal({
   };
 
   const splitHere = () => {
-    if (!row || processing || saving || row.status === 'saved' || row.retryOnly) return;
+    if (!row || processing || reviewMutationLocked || row.status === 'saved' || row.retryOnly) return;
     const cut = row.region.bounds.top + (row.region.bounds.bottom - row.region.bounds.top) * cutPercent / 100;
     const divided = splitPageOcrRegion(rows.map((item) => item.region), selectedIndex, cut);
     if (divided.length === rows.length) {
@@ -214,7 +217,7 @@ export function PageOcrReviewModal({
   // Combining drafts never silently creates a valid mathematical step.
   const mergeNextLogicalStep = () => {
     const next = rows[selectedIndex + 1];
-    if (!row || !next || processing || saving || row.retryOnly || next.retryOnly
+    if (!row || !next || processing || reviewMutationLocked || row.retryOnly || next.retryOnly
       || ['saved', 'skipped', 'pending', 'recognizing'].includes(row.status)
       || ['saved', 'skipped', 'pending', 'recognizing'].includes(next.status)) return;
     const mergedRegion = mergePageOcrRegions(rows.map((item) => item.region), selectedIndex, pageStrokes)[selectedIndex];
@@ -229,7 +232,7 @@ export function PageOcrReviewModal({
 
   // Split at an explicit student-selected cursor position, never by guessing a math boundary.
   const splitLogicalStep = () => {
-    if (!row || processing || saving || row.retryOnly || ['saved', 'skipped', 'pending', 'recognizing'].includes(row.status)) return;
+    if (!row || processing || reviewMutationLocked || row.retryOnly || ['saved', 'skipped', 'pending', 'recognizing'].includes(row.status)) return;
     if (row.draft.explanationText.trim()) {
       setReviewError('Bước đang có lời giải thích. Hãy xử lý phần giải thích trước khi tách thành hai bước.');
       return;
@@ -258,7 +261,7 @@ export function PageOcrReviewModal({
 
   const moveLogicalStep = (offset: -1 | 1) => {
     const target = selectedIndex + offset;
-    if (!row || processing || saving || target < 0 || target >= rows.length
+    if (!row || processing || reviewMutationLocked || target < 0 || target >= rows.length
       || ['saved', 'skipped', 'pending', 'recognizing'].includes(row.status)
       || ['saved', 'skipped', 'pending', 'recognizing'].includes(rows[target].status)
       || row.retryOnly || rows[target].retryOnly) return;
@@ -286,7 +289,7 @@ export function PageOcrReviewModal({
   };
 
   const saveStep = async () => {
-    if (!row || saving || row.status === 'saved' || row.status === 'skipped') return;
+    if (!row || reviewMutationLocked || row.status === 'saved' || row.status === 'skipped') return;
     if (earlierUnreviewed) {
       setReviewError('Hãy xác nhận hoặc bỏ qua các vùng phía trên trước để giữ đúng thứ tự bài giải.');
       return;
@@ -330,7 +333,7 @@ export function PageOcrReviewModal({
   };
 
   const approveCurrentDraft = () => {
-    if (!row || row.status === 'saved' || row.status === 'skipped') return;
+    if (!row || reviewMutationLocked || row.status === 'saved' || row.status === 'skipped') return;
     if (!canApproveOcrDraft(row.draft)) {
       setReviewError('Chưa xác định được loại bước hoặc công thức đang để trống. Hãy chọn loại bước trước khi duyệt.');
       return;
@@ -342,7 +345,7 @@ export function PageOcrReviewModal({
   };
 
   const unapproveCurrentDraft = () => {
-    if (!row || row.status !== 'approved') return;
+    if (!row || reviewMutationLocked || row.status !== 'approved') return;
     changeRow({
       draft: { ...row.draft, reviewStatus: 'NEEDS_REVIEW' },
       status: 'manual',
@@ -351,7 +354,7 @@ export function PageOcrReviewModal({
   };
 
   const saveBatchSteps = async () => {
-    if (batchSaving || saving) return;
+    if (reviewMutationLocked) return;
     const check = canStartBatchReview(rows);
     if (!check.canStart) {
       setReviewError(check.reason ?? 'Chưa thể lưu đợt bước giải.');
@@ -521,6 +524,11 @@ export function PageOcrReviewModal({
             </button>
           ) : null}
         </div>
+        {pausedJournal ? (
+          <p className={styles.pageReviewWarning} role='alert'>
+            Đợt lưu đang tạm dừng. Không thể sửa, bỏ qua hoặc lưu riêng các bước thuộc đợt này. Hãy dùng Lưu tiếp đợt này hoặc đóng modal để phục hồi an toàn.
+          </p>
+        ) : null}
         {batchProgress ? (
           <div className={styles.pageReviewBatchProgress} role='status'>
             {batchProgress.message}
@@ -575,18 +583,18 @@ export function PageOcrReviewModal({
               <div className={styles.pageReviewActions}>
                 {row.status === 'approved' ? (
                   <button type='button' className={styles.buttonSecondary} onClick={unapproveCurrentDraft}
-                    disabled={saving || batchSaving}>Hủy duyệt bước này</button>
+                    disabled={reviewMutationLocked}>Hủy duyệt bước này</button>
                 ) : row.status !== 'saved' && row.status !== 'skipped' ? (
                   <button type='button' className={styles.buttonSecondary} onClick={approveCurrentDraft}
-                    disabled={saving || batchSaving}>Duyệt bước này (Approve)</button>
+                    disabled={reviewMutationLocked}>Duyệt bước này (Approve)</button>
                 ) : null}
                 <button type='button' className={styles.buttonSecondary} onClick={() => void retryRecognition()}
-                  disabled={processing || saving || batchSaving || row.status === 'saved' || row.retryOnly}>Nhận diện lại vùng</button>
+                  disabled={processing || reviewMutationLocked || row.status === 'saved' || row.retryOnly}>Nhận diện lại vùng</button>
                 <button type='button' className={styles.buttonSecondary} onClick={mergeNext}
-                  disabled={processing || saving || batchSaving || row.status === 'saved' || row.retryOnly || selectedIndex >= rows.length - 1
+                  disabled={processing || reviewMutationLocked || row.status === 'saved' || row.retryOnly || selectedIndex >= rows.length - 1
                     || rows[selectedIndex + 1].status === 'saved' || rows[selectedIndex + 1].retryOnly}>Gộp vùng nét</button>
                 <button type='button' className={styles.buttonSecondary} onClick={mergeNextLogicalStep}
-                  disabled={processing || saving || batchSaving || row.retryOnly || ['saved', 'skipped', 'pending', 'recognizing'].includes(row.status)
+                  disabled={processing || reviewMutationLocked || row.retryOnly || ['saved', 'skipped', 'pending', 'recognizing'].includes(row.status)
                     || selectedIndex >= rows.length - 1 || rows[selectedIndex + 1].retryOnly
                     || ['saved', 'skipped', 'pending', 'recognizing'].includes(rows[selectedIndex + 1].status)}>
                   Gộp hai bước logic
@@ -594,17 +602,17 @@ export function PageOcrReviewModal({
               </div>
               <div className={styles.pageReviewActions}>
                 <button type='button' className={styles.buttonSecondary} onClick={splitLogicalStep}
-                  disabled={processing || saving || batchSaving || row.retryOnly || ['saved', 'skipped', 'pending', 'recognizing'].includes(row.status)}>
+                  disabled={processing || reviewMutationLocked || row.retryOnly || ['saved', 'skipped', 'pending', 'recognizing'].includes(row.status)}>
                   Tách thành hai bước tại con trỏ
                 </button>
                 <button type='button' className={styles.buttonSecondary} onClick={() => moveLogicalStep(-1)}
-                  disabled={processing || saving || batchSaving || selectedIndex === 0 || row.retryOnly
+                  disabled={processing || reviewMutationLocked || selectedIndex === 0 || row.retryOnly
                     || ['saved', 'skipped', 'pending', 'recognizing'].includes(row.status)
                     || ['saved', 'skipped', 'pending', 'recognizing'].includes(rows[selectedIndex - 1]?.status)}>
                   Đưa lên
                 </button>
                 <button type='button' className={styles.buttonSecondary} onClick={() => moveLogicalStep(1)}
-                  disabled={processing || saving || batchSaving || selectedIndex >= rows.length - 1 || row.retryOnly
+                  disabled={processing || reviewMutationLocked || selectedIndex >= rows.length - 1 || row.retryOnly
                     || ['saved', 'skipped', 'pending', 'recognizing'].includes(row.status)
                     || ['saved', 'skipped', 'pending', 'recognizing'].includes(rows[selectedIndex + 1]?.status)}>
                   Đưa xuống
@@ -614,9 +622,9 @@ export function PageOcrReviewModal({
                 <label htmlFor='page-ocr-cut'>Vạch tách vùng: {cutPercent}% chiều cao vùng</label>
                 <input id='page-ocr-cut' type='range' min='10' max='90' value={cutPercent}
                   onChange={(event) => setCutPercent(Number(event.target.value))}
-                  disabled={processing || saving || row.status === 'saved' || row.retryOnly || row.region.strokes.length < 2} />
+                  disabled={processing || reviewMutationLocked || row.status === 'saved' || row.retryOnly || row.region.strokes.length < 2} />
                 <button type='button' className={styles.buttonSecondary} onClick={splitHere}
-                  disabled={processing || saving || row.status === 'saved' || row.retryOnly || row.region.strokes.length < 2}>Tách tại vạch</button>
+                  disabled={processing || reviewMutationLocked || row.status === 'saved' || row.retryOnly || row.region.strokes.length < 2}>Tách tại vạch</button>
               </div>
               {isRowFrozenInPausedBatch ? (
                 <p className={styles.pageReviewWarning} role='status'>
@@ -682,12 +690,12 @@ export function PageOcrReviewModal({
                       ? { ...row.draft, reviewStatus: 'NEEDS_REVIEW' }
                       : skipOcrDraft(row.draft),
                   })}
-                  disabled={saving || batchSaving || processing || row.status === 'saved' || row.retryOnly}>
+                  disabled={reviewMutationLocked || processing || row.status === 'saved' || row.retryOnly}>
                   {row.status === 'skipped' ? 'Xem lại vùng' : 'Bỏ qua vùng'}
                 </button>
                 <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                   <button type='button' className={styles.buttonSecondary} onClick={() => void saveStep()}
-                    disabled={saving || batchSaving || earlierUnreviewed || row.status === 'saved' || row.status === 'skipped'}>
+                    disabled={reviewMutationLocked || earlierUnreviewed || row.status === 'saved' || row.status === 'skipped'}>
                     {saving ? 'Đang lưu...' : row.status === 'saved' ? 'Đã lưu' : row.retryOnly ? 'Lưu lại' : 'Lưu ngay bước này'}
                   </button>
                   {pausedJournal ? (

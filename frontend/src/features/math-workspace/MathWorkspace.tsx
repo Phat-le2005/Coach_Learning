@@ -491,6 +491,10 @@ export function MathWorkspace({
   // Persist the page before reviewing it; recognition only suggests step content.
   const handleTriggerOCR = useCallback(async () => {
     const penStrokes = getOcrPenStrokes(currentPageMemory.strokes);
+    if (pendingBatch) {
+      setOcrError("Đợt lưu trước chưa hoàn tất. Hãy phục hồi hoặc hủy đợt lưu an toàn trước khi trích xuất bước mới.");
+      return;
+    }
     if (penStrokes.length === 0 || pageOcrReview) return;
     setOcrError(null);
     setIsRecognizingOCR(true);
@@ -521,10 +525,11 @@ export function MathWorkspace({
       setIsRecognizingOCR(false);
     }
   }, [currentPageMemory.strokes, currentPageMemory.isDirty, currentPageIndex,
-    flushSavePage, authExpired, pageOcrReview]);
+    flushSavePage, authExpired, pageOcrReview, pendingBatch]);
 
   const handleConfirmStep = useCallback(
     async (stepType: StepKind, latex: string | null, explanation: string, actionId: string) => {
+      if (pendingBatch) throw new Error("Đợt lưu hàng loạt chưa hoàn tất; hãy phục hồi trước khi lưu bước riêng.");
       if (pendingDeleteRef.current) {
         throw new Error("Một thao tác xóa bước chưa nhận được kết quả. Hãy thử xóa lại hoặc tải lại bài giải trước khi thêm bước mới.");
       }
@@ -537,10 +542,11 @@ export function MathWorkspace({
       });
       setAttempt(updatedAttempt);
     },
-    [attempt?.current_revision, apiClient, accessToken, attemptId],
+    [attempt?.current_revision, apiClient, accessToken, attemptId, pendingBatch],
   );
 
   const handleSaveVariationTable = useCallback(async (payload: VariationTablePayload, actionId: string) => {
+    if (pendingBatch) throw new Error("Đợt lưu hàng loạt chưa hoàn tất; hãy phục hồi trước khi sửa bài giải.");
     if (!attempt || !["DRAFT", "IN_PROGRESS"].includes(attempt.status)) {
       throw new Error("Bài giải đã nộp nên không thể sửa bảng.");
     }
@@ -559,9 +565,10 @@ export function MathWorkspace({
       ? await apiClient.updateMathStep(accessToken, attemptId, variationTableEditor.stepId, mutation)
       : await apiClient.createMathStep(accessToken, attemptId, mutation);
     setAttempt(updated);
-  }, [attempt, variationTableEditor, apiClient, accessToken, attemptId]);
+  }, [attempt, variationTableEditor, apiClient, accessToken, attemptId, pendingBatch]);
 
   const handleDeleteStep = useCallback(async (stepId: string) => {
+    if (pendingBatch) throw new Error("Đợt lưu hàng loạt chưa hoàn tất; hãy phục hồi trước khi xóa bước.");
     if (!attempt || !["DRAFT", "IN_PROGRESS"].includes(attempt.status)) {
       throw new Error("Bài giải này không còn cho phép xóa bước.");
     }
@@ -596,7 +603,7 @@ export function MathWorkspace({
       }
       throw error;
     }
-  }, [attempt, apiClient, accessToken, attemptId]);
+  }, [attempt, apiClient, accessToken, attemptId, pendingBatch]);
 
   const executeAIReview = useCallback(async (targetAttempt: SolutionAttemptRead) => {
     if (isReviewing || targetAttempt.status !== "SUBMITTED") return;

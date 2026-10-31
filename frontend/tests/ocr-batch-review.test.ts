@@ -6,6 +6,7 @@ import {
   buildApprovedIntents,
   canStartBatchReview,
   syncRowsFromJournal,
+  canMutateReviewState,
   type ReviewRowLike,
 } from "../src/features/math-workspace/utils/ocr-batch-adapter.js";
 import {
@@ -57,6 +58,14 @@ function makeRow(id: string, status: string, latex = `x=${id}`, kind: any = "ROO
     error: null,
   };
 }
+
+test("PAUSED batch blocks all review edits, individual saves and new batch creation until recovery", () => {
+  const paused = { state: "PAUSED", entries: [] } as unknown as BatchJournal;
+  assert.equal(canMutateReviewState(false, false, null), true);
+  assert.equal(canMutateReviewState(true, false, null), false);
+  assert.equal(canMutateReviewState(false, true, null), false);
+  assert.equal(canMutateReviewState(false, false, paused), false);
+});
 
 test("buildApprovedIntents converts approved rows and excludes skipped/saved rows", () => {
   const rows: ReviewRowLike[] = [
