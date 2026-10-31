@@ -202,12 +202,15 @@ export function PageOcrReviewModal({ pageIndex, regions, pageStrokes, onClose, o
       setReviewError('Hãy sửa công thức hợp lệ hoặc nhập lời giải thích trước khi lưu.');
       return;
     }
+    // Approve the exact draft being submitted before any async mutation.
+    // Never perform a potentially throwing validation inside setState after a server commit.
+    const approvedDraft = approveOcrDraft(row.draft);
     setSaving(true);
     setReviewError(null);
     try {
-      await onConfirmStep(selectedKind, latex, row.draft.explanationText.trim(), row.actionId);
+      await onConfirmStep(selectedKind, latex, approvedDraft.explanationText.trim(), row.actionId);
       setRows((current) => current.map((item) => item.region.id === regionId
-        ? { ...item, draft: approveOcrDraft(item.draft), status: 'saved', error: null, retryOnly: false } : item));
+        ? { ...item, draft: approvedDraft, status: 'saved', error: null, retryOnly: false } : item));
       const next = rows.findIndex((item, index) => index > selectedIndex && item.status !== 'saved' && item.status !== 'skipped');
       if (next >= 0) setSelectedIndex(next);
     } catch (error: unknown) {
