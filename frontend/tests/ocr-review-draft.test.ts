@@ -94,3 +94,47 @@ test('reorder is immutable and rejects invalid indices', () => {
   assert.deepEqual(original.map(d=>d.localId),['a','b']);
   assert.deepEqual(reorderOcrReviewDrafts(original,9,0),original);
 });
+
+test('whitespace-only content cannot be approved even with selected kind', () => {
+  let draft = createOcrReviewDraft(source('a'));
+  draft = editOcrReviewDraft(draft, { contentLatex: "   ", explanationText: "   " });
+  draft = selectOcrDraftKind(draft, 'EXPLANATION');
+  assert.equal(canApproveOcrDraft(draft), false);
+  assert.throws(() => approveOcrDraft(draft), /OCR_DRAFT_NOT_READY/);
+});
+
+test('explanation-only draft without LaTeX can be approved when kind is selected', () => {
+  let draft = createOcrReviewDraft(source('a'));
+  draft = editOcrReviewDraft(draft, { contentLatex: "", explanationText: "Hàm số đồng biến trên R." });
+  assert.equal(draft.classification.status, 'DETERMINED');
+  assert.equal(draft.selectedStepKind, 'CONCLUSION');
+  assert.equal(canApproveOcrDraft(draft), true);
+  const approved = approveOcrDraft(draft);
+  assert.equal(approved.reviewStatus, 'APPROVED');
+});
+
+test('merge and split reject already approved drafts', () => {
+  const a = approveOcrDraft(selectOcrDraftKind(applyOcrToDraft(createOcrReviewDraft(source('a')), "x=1"), 'ROOT_FINDING'));
+  const b = selectOcrDraftKind(applyOcrToDraft(createOcrReviewDraft(source('b')), "x=2"), 'ROOT_FINDING');
+
+  assert.throws(() => mergeOcrReviewDrafts(a, b, 'merged'), /OCR_DRAFT_ALREADY_APPROVED/);
+  assert.throws(() => mergeOcrReviewDrafts(b, a, 'merged'), /OCR_DRAFT_ALREADY_APPROVED/);
+  assert.throws(() => splitOcrReviewDraft(a, { localId: 's1', contentLatex: 'x=1' }, { localId: 's2', contentLatex: 'x=1' }), /OCR_DRAFT_ALREADY_APPROVED/);
+});
+
+test('split rejects duplicate IDs and empty parts', () => {
+  const draft = selectOcrDraftKind(applyOcrToDraft(createOcrReviewDraft(source('a')), "x=1 \\wedge y=2"), 'ROOT_FINDING');
+
+  assert.throws(() => splitOcrReviewDraft(draft, { localId: 'same', contentLatex: 'x=1' }, { localId: 'same', contentLatex: 'y=2' }), /OCR_DRAFT_DUPLICATE_ID/);
+  assert.throws(() => splitOcrReviewDraft(draft, { localId: 'p1', contentLatex: '   ' }, { localId: 'p2', contentLatex: 'y=2' }), /OCR_DRAFT_EMPTY_PART/);
+  assert.throws(() => splitOcrReviewDraft(draft, { localId: 'p1', contentLatex: 'x=1' }, { localId: 'p2', contentLatex: '' }), /OCR_DRAFT_EMPTY_PART/);
+});
+
+test('editing a skipped draft is a no-op preserving SKIPPED status', () => {
+  let draft = createOcrReviewDraft(source('a'));
+  draft = skipOcrDraft(draft);
+  assert.equal(draft.reviewStatus, 'SKIPPED');
+  const edited = editOcrReviewDraft(draft, { contentLatex: "x=1" });
+  assert.strictEqual(edited, draft);
+  assert.equal(edited.contentLatex, "");
+});
