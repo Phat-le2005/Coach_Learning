@@ -33,6 +33,7 @@ export interface BatchEntry {
   serverStepId: string | null;
   serverRevision: number | null;
   error: string | null;
+  errorCode?: string | null;
 }
 
 export interface BatchJournal {
@@ -83,6 +84,26 @@ function statusAndCode(error: unknown): { status: number | undefined; code: stri
     code: typeof e.code === "string" ? e.code : undefined };
 }
 
+function normalizeContractString(val: string | null | undefined): string | null {
+  if (val === undefined || val === null) return null;
+  const trimmed = val.trim();
+  return trimmed.length > 0 ? trimmed : null;
+}
+
+function verifyStepContentMatches(
+  serverStep: { step_type: string; content_latex?: string | null; explanation_text?: string | null },
+  expected: FrozenStepRequest
+): boolean {
+  if (serverStep.step_type !== expected.step_type) return false;
+  if (normalizeContractString(serverStep.content_latex) !== normalizeContractString(expected.content_latex)) {
+    return false;
+  }
+  if (normalizeContractString(serverStep.explanation_text) !== normalizeContractString(expected.explanation_text)) {
+    return false;
+  }
+  return true;
+}
+
 export class SequentialBatchManager {
   constructor(private readonly api: BatchApi, private readonly store: BatchJournalStore, private readonly lock: BatchLock) {}
 
@@ -108,7 +129,7 @@ export class SequentialBatchManager {
           content: { step_type: x.stepType, content_latex: x.contentLatex,
             explanation_text: x.explanationText, artifact: null },
           state: "QUEUED", frozen: null, beforeStepIds: null,
-          serverStepId: null, serverRevision: null, error: null })),
+          serverStepId: null, serverRevision: null, error: null, errorCode: null })),
       };
       // Write-ahead: no POST can occur until the entire initial plan is persisted.
       await this.store.save(copyJournal(journal));
@@ -138,16 +159,33 @@ export class SequentialBatchManager {
       if (!journal) throw new Error("BATCH_JOURNAL_NOT_FOUND");
       if (journal.attemptId !== attemptId) throw new Error("BATCH_ATTEMPT_MISMATCH");
       if (!isValidBatchJournal(journal)) throw new Error("BATCH_JOURNAL_CORRUPT");
-      if (journal.state !== "PAUSED" ||
+
+      const hasTerminalActionKeyReused = journal.entries.some(
+        (entry) => entry.errorCode === "ACTION_KEY_REUSED" || entry.error?.includes("ACTION_KEY_REUSED")
+      );
+      if (
+        journal.state !== "PAUSED" ||
+        hasTerminalActionKeyReused ||
         journal.message === "BATCH_SEND_ACTION_KEY_REUSED" ||
         !journal.entries.some((entry) => entry.state === "REJECTED") ||
-        journal.entries.some((entry) => entry.state === "SENDING" || entry.state === "UNKNOWN")) {
+        journal.entries.some((entry) => entry.state === "SENDING" || entry.state === "UNKNOWN")
+      ) {
         throw new Error("BATCH_NOT_SAFE_TO_ABANDON");
       }
       const server = await this.api.getAttempt(attemptId);
-      if (!Array.isArray(server.steps) || !journal.entries.every((entry) =>
-        entry.state !== "COMMITTED" || (entry.serverStepId && server.steps!.some((s) => s.id === entry.serverStepId)))) {
+      if (!Array.isArray(server.steps) || server.id !== attemptId) {
         throw new Error("BATCH_RECONCILIATION_REQUIRED");
+      }
+      const serverStepsMap = new Map(server.steps.map((s) => [s.id, s]));
+      for (const entry of journal.entries) {
+        if (entry.state === "COMMITTED") {
+          if (!entry.serverStepId) throw new Error("BATCH_RECONCILIATION_REQUIRED");
+          const step = serverStepsMap.get(entry.serverStepId);
+          if (!step) throw new Error("BATCH_RECONCILIATION_REQUIRED");
+          if (entry.frozen && !verifyStepContentMatches(step, entry.frozen)) {
+            throw new Error("BATCH_RECONCILIATION_REQUIRED");
+          }
+        }
       }
       journal.state = "ABANDONED";
       journal.message = "BATCH_ABANDONED_AFTER_REJECTION";
@@ -171,8 +209,18 @@ export class SequentialBatchManager {
     if (journal.state === "ABANDONED") throw new Error("BATCH_ALREADY_ABANDONED");
     if (journal.state === "COMPLETE") {
       const fresh = await this.api.getAttempt(journal.attemptId);
-      if (!Array.isArray(fresh.steps) || !journal.entries.every((e) =>
-        e.serverStepId && fresh.steps!.some((s) => s.id === e.serverStepId))) {
+      if (!Array.isArray(fresh.steps) || fresh.id !== journal.attemptId) {
+        return this.pause(journal, "BATCH_PREVIOUS_RESULT_CHANGED");
+      }
+      const stepsMap = new Map(fresh.steps.map((s) => [s.id, s]));
+      const allMatch = journal.entries.every((e) => {
+        if (!e.serverStepId) return false;
+        const step = stepsMap.get(e.serverStepId);
+        if (!step) return false;
+        if (e.frozen && !verifyStepContentMatches(step, e.frozen)) return false;
+        return true;
+      });
+      if (!allMatch) {
         return this.pause(journal, "BATCH_PREVIOUS_RESULT_CHANGED");
       }
       return { status: "COMPLETE", journal: copyJournal(journal), attempt: fresh };
@@ -216,9 +264,13 @@ export class SequentialBatchManager {
         // Network/HTTP error: preserve frozen request for retry
         const { status, code } = statusAndCode(error);
         entry.error = reason(error);
+        entry.errorCode = code ?? (status !== undefined ? `HTTP_${status}` : "UNKNOWN");
         entry.state = status === undefined || status >= 500 || status === 401 || status === 429
           ? "UNKNOWN" : "REJECTED";
-        if (code === "ACTION_KEY_REUSED") entry.state = "REJECTED";
+        if (code === "ACTION_KEY_REUSED") {
+          entry.state = "REJECTED";
+          entry.errorCode = "ACTION_KEY_REUSED";
+        }
         return this.pause(journal, `BATCH_SEND_${code ?? status ?? "UNKNOWN"}`);
       }
 
@@ -231,10 +283,18 @@ export class SequentialBatchManager {
       const before = new Set(entry.beforeStepIds);
       const additions = response.steps.filter((step) => !before.has(step.id));
       if (additions.length !== 1) return this.pause(journal, "BATCH_UNVERIFIABLE_STEP_ID");
-      entry.serverStepId = additions[0].id;
+      const addedStep = additions[0];
+      if (!verifyStepContentMatches(addedStep, request)) {
+        entry.state = "REJECTED";
+        entry.error = "BATCH_SERVER_CONTENT_MISMATCH";
+        entry.errorCode = "CONTENT_MISMATCH";
+        return this.pause(journal, "BATCH_SERVER_CONTENT_MISMATCH");
+      }
+      entry.serverStepId = addedStep.id;
       entry.serverRevision = response.current_revision;
       entry.state = "COMMITTED";
       entry.error = null;
+      entry.errorCode = null;
       journal.nextRevision = response.current_revision;
       journal.state = "PREPARED";
       journal.message = null;
@@ -257,9 +317,21 @@ export class SequentialBatchManager {
     let fresh: SolutionAttemptRead;
     try { fresh = await this.api.getAttempt(journal.attemptId); }
     catch (error) { return this.pause(journal, `BATCH_VERIFY_${reason(error)}`); }
-    if (!Array.isArray(fresh.steps) || fresh.id !== journal.attemptId ||
-      !journal.entries.every((entry) => entry.serverStepId && fresh.steps!.some((step) => step.id === entry.serverStepId))) {
+    if (!Array.isArray(fresh.steps) || fresh.id !== journal.attemptId) {
       return this.pause(journal, "BATCH_SERVER_RECONCILIATION_REQUIRED");
+    }
+    const freshStepsMap = new Map(fresh.steps.map((step) => [step.id, step]));
+    for (const entry of journal.entries) {
+      if (!entry.serverStepId) {
+        return this.pause(journal, "BATCH_SERVER_RECONCILIATION_REQUIRED");
+      }
+      const serverStep = freshStepsMap.get(entry.serverStepId);
+      if (!serverStep) {
+        return this.pause(journal, "BATCH_SERVER_RECONCILIATION_REQUIRED");
+      }
+      if (entry.frozen && !verifyStepContentMatches(serverStep, entry.frozen)) {
+        return this.pause(journal, "BATCH_SERVER_CONTENT_MISMATCH");
+      }
     }
     journal.state = "COMPLETE";
     journal.message = null;

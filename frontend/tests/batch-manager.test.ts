@@ -259,6 +259,35 @@ test("action key reused blocks abandonment even with explicit confirmation", asy
   await assert.rejects(() => manager.abandonRejected("attempt"), /BATCH_NOT_SAFE_TO_ABANDON/);
 });
 
+test("BLOCKER 1 regression: action key reused rejection cannot be bypassed by resume or message overwrite", async () => {
+  const { manager, api } = setup();
+  api.addStep = async () => { throw { status: 409, code: "ACTION_KEY_REUSED" }; };
+  assert.equal((await manager.start("attempt", "b", approved(1))).status, "PAUSED");
+  await assert.rejects(() => manager.abandonRejected("attempt"), /BATCH_NOT_SAFE_TO_ABANDON/);
+
+  // Resume overwrites mutable message
+  const resumeResult = await manager.resume("attempt");
+  assert.equal(resumeResult.status, "PAUSED");
+
+  // Invariant: abandonment MUST still be rejected after resume
+  await assert.rejects(() => manager.abandonRejected("attempt"), /BATCH_NOT_SAFE_TO_ABANDON/);
+});
+
+test("BLOCKER 2 regression: server content mismatch MUST NOT return COMPLETE", async () => {
+  const { manager, api } = setup();
+  const original = api.addStep.bind(api);
+  api.addStep = async (id, req) => {
+    const res = await original(id, req);
+    // Server stored a corrupted content_latex different from frozen request
+    const step = res.steps![res.steps!.length - 1];
+    step.content_latex = "CORRUPTED_IN_FLIGHT";
+    return res;
+  };
+  const res = await manager.start("attempt", "b", approved(1));
+  assert.notEqual(res.status, "COMPLETE");
+  assert.equal(res.status, "PAUSED");
+});
+
 test("GET failure before preparing next item pauses without sending it", async () => {
   const { manager, api, store } = setup();
   const get = api.getAttempt.bind(api);
@@ -340,9 +369,46 @@ test("T14: external mutation of request object in api.addStep does not corrupt f
     return original(id, req);
   };
   const res = await manager.start("attempt", "b", approved(1));
-  assert.equal(res.status, "COMPLETE");
+  // Content mismatch prevents falsely reporting COMPLETE
+  assert.equal(res.status, "PAUSED");
+  assert.equal(res.journal?.message, "BATCH_SERVER_CONTENT_MISMATCH");
   // Frozen request in journal remained untouched
   assert.equal(store.saved?.entries[0].frozen?.content_latex, "x=0");
+  assert.equal(store.saved?.entries[0].state, "REJECTED");
+  assert.equal(store.saved?.entries[0].errorCode, "CONTENT_MISMATCH");
+});
+
+test("T14_B: whitespace trimming normalization by backend contract matches and completes", async () => {
+  const { manager, api } = setup();
+  const original = api.addStep.bind(api);
+  api.addStep = async (id, req) => {
+    const res = await original(id, req);
+    // Pydantic str_strip_whitespace behavior
+    const step = res.steps![res.steps!.length - 1];
+    step.content_latex = "  " + (req.content_latex ?? "") + "  ";
+    step.content_latex = step.content_latex.trim();
+    return res;
+  };
+  const res = await manager.start("attempt", "b", approved(1));
+  assert.equal(res.status, "COMPLETE");
+});
+
+test("T14_C: final reconciliation detects content tampering on server and halts", async () => {
+  const { manager, api, store } = setup();
+  const originalGet = api.getAttempt.bind(api);
+  let getCalls = 0;
+  api.getAttempt = async () => {
+    getCalls++;
+    const att = await originalGet();
+    // Tamper with step content during final reconciliation GET
+    if (getCalls >= 3 && att.steps && att.steps.length > 0) {
+      att.steps[0].content_latex = "TAMPERED_AT_REST";
+    }
+    return att;
+  };
+  const res = await manager.start("attempt", "b", approved(1));
+  assert.equal(res.status, "PAUSED");
+  assert.equal(store.saved?.message, "BATCH_SERVER_CONTENT_MISMATCH");
 });
 
 test("schema validation: corrupted journal data fails closed with BATCH_JOURNAL_CORRUPT or not found", async () => {
@@ -387,6 +453,7 @@ test("schema validation: isValidBatchJournal rejects invalid, unsupported, and c
         serverStepId: null,
         serverRevision: null,
         error: null,
+        errorCode: null,
       },
     ],
   };
@@ -437,6 +504,46 @@ test("schema validation: isValidBatchJournal rejects invalid, unsupported, and c
     ],
   };
   assert.equal(isValidBatchJournal(duplicateDraft), false);
+
+  // Rejects duplicate serverStepIds across entries
+  const duplicateServerStepId: BatchJournal = {
+    ...validJournal,
+    entries: [
+      {
+        ...validJournal.entries[0],
+        state: "COMMITTED",
+        frozen: {
+          expected_attempt_revision: 1,
+          client_action_id: "a-1",
+          step_type: "EXPLANATION",
+          content_latex: "x=1",
+          explanation_text: null,
+          artifact: null,
+        },
+        beforeStepIds: [],
+        serverStepId: "step-duplicate",
+        serverRevision: 2,
+      },
+      {
+        ...validJournal.entries[0],
+        draftId: "d-2",
+        actionId: "a-2",
+        state: "COMMITTED",
+        frozen: {
+          expected_attempt_revision: 2,
+          client_action_id: "a-2",
+          step_type: "EXPLANATION",
+          content_latex: "x=1",
+          explanation_text: null,
+          artifact: null,
+        },
+        beforeStepIds: ["step-duplicate"],
+        serverStepId: "step-duplicate", // DUPLICATE serverStepId!
+        serverRevision: 3,
+      },
+    ],
+  };
+  assert.equal(isValidBatchJournal(duplicateServerStepId), false);
 
   // Rejects contradictory QUEUED entry with frozen non-null or serverStepId non-null
   const badQueued: BatchJournal = {

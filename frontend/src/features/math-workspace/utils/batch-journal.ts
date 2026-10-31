@@ -22,6 +22,7 @@ export function isValidBatchJournal(value: unknown): value is BatchJournal {
 
   const seenActionIds = new Set<string>();
   const seenDraftIds = new Set<string>();
+  const seenServerStepIds = new Set<string>();
 
   // 2. Entries validation
   for (const e of j.entries) {
@@ -34,6 +35,13 @@ export function isValidBatchJournal(value: unknown): value is BatchJournal {
     if (seenActionIds.has(entry.actionId) || seenDraftIds.has(entry.draftId)) return false;
     seenActionIds.add(entry.actionId);
     seenDraftIds.add(entry.draftId);
+
+    // Duplicate serverStepId check
+    if (entry.serverStepId !== null && entry.serverStepId !== undefined) {
+      if (typeof entry.serverStepId !== "string" || !entry.serverStepId.trim()) return false;
+      if (seenServerStepIds.has(entry.serverStepId)) return false;
+      seenServerStepIds.add(entry.serverStepId);
+    }
 
     // Entry state
     if (typeof entry.state !== "string" || !VALID_ENTRY_STATES.has(entry.state)) return false;
@@ -68,8 +76,9 @@ export function isValidBatchJournal(value: unknown): value is BatchJournal {
       }
     }
 
-    // Error field validation
+    // Error and errorCode field validation (backward compatible with undefined/null)
     if (entry.error !== null && typeof entry.error !== "string") return false;
+    if (entry.errorCode !== undefined && entry.errorCode !== null && typeof entry.errorCode !== "string") return false;
 
     // Invariant: entry state vs frozen, beforeStepIds, serverStepId, serverRevision
     switch (entry.state) {
