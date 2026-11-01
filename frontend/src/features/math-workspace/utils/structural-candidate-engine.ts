@@ -347,6 +347,10 @@ export function detectStructuralCandidates(
       if (innerRegions.length >= 2) {
         // Classify whether bracket is Curly { (SYSTEM) or Square [ (ALTERNATIVES)
         const bracketClass = classifyBracketGeometry(bracketGeom.stroke);
+        // A tall stroke is not automatically a mathematical delimiter.
+        // If its shape is ambiguous, retain the ink for the ordinary path;
+        // never consume unrelated equations into an UNKNOWN parent.
+        if (bracketClass.type === "UNKNOWN") continue;
         const structureKind: StructureKind =
           bracketClass.type === "CURLY"
             ? "SYSTEM"
