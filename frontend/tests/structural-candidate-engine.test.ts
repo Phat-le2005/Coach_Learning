@@ -377,3 +377,23 @@ test("A fraction parent never includes an unrelated inline suffix even if segmen
   assert.ok(candidates.some((candidate) =>
     candidate.kind === "INDEPENDENT" && candidate.sourceStrokeIds.includes("suffix")));
 });
+
+
+test("Negative: an ambiguous tall stroke never consumes adjacent equations as a fake group", () => {
+  const tallLine = makeStroke("tall", [
+    { x: 0.08, y: 0.10, pressure: 0.5 },
+    { x: 0.08, y: 0.20, pressure: 0.5 },
+    { x: 0.08, y: 0.28, pressure: 0.5 },
+  ]);
+  const eq1 = makeLineStroke("eq1", 0.13, 0.12, 0.2, 0.02);
+  const eq2 = makeLineStroke("eq2", 0.13, 0.22, 0.2, 0.02);
+  const candidates = detectStructuralCandidates([tallLine, eq1, eq2]);
+  assert.equal(classifyBracketGeometry(tallLine).type, "UNKNOWN");
+  assert.ok(candidates.every((candidate) => candidate.children.length === 0));
+  assert.ok(candidates.every((candidate) =>
+    candidate.kind !== "SYSTEM" && candidate.kind !== "ALTERNATIVES"));
+  assert.deepEqual(
+    new Set(candidates.flatMap((c) => c.sourceStrokeIds)),
+    new Set(["tall", "eq1", "eq2"]),
+  );
+});
