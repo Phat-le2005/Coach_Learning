@@ -87,12 +87,13 @@ function computeOverlap(a: InkBounds, b: InkBounds): { horizontal: number; verti
  */
 export function classifyBracketGeometry(stroke: InkStroke): {
   type: "CURLY" | "SQUARE" | "UNKNOWN";
-  confidence: number;
+  /** Rule score only; NOT a calibrated probability. */
+  heuristicScore: number;
   reasons: string[];
 } {
   const points = stroke.points;
   if (points.length < 3) {
-    return { type: "UNKNOWN", confidence: 0, reasons: ["Too few points for bracket shape analysis"] };
+    return { type: "UNKNOWN", heuristicScore: 0, reasons: ["Too few points for bracket shape analysis"] };
   }
 
   const ys = points.map((p) => p.y);
@@ -105,7 +106,7 @@ export function classifyBracketGeometry(stroke: InkStroke): {
   const totalW = maxX - minX;
 
   if (totalH <= 0 || totalW <= 0) {
-    return { type: "UNKNOWN", confidence: 0, reasons: ["Degenerate stroke dimensions"] };
+    return { type: "UNKNOWN", heuristicScore: 0, reasons: ["Degenerate stroke dimensions"] };
   }
 
   // Divide stroke points into 3 vertical zones: Top (0%-30%), Middle (35%-65%), Bottom (70%-100%)
@@ -117,7 +118,7 @@ export function classifyBracketGeometry(stroke: InkStroke): {
   const botPoints = points.filter((p) => (p.y - minY) / totalH >= 0.7);
 
   if (midPoints.length === 0) {
-    return { type: "UNKNOWN", confidence: 0, reasons: ["Missing middle segment"] };
+    return { type: "UNKNOWN", heuristicScore: 0, reasons: ["Missing middle segment"] };
   }
 
   const midMinX = Math.min(...midPoints.map((p) => p.x));
@@ -136,7 +137,11 @@ export function classifyBracketGeometry(stroke: InkStroke): {
   const botIndent = botMinX - midMinX;
   const threshold = Math.max(0.003, totalW * 0.15);
 
-  const isCurly = topIndent > threshold && botIndent > threshold;
+  const centralLeftCusp = topIndent > threshold && botIndent > threshold;
+  // A typical left curly brace can have a right-facing central cusp and
+  // two left-facing outer lobes; do not require the synthetic reversed shape.
+  const centralRightCusp = -topIndent > threshold && -botIndent > threshold;
+  const isCurly = centralLeftCusp || centralRightCusp;
   const isSquare =
     Math.abs(topIndent) <= threshold &&
     Math.abs(botIndent) <= threshold &&
@@ -145,9 +150,11 @@ export function classifyBracketGeometry(stroke: InkStroke): {
   if (isCurly) {
     return {
       type: "CURLY",
-      confidence: 0.9,
+      heuristicScore: 0.9,
       reasons: [
-        "Central leftward cusp detected with indented top and bottom endpoints",
+        centralRightCusp
+          ? "Central rightward cusp detected between upper/lower left lobes"
+          : "Central leftward cusp detected with indented top and bottom endpoints",
         `topIndent: ${topIndent.toFixed(4)}, botIndent: ${botIndent.toFixed(4)}`,
       ],
     };
@@ -156,7 +163,7 @@ export function classifyBracketGeometry(stroke: InkStroke): {
   if (isSquare) {
     return {
       type: "SQUARE",
-      confidence: 0.88,
+      heuristicScore: 0.88,
       reasons: [
         "Straight vertical spine spanning top, middle, and bottom with horizontal arms",
         `topArm: ${(topMaxX - minX).toFixed(4)}, botArm: ${(botMaxX - minX).toFixed(4)}`,
@@ -168,14 +175,14 @@ export function classifyBracketGeometry(stroke: InkStroke): {
   if (topIndent > 0.002 || botIndent > 0.002) {
     return {
       type: "CURLY",
-      confidence: 0.65,
+      heuristicScore: 0.65,
       reasons: ["Partial cusp indicates curly brace"],
     };
   }
 
   return {
     type: "UNKNOWN",
-    confidence: 0.4,
+    heuristicScore: 0.4,
     reasons: ["Ambiguous bracket geometry; insufficient cusp or arm distinction"],
   };
 }
@@ -312,18 +319,24 @@ export function detectStructuralCandidates(
     const vSpanTop = bracketBounds.top - medianHeight * 0.4;
     const vSpanBottom = bracketBounds.bottom + medianHeight * 0.4;
 
-    const enclosedStrokes = geoms.filter((other) => {
-      if (other.stroke.id === bracketGeom.stroke.id) return false;
-      if (usedStrokeIds.has(other.stroke.id)) return false;
-
-      // Must be to the right of bracket's left boundary
-      const isRightOfBracket = other.bounds.left >= bracketBounds.left - 0.005;
-      // Must fall within the vertical extent of the bracket
-      const isWithinVerticalSpan =
+    // First gather candidates at the correct height, then follow the
+    // left-adjacent horizontal ink cluster. The previous half-plane rule
+    // ("everything to the right") incorrectly swallowed other columns.
+    // Prefer leaving an uncertain/long expression ungrouped to a false merge.
+    const horizontalCandidates = geoms.filter((other) => {
+      if (other.stroke.id === bracketGeom.stroke.id || usedStrokeIds.has(other.stroke.id)) return false;
+      return other.bounds.left >= bracketRight - 0.005 &&
         other.bounds.top >= vSpanTop && other.bounds.bottom <= vSpanBottom;
+    }).sort((a, b) => a.bounds.left - b.bounds.left);
 
-      return isRightOfBracket && isWithinVerticalSpan;
-    });
+    const maxHorizontalGap = Math.max(0.045, medianHeight * 2.3);
+    const enclosedStrokes: StrokeGeometry[] = [];
+    let connectedRightEdge = bracketRight;
+    for (const other of horizontalCandidates) {
+      if (other.bounds.left - connectedRightEdge > maxHorizontalGap) break;
+      enclosedStrokes.push(other);
+      connectedRightEdge = Math.max(connectedRightEdge, other.bounds.right);
+    }
 
     // A multi-line bracket requires at least 2 distinct expressions / lines
     if (enclosedStrokes.length >= 2) {
@@ -403,10 +416,17 @@ export function detectStructuralCandidates(
           const numBounds = computeBounds(fracCheck.numeratorStrokes);
           const denBounds = computeBounds(fracCheck.denominatorStrokes);
 
+          const fractionIds = new Set([
+            geom.stroke.id,
+            ...fracCheck.numeratorStrokes.map((s) => s.id),
+            ...fracCheck.denominatorStrokes.map((s) => s.id),
+          ]);
+          const fractionStrokes = reg.strokes.filter((s) => fractionIds.has(s.id));
           candidates.push({
             id: `frac-${reg.id}`,
             kind: "FRACTION",
-            sourceStrokeIds: reg.strokes.map((s) => s.id),
+            // Do not silently absorb an inline suffix/sibling into the fraction.
+            sourceStrokeIds: fractionStrokes.map((s) => s.id),
             bounds: { ...reg.bounds },
             children: [
               {
@@ -428,6 +448,21 @@ export function detectStructuralCandidates(
             ],
             reasons: ["Fraction structure: horizontal bar dividing numerator and denominator"],
           });
+          // Preserve non-fraction strokes as standalone regions rather than
+          // silently including them in the fraction parent.
+          const remainder = reg.strokes.filter((s) => !fractionIds.has(s.id));
+          if (remainder.length > 0) {
+            for (const extra of segmentPageInk_v2(remainder)) {
+              candidates.push({
+                id: `residual-${extra.id}`,
+                kind: "INDEPENDENT",
+                sourceStrokeIds: extra.strokes.map((s) => s.id),
+                bounds: { ...extra.bounds },
+                children: [],
+                reasons: ["Stroke group adjacent to, but not part of, the fraction"],
+              });
+            }
+          }
           fractionFound = true;
           break;
         }
