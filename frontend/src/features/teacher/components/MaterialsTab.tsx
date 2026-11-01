@@ -1,204 +1,214 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
-import {
-  BookOpen,
-  PenTool,
-  UploadCloud,
-  Search,
-  Filter,
-  Download,
-  Share2,
-  FileText,
-  CheckCircle,
-  FileCheck,
-} from "lucide-react";
-import type { TeacherMaterial, MaterialCategory } from "../types";
-import { UploadMaterialModal } from "./UploadMaterialModal";
+import { useMemo, useState } from "react";
+import { UploadCloud, Search, FileText, Calendar, Filter, Sparkles, AlertCircle } from "lucide-react";
+import type { TeacherClassroom, TeacherMaterial, TeacherSubject } from "../api";
 import styles from "../TeacherDashboard.module.css";
 
-interface MaterialsTabProps {
+export interface MaterialsTabProps {
+  selectedClass?: TeacherClassroom;
   materials: TeacherMaterial[];
-  onAddMaterial: (material: TeacherMaterial) => void;
+  subjects: TeacherSubject[];
+  isLoading: boolean;
+  onOpenUpload: () => void;
 }
 
-export function MaterialsTab({ materials, onAddMaterial }: MaterialsTabProps) {
-  const [activeCategory, setActiveCategory] = useState<MaterialCategory>("theory");
+export function MaterialsTab({
+  selectedClass,
+  materials,
+  subjects,
+  isLoading,
+  onOpenUpload,
+}: MaterialsTabProps) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedTopic, setSelectedTopic] = useState<string>("ALL");
-  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [selectedSubjectFilter, setSelectedSubjectFilter] = useState("");
 
-  const topicsList = useMemo(() => {
-    const set = new Set<string>();
-    for (const m of materials) set.add(m.topic);
-    return ["ALL", ...Array.from(set)];
-  }, [materials]);
+  const formatSize = (bytes: number) => {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
+    return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+  };
+
+  const formatDate = (dateStr: string) => {
+    try {
+      return new Intl.DateTimeFormat("vi-VN", { dateStyle: "medium" }).format(new Date(dateStr));
+    } catch {
+      return dateStr;
+    }
+  };
 
   const filteredMaterials = useMemo(() => {
-    return materials.filter((m) => {
-      if (m.category !== activeCategory) return false;
-      if (selectedTopic !== "ALL" && m.topic !== selectedTopic) return false;
-      if (searchQuery.trim()) {
-        const q = searchQuery.toLowerCase();
-        return (
-          m.title.toLowerCase().includes(q) ||
-          m.description.toLowerCase().includes(q) ||
-          m.topic.toLowerCase().includes(q)
-        );
-      }
-      return true;
+    return materials.filter((item) => {
+      const matchQuery =
+        item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.original_file_name.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchSubject = !selectedSubjectFilter || item.subject_id === selectedSubjectFilter;
+      return matchQuery && matchSubject;
     });
-  }, [materials, activeCategory, selectedTopic, searchQuery]);
+  }, [materials, searchQuery, selectedSubjectFilter]);
 
-  const theoryCount = materials.filter((m) => m.category === "theory").length;
-  const practiceCount = materials.filter((m) => m.category === "practice").length;
+  if (!selectedClass) {
+    return (
+      <div className={styles.sectionCard}>
+        <div className={styles.emptyCard}>
+          <AlertCircle size={32} className={styles.emptyIcon} aria-hidden="true" />
+          <h4 className={styles.emptyTitle}>Chưa chọn lớp học</h4>
+          <p className={styles.emptyDesc}>
+            Vui lòng chọn hoặc tạo một lớp học để quản lý kho tài liệu và đề thi bài tập.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div>
-      {/* Top action row */}
-      <div className={styles.viewHeader}>
-        <div className={styles.viewTitleGroup}>
-          <h2 className={styles.viewTitle}>Kho tài liệu giảng dạy</h2>
-          <span className={styles.viewSubtitle}>
-            Quản lý giáo án, chuyên đề lý thuyết và phiếu bài tập thực hành Toán 12
-          </span>
-        </div>
-
-        <div className={styles.viewActions}>
-          {/* Switch Category */}
-          <div className={styles.categorySwitch}>
-            <button
-              type="button"
-              className={`${styles.categoryBtn} ${activeCategory === "theory" ? styles.categoryBtnActive : ""}`}
-              onClick={() => setActiveCategory("theory")}
-            >
-              📖 Lý thuyết ({theoryCount})
-            </button>
-            <button
-              type="button"
-              className={`${styles.categoryBtn} ${activeCategory === "practice" ? styles.categoryBtnActive : ""}`}
-              onClick={() => setActiveCategory("practice")}
-            >
-              ✍️ Thực hành & Bài tập ({practiceCount})
-            </button>
+    <div className={styles.tabContentWrap}>
+      <div className={styles.sectionCard}>
+        {/* Header */}
+        <div className={styles.sectionCardHeader}>
+          <div>
+            <div className={styles.badgeCluster}>
+              <h3 className={styles.sectionHeading}>
+                Kho học liệu &amp; Đề thi · {selectedClass.name}
+              </h3>
+              <span className={styles.studentTotalPill}>{materials.length} tệp</span>
+            </div>
+            <p className={styles.sectionSubheading}>
+              Tài liệu PDF/TXT được lưu trữ an toàn trên máy chủ EduMS, dùng làm ngữ cảnh bài tập và đề kiểm tra
+            </p>
           </div>
 
           <button
             type="button"
             className={styles.btnPrimary}
-            onClick={() => setIsUploadModalOpen(true)}
+            onClick={onOpenUpload}
           >
-            <UploadCloud size={16} />
-            Tải lên tài liệu
+            <UploadCloud size={16} aria-hidden="true" />
+            Tải lên tài liệu mới
           </button>
         </div>
+
+        {/* Toolbar & Filters */}
+        <div className={styles.materialsToolbar}>
+          <div className={styles.searchInputWrap}>
+            <Search size={16} className={styles.searchIcon} aria-hidden="true" />
+            <input
+              type="text"
+              className={styles.searchInput}
+              placeholder="Tìm kiếm tài liệu theo tiêu đề hoặc tên tệp..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                className={styles.searchClearBtn}
+                onClick={() => setSearchQuery("")}
+                aria-label="Xóa từ khóa tìm kiếm"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+
+          <div className={styles.subjectFilterWrap}>
+            <Filter size={15} className={styles.filterIcon} aria-hidden="true" />
+            <select
+              className={styles.filterSelect}
+              value={selectedSubjectFilter}
+              onChange={(e) => setSelectedSubjectFilter(e.target.value)}
+              aria-label="Lọc theo môn học"
+            >
+              <option value="">Tất cả môn học</option>
+              {subjects.map((sub) => (
+                <option key={sub.id} value={sub.id}>
+                  {sub.name} ({sub.code})
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* Materials List */}
+        {isLoading ? (
+          <div className={styles.tableLoadingState}>
+            <div className={styles.spinner} aria-hidden="true" />
+            <p>Đang tải danh sách tài liệu...</p>
+          </div>
+        ) : filteredMaterials.length === 0 ? (
+          <div className={styles.emptyCard}>
+            <FileText size={36} className={styles.emptyIcon} aria-hidden="true" />
+            <h4 className={styles.emptyTitle}>
+              {searchQuery || selectedSubjectFilter
+                ? "Không tìm thấy tài liệu phù hợp bộ lọc"
+                : "Chưa có tài liệu nào trong lớp học này"}
+            </h4>
+            <p className={styles.emptyDesc}>
+              {searchQuery || selectedSubjectFilter
+                ? "Hãy thử tìm kiếm với từ khóa khác hoặc xóa bộ lọc môn học."
+                : "Tải lên đề ôn tập, bài giảng PDF để chia sẻ với học sinh và khai thác sơ đồ tư duy lý thuyết."}
+            </p>
+            {!searchQuery && !selectedSubjectFilter && (
+              <button
+                type="button"
+                className={styles.btnPrimary}
+                onClick={onOpenUpload}
+              >
+                <UploadCloud size={16} /> Tải tài liệu ngay
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className={styles.materialGridModern}>
+            {filteredMaterials.map((item) => {
+              const isPdf = item.original_file_name.endsWith(".pdf") || item.mime_type.includes("pdf");
+              const subject = subjects.find((s) => s.id === item.subject_id);
+
+              return (
+                <article key={item.id} className={styles.materialCardModern}>
+                  <div className={styles.materialCardHeader}>
+                    <span className={isPdf ? styles.badgeFormatPdf : styles.badgeFormatTxt}>
+                      <FileText size={13} aria-hidden="true" />
+                      {isPdf ? "PDF" : "TXT"}
+                    </span>
+                    <span className={styles.materialStatusPill}>
+                      {item.status === "APPROVED" ? "Đã duyệt" : item.status}
+                    </span>
+                  </div>
+
+                  <h4 className={styles.materialCardTitle} title={item.title}>
+                    {item.title}
+                  </h4>
+
+                  <p className={styles.materialFileName} title={item.original_file_name}>
+                    {item.original_file_name}
+                  </p>
+
+                  <div className={styles.materialCardMeta}>
+                    <span className={styles.materialSubjectTag}>
+                      {subject?.name || "Môn học"}
+                    </span>
+                    <span className={styles.materialSizeText}>
+                      {formatSize(item.file_size_bytes)}
+                    </span>
+                  </div>
+
+                  <div className={styles.materialCardFooter}>
+                    <span className={styles.materialDateText}>
+                      <Calendar size={12} aria-hidden="true" />
+                      {formatDate(item.created_at)}
+                    </span>
+                    <span className={styles.materialVerifiedHint}>
+                      <Sparkles size={12} aria-hidden="true" />
+                      Đã lưu trữ an toàn
+                    </span>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        )}
       </div>
-
-      {/* Filter and Search Bar */}
-      <div style={{ display: "flex", gap: "0.75rem", marginBottom: "1.25rem", flexWrap: "wrap" }}>
-        <div style={{ flex: 1, minWidth: "240px", position: "relative" }}>
-          <input
-            type="text"
-            className={styles.formInput}
-            style={{ paddingLeft: "2.25rem" }}
-            placeholder={`Tìm kiếm trong kho ${activeCategory === "theory" ? "lý thuyết" : "thực hành"}...`}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          <Search
-            size={16}
-            style={{ position: "absolute", left: "0.75rem", top: "50%", transform: "translateY(-50%)", color: "var(--text-tertiary)" }}
-          />
-        </div>
-
-        <div style={{ minWidth: "200px" }}>
-          <select
-            className={styles.formSelect}
-            value={selectedTopic}
-            onChange={(e) => setSelectedTopic(e.target.value)}
-          >
-            <option value="ALL">Tất cả chủ đề</option>
-            {topicsList.filter(t => t !== "ALL").map((t) => (
-              <option key={t} value={t}>
-                {t}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      {/* Material Grid */}
-      {filteredMaterials.length === 0 ? (
-        <div style={{ textAlign: "center", padding: "3rem", background: "var(--surface-elevated)", borderRadius: "14px", border: "1px dashed var(--border-soft)" }}>
-          <FileText size={36} style={{ color: "var(--text-tertiary)", marginBottom: "0.5rem" }} />
-          <h4 style={{ margin: "0 0 0.25rem", color: "var(--text-primary)" }}>Chưa có tài liệu phù hợp</h4>
-          <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--text-secondary)" }}>
-            Thử thay đổi từ khóa tìm kiếm hoặc bấm &quot;Tải lên tài liệu&quot; để thêm tài liệu mới.
-          </p>
-        </div>
-      ) : (
-        <div className={styles.materialGrid}>
-          {filteredMaterials.map((item) => (
-            <div key={item.id} className={styles.materialCard}>
-              <div>
-                <div className={styles.materialTop}>
-                  <span
-                    className={`${styles.materialFormatBadge} ${
-                      item.format === "pdf"
-                        ? styles.badgePdf
-                        : item.format === "docx"
-                        ? styles.badgeDocx
-                        : styles.badgeExam
-                    }`}
-                  >
-                    {item.format}
-                  </span>
-                  <span className={styles.materialTopic}>{item.topic}</span>
-                </div>
-
-                <h3 className={styles.materialTitle}>{item.title}</h3>
-                <p className={styles.materialDesc}>{item.description}</p>
-              </div>
-
-              <div className={styles.materialFooter}>
-                <div className={styles.materialMeta}>
-                  <span>{item.fileSize}</span>
-                  <span>•</span>
-                  <span>{item.downloadsCount} lượt tải</span>
-                </div>
-
-                <div className={styles.materialActions}>
-                  <button
-                    type="button"
-                    className={styles.cardActionBtn}
-                    onClick={() => alert(`Đã tạo liên kết chia sẻ cho "${item.title}".`)}
-                    title="Gán cho lớp học"
-                  >
-                    <Share2 size={13} style={{ marginRight: "3px", verticalAlign: "middle" }} />
-                    Gán lớp
-                  </button>
-                  <button
-                    type="button"
-                    className={styles.cardActionBtn}
-                    onClick={() => alert(`Bắt đầu tải về "${item.title}".`)}
-                    title="Tải tài liệu về máy"
-                  >
-                    <Download size={13} style={{ marginRight: "3px", verticalAlign: "middle" }} />
-                    Tải về
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Upload modal */}
-      <UploadMaterialModal
-        isOpen={isUploadModalOpen}
-        onClose={() => setIsUploadModalOpen(false)}
-        onAddMaterial={onAddMaterial}
-      />
     </div>
   );
 }

@@ -1,139 +1,224 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { X, UploadCloud, FileText, CheckCircle2 } from "lucide-react";
-import type { TeacherMaterial, MaterialCategory } from "../types";
+import type { TeacherClassroom, TeacherSubject } from "../api";
 import styles from "../TeacherDashboard.module.css";
 
-interface UploadMaterialModalProps {
+export interface UploadMaterialModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAddMaterial: (material: TeacherMaterial) => void;
+  selectedClass?: TeacherClassroom;
+  eligibleSubjects: TeacherSubject[];
+  onSubmit: (subjectId: string, title: string, file: File) => Promise<void>;
+  isBusy: boolean;
+  errorMessage?: string;
+  successMessage?: string;
 }
 
-export function UploadMaterialModal({ isOpen, onClose, onAddMaterial }: UploadMaterialModalProps) {
+export function UploadMaterialModal({
+  isOpen,
+  onClose,
+  selectedClass,
+  eligibleSubjects,
+  onSubmit,
+  isBusy,
+  errorMessage,
+  successMessage,
+}: UploadMaterialModalProps) {
   const [title, setTitle] = useState("");
-  const [category, setCategory] = useState<MaterialCategory>("theory");
-  const [topic, setTopic] = useState("Ứng dụng Đạo hàm");
-  const [format, setFormat] = useState<"pdf" | "docx" | "exam">("pdf");
-  const [description, setDescription] = useState("");
-  const [fileName, setFileName] = useState("");
+  const [subjectId, setSubjectId] = useState(eligibleSubjects[0]?.id ?? "");
+  const [file, setFile] = useState<File | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [localError, setLocalError] = useState("");
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  function handleFileChange(selected: File | null) {
+    setLocalError("");
+    if (!selected) {
+      setFile(null);
+      return;
+    }
+    if (selected.size > 25 * 1024 * 1024) {
+      setLocalError("Tệp vượt quá dung lượng tối đa cho phép (25 MB).");
+      return;
+    }
+    const allowed = ["application/pdf", "text/plain"];
+    if (!allowed.includes(selected.type) && !selected.name.endsWith(".pdf") && !selected.name.endsWith(".txt")) {
+      setLocalError("Hệ thống hiện tại chỉ tiếp nhận định dạng tệp PDF hoặc TXT.");
+      return;
+    }
+    setFile(selected);
+    if (!title.trim()) {
+      // Auto-fill title from filename without extension
+      const cleanName = selected.name.replace(/\.[^/.]+$/, "");
+      setTitle(cleanName);
+    }
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!title.trim()) return;
+    setLocalError("");
+    if (!file || !title.trim() || !subjectId || isBusy) return;
+    await onSubmit(subjectId, title.trim(), file);
+    setTitle("");
+    setFile(null);
+  }
 
-    const newMat: TeacherMaterial = {
-      id: `mat-${Date.now()}`,
-      title: title.trim(),
-      category,
-      topic,
-      format,
-      gradeLevel: 12,
-      description: description.trim() || (category === "theory" ? "Tài liệu tóm tắt lý thuyết chuyên đề." : "Phiếu bài tập rèn luyện thực hành."),
-      itemCount: category === "practice" ? 8 : 10,
-      assignedClassrooms: ["Lớp 12A"],
-      updatedAt: "Hôm nay",
-      fileSize: "1.5 MB",
-      downloadsCount: 0,
-    };
-
-    onAddMaterial(newMat);
-    onClose();
-  };
+  const effectiveError = localError || errorMessage;
 
   return (
-    <div className={styles.modalOverlay} role="dialog" aria-modal="true" aria-labelledby="upload-modal-title">
+    <div className={styles.modalOverlay} role="dialog" aria-modal="true" aria-labelledby="upload-material-title">
       <div className={styles.modalContent}>
         <div className={styles.modalHeader}>
-          <h3 id="upload-modal-title" className={styles.modalTitle}>
-            Tải lên tài liệu giảng dạy mới
-          </h3>
-          <button type="button" className={styles.closeBtn} onClick={onClose} aria-label="Đóng">
-            <X size={20} />
+          <div className={styles.modalTitleGroup}>
+            <div className={styles.modalIconWrap}>
+              <UploadCloud size={20} />
+            </div>
+            <div>
+              <h2 id="upload-material-title" className={styles.modalTitle}>
+                Tải học liệu lên lớp học
+              </h2>
+              <p className={styles.modalSubtitle}>
+                {selectedClass ? `Lớp tiếp nhận: ${selectedClass.name} · Khối ${selectedClass.grade_level}` : "Chọn tài liệu học tập hoặc đề thi"}
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            className={styles.modalCloseBtn}
+            onClick={onClose}
+            aria-label="Đóng cửa sổ"
+            disabled={isBusy}
+          >
+            <X size={18} />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit}>
-          <div className={styles.formGroup}>
-            <label className={styles.formLabel} htmlFor="mat-title">Tên tài liệu / Chuyên đề *</label>
-            <input
-              id="mat-title"
-              type="text"
-              className={styles.formInput}
-              placeholder="VD: Chuyên đề khảo sát hàm số bậc ba..."
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              required
-            />
-          </div>
-
-          <div className={styles.formGroup} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
-            <div>
-              <label className={styles.formLabel} htmlFor="mat-cat">Phân loại kho *</label>
-              <select
-                id="mat-cat"
-                className={styles.formSelect}
-                value={category}
-                onChange={(e) => setCategory(e.target.value as MaterialCategory)}
-              >
-                <option value="theory">📖 Lý thuyết chuyên đề</option>
-                <option value="practice">✍️ Thực hành / Bài tập</option>
-              </select>
+        <form onSubmit={handleSubmit} className={styles.modalForm}>
+          {effectiveError && (
+            <div className={styles.formAlert} role="alert">
+              {effectiveError}
             </div>
+          )}
 
-            <div>
-              <label className={styles.formLabel} htmlFor="mat-topic">Chủ đề kiến thức *</label>
-              <select
-                id="mat-topic"
-                className={styles.formSelect}
-                value={topic}
-                onChange={(e) => setTopic(e.target.value)}
-              >
-                <option value="Ứng dụng Đạo hàm">Ứng dụng Đạo hàm</option>
-                <option value="Nguyên hàm — Tích phân">Nguyên hàm — Tích phân</option>
-                <option value="Hình học Oxyz">Hình học Oxyz</option>
-                <option value="Xác suất — Thống kê">Xác suất — Thống kê</option>
-                <option value="Toán 12 Tổng hợp">Toán 12 Tổng hợp</option>
-              </select>
+          {successMessage && (
+            <div className={styles.formSuccess} role="status">
+              <CheckCircle2 size={16} />
+              {successMessage}
             </div>
-          </div>
+          )}
 
           <div className={styles.formGroup}>
-            <label className={styles.formLabel} htmlFor="mat-format">Định dạng file</label>
+            <label htmlFor="upload-material-subject" className={styles.formLabel}>
+              Môn học áp dụng <span className={styles.requiredMark}>*</span>
+            </label>
             <select
-              id="mat-format"
+              id="upload-material-subject"
               className={styles.formSelect}
-              value={format}
-              onChange={(e) => setFormat(e.target.value as "pdf" | "docx" | "exam")}
+              value={subjectId}
+              onChange={(e) => setSubjectId(e.target.value)}
+              required
             >
-              <option value="pdf">Tài liệu PDF (.pdf)</option>
-              <option value="docx">Tài liệu Word (.docx)</option>
-              <option value="exam">Đề thi / Bài tập Canvas (.exam)</option>
+              {eligibleSubjects.length === 0 && <option value="">Chưa có môn học phù hợp khối lớp</option>}
+              {eligibleSubjects.map((sub) => (
+                <option key={sub.id} value={sub.id}>
+                  {sub.name} ({sub.code})
+                </option>
+              ))}
             </select>
           </div>
 
           <div className={styles.formGroup}>
-            <label className={styles.formLabel} htmlFor="mat-desc">Mô tả tóm tắt nội dung</label>
-            <textarea
-              id="mat-desc"
-              rows={3}
-              className={styles.formTextarea}
-              placeholder="Nội dung chính, mục tiêu rèn luyện hoặc các định lý cần nhớ..."
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
+            <label htmlFor="upload-material-title-input" className={styles.formLabel}>
+              Tên tài liệu / Tiêu đề đề bài <span className={styles.requiredMark}>*</span>
+            </label>
+            <input
+              id="upload-material-title-input"
+              className={styles.formInput}
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="VD: Chuyên đề Đạo hàm & Khảo sát hàm số, Đề ôn tập giữa kì..."
+              required
+              maxLength={255}
             />
           </div>
 
-          <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.75rem", marginTop: "1.25rem" }}>
-            <button type="button" className={styles.btnSecondary} onClick={onClose}>
+          <div className={styles.formGroup}>
+            <label className={styles.formLabel}>
+              Tệp tài liệu (PDF hoặc TXT) <span className={styles.requiredMark}>*</span>
+            </label>
+            <div
+              className={`${styles.dropZone} ${isDragging ? styles.dropZoneActive : ""} ${file ? styles.dropZoneHasFile : ""}`}
+              onDragOver={(e) => {
+                e.preventDefault();
+                setIsDragging(true);
+              }}
+              onDragLeave={() => setIsDragging(false)}
+              onDrop={(e) => {
+                e.preventDefault();
+                setIsDragging(false);
+                if (e.dataTransfer.files?.[0]) {
+                  handleFileChange(e.dataTransfer.files[0]);
+                }
+              }}
+            >
+              <input
+                id="upload-file-hidden"
+                type="file"
+                className={styles.fileInputHidden}
+                accept=".pdf,.txt,application/pdf,text/plain"
+                onChange={(e) => handleFileChange(e.target.files?.[0] ?? null)}
+              />
+              <label htmlFor="upload-file-hidden" className={styles.dropZoneLabel}>
+                {file ? (
+                  <div className={styles.fileSelectedPreview}>
+                    <div className={styles.fileIconBadge}>
+                      <FileText size={24} />
+                    </div>
+                    <div className={styles.fileMeta}>
+                      <strong className={styles.fileNameText}>{file.name}</strong>
+                      <span className={styles.fileSizeText}>
+                        {(file.size / 1024 / 1024).toFixed(2)} MB · Nhấp để chọn tệp khác
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <UploadCloud size={32} className={styles.dropZoneIcon} />
+                    <p className={styles.dropZoneMainText}>
+                      Kéo thả tệp vào đây hoặc <strong>nhấp để duyệt tệp</strong>
+                    </p>
+                    <span className={styles.dropZoneSubText}>Hỗ trợ định dạng PDF, TXT dung lượng tối đa 25 MB</span>
+                  </>
+                )}
+              </label>
+            </div>
+          </div>
+
+          <div className={styles.modalFooter}>
+            <button
+              type="button"
+              className={styles.btnSecondary}
+              onClick={onClose}
+              disabled={isBusy}
+            >
               Hủy
             </button>
-            <button type="submit" className={styles.btnPrimary}>
-              <UploadCloud size={16} />
-              Xác nhận tải lên
+            <button
+              type="submit"
+              className={styles.btnPrimary}
+              disabled={isBusy || !file || !title.trim() || !subjectId}
+            >
+              {isBusy ? (
+                <>Đang tải lên máy chủ...</>
+              ) : (
+                <>
+                  <UploadCloud size={16} />
+                  Tải lên ngay
+                </>
+              )}
             </button>
           </div>
         </form>

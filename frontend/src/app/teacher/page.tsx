@@ -9,5 +9,5 @@ export const metadata: Metadata = {
 
 export default async function TeacherPage() {
   const session = await requirePageRole("TEACHER", "/teacher");
-  return <TeacherDashboardClient teacherName={session.fullName || "Giáo viên Toán"} />;
+  return <TeacherDashboardClient teacherName={session.fullName || session.email} teacherEmail={session.email} />;
 }
