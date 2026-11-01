@@ -720,15 +720,18 @@ export function MathWorkspace({
       }
       const dirty = await mathInkStorage.listDirtyPages(attemptId).catch(() => []);
       if (dirty.length) throw new Error("Vẫn còn trang viết chưa đồng bộ. Hãy thử lưu lại.");
-      const pending = submitActionRef.current ?? { revision: attempt.current_revision, actionId: generateUuid() };
-      submitActionRef.current = pending;
       // Read IndexedDB while holding the exact Web Lock used by the batch engine.
-      // React state may still be empty immediately after F5 or stale across tabs.
+      // Do NOT allocate an idempotency key before the safety gate: a blocked
+      // submission must not retain a stale attempt revision for a later retry.
       const submitted = await withSafeBatchSubmission(
         attemptId, new IndexedDbBatchJournal(), new BrowserBatchLock(),
-        () => apiClient.submitMathAttempt(accessToken, attemptId, {
-          expected_attempt_revision: pending.revision, client_action_id: pending.actionId,
-        }),
+        () => {
+          const pending = submitActionRef.current ?? { revision: attempt.current_revision, actionId: generateUuid() };
+          submitActionRef.current = pending;
+          return apiClient.submitMathAttempt(accessToken, attemptId, {
+            expected_attempt_revision: pending.revision, client_action_id: pending.actionId,
+          });
+        },
       );
       setAttempt(submitted);
       successfullySubmitted = submitted;
@@ -741,12 +744,30 @@ export function MathWorkspace({
           if (latest.status === "SUBMITTED") {
             submitActionRef.current = null;
             successfullySubmitted = latest;
+          } else if (error.status === 409 && submitActionRef.current
+            && latest.current_revision !== submitActionRef.current.revision) {
+            // Server authoritatively rejected this revision; a later manual
+            // retry must use the refreshed revision and a new action ID.
+            // Do not regenerate the key on timeout/unknown commit outcomes.
+            submitActionRef.current = null;
           }
         }
       }
       if (!successfullySubmitted) {
-        setGradingError(error instanceof ApiResponseError ? error.message
-          : error instanceof Error ? error.message : "Không thể nộp bài. Hãy thử lại.");
+        const code = error instanceof Error ? error.message : "";
+        if (code === "BATCH_PENDING_RECOVERY_REQUIRED" || code === "BATCH_JOURNAL_CORRUPT"
+          || code === "BATCH_INDEXEDDB_UNAVAILABLE" || code === "BATCH_SUBMIT_LOCK_UNAVAILABLE") {
+          void checkPendingBatch();
+        }
+        const message = code === "BATCH_PENDING_RECOVERY_REQUIRED"
+          ? "Có đợt lưu OCR chưa hoàn tất. Hãy phục hồi hoặc xử lý đợt lưu trước khi nộp bài."
+          : code === "BATCH_SUBMIT_LOCK_UNAVAILABLE"
+            ? "Một tab khác đang xử lý bước giải. Hãy đợi hoàn tất và thử nộp lại."
+            : code === "BATCH_JOURNAL_CORRUPT" || code === "BATCH_INDEXEDDB_UNAVAILABLE"
+              ? "Không thể xác minh nhật ký lưu OCR trong trình duyệt. Nộp bài đã bị chặn để bảo vệ dữ liệu."
+              : error instanceof ApiResponseError ? error.message
+                : error instanceof Error ? error.message : "Không thể nộp bài. Hãy thử lại.";
+        setGradingError(message);
       }
     } finally {
       setIsSubmitting(false);
@@ -757,7 +778,7 @@ export function MathWorkspace({
     }
   }, [attempt, isSubmitting, pageOcrReview, syncStatus, authExpired, pagesMap,
     flushSavePage, attemptId, apiClient, accessToken, problem?.question_type, executeAIReview,
-    pendingBatch, batchJournalLoadError, batchResuming]);
+    pendingBatch, batchJournalLoadError, batchResuming, checkPendingBatch]);
   // Keep stroke persistence separate from history updates. Undo/redo must not
   // append another history entry or erase the redo stack.
   const queueInkSave = useCallback((pageIndex: number, newStrokes: InkStroke[]) => {
