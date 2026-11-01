@@ -36,6 +36,7 @@ import type { AIReviewRead, AIReviewAvailabilityRead, StepKind, VariationTablePa
 import { SequentialBatchManager, type BatchJournal } from "./utils/batch-manager";
 import { IndexedDbBatchJournal, BrowserBatchLock } from "./utils/batch-journal";
 import { createBatchApi } from "./utils/ocr-batch-adapter";
+import { withSafeBatchSubmission } from "./utils/solution-submit-guard";
 import styles from "./MathWorkspace.module.css";
 
 const MathCanvasPanel = dynamic(() => import("@/features/math-canvas/MathCanvasPanel").then((module) => module.MathCanvasPanel), {
@@ -704,6 +705,7 @@ export function MathWorkspace({
     setGradingError(null);
     let successfullySubmitted: SolutionAttemptRead | null = null;
     try {
+      if (pendingBatch || batchJournalLoadError || batchResuming) throw new Error("Chưa thể nộp bài: đợt lưu OCR đang chờ phục hồi hoặc nhật ký lưu không đọc được. Hãy xử lý trạng thái phục hồi trước.");
       if (pendingDeleteRef.current || pageOcrReview) throw new Error("Hãy hoàn tất thao tác sửa bước và xác nhận OCR trước khi nộp.");
       if (!attempt.steps?.length) throw new Error("Hãy xác nhận ít nhất một bước giải trước khi nộp.");
       if (syncStatus === "conflict" || syncStatus === "offline" || authExpired) {
@@ -720,9 +722,14 @@ export function MathWorkspace({
       if (dirty.length) throw new Error("Vẫn còn trang viết chưa đồng bộ. Hãy thử lưu lại.");
       const pending = submitActionRef.current ?? { revision: attempt.current_revision, actionId: generateUuid() };
       submitActionRef.current = pending;
-      const submitted = await apiClient.submitMathAttempt(accessToken, attemptId, {
-        expected_attempt_revision: pending.revision, client_action_id: pending.actionId,
-      });
+      // Read IndexedDB while holding the exact Web Lock used by the batch engine.
+      // React state may still be empty immediately after F5 or stale across tabs.
+      const submitted = await withSafeBatchSubmission(
+        attemptId, new IndexedDbBatchJournal(), new BrowserBatchLock(),
+        () => apiClient.submitMathAttempt(accessToken, attemptId, {
+          expected_attempt_revision: pending.revision, client_action_id: pending.actionId,
+        }),
+      );
       setAttempt(submitted);
       successfullySubmitted = submitted;
       submitActionRef.current = null;
@@ -749,7 +756,8 @@ export function MathWorkspace({
       void executeAIReview(successfullySubmitted);
     }
   }, [attempt, isSubmitting, pageOcrReview, syncStatus, authExpired, pagesMap,
-    flushSavePage, attemptId, apiClient, accessToken, problem?.question_type, executeAIReview]);
+    flushSavePage, attemptId, apiClient, accessToken, problem?.question_type, executeAIReview,
+    pendingBatch, batchJournalLoadError, batchResuming]);
   // Keep stroke persistence separate from history updates. Undo/redo must not
   // append another history entry or erase the redo stack.
   const queueInkSave = useCallback((pageIndex: number, newStrokes: InkStroke[]) => {
@@ -1107,7 +1115,7 @@ export function MathWorkspace({
                   void handleSubmitSolution();
                 }
               }}
-              disabled={isSubmitting || isReviewing || (attempt.status !== "SUBMITTED" && !attempt.steps?.length)}
+              disabled={isSubmitting || isReviewing || batchResuming || Boolean(pendingBatch || batchJournalLoadError) || (attempt.status !== "SUBMITTED" && !attempt.steps?.length)}
               title={attempt.status === "SUBMITTED" ? "Chấm bài bằng AI" : "Nộp bài và chấm tự động bằng AI"}
             >
               <Sparkles size={14} />
@@ -1251,6 +1259,7 @@ export function MathWorkspace({
           gradingError={gradingError}
           isSubmitting={isSubmitting}
           isReviewing={isReviewing}
+          submissionBlocked={Boolean(pendingBatch || batchJournalLoadError || batchResuming)}
         />
 
         {/* Right Column: A4 Writing Canvas (65% or expanded) */}
@@ -1270,6 +1279,7 @@ export function MathWorkspace({
               onSubmitSolution={handleSubmitSolution}
               isSubmitting={isSubmitting}
               isReviewing={isReviewing}
+              submissionBlocked={Boolean(pendingBatch || batchJournalLoadError || batchResuming)}
               hasConfirmedSteps={Boolean(attempt?.steps && attempt.steps.length > 0)}
             />
           ) : (
