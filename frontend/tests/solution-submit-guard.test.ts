@@ -78,3 +78,42 @@ test("the lock is held during journal verification AND the actual submit call", 
   assert.equal(result, "committed");
   assert.equal(insideLock, false);
 });
+
+test("a blocked preflight never allocates an action key; next attempt uses refreshed revision", async () => {
+  let generated = 0;
+  let pending: { revision: number; actionId: string } | null = null;
+  let uiRevision = 2;
+  let stored: BatchJournal | null = journal("PAUSED");
+  const submit = async () => withSafeBatchSubmission("attempt-1", { load: async () => stored }, lock, async () => {
+    const token = pending ?? { revision: uiRevision, actionId: `action-${++generated}` };
+    pending = token;
+    return token;
+  });
+
+  await assert.rejects(submit(), /BATCH_PENDING_RECOVERY_REQUIRED/);
+  assert.equal(pending, null);
+  assert.equal(generated, 0);
+  uiRevision = 3; // authoritative server state after another tab completed its batch
+  stored = journal("COMPLETE");
+  const result = await submit();
+  assert.deepEqual(result, { revision: 3, actionId: "action-1" });
+  assert.equal(generated, 1);
+});
+
+test("an ambiguous network outcome reuses the same action key for idempotent replay", async () => {
+  let generated = 0;
+  let pending: { revision: number; actionId: string } | null = null;
+  const calls: string[] = [];
+  const send = async () => withSafeBatchSubmission("attempt-1", { load: async () => null }, lock, async () => {
+    const token = pending ?? { revision: 5, actionId: `action-${++generated}` };
+    pending = token;
+    calls.push(token.actionId);
+    if (calls.length === 1) throw new Error("NETWORK_UNKNOWN_OUTCOME");
+    return token;
+  });
+  await assert.rejects(send(), /NETWORK_UNKNOWN_OUTCOME/);
+  const retried = await send();
+  assert.equal(retried.revision, 5);
+  assert.deepEqual(calls, ["action-1", "action-1"]);
+  assert.equal(generated, 1);
+});
