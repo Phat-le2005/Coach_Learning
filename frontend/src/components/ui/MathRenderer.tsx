@@ -84,6 +84,88 @@ function parseMathSegments(text: string): Segment[] {
   return segments;
 }
 
+function preprocessVietnameseInMath(mathStr: string): {
+  processed: string;
+  restores: Array<{ token: string; text: string }>;
+} {
+  const restores: Array<{ token: string; text: string }> = [];
+  let tokenCounter = 0;
+
+  // Protect \text{...}, \textrm{...}, \textnormal{...}, \mathrm{...}, \textbf{...}, \textit{...} containing Vietnamese letters
+  const processed = mathStr.replace(
+    /\\(text|textnormal|textrm|mathrm|textbf|textit)\{([^}]+)\}/g,
+    (match, cmd, inner) => {
+      if (/[\u00c0-\u1ef9]/.test(inner)) {
+        const token = `VNTEXT${tokenCounter++}END`;
+        restores.push({ token, text: inner });
+        return `\\${cmd}{${token}}`;
+      }
+      return match;
+    }
+  );
+
+  return { processed, restores };
+}
+
+export function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+export function restoreVietnameseInHtml(
+  html: string,
+  restores: Array<{ token: string; text: string }>
+): string {
+  let result = html;
+  for (const item of restores) {
+    result = result.replace(
+      item.token,
+      `<span class="katex-vn-text">${escapeHtml(item.text)}</span>`
+    );
+  }
+  return result;
+}
+
+function renderKatexSafe(expression: string, isDisplay: boolean): string {
+  const originalWarn = console.warn;
+  try {
+    console.warn = (...args: unknown[]) => {
+      const msg = typeof args[0] === "string" ? args[0] : "";
+      if (
+        msg.includes("No character metrics") ||
+        msg.includes("LaTeX-incompatible input") ||
+        msg.includes("Unrecognized Unicode character")
+      ) {
+        return; // Suppress character metrics warnings for non-ASCII/Vietnamese text in math
+      }
+      originalWarn.apply(console, args);
+    };
+
+    const { processed, restores } = preprocessVietnameseInMath(expression);
+
+    let html = katex.renderToString(processed, {
+      displayMode: isDisplay,
+      throwOnError: false,
+      strict: "ignore",
+    });
+
+    if (restores.length > 0) {
+      html = restoreVietnameseInHtml(html, restores);
+    }
+
+    return html;
+  } catch {
+    const safe = expression.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    return `<span>${safe}</span>`;
+  } finally {
+    console.warn = originalWarn;
+  }
+}
+
 export function MathRenderer({ content, className = "", inline = false }: MathRendererProps) {
   const renderedHtml = useMemo(() => {
     if (!content) return "";
@@ -100,15 +182,7 @@ export function MathRenderer({ content, className = "", inline = false }: MathRe
       !trimmed.includes("$") &&
       !trimmed.includes("\\[")
     ) {
-      try {
-        return katex.renderToString(trimmed, {
-          displayMode: !inline,
-          throwOnError: false,
-          strict: false,
-        });
-      } catch {
-        // Fallback to segment parsing if single-shot render fails
-      }
+      return renderKatexSafe(trimmed, !inline);
     }
 
     const normalized = normalizeMathText(content);
@@ -128,16 +202,7 @@ export function MathRenderer({ content, className = "", inline = false }: MathRe
         }
 
         const isDisplay = segment.type === "display_math";
-        try {
-          return katex.renderToString(segment.value, {
-            displayMode: isDisplay,
-            throwOnError: false,
-            strict: false,
-          });
-        } catch {
-          const safe = segment.value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-          return `<span>${safe}</span>`;
-        }
+        return renderKatexSafe(segment.value, isDisplay);
       })
       .join("");
   }, [content, inline]);
