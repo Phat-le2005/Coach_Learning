@@ -1,28 +1,34 @@
 "use client";
 
 import {
-  BookOpen,
-  ChevronDown,
+  AlertTriangle,
   ChevronLeft,
   ChevronRight,
   Compass,
-  Filter,
+  GraduationCap,
+  Lock,
   Maximize2,
   Minimize2,
   Orbit,
-  RotateCcw,
   Search,
   Share2,
   Sparkles,
+  Zap,
 } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import type {
-  KnowledgeChapterNode,
   KnowledgeForestViewModel,
+  KnowledgeProblemTypeNode,
   KnowledgeStatusFilter,
 } from "../types";
 import styles from "../KnowledgeWorld3D.module.css";
+
+export type KnowledgeScopeFilter =
+  | "ALL"
+  | "TEACHER_SCOPE"
+  | "CURRENT_TEACHING"
+  | "FOG_OF_WAR";
 
 export interface KnowledgeNavigationProps {
   data: KnowledgeForestViewModel;
@@ -32,6 +38,9 @@ export interface KnowledgeNavigationProps {
   onSearchChange: (q: string) => void;
   statusFilter: KnowledgeStatusFilter;
   onStatusFilterChange: (f: KnowledgeStatusFilter) => void;
+  scopeFilter?: KnowledgeScopeFilter;
+  onScopeFilterChange?: (s: KnowledgeScopeFilter) => void;
+  onSelectProblemType?: (pt: KnowledgeProblemTypeNode) => void;
   showPrerequisites: boolean;
   onTogglePrerequisites: () => void;
   onResetCamera: () => void;
@@ -59,6 +68,9 @@ export function KnowledgeNavigation({
   onSearchChange,
   statusFilter,
   onStatusFilterChange,
+  scopeFilter = "ALL",
+  onScopeFilterChange,
+  onSelectProblemType,
   showPrerequisites,
   onTogglePrerequisites,
   onResetCamera,
@@ -69,8 +81,33 @@ export function KnowledgeNavigation({
 }: KnowledgeNavigationProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
-  const { summary } = data;
+  const { summary, classroomContext } = data;
   const overallScore = summary.masteryScore ?? 0;
+
+  // Priority nodes for the student's adaptive study pathway in 3D
+  const priorityNodes = useMemo(() => {
+    const allPts: KnowledgeProblemTypeNode[] = [];
+    data.chapters.forEach((ch) =>
+      ch.topics.forEach((t) => allPts.push(...t.problemTypes))
+    );
+    return allPts
+      .filter(
+        (pt) =>
+          pt.state === "WEAK" ||
+          pt.scopeState === "CURRENT_TEACHING" ||
+          (pt.attemptCount > 0 && pt.state !== "MASTERED")
+      )
+      .sort((a, b) => {
+        const scoreOrder = (pt: KnowledgeProblemTypeNode) => {
+          if (pt.state === "WEAK") return 0;
+          if (pt.scopeState === "CURRENT_TEACHING" && pt.attemptCount > 0) return 1;
+          if (pt.scopeState === "CURRENT_TEACHING") return 2;
+          return 3;
+        };
+        return scoreOrder(a) - scoreOrder(b);
+      })
+      .slice(0, 4);
+  }, [data.chapters]);
 
   return (
     <>
@@ -83,6 +120,18 @@ export function KnowledgeNavigation({
           </div>
           <span className={styles.subjectTitle}>{data.subject.name}</span>
           <span className={styles.subjectTag}>GDPT 2018</span>
+          {classroomContext?.hasActiveTeacherScope && classroomContext.classroomName && (
+            <span
+              className={styles.subjectTag}
+              style={{
+                color: "#fde047",
+                background: "rgba(250, 204, 21, 0.14)",
+                borderColor: "rgba(250, 204, 21, 0.35)",
+              }}
+            >
+              Lớp: {classroomContext.classroomName}
+            </span>
+          )}
         </div>
 
         {/* Search */}
@@ -173,7 +222,7 @@ export function KnowledgeNavigation({
           <div className={styles.sidebarHeader}>
             <div className={styles.sidebarTitle}>
               <Orbit size={16} color="#8be5c2" />
-              <span>Tiến độ chương trình</span>
+              <span>Tiến độ & Lộ trình 3D</span>
             </div>
             <button
               className={styles.sidebarCollapseBtn}
@@ -232,9 +281,104 @@ export function KnowledgeNavigation({
               </div>
             </div>
 
+            {/* Teacher Curriculum Scope Filter */}
+            {classroomContext?.hasActiveTeacherScope && onScopeFilterChange && (
+              <div>
+                <div className={styles.filterSectionTitle} style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                  <GraduationCap size={12} color="#fde047" />
+                  <span>Phạm vi Giáo viên giảng dạy</span>
+                </div>
+                <div className={styles.filterChipsWrap}>
+                  <button
+                    className={`${styles.filterChip} ${scopeFilter === "ALL" ? styles.filterChipActive : ""}`}
+                    onClick={() => onScopeFilterChange("ALL")}
+                  >
+                    Toàn cảnh ({summary.problemTypeCount})
+                  </button>
+                  <button
+                    className={`${styles.filterChip} ${scopeFilter === "TEACHER_SCOPE" ? styles.filterChipActive : ""}`}
+                    onClick={() => onScopeFilterChange("TEACHER_SCOPE")}
+                  >
+                    Đã & Đang dạy ({classroomContext.currentTeachingCount + classroomContext.unlockedCount})
+                  </button>
+                  <button
+                    className={`${styles.filterChip} ${scopeFilter === "CURRENT_TEACHING" ? styles.filterChipActive : ""}`}
+                    onClick={() => onScopeFilterChange("CURRENT_TEACHING")}
+                  >
+                    ✦ Đang dạy ({classroomContext.currentTeachingCount})
+                  </button>
+                  <button
+                    className={`${styles.filterChip} ${scopeFilter === "FOG_OF_WAR" ? styles.filterChipActive : ""}`}
+                    onClick={() => onScopeFilterChange("FOG_OF_WAR")}
+                  >
+                    🔒 Sương mù ({classroomContext.fogCount})
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* AI Priority Pathway from Student Submissions */}
+            {priorityNodes.length > 0 && onSelectProblemType && (
+              <div>
+                <div className={styles.filterSectionTitle} style={{ color: "#fde047" }}>
+                  ⚡ Lộ trình AI từ bài làm PDF
+                </div>
+                <div className={styles.chapterList}>
+                  {priorityNodes.map((pt) => (
+                    <button
+                      key={pt.id}
+                      className={styles.chapterItemBtn}
+                      onClick={() => onSelectProblemType(pt)}
+                      style={{
+                        borderColor:
+                          pt.state === "WEAK"
+                            ? "rgba(248, 113, 113, 0.4)"
+                            : "rgba(250, 204, 21, 0.3)",
+                        background:
+                          pt.state === "WEAK"
+                            ? "rgba(127, 29, 29, 0.25)"
+                            : "rgba(5, 25, 20, 0.55)",
+                      }}
+                    >
+                      <div style={{ display: "flex", flexDirection: "column", gap: "2px", minWidth: 0 }}>
+                        <span className={styles.chapterItemTitle} style={{ maxWidth: "185px" }}>
+                          {pt.name}
+                        </span>
+                        <span
+                          style={{
+                            fontSize: "10px",
+                            color: pt.state === "WEAK" ? "#fca5a5" : "#fde047",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "4px",
+                          }}
+                        >
+                          {pt.state === "WEAK" ? (
+                            <>
+                              <AlertTriangle size={10} /> Cần bù lỗ hổng • Luyện bài hệ thống
+                            </>
+                          ) : (
+                            <>
+                              <Zap size={10} /> Giáo viên đang dạy • {pt.attemptCount} lượt làm
+                            </>
+                          )}
+                        </span>
+                      </div>
+                      <span
+                        className={styles.chapterItemPercent}
+                        style={{ color: pt.state === "WEAK" ? "#fca5a5" : "#8be5c2" }}
+                      >
+                        {pt.masteryScore !== undefined ? `${pt.masteryScore}%` : "Mới"}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Filter Chips */}
             <div>
-              <div className={styles.filterSectionTitle}>Lọc theo trạng thái</div>
+              <div className={styles.filterSectionTitle}>Lọc theo mức độ thành thạo</div>
               <div className={styles.filterChipsWrap}>
                 {FILTER_OPTIONS.map((opt) => (
                   <button

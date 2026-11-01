@@ -56,6 +56,34 @@ export function safeMasteryPercent(value: number | null | undefined): number | u
   return Math.round(value * 100);
 }
 
+const CODE_TO_VIETNAMESE: Record<string, string> = {
+  MONOTONICITY_FROM_EXPRESSION: "Xét tính đơn điệu của hàm số",
+  FIND_FUNCTION_EXTREMA: "Tìm cực trị của hàm số",
+  LOCAL_EXTREMA: "Cực trị của hàm số",
+  VARIATION_TABLE: "Lập bảng biến thiên",
+  DERIVATIVE_CALCULATION: "Tính đạo hàm hàm số",
+  FIRST_DERIVATIVE: "Tính đạo hàm hàm số",
+  FUNCTION_DOMAIN: "Tìm tập xác định của hàm số",
+  DERIVATIVE_SIGN_DIRECTION: "Quy tắc xét dấu đạo hàm",
+  ASYMPTOTE_FINDING: "Tìm đường tiệm cận của đồ thị",
+  FUNCTION_GRAPH: "Khảo sát và vẽ đồ thị hàm số",
+  ROOT_FINDING: "Tìm nghiệm phương trình đạo hàm",
+  CONCLUSION: "Kết luận tính đơn điệu & cực trị",
+};
+
+export function formatHumanTargetName(name?: string | null, code?: string | null): string {
+  if (name && !name.includes("_") && !/^[A-Z0-9_-]+$/.test(name)) {
+    return name;
+  }
+  if (code && CODE_TO_VIETNAMESE[code]) {
+    return CODE_TO_VIETNAMESE[code];
+  }
+  if (name && CODE_TO_VIETNAMESE[name]) {
+    return CODE_TO_VIETNAMESE[name];
+  }
+  return name || code || "Dạng bài trọng tâm";
+}
+
 export function toStudentHomeViewModel(
   source: StudentLearningStateRead,
   fullName: string,
@@ -267,18 +295,30 @@ export function toStudentHomeViewModel(
         };
       });
     })(),
-    priorities: (isFocusedLearningState ? source.priority_targets : []).map((priority) => ({
-      id: priority.problem_type_id ?? priority.concept_id ?? `${priority.target_type}:${priority.target_code}`,
-      targetType: priority.target_type,
-      targetName: priority.target_name,
-      targetCode: priority.target_code,
-      reasonCode: priority.reason_code,
-      mastery: safeMasteryPercent(priority.mastery_score),
-      rawMastery: priority.mastery_score,
-      confidence: priority.confidence,
-      desiredDifficulty: priority.desired_difficulty,
-      priorityScore: priority.priority_score,
-    })),
+    priorities: (isFocusedLearningState ? source.priority_targets : []).map((priority) => {
+      const q = new URLSearchParams();
+      if (priority.target_type === "CONCEPT" || priority.concept_id) {
+        if (priority.concept_id) q.set("concept_id", priority.concept_id);
+      } else {
+        if (priority.problem_type_id) q.set("problem_type_id", priority.problem_type_id);
+      }
+      if (subject.id) q.set("subject_id", subject.id);
+      const practiceRoute = `/student/practice?${q.toString()}`;
+
+      return {
+        id: priority.problem_type_id ?? priority.concept_id ?? `${priority.target_type}:${priority.target_code}`,
+        targetType: priority.target_type,
+        targetName: formatHumanTargetName(priority.target_name, priority.target_code),
+        targetCode: priority.target_code,
+        reasonCode: priority.reason_code,
+        mastery: safeMasteryPercent(priority.mastery_score),
+        rawMastery: priority.mastery_score,
+        confidence: priority.confidence,
+        desiredDifficulty: priority.desired_difficulty,
+        priorityScore: priority.priority_score,
+        practiceRoute,
+      };
+    }),
   };
 }
 

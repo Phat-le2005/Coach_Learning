@@ -9,6 +9,7 @@ export async function proxy(request: NextRequest) {
   const secret = process.env.AUTH_SESSION_SECRET ?? "";
   const session = await verifySession(request.cookies.get(AUTH_COOKIES.session)?.value, secret);
   const pathname = request.nextUrl.pathname;
+  if (pathname.includes("/mobile-upload")) return NextResponse.next();
 
   if (pathname === "/") {
     if (session) return NextResponse.redirect(new URL(ROLE_HOME[session.role], request.url));

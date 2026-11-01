@@ -16,6 +16,8 @@ const PROTECTED_PREFIXES: ReadonlyArray<readonly [string, Role]> = [
 
 export function requiredRoleForPath(pathname: string): Role | null {
   const routePath = pathname.split(/[?#]/u, 1)[0];
+  // Mobile upload endpoint is secured via HMAC QR tokens, not session cookies
+  if (routePath.includes("/mobile-upload")) return null;
   return PROTECTED_PREFIXES.find(([prefix]) => routePath === prefix || routePath.startsWith(`${prefix}/`))?.[1] ?? null;
 }
 

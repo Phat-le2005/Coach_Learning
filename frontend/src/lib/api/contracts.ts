@@ -638,18 +638,34 @@ export interface AIStepSuggestionRead {
   score: number | null;
   confidence: number;
   feedback: string;
+  error_nature?: "ARITHMETIC_SLIP" | "CONSEQUENTIAL" | "CONCEPTUAL" | null;
 }
 
 export interface AIReviewRead {
   attempt_id: string;
   step_grades: AIStepSuggestionRead[];
   needs_teacher_review: boolean;
-  is_final: false;
+  is_final: boolean;
+  review_source: "DETERMINISTIC" | "TEACHER" | "ANSWER_GROUNDED_AI" | "UNANSWERED_AI";
+  final_score: number | null;
 }
 
 export function parseAIReviewRead(value: unknown, path = "ai_review"): AIReviewRead {
   const source = record(value, path);
-  if (source.is_final !== false) throw new ApiContractError("AI review must be provisional", `${path}.is_final`);
+  const isFinal = boolean(source.is_final, `${path}.is_final`);
+  const reviewSource = source.review_source === undefined
+    ? "ANSWER_GROUNDED_AI" : string(source.review_source, `${path}.review_source`);
+  if (!["DETERMINISTIC", "TEACHER", "ANSWER_GROUNDED_AI", "UNANSWERED_AI"].includes(reviewSource)) {
+    throw new ApiContractError("Unknown review source", `${path}.review_source`);
+  }
+  const finalScore = source.final_score === undefined || source.final_score === null
+    ? null : number(source.final_score, `${path}.final_score`);
+  if ((isFinal && (finalScore === null || finalScore < 0 || finalScore > 1)) ||
+      (!isFinal && finalScore !== null) ||
+      (isFinal && reviewSource !== "DETERMINISTIC" && reviewSource !== "TEACHER") ||
+      (!isFinal && (reviewSource === "DETERMINISTIC" || reviewSource === "TEACHER"))) {
+    throw new ApiContractError("Review source and final score conflict", path);
+  }
   const steps = array(source.step_grades, `${path}.step_grades`, (item, stepPath): AIStepSuggestionRead => {
     const row = record(item, stepPath);
     const verdict = string(row.verdict, `${stepPath}.verdict`);
@@ -661,17 +677,37 @@ export function parseAIReviewRead(value: unknown, path = "ai_review"): AIReviewR
     if ((score !== null && (score < 0 || score > 1)) || confidence < 0 || confidence > 1) {
       throw new ApiContractError("AI grade outside 0..1", stepPath);
     }
-    if ((verdict === "NEEDS_REVIEW") !== (score === null)) {
-      throw new ApiContractError("AI verdict and score conflict", stepPath);
+    if ((!isFinal && score !== null) ||
+        (isFinal && (verdict === "NEEDS_REVIEW") !== (score === null))) {
+      throw new ApiContractError("Review verdict and score conflict", stepPath);
     }
-    return { step_index: integer(row.step_index, `${stepPath}.step_index`), verdict, score,
-      confidence, feedback: nonEmptyString(row.feedback, `${stepPath}.feedback`) };
+    const errorNatureRaw = row.error_nature;
+    let errorNature: AIStepSuggestionRead["error_nature"] = null;
+    if (errorNatureRaw !== null && errorNatureRaw !== undefined) {
+      const parsed = string(errorNatureRaw, `${stepPath}.error_nature`);
+      if (parsed === "ARITHMETIC_SLIP" || parsed === "CONSEQUENTIAL" || parsed === "CONCEPTUAL") {
+        errorNature = parsed;
+      }
+    }
+    return {
+      step_index: integer(row.step_index, `${stepPath}.step_index`),
+      verdict,
+      score,
+      confidence,
+      feedback: nonEmptyString(row.feedback, `${stepPath}.feedback`),
+      error_nature: errorNature,
+    };
   });
-  if (steps.length === 0 || new Set(steps.map((step) => step.step_index)).size !== steps.length) {
+  if ((!isFinal && steps.length === 0) || new Set(steps.map((step) => step.step_index)).size !== steps.length) {
     throw new ApiContractError("AI review must contain unique steps", `${path}.step_grades`);
   }
+  if (reviewSource === "UNANSWERED_AI" &&
+      (steps.some((step) => step.verdict !== "NEEDS_REVIEW" || step.score !== null) || !boolean(source.needs_teacher_review, `${path}.needs_teacher_review`))) {
+    throw new ApiContractError("Unanswered feedback cannot award step scores", path);
+  }
   return { attempt_id: nonEmptyString(source.attempt_id, `${path}.attempt_id`), step_grades: steps,
-    needs_teacher_review: boolean(source.needs_teacher_review, `${path}.needs_teacher_review`), is_final: false };
+    needs_teacher_review: boolean(source.needs_teacher_review, `${path}.needs_teacher_review`),
+    is_final: isFinal, review_source: reviewSource as AIReviewRead["review_source"], final_score: finalScore };
 }
 export interface MathAttemptsPageRead {
   items: SolutionAttemptRead[];

@@ -73,7 +73,7 @@ export async function startStepReviewDemoAction(
     );
     attemptId = attempt.id;
     const review = await client.getMathAIReviewAvailability(accessToken, attempt.id);
-    if (!review.available) {
+    if (!review.available || review.reason_code === "PROVISIONAL_WITHOUT_ANSWER") {
       return { error: "Bài mẫu chưa có đáp án tham chiếu. Chạy python -m app.seed_step_review_demo trong backend rồi thử lại." };
     }
   } catch {

@@ -215,7 +215,8 @@ export default async function StudentKnowledgePage(props: {
       subjectAccess.subjects,
       selectedSubject?.id,
       learningState.student_id,
-      subjectAccess.discoveryOnlySubjectIds
+      subjectAccess.discoveryOnlySubjectIds,
+      learningState
     );
   } catch (error) {
     return state(

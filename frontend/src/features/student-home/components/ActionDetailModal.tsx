@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertCircle, CheckCircle2, Clock, Info, Route, Sparkles, Target, Wrench, X } from "lucide-react";
+import { AlertCircle, ArrowRight, CheckCircle2, Clock, Info, Route, Sparkles, Target, Wrench, X } from "lucide-react";
 import { motion } from "motion/react";
 import { useEffect, useId, useRef } from "react";
 
@@ -227,21 +227,31 @@ export function ActionDetailModal({ isOpen, onClose, action, priority }: ActionD
 
           <div className={styles.guidanceCallout}>
             <p className={styles.guidanceTitle}>
-              <AlertCircle size={15} aria-hidden="true" />
-              Lộ trình không gian học tập
+              <Sparkles size={15} aria-hidden="true" />
+              Gợi ý phương pháp từ EduMS Coach
             </p>
             <p className={styles.guidanceText}>
-              {action ? action.guidanceText : "Mục tiêu học tập đã được đồng bộ chính xác từ cơ sở dữ liệu thật."}
-            </p>
-            <p className={styles.guidanceSubtext}>
-              Giao diện làm bài tương tác (Practice Workspace) sẽ được ra mắt trong giai đoạn FE-REAL-04. Toàn bộ dữ liệu
-              hiển thị ở đây là số liệu thực 100% từ backend.
+              {action
+                ? action.guidanceText
+                : "Mục tiêu được ưu tiên để bù đắp các lỗ hổng biến đổi trong các bài làm trước. Bạn chỉ cần dành khoảng 5 phút làm 2-3 câu ngắn để củng cố ngay."}
             </p>
           </div>
         </div>
 
         <div className={styles.footer}>
-          <GradientButton onClick={onClose}>Đã hiểu</GradientButton>
+          <button type="button" className={styles.secondaryButton} onClick={onClose}>
+            Đóng
+          </button>
+          {priority?.practiceRoute || (action?.hasAvailableRoute && action?.route) ? (
+            <GradientButton
+              href={priority?.practiceRoute || (action?.hasAvailableRoute ? action?.route : "/student/practice")}
+            >
+              Bắt đầu luyện tập ngay
+              <ArrowRight size={16} aria-hidden="true" />
+            </GradientButton>
+          ) : (
+            <GradientButton onClick={onClose}>Đã hiểu</GradientButton>
+          )}
         </div>
       </motion.div>
     </div>

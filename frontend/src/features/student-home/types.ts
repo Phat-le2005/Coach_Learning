@@ -43,6 +43,7 @@ export interface PriorityViewModel {
   confidence?: number;
   desiredDifficulty?: number;
   priorityScore?: number;
+  practiceRoute?: string;
 }
 
 export interface StudentHomeSubjectViewModel {

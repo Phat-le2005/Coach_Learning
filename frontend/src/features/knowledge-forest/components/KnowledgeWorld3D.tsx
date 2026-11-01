@@ -1,6 +1,6 @@
 "use client";
 
-import { Compass, Layers, RotateCcw, Sparkles, X, Zap } from "lucide-react";
+import { Compass, GraduationCap, Layers, Sparkles, X, Zap } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
@@ -12,7 +12,6 @@ import {
   type Node3DLayout,
 } from "../tree-3d-layout";
 import type {
-  KnowledgeChapterNode,
   KnowledgeForestViewModel,
   KnowledgeProblemTypeNode,
   KnowledgeStatusFilter,
@@ -25,7 +24,7 @@ import { createKnowledgeTree, TreeSystem } from "./3d/KnowledgeTree";
 import { createTopicClusters, TopicClustersSystem } from "./3d/TopicCluster";
 import { KnowledgeCameraController } from "./3d/KnowledgeCameraController";
 import { KnowledgeDetailPanel } from "./KnowledgeDetailPanel";
-import { KnowledgeNavigation } from "./KnowledgeNavigation";
+import { KnowledgeNavigation, type KnowledgeScopeFilter } from "./KnowledgeNavigation";
 
 export interface KnowledgeWorld3DProps {
   data: KnowledgeForestViewModel;
@@ -60,6 +59,7 @@ export function KnowledgeWorld3D({
   const [activeChapterId, setActiveChapterId] = useState<string | undefined>(data.chapters[0]?.id);
   const [showChapterExplorer, setShowChapterExplorer] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [scopeFilter, setScopeFilter] = useState<KnowledgeScopeFilter>("ALL");
 
   // Tooltip & Projected Labels state
   const [hoveredNode, setHoveredNode] = useState<{
@@ -123,7 +123,7 @@ export function KnowledgeWorld3D({
     return layout.chapters.find((c) => c.data.id === activeChapterId) ?? null;
   }, [layout.chapters, activeChapterId]);
 
-  // Filtered nodes
+  // Filtered nodes (by search, mastery status, and teacher curriculum scope)
   const matchedProblemTypeIds = useMemo(() => {
     const ids = new Set<string>();
     const res = filterKnowledgeForest({
@@ -133,10 +133,24 @@ export function KnowledgeWorld3D({
       statusFilter,
     });
     res.filteredChapters.forEach((ch) =>
-      ch.topics.forEach((t) => t.problemTypes.forEach((pt) => ids.add(pt.id)))
+      ch.topics.forEach((t) =>
+        t.problemTypes.forEach((pt) => {
+          const scope = pt.scopeState ?? "UNLOCKED";
+          if (scopeFilter === "TEACHER_SCOPE" && scope === "FOG_OF_WAR") {
+            return;
+          }
+          if (scopeFilter === "CURRENT_TEACHING" && scope !== "CURRENT_TEACHING") {
+            return;
+          }
+          if (scopeFilter === "FOG_OF_WAR" && scope !== "FOG_OF_WAR") {
+            return;
+          }
+          ids.add(pt.id);
+        })
+      )
     );
     return ids;
-  }, [data.chapters, searchQuery, statusFilter]);
+  }, [data.chapters, searchQuery, statusFilter, scopeFilter]);
 
   // Internal references to 3D systems
   const sceneRef = useRef<THREE.Scene | null>(null);
@@ -348,7 +362,7 @@ export function KnowledgeWorld3D({
       });
       setProjectedChapters(projChapters);
 
-      // Project Topic Badges for Active Chapter (Clean, unstacked layout matching concept)
+      // Project Topic Badges for Active Chapter
       const currentActiveCh = activeChapterIdRef.current;
       if (currentActiveCh) {
         const chLayout = layout.chapters.find((c) => c.data.id === currentActiveCh);
@@ -483,7 +497,7 @@ export function KnowledgeWorld3D({
     }
   }, [selectedId, layout.nodeMap, showPrerequisites]);
 
-  // Synchronize search and status filter with node dimming
+  // Synchronize search, status filter, and teacher scope filter with node visibility
   useEffect(() => {
     if (!nodesSystemRef.current) return;
     nodesSystemRef.current.nodeMeshes.forEach((mesh, id) => {
@@ -550,6 +564,9 @@ export function KnowledgeWorld3D({
         onSearchChange={onSearchChange}
         statusFilter={statusFilter}
         onStatusFilterChange={onStatusFilterChange}
+        scopeFilter={scopeFilter}
+        onScopeFilterChange={setScopeFilter}
+        onSelectProblemType={onSelectProblemType}
         showPrerequisites={showPrerequisites}
         onTogglePrerequisites={handleTogglePrerequisites}
         onResetCamera={handleResetCamera}
@@ -583,7 +600,7 @@ export function KnowledgeWorld3D({
           );
         })}
 
-        {/* Clean Topic Badges for Active Chapter (Matches Reference Concept) */}
+        {/* Clean Topic Badges for Active Chapter */}
         {projectedTopics.map((item) => {
           if (!item.visible) return null;
           return (
@@ -638,12 +655,17 @@ export function KnowledgeWorld3D({
               {hoveredNode.pt.masteryScore !== undefined
                 ? `${hoveredNode.pt.masteryScore}% thành thạo`
                 : "Chưa bắt đầu"}
+              {hoveredNode.pt.scopeState === "CURRENT_TEACHING"
+                ? " • ✦ Giáo viên đang dạy"
+                : hoveredNode.pt.scopeState === "FOG_OF_WAR"
+                ? " • 🔒 Chưa dạy tới"
+                : ""}
             </span>
           </div>
         )}
       </div>
 
-      {/* Floating Chapter Canopy Explorer Dock (Shows all problem types of active chapter clearly) */}
+      {/* Floating Chapter Canopy Explorer Dock */}
       {showChapterExplorer && activeChapterLayout && (
         <div className={styles.chapterExplorerDock}>
           <div className={styles.chapterExplorerHeader}>
@@ -672,6 +694,7 @@ export function KnowledgeWorld3D({
             {activeChapterLayout.topics.flatMap((topic) =>
               topic.nodes.map((node) => {
                 const isSelected = selectedId === node.data.id;
+                const scope = node.data.scopeState ?? "UNLOCKED";
                 return (
                   <div
                     key={node.data.id}
@@ -679,9 +702,23 @@ export function KnowledgeWorld3D({
                       isSelected ? styles.chapterExplorerCardActive : ""
                     }`}
                     onClick={() => onSelectProblemType(node.data)}
+                    style={{
+                      opacity: scope === "FOG_OF_WAR" ? 0.65 : 1,
+                      borderColor:
+                        scope === "CURRENT_TEACHING"
+                          ? "rgba(250, 204, 21, 0.45)"
+                          : undefined,
+                    }}
                   >
                     <div>
-                      <div className={styles.chapterExplorerCardTopic}>{topic.data.name}</div>
+                      <div className={styles.chapterExplorerCardTopic}>
+                        {scope === "CURRENT_TEACHING"
+                          ? "✦ Đang dạy • "
+                          : scope === "FOG_OF_WAR"
+                          ? "🔒 Chưa dạy • "
+                          : ""}
+                        {topic.data.name}
+                      </div>
                       <div className={styles.chapterExplorerCardName}>{node.data.name}</div>
                     </div>
                     <div className={styles.chapterExplorerCardFooter}>
@@ -701,7 +738,7 @@ export function KnowledgeWorld3D({
                             : "Chưa học"}
                         </span>
                       </span>
-                      <Zap size={13} color="#8be5c2" />
+                      <Zap size={13} color={scope === "CURRENT_TEACHING" ? "#fde047" : "#8be5c2"} />
                     </div>
                   </div>
                 );
@@ -721,6 +758,27 @@ export function KnowledgeWorld3D({
           <Compass size={14} />
           <span>Toàn cảnh</span>
         </button>
+
+        {data.classroomContext?.hasActiveTeacherScope && (
+          <>
+            <span style={{ color: "rgba(139, 229, 194, 0.3)" }}>|</span>
+            <button
+              className={styles.controlActionBtn}
+              onClick={() =>
+                setScopeFilter((prev) => (prev === "TEACHER_SCOPE" ? "ALL" : "TEACHER_SCOPE"))
+              }
+              title="Lọc những kiến thức Giáo viên đã và đang dạy"
+            >
+              <GraduationCap
+                size={14}
+                color={scopeFilter === "TEACHER_SCOPE" ? "#fde047" : "#f7f7ee"}
+              />
+              <span style={{ color: scopeFilter === "TEACHER_SCOPE" ? "#fde047" : "inherit" }}>
+                {scopeFilter === "TEACHER_SCOPE" ? "✓ Đang lọc theo Giáo viên" : "Lọc theo Giáo viên"}
+              </span>
+            </button>
+          </>
+        )}
 
         {activeChapterLayout && (
           <>
@@ -751,6 +809,7 @@ export function KnowledgeWorld3D({
       {/* Right Floating Detail Panel */}
       <KnowledgeDetailPanel
         node={selectedNode}
+        subjectId={data.subject.id}
         onClose={onClearSelection}
         onSelectRelatedCode={(code) => {
           const ptNode = layout.nodeByCodeMap.get(code)?.data;

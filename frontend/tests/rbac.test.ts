@@ -8,6 +8,7 @@ test("protected dashboard prefixes map to their exact roles", () => {
   assert.equal(requiredRoleForPath("/teacher/classes"), "TEACHER");
   assert.equal(requiredRoleForPath("/parent"), "PARENT");
   assert.equal(requiredRoleForPath("/admin/users"), "ADMIN");
+  assert.equal(requiredRoleForPath("/student/attempts/123e4567-e89b-12d3-a456-426614174000/mobile-upload"), null);
 });
 
 test("RBAC denies cross-role dashboard access", () => {

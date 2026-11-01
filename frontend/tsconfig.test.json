@@ -23,6 +23,7 @@
     "src/lib/auth/rbac.ts",
     "src/lib/auth/security.ts",
     "src/lib/auth/session-codec.ts",
+    "src/lib/auth/qr-upload-token.ts",
     "src/features/student-home/action-resolver.ts",
     "src/features/student-home/adapter.ts",
     "src/features/student-home/copy.ts",

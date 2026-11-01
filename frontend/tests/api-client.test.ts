@@ -164,7 +164,7 @@ test("deleting a saved math step sends the revision and idempotency key to the s
   }]);
 });
 
-test("student submits a confirmed attempt then receives only provisional AI step feedback", async () => {
+test("student submits a confirmed attempt then receives provisional answer-grounded feedback", async () => {
   const calls: Array<{ path: string; method: string; body: unknown }> = [];
   const api = createApiClient({ baseUrl: "https://api.example.test", fetcher: async (input, init) => {
     const path = new URL(String(input)).pathname;
@@ -174,14 +174,16 @@ test("student submits a confirmed attempt then receives only provisional AI step
       attempt_revision_number: 3, started_at: "2026-10-24T00:00:00Z", steps: [],
     });
     return Response.json({ attempt_id: "attempt-1", is_final: false, needs_teacher_review: false,
-      step_grades: [{ step_index: 1, verdict: "VALID", score: 0.8,
+      review_source: "ANSWER_GROUNDED_AI", final_score: null,
+      step_grades: [{ step_index: 1, verdict: "VALID", score: null,
         confidence: 0.92, feedback: "The step matches the reviewed answer." }] });
   } });
   const token = { expected_attempt_revision: 2, client_action_id: "a1234567-89ab-4cde-8012-3456789abcde" };
   assert.equal((await api.submitMathAttempt("student-token", "attempt-1", token)).status, "SUBMITTED");
   const review = await api.reviewMathAttempt("student-token", "attempt-1");
   assert.equal(review.is_final, false);
-  assert.equal(review.step_grades[0].score, 0.8);
+  assert.equal(review.step_grades[0].score, null);
+  assert.equal(review.review_source, "ANSWER_GROUNDED_AI");
   assert.deepEqual(calls, [
     { path: "/api/v2/math-solutions/attempts/attempt-1/submit", method: "POST", body: token },
     { path: "/api/v3/math-solutions/attempts/attempt-1/ai-review", method: "POST", body: null },
@@ -192,6 +194,32 @@ test("frontend rejects AI feedback that claims a final grade", async () => {
   const api = createApiClient({ baseUrl: "https://api.example.test", fetcher: async () =>
     Response.json({ attempt_id: "attempt-1", is_final: true, needs_teacher_review: false,
       step_grades: [{ step_index: 1, verdict: "VALID", score: 1, confidence: 0.9, feedback: "OK" }] }) });
+  await assert.rejects(api.reviewMathAttempt("student-token", "attempt-1"), ApiContractError);
+});
+
+test("frontend accepts persisted deterministic grade with a rubric score", async () => {
+  const api = createApiClient({ baseUrl: "https://api.example.test", fetcher: async () =>
+    Response.json({ attempt_id: "attempt-1", is_final: true, review_source: "DETERMINISTIC",
+      final_score: 0.85, needs_teacher_review: false,
+      step_grades: [{ step_index: 1, verdict: "VALID", score: 1, confidence: 1, feedback: "Verified by rule." }] }) });
+  const result = await api.reviewMathAttempt("student-token", "attempt-1");
+  assert.equal(result.is_final, true);
+  assert.equal(result.final_score, 0.85);
+});
+
+test("frontend rejects a score in provisional feedback without an answer", async () => {
+  const api = createApiClient({ baseUrl: "https://api.example.test", fetcher: async () =>
+    Response.json({ attempt_id: "attempt-1", is_final: false, review_source: "UNANSWERED_AI",
+      final_score: null, needs_teacher_review: true,
+      step_grades: [{ step_index: 1, verdict: "VALID", score: 1, confidence: 0.5, feedback: "Looks right." }] }) });
+  await assert.rejects(api.reviewMathAttempt("student-token", "attempt-1"), ApiContractError);
+});
+
+test("frontend rejects a step score in answer-grounded provisional feedback", async () => {
+  const api = createApiClient({ baseUrl: "https://api.example.test", fetcher: async () =>
+    Response.json({ attempt_id: "attempt-1", is_final: false, review_source: "ANSWER_GROUNDED_AI",
+      final_score: null, needs_teacher_review: false,
+      step_grades: [{ step_index: 1, verdict: "VALID", score: 1, confidence: 0.9, feedback: "Tentative." }] }) });
   await assert.rejects(api.reviewMathAttempt("student-token", "attempt-1"), ApiContractError);
 });
 
@@ -226,14 +254,14 @@ test("paper OCR returns editable suggestions without creating solution steps", a
   assert.equal(result.suggestions[0].uncertain, true);
   assert.deepEqual(result.suggestions[0].box_2d, [100, 200, 300, 400]);
 });
-test("review readiness explains missing approved answers without requesting a grade", async () => {
+test("review readiness marks missing answer as provisional only", async () => {
   const calls: string[] = [];
   const api = createApiClient({ baseUrl: "https://api.example.test", fetcher: async (input, init) => {
     calls.push(`${init?.method} ${new URL(String(input)).pathname}`);
-    return Response.json({ available: false, reason_code: "GRADING_ANSWER_REQUIRED" });
+    return Response.json({ available: true, reason_code: "PROVISIONAL_WITHOUT_ANSWER" });
   } });
   const result = await api.getMathAIReviewAvailability("student-token", "attempt-1");
-  assert.deepEqual(result, { available: false, reason_code: "GRADING_ANSWER_REQUIRED" });
+  assert.deepEqual(result, { available: true, reason_code: "PROVISIONAL_WITHOUT_ANSWER" });
   assert.deepEqual(calls, ["GET /api/v3/math-solutions/attempts/attempt-1/ai-review"]);
 });
 

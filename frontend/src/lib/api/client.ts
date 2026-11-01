@@ -264,10 +264,10 @@ export function createApiClient({ baseUrl, fetcher = fetch }: ApiClientOptions) 
         accessToken
       );
     },
-    createPracticeSession(accessToken: string, subjectId: string): Promise<PracticeSessionStartRead> {
+    createPracticeSession(accessToken: string, subjectId: string, options?: { problemTypeIds?: string[]; conceptIds?: string[]; sessionType?: string }): Promise<PracticeSessionStartRead> {
       return request(API_PATHS.practiceSessions, parsePracticeSessionStartRead, {
         method: "POST",
-        body: JSON.stringify({ subject_id: subjectId, session_type: "PRACTICE", problem_type_ids: [], concept_ids: [] }),
+        body: JSON.stringify({ subject_id: subjectId, session_type: options?.sessionType ?? "PRACTICE", problem_type_ids: options?.problemTypeIds ?? [], concept_ids: options?.conceptIds ?? [] }),
       }, accessToken);
     },
     getMathPracticeNextProblem(accessToken: string, sessionId: string): Promise<ProblemRead> {

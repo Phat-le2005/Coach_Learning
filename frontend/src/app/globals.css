@@ -104,3 +104,19 @@ p {
   border: 3px solid transparent;
   background-clip: padding-box;
 }
+
+/* Fix Vietnamese font typography and diacritics inside KaTeX math */
+.katex .text,
+.katex .textrm,
+.katex .textnormal,
+.katex .mathrm,
+.katex-vn-text {
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+  font-style: normal !important;
+}
+
+.katex-display {
+  margin: 8px 0 !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+}

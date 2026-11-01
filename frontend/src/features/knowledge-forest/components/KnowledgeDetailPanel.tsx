@@ -1,11 +1,14 @@
 "use client";
 
 import {
+  AlertTriangle,
   ArrowRight,
   BookOpen,
   CheckCircle2,
   Clock,
   Compass,
+  Lock,
+  ShieldCheck,
   Sparkles,
   Target,
   X,
@@ -14,7 +17,7 @@ import {
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 
-import { getMasteryStateDescription, getMasteryStateLabel } from "../copy";
+import { getMasteryStateLabel } from "../copy";
 import {
   getPostrequisitesForProblemType,
   getPrerequisitesForProblemType,
@@ -24,6 +27,7 @@ import styles from "../KnowledgeWorld3D.module.css";
 
 export interface KnowledgeDetailPanelProps {
   node: KnowledgeProblemTypeNode | null;
+  subjectId?: string;
   onClose: () => void;
   onSelectRelatedCode?: (code: string) => void;
   onExploreRelations?: (code: string) => void;
@@ -34,6 +38,14 @@ const THEORY_SNIPPETS: Record<string, { summary: string; formula?: string }> = {
   MONOTONICITY_FROM_DERIVATIVE_SIGN: {
     summary: "Hàm số f(x) đồng biến trên K khi f'(x) ≥ 0, nghịch biến khi f'(x) ≤ 0 (dấu bằng tại hữu hạn điểm).",
     formula: "f'(x) \\ge 0, \\forall x \\in K \\implies f(x) \\text{ đồng biến}",
+  },
+  MONOTONICITY_FROM_EXPRESSION: {
+    summary: "Tìm TXĐ D, tính đạo hàm y' = f'(x), giải f'(x) = 0, lập bảng xét dấu đạo hàm và kết luận khoảng đơn điệu.",
+    formula: "y' = f'(x) = 0 \\implies \\text{Lập bảng biến thiên}",
+  },
+  COMPLETE_FUNCTION_ANALYSIS_CUBIC: {
+    summary: "Khảo sát sự biến thiên và vẽ đồ thị hàm số bậc ba y = ax³ + bx² + cx + d (a ≠ 0) qua 5 bước chuẩn.",
+    formula: "y = ax^3 + bx^2 + cx + d \\implies y' = 3ax^2 + 2bx + c",
   },
   FIND_FUNCTION_EXTREMA: {
     summary: "Điểm cực trị x₀ là điểm làm f'(x₀) = 0 hoặc không xác định và f'(x) đổi dấu khi qua x₀.",
@@ -79,6 +91,7 @@ const THEORY_SNIPPETS: Record<string, { summary: string; formula?: string }> = {
 
 export function KnowledgeDetailPanel({
   node,
+  subjectId,
   onClose,
   onSelectRelatedCode,
   onExploreRelations,
@@ -102,7 +115,6 @@ export function KnowledgeDetailPanel({
   }
 
   const stateLabel = getMasteryStateLabel(node.state);
-  const stateDesc = getMasteryStateDescription(node.state);
   const prereqs = getPrerequisitesForProblemType(node.code);
   const postreqs = getPostrequisitesForProblemType(node.code);
   const theory = THEORY_SNIPPETS[node.code] ?? {
@@ -117,6 +129,27 @@ export function KnowledgeDetailPanel({
         minute: "2-digit",
       })
     : "Chưa luyện tập";
+
+  const scopeState = node.scopeState ?? "UNLOCKED";
+  const scopeLabel =
+    node.teacherScopeLabel ??
+    (scopeState === "CURRENT_TEACHING"
+      ? "Giáo viên đang dạy & giao bài"
+      : scopeState === "FOG_OF_WAR"
+      ? "Sương mù tri thức — Giáo viên chưa dạy tới"
+      : "Nền tảng đã mở khóa");
+
+  const relatedConcepts = node.relatedConcepts ?? [];
+  const recommendedTasks = node.recommendedTasks ?? [];
+  const weakConcepts = relatedConcepts.filter((c) => c.isWeakPrerequisite);
+
+  const buildPracticeHref = (conceptId?: string) => {
+    const params = new URLSearchParams();
+    params.set("problem_type_id", node.id);
+    if (conceptId) params.set("concept_id", conceptId);
+    if (subjectId) params.set("subject_id", subjectId);
+    return `/student/practice?${params.toString()}`;
+  };
 
   return (
     <aside
@@ -144,56 +177,321 @@ export function KnowledgeDetailPanel({
 
       {/* Panel Body */}
       <div className={styles.detailBody}>
-        {/* State Card */}
-        <div className={styles.stateCard}>
-          <div className={styles.stateBadge}>
-            <span className={styles.stateDot} />
-            <span>{stateLabel}</span>
-          </div>
-          <div className={styles.stateScore}>
-            {node.masteryScore !== undefined ? `${node.masteryScore}%` : "Chưa tích lũy"}
-          </div>
-        </div>
-
-        {/* Stats Strip */}
+        {/* 1. Teacher Curriculum Scope Banner */}
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
+            display: "flex",
+            alignItems: "center",
             gap: "8px",
-            fontSize: "12px",
-            color: "rgba(247, 247, 238, 0.7)",
+            padding: "8px 12px",
+            borderRadius: "10px",
+            fontSize: "11.5px",
+            fontWeight: 600,
+            background:
+              scopeState === "CURRENT_TEACHING"
+                ? "rgba(250, 204, 21, 0.14)"
+                : scopeState === "FOG_OF_WAR"
+                ? "rgba(51, 65, 85, 0.45)"
+                : "rgba(35, 166, 122, 0.14)",
+            border:
+              scopeState === "CURRENT_TEACHING"
+                ? "1px solid rgba(250, 204, 21, 0.4)"
+                : scopeState === "FOG_OF_WAR"
+                ? "1px solid rgba(148, 163, 184, 0.28)"
+                : "1px solid rgba(139, 229, 194, 0.3)",
+            color:
+              scopeState === "CURRENT_TEACHING"
+                ? "#fde047"
+                : scopeState === "FOG_OF_WAR"
+                ? "#cbd5e1"
+                : "#8be5c2",
           }}
         >
-          <div
-            style={{
-              background: "rgba(5, 25, 20, 0.4)",
-              padding: "8px 10px",
-              borderRadius: "8px",
-              display: "flex",
-              alignItems: "center",
-              gap: "6px",
-            }}
-          >
-            <Target size={14} color="#8be5c2" />
-            <span>{node.attemptCount} lượt làm</span>
+          {scopeState === "CURRENT_TEACHING" ? (
+            <Sparkles size={14} color="#fde047" style={{ flexShrink: 0 }} />
+          ) : scopeState === "FOG_OF_WAR" ? (
+            <Lock size={14} color="#94a3b8" style={{ flexShrink: 0 }} />
+          ) : (
+            <CheckCircle2 size={14} color="#8be5c2" style={{ flexShrink: 0 }} />
+          )}
+          <span>{scopeLabel}</span>
+        </div>
+
+        {/* 2. Step-Grounded Mastery Backdrop Card */}
+        <div
+          className={styles.stateCard}
+          style={{ flexDirection: "column", alignItems: "stretch", gap: "10px" }}
+        >
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div className={styles.stateBadge}>
+              <span
+                className={styles.stateDot}
+                style={{
+                  background:
+                    node.state === "WEAK"
+                      ? "#f87171"
+                      : node.state === "MASTERED"
+                      ? "#22c55e"
+                      : "#23a67a",
+                  boxShadow:
+                    node.state === "WEAK"
+                      ? "0 0 8px #f87171"
+                      : "0 0 8px #23a67a",
+                }}
+              />
+              <span>{stateLabel}</span>
+            </div>
+            <div className={styles.stateScore}>
+              {node.masteryScore !== undefined ? `${node.masteryScore}%` : "Chưa tích lũy"}
+            </div>
           </div>
+
+          {/* Visual Mastery Progress Bar */}
           <div
             style={{
-              background: "rgba(5, 25, 20, 0.4)",
-              padding: "8px 10px",
-              borderRadius: "8px",
-              display: "flex",
-              alignItems: "center",
-              gap: "6px",
+              width: "100%",
+              height: "6px",
+              borderRadius: "999px",
+              background: "rgba(255, 255, 255, 0.08)",
+              overflow: "hidden",
             }}
           >
-            <Clock size={14} color="#67bfd4" />
-            <span>{formattedDate}</span>
+            <div
+              style={{
+                width: `${Math.min(100, Math.max(0, node.masteryScore ?? 0))}%`,
+                height: "100%",
+                borderRadius: "999px",
+                background:
+                  node.state === "WEAK"
+                    ? "linear-gradient(90deg, #ef4444, #f59e0b)"
+                    : "linear-gradient(90deg, #10b981, #34d399)",
+                transition: "width 0.35s ease",
+              }}
+            />
+          </div>
+
+          {/* Stats Strip */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "8px",
+              fontSize: "11.5px",
+              color: "rgba(247, 247, 238, 0.78)",
+            }}
+          >
+            <div
+              style={{
+                background: "rgba(5, 25, 20, 0.45)",
+                padding: "7px 10px",
+                borderRadius: "8px",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+              }}
+            >
+              <Target size={13} color="#8be5c2" />
+              <span>
+                {node.attemptCount} lượt giải ({node.correctCount ?? 0} chuẩn)
+              </span>
+            </div>
+            <div
+              style={{
+                background: "rgba(5, 25, 20, 0.45)",
+                padding: "7px 10px",
+                borderRadius: "8px",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+              }}
+            >
+              <ShieldCheck size={13} color="#67bfd4" />
+              <span>
+                Độ tin cậy AI: {node.confidence !== undefined ? `${node.confidence}%` : "Mới"}
+              </span>
+            </div>
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              fontSize: "11px",
+              color: "rgba(247, 247, 238, 0.58)",
+            }}
+          >
+            <span style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+              <Clock size={12} color="#67bfd4" />
+              Cập nhật từ bài làm: {formattedDate}
+            </span>
           </div>
         </div>
 
-        {/* Theory & Key Formula */}
+        {/* 3. AI Diagnostic & Prerequisite Concept Root-Cause */}
+        {(node.diagnosticSummary || relatedConcepts.length > 0) && (
+          <div className={styles.sectionBlock}>
+            <div
+              className={styles.sectionHeading}
+              style={{ color: weakConcepts.length > 0 ? "#fca5a5" : "#67e8f9" }}
+            >
+              {weakConcepts.length > 0 ? (
+                <AlertTriangle size={14} color="#f87171" />
+              ) : (
+                <Sparkles size={14} color="#67e8f9" />
+              )}
+              <span>Chẩn đoán AI & Khái niệm gốc</span>
+            </div>
+
+            {node.diagnosticSummary && (
+              <div
+                style={{
+                  background:
+                    weakConcepts.length > 0
+                      ? "rgba(239, 68, 68, 0.12)"
+                      : "rgba(6, 182, 212, 0.1)",
+                  border:
+                    weakConcepts.length > 0
+                      ? "1px solid rgba(248, 113, 113, 0.35)"
+                      : "1px solid rgba(103, 232, 249, 0.25)",
+                  borderRadius: "10px",
+                  padding: "10px 12px",
+                  fontSize: "12px",
+                  lineHeight: 1.5,
+                  color: "#f7f7ee",
+                }}
+              >
+                {node.diagnosticSummary}
+              </div>
+            )}
+
+            {relatedConcepts.length > 0 && (
+              <div className={styles.prereqList}>
+                {relatedConcepts.map((concept) => (
+                  <div
+                    key={concept.id}
+                    className={styles.prereqItem}
+                    style={{
+                      justifyContent: "space-between",
+                      borderColor: concept.isWeakPrerequisite
+                        ? "rgba(248, 113, 113, 0.4)"
+                        : "rgba(139, 229, 194, 0.14)",
+                      background: concept.isWeakPrerequisite
+                        ? "rgba(127, 29, 29, 0.25)"
+                        : "rgba(5, 25, 20, 0.5)",
+                    }}
+                  >
+                    <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                      <span style={{ fontWeight: 600, fontSize: "12px", color: "#f7f7ee" }}>
+                        {concept.name}
+                      </span>
+                      <span
+                        style={{
+                          fontSize: "10.5px",
+                          color: concept.isWeakPrerequisite ? "#fca5a5" : "#8be5c2",
+                        }}
+                      >
+                        {concept.masteryScore !== undefined
+                          ? `Thành thạo khái niệm: ${concept.masteryScore}%`
+                          : "Chưa đo lường"}
+                        {concept.isWeakPrerequisite ? " • Lỗ hổng gốc" : ""}
+                      </span>
+                    </div>
+
+                    {concept.isWeakPrerequisite && (
+                      <Link
+                        href={buildPracticeHref(concept.id)}
+                        style={{
+                          fontSize: "11px",
+                          fontWeight: 700,
+                          color: "#fef08a",
+                          background: "rgba(234, 179, 8, 0.2)",
+                          border: "1px solid rgba(250, 204, 21, 0.4)",
+                          padding: "4px 8px",
+                          borderRadius: "6px",
+                          textDecoration: "none",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        Bù lỗ hổng →
+                      </Link>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* 4. Adaptive Practice Pathway using System Exercises */}
+        {recommendedTasks.length > 0 && (
+          <div className={styles.sectionBlock}>
+            <div className={styles.sectionHeading} style={{ color: "#8be5c2" }}>
+              <Zap size={14} color="#8be5c2" />
+              <span>Lộ trình luyện bài tập hệ thống ({recommendedTasks.length} bước)</span>
+            </div>
+            <div className={styles.prereqList}>
+              {recommendedTasks.map((task, idx) => (
+                <Link
+                  key={task.id}
+                  href={buildPracticeHref(task.conceptId)}
+                  style={{
+                    textDecoration: "none",
+                    background:
+                      task.taskType === "REPAIR"
+                        ? "rgba(234, 179, 8, 0.12)"
+                        : "rgba(35, 166, 122, 0.14)",
+                    border:
+                      task.taskType === "REPAIR"
+                        ? "1px solid rgba(250, 204, 21, 0.35)"
+                        : "1px solid rgba(139, 229, 194, 0.28)",
+                    borderRadius: "10px",
+                    padding: "10px 12px",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "4px",
+                    transition: "all 0.2s ease",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      gap: "8px",
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontSize: "10.5px",
+                        fontWeight: 700,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.04em",
+                        color: task.taskType === "REPAIR" ? "#fde047" : "#8be5c2",
+                      }}
+                    >
+                      Bước {idx + 1} •{" "}
+                      {task.taskType === "REPAIR"
+                        ? "Bù khái niệm gốc"
+                        : task.taskType === "REVIEW"
+                        ? "Ôn tập củng cố"
+                        : "Luyện bài hệ thống"}
+                    </span>
+                    <ArrowRight size={13} color="#8be5c2" />
+                  </div>
+                  <div style={{ fontSize: "12.5px", fontWeight: 700, color: "#f7f7ee" }}>
+                    {task.title}
+                  </div>
+                  <div style={{ fontSize: "11px", color: "rgba(247, 247, 238, 0.72)", lineHeight: 1.4 }}>
+                    {task.subtitle || task.rationale}
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* 5. Theory & Key Formula */}
         <div className={styles.sectionBlock}>
           <div className={styles.sectionHeading}>
             <BookOpen size={14} />
@@ -209,12 +507,12 @@ export function KnowledgeDetailPanel({
           )}
         </div>
 
-        {/* Prerequisites */}
+        {/* 6. Prerequisites in 3D Graph */}
         {prereqs.length > 0 && (
           <div className={styles.sectionBlock}>
             <div className={styles.sectionHeading}>
               <Sparkles size={14} />
-              <span>Kiến thức cần học trước ({prereqs.length})</span>
+              <span>Nhánh rễ tiên quyết 3D ({prereqs.length})</span>
             </div>
             <div className={styles.prereqList}>
               {prereqs.map((code) => (
@@ -232,12 +530,12 @@ export function KnowledgeDetailPanel({
           </div>
         )}
 
-        {/* Unlocks / Postrequisites */}
+        {/* 7. Unlocks / Postrequisites in 3D Graph */}
         {postreqs.length > 0 && (
           <div className={styles.sectionBlock}>
             <div className={styles.sectionHeading} style={{ color: "#8be5c2" }}>
               <Zap size={14} />
-              <span>Mở khóa tiếp theo ({postreqs.length})</span>
+              <span>Mở khóa nhánh tiếp theo ({postreqs.length})</span>
             </div>
             <div className={styles.prereqList}>
               {postreqs.map((code) => (
@@ -258,12 +556,15 @@ export function KnowledgeDetailPanel({
 
       {/* Action Footer */}
       <div className={styles.detailFooter}>
-        <Link
-          href={`/student/practice?problem_type_id=${encodeURIComponent(node.id)}`}
-          className={styles.practiceBtn}
-        >
+        <Link href={buildPracticeHref()} className={styles.practiceBtn}>
           <Zap size={16} />
-          <span>Luyện tập dạng bài này</span>
+          <span>
+            {scopeState === "FOG_OF_WAR"
+              ? "Khám phá trước bằng bài tập hệ thống"
+              : node.state === "WEAK"
+              ? "Luyện bài hệ thống khắc phục lỗi sai"
+              : "Giải bài tập hệ thống dạng này"}
+          </span>
         </Link>
         {onExploreRelations && (
           <button

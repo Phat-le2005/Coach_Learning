@@ -59,12 +59,12 @@ const actionCopy: Record<StudentHomeActionType, ActionCopy> = {
 };
 
 const priorityReasonCopy: Record<string, string> = {
-  VERIFIED_ROOT_CAUSE: "Nền tảng cần củng cố",
-  PREREQUISITE_REPAIR: "Kiến thức tiên quyết",
-  CURRENT_LESSON: "Bài đang học",
-  REVIEW_DUE: "Đến hạn ôn",
-  WEAK_PROBLEM_TYPE: "Dạng bài cần luyện",
-  WEAK_CONCEPT: "Khái niệm cần củng cố",
+  VERIFIED_ROOT_CAUSE: "⚠️ Điểm hổng bước giải",
+  PREREQUISITE_REPAIR: "🔧 Kiến thức tiên quyết",
+  CURRENT_LESSON: "🎯 Trọng tâm bài đang học",
+  REVIEW_DUE: "⏰ Đến hạn ôn tập",
+  WEAK_PROBLEM_TYPE: "⚠️ Dạng bài hay gặp lỗi",
+  WEAK_CONCEPT: "💡 Khái niệm cần củng cố",
 };
 
 const regionStateCopy: Record<KnowledgeRegionState, string> = {

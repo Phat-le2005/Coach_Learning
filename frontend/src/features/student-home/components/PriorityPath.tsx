@@ -46,9 +46,9 @@ export function PriorityPath({ priorities, onSelectPriority }: PriorityPathProps
       aria-labelledby="priority-title"
     >
       <SectionHeading
-        eyebrow="Con đường qua khu vườn · Bước tiếp theo"
-        title="Lộ trình kiến thức ưu tiên"
-        description="Mỗi cột mốc trên lối mòn được chọn lọc từ dữ liệu học thật để giúp bạn tiến bộ vững vàng nhất."
+        eyebrow="Khắc phục lỗ hổng & Tối ưu điểm số"
+        title="Lộ trình khắc phục & Luyện tập ưu tiên"
+        description="Được AI phân tích từ các bài làm gần nhất, tập trung vào những dạng bài và bước biến đổi bạn hay vấp phải."
       />
 
       <div ref={containerRef} className={styles.journeyGardenWrap}>
@@ -154,6 +154,10 @@ export function PriorityPath({ priorities, onSelectPriority }: PriorityPathProps
 
                         <h3 className={styles.journeyMilestoneTitle}>{priority.targetName}</h3>
 
+                        <p className={styles.journeyMilestoneHint}>
+                          ⚡ Luyện nhanh 2 - 3 câu · ~5 phút để củng cố dạng bài
+                        </p>
+
                         <div className={styles.journeyStatusRow}>
                           <span className={styles.journeyStateLabel}>
                             Trạng thái: <strong>{getMasteryStateText(priority.mastery)}</strong>
@@ -168,23 +172,26 @@ export function PriorityPath({ priorities, onSelectPriority }: PriorityPathProps
                       </div>
 
                       <div className={styles.journeyCardAction}>
-                        <span
-                          className={
-                            isFirst ? styles.priorityActionBtn : styles.journeySecondaryBtn
-                          }
+                        <a
+                          href={priority.practiceRoute || "/student/practice"}
+                          className={styles.priorityPracticeActionBtn}
+                          onClick={(e) => e.stopPropagation()}
                         >
-                          {isFirst ? (
-                            <>
-                              Khám phá mốc này
-                              <ArrowRight size={14} aria-hidden="true" />
-                            </>
-                          ) : (
-                            <>
-                              <Compass size={14} aria-hidden="true" />
-                              Xem lộ trình
-                            </>
-                          )}
-                        </span>
+                          Luyện ngay (5p)
+                          <ArrowRight size={13} aria-hidden="true" />
+                        </a>
+
+                        <button
+                          type="button"
+                          className={styles.journeySecondaryBtn}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onSelectPriority?.(priority);
+                          }}
+                        >
+                          <Compass size={13} aria-hidden="true" />
+                          Chi tiết
+                        </button>
                       </div>
                     </div>
                   </motion.li>

@@ -285,11 +285,19 @@
   line-height: 1.68;
 }
 
+.focusTargetBadgeRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 26px;
+}
+
 .focusTarget {
   display: inline-flex;
   align-items: center;
   gap: 9px;
-  margin-bottom: 26px;
+  margin-bottom: 0;
   padding: 6px 14px;
   border-radius: var(--radius-pill);
   background: rgba(9, 45, 37, 0.38);
@@ -309,6 +317,20 @@
 .focusTarget strong {
   color: #f7f7ee;
   font-weight: 700;
+}
+
+.focusTimeEstimatePill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 13px;
+  border-radius: var(--radius-pill);
+  background: rgba(232, 191, 106, 0.18);
+  border: 1px solid rgba(232, 191, 106, 0.38);
+  color: #fce8b2;
+  font-size: 0.8rem;
+  font-weight: 650;
+  letter-spacing: 0.01em;
 }
 
 .heroActions {
@@ -1513,6 +1535,16 @@
   line-height: 1.35;
 }
 
+.journeyMilestoneHint {
+  margin: 4px 0 10px;
+  font-size: 0.78rem;
+  color: #2e604f;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
 .journeyStatusRow {
   display: flex;
   flex-wrap: wrap;
@@ -1546,6 +1578,33 @@
 
 .journeyCardAction {
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.priorityPracticeActionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: var(--radius-pill);
+  font-size: 0.78rem;
+  font-weight: 750;
+  color: #092d25;
+  background: linear-gradient(135deg, #8be5c2 0%, #aef2d6 100%);
+  border: 1px solid rgba(35, 166, 122, 0.4);
+  box-shadow: 0 4px 12px rgba(35, 166, 122, 0.2);
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.priorityPracticeActionBtn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.04);
+  box-shadow: 0 6px 16px rgba(35, 166, 122, 0.3);
 }
 
 .priorityActionBtn {
@@ -2384,6 +2443,7 @@
 
   .journeyCardAction,
   .priorityActionBtn,
+  .priorityPracticeActionBtn,
   .journeySecondaryBtn {
     width: 100%;
     justify-content: center;

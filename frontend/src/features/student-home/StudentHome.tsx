@@ -92,23 +92,23 @@ export function StudentHome({ data }: StudentHomeProps) {
             {/* SECTION 1 — HERO: Welcome to the Garden */}
             <FocusHero data={data} onOpenActionDetail={handleOpenActionDetail} />
 
-            {/* SECTION 2 — PRACTICE ENTRY: Learning Path */}
-            <PracticePathway data={data} />
+            {/* SECTION 2 — PRIORITY PATH: Targeted Error Remediation & Practice */}
+            <PriorityPath priorities={data.priorities} onSelectPriority={handleSelectPriority} />
 
             <SectionNatureBridge variant="canopy-to-terrace" />
 
-            {/* SECTION 3 — LEARNING PULSE: Garden of Progress */}
-            <LearningPulse data={data} />
+            {/* SECTION 3 — PRACTICE ENTRY: Digital Paper Math Workspace */}
+            <PracticePathway data={data} />
 
             <SectionNatureBridge variant="terrace-to-forest" />
 
-            {/* SECTION 4 — KNOWLEDGE GARDEN: Forest of Knowledge */}
-            <KnowledgeGarden regions={data.knowledgeRegions} subjectId={data.subject.id} />
+            {/* SECTION 4 — LEARNING PULSE: Garden of Progress */}
+            <LearningPulse data={data} />
 
             <SectionNatureBridge variant="forest-to-trail" />
 
-            {/* SECTION 5 — PRIORITY PATH: The Learning Journey */}
-            <PriorityPath priorities={data.priorities} onSelectPriority={handleSelectPriority} />
+            {/* SECTION 5 — KNOWLEDGE GARDEN: Forest of Knowledge */}
+            <KnowledgeGarden regions={data.knowledgeRegions} subjectId={data.subject.id} />
 
             <SectionNatureBridge variant="trail-to-sanctuary" />
 
