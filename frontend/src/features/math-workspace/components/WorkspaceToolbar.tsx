@@ -97,7 +97,7 @@ export function WorkspaceToolbar({
           <Lasso size={18} /><span className={styles.toolLabel}>Khoanh vùng</span>
         </button>
         {onOpenGraph ? <button type="button" className={styles.toolButton} onClick={onOpenGraph} title="Math View: tự nhận diện và khám phá công thức 2D/3D">
-          <Box size={18} /><span className={styles.toolLabel}>Math View 3D</span>
+          <Box size={18} /><span className={styles.toolLabel}>Math View</span>
         </button> : null}
         <button
           type="button"
