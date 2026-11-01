@@ -5,11 +5,28 @@ reconstruct formulas. Cards therefore show pixels rendered from the original
 page. Recognized headings only supply navigation and card labels.
 """
 
+from collections import OrderedDict
+import copy
+from hashlib import sha256
 from io import BytesIO
+import logging
 import re
+import threading
 
 from app.core.exceptions import ApplicationError
 from app.theory_maps.pdf_extraction import MAX_PAGES
+
+logger = logging.getLogger(__name__)
+
+# Process-level thread lock for PDFium operations because the underlying
+# PDFium C library maintains global state that is not thread-safe.
+_PDFIUM_LOCK = threading.Lock()
+
+# Thread-safe LRU cache for notebook index dictionaries keyed by SHA-256 hash.
+_NOTEBOOK_INDEX_CACHE: OrderedDict[str, dict] = OrderedDict()
+_MAX_CACHE_ENTRIES = 32
+_CACHE_LOCK = threading.Lock()
+
 
 _ANCHOR = re.compile(
     r"(?im)^[ \t\uf000-\uf8ff]*(?P<title>"
@@ -43,9 +60,16 @@ def _pdf(content: bytes):
 
 
 def _page_blocks(page, page_number: int) -> list[dict]:
-    height = page.get_height()
-    textpage = page.get_textpage()
-    text = textpage.get_text_range(0, textpage.count_chars())
+    try:
+        height = page.get_height()
+        textpage = page.get_textpage()
+        char_count = textpage.count_chars()
+        text = textpage.get_text_range(0, char_count) if char_count > 0 else ""
+    except Exception as exc:
+        logger.warning("Error getting textpage for page %d: %s", page_number, exc)
+        return [{"id": f"p{page_number}-b0", "page": page_number, "ordinal": 0,
+                 "kind": "CONTINUATION", "title": "Nội dung trang", "top": 50.0, "bottom": 750.0}]
+
     anchors: list[tuple[float, str, str]] = []
     for match in _ANCHOR.finditer(text):
         title = " ".join(match.group("title").split()).strip(" .")
@@ -99,16 +123,44 @@ def _chapters(page_texts: list[str]) -> dict[int, str]:
 
 
 def notebook_index(content: bytes, page_texts: list[str]) -> dict:
-    document = _pdf(content)
-    blocks: list[dict] = []
-    for index in range(len(document)):
-        # A contents page is navigation, not a learning card.
-        source_text = page_texts[index] if index < len(page_texts) else ""
-        if "mục lục" in source_text.casefold() or source_text.count("......") >= 3:
-            continue
-        if index == 0 and len(source_text.strip()) < 400 and len(document) > 1:
-            continue
-        blocks.extend(_page_blocks(document[index], index + 1))
+    digest = sha256(content).hexdigest()
+    with _CACHE_LOCK:
+        if digest in _NOTEBOOK_INDEX_CACHE:
+            _NOTEBOOK_INDEX_CACHE.move_to_end(digest)
+            return copy.deepcopy(_NOTEBOOK_INDEX_CACHE[digest])
+
+    with _PDFIUM_LOCK:
+        document = _pdf(content)
+        try:
+            page_count = len(document)
+            blocks: list[dict] = []
+            for index in range(page_count):
+                # A contents page is navigation, not a learning card.
+                source_text = page_texts[index] if index < len(page_texts) else ""
+                if "mục lục" in source_text.casefold() or source_text.count("......") >= 3:
+                    continue
+                if index == 0 and len(source_text.strip()) < 400 and page_count > 1:
+                    continue
+                try:
+                    page = document[index]
+                    blocks.extend(_page_blocks(page, index + 1))
+                except Exception as exc:
+                    logger.warning("Error processing page %d for notebook: %s", index + 1, exc)
+                    blocks.append({
+                        "id": f"p{index + 1}-b0",
+                        "page": index + 1,
+                        "ordinal": 0,
+                        "kind": "CONTINUATION",
+                        "title": f"Trang {index + 1}",
+                        "top": 50.0,
+                        "bottom": 750.0,
+                    })
+        finally:
+            try:
+                document.close()
+            except Exception:
+                pass
+
     if not blocks:
         raise ApplicationError(422, "NOTEBOOK_EMPTY", "No readable notebook pages were found.")
 
@@ -143,25 +195,46 @@ def notebook_index(content: bytes, page_texts: list[str]) -> dict:
         section["chapter_number"] = number
         section["chapter_title"] = chapter_names.get(number, f"Chủ đề {number:02d}" if number else "Lý thuyết")
         previous = number
-    return {"sections": sections, "total_blocks": len(blocks), "page_count": len(document)}
+
+    result = {"sections": sections, "total_blocks": len(blocks), "page_count": page_count}
+
+    with _CACHE_LOCK:
+        _NOTEBOOK_INDEX_CACHE[digest] = result
+        if len(_NOTEBOOK_INDEX_CACHE) > _MAX_CACHE_ENTRIES:
+            _NOTEBOOK_INDEX_CACHE.popitem(last=False)
+
+    return copy.deepcopy(result)
 
 
 def notebook_image(content: bytes, page_number: int, ordinal: int) -> bytes:
-    document = _pdf(content)
-    if not 1 <= page_number <= len(document):
-        raise ApplicationError(404, "NOTEBOOK_BLOCK_NOT_FOUND", "Notebook page was not found.")
-    page = document[page_number - 1]
-    blocks = _page_blocks(page, page_number)
-    if not 0 <= ordinal < len(blocks):
-        raise ApplicationError(404, "NOTEBOOK_BLOCK_NOT_FOUND", "Notebook card was not found.")
-    block = blocks[ordinal]
-    scale = min(1.8, 1800 / page.get_width(), 2200 / page.get_height())
-    image = page.render(scale=scale, optimize_mode="lcd").to_pil().convert("RGB")
-    left = round(20 * scale)
-    right = round((page.get_width() - 20) * scale)
-    upper = round(block["top"] * scale)
-    lower = round(block["bottom"] * scale)
-    region = image.crop((left, upper, right, lower))
-    output = BytesIO()
-    region.save(output, format="PNG", optimize=True)
-    return output.getvalue()
+    with _PDFIUM_LOCK:
+        document = _pdf(content)
+        try:
+            if not 1 <= page_number <= len(document):
+                raise ApplicationError(404, "NOTEBOOK_BLOCK_NOT_FOUND", "Notebook page was not found.")
+            page = document[page_number - 1]
+            blocks = _page_blocks(page, page_number)
+            if not 0 <= ordinal < len(blocks):
+                raise ApplicationError(404, "NOTEBOOK_BLOCK_NOT_FOUND", "Notebook card was not found.")
+            block = blocks[ordinal]
+            page_width = max(1.0, page.get_width())
+            page_height = max(1.0, page.get_height())
+            scale = min(1.8, 1800 / page_width, 2200 / page_height)
+            image = page.render(scale=scale, optimize_mode="lcd").to_pil().convert("RGB")
+            left = max(0, round(20 * scale))
+            right = min(image.width, round((page_width - 20) * scale))
+            upper = max(0, min(image.height - 10, round(block["top"] * scale)))
+            lower = max(upper + 10, min(image.height, round(block["bottom"] * scale)))
+            region = image.crop((left, upper, right, lower))
+            output = BytesIO()
+            region.save(output, format="PNG", optimize=True)
+            return output.getvalue()
+        except ApplicationError:
+            raise
+        except Exception as exc:
+            raise ApplicationError(422, "NOTEBOOK_RENDER_FAILED", "Failed to render card image.") from exc
+        finally:
+            try:
+                document.close()
+            except Exception:
+                pass
