@@ -511,7 +511,7 @@ export function TheoryMapView({
           >
             🌐 Không gian 3D
           </button>
-          {sourceUrl && (
+          {sourceUrl && isTeacher && (
             <button
               type="button"
               className={`${styles.viewModeBtn} ${viewMode === "source" ? styles.viewModeBtnActive : ""}`}
@@ -524,16 +524,18 @@ export function TheoryMapView({
           )}
         </div>
 
-        {/* Global Stats Badge */}
-        <div className={styles.statBadgeCounter}>
-          <span>📚 {stats.sectionsCount} bài học</span>
-          <span>&bull;</span>
-          <span>🎯 {stats.topicsCount} dạng bài</span>
-          <span>&bull;</span>
-          <span>📐 {stats.formulasCount} công thức</span>
-          <span>&bull;</span>
-          <span>💡 {stats.examplesCount} ví dụ</span>
-        </div>
+        {/* Global Stats Badge (Shown for teacher cockpit) */}
+        {isTeacher && (
+          <div className={styles.statBadgeCounter}>
+            <span>📚 {stats.sectionsCount} bài học</span>
+            <span>&bull;</span>
+            <span>🎯 {stats.topicsCount} dạng bài</span>
+            <span>&bull;</span>
+            <span>📐 {stats.formulasCount} công thức</span>
+            <span>&bull;</span>
+            <span>💡 {stats.examplesCount} ví dụ</span>
+          </div>
+        )}
 
         {/* Scope and Search */}
         <div className={styles.controlActionsGroup}>

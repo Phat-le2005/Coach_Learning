@@ -393,8 +393,8 @@ export function TheoryBilateralMindmap({
       style={{
         position: "relative",
         width: "100%",
-        height: "min(78vh, 760px)",
-        minHeight: "540px",
+        height: "calc(100vh - 128px)",
+        minHeight: "640px",
         background: "radial-gradient(circle at center, #ffffff 0%, #f4f8f5 100%)",
         overflow: "hidden",
         cursor: isPanning ? "grabbing" : "grab",
@@ -415,12 +415,12 @@ export function TheoryBilateralMindmap({
           display: "flex",
           alignItems: "center",
           gap: "5px",
-          background: "rgba(255, 255, 255, 0.92)",
-          backdropFilter: "blur(8px)",
+          background: "rgba(255, 255, 255, 0.94)",
+          backdropFilter: "blur(10px)",
           padding: "5px 8px",
           borderRadius: "10px",
           border: "1px solid #bce0cc",
-          boxShadow: "0 3px 12px rgba(10, 40, 25, 0.08)",
+          boxShadow: "0 4px 16px rgba(10, 40, 25, 0.08)",
           zIndex: 10,
         }}
       >
