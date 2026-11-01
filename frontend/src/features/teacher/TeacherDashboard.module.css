@@ -21,9 +21,7 @@
   position: sticky;
   top: 0;
   z-index: 40;
-  background: rgba(251, 250, 244, 0.88);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: #fbfaf4;
   border-bottom: 1px solid var(--border-soft, rgba(29, 75, 61, 0.12));
   box-shadow: 0 4px 20px rgba(16, 46, 38, 0.03);
   transition: all 0.2s ease;
@@ -543,12 +541,11 @@
    ========================================================================== */
 .tabsStickyWrap {
   position: sticky;
-  top: 73px;
+  top: 75px;
   z-index: 30;
-  background: rgba(245, 243, 233, 0.92);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  padding: 4px 0 10px;
+  background: #f5f3e9;
+  padding: 6px 0 10px;
+  border-bottom: 1px solid rgba(40, 105, 85, 0.08);
 }
 
 .tabsBar {

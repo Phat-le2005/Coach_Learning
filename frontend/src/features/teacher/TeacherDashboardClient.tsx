@@ -307,17 +307,19 @@ export function TeacherDashboardClient({
           </div>
         )}
 
-        {/* 2. Cockpit Welcome Banner & KPI Cards */}
-        <TeacherCockpitBanner
-          teacherName={teacherName}
-          selectedClass={selectedClass}
-          students={students}
-          assignments={assignments}
-          analytics={analytics}
-          onOpenCreateClass={() => setIsCreateClassOpen(true)}
-          onOpenUpload={() => setIsUploadOpen(true)}
-          onSelectTab={handleSelectTab}
-        />
+        {/* 2. Cockpit Welcome Banner & KPI Cards (hidden on theory tab to provide full workspace) */}
+        {tab !== "theory" && (
+          <TeacherCockpitBanner
+            teacherName={teacherName}
+            selectedClass={selectedClass}
+            students={students}
+            assignments={assignments}
+            analytics={analytics}
+            onOpenCreateClass={() => setIsCreateClassOpen(true)}
+            onOpenUpload={() => setIsUploadOpen(true)}
+            onSelectTab={handleSelectTab}
+          />
+        )}
 
         {/* 3. Navigation Tabs */}
         <div className={styles.tabsStickyWrap}>

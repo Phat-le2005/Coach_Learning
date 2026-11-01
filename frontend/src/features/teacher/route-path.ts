@@ -35,5 +35,20 @@ export function teacherBackendPath(parts: string[], method: string, search: stri
   }  if (first === "assignments" && UUID.test(id ?? "") && action === "submissions" && parts.length === 3 && method === "GET" && !search) {
     return `/teacher/assignments/${id}/submissions`;
   }
+  if (first === "grading") {
+    if (parts.length === 2 && id === "queue" && method === "GET") {
+      return `/api/v2/teacher/grading/queue${search}`;
+    }
+    if (parts.length === 2 && id === "batch-approve" && method === "POST" && !search) {
+      return "/api/v2/teacher/grading/batch-approve";
+    }
+    if (parts.length === 3 && id === "attempts" && UUID.test(action ?? "") && method === "GET" && !search) {
+      return `/api/v2/teacher/grading/attempts/${action}`;
+    }
+    if (parts.length === 3 && UUID.test(id ?? "") && !search) {
+      if (action === "override" && method === "POST") return `/api/v2/teacher/grading/${id}/override`;
+      if (action === "retry-sync" && method === "POST") return `/api/v2/teacher/grading/${id}/retry-sync`;
+    }
+  }
   return null;
 }
