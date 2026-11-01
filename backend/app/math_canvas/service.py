@@ -31,6 +31,10 @@ def spec_hash(spec: GraphSpec) -> str:
         settings.pop("view_mode")
     if settings["slice_y"] == 0:
         settings.pop("slice_y")
+    if settings["scene_depth"] == 0:
+        settings.pop("scene_depth")
+    if not settings["scene_surface"]:
+        settings.pop("scene_surface")
     return fingerprint({"expression": spec.expression, "settings": settings})
 
 

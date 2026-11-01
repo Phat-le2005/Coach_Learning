@@ -5,7 +5,7 @@ from datetime import datetime
 from typing import Literal
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, Field, StrictBool, field_validator, model_validator
 from app.math_canvas.scene_schema import GraphSceneDocument
 from app.math_canvas.lab_schema import LabDocument
 
@@ -70,6 +70,7 @@ class GraphSettings(StrictModel):
     view_mode: Literal["AUTO", "2D", "3D", "EXTRUDED"] = "AUTO"
     slice_y: float = Field(default=0, ge=-5, le=5)
     scene_depth: float = Field(default=0, ge=0, le=10)
+    scene_surface: StrictBool = False
     scene: GraphSceneDocument | None = None
     lab: LabDocument | None = None
 
@@ -87,6 +88,8 @@ class GraphSpec(StrictModel):
 
     @model_validator(mode="after")
     def valid_expression(self):
+        if self.settings.scene_surface and (self.settings.scene is None or self.settings.view_mode != "3D" or self.settings.scene_depth <= 0):
+            raise ValueError("Extended scene surfaces require a 3D scene with a positive extent.")
         if self.settings.scene_depth and (self.settings.scene is None or self.settings.view_mode != "3D"):
             raise ValueError("Scene depth requires a planar scene with a 3D view.")
         if self.settings.lab is not None:
@@ -104,7 +107,7 @@ class GraphSpec(StrictModel):
             if set(self.settings.parameters) != self.settings.scene.parameter_names():
                 raise ValueError("Shared parameters must match all scene expressions.")
             if self.settings.view_mode not in {"AUTO", "2D", "3D"} or self.settings.scale != 1 or any((self.settings.offset, self.settings.shift_x, self.settings.shift_y, self.settings.slice_y)):
-                raise ValueError("Planar scenes use a 2D/3D camera without legacy transforms or extrusion.")
+                raise ValueError("Planar scenes use a 2D/3D camera without legacy transforms; scene_depth controls the optional 3D extension.")
             return self
         dimension, parameters = classify_expression(self.expression)
         if set(self.settings.parameters) != parameters:
