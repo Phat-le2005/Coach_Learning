@@ -39,7 +39,7 @@ from app.mastery.evidence import (
     WeightedProblemTypeEvidence,
 )
 from app.math_solutions.answer_grounded_ai import AIStepGrade, AnswerGroundedReview
-from app.math_solutions.models import SolutionAttempt, SolutionStep
+from app.math_solutions.models import EvaluationDecision, SolutionAttempt, SolutionRubric, SolutionStep
 from app.misconceptions.models import (
     MisconceptionCategory,
     MisconceptionDefinition,
@@ -123,6 +123,16 @@ def classify_step_error(
     verdict = grade.verdict
 
     if verdict == "VALID":
+        # Low confidence (< 0.80) cannot be treated as verified without human audit
+        if grade.confidence is not None and grade.confidence < 0.80:
+            return StepClassificationResult(
+                step_index=grade.step_index,
+                step_type=step_type,
+                verdict="NEEDS_REVIEW",
+                category=ErrorPedagogicalCategory.NEEDS_REVIEW,
+                score=0.0,
+                feedback=f"[Chưa đủ độ tin cậy để xác minh bước giải] {grade.feedback}",
+            )
         return StepClassificationResult(
             step_index=grade.step_index,
             step_type=step_type,
@@ -132,14 +142,13 @@ def classify_step_error(
             feedback=grade.feedback,
         )
 
-    if verdict == "NEEDS_REVIEW":
-        partial = round(0.35 * max(0.5, grade.confidence), 4)
+    if verdict in ("NEEDS_REVIEW", "UNDETERMINED"):
         return StepClassificationResult(
             step_index=grade.step_index,
             step_type=step_type,
             verdict="NEEDS_REVIEW",
             category=ErrorPedagogicalCategory.NEEDS_REVIEW,
-            score=partial,
+            score=0.0,
             feedback=grade.feedback,
         )
 
@@ -254,10 +263,32 @@ def classify_step_error(
 def compute_step_grounded_score(
     steps: list[SolutionStep],
     review: AnswerGroundedReview,
+    rubric: SolutionRubric | None = None,
 ) -> tuple[float, bool, list[str], list[StepClassificationResult]]:
-    """Compute weighted score [0, 1] with consequential/slip credit and pedagogical audit."""
+    """Compute weighted score [0, 1] with consequential/slip credit and pedagogical audit.
+    
+    If a rubric is provided, step weights are extracted directly from rubric criteria.
+    Unverified steps (NEEDS_REVIEW) receive 0 score and strictly disqualify is_correct.
+    """
     if not review.step_grades:
         return 0.0, False, [], []
+
+    # Extract criterion weights from rubric if available
+    rubric_weights: dict[str, float] = {}
+    if rubric and rubric.criteria:
+        crit_list = (
+            rubric.criteria
+            if isinstance(rubric.criteria, list)
+            else rubric.criteria.get("criteria", [])
+        )
+        for crit in crit_list:
+            st = crit.get("step_type")
+            w = crit.get("weight")
+            if st and w is not None:
+                try:
+                    rubric_weights[st] = float(w)
+                except (ValueError, TypeError):
+                    pass
 
     step_by_index = {step.step_index: step for step in steps}
     weighted_sum = 0.0
@@ -275,7 +306,7 @@ def compute_step_grounded_score(
             SolutionStep(step_index=grade.step_index, step_type="CUSTOM"),
         )
         step_type = step.step_type or "CUSTOM"
-        weight = _STEP_TYPE_WEIGHTS.get(step_type, 1.0)
+        weight = rubric_weights.get(step_type) or _STEP_TYPE_WEIGHTS.get(step_type, 1.0)
         total_weight += weight
 
         classification = classify_step_error(step, grade, invalid_prior_indices)
@@ -289,12 +320,19 @@ def compute_step_grounded_score(
         weighted_sum += weight * classification.score
 
     final_score = round(min(1.0, max(0.0, weighted_sum / max(total_weight, 1e-6))), 4)
-    # A solution is considered passably correct if all steps valid or final score >= 0.85 with no conceptual errors
+    has_needs_review = any(
+        c.verdict == "NEEDS_REVIEW" or c.category == ErrorPedagogicalCategory.NEEDS_REVIEW
+        for c in classifications
+    )
     has_conceptual_error = any(
         c.category == ErrorPedagogicalCategory.CONCEPTUAL for c in classifications
     )
-    is_correct = all_valid or (
-        not review.needs_teacher_review and final_score >= 0.85 and not has_conceptual_error
+    # A solution is considered passably correct ONLY if verified (no needs_review, not needs_teacher_review)
+    # and either all steps valid OR final_score >= 0.85 with no conceptual errors.
+    is_correct = (
+        not review.needs_teacher_review
+        and not has_needs_review
+        and (all_valid or (final_score >= 0.85 and not has_conceptual_error))
     )
     return final_score, is_correct, failed_summaries, classifications
 
@@ -314,6 +352,26 @@ class MasteryBackdropService:
         content_sha256: str,
     ) -> None:
         if not isinstance(self.session, Session):
+            return
+
+        # 1. Anti-double-counting: Check if an official EvaluationDecision already exists
+        existing_decision = self.session.scalar(
+            select(EvaluationDecision).where(EvaluationDecision.attempt_id == attempt.id)
+        )
+        if existing_decision is not None:
+            logger.info(
+                "Skipping backdrop for attempt %s: official EvaluationDecision %s already exists",
+                attempt.id,
+                existing_decision.id,
+            )
+            return
+
+        # 2. Gating: Only verified reviews (not needing teacher review) may alter mastery
+        if review.needs_teacher_review:
+            logger.info(
+                "Skipping backdrop for attempt %s: review flagged needs_teacher_review",
+                attempt.id,
+            )
             return
 
         # Deterministic idempotency key per (attempt.id, content_sha256)
@@ -339,9 +397,22 @@ class MasteryBackdropService:
             ).all()
         )
 
-        score, is_correct, failed_summaries, classifications = compute_step_grounded_score(
-            active_steps, review
+        rubric = (
+            self.session.get(SolutionRubric, attempt.rubric_id)
+            if attempt.rubric_id
+            else None
         )
+        score, is_correct, failed_summaries, classifications = compute_step_grounded_score(
+            active_steps, review, rubric=rubric
+        )
+
+        # 3. Gating: Unverified steps cannot mutate official student competencies
+        if any(c.category == ErrorPedagogicalCategory.NEEDS_REVIEW for c in classifications):
+            logger.info(
+                "Skipping backdrop for attempt %s: contains unverified steps (NEEDS_REVIEW)",
+                attempt.id,
+            )
+            return
 
         subject_id, classroom_id, teaching_plan_id, difficulty, problem_types, concepts = (
             self._resolve_curriculum_mappings(attempt)
@@ -433,21 +504,70 @@ class MasteryBackdropService:
             attempt.student_id, concepts, active_steps, classifications, event.id
         )
 
-        # 3. Publish ProblemTypes + healthy/suspected Concepts with the attempt score
-        self.mastery_publisher.publish(
-            GenericMasteryEvidence(
-                student_id=attempt.student_id,
-                is_correct=is_correct,
-                score=score,
-                difficulty=difficulty,
-                response_time_seconds=response_time,
-                hint_count=0,
-                occurred_at=occurred_at,
-                concepts=tuple(attributed_concepts),
-                problem_types=tuple(problem_types),
-            ),
-            self.session,
-        )
+        # 3. Attribute step-specific performance to mapped concepts vs overarching problem types
+        concept_ids = [c.concept_id for c in attributed_concepts]
+        concept_rows = list(
+            self.session.scalars(select(Concept).where(Concept.id.in_(concept_ids)))
+        ) if concept_ids else []
+        code_by_id = {c.id: c.code for c in concept_rows}
+
+        step_class_by_type = {c.step_type: c for c in classifications}
+        concept_specific_evidences: list[tuple[WeightedConceptEvidence, float, bool]] = []
+        unmapped_concepts: list[WeightedConceptEvidence] = []
+
+        for c in attributed_concepts:
+            concept_code = code_by_id.get(c.concept_id)
+            matched_step_class: StepClassificationResult | None = None
+            if concept_code:
+                for triggers, concept_codes in _STEP_CONCEPT_KEYWORDS:
+                    if concept_code in concept_codes:
+                        for trig in triggers:
+                            if trig in step_class_by_type:
+                                matched_step_class = step_class_by_type[trig]
+                                break
+                    if matched_step_class is not None:
+                        break
+
+            if matched_step_class is not None:
+                c_score = matched_step_class.score
+                c_correct = matched_step_class.category == ErrorPedagogicalCategory.VALID
+                concept_specific_evidences.append((c, c_score, c_correct))
+            else:
+                unmapped_concepts.append(c)
+
+        # Publish ProblemTypes + overarching Concepts with the attempt score
+        if problem_types or unmapped_concepts:
+            self.mastery_publisher.publish(
+                GenericMasteryEvidence(
+                    student_id=attempt.student_id,
+                    is_correct=is_correct,
+                    score=score,
+                    difficulty=difficulty,
+                    response_time_seconds=response_time,
+                    hint_count=0,
+                    occurred_at=occurred_at,
+                    concepts=tuple(unmapped_concepts),
+                    problem_types=tuple(problem_types),
+                ),
+                self.session,
+            )
+
+        # Publish step-specific concepts with their exact rubric/step credit
+        for c, c_score, c_correct in concept_specific_evidences:
+            self.mastery_publisher.publish(
+                GenericMasteryEvidence(
+                    student_id=attempt.student_id,
+                    is_correct=c_correct,
+                    score=c_score,
+                    difficulty=difficulty,
+                    response_time_seconds=response_time,
+                    hint_count=0,
+                    occurred_at=occurred_at,
+                    concepts=(c,),
+                    problem_types=(),
+                ),
+                self.session,
+            )
 
         # 4. Only if a concept has a CONFIRMED repeated misconception gap across attempts,
         # apply the targeted 0.0 penalty so RootCause and StudyPlan trigger the repair task.
@@ -592,6 +712,7 @@ class MasteryBackdropService:
                     LearningEvidenceEvent.student_id == student_id,
                     LearningEvidenceConcept.concept_id == c.concept_id,
                     LearningEvidenceEvent.is_correct.is_(False),
+                    LearningEvidenceEvent.score < 0.50,
                     LearningEvidenceEvent.id != current_event_id,
                 )
             ) or 0
@@ -662,96 +783,4 @@ class MasteryBackdropService:
                 for link in question.concept_links:
                     concepts.append(WeightedConceptEvidence(link.concept_id, link.weight))
 
-                # Fallback for unlinked cubic function analysis demo question
-                if not problem_types and subject_id is not None:
-                    problem_types = self._fallback_problem_types_for_content(
-                        subject_id, question.content
-                    )
-
-        elif attempt.assignment_material_item_id:
-            snapshot = self.session.get(
-                AssignmentMaterialItem, attempt.assignment_material_item_id
-            )
-            if snapshot and snapshot.difficulty is not None:
-                difficulty = snapshot.difficulty
-
-            mat_pts = list(
-                self.session.scalars(
-                    select(AssignmentMaterialItemProblemType).where(
-                        AssignmentMaterialItemProblemType.assignment_material_item_id
-                        == attempt.assignment_material_item_id
-                    )
-                )
-            )
-            for idx, mpt in enumerate(mat_pts):
-                problem_types.append(
-                    WeightedProblemTypeEvidence(
-                        mpt.problem_type_id,
-                        mpt.weight,
-                        is_primary=mpt.is_primary or (idx == 0),
-                    )
-                )
-
-            mat_concepts = list(
-                self.session.scalars(
-                    select(AssignmentMaterialItemConcept).where(
-                        AssignmentMaterialItemConcept.assignment_material_item_id
-                        == attempt.assignment_material_item_id
-                    )
-                )
-            )
-            for mc in mat_concepts:
-                concepts.append(WeightedConceptEvidence(mc.concept_id, mc.weight))
-
-        # If concepts are not explicitly linked on the item, derive from ProblemTypeConcept
-        if not concepts and problem_types:
-            pt_ids = [pt.problem_type_id for pt in problem_types]
-            pt_concepts = list(
-                self.session.scalars(
-                    select(ProblemTypeConcept).where(
-                        ProblemTypeConcept.problem_type_id.in_(pt_ids)
-                    )
-                )
-            )
-            seen_c: set[UUID] = set()
-            for ptc in pt_concepts:
-                if ptc.concept_id not in seen_c:
-                    seen_c.add(ptc.concept_id)
-                    concepts.append(WeightedConceptEvidence(ptc.concept_id, ptc.weight))
-
         return subject_id, classroom_id, teaching_plan_id, difficulty, problem_types, concepts
-
-    def _fallback_problem_types_for_content(
-        self, subject_id: UUID, content: str
-    ) -> list[WeightedProblemTypeEvidence]:
-        text_lower = (content or "").lower()
-        target_codes: list[tuple[str, float, bool]] = []
-        if "khảo sát" in text_lower or "x^3" in text_lower:
-            target_codes = [
-                ("COMPLETE_FUNCTION_ANALYSIS_CUBIC", 1.0, True),
-                ("MONOTONICITY_FROM_EXPRESSION", 0.85, False),
-                ("FIND_FUNCTION_EXTREMA", 0.85, False),
-            ]
-        elif "đơn điệu" in text_lower or "đồng biến" in text_lower or "nghịch biến" in text_lower:
-            target_codes = [("MONOTONICITY_FROM_EXPRESSION", 1.0, True)]
-        elif "cực trị" in text_lower or "cực đại" in text_lower:
-            target_codes = [("FIND_FUNCTION_EXTREMA", 1.0, True)]
-
-        if not target_codes:
-            return []
-
-        codes = [c[0] for c in target_codes]
-        rows = list(
-            self.session.scalars(
-                select(ProblemType)
-                .join(Topic, Topic.id == ProblemType.topic_id)
-                .join(Chapter, Chapter.id == Topic.chapter_id)
-                .where(Chapter.subject_id == subject_id, ProblemType.code.in_(codes))
-            )
-        )
-        by_code = {r.code: r.id for r in rows}
-        result: list[WeightedProblemTypeEvidence] = []
-        for code, weight, is_primary in target_codes:
-            if code in by_code:
-                result.append(WeightedProblemTypeEvidence(by_code[code], weight, is_primary))
-        return result

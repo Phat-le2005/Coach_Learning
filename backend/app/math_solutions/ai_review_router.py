@@ -1,7 +1,10 @@
 import asyncio
 import json
+import logging
 from pathlib import Path
 """Student-owned hybrid step grading and provisional feedback API."""
+
+logger = logging.getLogger(__name__)
 
 from typing import Annotated, Literal
 from uuid import UUID
@@ -260,17 +263,41 @@ async def review_submitted_steps(
                     UnansweredAIService(session, gateway).review_attempt(attempt_id)
                 )
                 if ref.correct_answer:
-                    try:
-                        from app.math_solutions.mastery_backdrop import MasteryBackdropService
-
-                        MasteryBackdropService(session).record_answer_grounded_review(
-                            attempt=attempt,
-                            review=review,
-                            content_sha256=ref.content_sha256,
+                    # Gating Rule: Provisional AI reviews must NOT mutate official student mastery
+                    # if flagged for teacher review, or if any step is unverified / low confidence.
+                    is_unverified = (
+                        review.needs_teacher_review
+                        or any(
+                            step.verdict in ("NEEDS_REVIEW", "UNDETERMINED")
+                            or (step.confidence is not None and step.confidence < 0.85)
+                            for step in review.step_grades
                         )
-                        session.commit()
-                    except Exception:
-                        pass
+                    )
+                    if is_unverified:
+                        logger.info(
+                            "Provisional AI review for attempt %s marked needs_teacher_review or has unverified steps; skipping mastery backdrop update.",
+                            attempt_id,
+                        )
+                    else:
+                        try:
+                            from app.math_solutions.mastery_backdrop import MasteryBackdropService
+
+                            MasteryBackdropService(session).record_answer_grounded_review(
+                                attempt=attempt,
+                                review=review,
+                                content_sha256=ref.content_sha256,
+                            )
+                            if hasattr(session, "commit"):
+                                session.commit()
+                        except Exception as e:
+                            if hasattr(session, "rollback"):
+                                session.rollback()
+                            logger.error(
+                                "Failed to record verified answer-grounded review backdrop for attempt %s: %s",
+                                attempt_id,
+                                e,
+                                exc_info=True,
+                            )
                 res = AIReviewRead(
                     attempt_id=review.attempt_id,
                     step_grades=[StepSuggestionRead(

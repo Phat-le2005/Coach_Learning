@@ -70,7 +70,7 @@ class SolutionRubricEvaluator:
                 if val == "VALID":
                     factor = 1.0 if raw is None else float(raw)
                 elif val == "NEEDS_REVIEW":
-                    factor = 0.5
+                    factor = 0.0
                 else:
                     factor = 0.0
 

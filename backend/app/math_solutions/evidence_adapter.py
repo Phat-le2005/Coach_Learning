@@ -27,6 +27,7 @@ from app.learning_evidence.publisher import (
     LearningEvidencePublisher,
 )
 from app.mastery.evidence import (
+    DeterministicMasteryEvidencePublisher,
     WeightedConceptEvidence,
     WeightedProblemTypeEvidence,
 )
@@ -192,6 +193,31 @@ class MathSolutionEvidenceAdapter:
         decision.learning_evidence_event_id = evidence_event.id
         self.session.flush()
 
+        # Check if a prior provisional backdrop existed for this attempt; if so, resync mastery
+        prior_backdrops = list(
+            self.session.scalars(
+                select(LearningEvidenceEvent).where(
+                    LearningEvidenceEvent.source_kind == LearningEvidenceSourceKind.MATH_SOLUTION_EVALUATION,
+                    LearningEvidenceEvent.student_id == attempt.student_id,
+                )
+            )
+        )
+        has_prior_backdrop = any(
+            (ev.event_metadata or {}).get("attempt_id") == str(attempt.id)
+            and (ev.event_metadata or {}).get("review_source") == "ANSWER_GROUNDED_AI"
+            and ev.id != evidence_event.id
+            for ev in prior_backdrops
+        )
+        if has_prior_backdrop:
+            target_pts = {pt.problem_type_id for pt in problem_types}
+            target_cs = {c.concept_id for c in concepts}
+            DeterministicMasteryEvidencePublisher().recalculate_student_mastery(
+                self.session,
+                attempt.student_id,
+                problem_type_ids=target_pts,
+                concept_ids=target_cs,
+            )
+
         # 3. Synchronize the one classroom item represented by this decision.
         # The Assignment submission owns the transaction when commit=False.
         if attempt.assignment_student_question_id:
@@ -303,6 +329,171 @@ class MathSolutionEvidenceAdapter:
         if attempt:
             attempt.total_score = new_score
             attempt.is_correct = new_is_correct
+
+        # 1. Resolve subject, curriculum mappings, and difficulty for the append-only override evidence
+        subject_id = None
+        classroom_id = None
+        teaching_plan_id = None
+        assignment_id = attempt.assignment_id if attempt else None
+        difficulty = 0.5
+        concepts: list[WeightedConceptEvidence] = []
+        problem_types: list[WeightedProblemTypeEvidence] = []
+        response_time = None
+
+        if attempt:
+            if attempt.assignment_id:
+                assignment = self.session.get(Assignment, attempt.assignment_id)
+                if assignment:
+                    subject_id = assignment.subject_id
+                    classroom_id = assignment.classroom_id
+                    teaching_plan_id = assignment.teaching_plan_id
+            if attempt.submitted_at and attempt.started_at:
+                response_time = max(1.0, (attempt.submitted_at - attempt.started_at).total_seconds())
+
+            if attempt.question_id:
+                question = self.session.scalar(
+                    select(Question)
+                    .options(selectinload(Question.concept_links), selectinload(Question.problem_type_links))
+                    .where(Question.id == attempt.question_id)
+                )
+                if question:
+                    if subject_id is None:
+                        subject_id = question.subject_id
+                    difficulty = question.difficulty if question.difficulty is not None else 0.5
+                    for link in question.concept_links:
+                        concepts.append(WeightedConceptEvidence(link.concept_id, link.weight))
+                    for link in question.problem_type_links:
+                        problem_types.append(
+                            WeightedProblemTypeEvidence(
+                                link.problem_type_id,
+                                link.weight if link.weight is not None else 1.0,
+                                is_primary=link.is_primary,
+                            )
+                        )
+            elif attempt.assignment_material_item_id:
+                snapshot = self.session.get(AssignmentMaterialItem, attempt.assignment_material_item_id)
+                if snapshot and snapshot.difficulty is not None:
+                    difficulty = snapshot.difficulty
+                for mc in self.session.scalars(
+                    select(AssignmentMaterialItemConcept).where(
+                        AssignmentMaterialItemConcept.assignment_material_item_id == attempt.assignment_material_item_id
+                    )
+                ):
+                    concepts.append(WeightedConceptEvidence(mc.concept_id, mc.weight))
+                for idx, mpt in enumerate(self.session.scalars(
+                    select(AssignmentMaterialItemProblemType).where(
+                        AssignmentMaterialItemProblemType.assignment_material_item_id == attempt.assignment_material_item_id
+                    )
+                )):
+                    problem_types.append(
+                        WeightedProblemTypeEvidence(mpt.problem_type_id, mpt.weight, is_primary=(idx == 0))
+                    )
+
+        # 2. Append-only: Record a new LearningEvidenceEvent for the teacher override
+        if subject_id and attempt:
+            override_event = LearningEvidenceEvent(
+                student_id=attempt.student_id,
+                subject_id=subject_id,
+                classroom_id=classroom_id,
+                teaching_plan_id=teaching_plan_id,
+                assignment_id=assignment_id,
+                source_kind=LearningEvidenceSourceKind.MATH_SOLUTION_EVALUATION,
+                source_entity_id=override.id,
+                is_correct=new_is_correct,
+                score=new_score,
+                difficulty=difficulty,
+                response_time_seconds=response_time,
+                hint_count=0,
+                evaluation_status=EvaluationStatus.EVALUATED,
+                occurred_at=override.created_at,
+                event_metadata={
+                    "attempt_id": str(attempt.id),
+                    "decision_id": str(decision.id),
+                    "override_id": str(override.id),
+                    "override_version": override.override_version,
+                    "teacher_id": str(teacher_id),
+                    "previous_score": override.previous_score,
+                    "previous_is_correct": override.previous_is_correct,
+                    "reason": reason,
+                    "decision_source": "TEACHER_REVIEW",
+                },
+            )
+            self.session.add(override_event)
+            self.session.flush()
+
+            self.session.add_all([
+                LearningEvidenceProblemType(
+                    event_id=override_event.id,
+                    problem_type_id=pt.problem_type_id,
+                    weight=pt.weight,
+                    is_primary=pt.is_primary,
+                )
+                for pt in problem_types
+            ])
+            self.session.add_all([
+                LearningEvidenceConcept(
+                    event_id=override_event.id,
+                    concept_id=c.concept_id,
+                    weight=c.weight,
+                )
+                for c in concepts
+            ])
+            self.session.flush()
+            decision.learning_evidence_event_id = override_event.id
+
+            # 3. Synchronize classroom assigned items
+            if attempt.assignment_student_question_id:
+                asq = self.session.get(AssignmentStudentQuestion, attempt.assignment_student_question_id)
+                if asq:
+                    asq.score = new_score
+                    asq.is_correct = new_is_correct
+            elif attempt.student_assignment_material_item_id:
+                smi = self.session.get(StudentAssignmentMaterialItem, attempt.student_assignment_material_item_id)
+                if smi:
+                    smi.score = new_score
+                    smi.is_correct = new_is_correct
+                    smi.evaluation_status = EvaluationStatus.EVALUATED
+            if attempt.student_assignment_id:
+                sa = self.session.get(StudentAssignment, attempt.student_assignment_id)
+                if sa:
+                    recalculate_student_assignment_score(sa, finalize=False)
+
+            # 4. Deterministic Mastery Recalculation: replay active events, using latest override per attempt
+            target_pt_ids = {pt.problem_type_id for pt in problem_types}
+            target_concept_ids = {c.concept_id for c in concepts}
+            if target_pt_ids or target_concept_ids:
+                DeterministicMasteryEvidencePublisher().recalculate_student_mastery(
+                    self.session,
+                    attempt.student_id,
+                    problem_type_ids=target_pt_ids,
+                    concept_ids=target_concept_ids,
+                )
+
+            # 5. Update spaced repetition schedule for primary problem type
+            if target_pt_ids:
+                primary_pt_id = next(iter(target_pt_ids))
+                schedule = self.session.scalar(
+                    select(ReviewSchedule).where(
+                        ReviewSchedule.student_id == attempt.student_id,
+                        ReviewSchedule.problem_type_id == primary_pt_id,
+                    )
+                )
+                if schedule:
+                    schedule.last_review_result = (
+                        ReviewResult.GOOD.value if new_is_correct else ReviewResult.POOR.value
+                    )
+
+            # 6. Recalculate adaptive study plan
+            try:
+                with self.session.begin_nested():
+                    from app.planning.study_service import StudyPlanService
+                    StudyPlanService(self.session).recalculate_study_plan(attempt.student_id)
+            except Exception:
+                logger.debug(
+                    "Study plan recalculation skipped after teacher override %s",
+                    override.id,
+                    exc_info=True,
+                )
 
         self.session.flush()
         return override

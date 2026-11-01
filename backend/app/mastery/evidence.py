@@ -89,6 +89,206 @@ class DeterministicMasteryEvidencePublisher:
         row.last_practiced_at = _latest(row.last_practiced_at, practiced_at)
         row.last_updated_at = datetime.now(timezone.utc)
 
+    def recalculate_student_mastery(
+        self,
+        session: Session,
+        student_id: UUID,
+        *,
+        problem_type_ids: set[UUID] | None = None,
+        concept_ids: set[UUID] | None = None,
+    ) -> None:
+        """Deterministically replay active, non-superseded learning evidence for a student.
+
+        Guarantees that:
+        1. An attempt only contributes one effective result (superseded/backdrop duplicates are ignored).
+        2. Teacher overrides replace previous scores without double counting or accumulation drift.
+        3. MasteryState reflects the authoritative state.
+        """
+        if session.scalar(select(StudentProfile.id).where(StudentProfile.id == student_id).with_for_update()) is None:
+            raise RuntimeError("Mastery evidence references a missing student")
+
+        from app.learning_evidence.models import (
+            LearningEvidenceConcept,
+            LearningEvidenceEvent,
+            LearningEvidenceProblemType,
+        )
+
+        # 1. Recalculate Problem Types
+        if problem_type_ids:
+            for pt_id in problem_type_ids:
+                rows = list(
+                    session.scalars(
+                        select(LearningEvidenceEvent)
+                        .join(
+                            LearningEvidenceProblemType,
+                            LearningEvidenceProblemType.event_id == LearningEvidenceEvent.id,
+                        )
+                        .where(
+                            LearningEvidenceEvent.student_id == student_id,
+                            LearningEvidenceProblemType.problem_type_id == pt_id,
+                        )
+                        .order_by(
+                            LearningEvidenceEvent.occurred_at.asc(),
+                            LearningEvidenceEvent.id.asc(),
+                        )
+                    )
+                )
+
+                effective_events: list[LearningEvidenceEvent] = []
+                seen_attempts: set[str] = set()
+                for ev in reversed(rows):
+                    meta = ev.event_metadata or {}
+                    if meta.get("is_superseded") is True:
+                        continue
+                    if ev.score is None or ev.is_correct is None:
+                        continue
+                    att_id = meta.get("attempt_id")
+                    if att_id:
+                        if att_id in seen_attempts:
+                            continue
+                        seen_attempts.add(att_id)
+                    effective_events.append(ev)
+                effective_events.reverse()
+
+                state = MasteryState()
+                last_practiced: datetime | None = None
+                for ev in effective_events:
+                    pt_link = session.scalar(
+                        select(LearningEvidenceProblemType).where(
+                            LearningEvidenceProblemType.event_id == ev.id,
+                            LearningEvidenceProblemType.problem_type_id == pt_id,
+                        )
+                    )
+                    weight = pt_link.weight if pt_link and pt_link.weight is not None else 1.0
+                    attempt_ev = AttemptEvidence(
+                        is_correct=ev.is_correct,
+                        score=ev.score,
+                        hint_count=ev.hint_count or 0,
+                        response_time_seconds=ev.response_time_seconds,
+                    )
+                    question_ev = QuestionEvidence(difficulty=ev.difficulty if ev.difficulty is not None else 0.5)
+                    mapping_ev = MappingEvidence(weight=weight)
+                    state = self.strategy.calculate_from_attempt(state, question_ev, mapping_ev, attempt_ev)
+                    last_practiced = ev.occurred_at
+
+                row = session.scalar(
+                    select(StudentProblemTypeMastery)
+                    .where(
+                        StudentProblemTypeMastery.student_id == student_id,
+                        StudentProblemTypeMastery.problem_type_id == pt_id,
+                    )
+                    .with_for_update()
+                )
+                if row is None and state.attempt_count > 0:
+                    row = StudentProblemTypeMastery(
+                        student_id=student_id,
+                        problem_type_id=pt_id,
+                        mastery_score=state.mastery_score,
+                        confidence=state.confidence,
+                        attempt_count=state.attempt_count,
+                        correct_count=state.correct_count,
+                        last_practiced_at=last_practiced or datetime.now(timezone.utc),
+                        last_updated_at=datetime.now(timezone.utc),
+                    )
+                    session.add(row)
+                elif row is not None:
+                    row.mastery_score = state.mastery_score
+                    row.confidence = state.confidence
+                    row.attempt_count = state.attempt_count
+                    row.correct_count = state.correct_count
+                    if last_practiced:
+                        row.last_practiced_at = last_practiced
+                    row.last_updated_at = datetime.now(timezone.utc)
+
+        # 2. Recalculate Concepts
+        if concept_ids:
+            for cid in concept_ids:
+                rows = list(
+                    session.scalars(
+                        select(LearningEvidenceEvent)
+                        .join(
+                            LearningEvidenceConcept,
+                            LearningEvidenceConcept.event_id == LearningEvidenceEvent.id,
+                        )
+                        .where(
+                            LearningEvidenceEvent.student_id == student_id,
+                            LearningEvidenceConcept.concept_id == cid,
+                        )
+                        .order_by(
+                            LearningEvidenceEvent.occurred_at.asc(),
+                            LearningEvidenceEvent.id.asc(),
+                        )
+                    )
+                )
+
+                effective_events: list[LearningEvidenceEvent] = []
+                seen_attempts: set[str] = set()
+                for ev in reversed(rows):
+                    meta = ev.event_metadata or {}
+                    if meta.get("is_superseded") is True:
+                        continue
+                    if ev.score is None or ev.is_correct is None:
+                        continue
+                    att_id = meta.get("attempt_id")
+                    if att_id:
+                        if att_id in seen_attempts:
+                            continue
+                        seen_attempts.add(att_id)
+                    effective_events.append(ev)
+                effective_events.reverse()
+
+                state = MasteryState()
+                last_practiced: datetime | None = None
+                for ev in effective_events:
+                    c_link = session.scalar(
+                        select(LearningEvidenceConcept).where(
+                            LearningEvidenceConcept.event_id == ev.id,
+                            LearningEvidenceConcept.concept_id == cid,
+                        )
+                    )
+                    weight = c_link.weight if c_link and c_link.weight is not None else 1.0
+                    attempt_ev = AttemptEvidence(
+                        is_correct=ev.is_correct,
+                        score=ev.score,
+                        hint_count=ev.hint_count or 0,
+                        response_time_seconds=ev.response_time_seconds,
+                    )
+                    question_ev = QuestionEvidence(difficulty=ev.difficulty if ev.difficulty is not None else 0.5)
+                    mapping_ev = MappingEvidence(weight=weight)
+                    state = self.strategy.calculate_from_attempt(state, question_ev, mapping_ev, attempt_ev)
+                    last_practiced = ev.occurred_at
+
+                row = session.scalar(
+                    select(StudentConceptMastery)
+                    .where(
+                        StudentConceptMastery.student_id == student_id,
+                        StudentConceptMastery.concept_id == cid,
+                    )
+                    .with_for_update()
+                )
+                if row is None and state.attempt_count > 0:
+                    row = StudentConceptMastery(
+                        student_id=student_id,
+                        concept_id=cid,
+                        mastery_score=state.mastery_score,
+                        confidence=state.confidence,
+                        attempt_count=state.attempt_count,
+                        correct_count=state.correct_count,
+                        last_practiced_at=last_practiced or datetime.now(timezone.utc),
+                        last_updated_at=datetime.now(timezone.utc),
+                    )
+                    session.add(row)
+                elif row is not None:
+                    row.mastery_score = state.mastery_score
+                    row.confidence = state.confidence
+                    row.attempt_count = state.attempt_count
+                    row.correct_count = state.correct_count
+                    if last_practiced:
+                        row.last_practiced_at = last_practiced
+                    row.last_updated_at = datetime.now(timezone.utc)
+
+        session.flush()
+
 
 class MasteryAttemptEvidencePublisher:
     """Compatibility adapter for the public practice publisher API."""
