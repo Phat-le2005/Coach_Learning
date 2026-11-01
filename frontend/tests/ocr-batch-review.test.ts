@@ -593,3 +593,115 @@ test("ADVERSARIAL 12: Không ghi đè công thức và loại bước do học s
   assert.equal(retryDraft.stepKindSource, "MANUAL");
 });
 
+
+test("BUG-001 regression: createBatchApi defaults accessToken to empty string for BFF HttpOnly cookie auth", async () => {
+  const seenTokens: string[] = [];
+  const bffClient: any = {
+    async getMathAttempt(token: string, id: string) {
+      seenTokens.push(token);
+      return { id, status: "DRAFT", current_revision: 1, steps: [] };
+    },
+    async createMathStep(token: string, id: string, req: StepMutationRequest) {
+      seenTokens.push(token);
+      return {
+        id,
+        status: "IN_PROGRESS",
+        current_revision: 2,
+        steps: [
+          {
+            id: "s1",
+            step_index: 1,
+            step_type: req.step_type,
+            content_latex: req.content_latex,
+            explanation_text: null,
+            step_revision_number: 1,
+          },
+        ],
+      };
+    },
+  };
+
+  const bffBatchApi = createBatchApi(bffClient);
+  await bffBatchApi.getAttempt("att-bff");
+  await bffBatchApi.addStep("att-bff", {
+    expected_attempt_revision: 1,
+    client_action_id: "action-bff",
+    step_type: "EXPLANATION",
+    content_latex: "x=1",
+    explanation_text: null,
+  });
+  assert.deepEqual(seenTokens, ["", ""]);
+});
+
+test("QA Harness Safety: rejects missing QA_E2E_PASSWORD, ordinary dev DB, and APP_ENV=production, and accepts dedicated QA DB", async () => {
+  const { validateQaHarnessEnv, isDedicatedQaDatabaseName } = await import(
+    "../e2e/qa-harness-safety.js"
+  );
+
+  // 1. Missing QA_E2E_PASSWORD causes a clear failure
+  assert.throws(
+    () =>
+      validateQaHarnessEnv({
+        QA_E2E_IGNORE_ENV_FILE: "1",
+        APP_ENV: "test",
+        QA_E2E_DATABASE_NAME: "edums_qa_e2e",
+        DATABASE_NAME: "edums_qa_e2e",
+      }),
+    /QA_E2E_CONFIG_ERROR: QA_E2E_PASSWORD is required/,
+  );
+
+  // 2. Wrong / ordinary development database name blocks provisioning
+  assert.equal(isDedicatedQaDatabaseName("edums"), false);
+  assert.equal(isDedicatedQaDatabaseName("postgres"), false);
+  assert.equal(isDedicatedQaDatabaseName("edums_dev"), false);
+  assert.equal(isDedicatedQaDatabaseName("edums_qa_e2e"), true);
+
+  assert.throws(
+    () =>
+      validateQaHarnessEnv({
+        QA_E2E_IGNORE_ENV_FILE: "1",
+        APP_ENV: "test",
+        QA_E2E_PASSWORD: "ValidQaSecretPassword!2026",
+        QA_E2E_DATABASE_NAME: "edums",
+        DATABASE_NAME: "edums",
+      }),
+    /QA_E2E_SAFETY_ERROR: QA_E2E_DATABASE_NAME='edums' is not a dedicated QA database/,
+  );
+
+  assert.throws(
+    () =>
+      validateQaHarnessEnv({
+        QA_E2E_IGNORE_ENV_FILE: "1",
+        APP_ENV: "test",
+        QA_E2E_PASSWORD: "ValidQaSecretPassword!2026",
+        QA_E2E_DATABASE_NAME: "edums_qa_e2e",
+        DATABASE_NAME: "edums_qa_other",
+      }),
+    /QA_E2E_SAFETY_ERROR: QA_E2E_DATABASE_NAME \('edums_qa_e2e'\) does not match DATABASE_NAME \('edums_qa_other'\)/,
+  );
+
+  // 3. Production configuration is rejected
+  assert.throws(
+    () =>
+      validateQaHarnessEnv({
+        QA_E2E_IGNORE_ENV_FILE: "1",
+        APP_ENV: "production",
+        QA_E2E_PASSWORD: "ValidQaSecretPassword!2026",
+        QA_E2E_DATABASE_NAME: "edums_qa_e2e",
+        DATABASE_NAME: "edums_qa_e2e",
+      }),
+    /QA_E2E_SAFETY_ERROR: APP_ENV=production is strictly forbidden/,
+  );
+
+  // 4. Correct QA configuration allows fixtures
+  const valid = validateQaHarnessEnv({
+    QA_E2E_IGNORE_ENV_FILE: "1",
+    APP_ENV: "test",
+    QA_E2E_PASSWORD: "ValidQaSecretPassword!2026",
+    QA_E2E_DATABASE_NAME: "edums_qa_e2e",
+    DATABASE_NAME: "edums_qa_e2e",
+  });
+  assert.equal(valid.qaDatabaseName, "edums_qa_e2e");
+  assert.equal(valid.backendDatabaseName, "edums_qa_e2e");
+  assert.equal(valid.appEnv, "test");
+});

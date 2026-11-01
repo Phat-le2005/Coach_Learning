@@ -196,7 +196,11 @@ export function PageOcrReviewModal({
       || selectedIndex >= rows.length - 1 || rows[selectedIndex + 1].status === 'saved'
       || rows[selectedIndex + 1].retryOnly) return;
     const merged = mergePageOcrRegions(rows.map((item) => item.region), selectedIndex, pageStrokes)[selectedIndex];
-    setRows((current) => [...current.slice(0, selectedIndex), newRow(merged, pageIndex), ...current.slice(selectedIndex + 2)]);
+    setRows((current) => [
+      ...current.slice(0, selectedIndex),
+      { ...newRow(merged, pageIndex), status: 'manual' },
+      ...current.slice(selectedIndex + 2),
+    ]);
     setReviewError('Đã gộp hai vùng. Bấm Nhận diện lại hoặc nhập công thức cho vùng mới.');
   };
 
@@ -208,8 +212,12 @@ export function PageOcrReviewModal({
       setReviewError('Vị trí này chưa tách được nét viết. Hãy kéo vạch chia sang chỗ khác.');
       return;
     }
-    setRows((current) => [...current.slice(0, selectedIndex), newRow(divided[selectedIndex], pageIndex),
-      newRow(divided[selectedIndex + 1], pageIndex), ...current.slice(selectedIndex + 1)]);
+    setRows((current) => [
+      ...current.slice(0, selectedIndex),
+      { ...newRow(divided[selectedIndex], pageIndex), status: 'manual' },
+      { ...newRow(divided[selectedIndex + 1], pageIndex), status: 'manual' },
+      ...current.slice(selectedIndex + 1),
+    ]);
     setReviewError('Đã tách vùng. Em có thể nhận diện lại từng vùng.');
   };
 
@@ -218,21 +226,40 @@ export function PageOcrReviewModal({
   const mergeNextLogicalStep = () => {
     const next = rows[selectedIndex + 1];
     if (!row || !next || processing || reviewMutationLocked || row.retryOnly || next.retryOnly
-      || ['saved', 'skipped', 'pending', 'recognizing'].includes(row.status)
-      || ['saved', 'skipped', 'pending', 'recognizing'].includes(next.status)) return;
-    const mergedRegion = mergePageOcrRegions(rows.map((item) => item.region), selectedIndex, pageStrokes)[selectedIndex];
-    const mergedDraft = mergeOcrReviewDrafts(row.draft, next.draft, generateUuid());
-    setRows((current) => [
-      ...current.slice(0, selectedIndex),
-      { ...newRow(mergedRegion, pageIndex), draft: mergedDraft, status: 'manual', touched: true },
-      ...current.slice(selectedIndex + 2),
-    ]);
-    setReviewError('Đã ghép hai bước tạm thời. Nội dung chưa được xác nhận: hãy sửa LaTeX và chọn lại loại bước trước khi lưu.');
+      || ['saved', 'skipped', 'pending', 'recognizing', 'approved'].includes(row.status)
+      || ['saved', 'skipped', 'pending', 'recognizing', 'approved'].includes(next.status)
+      || row.draft.reviewStatus === 'APPROVED'
+      || next.draft.reviewStatus === 'APPROVED') {
+      if (row?.status === 'approved' || next?.status === 'approved'
+        || row?.draft.reviewStatus === 'APPROVED' || next?.draft.reviewStatus === 'APPROVED') {
+        setReviewError('Không thể gộp bước đã duyệt. Hãy bấm "Hủy duyệt bước này" trước khi gộp.');
+      }
+      return;
+    }
+    try {
+      const mergedRegion = mergePageOcrRegions(rows.map((item) => item.region), selectedIndex, pageStrokes)[selectedIndex];
+      const mergedDraft = mergeOcrReviewDrafts(row.draft, next.draft, generateUuid());
+      setRows((current) => [
+        ...current.slice(0, selectedIndex),
+        { ...newRow(mergedRegion, pageIndex), draft: mergedDraft, status: 'manual', touched: true },
+        ...current.slice(selectedIndex + 2),
+      ]);
+      setReviewError('Đã ghép hai bước tạm thời. Nội dung chưa được xác nhận: hãy sửa LaTeX và chọn lại loại bước trước khi lưu.');
+    } catch (error: unknown) {
+      setReviewError(error instanceof Error ? error.message : 'Không thể gộp hai bước logic này.');
+    }
   };
 
   // Split at an explicit student-selected cursor position, never by guessing a math boundary.
   const splitLogicalStep = () => {
-    if (!row || processing || reviewMutationLocked || row.retryOnly || ['saved', 'skipped', 'pending', 'recognizing'].includes(row.status)) return;
+    if (!row || processing || reviewMutationLocked || row.retryOnly
+      || ['saved', 'skipped', 'pending', 'recognizing', 'approved'].includes(row.status)
+      || row.draft.reviewStatus === 'APPROVED') {
+      if (row?.status === 'approved' || row?.draft.reviewStatus === 'APPROVED') {
+        setReviewError('Không thể tách bước đã duyệt. Hãy bấm "Hủy duyệt bước này" trước khi tách.');
+      }
+      return;
+    }
     if (row.draft.explanationText.trim()) {
       setReviewError('Bước đang có lời giải thích. Hãy xử lý phần giải thích trước khi tách thành hai bước.');
       return;
@@ -243,20 +270,24 @@ export function PageOcrReviewModal({
       setReviewError('Hãy đặt con trỏ trong ô LaTeX tại ranh giới của hai bước rồi chọn Tách bước.');
       return;
     }
-    const [first, second] = splitOcrReviewDraft(
-      row.draft,
-      { localId: generateUuid(), contentLatex: text.slice(0, cut).trim() },
-      { localId: generateUuid(), contentLatex: text.slice(cut).trim() },
-    );
-    const firstRegion = { ...row.region, id: first.localId };
-    const secondRegion = { ...row.region, id: second.localId };
-    setRows((current) => [
-      ...current.slice(0, selectedIndex),
-      { ...newRow(firstRegion, pageIndex), draft: first, status: 'manual', touched: true },
-      { ...newRow(secondRegion, pageIndex), draft: second, status: 'manual', touched: true },
-      ...current.slice(selectedIndex + 1),
-    ]);
-    setReviewError('Hai bước tạm thời cùng tham chiếu nét gốc. Hãy kiểm tra LaTeX và loại của từng bước trước khi lưu.');
+    try {
+      const [first, second] = splitOcrReviewDraft(
+        row.draft,
+        { localId: generateUuid(), contentLatex: text.slice(0, cut).trim() },
+        { localId: generateUuid(), contentLatex: text.slice(cut).trim() },
+      );
+      const firstRegion = { ...row.region, id: first.localId };
+      const secondRegion = { ...row.region, id: second.localId };
+      setRows((current) => [
+        ...current.slice(0, selectedIndex),
+        { ...newRow(firstRegion, pageIndex), draft: first, status: 'manual', touched: true },
+        { ...newRow(secondRegion, pageIndex), draft: second, status: 'manual', touched: true },
+        ...current.slice(selectedIndex + 1),
+      ]);
+      setReviewError('Hai bước tạm thời cùng tham chiếu nét gốc. Hãy kiểm tra LaTeX và loại của từng bước trước khi lưu.');
+    } catch (error: unknown) {
+      setReviewError(error instanceof Error ? error.message : 'Không thể tách bước logic này.');
+    }
   };
 
   const moveLogicalStep = (offset: -1 | 1) => {
@@ -360,7 +391,7 @@ export function PageOcrReviewModal({
       setReviewError(check.reason ?? 'Chưa thể lưu đợt bước giải.');
       return;
     }
-    if (!attemptId || !accessToken || !apiClient) {
+    if (!attemptId || !apiClient) {
       setReviewError('Thiếu thông tin phiên làm bài để lưu hàng loạt.');
       return;
     }
@@ -379,7 +410,7 @@ export function PageOcrReviewModal({
     });
 
     try {
-      const batchApi = createBatchApi(apiClient, accessToken);
+      const batchApi = createBatchApi(apiClient, accessToken ?? '');
       const store = new IndexedDbBatchJournal();
       const lock = new BrowserBatchLock();
       const manager = new SequentialBatchManager(batchApi, store, lock);
@@ -421,7 +452,7 @@ export function PageOcrReviewModal({
   };
 
   const resumeBatchSteps = async () => {
-    if (batchSaving || saving || !attemptId || !accessToken || !apiClient) return;
+    if (batchSaving || saving || !attemptId || !apiClient) return;
     setBatchSaving(true);
     setReviewError(null);
     setBatchProgress({
@@ -430,7 +461,7 @@ export function PageOcrReviewModal({
       message: 'Đang đối soát và lưu tiếp các bước...',
     });
     try {
-      const batchApi = createBatchApi(apiClient, accessToken);
+      const batchApi = createBatchApi(apiClient, accessToken ?? '');
       const store = new IndexedDbBatchJournal();
       const lock = new BrowserBatchLock();
       const manager = new SequentialBatchManager(batchApi, store, lock);
@@ -471,8 +502,24 @@ export function PageOcrReviewModal({
 
   const closeReview = () => {
     if (saving || batchSaving) return;
-    if (rows.some((item) => (item.touched || item.retryOnly) && item.status !== 'saved' && item.status !== 'skipped')
-      && !window.confirm('Các bước chưa lưu sẽ mất phần chỉnh sửa. Nét viết trên trang vẫn được giữ. Đóng phần trích xuất?')) return;
+    const journaledDraftIds = new Set(pausedJournal?.entries.map((e) => e.draftId) ?? []);
+    const hasUnjournaledUnsavedEdits = rows.some(
+      (item) =>
+        !journaledDraftIds.has(item.draft.localId) &&
+        (item.touched || item.retryOnly) &&
+        item.status !== 'saved' &&
+        item.status !== 'skipped',
+    );
+    if (
+      hasUnjournaledUnsavedEdits &&
+      !window.confirm(
+        pausedJournal
+          ? 'Các bước đã lưu trên máy chủ và đợt lưu tạm dừng đã được bảo toàn để phục hồi. Các vùng chỉnh sửa ngoài đợt lưu sẽ đóng lại. Đóng phần trích xuất?'
+          : 'Các bước chưa lưu sẽ mất phần chỉnh sửa. Các bước đã lưu và nét viết trên trang vẫn được giữ. Đóng phần trích xuất?',
+      )
+    ) {
+      return;
+    }
     if (activeRunRef.current) activeRunRef.current.cancelled = true;
     onBatchUpdate?.(pausedJournal);
     onClose();
@@ -511,7 +558,7 @@ export function PageOcrReviewModal({
             <h2 id='page-ocr-title'>Trích xuất trang {pageIndex + 1}</h2>
             <p>Hệ thống gợi ý các vùng nét viết. Em có thể gộp, tách, sửa và xác nhận từng bước.</p>
           </div>
-          <button type='button' className={styles.buttonSecondary} onClick={closeReview} disabled={saving}>Đóng</button>
+          <button type='button' className={styles.buttonSecondary} onClick={closeReview} disabled={saving || batchSaving}>Đóng</button>
         </header>
         <div className={styles.pageReviewNotice}>
           OCR chỉ là gợi ý cho công thức viết tay, không tự chấm bài. Với bảng biến thiên, hãy dùng nút “Bảng biến thiên” trên thanh công cụ để điền vào ô và vẽ mũi tên tự động.
@@ -594,15 +641,18 @@ export function PageOcrReviewModal({
                   disabled={processing || reviewMutationLocked || row.status === 'saved' || row.retryOnly || selectedIndex >= rows.length - 1
                     || rows[selectedIndex + 1].status === 'saved' || rows[selectedIndex + 1].retryOnly}>Gộp vùng nét</button>
                 <button type='button' className={styles.buttonSecondary} onClick={mergeNextLogicalStep}
-                  disabled={processing || reviewMutationLocked || row.retryOnly || ['saved', 'skipped', 'pending', 'recognizing'].includes(row.status)
+                  disabled={processing || reviewMutationLocked || row.retryOnly || ['saved', 'skipped', 'pending', 'recognizing', 'approved'].includes(row.status)
+                    || row.draft.reviewStatus === 'APPROVED'
                     || selectedIndex >= rows.length - 1 || rows[selectedIndex + 1].retryOnly
-                    || ['saved', 'skipped', 'pending', 'recognizing'].includes(rows[selectedIndex + 1].status)}>
+                    || ['saved', 'skipped', 'pending', 'recognizing', 'approved'].includes(rows[selectedIndex + 1].status)
+                    || rows[selectedIndex + 1].draft.reviewStatus === 'APPROVED'}>
                   Gộp hai bước logic
                 </button>
               </div>
               <div className={styles.pageReviewActions}>
                 <button type='button' className={styles.buttonSecondary} onClick={splitLogicalStep}
-                  disabled={processing || reviewMutationLocked || row.retryOnly || ['saved', 'skipped', 'pending', 'recognizing'].includes(row.status)}>
+                  disabled={processing || reviewMutationLocked || row.retryOnly || ['saved', 'skipped', 'pending', 'recognizing', 'approved'].includes(row.status)
+                    || row.draft.reviewStatus === 'APPROVED'}>
                   Tách thành hai bước tại con trỏ
                 </button>
                 <button type='button' className={styles.buttonSecondary} onClick={() => moveLogicalStep(-1)}

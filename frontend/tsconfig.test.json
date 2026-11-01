@@ -39,6 +39,7 @@
     "src/features/math-canvas/implicit.worker.ts",
     "src/features/math-canvas/scene.worker.ts",
     "src/features/math-canvas/lab.worker.ts",
+    "e2e/qa-harness-safety.ts",
     "tests/**/*.ts"
   ],
   "exclude": ["node_modules", ".next"]
