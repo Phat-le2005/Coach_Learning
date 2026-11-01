@@ -63,7 +63,7 @@ test("classifyBracketGeometry: accurately classifies Curly brace '{' with centra
   const curly = makeCurlyBraceStroke("curly-1", 0.08, 0.1, 0.3);
   const result = classifyBracketGeometry(curly);
   assert.equal(result.type, "CURLY");
-  assert.ok(result.confidence >= 0.8);
+  assert.ok(result.heuristicScore >= 0.8);
   assert.ok(result.reasons.some((r) => r.includes("cusp")));
 });
 
@@ -71,7 +71,7 @@ test("classifyBracketGeometry: accurately classifies Square bracket '[' with ort
   const square = makeSquareBracketStroke("square-1", 0.08, 0.1, 0.3);
   const result = classifyBracketGeometry(square);
   assert.equal(result.type, "SQUARE");
-  assert.ok(result.confidence >= 0.8);
+  assert.ok(result.heuristicScore >= 0.8);
   assert.ok(result.reasons.some((r) => r.includes("spine") || r.includes("arms")));
 });
 
@@ -79,7 +79,7 @@ test("classifyBracketGeometry: degenerate or straight single point returns UNKNO
   const degen = makeStroke("degen", [{ x: 0.1, y: 0.1, pressure: 0.5 }]);
   const result = classifyBracketGeometry(degen);
   assert.equal(result.type, "UNKNOWN");
-  assert.equal(result.confidence, 0);
+  assert.equal(result.heuristicScore, 0);
 });
 
 // ============================================================================
@@ -322,4 +322,58 @@ test("Baseline Comparison: structural candidate engine preserves 100% stroke pro
   assert.equal(structCandidates[0].kind, "SYSTEM");
   assert.equal(structCandidates[0].children.length, 2);
   assert.equal(structCandidates[1].kind, "INDEPENDENT");
+});
+
+
+test("Regular left curly brace with a right-facing middle cusp is classified as CURLY", () => {
+  const brace = makeStroke("regular-curly", [
+    { x: 0.11, y: 0.10, pressure: 0.5 },
+    { x: 0.08, y: 0.13, pressure: 0.5 },
+    { x: 0.11, y: 0.19, pressure: 0.5 },
+    { x: 0.08, y: 0.24, pressure: 0.5 },
+    { x: 0.11, y: 0.28, pressure: 0.5 },
+  ]);
+  const classification = classifyBracketGeometry(brace);
+  assert.equal(classification.type, "CURLY");
+  assert.ok(classification.reasons.some((r) => r.includes("rightward cusp")));
+});
+
+test("Negative: a brace may not swallow independent equations in a second column", () => {
+  const brace = makeCurlyBraceStroke("brace", 0.08, 0.10, 0.28);
+  const left1 = makeLineStroke("left1", 0.13, 0.12, 0.20, 0.02);
+  const left2 = makeLineStroke("left2", 0.13, 0.22, 0.20, 0.02);
+  const right1 = makeLineStroke("right1", 0.62, 0.12, 0.17, 0.02);
+  const right2 = makeLineStroke("right2", 0.62, 0.22, 0.17, 0.02);
+
+  const candidates = detectStructuralCandidates([brace, left1, right1, left2, right2]);
+  const system = candidates.find((candidate) => candidate.kind === "SYSTEM");
+  assert.ok(system);
+  assert.deepEqual(new Set(system.sourceStrokeIds), new Set(["brace", "left1", "left2"]));
+  assert.equal(system.children.length, 2);
+  assert.equal(candidates.filter((c) => c.sourceStrokeIds.includes("right1")).length, 1);
+  assert.equal(candidates.filter((c) => c.sourceStrokeIds.includes("right2")).length, 1);
+});
+
+test("A fraction parent never includes an unrelated inline suffix even if segmentation groups it", () => {
+  const num = makeStroke("num", [
+    { x: 0.15, y: 0.12, pressure: 0.5 },
+    { x: 0.20, y: 0.135, pressure: 0.5 },
+  ]);
+  const bar = makeStroke("bar", [
+    { x: 0.12, y: 0.15, pressure: 0.5 },
+    { x: 0.24, y: 0.15, pressure: 0.5 },
+  ]);
+  const den = makeStroke("den", [
+    { x: 0.15, y: 0.17, pressure: 0.5 },
+    { x: 0.20, y: 0.185, pressure: 0.5 },
+  ]);
+  const suffix = makeLineStroke("suffix", 0.25, 0.15, 0.05, 0.012);
+
+  const candidates = detectStructuralCandidates([num, bar, den, suffix]);
+  const fraction = candidates.find((candidate) => candidate.kind === "FRACTION");
+  assert.ok(fraction, "Expected an isolated structured fraction");
+  assert.deepEqual(new Set(fraction.sourceStrokeIds), new Set(["num", "bar", "den"]));
+  assert.ok(!fraction.sourceStrokeIds.includes("suffix"));
+  assert.ok(candidates.some((candidate) =>
+    candidate.kind === "INDEPENDENT" && candidate.sourceStrokeIds.includes("suffix")));
 });
