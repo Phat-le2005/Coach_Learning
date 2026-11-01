@@ -336,3 +336,22 @@ test("evaluateSegmentationAgainstGroundTruth: detects inverted reading order", (
   // Concordance is 0 because the order was completely inverted
   assert.equal(metrics.readingOrderCorrectness, 0.0);
 });
+
+
+test("reading order is not reported as perfect when a merge leaves no comparable pair", () => {
+  const ink = [stroke("first", 0.1, 0.1), stroke("second", 0.1, 0.3)];
+  const regions = [region("both", ink)];
+  const truth: OcrGroundTruthV1 = {
+    schemaVersion: 1,
+    sampleId: "reading-order-unobservable",
+    expectedGroups: [
+      { groupId: "g1", strokeIds: ["first"] },
+      { groupId: "g2", strokeIds: ["second"] },
+    ],
+    expectedReadingOrder: ["g1", "g2"],
+  };
+  const metrics = evaluateSegmentationAgainstGroundTruth(regions, truth);
+  assert.equal(metrics.falseMergeCount, 1);
+  assert.equal(metrics.readingOrderComparablePairs, 0);
+  assert.equal(metrics.readingOrderCorrectness, null);
+});
