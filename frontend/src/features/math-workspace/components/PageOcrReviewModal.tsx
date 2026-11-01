@@ -8,6 +8,7 @@ import { generateUuid } from '../utils/ink-math';
 import { mergePageOcrRegions, splitPageOcrRegion } from '../utils/page-ocr';
 import type { PageOcrRegion } from '../utils/page-ocr';
 import { recognizeHandwrittenMath } from '../utils/handwritten-ocr';
+import { createOcrEvalCapture } from '../utils/ocr-eval-capture';
 import {
   createOcrReviewDraft, applyOcrToDraft, editOcrReviewDraft,
   selectOcrDraftKind, approveOcrDraft, skipOcrDraft,
@@ -500,6 +501,20 @@ export function PageOcrReviewModal({
     }
   };
 
+  const exportDevOcrCapture = () => {
+    // Intentional local-only QA export: never send handwritten content to an API.
+    const snapshot = createOcrEvalCapture(pageIndex, pageStrokes, regions);
+    const blob = new Blob([JSON.stringify(snapshot, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `ocr-ink-page-${pageIndex + 1}.json`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 0);
+  };
+
   const closeReview = () => {
     if (saving || batchSaving) return;
     const journaledDraftIds = new Set(pausedJournal?.entries.map((e) => e.draftId) ?? []);
@@ -563,6 +578,14 @@ export function PageOcrReviewModal({
         <div className={styles.pageReviewNotice}>
           OCR chỉ là gợi ý cho công thức viết tay, không tự chấm bài. Với bảng biến thiên, hãy dùng nút “Bảng biến thiên” trên thanh công cụ để điền vào ô và vẽ mũi tên tự động.
         </div>
+        {process.env.NODE_ENV !== 'production' ? (
+          <div className={styles.pageReviewNotice}>
+            <button type='button' className={styles.buttonSecondary} onClick={exportDevOcrCapture}>
+              Xuất nét và phân vùng (QA)
+            </button>
+            <p>File chỉ tải về máy, chứa chữ viết tay gốc. Không chia sẻ nếu chưa được phép.</p>
+          </div>
+        ) : null}
         <div className={styles.pageReviewProgress} role='status' aria-live='polite'>
           <span>{savedCount}/{rows.length} vùng đã lưu · {approvedCount} bước đã duyệt</span>
           {processing ? (
