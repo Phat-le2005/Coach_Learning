@@ -1,10 +1,11 @@
 import { evaluateMath, type GraphSettings, type MathExpression } from "./expression";
 import { sampleImplicitGeometry } from "./geometry";
 import { relationContains, type CompiledScene, type SceneRelation, type SceneLayer } from "./scene";
+import { sampleBetweenCurves } from "./between-curves";
 
 export interface ScenePath { rowId: string; color: string; dashed: boolean; points: number[] | Float32Array; polylines: (number[] | Float32Array)[] }
 export interface SceneFill { color: string; points: number[] | Float32Array }
-export interface SceneDrawing { paths: ScenePath[]; fills: SceneFill[]; intersections: [number, number][] }
+export interface SceneDrawing { paths: ScenePath[]; fills: SceneFill[]; intersections: [number, number][]; betweenFills?:SceneFill[]|null }
 type Point = [number, number];
 /** Join contour edges so a dashed stroke keeps its phase across sampling triangles. */
 export function connectContourSegments(points: ArrayLike<number>, tolerance: number): number[][] {
@@ -117,5 +118,6 @@ export function sampleScene(scene: CompiledScene, parameters: Record<string, num
       if (found && !drawing.intersections.some((p) => Math.hypot(p[0]-found![0],p[1]-found![1])<domain/100)) drawing.intersections.push(found);
     }
   }
+  drawing.betweenFills=sampleBetweenCurves(scene,parameters,domain,drawing.intersections);
   return drawing;
 }
