@@ -4,8 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import type { GraphSettings, MathExpression } from "./expression";
 import { GraphSamplingQueue, type SamplingData, type SamplingResponse } from "./sampling-protocol";
 
-export function useImplicitGeometry(model: MathExpression, settings: GraphSettings) {
-  const enabled = model.kind === "implicit";
+export function useImplicitGeometry(model: MathExpression, settings: GraphSettings, sample = true) {
+  const enabled = model.kind === "implicit" && sample;
   const queue = useRef<GraphSamplingQueue | null>(null);
   const [generation, setGeneration] = useState(0);
   const [data, setData] = useState<SamplingData | null>(null);
