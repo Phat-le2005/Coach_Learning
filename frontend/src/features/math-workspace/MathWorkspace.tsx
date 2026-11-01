@@ -36,6 +36,7 @@ import type { AIReviewRead, AIReviewAvailabilityRead, StepKind, VariationTablePa
 import { SequentialBatchManager, type BatchJournal } from "./utils/batch-manager";
 import { IndexedDbBatchJournal, BrowserBatchLock } from "./utils/batch-journal";
 import { createBatchApi } from "./utils/ocr-batch-adapter";
+import { withSafeBatchSubmission } from "./utils/solution-submit-guard";
 import styles from "./MathWorkspace.module.css";
 
 const MathCanvasPanel = dynamic(() => import("@/features/math-canvas/MathCanvasPanel").then((module) => module.MathCanvasPanel), {
@@ -704,6 +705,7 @@ export function MathWorkspace({
     setGradingError(null);
     let successfullySubmitted: SolutionAttemptRead | null = null;
     try {
+      if (pendingBatch || batchJournalLoadError || batchResuming) throw new Error("Chưa thể nộp bài: đợt lưu OCR đang chờ phục hồi hoặc nhật ký lưu không đọc được. Hãy xử lý trạng thái phục hồi trước.");
       if (pendingDeleteRef.current || pageOcrReview) throw new Error("Hãy hoàn tất thao tác sửa bước và xác nhận OCR trước khi nộp.");
       if (!attempt.steps?.length) throw new Error("Hãy xác nhận ít nhất một bước giải trước khi nộp.");
       if (syncStatus === "conflict" || syncStatus === "offline" || authExpired) {
@@ -718,11 +720,19 @@ export function MathWorkspace({
       }
       const dirty = await mathInkStorage.listDirtyPages(attemptId).catch(() => []);
       if (dirty.length) throw new Error("Vẫn còn trang viết chưa đồng bộ. Hãy thử lưu lại.");
-      const pending = submitActionRef.current ?? { revision: attempt.current_revision, actionId: generateUuid() };
-      submitActionRef.current = pending;
-      const submitted = await apiClient.submitMathAttempt(accessToken, attemptId, {
-        expected_attempt_revision: pending.revision, client_action_id: pending.actionId,
-      });
+      // Read IndexedDB while holding the exact Web Lock used by the batch engine.
+      // Do NOT allocate an idempotency key before the safety gate: a blocked
+      // submission must not retain a stale attempt revision for a later retry.
+      const submitted = await withSafeBatchSubmission(
+        attemptId, new IndexedDbBatchJournal(), new BrowserBatchLock(),
+        () => {
+          const pending = submitActionRef.current ?? { revision: attempt.current_revision, actionId: generateUuid() };
+          submitActionRef.current = pending;
+          return apiClient.submitMathAttempt(accessToken, attemptId, {
+            expected_attempt_revision: pending.revision, client_action_id: pending.actionId,
+          });
+        },
+      );
       setAttempt(submitted);
       successfullySubmitted = submitted;
       submitActionRef.current = null;
@@ -734,12 +744,30 @@ export function MathWorkspace({
           if (latest.status === "SUBMITTED") {
             submitActionRef.current = null;
             successfullySubmitted = latest;
+          } else if (error.status === 409 && submitActionRef.current
+            && latest.current_revision !== submitActionRef.current.revision) {
+            // Server authoritatively rejected this revision; a later manual
+            // retry must use the refreshed revision and a new action ID.
+            // Do not regenerate the key on timeout/unknown commit outcomes.
+            submitActionRef.current = null;
           }
         }
       }
       if (!successfullySubmitted) {
-        setGradingError(error instanceof ApiResponseError ? error.message
-          : error instanceof Error ? error.message : "Không thể nộp bài. Hãy thử lại.");
+        const code = error instanceof Error ? error.message : "";
+        if (code === "BATCH_PENDING_RECOVERY_REQUIRED" || code === "BATCH_JOURNAL_CORRUPT"
+          || code === "BATCH_INDEXEDDB_UNAVAILABLE" || code === "BATCH_SUBMIT_LOCK_UNAVAILABLE") {
+          void checkPendingBatch();
+        }
+        const message = code === "BATCH_PENDING_RECOVERY_REQUIRED"
+          ? "Có đợt lưu OCR chưa hoàn tất. Hãy phục hồi hoặc xử lý đợt lưu trước khi nộp bài."
+          : code === "BATCH_SUBMIT_LOCK_UNAVAILABLE"
+            ? "Một tab khác đang xử lý bước giải. Hãy đợi hoàn tất và thử nộp lại."
+            : code === "BATCH_JOURNAL_CORRUPT" || code === "BATCH_INDEXEDDB_UNAVAILABLE"
+              ? "Không thể xác minh nhật ký lưu OCR trong trình duyệt. Nộp bài đã bị chặn để bảo vệ dữ liệu."
+              : error instanceof ApiResponseError ? error.message
+                : error instanceof Error ? error.message : "Không thể nộp bài. Hãy thử lại.";
+        setGradingError(message);
       }
     } finally {
       setIsSubmitting(false);
@@ -749,7 +777,8 @@ export function MathWorkspace({
       void executeAIReview(successfullySubmitted);
     }
   }, [attempt, isSubmitting, pageOcrReview, syncStatus, authExpired, pagesMap,
-    flushSavePage, attemptId, apiClient, accessToken, problem?.question_type, executeAIReview]);
+    flushSavePage, attemptId, apiClient, accessToken, problem?.question_type, executeAIReview,
+    pendingBatch, batchJournalLoadError, batchResuming, checkPendingBatch]);
   // Keep stroke persistence separate from history updates. Undo/redo must not
   // append another history entry or erase the redo stack.
   const queueInkSave = useCallback((pageIndex: number, newStrokes: InkStroke[]) => {
@@ -1107,7 +1136,7 @@ export function MathWorkspace({
                   void handleSubmitSolution();
                 }
               }}
-              disabled={isSubmitting || isReviewing || (attempt.status !== "SUBMITTED" && !attempt.steps?.length)}
+              disabled={isSubmitting || isReviewing || batchResuming || Boolean(pendingBatch || batchJournalLoadError) || (attempt.status !== "SUBMITTED" && !attempt.steps?.length)}
               title={attempt.status === "SUBMITTED" ? "Chấm bài bằng AI" : "Nộp bài và chấm tự động bằng AI"}
             >
               <Sparkles size={14} />
@@ -1251,6 +1280,7 @@ export function MathWorkspace({
           gradingError={gradingError}
           isSubmitting={isSubmitting}
           isReviewing={isReviewing}
+          submissionBlocked={Boolean(pendingBatch || batchJournalLoadError || batchResuming)}
         />
 
         {/* Right Column: A4 Writing Canvas (65% or expanded) */}
@@ -1270,6 +1300,7 @@ export function MathWorkspace({
               onSubmitSolution={handleSubmitSolution}
               isSubmitting={isSubmitting}
               isReviewing={isReviewing}
+              submissionBlocked={Boolean(pendingBatch || batchJournalLoadError || batchResuming)}
               hasConfirmedSteps={Boolean(attempt?.steps && attempt.steps.length > 0)}
             />
           ) : (

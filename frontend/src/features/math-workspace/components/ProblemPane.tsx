@@ -30,6 +30,7 @@ interface ProblemPaneProps {
   gradingError: string | null;
   isSubmitting: boolean;
   isReviewing: boolean;
+  submissionBlocked: boolean;
 }
 
 function variationPayload(step: SolutionStepRead): VariationTablePayload | null {
@@ -54,6 +55,7 @@ export function ProblemPane({
   gradingError,
   isSubmitting,
   isReviewing,
+  submissionBlocked,
 }: ProblemPaneProps) {
   const [confirmStepId, setConfirmStepId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -317,8 +319,8 @@ export function ProblemPane({
                 type="button"
                 className={styles.primaryGradeButton}
                 onClick={() => void onSubmitSolution()}
-                disabled={isSubmitting || isReviewing || !submission.canSubmit}
-                title={!attempt.steps?.length ? "Hãy xác nhận ít nhất một bước giải để chấm bài" : "Nộp bài và chấm điểm tự động bằng AI"}
+                disabled={isSubmitting || isReviewing || submissionBlocked || !submission.canSubmit}
+                title={submissionBlocked ? "Đợt lưu OCR chưa hoàn tất hoặc nhật ký phục hồi lỗi. Hãy xử lý trước khi nộp." : !attempt.steps?.length ? "Hãy xác nhận ít nhất một bước giải để chấm bài" : "Nộp bài và chấm điểm tự động bằng AI"}
               >
                 <Sparkles size={16} />
                 {isSubmitting ? "Đang nộp bài..." : isReviewing ? "Đang chấm bài..." : "Nộp & Chấm bài bằng AI"}
