@@ -8,6 +8,7 @@ import {
   inspectAttemptInDb,
   loginAsIsolatedStudent,
   SCREENSHOT_DIR,
+  validateQaHarnessEnv,
 } from "./helpers";
 
 test.describe("Phase 2A — MathCanvas, Ink Persistence & Handwritten OCR", () => {
@@ -15,7 +16,55 @@ test.describe("Phase 2A — MathCanvas, Ink Persistence & Handwritten OCR", () =
     page,
   }) => {
     const telemetry = attachTelemetry(page);
+
+    // 0. Verify QA Harness Safety Invariants against the exact Playwright environment:
+    // (a) Missing QA_E2E_PASSWORD causes a clear failure
+    expect(() =>
+      validateQaHarnessEnv({
+        QA_E2E_IGNORE_ENV_FILE: "1",
+        APP_ENV: "test",
+        QA_E2E_DATABASE_NAME: "edums_qa_e2e",
+        DATABASE_NAME: "edums_qa_e2e",
+      }),
+    ).toThrow(/QA_E2E_CONFIG_ERROR: QA_E2E_PASSWORD is required/);
+
+    // (b) Ordinary development database ('edums') or mismatched database name blocks provisioning
+    expect(() =>
+      validateQaHarnessEnv({
+        QA_E2E_IGNORE_ENV_FILE: "1",
+        APP_ENV: "test",
+        QA_E2E_PASSWORD: "ValidQaSecretPassword!2026",
+        QA_E2E_DATABASE_NAME: "edums",
+        DATABASE_NAME: "edums",
+      }),
+    ).toThrow(/QA_E2E_SAFETY_ERROR: QA_E2E_DATABASE_NAME='edums' is not a dedicated QA database/);
+
+    expect(() =>
+      validateQaHarnessEnv({
+        QA_E2E_IGNORE_ENV_FILE: "1",
+        APP_ENV: "test",
+        QA_E2E_PASSWORD: "ValidQaSecretPassword!2026",
+        QA_E2E_DATABASE_NAME: "edums_qa_e2e",
+        DATABASE_NAME: "edums",
+      }),
+    ).toThrow(/QA_E2E_SAFETY_ERROR: Backend DATABASE_NAME='edums' is not a dedicated QA database/);
+
+    // (c) Production configuration (APP_ENV=production) is rejected
+    expect(() =>
+      validateQaHarnessEnv({
+        QA_E2E_IGNORE_ENV_FILE: "1",
+        APP_ENV: "production",
+        QA_E2E_PASSWORD: "ValidQaSecretPassword!2026",
+        QA_E2E_DATABASE_NAME: "edums_qa_e2e",
+        DATABASE_NAME: "edums_qa_e2e",
+      }),
+    ).toThrow(/QA_E2E_SAFETY_ERROR: APP_ENV=production is strictly forbidden/);
+
+    // (d) Correct QA configuration allows fixture provisioning in dedicated QA database
+    const activeCfg = validateQaHarnessEnv(process.env);
+    expect(activeCfg.qaDatabaseName).toBe("edums_qa_e2e");
     const fixture = createIsolatedAttempt("a1-ocr-ink");
+    expect(fixture.database_name).toBe("edums_qa_e2e");
 
     await loginAsIsolatedStudent(page);
     await page.goto(`/student/attempts/${fixture.attempt_id}`);

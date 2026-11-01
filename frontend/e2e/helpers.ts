@@ -3,18 +3,39 @@ import fs from "node:fs";
 import path from "node:path";
 import type { Page } from "@playwright/test";
 
+import {
+  isDedicatedQaDatabaseName,
+  loadUntrackedQaEnv,
+  validateQaHarnessEnv,
+  type EnvMap,
+  type QaHarnessConfig,
+} from "./qa-harness-safety";
+
 export const REPO_ROOT = path.resolve(__dirname, "..", "..");
 export const ARTIFACT_DIR = path.join(REPO_ROOT, ".tmp", "tri-ocr-e2e");
 export const SCREENSHOT_DIR = path.join(ARTIFACT_DIR, "screenshots");
 export const TELEMETRY_DIR = path.join(ARTIFACT_DIR, "telemetry");
 export const PYTHON_EXE = path.join(REPO_ROOT, "backend", ".venv", "Scripts", "python.exe");
 export const DB_HELPER = path.join(__dirname, "qa_db_helper.py");
+export const DEFAULT_UNTRACKED_ENV_FILE = path.join(ARTIFACT_DIR, ".qa-e2e.env");
 
 export const QA_STUDENT_EMAIL = "qa.ocr.e2e.isolated@edums.edu.vn";
-export const QA_STUDENT_PASSWORD = process.env.QA_E2E_PASSWORD ?? "QaOcrE2e!2026#Isolated";
 
 for (const dir of [ARTIFACT_DIR, SCREENSHOT_DIR, TELEMETRY_DIR]) {
   fs.mkdirSync(dir, { recursive: true });
+}
+
+export { isDedicatedQaDatabaseName, loadUntrackedQaEnv, validateQaHarnessEnv, type EnvMap, type QaHarnessConfig };
+
+function buildDbHelperEnv(env: EnvMap = process.env): NodeJS.ProcessEnv {
+  const cfg = validateQaHarnessEnv(env, DEFAULT_UNTRACKED_ENV_FILE);
+  return {
+    ...(env as NodeJS.ProcessEnv),
+    APP_ENV: cfg.appEnv,
+    QA_E2E_PASSWORD: cfg.password,
+    QA_E2E_DATABASE_NAME: cfg.qaDatabaseName,
+    DATABASE_NAME: cfg.backendDatabaseName,
+  };
 }
 
 export interface CreatedAttemptFixture {
@@ -22,6 +43,7 @@ export interface CreatedAttemptFixture {
   question_id: string;
   practice_session_id: string;
   student_email: string;
+  database_name?: string;
   initial_revision: number;
   status: string;
 }
@@ -47,6 +69,7 @@ export interface DbOperationRecord {
 
 export interface DbAttemptInspection {
   exists: boolean;
+  database_name?: string;
   attempt: {
     id: string;
     status: string;
@@ -72,31 +95,41 @@ export interface DbAttemptInspection {
 }
 
 export function createIsolatedAttempt(label: string): CreatedAttemptFixture {
+  const helperEnv = buildDbHelperEnv(process.env);
   const out = execFileSync(PYTHON_EXE, [DB_HELPER, "create-attempt", "--label", label], {
     cwd: path.join(REPO_ROOT, "backend"),
+    env: helperEnv,
     encoding: "utf-8",
   });
   return JSON.parse(out.trim()) as CreatedAttemptFixture;
 }
 
 export function inspectAttemptInDb(attemptId: string): DbAttemptInspection {
+  const helperEnv = buildDbHelperEnv(process.env);
   const out = execFileSync(PYTHON_EXE, [DB_HELPER, "inspect-attempt", "--attempt-id", attemptId], {
     cwd: path.join(REPO_ROOT, "backend"),
+    env: helperEnv,
     encoding: "utf-8",
   });
   return JSON.parse(out.trim()) as DbAttemptInspection;
 }
 
-export function bumpAttemptRevisionInDb(attemptId: string, latex = "D = \\mathbb{R}"): {
+export function bumpAttemptRevisionInDb(
+  attemptId: string,
+  latex = "D = \\mathbb{R}",
+): {
   attempt_id: string;
+  database_name?: string;
   new_revision: number;
   step_count: number;
 } {
+  const helperEnv = buildDbHelperEnv(process.env);
   const out = execFileSync(
     PYTHON_EXE,
     [DB_HELPER, "bump-revision", "--attempt-id", attemptId, "--latex", latex],
     {
       cwd: path.join(REPO_ROOT, "backend"),
+      env: helperEnv,
       encoding: "utf-8",
     },
   );
@@ -206,12 +239,12 @@ export function attachTelemetry(page: Page): TelemetryCollector {
 }
 
 export async function loginAsIsolatedStudent(page: Page): Promise<void> {
+  const { password } = validateQaHarnessEnv(process.env);
   await page.goto("/login");
-  // Wait for login form
   const emailInput = page.locator('input[type="email"], input[name="email"]').first();
   const passwordInput = page.locator('input[type="password"], input[name="password"]').first();
   await emailInput.fill(QA_STUDENT_EMAIL);
-  await passwordInput.fill(QA_STUDENT_PASSWORD);
+  await passwordInput.fill(password);
   await page.locator('button[type="submit"]').click();
   await page.waitForURL((url) => !url.pathname.startsWith("/login"), { timeout: 20_000 });
 }
@@ -254,8 +287,6 @@ export async function drawDistinctMathLines(page: Page, lineCount: number): Prom
   await canvas.waitFor({ state: "visible" });
 
   for (let i = 0; i < lineCount; i++) {
-    // Space lines by 0.042 in normalized Y (~47px on 1123px A4 height) with stroke height ~9px (0.008)
-    // so gap (~38px) > gapThreshold (14px) and all 1..10 lines stay in the top 48% of the canvas (always visible in viewport).
     const baseY = 0.05 + i * 0.042;
     await drawNormalizedStroke(page, [
       { x: 0.18, y: baseY },
