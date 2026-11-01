@@ -1,4 +1,4 @@
-"""Independent API v3 surface for provisional AI step review."""
+"""Independent API v3 surface for hybrid math-step review."""
 
 from fastapi import FastAPI, Request, Response
 
@@ -12,7 +12,7 @@ def create_v3_app(settings: Settings) -> FastAPI:
     application = FastAPI(
         title=f"{settings.app_name} API v3",
         version="3.0.0",
-        description="Provisional answer-grounded AI review; never final grade or mastery evidence.",
+        description="Deterministic rubric grading when verified; AI feedback remains provisional.",
         debug=False,
         responses={422: {"model": ErrorResponse}, 500: {"model": ErrorResponse}},
     )

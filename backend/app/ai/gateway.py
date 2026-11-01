@@ -142,7 +142,7 @@ class AIGateway:
                 )
                 return result, latency_ms
 
-            except (AIRateLimitError, TimeoutError, asyncio.TimeoutError, ConnectionError) as exc:
+            except (AIRateLimitError, AIServiceUnavailableError, TimeoutError, asyncio.TimeoutError, ConnectionError) as exc:
                 latency_ms = (time.perf_counter() - start_time) * 1000.0
                 if attempt < max_retries:
                     attempt += 1

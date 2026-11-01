@@ -494,14 +494,69 @@ class StudentLearningStateService:
             .order_by(Classroom.name.asc(), Classroom.id.asc())
         ).all()
 
-        return [
-            StudentClassContextRead(
-                classroom_id=row[0],
-                classroom_name=row[1],
-                teaching_plan_id=row[2],
+        results: list[StudentClassContextRead] = []
+        from app.assignments.models import (
+            AssignmentMaterialItem,
+            AssignmentMaterialItemProblemType,
+            AssignmentProblemType,
+        )
+        from app.planning.models import TeachingPlanItem
+
+        for classroom_id, classroom_name, teaching_plan_id in rows:
+            tp_pt_ids: list[UUID] = []
+            if teaching_plan_id is not None:
+                tp_pt_ids = list(
+                    self.session.scalars(
+                        select(TeachingPlanItem.problem_type_id)
+                        .where(TeachingPlanItem.teaching_plan_id == teaching_plan_id)
+                        .order_by(
+                            TeachingPlanItem.priority.desc(),
+                            TeachingPlanItem.order_index.asc().nullslast(),
+                            TeachingPlanItem.id.asc(),
+                        )
+                    ).all()
+                )
+
+            assigned_pt_set: dict[UUID, None] = {}
+            direct_pts = self.session.scalars(
+                select(AssignmentProblemType.problem_type_id)
+                .join(Assignment, Assignment.id == AssignmentProblemType.assignment_id)
+                .where(
+                    Assignment.classroom_id == classroom_id,
+                    Assignment.subject_id == focus_subject_id,
+                    Assignment.status == AssignmentStatus.PUBLISHED,
+                )
+            ).all()
+            for pt_id in direct_pts:
+                assigned_pt_set[pt_id] = None
+
+            mat_pts = self.session.scalars(
+                select(AssignmentMaterialItemProblemType.problem_type_id)
+                .join(
+                    AssignmentMaterialItem,
+                    AssignmentMaterialItem.id
+                    == AssignmentMaterialItemProblemType.assignment_material_item_id,
+                )
+                .join(Assignment, Assignment.id == AssignmentMaterialItem.assignment_id)
+                .where(
+                    Assignment.classroom_id == classroom_id,
+                    Assignment.subject_id == focus_subject_id,
+                    Assignment.status == AssignmentStatus.PUBLISHED,
+                )
+            ).all()
+            for pt_id in mat_pts:
+                assigned_pt_set[pt_id] = None
+
+            results.append(
+                StudentClassContextRead(
+                    classroom_id=classroom_id,
+                    classroom_name=classroom_name,
+                    teaching_plan_id=teaching_plan_id,
+                    teaching_plan_problem_type_ids=tp_pt_ids,
+                    assigned_problem_type_ids=list(assigned_pt_set.keys()),
+                )
             )
-            for row in rows
-        ]
+        return results
 
     def _get_active_repair(
         self, student_id: UUID, focus_subject_id: UUID | None

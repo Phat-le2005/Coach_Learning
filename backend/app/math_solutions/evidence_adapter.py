@@ -249,6 +249,13 @@ class MathSolutionEvidenceAdapter:
             schedule.review_count += 1
             self.session.flush()
 
+        try:
+            with self.session.begin_nested():
+                from app.planning.study_service import StudyPlanService
+                StudyPlanService(self.session).recalculate_study_plan(attempt.student_id)
+        except Exception:
+            logger.debug('Study plan recalculation skipped after decision %s', decision.id, exc_info=True)
+
         return evidence_event
 
     def apply_teacher_override(

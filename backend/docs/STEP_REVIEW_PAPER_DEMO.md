@@ -13,9 +13,14 @@ cd backend
 Đăng nhập tài khoản học sinh có quyền Toán 12, mở **Bài làm của tôi** rồi chọn
 **Thử chấm từng bước**. Giải bài khảo sát hàm số bậc ba thành các bước:
 đạo hàm, xét dấu/đồng biến nghịch biến, cực trị, nhận xét đồ thị. Xác nhận các
-bước, bấm **Nộp bài giải**, sau đó bấm **Nhận xét bằng Gemini**. Backend cần
-`AI_PROVIDER=gemini` và `AI_API_KEY` trong `backend/.env`. Kết quả AI chỉ là
-góp ý từng bước, không ghi điểm cuối cùng hay cập nhật mastery.
+bước, bấm **Nộp bài giải** để nhận kết quả. Nếu câu hỏi có đáp án, rubric đã duyệt
+và mọi bước nằm trong phạm vi quy tắc toán học đã kiểm chứng, backend chấm và
+ghi điểm chính thức mà không gọi Gemini. Nếu thiếu rubric hoặc có bước chưa
+thể kiểm chứng, backend gọi Gemini một lần cho toàn bài để nhận góp ý tạm thời.
+Nếu thiếu đáp án, Gemini chỉ gợi ý điều cần kiểm tra, không kết luận đúng sai.
+Cần `AI_PROVIDER=gemini` và `AI_API_KEY` trong `backend/.env` cho hai trường hợp
+cần AI. Góp ý AI không ghi điểm hoặc cập nhật mastery. Lệnh seed mẫu ở trên chỉ
+bổ sung đáp án, không tạo rubric đã duyệt nên bài mẫu dùng nhánh góp ý AI.
 
 Trong trang làm bài, bấm **Tải bài giấy** để nộp tối đa 10 ảnh PNG/JPEG hoặc PDF,
 mỗi tệp tối đa 10 MB. Tệp được lưu riêng theo lượt giải trong

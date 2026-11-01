@@ -61,6 +61,7 @@ def test_all_ai_task_types_defined():
         "ADMISSION_ASSISTANT",
         "MEMORY_EXTRACTION",
         "TEACHER_MATERIAL_MAPPING",
+        "TEACHER_THEORY_MAP",
     }
     actual_tasks = {t.value for t in AITaskType}
     assert actual_tasks == expected_tasks
@@ -84,6 +85,7 @@ def test_routing_tier_resolution(ai_settings: Settings):
     assert gateway.resolve_tier(AITaskType.QUESTION_GENERATION) == AIRoutingTier.STANDARD
     assert gateway.resolve_tier(AITaskType.ADMISSION_ASSISTANT) == AIRoutingTier.STANDARD
     assert gateway.resolve_tier(AITaskType.TEACHER_MATERIAL_MAPPING) == AIRoutingTier.STANDARD
+    assert gateway.resolve_tier(AITaskType.TEACHER_THEORY_MAP) == AIRoutingTier.STANDARD
 
     # Reasoning tier tasks
     assert gateway.resolve_tier(AITaskType.EXAM_ANALYSIS) == AIRoutingTier.REASONING

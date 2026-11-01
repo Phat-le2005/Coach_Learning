@@ -28,8 +28,18 @@ class AnswerReference:
     content_sha256: str
 
 
-def resolve_answer_reference(session: Session, attempt: SolutionAttempt, *, require_submitted: bool = True) -> AnswerReference:
-    """Bind grading to an approved question or immutable assigned snapshot."""
+def resolve_answer_reference(
+    session: Session,
+    attempt: SolutionAttempt,
+    *,
+    require_submitted: bool = True,
+    require_answer: bool = True,
+) -> AnswerReference:
+    """Bind a problem to an approved question or immutable assigned snapshot.
+
+    ``require_answer=False`` is only for provisional feedback. Callers that
+    produce a final grade must keep the default and require a reviewed answer.
+    """
     if require_submitted and attempt.status != "SUBMITTED":
         raise ApplicationError(409, "SOLUTION_NOT_SUBMITTED", "Submit the solution before grading.")
 
@@ -72,11 +82,11 @@ def resolve_answer_reference(session: Session, attempt: SolutionAttempt, *, requ
 
     if not isinstance(content, str) or not content.strip():
         raise ApplicationError(409, "GRADING_SOURCE_UNAVAILABLE", "The problem text is unavailable.")
-    if not isinstance(answer, str) or not answer.strip():
+    if require_answer and (not isinstance(answer, str) or not answer.strip()):
         raise ApplicationError(409, "GRADING_ANSWER_REQUIRED", "A reviewed answer is required before AI step grading.")
     explanation = explanation.strip() if isinstance(explanation, str) and explanation.strip() else None
     content = content.strip()
-    answer = answer.strip()
+    answer = answer.strip() if isinstance(answer, str) else ""
     fingerprint = sha256(json.dumps(
         {"source_kind": attempt.source_kind, "source_id": str(source_id),
          "problem_content": content, "correct_answer": answer, "explanation": explanation},

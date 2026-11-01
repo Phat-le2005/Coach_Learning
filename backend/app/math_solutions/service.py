@@ -49,6 +49,7 @@ from app.questions.models import Question, QuestionStatus, QuestionType
 from app.questions.presentation_quality import question_has_broken_math_extraction
 from app.students.models import StudentProfile
 from app.teacher_materials.models import TeacherMaterial, TeacherMaterialItem
+from app.teacher_materials.models import MaterialEvaluationMode
 
 
 def _fail(status: int, code: str, message: str) -> ApplicationError:
@@ -206,7 +207,7 @@ class MathSolutionService:
                 existing.student_assignment_id != student_assignment_id or
                 existing.assignment_student_question_id != assignment_student_question_id or
                 existing.student_assignment_material_item_id != student_assignment_material_item_id or
-                existing.rubric_id != rubric_id
+                (rubric_id is not None and existing.rubric_id != rubric_id)
             ):
                 raise _fail(409, "CREATE_KEY_REUSED", "This create key already belongs to another request.")
             return self._snapshot(existing)
@@ -296,6 +297,26 @@ class MathSolutionService:
                 raise _fail(422, "QUESTION_PRESENTATION_REVIEW_REQUIRED", "Question text or options need source presentation review.")
             if asg is not None and q.subject_id != assignment.subject_id:
                 raise _fail(422, "SUBJECT_MISMATCH", "Question and assignment subject must match.")
+        if rubric_id is None:
+            # Pin the latest already-approved rubric at attempt creation. Never
+            # synthesize criteria or attach a rubric to an unanswered source.
+            target = None
+            if q is not None and q.question_type == QuestionType.OPEN_RESPONSE and q.correct_answer:
+                target = SolutionRubric.question_id == q.id
+            elif (source_kind == "TEACHER_MATERIAL" and material_id is not None
+                  and snapshot.question_type == QuestionType.OPEN_RESPONSE
+                  and snapshot.evaluation_mode == MaterialEvaluationMode.OPEN_RESPONSE
+                  and snapshot.correct_answer):
+                target = SolutionRubric.assignment_material_item_id == material_id
+            if target is not None:
+                approved = self.session.scalar(
+                    select(SolutionRubric)
+                    .where(SolutionRubric.status == "APPROVED", target)
+                    .order_by(SolutionRubric.rubric_version.desc(), SolutionRubric.id.desc())
+                    .limit(1)
+                )
+                if approved is not None:
+                    rubric_id = approved.id
         if rubric_id is not None:
             rubric = self.session.get(SolutionRubric, rubric_id)
             if rubric is None or rubric.status != "APPROVED" or (
@@ -318,7 +339,7 @@ class MathSolutionService:
             )
             if previous is not None:
                 # Existing classroom item is immutable: never silently switch modes or rubrics.
-                if previous.mode != mode or previous.rubric_id != rubric_id:
+                if previous.mode != mode or (rubric_id is not None and previous.rubric_id != rubric_id):
                     raise _fail(409, "SOLUTION_CONFIGURATION_CONFLICT", "Existing assigned solution has a different mode or rubric.")
                 return self._snapshot(previous)
         row = SolutionAttempt(

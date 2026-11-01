@@ -68,6 +68,7 @@ ALLOWED_TOOLS: dict[AITaskType, set[str]] = {
     AITaskType.TEACHER_MATERIAL_MAPPING: {
         "propose_teacher_material_mapping",
     },
+    AITaskType.TEACHER_THEORY_MAP: set(),
 }
 
 ALL_KNOWN_TOOLS: set[str] = {tool for tools in ALLOWED_TOOLS.values() for tool in tools}

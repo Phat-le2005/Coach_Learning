@@ -186,6 +186,8 @@ class StudentClassContextRead(BaseModel):
     classroom_id: UUID
     classroom_name: str
     teaching_plan_id: UUID | None = None
+    teaching_plan_problem_type_ids: list[UUID] = []
+    assigned_problem_type_ids: list[UUID] = []
 
 
 # Alias for today plan snapshot to match prompt Section 8 naming

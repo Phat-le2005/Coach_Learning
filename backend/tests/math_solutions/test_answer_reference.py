@@ -44,6 +44,9 @@ def test_approved_canonical_answer_is_stable_and_missing_answer_blocks_ai():
     with pytest.raises(ApplicationError) as missing:
         resolve_answer_reference(session, attempt)
     assert missing.value.code == "GRADING_ANSWER_REQUIRED"
+    provisional = resolve_answer_reference(session, attempt, require_answer=False)
+    assert provisional.correct_answer == ""
+    assert provisional.content_sha256 != first.content_sha256
     question.correct_answer = "y' = 2x"
     assert resolve_answer_reference(session, attempt).content_sha256 != first.content_sha256
 

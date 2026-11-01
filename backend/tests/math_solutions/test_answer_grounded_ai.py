@@ -1,4 +1,4 @@
-"""AI suggestions must be tied to an answer and every confirmed step."""
+"""AI feedback must cover confirmed steps and never invent a final grade."""
 
 import asyncio
 from types import SimpleNamespace
@@ -9,7 +9,7 @@ import pytest
 from app.ai.mock_provider import MockAIProvider
 from app.core.exceptions import ApplicationError
 from app.math_solutions.answer_grounded_ai import (
-    AIGradeOutput, AnswerGroundedAIService,
+    AIGradeOutput, AnswerGroundedAIService, UnansweredAIService,
 )
 from app.math_solutions.answer_reference import AnswerReference
 
@@ -48,7 +48,7 @@ class FakeGateway:
     async def generate_structured(self, **kwargs):
         self.calls += 1
         self.messages = kwargs["messages"]
-        return SimpleNamespace(data=AIGradeOutput.model_validate(self.response))
+        return SimpleNamespace(data=kwargs["schema"].model_validate(self.response))
 
 
 def fixture_case(monkeypatch, response=None, *, mock=False):
@@ -105,6 +105,52 @@ def test_missing_answer_stops_before_model_call(monkeypatch):
         asyncio.run(AnswerGroundedAIService(session, gateway).review_attempt(attempt.id))
     assert error.value.code == "GRADING_ANSWER_REQUIRED"
     assert gateway.calls == 0
+
+
+def test_no_answer_feedback_is_always_unscored_and_requests_teacher_review(monkeypatch):
+    attempt, session, gateway = fixture_case(monkeypatch)
+    reference = AnswerReference("CANONICAL", uuid4(), "Find the derivative for y=x^3", "", None, "b" * 64)
+    monkeypatch.setattr(
+        "app.math_solutions.answer_grounded_ai.resolve_answer_reference",
+        lambda _session, _attempt, **_kwargs: reference,
+    )
+    gateway.response = {"steps": [
+        {"step_index": 1, "student_quote": "3x^2", "problem_quote": "derivative", "feedback": "Check the derivative rule."},
+        {"step_index": 2, "student_quote": "(0,2)", "problem_quote": "y=x^3", "feedback": "Check the interval against the domain."},
+    ]}
+    review = asyncio.run(UnansweredAIService(session, gateway).review_attempt(attempt.id))
+    assert gateway.calls == 1
+    assert review.needs_teacher_review is True
+    assert [step.verdict for step in review.step_grades] == ["NEEDS_REVIEW"] * 2
+    assert all(step.score is None for step in review.step_grades)
+    assert "correct_answer" not in gateway.messages[1].content
+    assert attempt.status == "SUBMITTED"
+
+
+def test_no_answer_feedback_rejects_fabricated_problem_quote(monkeypatch):
+    attempt, session, gateway = fixture_case(monkeypatch)
+    reference = AnswerReference("CANONICAL", uuid4(), "Find the derivative for y=x^3", "", None, "b" * 64)
+    monkeypatch.setattr(
+        "app.math_solutions.answer_grounded_ai.resolve_answer_reference",
+        lambda _session, _attempt, **_kwargs: reference,
+    )
+    gateway.response = {"steps": [
+        {"step_index": 1, "student_quote": "3x^2", "problem_quote": "unrelated theorem", "feedback": "Check the step."},
+        {"step_index": 2, "student_quote": "(0,2)", "problem_quote": "y=x^3", "feedback": "Check the interval."},
+    ]}
+    with pytest.raises(ApplicationError) as error:
+        asyncio.run(UnansweredAIService(session, gateway).review_attempt(attempt.id))
+    assert error.value.code == "AI_EVIDENCE_INVALID"
+
+
+@pytest.mark.parametrize("score", [0.0, None])
+def test_ai_cannot_return_a_score_that_conflicts_with_its_verdict(score):
+    from pydantic import ValidationError
+    with pytest.raises(ValidationError):
+        AIGradeOutput.model_validate({"steps": [{
+            "step_index": 1, "verdict": "VALID", "score": score, "confidence": 1.0,
+            "student_quote": "x", "answer_quote": "x", "feedback": "Conflicting score",
+        }]})
 
 
 @pytest.mark.parametrize("broken,code", [
