@@ -5,6 +5,7 @@ import { ChevronDown, ChevronUp, Eye, Sparkles } from "lucide-react";
 import {
   parseVariationTablePayload,
   type AIStepSuggestionRead,
+  type AIReviewRead,
   type SolutionStepRead,
   type VariationTablePayload,
 } from "@/lib/api/contracts";
@@ -21,6 +22,8 @@ import styles from "./AIReview.module.css";
 
 interface AIReviewStepCardProps {
   grade: AIStepSuggestionRead;
+  showScore: boolean;
+  reviewSource: AIReviewRead["review_source"];
   step: SolutionStepRead | undefined;
   cardState: AIReviewStepCardState;
   isSelected: boolean;
@@ -102,6 +105,8 @@ function VerdictAnimatedSvg({ verdict }: { verdict: StepVerdict }) {
 
 export function AIReviewStepCard({
   grade,
+  showScore,
+  reviewSource,
   step,
   cardState,
   isSelected,
@@ -143,8 +148,8 @@ export function AIReviewStepCard({
     );
   }
 
-  const verdictMeta = formatStepVerdictMeta(grade.verdict);
-  const scoreDisplay = formatStepScoreDisplay(grade.score);
+  const verdictMeta = formatStepVerdictMeta(grade.verdict, grade.error_nature);
+  const scoreDisplay = showScore ? formatStepScoreDisplay(grade.score) : null;
   const variationPayload = getVariationPayload(step);
   const authenticTitle = formatAuthenticStepTitle(
     step?.step_type,
@@ -283,14 +288,19 @@ export function AIReviewStepCard({
                 aria-hidden="true"
               />
               <span>
-                Gemini đang kiểm tra phép biến đổi Bước {grade.step_index} với
-                đáp án tham chiếu...
+                Đang kiểm tra Bước {grade.step_index}...
               </span>
             </div>
           ) : (
             <>
               <div className={`${styles.feedbackBox} ${feedbackBoxToneClass}`}>
-                <span className={styles.feedbackLabel}>Nhận xét từ AI</span>
+                <span className={styles.feedbackLabel}>{reviewSource === "DETERMINISTIC"
+                  ? "Kết quả kiểm chứng toán học"
+                  : reviewSource === "UNANSWERED_AI"
+                    ? "Góp ý sơ bộ, chưa xác định đúng sai"
+                    : reviewSource === "TEACHER"
+                      ? "Nhận xét của giáo viên"
+                      : "Nhận xét tạm thời từ AI"}</span>
                 <p className={styles.feedbackText}>{grade.feedback}</p>
               </div>
 

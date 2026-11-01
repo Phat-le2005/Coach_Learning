@@ -12,7 +12,7 @@ interface AIReviewLoadingProps {
 
 const SCAN_STAGES = [
   "Quét cấu trúc các bước giải & ký hiệu Toán học",
-  "Đối chiếu biến đổi với đáp án tham chiếu chuẩn",
+  "Kiểm tra quy tắc toán học và đối chiếu nguồn tham chiếu nếu có",
   "Tổng hợp nhận xét sư phạm cho từng bước giải",
 ];
 
@@ -75,12 +75,12 @@ export function AIReviewLoading({
 
       <div>
         <h3 className={styles.loadingHeading}>
-          Gemini đang quét & đối chiếu lời giải từng bước...
+          Đang kiểm tra lời giải từng bước...
         </h3>
         <p className={styles.loadingSubtext}>
           Đang phân tích tuần tự{" "}
           {stepCount > 0 ? `${stepCount} bước giải` : "các bước giải"} đã xác
-          nhận của bạn với đáp án chuẩn.
+          nhận. Chỉ bài có đáp án và rubric phù hợp mới được cho điểm chính thức.
         </p>
       </div>
 

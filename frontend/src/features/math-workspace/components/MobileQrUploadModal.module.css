@@ -1,0 +1,460 @@
+@keyframes qrModalFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes scanSweep {
+  0% {
+    top: 4px;
+    opacity: 0.85;
+  }
+  50% {
+    top: calc(100% - 6px);
+    opacity: 1;
+  }
+  100% {
+    top: 4px;
+    opacity: 0.85;
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.25);
+    opacity: 1;
+  }
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(12, 38, 27, 0.58);
+  backdrop-filter: blur(8px);
+  padding: 1rem;
+}
+
+.modalCard {
+  width: 100%;
+  max-width: 640px;
+  background: #ffffff;
+  border-radius: 1.35rem;
+  border: 1.5px solid #c9e2d3;
+  box-shadow: 0 24px 56px rgba(13, 58, 39, 0.22);
+  animation: qrModalFadeIn 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.4rem;
+  background: linear-gradient(135deg, #f7fcf9 0%, #edf7f2 100%);
+  border-bottom: 1px solid #d4e8dd;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.headerIcon {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.75rem;
+  background: linear-gradient(135deg, #114e36 0%, #1ea673 100%);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(18, 92, 63, 0.24);
+  flex-shrink: 0;
+}
+
+.modalTitle {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0e3827;
+}
+
+.modalSubtitle {
+  margin: 0.12rem 0 0;
+  font-size: 0.78rem;
+  color: #4c705e;
+}
+
+.closeBtn {
+  background: transparent;
+  border: 1px solid #c8ded2;
+  color: #275240;
+  border-radius: 0.6rem;
+  width: 2rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+
+.closeBtn:hover {
+  background: #eaf5ee;
+  border-color: #9eccb4;
+}
+
+.modalBody {
+  padding: 1.4rem;
+}
+
+/* QR + Instructions Layout */
+.qrContentLayout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 1.4rem;
+  align-items: flex-start;
+}
+
+.qrFrameWrapper {
+  position: relative;
+  background: #ffffff;
+  border-radius: 1.15rem;
+  border: 2px solid #bce2cd;
+  box-shadow: 0 8px 24px rgba(17, 72, 49, 0.08);
+  padding: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+}
+
+.qrScanLine {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  height: 2.5px;
+  background: linear-gradient(90deg, transparent, #10b981, #34d399, transparent);
+  box-shadow: 0 0 12px 2px rgba(16, 185, 129, 0.6);
+  animation: scanSweep 2s ease-in-out infinite;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.qrSvgContainer {
+  width: 196px;
+  height: 196px;
+}
+
+.qrSvgContainer svg {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+  border-radius: 0.5rem;
+}
+
+.qrCountdownBadge {
+  margin-top: 0.65rem;
+  font-size: 0.74rem;
+  color: #3b6250;
+  background: #eff7f2;
+  padding: 0.22rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid #cfe5d8;
+}
+
+.qrQuickActions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.65rem;
+  width: 100%;
+}
+
+.quickActionBtn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.38rem 0.5rem;
+  border-radius: 0.55rem;
+  border: 1px solid #c3ded0;
+  background: #f4faf6;
+  color: #17543a;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+
+.quickActionBtn:hover {
+  background: #e5f4ec;
+  border-color: #9eccb4;
+  color: #0d3b27;
+}
+
+.instructionList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.stepRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.stepNum {
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 999px;
+  background: #d8f1e3;
+  color: #126343;
+  font-size: 0.76rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.stepText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.stepText strong {
+  font-size: 0.86rem;
+  color: #113928;
+}
+
+.stepText span {
+  font-size: 0.78rem;
+  color: #4d7060;
+  line-height: 1.45;
+}
+
+.lanNoticeBox {
+  background: #fdfbef;
+  border: 1px solid #f2e2a8;
+  border-radius: 0.7rem;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.76rem;
+  color: #71550c;
+}
+
+.lanNoticeHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+  font-weight: 700;
+}
+
+.toggleLanBtn {
+  background: transparent;
+  border: 1px solid #d8bf62;
+  border-radius: 0.4rem;
+  color: #71550c;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.15rem 0.45rem;
+  cursor: pointer;
+}
+
+.toggleLanBtn:hover {
+  background: #f7eed0;
+}
+
+.lanConfigForm {
+  margin-top: 0.45rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.lanConfigForm label {
+  font-size: 0.72rem;
+  color: #634b0d;
+}
+
+.lanInput {
+  font-size: 0.76rem;
+  padding: 0.3rem 0.55rem;
+  border-radius: 0.45rem;
+  border: 1px solid #d4c58e;
+  background: #ffffff;
+  color: #27210e;
+  outline: none;
+}
+
+.lanInput:focus {
+  border-color: #1b8a5a;
+}
+
+.liveListeningBar {
+  margin-top: 0.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.55rem 0.85rem;
+  border-radius: 0.75rem;
+  background: #f0f9f4;
+  border: 1px solid #c9e4d5;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #16563c;
+}
+
+.pulseDot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 999px;
+  background: #1cb57b;
+  box-shadow: 0 0 0 3px rgba(28, 181, 123, 0.25);
+  animation: pulseGlow 1.4s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+/* Success State */
+.successState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 2.2rem 1rem;
+  gap: 0.85rem;
+}
+
+.successIcon {
+  width: 4.2rem;
+  height: 4.2rem;
+  border-radius: 999px;
+  background: #d6f4e4;
+  color: #118155;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(17, 129, 85, 0.22);
+}
+
+.successState h4 {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #113c2a;
+}
+
+.successState p {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #496d5c;
+}
+
+/* Loading & Error States */
+.loadingState, .errorState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 2.5rem 1rem;
+  gap: 0.85rem;
+  color: #3b5f4f;
+  font-size: 0.88rem;
+}
+
+.errorIconBadge {
+  width: 3.2rem;
+  height: 3.2rem;
+  border-radius: 999px;
+  background: #fee4e2;
+  border: 1px solid #fecdca;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.errorText {
+  color: #912018;
+  font-weight: 600;
+  max-width: 420px;
+  line-height: 1.45;
+}
+
+.retryBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.65rem;
+  border: 1px solid #14593e;
+  background: #14593e;
+  color: #ffffff;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+
+.retryBtn:hover {
+  background: #0d3d29;
+}
+
+.modalFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.4rem;
+  background: #fbfdfc;
+  border-top: 1px solid #e1efe7;
+}
+
+.footerNote {
+  font-size: 0.77rem;
+  color: #557967;
+}
+
+.cancelBtn {
+  padding: 0.42rem 0.88rem;
+  border-radius: 0.6rem;
+  border: 1px solid #cbdcd2;
+  background: #ffffff;
+  color: #234b39;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.cancelBtn:hover {
+  background: #f0f6f2;
+}
+
+@media (max-width: 580px) {
+  .qrContentLayout {
+    grid-template-columns: 1fr;
+  }
+  .qrFrameWrapper {
+    width: 210px;
+    margin: 0 auto;
+  }
+}

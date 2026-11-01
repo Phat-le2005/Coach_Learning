@@ -124,7 +124,7 @@ export function ProblemPane({
       <div className={styles.problemContentScroll}>
         {problem ? (
           <>
-            {problem.is_read_only && attempt?.status !== "SUBMITTED" ? (
+            {problem.is_read_only && attempt?.status !== "SUBMITTED" && attempt?.status !== "EVALUATED" ? (
               <section className={styles.questionSourceWarning} role="alert">
                 Câu hỏi này đang chờ kiểm tra nguồn. Bài làm cũ được giữ để xem lại; hiện không thể tiếp tục hoặc nộp bài này.
               </section>
@@ -241,11 +241,15 @@ export function ProblemPane({
             {/* AI Review Launch Card */}
             {aiReview ? (
               <section className={styles.aiReviewPanel} aria-label="Nhận xét từng bước giải">
-                <h3>Đã có nhận xét từng bước từ AI</h3>
+                <h3>{aiReview.is_final ? "Đã có điểm chính thức" : "Đã có nhận xét từng bước"}</h3>
                 <p className={styles.aiReviewNotice}>
-                  {aiReview.step_grades.filter((g) => g.verdict === "VALID").length}/{aiReview.step_grades.length} bước hợp lý
+                  {aiReview.review_source === "UNANSWERED_AI"
+                    ? `${aiReview.step_grades.length} bước có góp ý sơ bộ, chưa xác định đúng sai`
+                    : aiReview.step_grades.length
+                      ? `${aiReview.step_grades.filter((g) => g.verdict === "VALID").length}/${aiReview.step_grades.length} bước ${aiReview.is_final ? "đã kiểm chứng" : "AI nhận xét có thể hợp lý"}`
+                      : "Chưa có nhận xét chi tiết theo từng bước"}
                   {aiReview.step_grades.some((g) => g.verdict === "INVALID")
-                    ? ` · ${aiReview.step_grades.filter((g) => g.verdict === "INVALID").length} bước cần sửa`
+                    ? ` · ${aiReview.step_grades.filter((g) => g.verdict === "INVALID").length} bước ${aiReview.is_final ? "cần sửa" : "AI gợi ý xem lại"}`
                     : ""}
                   {aiReview.step_grades.some((g) => g.verdict === "NEEDS_REVIEW")
                     ? ` · ${aiReview.step_grades.filter((g) => g.verdict === "NEEDS_REVIEW").length} bước cần xem lại`
@@ -270,14 +274,19 @@ export function ProblemPane({
       </div>
 
       {/* Sticky Bottom Footer: Always Visible Submit & Grade Bar */}
-      {problem && attempt && !needsSourceReview && !problem.is_read_only ? (
+      {problem && attempt && !needsSourceReview &&
+        (!problem.is_read_only || attempt.status === "SUBMITTED" || attempt.status === "EVALUATED") ? (
         <div className={styles.problemPaneFooter}>
-          {attempt.status === "SUBMITTED" ? (
+          {attempt.status === "SUBMITTED" || attempt.status === "EVALUATED" ? (
             aiReview ? (
               <div className={styles.footerReviewed}>
                 <div className={styles.footerStatusInfo}>
                   <span className={styles.footerSuccessDot}>●</span>
-                  <span>Đã chấm xong ({aiReview.step_grades.filter((g) => g.verdict === "VALID").length}/{aiReview.step_grades.length} bước hợp lý)</span>
+                  <span>{aiReview.is_final
+                    ? `Điểm chính thức: ${Math.round((aiReview.final_score ?? 0) * 100)}%`
+                    : aiReview.review_source === "UNANSWERED_AI"
+                      ? "Góp ý sơ bộ · Chờ đáp án và giáo viên duyệt"
+                      : "Nhận xét tạm thời · Chưa có điểm chính thức"}</span>
                 </div>
                 <button
                   type="button"
@@ -286,7 +295,7 @@ export function ProblemPane({
                   disabled={isReviewing}
                 >
                   <Sparkles size={15} />
-                  {isReviewing ? "Đang đối chiếu..." : "Xem nhận xét từng bước"}
+                  {isReviewing ? "Đang kiểm tra..." : "Xem chi tiết từng bước"}
                 </button>
               </div>
             ) : (
@@ -298,12 +307,16 @@ export function ProblemPane({
                   disabled={isReviewing || aiReviewAvailability?.available === false}
                 >
                   <Sparkles size={16} />
-                  {isReviewing ? "Đang chấm bằng Gemini..." : "Chấm bài bằng AI"}
+                  {isReviewing ? "Đang kiểm tra bài..." : "Kiểm tra bài làm"}
                 </button>
                 {aiReviewAvailability?.available === false ? (
-                  <small className={styles.footerNotice}>Chưa có đáp án tham chiếu được duyệt</small>
+                  <small className={styles.footerNotice}>{aiReviewAvailability.reason_code === "GRADING_ASSIGNMENT_NOT_SUBMITTED"
+                    ? "Hãy nộp toàn bộ bài giáo viên giao trước khi kiểm tra lời giải."
+                    : "Đề bài chưa đủ điều kiện kiểm tra"}</small>
                 ) : (
-                  <small className={styles.footerHint}>Bài đã nộp. Bấm để Gemini chấm từng bước</small>
+                  <small className={styles.footerHint}>{aiReviewAvailability?.reason_code === "PROVISIONAL_WITHOUT_ANSWER"
+                    ? "Chưa có đáp án: chỉ nhận góp ý sơ bộ, không cho điểm"
+                    : "Ưu tiên chấm bằng quy tắc; bước chưa rõ sẽ nhận góp ý AI"}</small>
                 )}
               </div>
             )
@@ -314,15 +327,15 @@ export function ProblemPane({
                 className={styles.primaryGradeButton}
                 onClick={() => void onSubmitSolution()}
                 disabled={isSubmitting || isReviewing || !submission.canSubmit}
-                title={!attempt.steps?.length ? "Hãy xác nhận ít nhất một bước giải để chấm bài" : "Nộp bài và chấm điểm tự động bằng AI"}
+                title={!attempt.steps?.length ? "Hãy xác nhận ít nhất một bước giải để nộp bài" : "Nộp bài và kiểm tra các bước đã xác nhận"}
               >
                 <Sparkles size={16} />
-                {isSubmitting ? "Đang nộp bài..." : isReviewing ? "Đang chấm bài..." : "Nộp & Chấm bài bằng AI"}
+                {isSubmitting ? "Đang nộp bài..." : isReviewing ? "Đang kiểm tra bài..." : "Nộp bài & kiểm tra"}
               </button>
               {!attempt.steps?.length ? (
-                <small className={styles.footerHint}>Xác nhận ít nhất 1 bước giải để chấm bài</small>
+                <small className={styles.footerHint}>Xác nhận ít nhất 1 bước giải để nộp bài</small>
               ) : (
-                <small className={styles.footerHint}>Đã có {attempt.steps.length} bước giải • Bấm để nộp & chấm tự động</small>
+                <small className={styles.footerHint}>Đã có {attempt.steps.length} bước giải • Điểm chính thức chỉ có khi đủ đáp án và rubric</small>
               )}
             </div>
           )}

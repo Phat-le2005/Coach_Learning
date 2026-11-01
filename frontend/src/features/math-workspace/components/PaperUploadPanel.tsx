@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { Sparkles } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Sparkles, QrCode, UploadCloud } from "lucide-react";
 import type { ApiClient, PaperAttachmentRead, PaperOcrRead } from "@/lib/api/client";
 import { API_PATHS, ApiResponseError } from "@/lib/api/client";
 import { generateUuid } from "../utils/ink-math";
 import { PaperOcrReview } from "./PaperOcrReview";
+import { MobileQrUploadModal } from "./MobileQrUploadModal";
 import type { ConfirmedPaperStepContent } from "../utils/paper-ocr-step";
 import styles from "../MathWorkspace.module.css";
 
@@ -47,18 +48,30 @@ export function PaperUploadPanel({
   const [savedOcrPaperIds, setSavedOcrPaperIds] = useState<Set<string>>(() => new Set());
   const [activeOcrIndex, setActiveOcrIndex] = useState<number | null>(0);
   const [showBbox, setShowBbox] = useState(true);
+  const [showQrModal, setShowQrModal] = useState(false);
   const actionId = useRef(generateUuid());
   const fileInput = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    let active = true;
-    apiClient.listMathPaper(accessToken, attemptId).then((list) => {
-      if (!active) return;
+  const loadPaperList = useCallback(async (autoSelectNewest = false) => {
+    try {
+      const list = await apiClient.listMathPaper(accessToken, attemptId);
       setFiles(list);
-      setSelectedId((current) => current && list.some((item) => item.id === current) ? current : list[0]?.id ?? null);
-    }).catch(() => { if (active) setError("Chưa tải được bài viết giấy. Hãy thử lại sau."); });
-    return () => { active = false; };
+      setSelectedId((current) => {
+        if (autoSelectNewest && list.length > 0) {
+          return list[list.length - 1]!.id;
+        }
+        return current && list.some((item) => item.id === current)
+          ? current
+          : list[list.length - 1]?.id ?? list[0]?.id ?? null;
+      });
+    } catch {
+      setError("Chưa tải được bài viết giấy. Hãy thử lại sau.");
+    }
   }, [apiClient, accessToken, attemptId]);
+
+  useEffect(() => {
+    loadPaperList();
+  }, [loadPaperList]);
 
   const selected = files.find((item) => item.id === selectedId) ?? null;
   const recognize = async () => {
@@ -138,14 +151,35 @@ export function PaperUploadPanel({
 
   return <div className={styles.paperUploadPanel}>
     <header>
-      <h2>Bài viết trên giấy</h2>
-      <p>Tải ảnh chụp hoặc PDF bài làm. Tệp được giữ riêng trong lượt giải này, kể cả khi em tải lại trang.</p>
+      <h2>Bài viết trên giấy & Chụp ảnh</h2>
+      <p>Bạn có thể chụp trang vở bằng điện thoại qua mã QR hoặc tải tệp ảnh/PDF trực tiếp từ máy tính.</p>
     </header>
-    {!isReadOnly ? <label className={styles.paperUploadLabel}>
-      <span>{busy ? "Đang tải lên..." : "Chọn ảnh hoặc PDF"}</span>
-      <input ref={fileInput} type="file" accept="image/png,image/jpeg,application/pdf,.png,.jpg,.jpeg,.pdf"
-        disabled={busy} onChange={(event) => void upload(event.currentTarget.files?.[0])} />
-    </label> : null}
+    {!isReadOnly ? (
+      <div className={styles.paperUploadActionRow}>
+        <button
+          type="button"
+          onClick={() => setShowQrModal(true)}
+          disabled={busy}
+          className={styles.qrLaunchButton}
+          title="Chụp ảnh trang vở bằng điện thoại và tự động gửi lên máy tính"
+        >
+          <QrCode size={18} />
+          <span>Chụp bằng điện thoại (Mã QR)</span>
+          <span className={styles.qrBadgeRecommend}>Khuyên dùng</span>
+        </button>
+        <label className={styles.paperUploadSecondaryLabel}>
+          <UploadCloud size={17} />
+          <span>{busy ? "Đang tải tệp..." : "Tải tệp từ máy tính"}</span>
+          <input
+            ref={fileInput}
+            type="file"
+            accept="image/png,image/jpeg,application/pdf,.png,.jpg,.jpeg,.pdf"
+            disabled={busy}
+            onChange={(event) => void upload(event.currentTarget.files?.[0])}
+          />
+        </label>
+      </div>
+    ) : null}
     <p className={styles.paperNote}>PNG/JPEG/PDF, tối đa 10 MB mỗi tệp và 10 tệp mỗi bài.</p>
     {error ? <p role="alert" className={styles.paperError}>{error}</p> : null}
     {files.length ? <>
@@ -209,7 +243,7 @@ export function PaperUploadPanel({
           activeStepIndex={activeOcrIndex} onSelectStepIndex={setActiveOcrIndex} /> : null}
       {!isReadOnly ? <div className={styles.paperStepEntry}>
         <h3>Thêm bước chưa được OCR đọc rõ</h3>
-        <p>Đối chiếu bài giấy rồi nhập bước còn thiếu. AI chỉ nhận xét các bước em đã xác nhận với đáp án tham chiếu; ảnh gốc không tự trở thành điểm số.</p>
+        <p>Đối chiếu bài giấy rồi nhập bước còn thiếu. Hệ thống chỉ kiểm tra các bước em đã xác nhận; ảnh gốc không tự trở thành điểm số.</p>
         <label htmlFor="paper-step-text">Một bước giải từ bài viết</label>
         <textarea id="paper-step-text" value={stepText} onChange={(event) => setStepText(event.target.value)}
           rows={4} maxLength={4000} placeholder="Ví dụ: y' = x² - 2x - 3 = (x+1)(x-3)" />
@@ -221,7 +255,7 @@ export function PaperUploadPanel({
         <div className={styles.paperSubmitBanner}>
           <div className={styles.paperSubmitBannerText}>
             <h4>✨ Đã có các bước giải được xác nhận!</h4>
-            <p>Em có thể bấm nộp bài để AI (Gemini) đối chiếu và chấm điểm từng bước giải ngay lập tức.</p>
+            <p>Sau khi nộp, bước thuộc quy tắc đã kiểm chứng có thể được chấm theo rubric. Bước khác chỉ nhận góp ý tạm thời; thiếu đáp án sẽ không có điểm.</p>
           </div>
           <button
             type="button"
@@ -230,10 +264,22 @@ export function PaperUploadPanel({
             disabled={isSubmitting || isReviewing}
           >
             <Sparkles size={16} />
-            {isSubmitting ? "Đang nộp bài..." : isReviewing ? "Đang chấm bằng Gemini..." : "Nộp & Chấm bài bằng AI"}
+            {isSubmitting ? "Đang nộp bài..." : isReviewing ? "Đang kiểm tra bài..." : "Nộp bài & kiểm tra"}
           </button>
         </div>
       ) : null}
-    </> : <p role="status">Chưa có bài viết giấy được tải lên.</p>}
+    </> : <p role="status">Chưa có bài viết giấy được tải lên. Hãy bấm chụp bằng điện thoại hoặc tải tệp ở trên.</p>}
+
+    {showQrModal && (
+      <MobileQrUploadModal
+        attemptId={attemptId}
+        accessToken={accessToken}
+        initialFileCount={files.length}
+        onPaperReceived={() => {
+          loadPaperList(true);
+        }}
+        onClose={() => setShowQrModal(false)}
+      />
+    )}
   </div>;
 }

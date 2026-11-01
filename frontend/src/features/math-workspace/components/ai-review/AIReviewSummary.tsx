@@ -12,9 +12,11 @@ import type {
   AIReviewFilterMode,
   AIReviewSummaryStats,
 } from "../../utils/ai-review-controller";
+import type { AIReviewRead } from "@/lib/api/contracts";
 import styles from "./AIReview.module.css";
 
 interface AIReviewSummaryProps {
+  review: AIReviewRead;
   stats: AIReviewSummaryStats;
   filterMode: AIReviewFilterMode;
   onSetFilter: (mode: AIReviewFilterMode) => void;
@@ -24,6 +26,7 @@ interface AIReviewSummaryProps {
 }
 
 export function AIReviewSummary({
+  review,
   stats,
   filterMode,
   onSetFilter,
@@ -57,7 +60,7 @@ export function AIReviewSummary({
           <CheckCircle2 size={18} color="#148056" />
           <span>Tổng kết đánh giá từng bước</span>
         </h3>
-        <span className={styles.referenceBadge}>Kết quả tham khảo</span>
+        <span className={styles.referenceBadge}>{review.is_final ? "Điểm đã ghi nhận" : "Góp ý tham khảo"}</span>
       </div>
 
       <div className={styles.summaryHeroRow}>
@@ -88,15 +91,19 @@ export function AIReviewSummary({
             />
           </svg>
           <span className={styles.accuracyRingLabel}>
-            {stats.validCount}/{stats.totalSteps}
+            {review.review_source === "UNANSWERED_AI" ? "—" : `${stats.validCount}/${stats.totalSteps}`}
           </span>
         </div>
 
         <div>
           <strong style={{ fontSize: "0.92rem", color: "#113928" }}>
-            {stats.invalidCount === 0 && stats.needsReviewCount === 0
-              ? "Tuyệt vời! Toàn bộ các bước giải đều hợp lý."
-              : `Đã phát hiện ${stats.issueStepIndices.length} bước giải cần kiểm tra hoặc chỉnh sửa.`}
+            {review.is_final
+              ? `${review.review_source === "TEACHER" ? "Điểm giáo viên ghi nhận" : "Điểm theo rubric được duyệt"}: ${Math.round((review.final_score ?? 0) * 100)}%.`
+              : review.review_source === "UNANSWERED_AI"
+                ? "Chưa có đáp án được duyệt. Các góp ý dưới đây không xác định đúng sai và không cho điểm."
+                : stats.invalidCount === 0 && stats.needsReviewCount === 0
+              ? "AI chưa đánh dấu bước nào cần xem lại. Đây vẫn là góp ý tạm thời."
+              : `AI gợi ý kiểm tra lại ${stats.issueStepIndices.length} bước trước khi có điểm chính thức.`}
           </strong>
           <p
             style={{
@@ -119,7 +126,7 @@ export function AIReviewSummary({
           <span className={`${styles.metricValue} ${styles.metricValueValid}`}>
             {stats.validCount}
           </span>
-          <span className={styles.metricLabel}>Bước hợp lý</span>
+          <span className={styles.metricLabel}>{review.is_final ? "Bước hợp lý" : "AI nhận xét hợp lý"}</span>
         </div>
         <div className={styles.metricCard}>
           <span
@@ -127,7 +134,7 @@ export function AIReviewSummary({
           >
             {stats.invalidCount}
           </span>
-          <span className={styles.metricLabel}>Bước cần sửa</span>
+          <span className={styles.metricLabel}>{review.is_final ? "Bước cần sửa" : "AI gợi ý xem lại"}</span>
         </div>
         <div className={styles.metricCard}>
           <span className={`${styles.metricValue} ${styles.metricValueReview}`}>
@@ -164,7 +171,13 @@ export function AIReviewSummary({
         </div>
       )}
 
-      <p className={styles.disclaimerNote}>{stats.disclaimer}</p>
+      <p className={styles.disclaimerNote}>{review.is_final
+        ? review.review_source === "TEACHER"
+          ? "Điểm này do giáo viên ghi nhận. Nhận xét theo từng bước chỉ hiện nếu đã được lưu."
+          : "Điểm này được tính từ rubric đã duyệt và các bước được quy tắc toán học kiểm chứng."
+        : review.review_source === "UNANSWERED_AI"
+          ? "AI chỉ gợi ý điều cần kiểm tra. Giáo viên cần bổ sung hoặc duyệt đáp án trước khi có điểm chính thức."
+          : stats.disclaimer}</p>
 
       <div className={styles.summaryActions}>
         {hasIssues && (

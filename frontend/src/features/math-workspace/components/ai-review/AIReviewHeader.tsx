@@ -5,16 +5,18 @@ import { Sparkles, BookOpen, X, ChevronUp } from "lucide-react";
 import { MathRenderer } from "@/components/ui/MathRenderer";
 import type { ProblemRead } from "../../types";
 import type { AIReviewUIState } from "../../utils/ai-review-controller";
+import type { AIReviewRead } from "@/lib/api/contracts";
 import styles from "./AIReview.module.css";
 
 interface AIReviewHeaderProps {
   uiState: AIReviewUIState;
   confirmedStepCount: number;
   problem: ProblemRead | null;
+  review: AIReviewRead | null;
   onClose: () => void;
 }
 
-function getStatusBadgeMeta(uiState: AIReviewUIState): {
+function getStatusBadgeMeta(uiState: AIReviewUIState, review: AIReviewRead | null): {
   label: string;
   className: string;
 } {
@@ -22,7 +24,7 @@ function getStatusBadgeMeta(uiState: AIReviewUIState): {
     case "REQUESTING":
     case "READY":
       return {
-        label: "Đang đối chiếu với đáp án...",
+        label: "Đang kiểm tra các bước...",
         className: styles.statusPillRequesting,
       };
     case "REVEALING":
@@ -37,7 +39,7 @@ function getStatusBadgeMeta(uiState: AIReviewUIState): {
       };
     case "COMPLETED":
       return {
-        label: "Đã có nhận xét AI",
+        label: review?.is_final ? "Đã có điểm chính thức" : "Đã có góp ý tạm thời",
         className: styles.statusPillCompleted,
       };
     case "ERROR":
@@ -47,7 +49,7 @@ function getStatusBadgeMeta(uiState: AIReviewUIState): {
       };
     default:
       return {
-        label: "Chế độ nhận xét AI",
+        label: "Kiểm tra bài làm",
         className: styles.statusPillRequesting,
       };
   }
@@ -57,10 +59,11 @@ export function AIReviewHeader({
   uiState,
   confirmedStepCount,
   problem,
+  review,
   onClose,
 }: AIReviewHeaderProps) {
   const [showProblem, setShowProblem] = useState(false);
-  const statusMeta = getStatusBadgeMeta(uiState);
+  const statusMeta = getStatusBadgeMeta(uiState, review);
 
   return (
     <>
@@ -72,7 +75,7 @@ export function AIReviewHeader({
           <div className={styles.headerTitleGroup}>
             <div className={styles.headerTitleRow}>
               <h2 className={styles.headerTitle}>
-                Đối chiếu lời giải từng bước cùng AI
+                Kiểm tra lời giải từng bước
               </h2>
               <span className={`${styles.statusPill} ${statusMeta.className}`}>
                 <span className={styles.statusDot} aria-hidden="true" />
@@ -80,7 +83,13 @@ export function AIReviewHeader({
               </span>
             </div>
             <p className={styles.headerSubtitle}>
-              {confirmedStepCount} bước giải đã xác nhận · Nhận xét tham khảo dựa trên đáp án chuẩn
+              {confirmedStepCount} bước giải đã xác nhận · {review?.review_source === "TEACHER"
+                ? "Điểm do giáo viên ghi nhận"
+                : review?.is_final
+                ? "Điểm từ quy tắc toán học và rubric được duyệt"
+                : review?.review_source === "UNANSWERED_AI"
+                  ? "Chưa có đáp án: góp ý sơ bộ, chờ giáo viên duyệt"
+                  : "Nhận xét tham khảo, chưa phải điểm chính thức"}
             </p>
           </div>
         </div>
@@ -102,7 +111,7 @@ export function AIReviewHeader({
             type="button"
             onClick={onClose}
             className={styles.closeReviewBtn}
-            aria-label="Đóng chế độ nhận xét AI"
+            aria-label="Đóng chế độ kiểm tra bài làm"
           >
             <X size={16} />
             <span>Quay lại bài làm</span>

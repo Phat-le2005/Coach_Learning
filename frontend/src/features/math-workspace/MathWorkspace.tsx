@@ -109,15 +109,8 @@ export function MathWorkspace({
   const [ocrError, setOcrError] = useState<string | null>(null);
   const [variationTableEditor, setVariationTableEditor] = useState<{ stepId?: string; initial?: VariationTablePayload } | null>(null);
 
-  const [aiReview, setAIReview] = useState<AIReviewRead | null>(() => {
-    if (typeof window === "undefined") return null;
-    try {
-      const raw = window.sessionStorage.getItem(`edums_ai_review_${attemptId}`);
-      return raw ? JSON.parse(raw) as AIReviewRead : null;
-    } catch {
-      return null;
-    }
-  });
+  // A final score must come from the server, never from editable browser storage.
+  const [aiReview, setAIReview] = useState<AIReviewRead | null>(null);
   const [aiReviewAvailability, setAIReviewAvailability] = useState<AIReviewAvailabilityRead | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isReviewing, setIsReviewing] = useState(false);
@@ -164,9 +157,6 @@ export function MathWorkspace({
           setAIReviewAvailability(value);
           if (value.cached_review) {
             setAIReview(value.cached_review);
-            try {
-              window.sessionStorage.setItem(`edums_ai_review_${attemptId}`, JSON.stringify(value.cached_review));
-            } catch {}
           }
         }
       })
@@ -516,23 +506,27 @@ export function MathWorkspace({
   }, [attempt, apiClient, accessToken, attemptId]);
 
   const executeAIReview = useCallback(async (targetAttempt: SolutionAttemptRead) => {
-    if (isReviewing || targetAttempt.status !== "SUBMITTED") return;
+    if (isReviewing || !["SUBMITTED", "EVALUATED"].includes(targetAttempt.status)) return;
     setInstantReviewOpen(false);
     setIsReviewWorkspaceOpen(true);
     setIsReviewing(true);
     setGradingError(null);
     try {
       const result = await apiClient.reviewMathAttempt(accessToken, attemptId);
-      if (result.attempt_id !== attemptId || result.step_grades.length !== targetAttempt.steps?.length) {
+      if (result.attempt_id !== attemptId ||
+          (!result.is_final && result.step_grades.length !== targetAttempt.steps?.length)) {
         throw new Error("Phản hồi AI không khớp bài làm đã nộp.");
       }
       setAIReview(result);
-      try {
-        window.sessionStorage.setItem(`edums_ai_review_${attemptId}`, JSON.stringify(result));
-      } catch {}
+      if (result.is_final) {
+        const refreshed = await apiClient.getMathAttempt(accessToken, attemptId).catch(() => null);
+        if (refreshed) setAttempt(refreshed);
+      }
     } catch (error: unknown) {
       const code = error instanceof ApiResponseError ? error.code : "";
-      const message = code === "GRADING_ANSWER_REQUIRED"
+      const message = code === "GRADING_ASSIGNMENT_NOT_SUBMITTED"
+        ? "Hãy nộp toàn bộ bài giáo viên giao trước khi kiểm tra lời giải này."
+        : code === "GRADING_ANSWER_REQUIRED"
         ? "Câu hỏi này chưa có đáp án được duyệt; hiện chưa thể chấm bằng AI."
         : code === "REAL_AI_PROVIDER_REQUIRED" || code === "AI_CONFIGURATION_ERROR"
           ? "Gemini chưa được cấu hình trên máy chủ. Hãy liên hệ người quản trị."
@@ -555,7 +549,7 @@ export function MathWorkspace({
 
   const handleOpenReviewWorkspace = useCallback(() => {
     if (aiReview) {
-      setInstantReviewOpen(false);
+      setInstantReviewOpen(true);
       setIsReviewWorkspaceOpen(true);
     } else if (attempt) {
       void executeAIReview(attempt);
@@ -609,7 +603,12 @@ export function MathWorkspace({
       setIsSubmitting(false);
     }
 
-    if (autoReview && successfullySubmitted && problem?.question_type === "OPEN_RESPONSE") {
+    const availability = successfullySubmitted && problem?.question_type === "OPEN_RESPONSE"
+      ? await apiClient.getMathAIReviewAvailability(accessToken, attemptId).catch(() => null)
+      : null;
+    if (availability) setAIReviewAvailability(availability);
+    if (autoReview && successfullySubmitted && problem?.question_type === "OPEN_RESPONSE"
+        && availability?.available !== false) {
       void executeAIReview(successfullySubmitted);
     }
   }, [attempt, isSubmitting, pageOcrReview, syncStatus, authExpired, pagesMap,
@@ -942,6 +941,9 @@ export function MathWorkspace({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleUndo, handleRedo, handleSelectPage, currentPageIndex, pageCount]);
 
+  const isReadOnlyAttempt = Boolean(problem?.is_read_only ||
+    attempt && ["SUBMITTED", "EVALUATED", "ABANDONED"].includes(attempt.status));
+
   return (
     <div className={styles.workspaceContainer}>
       {/* Top Header Bar */}
@@ -956,12 +958,12 @@ export function MathWorkspace({
             onResolveConflict={handleResolveConflict}
             onExportDraft={handleExportDraft}
           />
-          {attempt && !problem?.is_read_only ? (
+          {attempt && (!problem?.is_read_only || ["SUBMITTED", "EVALUATED"].includes(attempt.status)) ? (
             <button
               type="button"
               className={styles.headerGradeButton}
               onClick={() => {
-                if (attempt.status === "SUBMITTED") {
+                if (["SUBMITTED", "EVALUATED"].includes(attempt.status)) {
                   if (aiReview) {
                     handleOpenReviewWorkspace();
                   } else {
@@ -971,20 +973,20 @@ export function MathWorkspace({
                   void handleSubmitSolution();
                 }
               }}
-              disabled={isSubmitting || isReviewing || (attempt.status !== "SUBMITTED" && !attempt.steps?.length)}
-              title={attempt.status === "SUBMITTED" ? "Chấm bài bằng AI" : "Nộp bài và chấm tự động bằng AI"}
+              disabled={isSubmitting || isReviewing || (!isReadOnlyAttempt && !attempt.steps?.length)}
+              title={isReadOnlyAttempt ? "Xem kết quả kiểm tra bài làm" : "Nộp bài và kiểm tra các bước giải"}
             >
               <Sparkles size={14} />
               <span>
                 {isSubmitting
                   ? "Đang nộp bài..."
                   : isReviewing
-                    ? "Đang chấm bằng Gemini..."
-                    : attempt.status === "SUBMITTED"
+                    ? "Đang kiểm tra bài..."
+                    : isReadOnlyAttempt
                       ? aiReview
-                        ? "Xem lại điểm AI"
-                        : "Chấm bài bằng AI"
-                      : "Nộp & Chấm bài"}
+                        ? "Xem kết quả"
+                        : "Kiểm tra bài làm"
+                      : "Nộp bài & kiểm tra"}
               </span>
             </button>
           ) : null}
@@ -997,7 +999,7 @@ export function MathWorkspace({
           onAddPage={handleAddPage}
           onDeleteCurrentPage={handleDeleteCurrentPage}
           canDeleteCurrentPage={canDeleteCurrentPage}
-          isReadOnly={problem?.is_read_only}
+          isReadOnly={isReadOnlyAttempt}
         />
       </header>
 
@@ -1013,23 +1015,23 @@ export function MathWorkspace({
         onSelectHighlighterWidth={setHighlighterWidth}
         paperGrid={paperGrid}
         onSelectPaperGrid={setPaperGrid}
-        canUndo={!problem?.is_read_only && currentPageMemory.past.length > 0}
+        canUndo={!isReadOnlyAttempt && currentPageMemory.past.length > 0}
         onUndo={handleUndo}
-        canRedo={!problem?.is_read_only && currentPageMemory.future.length > 0}
+        canRedo={!isReadOnlyAttempt && currentPageMemory.future.length > 0}
         onRedo={handleRedo}
         onClearPage={handleClearPage}
         zoomLevel={zoomLevel}
         onZoomIn={() => setZoomLevel((z) => Math.min(2.0, z + 0.1))}
         onZoomOut={() => setZoomLevel((z) => Math.max(0.6, z - 0.1))}
         onResetZoom={() => setZoomLevel(1.0)}
-        onTriggerOCR={paperMode || attempt?.status === "SUBMITTED" || problem?.is_read_only ? undefined : handleTriggerOCR}
-        onOpenVariationTable={attempt && ["DRAFT", "IN_PROGRESS"].includes(attempt.status) && !pageOcrReview && !problem?.is_read_only
+        onTriggerOCR={paperMode || isReadOnlyAttempt ? undefined : handleTriggerOCR}
+        onOpenVariationTable={attempt && ["DRAFT", "IN_PROGRESS"].includes(attempt.status) && !pageOcrReview && !isReadOnlyAttempt
           ? () => setVariationTableEditor({}) : undefined}
         onTogglePaper={() => setPaperMode((current) => !current)}
         paperMode={paperMode}
         isRecognizingOCR={isRecognizingOCR}
         strokeCount={getOcrPenStrokes(currentPageMemory.strokes).length}
-        isReadOnly={problem?.is_read_only}
+        isReadOnly={isReadOnlyAttempt}
       />
 
       {ocrError && !pageOcrReview ? (
@@ -1067,7 +1069,7 @@ export function MathWorkspace({
           aria-label="Không gian giấy A4 viết tay"
         >
           {paperMode ? <PaperUploadPanel attemptId={attemptId} accessToken={accessToken}
-            apiClient={apiClient} isReadOnly={Boolean(problem?.is_read_only || attempt?.status === "SUBMITTED")}
+            apiClient={apiClient} isReadOnly={isReadOnlyAttempt}
             onConfirmStep={(content, actionId) => handleConfirmStep("EXPLANATION", content.latex, content.explanation, actionId)}
             onSubmitSolution={handleSubmitSolution}
             isSubmitting={isSubmitting}
@@ -1081,7 +1083,7 @@ export function MathWorkspace({
             highlighterWidth={highlighterWidth}
             paperGrid={paperGrid}
             zoomLevel={zoomLevel}
-            isReadOnly={attempt?.status === "SUBMITTED" || problem?.is_read_only}
+            isReadOnly={isReadOnlyAttempt}
           />}
         </section>
       </main>

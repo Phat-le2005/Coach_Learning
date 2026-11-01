@@ -80,6 +80,10 @@ export function AIReviewWorkspace({
     createInitialAIReviewState,
   );
 
+  useEffect(() => {
+    if (aiReview?.is_final) setIsCeremonyScanning(false);
+  }, [aiReview?.is_final]);
+
   const stepGrades = useMemo(() => aiReview?.step_grades ?? [], [aiReview]);
   const stepIndices = useMemo(
     () => stepGrades.map((g) => g.step_index),
@@ -132,7 +136,7 @@ export function AIReviewWorkspace({
           type: "RECEIVE_DATA",
           stepIndices: indices,
           reducedMotion: false,
-          instantComplete: instantOpen,
+          instantComplete: instantOpen || aiReview.is_final,
         });
       }
     }
@@ -264,7 +268,7 @@ export function AIReviewWorkspace({
 
   const liveAnnouncement = useMemo(() => {
     if (isScanningPhase) {
-      return "Gemini đang quét và đối chiếu lời giải với đáp án tham chiếu.";
+      return "Đang kiểm tra các bước giải đã xác nhận.";
     }
     if (controllerState.uiState === "COMPLETED") {
       return `Đã hoàn tất đối chiếu ${summaryStats.totalSteps} bước giải: ${summaryStats.validCount} bước hợp lý, ${summaryStats.invalidCount} bước cần sửa.`;
@@ -291,7 +295,7 @@ export function AIReviewWorkspace({
       className={styles.reviewWorkspaceOverlay}
       role="dialog"
       aria-modal="true"
-      aria-label="Không gian đối chiếu lời giải từng bước cùng AI"
+      aria-label="Không gian kiểm tra lời giải từng bước"
     >
       <div className={styles.srOnly} aria-live="polite" aria-atomic="true">
         {liveAnnouncement}
@@ -301,6 +305,7 @@ export function AIReviewWorkspace({
         uiState={effectiveHeaderState}
         confirmedStepCount={confirmedCount}
         problem={problem}
+        review={aiReview}
         onClose={onClose}
       />
 
@@ -315,7 +320,7 @@ export function AIReviewWorkspace({
           }`}
         >
           <Sparkles size={14} />
-          <span>Nhận xét AI ({confirmedCount})</span>
+          <span>{aiReview?.is_final ? "Kết quả chấm" : "Góp ý từng bước"} ({confirmedCount})</span>
         </button>
         <button
           type="button"
@@ -446,6 +451,8 @@ export function AIReviewWorkspace({
                         <AIReviewStepCard
                           key={`${ceremonyNonce}-${grade.step_index}`}
                           grade={grade}
+                          showScore={Boolean(aiReview?.is_final)}
+                          reviewSource={aiReview?.review_source ?? "ANSWER_GROUNDED_AI"}
                           step={stepData}
                           cardState={cardState}
                           isSelected={
@@ -469,8 +476,9 @@ export function AIReviewWorkspace({
                     })}
                   </div>
 
-                  {controllerState.uiState === "COMPLETED" && (
+                  {controllerState.uiState === "COMPLETED" && aiReview && (
                     <AIReviewSummary
+                      review={aiReview}
                       stats={summaryStats}
                       filterMode={controllerState.filterMode}
                       onSetFilter={(mode: AIReviewFilterMode) =>

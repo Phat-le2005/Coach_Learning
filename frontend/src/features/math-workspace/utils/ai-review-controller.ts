@@ -24,6 +24,7 @@ export interface StepGradeItem {
   score: number | null;
   confidence: number;
   feedback: string;
+  error_nature?: "ARITHMETIC_SLIP" | "CONSEQUENTIAL" | "CONCEPTUAL" | null;
 }
 
 export interface AIReviewControllerState {
@@ -307,7 +308,10 @@ export interface StepVerdictMeta {
   ariaLabel: string;
 }
 
-export function formatStepVerdictMeta(verdict: StepVerdict): StepVerdictMeta {
+export function formatStepVerdictMeta(
+  verdict: StepVerdict,
+  errorNature?: "ARITHMETIC_SLIP" | "CONSEQUENTIAL" | "CONCEPTUAL" | null,
+): StepVerdictMeta {
   switch (verdict) {
     case "VALID":
       return {
@@ -318,6 +322,24 @@ export function formatStepVerdictMeta(verdict: StepVerdict): StepVerdictMeta {
         ariaLabel: "Đánh giá bước giải: Hợp lý",
       };
     case "INVALID":
+      if (errorNature === "ARITHMETIC_SLIP") {
+        return {
+          verdict: "INVALID",
+          label: "Sơ suất số học",
+          badgeText: "Sơ suất tính toán",
+          tone: "invalid",
+          ariaLabel: "Đánh giá bước giải: Sơ suất tính toán (bảo lưu điểm)",
+        };
+      }
+      if (errorNature === "CONSEQUENTIAL") {
+        return {
+          verdict: "INVALID",
+          label: "Bảo lưu phương pháp",
+          badgeText: "Bảo lưu phương pháp",
+          tone: "invalid",
+          ariaLabel: "Đánh giá bước giải: Bảo lưu điểm phương pháp 75%",
+        };
+      }
       return {
         verdict: "INVALID",
         label: "Cần sửa",
