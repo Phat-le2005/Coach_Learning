@@ -5,12 +5,17 @@ import { resolve } from "node:path";
 import { PerspectiveCamera, OrthographicCamera, Vector3 } from "three";
 import { GraphSamplingQueue, type SamplingInput, type SamplingRequest, type SamplingResponse } from "../src/features/math-canvas/sampling-protocol.js";
 import { fitGraphCamera } from "../src/features/math-canvas/fit-camera.js";
+import { fitCameraPreset, type GraphCameraPreset } from "../src/features/math-canvas/camera-presets.js";
+import { frameCurve } from "../src/features/math-canvas/curve-framing.js";
+import { analyzeXPolynomialEquation, sampleXPolynomialEquation } from "../src/features/math-canvas/univariate-equation.js";
+import { insertMathSnippet } from "../src/features/math-canvas/formula-editing.js";
+import { createCoefficientExploration } from "../src/features/math-canvas/coefficient-exploration.js";
 import { createExplorationDraft } from "../src/features/math-canvas/exploration.js";
 import { parseMathExpression, sampleGraph, sampleImplicit, DEFAULT_GRAPH } from "../src/features/math-canvas/expression.js";
 import { sampleImplicitGeometry } from "../src/features/math-canvas/geometry.js";
 import { selectLassoStrokes } from "../src/features/math-workspace/utils/lasso.js";
 import { mathCanvasProxyPath } from "../src/lib/api/math-canvas-path.js";
-import { describeGraphView, isSpatialView, resolveGraphView, sampleViewPoint } from "../src/features/math-canvas/presentation.js";
+import { describeGraphView, isSpatialView, resolveGraphExpression, resolveGraphView, sampleViewPoint } from "../src/features/math-canvas/presentation.js";
 import type { InkPoint, InkStroke } from "../src/features/math-workspace/types.js";
 
 test("recognizes Unicode and LaTeX paraboloids with the same geometry", () => {
@@ -38,6 +43,26 @@ test("nested fractions, sqrt, implicit multiplication, unary minus and right-ass
   assert.equal(sampleGraph(parseMathExpression("y=-x^2"), DEFAULT_GRAPH, 2), -4);
   assert.equal(sampleGraph(parseMathExpression("y=2^3^2"), DEFAULT_GRAPH, 0), 512);
 });
+
+test("conventional sine/cosine powers from OCR mean powers of the function value", () => {
+  for (const source of ["y=sin²(x)+cos²(x)", "y=sin^2(x)+cos^2(x)", String.raw`y = \sin ^ { 2 } ( x ) + \cos ^ { 2 } ( x )`]) {
+    const model = parseMathExpression(source);
+    for (const x of [-2, -.3, 0, .7, Math.PI / 2]) assert.ok(Math.abs(sampleGraph(model, DEFAULT_GRAPH, x) - 1) < 1e-12, source);
+    const restored = parseMathExpression(model.expression);
+    assert.deepEqual(restored.node, model.node, "canonical output must restore the same mathematical AST");
+  }
+  assert.ok(Math.abs(sampleGraph(parseMathExpression("y=2cos²(3*x)+sin³(x)"), DEFAULT_GRAPH, .4) - (2*Math.cos(1.2)**2+Math.sin(.4)**3))<1e-12);
+  assert.ok(Math.abs(sampleGraph(parseMathExpression("y=cos²(sin³(x))"), DEFAULT_GRAPH, .4) - Math.cos(Math.sin(.4)**3)**2)<1e-12);
+  assert.ok(Math.abs(sampleGraph(parseMathExpression("y=sin²(x)^3"), DEFAULT_GRAPH, .4)-Math.sin(.4)**6)<1e-12);
+  assert.ok(Math.abs(sampleGraph(parseMathExpression("y=-cos²(x)"), DEFAULT_GRAPH, .4)+Math.cos(.4)**2)<1e-12);
+  assert.ok(Math.abs(sampleGraph(parseMathExpression("y=cos²(x)sin²(x)"), DEFAULT_GRAPH, .4)-Math.cos(.4)**2*Math.sin(.4)**2)<1e-12);
+});
+
+test("function powers keep undefined arguments undefined and reject ambiguous inverse notation", () => {
+  assert.ok(Number.isNaN(sampleGraph(parseMathExpression("y=cos²(1/x)"), DEFAULT_GRAPH, 0)));
+  for (const source of ["y=sin^-1(x)", String.raw`y=\cos^{-1}(x)`, "y=cos²x", "y=cos²(x", "y=sin^a(x)", "y=sin²(window.alert(x))"]) assert.throws(()=>parseMathExpression(source),source);
+  assert.ok(Math.abs(sampleGraph(parseMathExpression("y=(sin(x))^(-1)"),DEFAULT_GRAPH,.4)-1/Math.sin(.4))<1e-12);
+});
 test("undefined math stays undefined rather than becoming plausible surface values", () => {
   assert.ok(Number.isNaN(sampleGraph(parseMathExpression("y=1/x"), DEFAULT_GRAPH, 0)));
   assert.ok(Number.isNaN(sampleGraph(parseMathExpression("y=sqrt(x)"), DEFAULT_GRAPH, -1)));
@@ -58,6 +83,65 @@ test("implicit equations retain both sides, classify coordinates and discover pa
   assert.equal(parseMathExpression("x=2").kind, "implicit");
   assert.equal(parseMathExpression("sin(x)-(x)=2y").expression, "sin(x)-(x)=2*y");
   assert.throws(() => parseMathExpression("2=3"));
+});
+
+test("a reversed y equation retains its vertex outside the contour box in both camera modes", () => {
+  const relation = parseMathExpression(String.raw`x^{2}+2x-3=y`);
+  const original = structuredClone(relation);
+  const explicit = parseMathExpression("y=x^2+2x-3");
+  assert.equal(resolveGraphExpression(relation).kind, "explicit");
+  for (const view_mode of ["2D", "3D"] as const) {
+    const settings = { ...DEFAULT_GRAPH, view_mode };
+    assert.equal(resolveGraphView(relation, settings), view_mode === "2D" ? "CURVE_2D" : "CURVE_3D");
+    assert.deepEqual(sampleViewPoint(relation, settings, -1), [-1, -4, 0]);
+    for (let x = -3; x <= 3; x += .125) {
+      const point = sampleViewPoint(relation, settings, x);
+      assert.deepEqual(point, sampleViewPoint(explicit, settings, x));
+      assert.equal(sampleImplicit(relation, settings, point[0], point[1]), 0);
+    }
+  }
+  assert.deepEqual(relation, original, "rendering must preserve the canonical relation and AST for saving");
+});
+
+test("reversed function rendering preserves parameters and undefined values without reinterpreting implicit relations", () => {
+  const settings = { ...DEFAULT_GRAPH, parameters: { a: 2 } };
+  assert.deepEqual(sampleViewPoint(parseMathExpression("a*x^2=y"), settings, -2), [-2, 8, 0]);
+  assert.ok(Number.isNaN(sampleViewPoint(parseMathExpression("1/x=y"), settings, 0)[1]));
+  for (const formula of ["x^2+y^2=4", "x+y=y", "x*y=y", "x^2=y^2", "x^2+z=y", "x^2+2x-3=0"]) {
+    const model = parseMathExpression(formula);
+    assert.strictEqual(resolveGraphExpression(model), model, formula);
+  }
+});
+
+test("fixed polynomial coefficients become editable parameters without changing the initial curve or view", () => {
+  for (const formula of ["x^{2}+2x-3=y", "y=x^2+2x-3", "y=(x+1)^2-4"]) {
+    const model = parseMathExpression(formula);
+    const settings = { ...DEFAULT_GRAPH, view_mode: "3D" as const };
+    const original = structuredClone({ model, settings });
+    const draft = createCoefficientExploration(model, settings);
+    assert.ok(draft, formula);
+    assert.equal(draft.model.expression, "y=a*x^2+b*x+c");
+    assert.deepEqual(draft.settings.parameters, { a: 1, b: 2, c: -3 });
+    assert.equal(draft.settings.view_mode, "3D");
+    for (let x = -3; x <= 3; x += .125) assert.deepEqual(sampleViewPoint(draft.model, draft.settings, x), sampleViewPoint(model, settings, x));
+    const changed = { ...draft.settings, parameters: { ...draft.settings.parameters, a: -1 } };
+    assert.equal(sampleGraph(draft.model, changed, 2), -3);
+    draft.settings.parameters.b = 5;
+    assert.deepEqual({ model, settings }, original, "the original relation and settings must remain independent");
+  }
+});
+
+test("coefficient controls retain transforms and handle linear, constant and unsupported forms conservatively", () => {
+  const settings = { ...DEFAULT_GRAPH, scale: -2, offset: 1, shift_x: .5 };
+  for (const [formula, parameters] of [["y=2x-3", { a: 2, b: -3 }], ["y=4", { a: 4 }], ["y=0", { a: 0 }], ["y=-x^2", { a: -1, b: 0, c: 0 }]] as const) {
+    const model = parseMathExpression(formula), draft = createCoefficientExploration(model, settings);
+    assert.ok(draft, formula);
+    assert.deepEqual(draft.settings.parameters, parameters);
+    for (const x of [-2, 0, 1, 3]) assert.equal(sampleGraph(draft.model, draft.settings, x), sampleGraph(model, settings, x));
+  }
+  for (const formula of ["y=sin(x)", "y=1/x", "y=x^3", "y=6x^2", "y=a*x^2", "x^2+y^2=4", "x^2=0", "x+y=y", "z=x^2+y^2"]) {
+    assert.equal(createCoefficientExploration(parseMathExpression(formula), DEFAULT_GRAPH), null, formula);
+  }
 });
 
 test("sampled sphere vertices satisfy the equation and changing radius changes geometry", () => {
@@ -244,6 +328,76 @@ test("planar camera fitting preserves coordinate scale and makes a translated cu
   }
 });
 
+test("a cubic's long tail does not shrink its turning points into a line in the default view", () => {
+  const model = parseMathExpression("y=x^3-3*x^2+2");
+  const points = Array.from({ length: 901 }, (_, i) => sampleViewPoint(model, DEFAULT_GRAPH, -3 + i / 150));
+  const original = structuredClone(points);
+  const full = { min: [-3, -52, 0] as [number, number, number], max: [3, 2, 0] as [number, number, number] };
+  const focused = frameCurve([points], full);
+  assert.equal(focused.focused, true);
+  assert.deepEqual(focused.bounds, { min: [-3,-3,0], max: [3,3,0] });
+  assert.deepEqual(points, original, "focusing must retain the full geometry and every mathematical coordinate");
+  for (const aspect of [.7, 2.1]) {
+    const fitted = fitGraphCamera(focused.bounds, { position: [11,9,13], target: [0,0,0] }, { spatial: true, aspect, halfHeight: 4, planarCurve: true });
+    assert.ok(fitted);
+    const camera = new PerspectiveCamera(42, aspect, .1, 500);
+    camera.position.fromArray(fitted.position); camera.lookAt(new Vector3(...fitted.target)); camera.updateMatrixWorld();
+    const maximum = new Vector3(0,2,0).project(camera), minimum = new Vector3(2,-2,0).project(camera);
+    for (const point of [maximum, minimum]) assert.ok(Math.abs(point.x) < 1 && Math.abs(point.y) < 1);
+    assert.ok(maximum.distanceTo(minimum) > .25, "both turns must remain visually separated, even in a narrow viewport");
+    const whole = fitGraphCamera(full, { position: [11,9,13], target: [0,0,0] }, { spatial: true, aspect, halfHeight: 4 });
+    assert.ok(whole, "the complete sampled curve must still have an explicit full view");
+  }
+});
+
+test("curve focusing keeps shifted features and the parabola vertex, without bridging gaps", () => {
+  for (const offset of [0, 20]) {
+    const points = Array.from({ length: 901 }, (_, i) => { const x = -3 + i / 150; return [x, x ** 3 - 3 * x ** 2 + 2 + offset, 0] as [number, number, number]; });
+    const focused = frameCurve([points], { min: [-3,-52+offset,0], max: [3,2+offset,0] });
+    assert.ok(focused.focused);
+    assert.ok(focused.bounds.min[1] <= -2+offset && focused.bounds.max[1] >= 2+offset);
+    assert.ok(focused.bounds.max[1] - focused.bounds.min[1] < 15);
+  }
+  const parabola = Array.from({ length: 901 }, (_, i) => { const x = -3 + i / 150; return [x, x*x+2*x-3, 0] as [number, number, number]; });
+  const focus = frameCurve([parabola], { min: [-3,-4,0], max: [3,12,0] });
+  assert.ok(focus.bounds.min[1] <= -4 && focus.bounds.max[1] >= 0);
+  const compact = { min: [-3,-1,0] as [number, number, number], max: [3,1,0] as [number, number, number] };
+  assert.deepEqual(frameCurve([], compact), { bounds: compact, focused: false });
+  const disconnected: [number,number,number][][] = [[[-3,90,0],[-1,80,0]], [[1,120,0],[3,110,0]]];
+  assert.equal(frameCurve(disconnected, { min: [-3,80,0], max: [3,120,0] }).focused, false, "do not invent central features across a discontinuity");
+});
+
+test("fit restores a readable planar curve angle when the current 3D camera is edge-on", () => {
+  const bounds = { min: [-3,-3,0] as [number,number,number], max: [3,3,0] as [number,number,number] };
+  const fitted = fitGraphCamera(bounds, { position: [16,0,0], target: [0,0,0] }, { spatial: true, aspect: 2, halfHeight: 4, planarCurve: true });
+  assert.ok(fitted);
+  const camera = new PerspectiveCamera(42, 2, .1, 500); camera.position.fromArray(fitted.position); camera.lookAt(new Vector3(...fitted.target)); camera.updateMatrixWorld();
+  const left = new Vector3(-3,0,0).project(camera), right = new Vector3(3,0,0).project(camera);
+  assert.ok(Math.abs(right.x - left.x) > .5, "fitting must not preserve an edge-on angle that collapses the curve");
+});
+
+test("quick camera planes respect the surface axis mapping and contain translated geometry", () => {
+  const bounds = { min: [4,-2,-6] as [number,number,number], max: [10,16,0] as [number,number,number] };
+  for (const dimension of ["2D", "3D"] as const) for (const aspect of [.65, 1.8]) {
+    for (const preset of ["PERSPECTIVE", "OXY", "OXZ", "OYZ"] as GraphCameraPreset[]) {
+      const saved = fitCameraPreset(preset, bounds, dimension, aspect);
+      assert.ok(saved);
+      assert.deepEqual(saved.target, [7,7,-3]);
+      const direction = new Vector3(...saved.position).sub(new Vector3(...saved.target)).normalize();
+      if (preset === "OYZ") assert.ok(direction.x > .999);
+      if (preset === "OXY") assert.ok((dimension === "3D" ? direction.y : direction.z) > .999);
+      if (preset === "OXZ") assert.ok((dimension === "3D" ? direction.z : direction.y) > .999);
+      const camera = new PerspectiveCamera(42, aspect, .1, 500);
+      camera.position.fromArray(saved.position); camera.lookAt(new Vector3(...saved.target)); camera.updateMatrixWorld();
+      for (const x of [4,10]) for (const y of [-2,16]) for (const z of [-6,0]) {
+        const point = new Vector3(x,y,z).project(camera);
+        assert.ok(Math.abs(point.x) <= 1 && Math.abs(point.y) <= 1 && Math.abs(point.z) <= 1);
+      }
+    }
+  }
+  assert.equal(fitCameraPreset("OXY", bounds, "3D", 0), null);
+});
+
 test("resuming exploration retains the equation and current view without mutating saved values", () => {
   const settings = { ...DEFAULT_GRAPH, parameters: { r: 2 }, view_mode: "2D" as const, slice_y: 1 };
   const camera = { position: [0,0,16] as [number,number,number], target: [0,0,0] as [number,number,number], zoom: 1.5 };
@@ -251,4 +405,61 @@ test("resuming exploration retains the equation and current view without mutatin
   assert.equal(draft.source, "x^2+y^2+z^2=r^2"); assert.equal(draft.settings.slice_y, 1); assert.equal(draft.camera.zoom, 1.5);
   draft.settings.parameters.r = 3; draft.camera.position[0] = 4;
   assert.equal(settings.parameters.r, 2); assert.equal(camera.position[0], 0);
+});
+
+test("a one-variable quadratic shows its actual roots and an explicitly chosen related function", () => {
+  const model = parseMathExpression("x^{2}+2x-3=0");
+  const result = analyzeXPolynomialEquation(model, {});
+  assert.ok(result);
+  assert.equal(result.degree, 2);
+  assert.deepEqual(result.roots, [-3, 1]);
+  assert.equal(result.solution, "FINITE");
+  assert.equal(model.kind, "implicit");
+  const related = parseMathExpression(result.relatedFunction);
+  assert.equal(related.kind, "explicit");
+  for (const root of result.roots) assert.equal(sampleGraph(related, DEFAULT_GRAPH, root), 0);
+  const nonzeroRhs = analyzeXPolynomialEquation(parseMathExpression("x²=4"), {});
+  assert.ok(nonzeroRhs);
+  assert.deepEqual(nonzeroRhs.roots, [-2, 2]);
+  assert.equal(sampleGraph(parseMathExpression(nonzeroRhs.relatedFunction), DEFAULT_GRAPH, 0), -4);
+});
+
+test("double roots, no-real-root equations and identities do not depend on sign-change sampling", () => {
+  const repeated = analyzeXPolynomialEquation(parseMathExpression("(x-1)^2=0"), {});
+  assert.ok(repeated);
+  assert.deepEqual(repeated.roots, [1]);
+  assert.deepEqual(sampleXPolynomialEquation(repeated, 3).positions, [1,-3,0,1,3,0]);
+  assert.equal(analyzeXPolynomialEquation(parseMathExpression("x²+1=0"), {})?.solution, "NO_REAL");
+  assert.equal(analyzeXPolynomialEquation(parseMathExpression("x-x=0"), {})?.solution, "ALL_REAL");
+  assert.equal(analyzeXPolynomialEquation(parseMathExpression("x-x=1"), {})?.solution, "NO_REAL");
+  assert.deepEqual(sampleXPolynomialEquation(repeated, .5).positions, []);
+});
+
+test("quadratic parameter degeneracy and cancellation preserve real polynomial semantics", () => {
+  const model = parseMathExpression("a*x²+b*x+c=0");
+  assert.deepEqual(analyzeXPolynomialEquation(model, {a:0,b:2,c:-3})?.roots, [1.5]);
+  assert.equal(analyzeXPolynomialEquation(model, {a:0,b:0,c:3})?.solution, "NO_REAL");
+  assert.equal(analyzeXPolynomialEquation(model, {a:0,b:0,c:0})?.solution, "ALL_REAL");
+  const large = analyzeXPolynomialEquation(parseMathExpression("x²+1000000*x+1=0"), {});
+  assert.ok(large);
+  assert.ok(Math.abs(large.roots[0] * large.roots[1] - 1) < 1e-10);
+});
+
+test("analytic root annotations reject poles, higher degrees and two-coordinate relations", () => {
+  for (const source of ["sin(x)=0", "x^3=0", "1/(x-1)=0", "x²+y²=1", "z=x²", "y=x²", "x/a=0"]) {
+    assert.equal(analyzeXPolynomialEquation(parseMathExpression(source), {a:0}), null, source);
+  }
+});
+
+test("formula keys preserve selected expressions, replace constants and keep the caret inside functions", () => {
+  const squared = insertMathSnippet("y=x+1", 2, 5, "", "^2", "x");
+  assert.ok(squared);
+  assert.equal(sampleGraph(parseMathExpression(squared.text), DEFAULT_GRAPH, 2), 9);
+  assert.equal(squared.text, "y=(x+1)^2");
+  assert.equal(insertMathSnippet("y=x", 2, 3, "pi", "", "")?.text, "y=pi");
+  const sine = insertMathSnippet("y=", 2, 2, "sin(", ")", "x");
+  assert.ok(sine);
+  assert.equal(sine.text.slice(sine.selectionStart, sine.selectionEnd), "x");
+  assert.equal(sine.text, "y=sin(x)");
+  assert.equal(insertMathSnippet("x".repeat(500), 500, 500, "pi", "", ""), null);
 });

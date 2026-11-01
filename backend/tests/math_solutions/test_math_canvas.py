@@ -160,7 +160,7 @@ def test_save_and_teacher_review_restore_spatial_curve_without_rewriting_formula
 def test_legacy_graph_hash_remains_compatible_with_default_presentation():
     from app.math_canvas.service import fingerprint,spec_hash
     spec=GraphSpec(expression="z=x^2+y^2",settings={"parameters":{}})
-    legacy=spec.settings.model_dump(mode="json",exclude={"view_mode","slice_y","scene","lab"})
+    legacy=spec.settings.model_dump(mode="json",exclude={"view_mode","slice_y","scene_depth","scene_surface","scene","lab"})
     assert spec_hash(spec)==fingerprint({"expression":spec.expression,"settings":legacy})
     changed=spec.model_copy(update={"settings":spec.settings.model_copy(update={"view_mode":"2D","slice_y":1})})
     assert spec_hash(changed)!=spec_hash(spec)
@@ -244,20 +244,43 @@ def test_scenes_reject_unsafe_ambiguous_or_unbounded_inputs(expressions):
 
 
 def test_scene_shared_parameters_and_legacy_transforms_are_not_silently_accepted():
-    for settings in [{"parameters": {}}, {"parameters": {"a": 2}, "scale": 2}, {"parameters": {"a": 2}, "view_mode": "3D"}]:
+    for settings in [{"parameters": {}}, {"parameters": {"a": 2}, "scale": 2}, {"parameters": {"a": 2}, "view_mode": "EXTRUDED"}]:
         with pytest.raises(ValidationError):
             GraphSpec(expression="y=0", settings={**settings, "scene": graph_scene(["y>=a*x^2"])})
 
 
-def test_scene_snapshot_replay_and_teacher_restore_all_rows(db_session, canvas_case):
+@pytest.mark.parametrize("mode,depth,surface", [("2D", 0, False), ("3D", 0, False), ("3D", 1.5, False), ("3D", 3, True)])
+def test_scene_snapshot_replay_and_teacher_restore_all_rows(db_session, canvas_case, mode, depth, surface):
     case = canvas_case
     payload = SnapshotCreate(**{**case.payload.model_dump(), "expression": "y=0", "settings": {
-        "parameters": {"a": 2}, "scene": graph_scene(["f(x)=a*x^2", "y>=f(x)", "y<=3"]), "view_mode": "2D"}})
+        "parameters": {"a": 2}, "scene": graph_scene(["f(x)=a*x^2", "y>=f(x)", "y<=3"]), "view_mode": mode, "scene_depth": depth, "scene_surface": surface},
+        "camera": {"position": [4, 2, 14], "target": [0, 0, 0], "zoom": 1} if mode == "3D" else case.payload.camera.model_dump()})
     service = MathCanvasService(db_session)
     saved = service.save(case.owner.id, case.aid, payload)
     assert service.save(case.owner.id, case.aid, payload).id == saved.id
     restored = service.list_teacher(case.teacher.id)[0]
     assert restored.settings.scene.model_dump() == payload.settings.scene.model_dump()
     assert restored.settings.parameters == {"a": 2}
+    assert restored.settings.view_mode == mode and restored.camera == payload.camera
+    assert restored.settings.scene_depth == depth
+    assert restored.settings.scene_surface == surface
     with pytest.raises(ApplicationError):
         service.list_student(case.outsider.id, case.aid)
+
+
+@pytest.mark.parametrize("depth", [-1, 11, float("inf"), float("nan")])
+def test_scene_depth_is_bounded(depth):
+    with pytest.raises(ValidationError):
+        GraphSpec(expression="y=0", settings={"parameters": {}, "scene": graph_scene(["y=x^2", "y=1"]), "view_mode": "3D", "scene_depth": depth})
+
+
+def test_scene_depth_requires_explicit_3d_scene():
+    for settings in [{"parameters": {}, "view_mode": "3D"}, {"parameters": {}, "view_mode": "2D", "scene": graph_scene(["y=x^2", "y=1"])}]:
+        with pytest.raises(ValidationError):
+            GraphSpec(expression="y=0", settings={**settings, "scene_depth": 1.5})
+
+
+@pytest.mark.parametrize("patch", [{"view_mode": "2D"}, {"scene_depth": 0}, {"scene": None}, {"scene_surface": "true"}])
+def test_extended_scene_surfaces_require_explicit_3d_extent_and_typed_flag(patch):
+    with pytest.raises(ValidationError):
+        GraphSpec(expression="y=0", settings={"parameters": {}, "scene": graph_scene(["y=x^3+2", "y=sin(x)"]), "view_mode": "3D", "scene_depth": 3, "scene_surface": True, **patch})
