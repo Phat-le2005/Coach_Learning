@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { OcrInkPreview } from "@/features/math-workspace/components/OcrInkPreview";
 import { canvasRequest, type CanvasSnapshot } from "./api";
 import { parseMathExpression } from "./expression";
@@ -12,6 +13,7 @@ import { describeGraphView } from "./presentation";
 import { compileLab, describeLabDocument, LAB_TITLES } from "./lab-spec";
 import { LabView } from "./LabView";
 import styles from "./MathCanvas.module.css";
+const GraphScene3DView=dynamic(()=>import("./GraphScene3DView").then((module)=>module.GraphScene3DView),{ssr:false});
 
 export function TeacherCanvasReview() {
   const [rows, setRows] = useState<CanvasSnapshot[]>([]);
@@ -37,10 +39,10 @@ export function TeacherCanvasReview() {
         <nav aria-label="Bản lưu Math Canvas">{rows.map((row) => <button key={row.id} type="button" className={`${styles.saved} ${selected?.id === row.id ? styles.selected : ""}`} onClick={() => setSelected(row)}>
           <strong>{row.student_name}</strong><p>{row.settings.lab?LAB_TITLES[row.settings.lab.kind]:row.settings.scene?`Bảng ${row.settings.scene.rows.length} biểu thức`:row.expression}</p><small>{new Date(row.created_at).toLocaleString("vi-VN")} · Trang {row.page_index + 1}</small></button>)}</nav>
         {selected && model ? <article className={styles.card}>
-          <span className={styles.badge}>{lab?`${LAB_TITLES[lab.document.kind]} · ${lab.document.dimension}`:scene?"Bảng đồ thị 2D nhiều biểu thức":describeGraphView(model, selected.settings)} · Bản lưu bài học</span><h2>{lab?LAB_TITLES[lab.document.kind]:scene?"Bảng khám phá của học sinh":selected.expression}</h2>
-          {lab?<><details className={styles.examples}><summary>Công thức và thiết lập đã lưu</summary><ul>{describeLabDocument(lab.document).map((description)=><li key={description}>{description}</li>)}</ul></details><LabView key={selected.id} document={lab.document} parameters={selected.settings.parameters} domain={selected.settings.domain} initialCamera={selected.camera}/></>:scene?<><ol>{scene.document.rows.map((row)=><li key={row.id}><span style={{color:row.color}}>●</span> <code>{row.expression}</code> {!row.visible?"· đang ẩn":""}</li>)}</ol><p className={styles.muted}>Tô miền: {scene.document.combine==="AND"?"thỏa mãn tất cả bất phương trình":scene.document.combine==="OR"?"thỏa mãn ít nhất một bất phương trình":"tô riêng từng miền"}.</p><GraphSceneView key={selected.id} scene={scene} parameters={selected.settings.parameters} domain={selected.settings.domain} initialCamera={selected.camera}/></>
+          <span className={styles.badge}>{lab?`${LAB_TITLES[lab.document.kind]} · ${lab.document.dimension}`:scene?`Bảng đồ thị ${selected.settings.view_mode==="3D"?"3D":"2D"} nhiều biểu thức`:describeGraphView(model, selected.settings)} · Bản lưu bài học</span><h2>{lab?LAB_TITLES[lab.document.kind]:scene?"Bảng khám phá của học sinh":selected.expression}</h2>
+          {lab?<><details className={styles.examples}><summary>Công thức và thiết lập đã lưu</summary><ul>{describeLabDocument(lab.document).map((description)=><li key={description}>{description}</li>)}</ul></details><LabView key={selected.id} document={lab.document} parameters={selected.settings.parameters} domain={selected.settings.domain} initialCamera={selected.camera}/></>:scene?<><ol>{scene.document.rows.map((row)=><li key={row.id}><span style={{color:row.color}}>●</span> <code>{row.expression}</code> {!row.visible?"· đang ẩn":""}</li>)}</ol><p className={styles.muted}>Tô miền: {scene.document.combine==="AND"?"thỏa mãn tất cả bất phương trình":scene.document.combine==="OR"?"thỏa mãn ít nhất một bất phương trình":"tô riêng từng miền"}.</p>{selected.settings.view_mode==="3D"?<GraphScene3DView key={selected.id} scene={scene} parameters={selected.settings.parameters} domain={selected.settings.domain} initialCamera={selected.camera} depth={selected.settings.scene_depth??0} surfaceMode={selected.settings.scene_surface??false}/>:<GraphSceneView key={selected.id} scene={scene} parameters={selected.settings.parameters} domain={selected.settings.domain} initialCamera={selected.camera}/>}</>
             :<GraphView key={selected.id} model={model} settings={selected.settings} initialCamera={selected.camera} />}
-          <p className={styles.muted}>{scene?"Bảng mở bằng góc nhìn đã lưu của học sinh. Kéo để di chuyển và zoom để quan sát.":"Có thể xoay/zoom để xem. Góc nhìn của học sinh được khôi phục khi đặt lại."}</p>
+          <p className={styles.muted}>{scene?"Bảng mở bằng góc nhìn 2D/3D đã lưu của học sinh. Dùng các nút để di chuyển, xoay hoặc zoom.":"Có thể xoay/zoom để xem. Góc nhìn của học sinh được khôi phục khi đặt lại."}</p>
           <p>Tham số: {Object.entries(selected.settings.parameters).map(([k,v]) => `${k}=${v}`).join(", ") || "Không có tham số ký hiệu"}</p>
           <p>{scene?`Miền khảo sát: −${selected.settings.domain} ≤ x, y ≤ ${selected.settings.domain}.`:`s=${selected.settings.scale}; v=${selected.settings.offset}; h=${selected.settings.shift_x}; k=${selected.settings.shift_y}; miền ±${selected.settings.domain}`}</p>
           {selected.source_strokes.length ? <OcrInkPreview strokes={selected.source_strokes} /> : <p className={styles.muted}>Công thức được nhập trực tiếp.</p>}
