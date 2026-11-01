@@ -1,10 +1,28 @@
-import { sampleGraph, type GraphSettings, type MathExpression } from "./expression";
+import { sampleGraph, type GraphSettings, type MathExpression, type MathNode } from "./expression";
 
 export type GraphRenderMode = "CURVE_2D" | "CURVE_3D" | "EXTRUDED_3D" | "SURFACE_3D" | "SLICE_2D"
   | "CONTOUR_2D" | "CONTOUR_3D" | "LEVEL_SURFACE_3D" | "LEVEL_SLICE_2D";
 
+/** Render f(x)=y as the same curve as y=f(x), without rewriting the saved relation.
+ * A contour grid clips both coordinates to ±domain and can otherwise omit the vertex.
+ */
+export function resolveGraphExpression(model: MathExpression): MathExpression {
+  if (model.kind !== "implicit" || model.dimension !== "2D" || model.node.kind !== "binary" || model.node.op !== "-") return model;
+  const { left, right } = model.node;
+  if (right.kind !== "variable" || right.name !== "y") return model;
+  const dependsOnOtherCoordinate = (node: MathNode): boolean => {
+    if (node.kind === "variable") return node.name === "y" || node.name === "z";
+    if (node.kind === "binary") return dependsOnOtherCoordinate(node.left) || dependsOnOtherCoordinate(node.right);
+    if (node.kind === "guard") return dependsOnOtherCoordinate(node.argument) || dependsOnOtherCoordinate(node.node);
+    return node.kind === "unary" || node.kind === "call" ? dependsOnOtherCoordinate(node.node) : false;
+  };
+  if (dependsOnOtherCoordinate(left)) return model;
+  return { ...model, kind: "explicit", expression: `y=${model.expression.split("=")[0]}`, node: left };
+}
+
 /** A camera choice must never reclassify or rewrite the mathematical expression. */
 export function resolveGraphView(model: MathExpression, settings: GraphSettings): GraphRenderMode {
+  model = resolveGraphExpression(model);
   if (model.kind === "implicit") return model.dimension === "3D"
     ? settings.view_mode === "2D" ? "LEVEL_SLICE_2D" : "LEVEL_SURFACE_3D"
     : settings.view_mode === "3D" ? "CONTOUR_3D" : "CONTOUR_2D";
@@ -32,6 +50,7 @@ export function describeGraphView(model: MathExpression, settings: GraphSettings
 }
 
 export function recommendGraph(model: MathExpression): { title: string; reason: string } {
+  model = resolveGraphExpression(model);
   if (model.kind === "implicit") return model.dimension === "3D"
     ? { title: "Đề xuất mặt mức 3D", reason: "Phương trình liên hệ các tọa độ trong không gian. Xoay để quan sát hình dạng, hoặc xem giao tuyến tại y cố định." }
     : { title: "Đề xuất đường mức 2D", reason: "Phương trình liên hệ x và y. Đường vẽ biểu diễn các điểm thỏa mãn cả hai vế." };
@@ -42,6 +61,7 @@ export function recommendGraph(model: MathExpression): { title: string; reason: 
 
 /** World Y is the displayed height; the label specifies whether this is mathematical y or z. */
 export function sampleViewPoint(model: MathExpression, settings: GraphSettings, x: number, second = 0): [number, number, number] {
+  model = resolveGraphExpression(model);
   const mode = resolveGraphView(model, settings);
   const inputY = mode === "SLICE_2D" ? settings.slice_y ?? 0 : second;
   const value = sampleGraph(model, settings, x, inputY);

@@ -20,6 +20,8 @@ export interface GraphSettings {
   domain: number;
   view_mode?: "AUTO" | "2D" | "3D" | "EXTRUDED";
   slice_y?: number;
+  scene_depth?: number;
+  scene_surface?: boolean;
   scene?: import("./scene").GraphSceneDocument | null;
   lab?: import("./lab-spec").LabDocument | null;
 }
@@ -34,6 +36,30 @@ const FUNCTIONS: Record<string, (x: number) => number> = {
   exp: Math.exp, log: Math.log, ln: Math.log,
 };
 const isFunction = (name: string) => Object.hasOwn(FUNCTIONS, name);
+
+/** Conventional trig powers apply to the call value: cos²(x) = (cos(x))².
+ * Keep the resulting power atomic, including when another outer power follows.
+ * Negative/variable powers before the argument remain explicit-only to avoid
+ * confusing reciprocal notation with inverse trigonometric functions.
+ */
+function normalizeTrigPowers(input: string, depth = 0): string {
+  if (depth > 24) throw new Error("Công thức lồng quá sâu.");
+  const pattern = /(?<![a-z])(sin|cos|tan)\^(?:\(([1-9]\d*)\)|([1-9]\d*))\(/g;
+  let output = "", cursor = 0, match: RegExpExecArray | null;
+  while ((match = pattern.exec(input))) {
+    const open = pattern.lastIndex - 1;
+    let end = open + 1, nesting = 1;
+    for (; end < input.length; end++) {
+      if (input[end] === "(") nesting++;
+      if (input[end] === ")" && --nesting === 0) break;
+    }
+    if (nesting) throw new Error("Thiếu dấu đóng ngoặc.");
+    const argument = normalizeTrigPowers(input.slice(open + 1, end), depth + 1);
+    output += input.slice(cursor, match.index) + `(${match[1]}(${argument})^${match[2] ?? match[3]})`;
+    cursor = end + 1; pattern.lastIndex = cursor;
+  }
+  return output + input.slice(cursor);
+}
 
 export function normalizeFormula(source: string): string {
   if (source.length > 500) throw new Error("Công thức quá dài (tối đa 500 ký tự).");
@@ -67,7 +93,7 @@ export function normalizeFormula(source: string): string {
   text = expand(text);
   text = text.replace(/\s+/g, "").toLowerCase();
   if (/[\\{}]/.test(text)) throw new Error("Ký hiệu LaTeX chưa được hỗ trợ. Hãy sửa thành dạng z=x^2+y^2.");
-  return text;
+  return normalizeTrigPowers(text);
 }
 
 export function parseMathExpression(source: string): MathExpression {
@@ -129,6 +155,7 @@ export function parseScalarExpression(body: string, context?: ScalarContext): { 
     if (token === "+") return expression(25, depth + 1);
     if (token === "-") return { kind: "unary", node: expression(25, depth + 1) };
     if (token && callable(token) && (isFunction(token) || context?.functions.has(token) || tokens[index] === "(")) {
+      if (tokens[index] === "^") throw new Error(`Hãy viết lũy thừa theo dạng (${token}(x))^2; số mũ âm hoặc tham số cần đặt sau đối số.`);
       if (tokens[index++] !== "(") throw new Error(`Hãy viết ${token}(...) với dấu ngoặc.`);
       const node = expression(0, depth + 1);
       if (tokens[index++] !== ")") throw new Error("Thiếu dấu đóng ngoặc.");
