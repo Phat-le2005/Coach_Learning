@@ -68,7 +68,9 @@ export interface SegmentationMetrics {
   groupPrecision: number;
   groupRecall: number;
   groupF1: number;
-  readingOrderCorrectness: number;
+  /** Null when the predictions offer no comparable ordered pair. */
+  readingOrderCorrectness: number | null;
+  readingOrderComparablePairs: number;
 }
 
 // ============================================================================
@@ -461,7 +463,8 @@ export function evaluateSegmentationAgainstGroundTruth(
       : 0;
 
   // 2. Reading order correctness (Pairwise concordance)
-  let readingOrderCorrectness = 1.0;
+  let readingOrderCorrectness: number | null = null;
+  let readingOrderComparablePairs = 0;
   if (groundTruth.expectedReadingOrder && groundTruth.expectedReadingOrder.length > 1) {
     const orderMap = new Map<string, number>();
     groundTruth.expectedReadingOrder.forEach((gId, idx) => orderMap.set(gId, idx));
@@ -494,11 +497,15 @@ export function evaluateSegmentationAgainstGroundTruth(
         for (let j = i + 1; j < predictedGroupSequence.length; j++) {
           const expectedI = orderMap.get(predictedGroupSequence[i])!;
           const expectedJ = orderMap.get(predictedGroupSequence[j])!;
+          // Repeated references to the same GT group do not provide an
+          // independent ordered pair.
+          if (predictedGroupSequence[i] === predictedGroupSequence[j]) continue;
           totalPairs++;
-          if (expectedI <= expectedJ) concordant++;
+          if (expectedI < expectedJ) concordant++;
         }
       }
-      readingOrderCorrectness = totalPairs > 0 ? concordant / totalPairs : 1.0;
+      readingOrderComparablePairs = totalPairs;
+      if (totalPairs > 0) readingOrderCorrectness = concordant / totalPairs;
     }
   }
 
@@ -517,5 +524,6 @@ export function evaluateSegmentationAgainstGroundTruth(
     groupRecall,
     groupF1,
     readingOrderCorrectness,
+    readingOrderComparablePairs,
   };
 }
