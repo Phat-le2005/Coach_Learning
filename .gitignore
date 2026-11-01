@@ -32,3 +32,8 @@ Desktop.ini
 .tmp/
 *.sql
 backend/var/
+*.db
+*.sqlite
+*.sqlite3
+*.zip
+*.backend-draft.json

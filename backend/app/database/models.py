@@ -139,6 +139,7 @@ from app.tutor.models import (
     TutorSessionSummary,
 )
 from app.users.models import User
+from app.theory_maps.models import TheoryDocument
 from app.teacher_materials.models import (
     TeacherMaterial, TeacherMaterialItem, TeacherMaterialItemOption,
     TeacherMaterialItemProblemType, TeacherMaterialItemConcept,
@@ -285,6 +286,7 @@ __all__ = [
     "LearningMemoryType",
     "University",
     "User",
+    "TheoryDocument",
     "TeacherMaterial",
     "TeacherMaterialItem",
     "TeacherMaterialItemOption",
