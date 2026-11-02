@@ -123,7 +123,20 @@ async function main() {
     const extractBtn = page.getByRole("button", { name: /Trích xuất trang/i });
     await extractBtn.waitFor({ state: "visible", timeout: 10000 });
 
-    const initialMutationsCount = mutationRequests.length;
+    // The freshly provisioned isolated QA attempt starts empty. Draw two real
+    // pointer strokes on the actual MathCanvas to enable extraction.
+    // This synthetic browser input is NOT counted as real-handwriting evidence.
+    const canvas = page.locator("canvas").first();
+    await canvas.waitFor({ state: "visible", timeout: 15000 });
+    const rect = await canvas.boundingBox();
+    if (!rect) throw new Error("QA canvas bounding box unavailable");
+    for (const relativeY of [0.18, 0.32]) {
+      await page.mouse.move(rect.x + rect.width * 0.18, rect.y + rect.height * relativeY);
+      await page.mouse.down();
+      await page.mouse.move(rect.x + rect.width * 0.29,
+        rect.y + rect.height * (relativeY + 0.01), { steps: 8 });
+      await page.mouse.up();
+    }
 
     // 3. Open Page OCR Review Modal
     console.log("3. Opening PageOcrReviewModal via 'Trích xuất trang' ...");
@@ -131,6 +144,7 @@ async function main() {
 
     const modal = page.getByRole("dialog", { name: /Trích xuất trang/i });
     await modal.waitFor({ state: "visible", timeout: 15000 });
+    const shadowQaStart = mutationRequests.length; // ink flush was part of opening modal
 
     await page.screenshot({ path: path.join(screenshotsDir, "real_app_01_modal_initial.png") });
 
@@ -225,7 +239,7 @@ async function main() {
     });
 
     // 11. Verify zero application API mutations
-    const shadowQaMutations = mutationRequests.slice(initialMutationsCount).filter((m) => {
+    const shadowQaMutations = mutationRequests.slice(shadowQaStart).filter((m) => {
       const isApiMutation = m.url.includes("/api/") || m.url.includes("/math-solutions/") || m.url.includes("/steps");
       const isInkFlush = m.url.includes("/paper") || m.url.includes("/strokes");
       return isApiMutation && !isInkFlush;
