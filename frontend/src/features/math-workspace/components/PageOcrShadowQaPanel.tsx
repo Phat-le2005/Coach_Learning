@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import type { InkStroke } from "@/lib/api/contracts";
 import type { PageOcrRegion } from "../utils/page-ocr";
 import { buildOcrShadowQaReport } from "../utils/ocr-shadow-qa";
+import { proposeIntegralExpressionUnits } from "../utils/expression-reconstruction";
 import { OcrInkPreview } from "./OcrInkPreview";
 import styles from "../MathWorkspace.module.css";
 
@@ -25,6 +26,9 @@ export function PageOcrShadowQaPanel({
   const report = useMemo(
     () => buildOcrShadowQaReport(pageStrokes, initialRegions),
     [pageStrokes, initialRegions],
+  );
+  const integralUnits = useMemo(
+    () => proposeIntegralExpressionUnits(pageStrokes), [pageStrokes],
   );
   const [selectedCandidate, setSelectedCandidate] = useState(0);
   const selected = report.candidates[selectedCandidate];
@@ -103,6 +107,25 @@ export function PageOcrShadowQaPanel({
           ) : null}
         </>
       )}
+      <div style={{ marginTop: "0.75rem", borderTop: "1px solid #b7cfbf", paddingTop: "0.5rem" }}>
+        <h4>Đề xuất ghép biểu thức (Core OCR V2 — thử nghiệm)</h4>
+        {integralUnits.length === 0 ? (
+          <p>Chưa có đề xuất tích phân đủ bằng chứng hình học.</p>
+        ) : integralUnits.map((unit) => (
+          <div key={unit.id} data-testid="ocr-integral-expression-proposal">
+            <p><strong>INTEGRAL · {unit.sourceStrokeIds.length} nét</strong>
+              {" · "}cận trên: {unit.upperLimitStrokeIds.length}
+              {" · "}cận dưới: {unit.lowerLimitStrokeIds.length}
+              {" · "}biểu thức: {unit.bodyStrokeIds.length}
+            </p>
+            <OcrInkPreview strokes={unit.sourceStrokeIds.flatMap((id) => {
+              const stroke = penById.get(id);
+              return stroke ? [stroke] : [];
+            })} />
+            <p>Chỉ là đề xuất ghép nét, chưa nhận diện LaTeX và không thay đổi bước giải.</p>
+          </div>
+        ))}
+      </div>
       <p>Chưa có ground truth: không thể coi các nhóm này là cấu trúc đúng của bài viết.</p>
     </section>
   );
