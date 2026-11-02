@@ -7,6 +7,7 @@ import { validateOcrEvalCapture, reconstructSegmentationInput } from "../src/fea
 import { segmentPageInk_v2 } from "../src/features/math-workspace/utils/page-ocr.js";
 import { detectStructuralCandidates } from "../src/features/math-workspace/utils/structural-candidate-engine.js";
 import { buildOcrShadowQaReport } from "../src/features/math-workspace/utils/ocr-shadow-qa.js";
+import { proposeIntegralExpressionUnits } from "../src/features/math-workspace/utils/expression-reconstruction.js";
 
 // Helper to construct synthetic strokes
 function makeStroke(id: string, points: Array<{ x: number; y: number; pressure?: number }>, tool: InkStroke["tool"] = "PEN"): InkStroke {
@@ -122,6 +123,17 @@ test("REAL_INK_NEGATIVE_TESTED: integral handwriting capture preserves all 10 st
   assert.equal(qaReport.shadowMissingStrokeIds.length, 0);
   assert.equal(qaReport.shadowDuplicateStrokeIds.length, 0);
   assert.equal(qaReport.shadowUnknownStrokeIds.length, 0);
+
+  // Core OCR V2: a composite expression proposal must reconnect upper limit,
+  // lower limit and the right-hand body WITHOUT changing the existing 4 regions.
+  const expressionUnits = proposeIntegralExpressionUnits(strokes);
+  assert.equal(expressionUnits.length, 1, "Expected one definite-integral expression proposal");
+  const expression = expressionUnits[0];
+  assert.equal(expression.sourceStrokeIds.length, 10);
+  assert.equal(new Set(expression.sourceStrokeIds).size, 10);
+  assert.equal(expression.upperLimitStrokeIds.length, 1);
+  assert.equal(expression.lowerLimitStrokeIds.length, 1);
+  assert.equal(expression.bodyStrokeIds.length, 7);
 
   // 6. Input immutability
   assert.equal(JSON.stringify(strokes), serializedBefore, "Input strokes must not be mutated");
