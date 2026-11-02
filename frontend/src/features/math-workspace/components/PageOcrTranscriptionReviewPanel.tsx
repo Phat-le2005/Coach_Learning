@@ -15,6 +15,7 @@ import {
 } from "../utils/structured-transcription-ir";
 import { proposeIntegralExpressionUnits } from "../utils/expression-reconstruction";
 import { detectStructuralCandidates } from "../utils/structural-candidate-engine";
+import { recognizeHandwrittenMath } from "../utils/handwritten-ocr";
 import { renderOcrLatexHtml } from "../utils/ocr-math-preview";
 import { OcrInkPreview } from "./OcrInkPreview";
 import styles from "../MathWorkspace.module.css";
@@ -60,6 +61,8 @@ export function PageOcrTranscriptionReviewPanel({
     initialIr.contentUnits[0]?.id ?? "",
   );
   const [showProjection, setShowProjection] = useState(false);
+  const [recognizingUnit, setRecognizingUnit] = useState(false);
+  const [recognitionError, setRecognitionError] = useState<string | null>(null);
 
   const topUnits = useMemo(
     () => ir.contentUnits.filter((u) => !u.id.startsWith("sub-")),
@@ -78,6 +81,23 @@ export function PageOcrTranscriptionReviewPanel({
       return s ? [s] : [];
     });
   }, [selectedUnit, penById]);
+
+  const handleRecognizeUnitWithComer = async () => {
+    if (!selectedUnit || selectedStrokes.length === 0) return;
+    if (selectedUnit.kind !== "MATH" && selectedUnit.kind !== "STRUCTURE") {
+      return;
+    }
+    setRecognizingUnit(true);
+    setRecognitionError(null);
+    try {
+      const resp = await recognizeHandwrittenMath(selectedStrokes);
+      setIr((prev) => applyOcrToContentUnit(prev, selectedUnit.id, resp.latex));
+    } catch (err: unknown) {
+      setRecognitionError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setRecognizingUnit(false);
+    }
+  };
 
   // Evaluator projection preview
   const projection: LegacyStepProjection = useMemo(
@@ -199,6 +219,39 @@ export function PageOcrTranscriptionReviewPanel({
 
             {/* Editable Content */}
             <div style={{ flex: 2, display: "flex", flexDirection: "column", gap: "6px" }}>
+              {(selectedUnit.kind === "MATH" || selectedUnit.kind === "STRUCTURE") ? (
+                <div style={{ marginBlock: "2px" }}>
+                  <button
+                    type="button"
+                    className={styles.buttonSecondary}
+                    data-testid="btn-recognize-unit-comer"
+                    disabled={recognizingUnit}
+                    onClick={handleRecognizeUnitWithComer}
+                  >
+                    {recognizingUnit ? "Đang nhận diện bằng CoMER..." : "Nhận diện nội dung bằng CoMER"}
+                  </button>
+                  {recognitionError ? (
+                    <span style={{ color: "#dc2626", fontSize: "11px", marginLeft: "8px" }}>
+                      Lỗi: {recognitionError}
+                    </span>
+                  ) : null}
+                </div>
+              ) : selectedUnit.kind === "TEXT" ? (
+                <p style={{ fontSize: "11px", color: "#64748b", margin: "2px 0" }}>
+                  Đơn vị nội dung chữ (TEXT): nhập hoặc chỉnh sửa nội dung bên dưới.
+                </p>
+              ) : (
+                <p style={{ fontSize: "11px", color: "#b45309", margin: "2px 0" }}>
+                  Đơn vị UNKNOWN: kiểm tra lại nét và nhập nội dung thủ công.
+                </p>
+              )}
+
+              {selectedUnit.rawRecognition ? (
+                <div style={{ fontSize: "11px", color: "#475569", margin: "1px 0 3px 0" }}>
+                  CoMER nhận diện thô: <code style={{ background: "#f1f5f9", padding: "1px 4px" }}>{selectedUnit.rawRecognition}</code>
+                </div>
+              ) : null}
+
               <label style={{ fontSize: "12px", fontWeight: "bold" }}>
                 Bản chép nội dung:
               </label>

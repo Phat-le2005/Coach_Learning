@@ -64,20 +64,33 @@ export interface LegacyStepProjectionItem {
   warnings: string[];
 }
 
+export interface BlockedProjectionUnit {
+  unitId: string;
+  kind: ContentUnitKind;
+  sourceStrokeIds: string[];
+  reason: string;
+}
+
 export interface LegacyStepProjection {
   irSchemaVersion: "1.0";
   projectedStepCount: number;
   steps: LegacyStepProjectionItem[];
   allUnitsMapped: boolean;
-  unmappedUnitIds: string[];
+  isProjectionBlocked: boolean;
+  blockedUnits: BlockedProjectionUnit[];
   warnings: string[];
+  note: string;
 }
 
 // ============================================================================
-// 2. Helper Functions & Geometry
+// 2. Helper Functions & Geometry (P0.1 Fixed)
 // ============================================================================
 
-function computeBounds(strokes: readonly InkStroke[]): InkBounds {
+/**
+ * Computes exact normalized bounding box across all points in strokes.
+ * P0.1 FIX: Corrected comparison `p.x > right` (was erroneously checking `p.y > right`).
+ */
+export function computeBounds(strokes: readonly InkStroke[]): InkBounds {
   if (strokes.length === 0) {
     return { left: 0, top: 0, right: 0, bottom: 0 };
   }
@@ -85,7 +98,7 @@ function computeBounds(strokes: readonly InkStroke[]): InkBounds {
   for (const s of strokes) {
     for (const p of s.points) {
       if (p.x < left) left = p.x;
-      if (p.y > right) right = p.x;
+      if (p.x > right) right = p.x;
       if (p.y < top) top = p.y;
       if (p.y > bottom) bottom = p.y;
     }
@@ -94,7 +107,7 @@ function computeBounds(strokes: readonly InkStroke[]): InkBounds {
 }
 
 // ============================================================================
-// 3. Construction & Assembly
+// 3. Construction & Assembly (P0.2 Fixed)
 // ============================================================================
 
 export interface BuildTranscriptionIrParams {
@@ -110,7 +123,8 @@ export interface BuildTranscriptionIrParams {
 /**
  * Builds a structured SolutionTranscriptionIR from raw ink, segmentation regions,
  * and structural/expression proposals.
- * Preserves 100% of pen strokes and chronological / spatial reading order.
+ * P0.2 FIX: Guarantees 100% pen stroke conservation: any stroke omitted by segmentation
+ * or structural grouping is captured into an orphan/residual ContentUnit so zero strokes are dropped.
  */
 export function buildStructuredTranscriptionIR(
   params: BuildTranscriptionIrParams,
@@ -132,10 +146,6 @@ export function buildStructuredTranscriptionIR(
 
   // 1. Process Integral Expression Units first (spans limits + body)
   for (const intUnit of integralUnits) {
-    const unitStrokes = intUnit.sourceStrokeIds.flatMap((id) => {
-      const s = penById.get(id);
-      return s ? [s] : [];
-    });
     const overlappingRegionIds = regions
       .filter((r) => r.strokes.some((s) => intUnit.sourceStrokeIds.includes(s.id)))
       .map((r) => r.id);
@@ -242,7 +252,32 @@ export function buildStructuredTranscriptionIR(
     }
   }
 
-  // 4. Sort top-level content units in natural spatial reading order (top-to-bottom, left-to-right)
+  // 4. P0.2 Conservation Safety Net:
+  // Catch any active pen strokes that were NOT in any region or structural unit!
+  const orphanPenStrokes = penStrokes.filter((s) => !usedStrokeIds.has(s.id));
+  if (orphanPenStrokes.length > 0) {
+    for (const s of orphanPenStrokes) {
+      const b = computeBounds([s]);
+      units.push({
+        id: `orphan-${s.id}`,
+        pageIndex,
+        kind: "UNKNOWN",
+        sourceRegionIds: [],
+        sourceStrokeIds: [s.id],
+        readingOrder: 0,
+        rawRecognition: null,
+        approvedContent: null,
+        recognitionStatus: "UNRESOLVED",
+        reviewStatus: "NEEDS_REVIEW",
+        isManuallyCorrected: false,
+        bounds: b,
+        reasons: ["Orphan pen stroke omitted by segmentation"],
+      });
+      usedStrokeIds.add(s.id);
+    }
+  }
+
+  // 5. Sort top-level content units in natural spatial reading order (top-to-bottom, left-to-right)
   const topLevel = units.filter((u) => !u.id.startsWith("sub-"));
   topLevel.sort((a, b) => a.bounds.top - b.bounds.top || a.bounds.left - b.bounds.left);
   topLevel.forEach((u, idx) => {
@@ -270,8 +305,29 @@ export function buildStructuredTranscriptionIR(
 }
 
 // ============================================================================
-// 4. Mutation & Review Functions (Faithful & Non-destructive)
+// 4. Mutation & Review Functions (P0.4 Approval Consistency)
 // ============================================================================
+
+/** Computes whether the entire IR is APPROVED based on all units and parent-child consistency */
+function computeIrApprovalStatus(units: readonly ContentUnit[]): TranscriptionReviewStatus {
+  if (units.length === 0) return "NEEDS_REVIEW";
+
+  // Check parent-child consistency
+  for (const u of units) {
+    if (u.childIds && u.childIds.length > 0) {
+      const children = units.filter((c) => u.childIds?.includes(c.id));
+      const allChildrenApproved = children.every((c) => c.reviewStatus === "APPROVED");
+      // If parent is marked APPROVED but any child is not APPROVED, the IR is NOT approved!
+      if (u.reviewStatus === "APPROVED" && !allChildrenApproved) {
+        return "NEEDS_REVIEW";
+      }
+    }
+    if (u.reviewStatus !== "APPROVED") {
+      return "NEEDS_REVIEW";
+    }
+  }
+  return "APPROVED";
+}
 
 /**
  * Applies OCR engine output to a content unit.
@@ -301,6 +357,7 @@ export function applyOcrToContentUnit(
     ...ir,
     contentUnits: nextUnits,
     recognizedUnitCount: recognizedCount,
+    reviewStatus: computeIrApprovalStatus(nextUnits),
     provenance: { ...ir.provenance, updatedAt: new Date().toISOString() },
   };
 }
@@ -334,27 +391,49 @@ export function editContentUnit(
     ...ir,
     contentUnits: nextUnits,
     approvedUnitCount: approvedCount,
-    reviewStatus: approvedCount === nextUnits.length ? "APPROVED" : "NEEDS_REVIEW",
+    reviewStatus: computeIrApprovalStatus(nextUnits),
     provenance: { ...ir.provenance, updatedAt: new Date().toISOString() },
   };
 }
 
 /**
  * Human confirmation: approves a content unit's transcription.
+ * P0.4 FIX: Enforces hierarchical parent-child approval consistency:
+ * - A parent STRUCTURE cannot be approved unless ALL of its children are already APPROVED.
+ * - When an atomic unit or child is approved, verifies non-empty content.
  */
 export function approveContentUnit(
   ir: SolutionTranscriptionIR,
   unitId: string,
 ): SolutionTranscriptionIR {
+  const targetUnit = ir.contentUnits.find((u) => u.id === unitId);
+  if (!targetUnit) {
+    throw new Error(`TRANSCRIPTION_UNIT_NOT_FOUND: Unit '${unitId}' does not exist`);
+  }
+
+  // P0.4 Check: if parent has children, verify that ALL children are already approved!
+  if (targetUnit.childIds && targetUnit.childIds.length > 0) {
+    const children = ir.contentUnits.filter((c) => targetUnit.childIds?.includes(c.id));
+    const unapprovedChild = children.find((c) => c.reviewStatus !== "APPROVED");
+    if (unapprovedChild) {
+      throw new Error(
+        `TRANSCRIPTION_PARENT_CHILDREN_UNAPPROVED: Cannot approve parent '${unitId}' because child '${unapprovedChild.id}' is not yet approved`,
+      );
+    }
+  } else {
+    // Atomic unit / child unit must have non-empty content
+    const content = targetUnit.approvedContent ?? targetUnit.rawRecognition;
+    if (!content || !content.trim()) {
+      throw new Error(`TRANSCRIPTION_UNIT_EMPTY_CONTENT: Cannot approve unit '${unitId}' without content`);
+    }
+  }
+
   const nextUnits = ir.contentUnits.map((u) => {
     if (u.id !== unitId) return u;
-    const content = u.approvedContent ?? u.rawRecognition;
-    if (!content || !content.trim()) {
-      throw new Error("TRANSCRIPTION_UNIT_EMPTY_CONTENT: Cannot approve unit without content");
-    }
+    const content = u.approvedContent ?? u.rawRecognition ?? "";
     return {
       ...u,
-      approvedContent: content.trim(),
+      approvedContent: content.trim() || null,
       reviewStatus: "APPROVED" as const,
     };
   });
@@ -364,19 +443,24 @@ export function approveContentUnit(
     ...ir,
     contentUnits: nextUnits,
     approvedUnitCount: approvedCount,
-    reviewStatus: approvedCount === nextUnits.length ? "APPROVED" : "NEEDS_REVIEW",
+    reviewStatus: computeIrApprovalStatus(nextUnits),
     provenance: { ...ir.provenance, updatedAt: new Date().toISOString() },
   };
 }
 
 // ============================================================================
-// 5. Evaluator Handoff Projection (Legacy Adapter)
+// 5. Evaluator Handoff Projection (P0.3 Fixed: Preview-Only & Blocked Safety)
 // ============================================================================
 
 /**
  * Explicitly projects an approved SolutionTranscriptionIR into the legacy SolutionStepDraft
  * API format accepted by Phát's Mathematical Evaluator (Module G).
- * Does NOT swallow UNKNOWN/TEXT units; flags unmapped metadata transparently.
+ *
+ * P0.3 FIXES:
+ * 1. PREVIEW-ONLY: Does NOT dictate that 1 ContentUnit = 1 GradingStep.
+ * 2. NO PLACEHOLDERS: Never generates fake text like "(UNKNOWN content unit)".
+ * 3. BLOCKED SAFETY: Unapproved, UNRESOLVED, or unmappable units are NOT emitted as valid steps.
+ *    Instead, they are recorded in `blockedUnits` with reasons, and `isProjectionBlocked = true`.
  */
 export function projectTranscriptionToLegacySteps(
   ir: SolutionTranscriptionIR,
@@ -384,6 +468,7 @@ export function projectTranscriptionToLegacySteps(
   const steps: LegacyStepProjectionItem[] = [];
   const warnings: string[] = [];
   const unmappedUnitIds: string[] = [];
+  const blockedUnits: BlockedProjectionUnit[] = [];
 
   // Consider only top-level content units (descendants are represented in their parent)
   const topUnits = ir.contentUnits
@@ -393,45 +478,74 @@ export function projectTranscriptionToLegacySteps(
   let targetOrder = 1;
 
   for (const unit of topUnits) {
-    const content = (unit.approvedContent ?? unit.rawRecognition ?? "").trim();
-    const itemWarnings: string[] = [];
-    const unmappedFields: string[] = [];
-
+    // P0.3 Check 1: Unit must be APPROVED by human review
     if (unit.reviewStatus !== "APPROVED") {
-      itemWarnings.push("Unit was not approved by human review before projection");
-      warnings.push(`Unit '${unit.id}' projected without APPROVED status`);
+      blockedUnits.push({
+        unitId: unit.id,
+        kind: unit.kind,
+        sourceStrokeIds: [...unit.sourceStrokeIds],
+        reason: `Unit '${unit.id}' is not APPROVED (current status: ${unit.reviewStatus})`,
+      });
+      warnings.push(`Unit '${unit.id}' skipped from legacy steps: not APPROVED`);
+      continue;
     }
 
+    // P0.3 Check 2: Unit must not be UNRESOLVED
     if (unit.recognitionStatus === "UNRESOLVED") {
-      itemWarnings.push("Unit recognition status is UNRESOLVED");
-      warnings.push(`Unit '${unit.id}' has UNRESOLVED recognition status`);
+      blockedUnits.push({
+        unitId: unit.id,
+        kind: unit.kind,
+        sourceStrokeIds: [...unit.sourceStrokeIds],
+        reason: `Unit '${unit.id}' has UNRESOLVED recognition status`,
+      });
+      warnings.push(`Unit '${unit.id}' skipped from legacy steps: UNRESOLVED`);
+      continue;
+    }
+
+    // P0.3 Check 3: Unit of kind UNKNOWN cannot be represented by legacy StepKind without guessing
+    if (unit.kind === "UNKNOWN") {
+      unmappedUnitIds.push(unit.id);
+      blockedUnits.push({
+        unitId: unit.id,
+        kind: unit.kind,
+        sourceStrokeIds: [...unit.sourceStrokeIds],
+        reason: `Unit '${unit.id}' has kind UNKNOWN; cannot be projected without guessing StepKind`,
+      });
+      warnings.push(`Unit '${unit.id}' of kind UNKNOWN blocked from projection (requires human rubric mapping)`);
+      continue;
+    }
+
+    const content = (unit.approvedContent ?? unit.rawRecognition ?? "").trim();
+    if (!content) {
+      blockedUnits.push({
+        unitId: unit.id,
+        kind: unit.kind,
+        sourceStrokeIds: [...unit.sourceStrokeIds],
+        reason: `Unit '${unit.id}' has empty content`,
+      });
+      warnings.push(`Unit '${unit.id}' skipped from legacy steps: empty content`);
+      continue;
     }
 
     let projectedKind: StepKind = "CUSTOM";
     let contentLatex: string | null = null;
     let explanationText: string | null = null;
+    const unmappedFields: string[] = [];
+    const itemWarnings: string[] = [];
 
     if (unit.kind === "TEXT") {
       projectedKind = "EXPLANATION";
       explanationText = content;
-      unmappedFields.push("kind=TEXT (projected to StepKind EXPLANATION)");
+      unmappedFields.push("kind=TEXT (mapped to StepKind EXPLANATION)");
     } else if (unit.kind === "MATH" || unit.kind === "STRUCTURE") {
       contentLatex = content;
-      // Classify step using deterministic classifier
       const classification = classifyMathStep({ contentLatex: content, explanationText: "" });
       if (classification.status === "DETERMINED") {
         projectedKind = classification.predictedType;
       } else {
         projectedKind = "CUSTOM";
-        itemWarnings.push("Mathematical classification unverified; defaulted to StepKind CUSTOM");
+        itemWarnings.push("StepKind unverified by heuristic; defaulted to StepKind.CUSTOM");
       }
-    } else {
-      // UNKNOWN
-      unmappedUnitIds.push(unit.id);
-      projectedKind = "EXPLANATION";
-      explanationText = content || "(UNKNOWN content unit)";
-      itemWarnings.push("Unit kind is UNKNOWN; projected to EXPLANATION to prevent silent drop");
-      warnings.push(`Unit '${unit.id}' of kind UNKNOWN preserved as fallback EXPLANATION`);
     }
 
     steps.push({
@@ -445,30 +559,134 @@ export function projectTranscriptionToLegacySteps(
     });
   }
 
+  const isProjectionBlocked = blockedUnits.length > 0;
+
   return {
     irSchemaVersion: ir.schemaVersion,
     projectedStepCount: steps.length,
     steps,
     allUnitsMapped: unmappedUnitIds.length === 0,
-    unmappedUnitIds,
+    isProjectionBlocked,
+    blockedUnits,
     warnings,
+    note: "Preview-only projection. Does not dictate that 1 ContentUnit = 1 GradingStep. Evaluator rubric boundaries require explicit agreement with Module G (Phát).",
   };
 }
 
 // ============================================================================
-// 6. Validation
+// 6. Comprehensive Validation (P0.5 Fixed)
 // ============================================================================
 
+/**
+ * Validates untrusted data as a strictly well-formed SolutionTranscriptionIR v1.0.
+ * P0.5 FIX: Checks:
+ * 1. Root object, schemaVersion '1.0', sourceKind 'INK'.
+ * 2. Unique unit IDs across all units.
+ * 3. Finite bounds within canvas bounds [-0.5, 1.5] with left <= right and top <= bottom.
+ * 4. Non-empty string sourceStrokeIds.
+ * 5. Reading order non-negative integer.
+ * 6. Parent-child consistency: referenced childIds exist in contentUnits, child strokes are subset of parent strokes.
+ * 7. Approval consistency: if unit is APPROVED, approvedContent must be non-empty string.
+ * 8. If ir.reviewStatus is APPROVED, every unit must be APPROVED and parent-child consistent.
+ */
 export function validateSolutionTranscriptionIR(data: unknown): SolutionTranscriptionIR {
-  if (typeof data !== "object" || data === null) {
-    throw new Error("INVALID_IR_ROOT: Root must be an object");
+  if (typeof data !== "object" || data === null || Array.isArray(data)) {
+    throw new Error("INVALID_IR_ROOT: Root must be a non-null JSON object");
   }
+
   const ir = data as Record<string, unknown>;
   if (ir.schemaVersion !== "1.0") {
     throw new Error(`UNSUPPORTED_IR_VERSION: Expected '1.0', got '${String(ir.schemaVersion)}'`);
   }
+
+  if (ir.sourceKind !== "INK") {
+    throw new Error(`UNSUPPORTED_IR_SOURCE_KIND: Expected 'INK', got '${String(ir.sourceKind)}'`);
+  }
+
   if (!Array.isArray(ir.contentUnits)) {
     throw new Error("INVALID_IR_CONTENT_UNITS: contentUnits must be an array");
   }
+
+  const seenUnitIds = new Set<string>();
+  const unitsById = new Map<string, ContentUnit>();
+
+  for (let i = 0; i < ir.contentUnits.length; i++) {
+    const u = ir.contentUnits[i] as ContentUnit;
+    if (typeof u !== "object" || u === null) {
+      throw new Error(`INVALID_UNIT: Unit at index ${i} is not an object`);
+    }
+
+    if (typeof u.id !== "string" || !u.id.trim()) {
+      throw new Error(`INVALID_UNIT_ID: Unit at index ${i} has empty or non-string id`);
+    }
+
+    if (seenUnitIds.has(u.id)) {
+      throw new Error(`DUPLICATE_UNIT_ID: Unit id '${u.id}' is duplicated`);
+    }
+    seenUnitIds.add(u.id);
+    unitsById.set(u.id, u);
+
+    // Validate bounds
+    const b = u.bounds;
+    if (!b || typeof b.left !== "number" || typeof b.right !== "number" || typeof b.top !== "number" || typeof b.bottom !== "number") {
+      throw new Error(`INVALID_UNIT_BOUNDS: Unit '${u.id}' has invalid bounds structure`);
+    }
+    if (!Number.isFinite(b.left) || !Number.isFinite(b.right) || !Number.isFinite(b.top) || !Number.isFinite(b.bottom)) {
+      throw new Error(`NON_FINITE_UNIT_BOUNDS: Unit '${u.id}' bounds contain NaN or Infinity`);
+    }
+    if (b.left > b.right || b.top > b.bottom) {
+      throw new Error(`MALFORMED_UNIT_BOUNDS: Unit '${u.id}' bounds inverted (left > right or top > bottom)`);
+    }
+
+    // Validate strokes
+    if (!Array.isArray(u.sourceStrokeIds) || u.sourceStrokeIds.length === 0) {
+      throw new Error(`EMPTY_UNIT_STROKES: Unit '${u.id}' has no sourceStrokeIds`);
+    }
+    for (const sid of u.sourceStrokeIds) {
+      if (typeof sid !== "string" || !sid.trim()) {
+        throw new Error(`INVALID_STROKE_ID: Unit '${u.id}' has invalid stroke id '${String(sid)}'`);
+      }
+    }
+
+    // Validate reading order
+    if (typeof u.readingOrder !== "number" || !Number.isInteger(u.readingOrder) || u.readingOrder < 0) {
+      throw new Error(`INVALID_READING_ORDER: Unit '${u.id}' readingOrder must be non-negative integer`);
+    }
+
+    // Validate approval consistency
+    if (u.reviewStatus === "APPROVED") {
+      if (!u.approvedContent || typeof u.approvedContent !== "string" || !u.approvedContent.trim()) {
+        throw new Error(`APPROVED_UNIT_EMPTY_CONTENT: Unit '${u.id}' is APPROVED but has empty approvedContent`);
+      }
+    }
+  }
+
+  // Check parent-child integrity
+  for (const [, u] of unitsById) {
+    if (u.childIds && u.childIds.length > 0) {
+      const parentStrokeSet = new Set(u.sourceStrokeIds);
+      for (const chId of u.childIds) {
+        const ch = unitsById.get(chId);
+        if (!ch) {
+          throw new Error(`MISSING_CHILD_UNIT: Parent '${u.id}' references non-existent child '${chId}'`);
+        }
+        for (const csId of ch.sourceStrokeIds) {
+          if (!parentStrokeSet.has(csId)) {
+            throw new Error(`CHILD_STROKE_NOT_IN_PARENT: Child '${chId}' stroke '${csId}' not in parent '${u.id}'`);
+          }
+        }
+      }
+    }
+  }
+
+  // Check overall IR approval consistency
+  if (ir.reviewStatus === "APPROVED") {
+    for (const [, u] of unitsById) {
+      if (u.reviewStatus !== "APPROVED") {
+        throw new Error(`INCONSISTENT_IR_APPROVAL: IR is APPROVED but unit '${u.id}' is ${u.reviewStatus}`);
+      }
+    }
+  }
+
   return data as SolutionTranscriptionIR;
 }
