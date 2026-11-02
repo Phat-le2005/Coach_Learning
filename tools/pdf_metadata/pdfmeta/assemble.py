@@ -3,10 +3,10 @@ from __future__ import annotations
 import re
 
 
-QUESTION = re.compile(r"^\s*(?:Câu|Bài)\s+(\d+)\s*[.:)]", re.IGNORECASE)
-SOLUTION = re.compile(r"^\s*(?:Lời giải|Hướng dẫn giải|Hướng dẫn)\s*[:.]?\s*$", re.IGNORECASE)
-ANSWER = re.compile(r"^\s*(?:Đáp án|Đáp số)(?:\s*:\s*|\s+)(.*)$", re.IGNORECASE)
-RESPONSE = re.compile(r"^\s*Trả lời\s*:", re.IGNORECASE)
+QUESTION = re.compile(r"^\s*(?:Câu|Cau|Bài|Bai|Question|Exercise)\s+(\d+)\s*[.:)]", re.IGNORECASE)
+SOLUTION = re.compile(r"^\s*(?:Lời giải|Loi giai|Solution|Hướng dẫn giải|Hướng dẫn)\s*[:.]?\s*$", re.IGNORECASE)
+ANSWER = re.compile(r"^\s*(?:Đáp án|Đáp số|Dap an|Dap so|Answer)(?:\s*:\s*|\s+)(.*)$", re.IGNORECASE)
+RESPONSE = re.compile(r"^\s*(?:Trả lời|Tra loi)\s*:", re.IGNORECASE)
 
 
 def span(page: dict, bbox: list[float], blocks: list[dict]) -> dict:
@@ -100,14 +100,16 @@ def assemble(pages: list[dict], source_hash: str) -> tuple[list[dict], list[dict
             section_blocks = {"stem": [], "solution": []}
             for block in region:
                 text = block["text_raw"]
-                if RESPONSE.match(text):
+                marker=block.get('section_marker_candidate',{}).get('kind')
+                if marker:current['review_flags'].append('OCR_SECTION_MARKER_INFERRED')
+                if RESPONSE.match(text) or marker=='RESPONSE':
                     current["question_type_candidate"] = "SHORT_ANSWER"
                     if stem_top is not None and block["bbox"][1] - 1 > stem_top:
                         current["stem"]["source_spans"].append(span(page, [0, stem_top, page["width"], block["bbox"][1] - 1], section_blocks["stem"]))
                     stem_top = None
                     section = "response"
                     continue
-                if SOLUTION.match(text):
+                if SOLUTION.match(text) or marker=='SOLUTION':
                     if stem_top is not None and block["bbox"][1] - 1 > stem_top:
                         current["stem"]["source_spans"].append(span(page, [0, stem_top, page["width"], block["bbox"][1] - 1], section_blocks["stem"]))
                     stem_top = None
@@ -122,6 +124,12 @@ def assemble(pages: list[dict], source_hash: str) -> tuple[list[dict], list[dict
                     current["answer"]["source_spans"].append(span(page, block["bbox"], [block]))
                     if section != "solution":
                         current["review_flags"].append("ANSWER_OUTSIDE_SOLUTION")
+                        # Protect the stem even when OCR lost the solution label.
+                        # The inferred boundary remains explicit and unapproved.
+                        if stem_top is not None and block['bbox'][1]>stem_top:
+                            current['stem']['source_spans'].append(span(page,[0,stem_top,page['width'],block['bbox'][1]-1],section_blocks['stem']))
+                        stem_top=None;section='solution';solution_top=block['bbox'][3]+1
+                        current['review_flags'].append('SOLUTION_BOUNDARY_INFERRED_FROM_ANSWER')
                     continue
                 if section == "response":
                     # Preserve region source, do not silently insert answer-box content into stem.
