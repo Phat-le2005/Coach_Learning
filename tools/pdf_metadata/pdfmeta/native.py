@@ -56,7 +56,7 @@ def mark_margins(pages: list[dict]) -> None:
             page["content_bounds"][1] = min(page["content_bounds"][1], min(b["bbox"][1] for b in content))
 
 
-def extract_native(pdf: Path, output: Path, *, dpi: int = 120) -> tuple[dict, list[dict]]:
+def extract_native(pdf: Path, output: Path, *, dpi: int = 120, progress=None) -> tuple[dict, list[dict]]:
     started = time.perf_counter()
     source_hash = file_hash(pdf)
     output.mkdir(parents=True, exist_ok=True)
@@ -109,6 +109,7 @@ def extract_native(pdf: Path, output: Path, *, dpi: int = 120) -> tuple[dict, li
                 page.to_image(resolution=dpi).save(page_image)
                 record["image_dpi"] = dpi
             pages.append(record)
+            if progress:progress(index,len(document.pages))
             if index % 10 == 0 or index == len(document.pages):
                 print(f"native pages {index}/{len(document.pages)}", flush=True)
     mark_margins(pages)

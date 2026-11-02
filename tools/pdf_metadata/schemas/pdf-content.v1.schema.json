@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "pdf-content/v1",
+  "title": "PDF acquisition metadata draft; never a production grading import",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "question_id", "source_number", "source", "student_view", "source_answer", "reference_solution", "quality_flags", "academic_review", "grading_support", "publishable"],
+  "properties": {
+    "schema_version": {"const": "pdf-content/v1"},
+    "question_id": {"type": "string", "minLength": 1},
+    "source_number": {"type": "integer", "minimum": 0},
+    "source": {"type": "object", "required": ["pdf_sha256", "spans"], "properties": {
+      "pdf_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}, "spans": {"type": "array"}
+    }},
+    "student_view": {"type": "object", "additionalProperties": false, "required": ["stem_text_lossy", "assets"], "properties": {
+      "stem_text_lossy": {"type": "string"}, "assets": {"type": "array", "items": {"type": "string"}}
+    }},
+    "source_answer": {"type": ["string", "null"]},
+    "reference_solution": {"type": "object", "required": ["raw_text", "steps", "math_audit", "tables"], "properties": {
+      "raw_text": {"type": "string"}, "steps": {"type": "array"}, "math_audit": {"type": "object"}, "tables": {"type": "array"}
+    }},
+    "quality_flags": {"type": "array", "items": {"type": "string"}},
+    "academic_review": {"const": "PENDING"},
+    "grading_support": {"const": "NOT_ASSESSED"},
+    "publishable": {"const": false}
+  }
+}
