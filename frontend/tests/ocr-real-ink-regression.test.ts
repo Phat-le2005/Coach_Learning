@@ -66,11 +66,11 @@ function findRealInkPath(): string {
 
 const realInkPath = findRealInkPath();
 
-test("REAL_INK_NEGATIVE_TESTED: integral handwriting capture preserves all 10 strokes with zero false SYSTEM", (t) => {
-  if (!fs.existsSync(realInkPath)) {
-    t.skip("Real ink capture fixture .tmp/tri-ocr-native/integral_case_01.json not found on disk");
-    return;
-  }
+test("REAL_INK_NEGATIVE_TESTED: integral handwriting capture preserves all 10 strokes with zero false SYSTEM", () => {
+  assert.ok(
+    fs.existsSync(realInkPath),
+    `BLOCKED_MISSING_REAL_INK_FIXTURE: Real ink capture fixture ${realInkPath} must be present for acceptance`,
+  );
 
   const rawBytes = fs.readFileSync(realInkPath, "utf-8");
   const captureRaw = JSON.parse(rawBytes);
