@@ -20,6 +20,7 @@ import { toConfirmedLatex, insertCorrectionKey, CORRECTION_KEYS } from '../utils
 import { renderOcrLatexHtml } from '../utils/ocr-math-preview';
 import { OcrInkPreview } from './OcrInkPreview';
 import { PageOcrShadowQaPanel } from './PageOcrShadowQaPanel';
+import { PageOcrTranscriptionReviewPanel } from './PageOcrTranscriptionReviewPanel';
 import { OcrMathPreview } from './OcrMathPreview';
 import { SequentialBatchManager, type BatchJournal } from '../utils/batch-manager';
 import { IndexedDbBatchJournal, BrowserBatchLock } from '../utils/batch-journal';
@@ -49,6 +50,7 @@ interface PageOcrReviewModalProps {
   pageIndex: number;
   regions: PageOcrRegion[];
   pageStrokes: InkStroke[];
+  sourceRevision?: number;
   onClose: () => void;
   onConfirmStep: (stepType: StepKind, latex: string | null, explanation: string, actionId: string) => Promise<void>;
   attemptId?: string;
@@ -86,6 +88,7 @@ export function PageOcrReviewModal({
   pageIndex,
   regions,
   pageStrokes,
+  sourceRevision,
   onClose,
   onConfirmStep,
   attemptId,
@@ -105,6 +108,7 @@ export function PageOcrReviewModal({
   const [reviewError, setReviewError] = useState<string | null>(null);
   // This toggle is QA-only. Shadow results never feed into rows, drafts or persistence.
   const [shadowQaOpen, setShadowQaOpen] = useState(false);
+  const [transcriptionReviewOpen, setTranscriptionReviewOpen] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const activeRunRef = useRef<{ cancelled: boolean } | null>(null);
@@ -592,12 +596,30 @@ export function PageOcrReviewModal({
               aria-expanded={shadowQaOpen} aria-controls='ocr-shadow-qa-panel'>
               {shadowQaOpen ? 'Ẩn đối chiếu cấu trúc (QA)' : 'Xem đề xuất cấu trúc (QA)'}
             </button>
+            {' '}
+            <button type='button' className={styles.buttonSecondary}
+              onClick={() => setTranscriptionReviewOpen((open) => !open)}
+              aria-expanded={transcriptionReviewOpen} aria-controls='ocr-transcription-review-panel'
+              data-testid='btn-toggle-transcription-review'>
+              {transcriptionReviewOpen ? 'Ẩn bản chép IR (QA)' : 'Xem bản chép IR (QA)'}
+            </button>
             <p>File chỉ tải về máy, chứa chữ viết tay gốc. Không chia sẻ nếu chưa được phép.</p>
           </div>
         ) : null}
         {process.env.NODE_ENV !== 'production' && shadowQaOpen ? (
           <div id='ocr-shadow-qa-panel' style={{ maxHeight: 'min(35dvh, 300px)', overflowY: 'auto', flexShrink: 0 }}>
             <PageOcrShadowQaPanel pageStrokes={pageStrokes} initialRegions={regions} />
+          </div>
+        ) : null}
+        {process.env.NODE_ENV !== 'production' && transcriptionReviewOpen ? (
+          <div id='ocr-transcription-review-panel' style={{ maxHeight: 'min(40dvh, 360px)', overflowY: 'auto', flexShrink: 0 }}>
+            <PageOcrTranscriptionReviewPanel
+              attemptId={attemptId}
+              sourceRevision={sourceRevision}
+              pageIndex={pageIndex}
+              pageStrokes={pageStrokes}
+              regions={regions}
+            />
           </div>
         ) : null}
         <div className={styles.pageReviewProgress} role='status' aria-live='polite'>
