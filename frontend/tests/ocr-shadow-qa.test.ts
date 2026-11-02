@@ -81,3 +81,25 @@ test("no pen ink returns an empty nonauthoritative QA comparison", () => {
   assert.deepEqual(report.candidates, []);
   assert.deepEqual(report.shadowMissingStrokeIds, []);
 });
+
+
+test("parent/child stroke references are not wrongly counted as duplicate ownership", () => {
+  const brace: InkStroke = {
+    ...stroke("brace", 0.08, 0.1),
+    points: [
+      { x: 0.11, y: 0.10, pressure: 0.5 },
+      { x: 0.095, y: 0.14, pressure: 0.5 },
+      { x: 0.08, y: 0.19, pressure: 0.5 },
+      { x: 0.095, y: 0.24, pressure: 0.5 },
+      { x: 0.11, y: 0.28, pressure: 0.5 },
+    ],
+  };
+  const source = [brace, stroke("eq1", 0.13, 0.12), stroke("eq2", 0.13, 0.22)];
+  const report = buildOcrShadowQaReport(source, segmentPageInk_v2(source));
+  const system = report.candidates.find((candidate) => candidate.kind === "SYSTEM");
+  assert.ok(system, "Expected the established positive SYSTEM fixture");
+  assert.equal(system.children.length, 2);
+  assert.deepEqual(new Set(system.strokeIds), new Set(["brace", "eq1", "eq2"]));
+  assert.deepEqual(report.shadowDuplicateStrokeIds, []);
+  assert.deepEqual(report.shadowMissingStrokeIds, []);
+});
