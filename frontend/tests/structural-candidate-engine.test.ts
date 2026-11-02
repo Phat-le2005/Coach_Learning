@@ -397,3 +397,39 @@ test("Negative: an ambiguous tall stroke never consumes adjacent equations as a 
     new Set(["tall", "eq1", "eq2"]),
   );
 });
+
+test("Integral Guard: Asymmetric S-curve integral sign is classified as UNKNOWN and never forms SYSTEM", () => {
+  // Integral sign: top curves right, middle straight, bottom curves left
+  const integral = makeStroke("integral", [
+    { x: 0.11, y: 0.08, pressure: 0.5 },  // Top hooks right (x > midX)
+    { x: 0.09, y: 0.10, pressure: 0.5 },
+    { x: 0.08, y: 0.18, pressure: 0.5 },  // Mid spine
+    { x: 0.07, y: 0.26, pressure: 0.5 },
+    { x: 0.05, y: 0.28, pressure: 0.5 },  // Bottom hooks left (x < midX)
+  ]);
+  const classification = classifyBracketGeometry(integral);
+  assert.equal(classification.type, "UNKNOWN");
+  assert.ok(classification.reasons.some((r) => r.includes("Asymmetric S-curve")));
+
+  const expr1 = makeLineStroke("integrand", 0.13, 0.12, 0.2, 0.02);
+  const expr2 = makeLineStroke("differential", 0.13, 0.22, 0.2, 0.02);
+  const candidates = detectStructuralCandidates([integral, expr1, expr2]);
+
+  assert.ok(candidates.every((c) => c.kind !== "SYSTEM"));
+});
+
+test("Negative: horizontal siblings on a single line do not form a multi-line SYSTEM", () => {
+  // A tall letter T followed by characters on the same horizontal baseline
+  const tallT = makeStroke("T_stem", [
+    { x: 0.08, y: 0.10, pressure: 0.5 },
+    { x: 0.08, y: 0.25, pressure: 0.5 },
+  ]);
+  // Characters on the same horizontal baseline y=0.18
+  const charPlus = makeLineStroke("plus", 0.12, 0.18, 0.03, 0.02);
+  const charA = makeLineStroke("char_A", 0.18, 0.18, 0.04, 0.02);
+  const charEq = makeLineStroke("equals", 0.24, 0.18, 0.04, 0.01);
+
+  const candidates = detectStructuralCandidates([tallT, charPlus, charA, charEq]);
+  assert.ok(candidates.every((c) => c.kind !== "SYSTEM" && c.kind !== "ALTERNATIVES"));
+});
+

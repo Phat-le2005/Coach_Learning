@@ -127,9 +127,10 @@ export function classifyBracketGeometry(stroke: InkStroke): {
   const topMaxX = topPoints.length > 0 ? Math.max(...topPoints.map((p) => p.x)) : maxX;
   const botMaxX = botPoints.length > 0 ? Math.max(...botPoints.map((p) => p.x)) : maxX;
 
-  // Geometric Invariant to separate Curly brace '{' from Square bracket '[':
-  // - In '{' (CURLY), the central cusp points left (midMinX ≈ minX), while both top and bottom
-  //   endpoints hook to the right (topMinX > minX + delta and botMinX > minX + delta).
+  // Geometric Invariant to separate Curly brace '{' from Square bracket '[' and Integral '∫':
+  // - In '∫' (INTEGRAL / S-CURVE), top and bottom endpoints curve in OPPOSITE directions
+  //   (e.g., top hooks right, bottom hooks left). This asymmetry strictly excludes it from being a bracket.
+  // - In '{' (CURLY), top and bottom endpoints curve symmetrically in the SAME direction relative to middle cusp.
   // - In '[' (SQUARE), the vertical spine forms a straight left wall from top to bottom
   //   (topMinX ≈ minX, midMinX ≈ minX, botMinX ≈ minX), with horizontal arms extending to the right
   //   at the top and bottom (topMaxX > minX + delta, botMaxX > minX + delta).
@@ -137,15 +138,38 @@ export function classifyBracketGeometry(stroke: InkStroke): {
   const botIndent = botMinX - midMinX;
   const threshold = Math.max(0.003, totalW * 0.15);
 
-  const centralLeftCusp = topIndent > threshold && botIndent > threshold;
-  // A typical left curly brace can have a right-facing central cusp and
-  // two left-facing outer lobes; do not require the synthetic reversed shape.
-  const centralRightCusp = -topIndent > threshold && -botIndent > threshold;
-  const isCurly = centralLeftCusp || centralRightCusp;
+  // 1. Integral Guard: Asymmetric top and bottom curves in opposite directions
+  const isOppositeCurve = (topIndent > threshold && botIndent < -threshold) ||
+                          (topIndent < -threshold && botIndent > threshold);
+  if (isOppositeCurve) {
+    return {
+      type: "UNKNOWN",
+      heuristicScore: 0.1,
+      reasons: ["Asymmetric S-curve indicates integral sign or slash, not an enclosing bracket"],
+    };
+  }
+
+  // 2. Square Bracket: Straight vertical spine with orthogonal horizontal arms
   const isSquare =
     Math.abs(topIndent) <= threshold &&
     Math.abs(botIndent) <= threshold &&
     (topMaxX - minX > threshold || botMaxX - minX > threshold);
+
+  if (isSquare) {
+    return {
+      type: "SQUARE",
+      heuristicScore: 0.88,
+      reasons: [
+        "Straight vertical spine spanning top, middle, and bottom with horizontal arms",
+        `topArm: ${(topMaxX - minX).toFixed(4)}, botArm: ${(botMaxX - minX).toFixed(4)}`,
+      ],
+    };
+  }
+
+  // 3. Curly Brace: Symmetric top and bottom endpoints with a central cusp
+  const centralLeftCusp = topIndent > threshold && botIndent > threshold;
+  const centralRightCusp = -topIndent > threshold && -botIndent > threshold;
+  const isCurly = centralLeftCusp || centralRightCusp;
 
   if (isCurly) {
     return {
@@ -160,29 +184,9 @@ export function classifyBracketGeometry(stroke: InkStroke): {
     };
   }
 
-  if (isSquare) {
-    return {
-      type: "SQUARE",
-      heuristicScore: 0.88,
-      reasons: [
-        "Straight vertical spine spanning top, middle, and bottom with horizontal arms",
-        `topArm: ${(topMaxX - minX).toFixed(4)}, botArm: ${(botMaxX - minX).toFixed(4)}`,
-      ],
-    };
-  }
-
-  // Fallback heuristic: if middle has any leftward cusp relative to either endpoint
-  if (topIndent > 0.002 || botIndent > 0.002) {
-    return {
-      type: "CURLY",
-      heuristicScore: 0.65,
-      reasons: ["Partial cusp indicates curly brace"],
-    };
-  }
-
   return {
     type: "UNKNOWN",
-    heuristicScore: 0.4,
+    heuristicScore: 0.0,
     reasons: ["Ambiguous bracket geometry; insufficient cusp or arm distinction"],
   };
 }
@@ -345,6 +349,16 @@ export function detectStructuralCandidates(
       const innerRegions = segmentPageInk_v2(innerStrokes);
 
       if (innerRegions.length >= 2) {
+        // Enclosed expressions must be vertically stacked lines (not horizontal siblings on a single line)
+        const verticallyStacked = innerRegions.every((reg, idx) => {
+          if (idx === 0) return true;
+          const prev = innerRegions[idx - 1];
+          const centerCurr = (reg.bounds.top + reg.bounds.bottom) / 2;
+          const centerPrev = (prev.bounds.top + prev.bounds.bottom) / 2;
+          return centerCurr - centerPrev >= medianHeight * 0.65;
+        });
+        if (!verticallyStacked) continue;
+
         // Classify whether bracket is Curly { (SYSTEM) or Square [ (ALTERNATIVES)
         const bracketClass = classifyBracketGeometry(bracketGeom.stroke);
         // A tall stroke is not automatically a mathematical delimiter.
@@ -431,7 +445,7 @@ export function detectStructuralCandidates(
             kind: "FRACTION",
             // Do not silently absorb an inline suffix/sibling into the fraction.
             sourceStrokeIds: fractionStrokes.map((s) => s.id),
-            bounds: { ...reg.bounds },
+            bounds: computeBounds(fractionStrokes),
             children: [
               {
                 id: `frac-num-${reg.id}`,
