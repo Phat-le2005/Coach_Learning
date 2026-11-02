@@ -1,0 +1,224 @@
+# PDF metadata pilot
+
+Isolated from the running FastAPI/Next.js app. The source PDF is read-only. Packages, weights, caches, temp files and output are stored on E for the Windows pilot. Native/Paddle and Qwen stages run locally; explicit Gemini actions send selected source images and metadata to Google. No stage writes the production database.
+
+## Default: local Qwen review
+
+The Windows wrapper now defaults to `-Provider local`. The Python entry points read `PDF_REVIEW_PROVIDER=local` from `.env`. There is no automatic cloud fallback. The existing Gemini key is preserved for an explicit future choice and is never sent to the local model server.
+
+```powershell
+# Download once to E and verify published SHA-256 digests.
+.\tools\pdf_metadata\run.ps1 -Action local-setup
+
+# On-demand model server: 3 CPU threads, no GPU offload, below-normal priority.
+.\tools\pdf_metadata\run.ps1 -Action local-start
+.\tools\pdf_metadata\run.ps1 -Action local-preflight
+
+# Review the pilot question with its original images and local step candidates.
+.\tools\pdf_metadata\run.ps1 -Action local-review -Questions '152' -Limit 1 -MaxCalls 1 -MaxOutputTokens 4096
+
+# A new corpus gets a separate local output directory.
+.\tools\pdf_metadata\run.ps1 -Action corpus-plan -Provider local -CorePages 1 -Overlap 1
+.\tools\pdf_metadata\run.ps1 -Action corpus-run -Provider local -Limit 1 -MaxCalls 1 -MaxOutputTokens 4096
+
+# Release the model's memory after a run.
+.\tools\pdf_metadata\run.ps1 -Action local-stop
+```
+
+Pilot output is `.tmp/pdf-metadata-pilot-v1/local-review/`, viewable at `http://localhost:8787/local-review/review.html` through the existing authoring server. Default local corpus output is `.tmp/toan12-local-corpus/`. Existing Gemini artifacts remain in their old directories.
+
+The initial local model is `ggml-org/Qwen3-VL-2B-Instruct-GGUF` Q8_0, revision `ea6a11058182570be6436b9a2e4ee7f7b49f908d`, with its Q8 vision projector, running the official Windows CPU llama.cpp build `b12032`. About 2.3 GB of downloads are pinned and verified by `local_setup.py`. Runtime, model, projector and local logs live in `.tmp/pdf-pipeline-runtime`; no system-wide Ollama/model install is used. The model is loaded only by `local-start`, not by the web app.
+
+The loopback endpoint accepts only `127.0.0.1`, `localhost` or `::1`, blocks redirects/proxies, and uses a separate local server token file under the ignored runtime directory. Source data does not leave the machine during inference. Downloads from GitHub/Hugging Face happen only during setup. Model fingerprint participates in cache identity. Local token counts measure computation, not a cloud bill; runtime and electricity still have costs.
+
+This small CPU model is a resource-bounded trial, not a claim of Gemini-equivalent math accuracy or practical throughput for all 3,478 pages. Benchmark a few questions and images first. Missing assumptions, OCR mistakes and model additions remain queued; local generation cannot grant academic approval or grading. See `docs/pdf-metadata-local-qwen-2026-11-02.md`.
+
+## Run on Windows
+
+From the repository root, use the project-local environment. `-Install` installs the lightweight dependencies; `-InstallOcr` also installs CPU PaddleOCR dependencies. The environment lives at `.tmp/pdf-pipeline-runtime/.venv`.
+
+```powershell
+# Native extraction, source crops and a local review HTML.
+.\tools\pdf_metadata\run.ps1 -Action native -Install
+
+# Layout detection + formula crops on the pilot document.
+.\tools\pdf_metadata\run.ps1 -Action hybrid -Pages all -InstallOcr
+
+# Attach model evidence and flag discrepancies. Native/source data stays intact.
+.\tools\pdf_metadata\run.ps1 -Action enrich
+
+# Read flagged formula regions again with the larger recognizer, then compare.
+.\tools\pdf_metadata\run.ps1 -Action fallback
+.\tools\pdf_metadata\run.ps1 -Action enrich
+
+# Source-specific regression assertions and generic unit tests.
+.\tools\pdf_metadata\run.ps1 -Action check
+.\tools\pdf_metadata\run.ps1 -Action test
+```
+
+Open `.tmp/pdf-metadata-pilot-v1/review.html`. Each item shows stem/answer/solution source crops, original page links, raw native text, OCR candidates, warnings and reference-step excerpts. Answers/solutions are intentionally visible here: this is an authoring/review artifact, not a student-facing payload.
+
+The optional full-page VLM experiment is significantly slower on this laptop. It is separate from the hybrid pass:
+
+```powershell
+.\tools\pdf_metadata\run.ps1 -Action ocr -Pages '1'
+.\tools\pdf_metadata\run.ps1 -Action formula
+.\tools\pdf_metadata\run.ps1 -Action enrich
+```
+
+For another digital, single-column PDF, change source and output explicitly. Run `native`, then `hybrid`, then `enrich` with the same source/output paths. The `check` action is specific to the pilot fixture and must not be applied to another source.
+
+```powershell
+.\tools\pdf_metadata\run.ps1 -Action native -Pdf 'E:\materials\another.pdf' -Output 'E:\pdf-pilots\another'
+.\tools\pdf_metadata\run.ps1 -Action hybrid -Pages all -Output 'E:\pdf-pilots\another'
+.\tools\pdf_metadata\run.ps1 -Action enrich -Output 'E:\pdf-pilots\another'
+```
+
+## Output contract
+
+- `manifest.json`: source path/hash, page count, extraction/render information.
+- `pages/*.json`: page geometry, raw lines, glyph positions/fonts/colors, image/vector bounds. Coordinates are PDF points from top-left. `pages/*.png` preserve source layout.
+- `questions.candidates.jsonl`: native question/answer/solution candidates and grounded step excerpts.
+- `questions.enriched.candidates.jsonl`: adds model evidence and discrepancy flags.
+- `assets/*.png`: separate source crops for stem, answer and solution.
+- `paddle-vl/`: full-page VLM outputs/config/timing when requested.
+- `fast-hybrid/`: layout and formula OCR checkpoints for each processed page, model hashes, runtime measurements.
+- `formula-probe/`: explicit control experiment; not a generic parser rule.
+- `formula-fallback/`: larger-model alternatives for flagged formula regions. Old results and warnings remain available.
+- `report.json`, `enrichment-report.json`, `fixture-result.json`: separate structural, source-regression and OCR quality evidence.
+
+Every candidate stays `academic_review=PENDING`, `grading_support=NOT_ASSESSED`, `publishable=false`. JSON Schema validates the acquisition format. It is **not** the existing production Question import format. Authoring a MathSpec, AnswerSpec or rubric, checking taxonomy IDs and performing a reviewed import remain separate tasks.
+
+## Quality boundaries
+
+This pilot's assembler targets digital single-column documents with explicit Câu/Bài, Trả lời, Lời giải and Đáp án markers. Its rules do not contain the pilot's page count, question range or answer values. Specific expectations live in `fixtures/pilot-kntt-v1.json` and are checked only after verifying the PDF hash.
+
+It retains continuation regions across pages, including drawings/tables above the first text line. Short raised math fragments overlapping the next heading are assigned to the next question. Repeated page-margin text is retained in raw records but omitted from question assembly.
+
+The following are **not solved by this prototype**:
+
+- Full mathematical transcription, semantic interpretation of all variation tables/figures, and academic validation of the source solutions.
+- Guaranteed question assembly for scans, multiple columns, unfamiliar section conventions or compound OCR blocks. Full-page OCR can produce evidence for these, but the native assembler must be extended/evaluated before claiming support.
+- Complete formula detection: detected regions are a subset, and a page with zero detections can still contain many formulas. Source images and native glyphs remain available.
+- Semantic step grading. Step groups are grounded source excerpts with candidate kinds; no expression/checker/rubric weight is invented.
+
+Discrepancy rules flag malformed or changed decimals, Latin v/Greek nu substitution, missing derivative marks and strict-boundary changes. Passing these rules does not prove correctness. No confidence score is treated as a calibrated probability.
+
+On the pilot, full-page PaddleOCR-VL misread a coefficient; the small formula recognizer recovered that coefficient in a control crop but lost a derivative mark elsewhere. Keep field-level review and allow a second parser to disagree. Do not automatically accept whichever model ran last.
+
+PP-FormulaNet_plus-M is used as a targeted fallback after the first enrichment pass. An optional four-region control experiment can be run with `python -m pdfmeta.formula_probe --pilot <output> --runtime <runtime> --model PP-FormulaNet_plus-M`. This control crop is specific to the source hash in the fixture. The fallback job handles at most 80 flagged regions unless an explicit limit is supplied; scanned documents should use a separate full-page OCR job.
+
+## Reuse and reproducibility
+
+Models are loaded only by explicit OCR commands; the web app does not load them. Native page caches use source hash/parser/library versions. Hybrid checkpoints include rendered image hash, package versions, weight hashes, crop resolution and threshold. Formula crops are rendered at 240 DPI directly from the original PDF. Raw detector coordinates remain available alongside coordinates converted to PDF points.
+
+The CLI Python modules can run from another OS/notebook with an explicit runtime directory; the PowerShell wrapper enforces E on Windows. For GPU runs, create a separate compatible environment, install the appropriate Paddle GPU wheel in place of the CPU wheel, and preflight hardware/CUDA. `pdfmeta.paddle_probe --device gpu:0` supports that selection, but GPU/Kaggle execution has not been tested in this pilot.
+
+Keep source PDFs, generated crops, models, environments and outputs out of Git. Review/promote a separate versioned release only after content and checker capabilities are verified.
+
+## Editable review and the 20-item authoring batch
+
+The pilot now has a source-specific editorial configuration at `fixtures/pilot20-editorial.json`. Stems and answer crops were visually compared; seven items carry notes about assumptions, wording or source-solution issues. This is separate from academic approval.
+
+```powershell
+.\tools\pdf_metadata\run.ps1 -Action recheck
+.\tools\pdf_metadata\run.ps1 -Action curate
+.\tools\pdf_metadata\run.ps1 -Action enrich
+.\tools\pdf_metadata\run.ps1 -Action review
+```
+
+Open `http://localhost:8787/review.html`. If a server is already listening on that port, use that page; do not start a duplicate process. The editor shows source images, editable stem/answer/solution, rendered LaTeX and individual OCR-region crops. KaTeX assets are copied from the existing frontend installation to the output on E; no CDN is used. Source text remains readable if these optional assets are unavailable.
+
+Save a draft, flag an item for checking, or confirm that its stem/answer were compared to the source. A reviewer label is required. Editing a field resets its corresponding verification checkbox. Source comparison does not approve the mathematics or enable grading. Formula corrections are saved by their original OCR block ID, leaving model outputs unchanged.
+
+Changes and full revision history live in `reviews/state.json`. Optimistic item revisions reject a stale save from another tab. Restarting the server/reloading the page preserves edits. If candidate content changes, old reviews are marked stale and must be checked again. Only one review server should write a pilot directory.
+
+Click **Xuất bộ 20 bài** after saving edits. It regenerates:
+
+- `exports/pilot20.authoring.jsonl`: 20 versioned authoring records with separate student view, draft AnswerSpec, draft MathSpec, source spans, solution/step candidates and review notes. The export is validated against `schemas/assessment-authoring.v1.schema.json`.
+- `exports/pilot20.student-preview.json`: stem text and stem assets only; no answer/spec/solution keys. This remains an authoring preview, not a production exercise response.
+- `exports/pilot20.report.json`: source checks, unresolved source issues, export revision and zero counts for academic approval/grading/publication.
+
+The preset batch is specific to this source hash. Another PDF needs its own editorial selection/configuration. The generic extraction pipeline is unchanged. Câu 260 intentionally retains source answer 6 and a separate proposed correction 3: the source stem asks for abscissas but its solution computes ordinates. It must not become a grading reference until the mismatch is resolved by academic review.
+
+### Clean authoring export (v2)
+
+The authored export no longer embeds raw PDF step text. Symbol-font private-use characters are decoded only when the source glyph font supports the mapping. Adobe Symbol mappings are reused from the project's installed pypdf codec in `pdfmeta/_symbol_encoding.py`, with its Unicode copyright notice preserved. Historical private-use bracket pieces are represented by assigned Unicode assembly characters.
+
+Unknown fonts are not assumed to use Symbol encoding: their characters become explicit `U+...` review markers. This matters because the same private code can mean different things in SymbolMT and MT-Extra. Normalized native excerpts are labeled lossy; fractions, superscripts, reading order and mathematical meaning still need source/LaTeX review.
+
+- `exports/pilot20.authoring.jsonl`: machine-readable `assessment-authoring/v2` records, with normalized native excerpts, separate LaTeX candidates and raw-source references.
+- `exports/pilot20.authoring.pretty.json`: the same records with indentation for inspection.
+- `exports/pilot20.readable.md`: a readable question/answer/excerpt/LaTeX report.
+- `exports/pilot20.raw-evidence.jsonl`: deliberately raw PDF evidence, not a grading input.
+
+The v2 schema lives in `schemas/assessment-authoring.v2.schema.json`. Export rejects residual private-use/replacement characters in authored fields. Raw inputs and review history remain unchanged. Successful Unicode normalization does not approve a mathematical expression or enable grading.
+
+### Layout-grounded reasoning-step trial
+
+```powershell
+.\tools\pdf_metadata\run.ps1 -Action steps
+# http://localhost:8787/steps.html?question=152
+```
+
+Run after `enrich`. This lightweight stage uses saved native glyphs and OCR evidence; it does not load models, call inference APIs, or overwrite raw acquisition, review history, or the existing v2 authoring export. `Xem các bước giải` on the regenerated review page opens the trial for that question.
+
+- `steps/questions.steps.jsonl` and `steps/questions.steps.pretty.json`: separate `solution-step-proposals/v1` records; the old `reference_steps` remain acquisition excerpts.
+- `steps/report.json`: structural grounding results, candidate kind counts, unresolved/long-step flags and processing time. Counts and a structural PASS are not measured semantic accuracy.
+- `steps.html`: read-only comparison of source images, normalized text, and OCR formula alternatives, including graphic-only table continuations across pages.
+
+The proposed boundaries use baseline overlap to attach fractions, language cues to identify new ideas, and explicit top-level separators to separate a derivative calculation from solving its zero equation. Intervals such as `(a;b)` and decimal coefficients such as `0,003` are preserved. Every available normalized source character must be covered exactly once by a text slice. Inline splits can share a full source-line image, explicitly marked. Context crops cannot extend into another question.
+
+The pilot's Câu 152 produces seven proposals without any question number or answer value in the parser. Other solutions can still remain composite or unclassified; the stage flags these for review. Previous-step links record presentation order only. `MODEL_SETUP` is an acquisition category and does not expand the production core's supported rubric kinds. Conditions explicitly found in source text are retained, while missing assumptions such as the sign of `c` remain review notes. No checker, score, rubric weight, academic approval or publication is inferred.
+
+Rerun `steps` after changing formula corrections or regenerating candidates. Do not import this experimental artifact directly into the grading core. See `docs/pdf-metadata-step-segmentation-2026-11-02.md` for the measured trial and limits.
+
+## Gemini review and reusable corpus pipeline
+
+The local extraction stages above remain offline. Only the explicit `gemini-review`, `corpus-run` and `pipeline` actions send selected source images/metadata to Google. `gemini-preflight` lists accessible models without sending document content. Configuration is `tools/pdf_metadata/.env`; `.env.example` is the shareable template, while the actual secret file is ignored by Git. API keys stay out of frontend code, prompts, checkpoints and logs.
+
+```powershell
+# 1. Check credentials/model access; no document inference.
+.\tools\pdf_metadata\run.ps1 -Action gemini-preflight
+
+# 2. Review existing extracted questions with the matching source crops.
+.\tools\pdf_metadata\run.ps1 -Action gemini-review -Questions '151,152,153,154,158,213,260' -Limit 7 -MaxCalls 10 -MaxTotalTokens 150000
+
+# 3. Inventory/plan the entire ZIP for the explicit Gemini route, without inference.
+.\tools\pdf_metadata\run.ps1 -Action corpus-plan -Provider gemini -InputPath 'E:\HocTap\Hackathon-SGU2026\Coach_Learning\data\Toan12.zip'
+
+# 4. Process the next bounded set of windows. Repeat to resume.
+.\tools\pdf_metadata\run.ps1 -Action corpus-run -Provider gemini -Limit 10 -MaxCalls 12 -MaxTotalTokens 200000
+
+# Or plan + run a bounded set in one command for another PDF/ZIP/directory.
+.\tools\pdf_metadata\run.ps1 -Action pipeline -Provider gemini -InputPath 'E:\materials\new-pdfs' -Output 'E:\pdf-output\new-corpus' -Limit 3 -MaxCalls 5
+
+# Read-only corpus viewer, localhost:8788/review.html.
+.\tools\pdf_metadata\run.ps1 -Action corpus-review -Provider gemini
+```
+
+The pilot viewer is `http://localhost:8787/gemini/review.html` when the existing authoring server is running. Corpus viewing is separate because its output root is different. HTTP checks do not establish visual quality. If the pipeline generated the review files but the browser tool is disabled, inspect the source images and JSON separately and leave browser validation explicitly pending.
+
+### What happens in the corpus route
+
+1. Hash/inventory input PDF files. ZIP entries are copied to E under their content hash; archive paths are never trusted as extraction destinations. Original sources are unchanged.
+2. Plan windows with two owner pages and one context page on each side (at most four images per request). Each page belongs to exactly one owner window. Context helps finish a question starting on an owner page; questions starting outside that window are not exported again.
+3. Render selected pages at 160 DPI and retain native text as a lossy helper. Image-only pages use the same visual route. No Paddle model is loaded by this route; it is the multimodal fallback for the mixed corpus, separate from the pilot's native/Paddle question extraction.
+4. Gemini extracts question/knowledge units, printed source numbers, options, source answer/solution, candidate reasoning steps and issues. It must separate visible source text from proposed corrections and added assumptions.
+5. Local validation checks strict JSON, owner-page boundaries, evidence IDs, step order and publication gates. This verifies structure/provenance, not general mathematical truth or complete source coverage. Missing answers/solutions, MCQ/true-false leakage risks, incomplete boundaries, uncertain steps and duplicate content go to a queue.
+6. Export versioned staging with source hashes, stable job IDs and images. `AI_REVIEWED` means an AI review ran and local gates passed; academic/grading/publication remain unapproved. No production database, grading score, rubric or mastery state is mutated.
+
+### Outputs and limits
+
+- Pilot: `.tmp/pdf-metadata-pilot-v1/gemini/questions.reviewed.jsonl`, readable pretty JSON, `review-queue.json`, `review.html`, `report.json`, `runs/` and `usage.jsonl`.
+- Corpus: `.tmp/toan12-gemini-corpus/plan.json`, `active-jobs.json`, `staging/content.jsonl`, `staging/content.pretty.json`, `staging/review-queue.json`, `review.html`, `report.json`, `runs/`, `pages/` and immutable hashed `jobs/` checkpoints.
+- Contracts: `gemini-question-review.v1.schema.json`, `gemini-window-extraction.v1.schema.json`, `math-content-staging.v1.schema.json`. Provider requests use a portable schema subset (explicit enum types); the full strict schemas are enforced locally.
+- `-Limit` bounds new corpus jobs. Complete cached jobs do not consume that limit. `-MaxCalls` bounds generation attempts including HTTP retries. `-MaxTotalTokens` is a stop threshold based on returned usage plus output reservation, **not a hard billing cap**; input costs and timed-out requests can be unknown. Token limits reset per invocation; there is no automatic unlimited loop.
+- 429/temporary server errors have bounded retries. Timeouts are recorded as unknown remote state and are not automatically replayed. Review failures or unknown remote jobs require `-RetryFailed` after checking their state; this can incur another charge. Never treat a timeout as proof of zero usage.
+- A changed image, package, schema, prompt, model or adapter creates a new cache key. Raw old jobs remain; active staging exports only the current corpus generation, avoiding mixed-model duplicates. A single-writer lock prevents competing processes. After a crash, verify the recorded PID is stopped before removing only that output's `.writer.lock`; unknown in-flight calls still need explicit retry.
+- `-Revalidate` rechecks a failed saved corpus response locally without resending images. Context-page units returned despite the prompt are excluded from staging and retained in `normalization_audit`; unknown/out-of-range page references still fail. `-RetryFailed` has a different meaning: it may request new inference and incur usage again.
+- Full-window output truncation or a question longer than the available context is not silently accepted. Retry with a smaller owner window in a **new output directory**, e.g. Python `pdfmeta.corpus plan --core-pages 1 --overlap 2`, or review the flagged source. The bounded native pilot assembler is not claimed to parse all layouts.
+
+Use `-Documents '<document_id>'` or `-Jobs '<document_id>:p0003,...'` from `plan.json` for representative tests. `-SamplePerDocument` interleaves documents to avoid testing only the first PDF. The Python entry points run on other hosts with explicit paths/env secrets; PowerShell enforces E-drive outputs on this Windows machine. No GPU/Kaggle execution or full-corpus quality benchmark has been claimed.
+
+See `docs/pdf-metadata-gemini-pipeline-2026-11-02.md` for the tested cases, known model failures and rollout instructions.
