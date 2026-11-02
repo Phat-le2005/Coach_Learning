@@ -1,0 +1,6624 @@
+[
+  {
+    "case_id": "P06",
+    "page": {
+      "schema_version": "page-document/v1",
+      "source_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927",
+      "parser_id": "pdfplumber-native",
+      "parser_version": "native-lines/v1",
+      "library_version": "0.11.9",
+      "page_number": 1,
+      "width": 595,
+      "height": 842,
+      "rotation": 0,
+      "coordinate_origin": "top-left",
+      "coordinate_unit": "pdf_point",
+      "blocks": [
+        {
+          "block_id": "p001-l0029",
+          "block_type": "native_line",
+          "bbox": [
+            404.4,
+            720.478,
+            486.971,
+            732.521
+          ],
+          "reading_order": 29,
+          "text_raw": "v  6 v  6",
+          "glyphs": [
+            {
+              "text": "v",
+              "bbox": [
+                404.4,
+                720.478,
+                409.746,
+                732.521
+              ],
+              "font": "TimesNewRomanPS-ItalicMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "",
+              "bbox": [
+                411.84,
+                720.478,
+                418.451,
+                732.521
+              ],
+              "font": "FNTSBS+SymbolMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "6",
+              "bbox": [
+                420.48,
+                720.478,
+                426.501,
+                732.521
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "v",
+              "bbox": [
+                464.871,
+                720.478,
+                470.217,
+                732.521
+              ],
+              "font": "TimesNewRomanPS-ItalicMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "",
+              "bbox": [
+                472.311,
+                720.478,
+                478.921,
+                732.521
+              ],
+              "font": "FNTSBS+SymbolMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "6",
+              "bbox": [
+                480.951,
+                720.478,
+                486.971,
+                732.521
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          ],
+          "review_flags": [
+            "PRIVATE_USE_GLYPHS"
+          ],
+          "is_margin": false
+        },
+        {
+          "block_id": "p001-l0030",
+          "block_type": "native_line",
+          "bbox": [
+            139.2,
+            741.358,
+            161.061,
+            753.401
+          ],
+          "reading_order": 30,
+          "text_raw": "v 9",
+          "glyphs": [
+            {
+              "text": "v",
+              "bbox": [
+                139.2,
+                741.358,
+                144.546,
+                753.401
+              ],
+              "font": "TimesNewRomanPS-ItalicMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "",
+              "bbox": [
+                146.64,
+                741.358,
+                153.251,
+                753.401
+              ],
+              "font": "FNTSBS+SymbolMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "9",
+              "bbox": [
+                155.04,
+                741.358,
+                161.061,
+                753.401
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          ],
+          "review_flags": [
+            "PRIVATE_USE_GLYPHS"
+          ],
+          "is_margin": false
+        },
+        {
+          "block_id": "p001-l0031",
+          "block_type": "native_line",
+          "bbox": [
+            59.76,
+            747.452,
+            310.715,
+            761.072
+          ],
+          "reading_order": 31,
+          "text_raw": "E(v)  600cv2 ; E(v)  0  v  9 do (v > 6)",
+          "glyphs": [
+            {
+              "text": "E",
+              "bbox": [
+                59.76,
+                748.798,
+                67.117,
+                760.841
+              ],
+              "font": "TimesNewRomanPS-ItalicMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "",
+              "bbox": [
+                67.68,
+                748.318,
+                70.654,
+                760.361
+              ],
+              "font": "FNTSBS+SymbolMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "(",
+              "bbox": [
+                70.56,
+                748.798,
+                74.57,
+                760.841
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "v",
+              "bbox": [
+                74.631,
+                748.798,
+                79.977,
+                760.841
+              ],
+              "font": "TimesNewRomanPS-ItalicMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": ")",
+              "bbox": [
+                80.157,
+                748.798,
+                84.167,
+                760.841
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "",
+              "bbox": [
+                86.88,
+                748.798,
+                93.491,
+                760.841
+              ],
+              "font": "FNTSBS+SymbolMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "6",
+              "bbox": [
+                96.232,
+                748.798,
+                102.252,
+                760.841
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "0",
+              "bbox": [
+                102.24,
+                748.798,
+                108.261,
+                760.841
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "0",
+              "bbox": [
+                108.249,
+                748.798,
+                114.27,
+                760.841
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "c",
+              "bbox": [
+                114.222,
+                748.798,
+                119.569,
+                760.841
+              ],
+              "font": "TimesNewRomanPS-ItalicMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "v",
+              "bbox": [
+                119.268,
+                748.798,
+                124.614,
+                760.841
+              ],
+              "font": "TimesNewRomanPS-ItalicMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "2",
+              "bbox": [
+                125.28,
+                747.452,
+                128.792,
+                754.477
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 7.025,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": ";",
+              "bbox": [
+                169.683,
+                748.798,
+                173.031,
+                760.841
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "E",
+              "bbox": [
+                175.897,
+                748.798,
+                183.254,
+                760.841
+              ],
+              "font": "TimesNewRomanPS-ItalicMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "",
+              "bbox": [
+                183.829,
+                748.318,
+                186.804,
+                760.361
+              ],
+              "font": "FNTSBS+SymbolMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "(",
+              "bbox": [
+                186.481,
+                748.798,
+                190.49,
+                760.841
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "v",
+              "bbox": [
+                190.768,
+                748.798,
+                196.114,
+                760.841
+              ],
+              "font": "TimesNewRomanPS-ItalicMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": ")",
+              "bbox": [
+                196.318,
+                748.798,
+                200.328,
+                760.841
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "",
+              "bbox": [
+                203.029,
+                748.798,
+                209.64,
+                760.841
+              ],
+              "font": "FNTSBS+SymbolMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "0",
+              "bbox": [
+                212.152,
+                748.798,
+                218.173,
+                760.841
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "",
+              "bbox": [
+                220.778,
+                748.798,
+                233.325,
+                760.841
+              ],
+              "font": "FNTSBS+SymbolMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "v",
+              "bbox": [
+                236.115,
+                748.798,
+                241.462,
+                760.841
+              ],
+              "font": "TimesNewRomanPS-ItalicMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "",
+              "bbox": [
+                244.535,
+                748.798,
+                251.146,
+                760.841
+              ],
+              "font": "FNTSBS+SymbolMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "9",
+              "bbox": [
+                253.43,
+                748.798,
+                259.45,
+                760.841
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "d",
+              "bbox": [
+                263.52,
+                749.072,
+                269.519,
+                761.072
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "o",
+              "bbox": [
+                269.519,
+                749.072,
+                275.518,
+                761.072
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "(",
+              "bbox": [
+                278.637,
+                749.072,
+                282.632,
+                761.072
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "v",
+              "bbox": [
+                282.72,
+                749.072,
+                288.047,
+                761.072
+              ],
+              "font": "TimesNewRomanPS-ItalicMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": ">",
+              "bbox": [
+                291.119,
+                749.072,
+                297.886,
+                761.072
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "6",
+              "bbox": [
+                300.96,
+                749.072,
+                306.959,
+                761.072
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": ")",
+              "bbox": [
+                306.72,
+                749.072,
+                310.715,
+                761.072
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          ],
+          "review_flags": [
+            "PRIVATE_USE_GLYPHS"
+          ],
+          "is_margin": false
+        },
+        {
+          "block_id": "p001-l0032",
+          "block_type": "native_line",
+          "bbox": [
+            132.48,
+            756.812,
+            166.472,
+            770.441
+          ],
+          "reading_order": 32,
+          "text_raw": "(v 6)2",
+          "glyphs": [
+            {
+              "text": "(",
+              "bbox": [
+                132.48,
+                758.398,
+                136.49,
+                770.441
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "v",
+              "bbox": [
+                136.56,
+                758.398,
+                141.906,
+                770.441
+              ],
+              "font": "TimesNewRomanPS-ItalicMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "",
+              "bbox": [
+                144.0,
+                758.398,
+                150.611,
+                770.441
+              ],
+              "font": "FNTSBS+SymbolMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "6",
+              "bbox": [
+                152.396,
+                758.398,
+                158.417,
+                770.441
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": ")",
+              "bbox": [
+                158.405,
+                758.398,
+                162.414,
+                770.441
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "2",
+              "bbox": [
+                162.96,
+                756.812,
+                166.472,
+                763.837
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 7.025,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          ],
+          "review_flags": [
+            "PRIVATE_USE_GLYPHS"
+          ],
+          "is_margin": false
+        }
+      ],
+      "images": [
+        {
+          "bbox": [
+            104.4,
+            289.52,
+            519.84,
+            408.08
+          ]
+        }
+      ],
+      "vectors": [
+        {
+          "kind": "line",
+          "bbox": [
+            131.82,
+            755.345,
+            168.18,
+            755.345
+          ]
+        }
+      ],
+      "image_path": "pages/page-001.png",
+      "image_dpi": 120,
+      "extraction_status": "NATIVE_EXTRACTED",
+      "seconds": 0.105,
+      "content_bounds": [
+        0.0,
+        36.217,
+        595,
+        805.417
+      ],
+      "content_block_count": 33
+    },
+    "candidate": {
+      "block_id": "p001-vl-0019-fallback-M",
+      "parser_id": "PP-FormulaNet_plus-M",
+      "page_number": 1,
+      "bbox": [
+        58.18,
+        740.048,
+        312.495,
+        770.634
+      ],
+      "latex": "E^{\\prime}(v)=600cv^{2}\\frac{v-9}{(v-6)^{2}}",
+      "status": "OCR_CANDIDATE_NOT_VERIFIED"
+    },
+    "source_pdf_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927"
+  },
+  {
+    "case_id": "P10",
+    "page": {
+      "schema_version": "page-document/v1",
+      "source_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927",
+      "parser_id": "pdfplumber-native",
+      "parser_version": "native-lines/v1",
+      "library_version": "0.11.9",
+      "page_number": 4,
+      "width": 595,
+      "height": 842,
+      "rotation": 0,
+      "coordinate_origin": "top-left",
+      "coordinate_unit": "pdf_point",
+      "blocks": [
+        {
+          "block_id": "p004-l0036",
+          "block_type": "native_line",
+          "bbox": [
+            28.8,
+            737.758,
+            537.647,
+            749.801
+          ],
+          "reading_order": 36,
+          "text_raw": "Câu 158. Một xưởng sản xuất nón bảo hiểm có hàm chi phí sản xuất cho x chiếc nón là",
+          "glyphs": [
+            {
+              "text": "C",
+              "bbox": [
+                28.8,
+                737.792,
+                37.462,
+                749.792
+              ],
+              "font": "TimesNewRomanPS-BoldMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                1.0
+              ]
+            },
+            {
+              "text": "â",
+              "bbox": [
+                37.45,
+                737.792,
+                43.449,
+                749.792
+              ],
+              "font": "TimesNewRomanPS-BoldMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                1.0
+              ]
+            },
+            {
+              "text": "u",
+              "bbox": [
+                43.449,
+                737.792,
+                50.12,
+                749.792
+              ],
+              "font": "TimesNewRomanPS-BoldMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                1.0
+              ]
+            },
+            {
+              "text": "1",
+              "bbox": [
+                53.287,
+                737.792,
+                59.286,
+                749.792
+              ],
+              "font": "TimesNewRomanPS-BoldMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                1.0
+              ]
+            },
+            {
+              "text": "5",
+              "bbox": [
+                59.286,
+                737.792,
+                65.285,
+                749.792
+              ],
+              "font": "TimesNewRomanPS-BoldMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                1.0
+              ]
+            },
+            {
+              "text": "8",
+              "bbox": [
+                65.285,
+                737.792,
+                71.284,
+                749.792
+              ],
+              "font": "TimesNewRomanPS-BoldMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                1.0
+              ]
+            },
+            {
+              "text": ".",
+              "bbox": [
+                71.284,
+                737.792,
+                74.283,
+                749.792
+              ],
+              "font": "TimesNewRomanPS-BoldMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                1.0
+              ]
+            },
+            {
+              "text": "M",
+              "bbox": [
+                75.6,
+                737.792,
+                86.266,
+                749.792
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "ộ",
+              "bbox": [
+                86.16,
+                737.792,
+                92.159,
+                749.792
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "t",
+              "bbox": [
+                92.159,
+                737.792,
+                95.494,
+                749.792
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "x",
+              "bbox": [
+                103.916,
+                737.792,
+                109.915,
+                749.792
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "ư",
+              "bbox": [
+                109.68,
+                737.792,
+                116.183,
+                749.792
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "ở",
+              "bbox": [
+                116.16,
+                737.792,
+                122.507,
+                749.792
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "n",
+              "bbox": [
+                122.639,
+                737.792,
+                128.638,
+                749.792
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "g",
+              "bbox": [
+                128.41,
+                737.792,
+                134.408,
+                749.792
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "s",
+              "bbox": [
+                142.567,
+                737.792,
+                147.234,
+                749.792
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "ả",
+              "bbox": [
+                147.138,
+                737.792,
+                152.465,
+                749.792
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "n",
+              "bbox": [
+                152.657,
+                737.792,
+                158.655,
+                749.792
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "x",
+              "bbox": [
+                166.826,
+                737.792,
+                172.825,
+                749.792
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "u",
+              "bbox": [
+                172.597,
+                737.792,
+                178.596,
+                749.792
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "ấ",
+              "bbox": [
+                178.596,
+                737.792,
+                183.922,
+                749.792
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "t",
+              "bbox": [
+                183.886,
+                737.792,
+                187.222,
+                749.792
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "n",
+              "bbox": [
+                195.644,
+                737.792,
+                201.643,
+                749.792
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "ó",
+              "bbox": [
+                201.415,
+                737.792,
+                207.414,
+                749.792
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "n",
+              "bbox": [
+                207.654,
+                737.792,
+                213.652,
+                749.792
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "b",
+              "bbox": [
+                221.518,
+                737.792,
+                227.517,
+                749.792
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "ả",
+              "bbox": [
+                227.28,
+                737.792,
+                232.607,
+                749.792
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "o",
+              "bbox": [
+                232.571,
+                737.792,
+                238.57,
+                749.792
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "h",
+              "bbox": [
+                246.968,
+                737.792,
+                252.967,
+                749.792
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "i",
+              "bbox": [
+                252.967,
+                737.792,
+                256.302,
+                749.792
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "ể",
+              "bbox": [
+                256.098,
+                737.792,
+                261.425,
+                749.792
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "m",
+              "bbox": [
+                261.617,
+                737.792,
+                270.951,
+                749.792
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "c",
+              "bbox": [
+                278.906,
+                737.792,
+                284.233,
+                749.792
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "ó",
+              "bbox": [
+                284.197,
+                737.792,
+                290.195,
+                749.792
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "h",
+              "bbox": [
+                298.594,
+                737.792,
+                304.593,
+                749.792
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "à",
+              "bbox": [
+                304.32,
+                737.792,
+                309.647,
+                749.792
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "m",
+              "bbox": [
+                309.839,
+                737.792,
+                319.173,
+                749.792
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "c",
+              "bbox": [
+                327.127,
+                737.792,
+                332.454,
+                749.792
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "h",
+              "bbox": [
+                332.418,
+                737.792,
+                338.417,
+                749.792
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "i",
+              "bbox": [
+                338.417,
+                737.792,
+                341.753,
+                749.792
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "p",
+              "bbox": [
+                349.467,
+                737.792,
+                355.466,
+                749.792
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "h",
+              "bbox": [
+                355.706,
+                737.792,
+                361.705,
+                749.792
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "í",
+              "bbox": [
+                361.705,
+                737.792,
+                365.04,
+                749.792
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "s",
+              "bbox": [
+                372.994,
+                737.792,
+                377.661,
+                749.792
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "ả",
+              "bbox": [
+                377.76,
+                737.792,
+                383.087,
+                749.792
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "n",
+              "bbox": [
+                383.279,
+                737.792,
+                389.278,
+                749.792
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "x",
+              "bbox": [
+                397.208,
+                737.792,
+                403.207,
+                749.792
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "u",
+              "bbox": [
+                402.979,
+                737.792,
+                408.978,
+                749.792
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "ấ",
+              "bbox": [
+                409.218,
+                737.792,
+                414.545,
+                749.792
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "t",
+              "bbox": [
+                414.509,
+                737.792,
+                417.844,
+                749.792
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "c",
+              "bbox": [
+                426.266,
+                737.792,
+                431.593,
+                749.792
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "h",
+              "bbox": [
+                431.557,
+                737.792,
+                437.556,
+                749.792
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "o",
+              "bbox": [
+                437.328,
+                737.792,
+                443.327,
+                749.792
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "x",
+              "bbox": [
+                453.84,
+                737.758,
+                459.186,
+                749.801
+              ],
+              "font": "TimesNewRomanPS-ItalicMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "c",
+              "bbox": [
+                469.678,
+                737.792,
+                475.005,
+                749.792
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "h",
+              "bbox": [
+                474.969,
+                737.792,
+                480.968,
+                749.792
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "i",
+              "bbox": [
+                480.968,
+                737.792,
+                484.303,
+                749.792
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "ế",
+              "bbox": [
+                484.08,
+                737.792,
+                489.407,
+                749.792
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "c",
+              "bbox": [
+                489.371,
+                737.792,
+                494.698,
+                749.792
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "n",
+              "bbox": [
+                503.06,
+                737.792,
+                509.059,
+                749.792
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "ó",
+              "bbox": [
+                508.831,
+                737.792,
+                514.83,
+                749.792
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "n",
+              "bbox": [
+                515.07,
+                737.792,
+                521.069,
+                749.792
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "l",
+              "bbox": [
+                529.239,
+                737.792,
+                532.574,
+                749.792
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "à",
+              "bbox": [
+                532.32,
+                737.792,
+                537.647,
+                749.792
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          ],
+          "review_flags": [],
+          "is_margin": false
+        },
+        {
+          "block_id": "p004-l0037",
+          "block_type": "native_line",
+          "bbox": [
+            30.24,
+            759.166,
+            537.858,
+            774.822
+          ],
+          "reading_order": 37,
+          "text_raw": "Cx  0,01x²  20x 1000(nghìn đồng). Giá bán mỗi chiếc nón là 50 nghìn đồng. Hãy xác định số",
+          "glyphs": [
+            {
+              "text": "C",
+              "bbox": [
+                30.24,
+                761.11,
+                38.21,
+                773.062
+              ],
+              "font": "TimesNewRomanPS-ItalicMT",
+              "size": 11.952,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "",
+              "bbox": [
+                40.08,
+                759.166,
+                44.02,
+                774.822
+              ],
+              "font": "FNTSBS+SymbolMT",
+              "size": 15.656,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "x",
+              "bbox": [
+                45.834,
+                761.11,
+                51.14,
+                773.062
+              ],
+              "font": "TimesNewRomanPS-ItalicMT",
+              "size": 11.952,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "",
+              "bbox": [
+                52.08,
+                759.166,
+                56.02,
+                774.822
+              ],
+              "font": "FNTSBS+SymbolMT",
+              "size": 15.656,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "",
+              "bbox": [
+                58.56,
+                761.11,
+                65.12,
+                773.062
+              ],
+              "font": "FNTSBS+SymbolMT",
+              "size": 11.952,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "0",
+              "bbox": [
+                67.68,
+                761.11,
+                73.655,
+                773.062
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 11.952,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": ",",
+              "bbox": [
+                73.679,
+                761.11,
+                76.666,
+                773.062
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 11.952,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "0",
+              "bbox": [
+                77.993,
+                761.11,
+                83.967,
+                773.062
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 11.952,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "1",
+              "bbox": [
+                83.991,
+                761.11,
+                89.966,
+                773.062
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 11.952,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "x",
+              "bbox": [
+                89.749,
+                761.11,
+                95.055,
+                773.062
+              ],
+              "font": "TimesNewRomanPS-ItalicMT",
+              "size": 11.952,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "²",
+              "bbox": [
+                95.511,
+                761.11,
+                99.096,
+                773.062
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 11.952,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "",
+              "bbox": [
+                101.268,
+                761.11,
+                107.828,
+                773.062
+              ],
+              "font": "FNTSBS+SymbolMT",
+              "size": 11.952,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "2",
+              "bbox": [
+                110.149,
+                761.11,
+                116.124,
+                773.062
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 11.952,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "0",
+              "bbox": [
+                116.148,
+                761.11,
+                122.122,
+                773.062
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 11.952,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "x",
+              "bbox": [
+                122.861,
+                761.11,
+                128.167,
+                773.062
+              ],
+              "font": "TimesNewRomanPS-ItalicMT",
+              "size": 11.952,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "",
+              "bbox": [
+                130.544,
+                761.11,
+                137.105,
+                773.062
+              ],
+              "font": "FNTSBS+SymbolMT",
+              "size": 11.952,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "1",
+              "bbox": [
+                137.98,
+                761.11,
+                143.954,
+                773.062
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 11.952,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "0",
+              "bbox": [
+                143.978,
+                761.11,
+                149.953,
+                773.062
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 11.952,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "0",
+              "bbox": [
+                149.977,
+                761.11,
+                155.952,
+                773.062
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 11.952,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "0",
+              "bbox": [
+                155.976,
+                761.11,
+                161.95,
+                773.062
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 11.952,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "(",
+              "bbox": [
+                163.92,
+                761.072,
+                167.915,
+                773.072
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "n",
+              "bbox": [
+                167.999,
+                761.072,
+                173.998,
+                773.072
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "g",
+              "bbox": [
+                173.77,
+                761.072,
+                179.769,
+                773.072
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "h",
+              "bbox": [
+                180.009,
+                761.072,
+                186.007,
+                773.072
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "ì",
+              "bbox": [
+                186.007,
+                761.072,
+                189.343,
+                773.072
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "n",
+              "bbox": [
+                189.139,
+                761.072,
+                195.138,
+                773.072
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "đ",
+              "bbox": [
+                200.16,
+                761.072,
+                206.159,
+                773.072
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "ồ",
+              "bbox": [
+                206.16,
+                761.072,
+                212.159,
+                773.072
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "n",
+              "bbox": [
+                212.399,
+                761.072,
+                218.398,
+                773.072
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "g",
+              "bbox": [
+                218.17,
+                761.072,
+                224.168,
+                773.072
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": ")",
+              "bbox": [
+                224.168,
+                761.072,
+                228.164,
+                773.072
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": ".",
+              "bbox": [
+                228.248,
+                761.072,
+                231.247,
+                773.072
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "G",
+              "bbox": [
+                236.406,
+                761.072,
+                245.068,
+                773.072
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "i",
+              "bbox": [
+                245.284,
+                761.072,
+                248.62,
+                773.072
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "á",
+              "bbox": [
+                248.176,
+                761.072,
+                253.503,
+                773.072
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "b",
+              "bbox": [
+                258.973,
+                761.072,
+                264.972,
+                773.072
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "á",
+              "bbox": [
+                264.744,
+                761.072,
+                270.071,
+                773.072
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "n",
+              "bbox": [
+                270.263,
+                761.072,
+                276.262,
+                773.072
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "m",
+              "bbox": [
+                281.313,
+                761.072,
+                290.647,
+                773.072
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "ỗ",
+              "bbox": [
+                290.203,
+                761.072,
+                296.202,
+                773.072
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "i",
+              "bbox": [
+                296.682,
+                761.072,
+                300.017,
+                773.072
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "c",
+              "bbox": [
+                304.852,
+                761.072,
+                310.179,
+                773.072
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "h",
+              "bbox": [
+                310.371,
+                761.072,
+                316.37,
+                773.072
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "i",
+              "bbox": [
+                316.37,
+                761.072,
+                319.705,
+                773.072
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "ế",
+              "bbox": [
+                319.501,
+                761.072,
+                324.828,
+                773.072
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "c",
+              "bbox": [
+                325.02,
+                761.072,
+                330.347,
+                773.072
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "n",
+              "bbox": [
+                335.59,
+                761.072,
+                341.589,
+                773.072
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "ó",
+              "bbox": [
+                341.361,
+                761.072,
+                347.36,
+                773.072
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "n",
+              "bbox": [
+                347.6,
+                761.072,
+                353.599,
+                773.072
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "l",
+              "bbox": [
+                358.649,
+                761.072,
+                361.985,
+                773.072
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "à",
+              "bbox": [
+                361.68,
+                761.072,
+                367.007,
+                773.072
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "5",
+              "bbox": [
+                372.01,
+                761.072,
+                378.009,
+                773.072
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "0",
+              "bbox": [
+                378.009,
+                761.072,
+                384.008,
+                773.072
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "n",
+              "bbox": [
+                389.526,
+                761.072,
+                395.525,
+                773.072
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "g",
+              "bbox": [
+                395.297,
+                761.072,
+                401.296,
+                773.072
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "h",
+              "bbox": [
+                401.536,
+                761.072,
+                407.535,
+                773.072
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "ì",
+              "bbox": [
+                407.535,
+                761.072,
+                410.87,
+                773.072
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "n",
+              "bbox": [
+                410.666,
+                761.072,
+                416.665,
+                773.072
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "đ",
+              "bbox": [
+                421.68,
+                761.072,
+                427.679,
+                773.072
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "ồ",
+              "bbox": [
+                427.68,
+                761.072,
+                433.679,
+                773.072
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "n",
+              "bbox": [
+                433.919,
+                761.072,
+                439.918,
+                773.072
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "g",
+              "bbox": [
+                439.69,
+                761.072,
+                445.688,
+                773.072
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": ".",
+              "bbox": [
+                445.688,
+                761.072,
+                448.688,
+                773.072
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "H",
+              "bbox": [
+                453.847,
+                761.072,
+                462.509,
+                773.072
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "ã",
+              "bbox": [
+                462.48,
+                761.072,
+                467.807,
+                773.072
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "y",
+              "bbox": [
+                467.999,
+                761.072,
+                473.998,
+                773.072
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "x",
+              "bbox": [
+                479.049,
+                761.072,
+                485.047,
+                773.072
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "á",
+              "bbox": [
+                485.047,
+                761.072,
+                490.374,
+                773.072
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "c",
+              "bbox": [
+                490.338,
+                761.072,
+                495.665,
+                773.072
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "đ",
+              "bbox": [
+                500.64,
+                761.072,
+                506.639,
+                773.072
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "ị",
+              "bbox": [
+                506.88,
+                761.072,
+                510.215,
+                773.072
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "n",
+              "bbox": [
+                510.011,
+                761.072,
+                516.01,
+                773.072
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "h",
+              "bbox": [
+                516.01,
+                761.072,
+                522.009,
+                773.072
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "s",
+              "bbox": [
+                527.288,
+                761.072,
+                531.955,
+                773.072
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "ố",
+              "bbox": [
+                531.859,
+                761.072,
+                537.858,
+                773.072
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          ],
+          "review_flags": [
+            "PRIVATE_USE_GLYPHS"
+          ],
+          "is_margin": false
+        }
+      ],
+      "images": [
+        {
+          "bbox": [
+            121.92,
+            641.36,
+            444.48,
+            706.16
+          ]
+        }
+      ],
+      "vectors": [],
+      "image_path": "pages/page-004.png",
+      "image_dpi": 120,
+      "extraction_status": "NATIVE_EXTRACTED",
+      "seconds": 0.0972,
+      "content_bounds": [
+        0.0,
+        36.217,
+        595,
+        805.417
+      ],
+      "content_block_count": 38
+    },
+    "candidate": {
+      "block_id": "p004-l0037:native-geometry",
+      "source_block_id": "p004-l0037",
+      "parser_id": "native-baseline-math/v1",
+      "page_number": 4,
+      "bbox": [
+        30.24,
+        759.166,
+        128.167,
+        774.822
+      ],
+      "latex": "C(x) = 0,01x^{2} + 20x",
+      "status": "NATIVE_GEOMETRY_CANDIDATE_NOT_VERIFIED",
+      "superscript_evidence": [],
+      "function_label": "C"
+    },
+    "source_pdf_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927"
+  },
+  {
+    "case_id": "P11",
+    "page": {
+      "schema_version": "page-document/v1",
+      "source_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927",
+      "parser_id": "pdfplumber-native",
+      "parser_version": "native-lines/v1",
+      "library_version": "0.11.9",
+      "page_number": 5,
+      "width": 595,
+      "height": 842,
+      "rotation": 0,
+      "coordinate_origin": "top-left",
+      "coordinate_unit": "pdf_point",
+      "blocks": [
+        {
+          "block_id": "p005-l0021",
+          "block_type": "native_line",
+          "bbox": [
+            127.44,
+            472.992,
+            219.878,
+            488.768
+          ],
+          "reading_order": 21,
+          "text_raw": "C x x 400",
+          "glyphs": [
+            {
+              "text": "C",
+              "bbox": [
+                127.44,
+                474.958,
+                135.471,
+                487.001
+              ],
+              "font": "TimesNewRomanPS-ItalicMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "",
+              "bbox": [
+                137.52,
+                472.992,
+                141.46,
+                488.768
+              ],
+              "font": "FNTSBS+SymbolMT",
+              "size": 15.776,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "x",
+              "bbox": [
+                143.033,
+                474.958,
+                148.38,
+                487.001
+              ],
+              "font": "TimesNewRomanPS-ItalicMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "",
+              "bbox": [
+                149.28,
+                472.992,
+                153.22,
+                488.768
+              ],
+              "font": "FNTSBS+SymbolMT",
+              "size": 15.776,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "x",
+              "bbox": [
+                167.76,
+                475.918,
+                173.106,
+                487.961
+              ],
+              "font": "TimesNewRomanPS-ItalicMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "4",
+              "bbox": [
+                201.84,
+                475.918,
+                207.861,
+                487.961
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "0",
+              "bbox": [
+                207.849,
+                475.918,
+                213.869,
+                487.961
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "0",
+              "bbox": [
+                213.857,
+                475.918,
+                219.878,
+                487.961
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          ],
+          "review_flags": [
+            "PRIVATE_USE_GLYPHS"
+          ],
+          "is_margin": false
+        },
+        {
+          "block_id": "p005-l0022",
+          "block_type": "native_line",
+          "bbox": [
+            57.6,
+            481.632,
+            225.719,
+            497.408
+          ],
+          "reading_order": 22,
+          "text_raw": "Ta có C x   3 .",
+          "glyphs": [
+            {
+              "text": "T",
+              "bbox": [
+                57.6,
+                483.632,
+                64.931,
+                495.632
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "a",
+              "bbox": [
+                65.039,
+                483.632,
+                70.365,
+                495.632
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "c",
+              "bbox": [
+                73.449,
+                483.632,
+                78.776,
+                495.632
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "ó",
+              "bbox": [
+                78.5,
+                483.632,
+                84.499,
+                495.632
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "C",
+              "bbox": [
+                89.04,
+                483.598,
+                97.071,
+                495.641
+              ],
+              "font": "TimesNewRomanPS-ItalicMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "",
+              "bbox": [
+                99.12,
+                481.632,
+                103.06,
+                497.408
+              ],
+              "font": "FNTSBS+SymbolMT",
+              "size": 15.776,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "x",
+              "bbox": [
+                104.633,
+                483.598,
+                109.98,
+                495.641
+              ],
+              "font": "TimesNewRomanPS-ItalicMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "",
+              "bbox": [
+                110.88,
+                481.632,
+                114.82,
+                497.408
+              ],
+              "font": "FNTSBS+SymbolMT",
+              "size": 15.776,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "",
+              "bbox": [
+                117.6,
+                483.598,
+                124.211,
+                495.641
+              ],
+              "font": "FNTSBS+SymbolMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "",
+              "bbox": [
+                156.71,
+                483.598,
+                163.32,
+                495.641
+              ],
+              "font": "FNTSBS+SymbolMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "",
+              "bbox": [
+                176.144,
+                483.598,
+                182.755,
+                495.641
+              ],
+              "font": "FNTSBS+SymbolMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "3",
+              "bbox": [
+                184.56,
+                483.598,
+                190.581,
+                495.641
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "",
+              "bbox": [
+                191.978,
+                483.598,
+                198.589,
+                495.641
+              ],
+              "font": "FNTSBS+SymbolMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": ".",
+              "bbox": [
+                222.72,
+                483.632,
+                225.719,
+                495.632
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          ],
+          "review_flags": [
+            "PRIVATE_USE_GLYPHS"
+          ],
+          "is_margin": false
+        },
+        {
+          "block_id": "p005-l0023",
+          "block_type": "native_line",
+          "bbox": [
+            138.0,
+            492.958,
+            213.655,
+            505.001
+          ],
+          "reading_order": 23,
+          "text_raw": "x 4 x",
+          "glyphs": [
+            {
+              "text": "x",
+              "bbox": [
+                138.0,
+                492.958,
+                143.346,
+                505.001
+              ],
+              "font": "TimesNewRomanPS-ItalicMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "4",
+              "bbox": [
+                167.28,
+                492.958,
+                173.301,
+                505.001
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "x",
+              "bbox": [
+                208.309,
+                492.958,
+                213.655,
+                505.001
+              ],
+              "font": "TimesNewRomanPS-ItalicMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          ],
+          "review_flags": [],
+          "is_margin": false
+        },
+        {
+          "block_id": "p005-l0024",
+          "block_type": "native_line",
+          "bbox": [
+            150.72,
+            514.307,
+            195.383,
+            528.755
+          ],
+          "reading_order": 24,
+          "text_raw": "x2 1600",
+          "glyphs": [
+            {
+              "text": "x",
+              "bbox": [
+                150.72,
+                516.741,
+                156.053,
+                528.755
+              ],
+              "font": "TimesNewRomanPS-ItalicMT",
+              "size": 12.014,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "2",
+              "bbox": [
+                156.72,
+                514.307,
+                160.911,
+                522.691
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 8.385,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "",
+              "bbox": [
+                163.92,
+                516.741,
+                170.514,
+                528.755
+              ],
+              "font": "FNTSBS+SymbolMT",
+              "size": 12.014,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "1",
+              "bbox": [
+                171.36,
+                516.741,
+                177.366,
+                528.755
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.014,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "6",
+              "bbox": [
+                177.366,
+                516.741,
+                183.371,
+                528.755
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.014,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "0",
+              "bbox": [
+                183.371,
+                516.741,
+                189.377,
+                528.755
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.014,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "0",
+              "bbox": [
+                189.377,
+                516.741,
+                195.383,
+                528.755
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.014,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          ],
+          "review_flags": [
+            "PRIVATE_USE_GLYPHS"
+          ],
+          "is_margin": false
+        }
+      ],
+      "images": [
+        {
+          "bbox": [
+            190.56,
+            574.4,
+            433.44,
+            687.44
+          ]
+        }
+      ],
+      "vectors": [
+        {
+          "kind": "line",
+          "bbox": [
+            91.485,
+            482.735,
+            97.485,
+            482.735
+          ]
+        },
+        {
+          "kind": "line",
+          "bbox": [
+            127.14,
+            489.98,
+            153.6,
+            489.98
+          ]
+        },
+        {
+          "kind": "line",
+          "bbox": [
+            166.35,
+            489.98,
+            173.67,
+            489.98
+          ]
+        },
+        {
+          "kind": "line",
+          "bbox": [
+            201.075,
+            489.98,
+            220.215,
+            489.98
+          ]
+        }
+      ],
+      "image_path": "pages/page-005.png",
+      "image_dpi": 120,
+      "extraction_status": "NATIVE_EXTRACTED",
+      "seconds": 0.0874,
+      "content_bounds": [
+        0.0,
+        36.032,
+        595,
+        805.417
+      ],
+      "content_block_count": 32
+    },
+    "candidate": {
+      "block_id": "p005-l0022:fraction-tree",
+      "source_block_id": "p005-l0022",
+      "parser_id": "native-fraction-tree/v1",
+      "page_number": 5,
+      "bbox": [
+        89.04,
+        472.992,
+        225.719,
+        505.001
+      ],
+      "latex": "C(x)=\\frac{x}{4}+3+\\frac{400}{x}.",
+      "full_chain_latex": "C(x)=\\frac{C(x)}{x}=\\frac{x}{4}+3+\\frac{400}{x}.",
+      "derivation_scope": "FINAL_EQUALITY_ENDPOINT_ONLY",
+      "conditions_raw": "",
+      "fraction_evidence": [
+        {
+          "bar_bbox": [
+            127.14,
+            489.98,
+            153.6,
+            489.98
+          ],
+          "numerator_glyph_keys": [
+            "p005-l0021:0",
+            "p005-l0021:1",
+            "p005-l0021:2",
+            "p005-l0021:3"
+          ],
+          "denominator_glyph_keys": [
+            "p005-l0023:0"
+          ]
+        },
+        {
+          "bar_bbox": [
+            201.075,
+            489.98,
+            220.215,
+            489.98
+          ],
+          "numerator_glyph_keys": [
+            "p005-l0021:5",
+            "p005-l0021:6",
+            "p005-l0021:7"
+          ],
+          "denominator_glyph_keys": [
+            "p005-l0023:2"
+          ]
+        },
+        {
+          "bar_bbox": [
+            166.35,
+            489.98,
+            173.67,
+            489.98
+          ],
+          "numerator_glyph_keys": [
+            "p005-l0021:4"
+          ],
+          "denominator_glyph_keys": [
+            "p005-l0023:1"
+          ]
+        }
+      ],
+      "source_glyph_keys": [
+        "p005-l0021:0",
+        "p005-l0021:1",
+        "p005-l0021:2",
+        "p005-l0021:3",
+        "p005-l0021:4",
+        "p005-l0021:5",
+        "p005-l0021:6",
+        "p005-l0021:7",
+        "p005-l0022:4",
+        "p005-l0022:5",
+        "p005-l0022:6",
+        "p005-l0022:7",
+        "p005-l0022:8",
+        "p005-l0022:9",
+        "p005-l0022:10",
+        "p005-l0022:11",
+        "p005-l0022:12",
+        "p005-l0022:13",
+        "p005-l0023:0",
+        "p005-l0023:1",
+        "p005-l0023:2"
+      ],
+      "status": "NATIVE_GEOMETRY_CANDIDATE_NOT_VERIFIED"
+    },
+    "source_pdf_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927"
+  },
+  {
+    "case_id": "P15",
+    "page": {
+      "schema_version": "page-document/v1",
+      "source_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927",
+      "parser_id": "pdfplumber-native",
+      "parser_version": "native-lines/v1",
+      "library_version": "0.11.9",
+      "page_number": 9,
+      "width": 595,
+      "height": 842,
+      "rotation": 0,
+      "coordinate_origin": "top-left",
+      "coordinate_unit": "pdf_point",
+      "blocks": [
+        {
+          "block_id": "p009-l0019",
+          "block_type": "native_line",
+          "bbox": [
+            297.6,
+            434.204,
+            303.591,
+            446.189
+          ],
+          "reading_order": 19,
+          "text_raw": "1",
+          "glyphs": [
+            {
+              "text": "1",
+              "bbox": [
+                297.6,
+                434.204,
+                303.591,
+                446.189
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 11.985,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          ],
+          "review_flags": [],
+          "is_margin": false
+        },
+        {
+          "block_id": "p009-l0020",
+          "block_type": "native_line",
+          "bbox": [
+            57.6,
+            438.917,
+            362.039,
+            455.202
+          ],
+          "reading_order": 20,
+          "text_raw": "Xét hàm số f (x)  x  x x2 với x cố định và x  x  x .",
+          "glyphs": [
+            {
+              "text": "X",
+              "bbox": [
+                57.6,
+                441.632,
+                66.262,
+                453.632
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "é",
+              "bbox": [
+                66.25,
+                441.632,
+                71.577,
+                453.632
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "t",
+              "bbox": [
+                71.541,
+                441.632,
+                74.877,
+                453.632
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "h",
+              "bbox": [
+                78.26,
+                441.632,
+                84.259,
+                453.632
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "à",
+              "bbox": [
+                84.031,
+                441.632,
+                89.358,
+                453.632
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "m",
+              "bbox": [
+                89.55,
+                441.632,
+                98.884,
+                453.632
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "s",
+              "bbox": [
+                101.559,
+                441.632,
+                106.226,
+                453.632
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "ố",
+              "bbox": [
+                106.08,
+                441.632,
+                112.079,
+                453.632
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "f",
+              "bbox": [
+                119.28,
+                441.578,
+                122.634,
+                453.647
+              ],
+              "font": "TimesNewRomanPS-ItalicMT",
+              "size": 12.068,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "(",
+              "bbox": [
+                125.52,
+                441.578,
+                129.538,
+                453.647
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.068,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "x",
+              "bbox": [
+                130.308,
+                441.578,
+                135.666,
+                453.647
+              ],
+              "font": "TimesNewRomanPS-ItalicMT",
+              "size": 12.068,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": ")",
+              "bbox": [
+                136.078,
+                441.578,
+                140.096,
+                453.647
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.068,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "",
+              "bbox": [
+                142.8,
+                441.578,
+                149.424,
+                453.647
+              ],
+              "font": "FNTSBS+SymbolMT",
+              "size": 12.068,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "",
+              "bbox": [
+                151.68,
+                439.268,
+                155.62,
+                455.202
+              ],
+              "font": "FNTSBS+SymbolMT",
+              "size": 15.934,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "x",
+              "bbox": [
+                157.18,
+                441.578,
+                162.537,
+                453.647
+              ],
+              "font": "TimesNewRomanPS-ItalicMT",
+              "size": 12.068,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "",
+              "bbox": [
+                169.671,
+                441.578,
+                176.295,
+                453.647
+              ],
+              "font": "FNTSBS+SymbolMT",
+              "size": 12.068,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "x",
+              "bbox": [
+                178.778,
+                441.578,
+                184.135,
+                453.647
+              ],
+              "font": "TimesNewRomanPS-ItalicMT",
+              "size": 12.068,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "",
+              "bbox": [
+                185.04,
+                439.268,
+                188.98,
+                455.202
+              ],
+              "font": "FNTSBS+SymbolMT",
+              "size": 15.934,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "x",
+              "bbox": [
+                191.013,
+                441.578,
+                196.37,
+                453.647
+              ],
+              "font": "TimesNewRomanPS-ItalicMT",
+              "size": 12.068,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "2",
+              "bbox": [
+                197.04,
+                438.917,
+                201.251,
+                447.339
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 8.423,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "v",
+              "bbox": [
+                206.399,
+                441.632,
+                212.398,
+                453.632
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "ớ",
+              "bbox": [
+                212.16,
+                441.632,
+                218.507,
+                453.632
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "i",
+              "bbox": [
+                218.639,
+                441.632,
+                221.974,
+                453.632
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "x",
+              "bbox": [
+                227.52,
+                441.632,
+                232.847,
+                453.632
+              ],
+              "font": "TimesNewRomanPS-ItalicMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "c",
+              "bbox": [
+                242.159,
+                441.632,
+                247.486,
+                453.632
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "ố",
+              "bbox": [
+                247.2,
+                441.632,
+                253.199,
+                453.632
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "đ",
+              "bbox": [
+                256.558,
+                441.632,
+                262.557,
+                453.632
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "ị",
+              "bbox": [
+                262.557,
+                441.632,
+                265.892,
+                453.632
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "n",
+              "bbox": [
+                265.688,
+                441.632,
+                271.687,
+                453.632
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "h",
+              "bbox": [
+                271.687,
+                441.632,
+                277.686,
+                453.632
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "v",
+              "bbox": [
+                280.577,
+                441.632,
+                286.576,
+                453.632
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "à",
+              "bbox": [
+                286.32,
+                441.632,
+                291.647,
+                453.632
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "x",
+              "bbox": [
+                306.72,
+                441.644,
+                312.04,
+                453.629
+              ],
+              "font": "TimesNewRomanPS-ItalicMT",
+              "size": 11.985,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "",
+              "bbox": [
+                319.68,
+                441.644,
+                326.258,
+                453.629
+              ],
+              "font": "FNTSBS+SymbolMT",
+              "size": 11.985,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "x",
+              "bbox": [
+                329.75,
+                441.644,
+                335.07,
+                453.629
+              ],
+              "font": "TimesNewRomanPS-ItalicMT",
+              "size": 11.985,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "",
+              "bbox": [
+                337.677,
+                441.644,
+                344.255,
+                453.629
+              ],
+              "font": "FNTSBS+SymbolMT",
+              "size": 11.985,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "x",
+              "bbox": [
+                347.747,
+                441.644,
+                353.067,
+                453.629
+              ],
+              "font": "TimesNewRomanPS-ItalicMT",
+              "size": 11.985,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": ".",
+              "bbox": [
+                359.04,
+                441.632,
+                362.039,
+                453.632
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          ],
+          "review_flags": [
+            "PRIVATE_USE_GLYPHS"
+          ],
+          "is_margin": false
+        },
+        {
+          "block_id": "p009-l0021",
+          "block_type": "native_line",
+          "bbox": [
+            162.24,
+            447.557,
+            356.976,
+            455.979
+          ],
+          "reading_order": 21,
+          "text_raw": "0 0 0 0",
+          "glyphs": [
+            {
+              "text": "0",
+              "bbox": [
+                162.24,
+                447.557,
+                166.451,
+                455.979
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 8.423,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "0",
+              "bbox": [
+                232.56,
+                447.594,
+                236.747,
+                455.969
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 8.375,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "0",
+              "bbox": [
+                311.76,
+                447.603,
+                315.941,
+                455.967
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 8.364,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "0",
+              "bbox": [
+                352.794,
+                447.603,
+                356.976,
+                455.967
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 8.364,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          ],
+          "review_flags": [],
+          "is_margin": false
+        },
+        {
+          "block_id": "p009-l0022",
+          "block_type": "native_line",
+          "bbox": [
+            297.84,
+            451.004,
+            303.831,
+            462.989
+          ],
+          "reading_order": 22,
+          "text_raw": "2",
+          "glyphs": [
+            {
+              "text": "2",
+              "bbox": [
+                297.84,
+                451.004,
+                303.831,
+                462.989
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 11.985,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          ],
+          "review_flags": [],
+          "is_margin": false
+        }
+      ],
+      "images": [
+        {
+          "bbox": [
+            199.68,
+            34.64,
+            424.32,
+            140.96
+          ]
+        },
+        {
+          "bbox": [
+            57.6,
+            572.48,
+            303.12,
+            702.08
+          ]
+        }
+      ],
+      "vectors": [],
+      "image_path": "pages/page-009.png",
+      "image_dpi": 120,
+      "extraction_status": "NATIVE_EXTRACTED",
+      "seconds": 0.0739,
+      "content_bounds": [
+        0.0,
+        36.217,
+        595,
+        805.417
+      ],
+      "content_block_count": 37
+    },
+    "candidate": {
+      "block_id": "p009-l0020:native-geometry",
+      "source_block_id": "p009-l0020",
+      "parser_id": "native-baseline-math/v1",
+      "page_number": 9,
+      "bbox": [
+        119.28,
+        438.917,
+        201.251,
+        455.202
+      ],
+      "latex": "f (x) = (x − x) x^{2}",
+      "status": "NATIVE_GEOMETRY_CANDIDATE_NOT_VERIFIED",
+      "superscript_evidence": [
+        {
+          "glyph_index": 19,
+          "bbox": [
+            197.04,
+            438.917,
+            201.251,
+            447.339
+          ],
+          "size": 8.423,
+          "baseline_size": 12.068,
+          "baseline_bottom": 453.647
+        }
+      ]
+    },
+    "source_pdf_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927"
+  },
+  {
+    "case_id": "P17",
+    "page": {
+      "schema_version": "page-document/v1",
+      "source_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927",
+      "parser_id": "pdfplumber-native",
+      "parser_version": "native-lines/v1",
+      "library_version": "0.11.9",
+      "page_number": 13,
+      "width": 595,
+      "height": 842,
+      "rotation": 0,
+      "coordinate_origin": "top-left",
+      "coordinate_unit": "pdf_point",
+      "blocks": [
+        {
+          "block_id": "p013-l0002",
+          "block_type": "native_line",
+          "bbox": [
+            57.6,
+            174.13,
+            407.087,
+            187.487
+          ],
+          "reading_order": 2,
+          "text_raw": "Câu 174. Cho hàm số y  x2  2x . Hàm số có bao nhiêu điểm cực trị?",
+          "glyphs": [
+            {
+              "text": "C",
+              "bbox": [
+                57.6,
+                175.472,
+                66.262,
+                187.472
+              ],
+              "font": "TimesNewRomanPS-BoldMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                1.0
+              ]
+            },
+            {
+              "text": "â",
+              "bbox": [
+                66.25,
+                175.472,
+                72.249,
+                187.472
+              ],
+              "font": "TimesNewRomanPS-BoldMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                1.0
+              ]
+            },
+            {
+              "text": "u",
+              "bbox": [
+                72.249,
+                175.472,
+                78.92,
+                187.472
+              ],
+              "font": "TimesNewRomanPS-BoldMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                1.0
+              ]
+            },
+            {
+              "text": "1",
+              "bbox": [
+                82.087,
+                175.472,
+                88.086,
+                187.472
+              ],
+              "font": "TimesNewRomanPS-BoldMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                1.0
+              ]
+            },
+            {
+              "text": "7",
+              "bbox": [
+                88.086,
+                175.472,
+                94.085,
+                187.472
+              ],
+              "font": "TimesNewRomanPS-BoldMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                1.0
+              ]
+            },
+            {
+              "text": "4",
+              "bbox": [
+                94.085,
+                175.472,
+                100.084,
+                187.472
+              ],
+              "font": "TimesNewRomanPS-BoldMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                1.0
+              ]
+            },
+            {
+              "text": ".",
+              "bbox": [
+                100.084,
+                175.472,
+                103.083,
+                187.472
+              ],
+              "font": "TimesNewRomanPS-BoldMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                1.0
+              ]
+            },
+            {
+              "text": "C",
+              "bbox": [
+                104.4,
+                175.472,
+                112.402,
+                187.472
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "h",
+              "bbox": [
+                112.33,
+                175.472,
+                118.329,
+                187.472
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "o",
+              "bbox": [
+                118.101,
+                175.472,
+                124.1,
+                187.472
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "h",
+              "bbox": [
+                127.459,
+                175.472,
+                133.458,
+                187.472
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "à",
+              "bbox": [
+                133.23,
+                175.472,
+                138.557,
+                187.472
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "m",
+              "bbox": [
+                138.749,
+                175.472,
+                148.083,
+                187.472
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "s",
+              "bbox": [
+                150.999,
+                175.472,
+                155.666,
+                187.472
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "ố",
+              "bbox": [
+                155.52,
+                175.472,
+                161.519,
+                187.472
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "y",
+              "bbox": [
+                167.52,
+                175.418,
+                172.877,
+                187.487
+              ],
+              "font": "TimesNewRomanPS-ItalicMT",
+              "size": 12.069,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "",
+              "bbox": [
+                175.92,
+                175.418,
+                182.544,
+                187.487
+              ],
+              "font": "FNTSBS+SymbolMT",
+              "size": 12.069,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "x",
+              "bbox": [
+                194.15,
+                175.418,
+                199.507,
+                187.487
+              ],
+              "font": "TimesNewRomanPS-ItalicMT",
+              "size": 12.069,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "2",
+              "bbox": [
+                199.92,
+                174.13,
+                203.408,
+                181.107
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 6.977,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "",
+              "bbox": [
+                206.628,
+                175.418,
+                213.252,
+                187.487
+              ],
+              "font": "FNTSBS+SymbolMT",
+              "size": 12.069,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "2",
+              "bbox": [
+                215.28,
+                175.418,
+                221.313,
+                187.487
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.069,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "x",
+              "bbox": [
+                221.986,
+                175.418,
+                227.344,
+                187.487
+              ],
+              "font": "TimesNewRomanPS-ItalicMT",
+              "size": 12.069,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": ".",
+              "bbox": [
+                233.759,
+                175.472,
+                236.759,
+                187.472
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "H",
+              "bbox": [
+                239.998,
+                175.472,
+                248.66,
+                187.472
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "à",
+              "bbox": [
+                248.648,
+                175.472,
+                253.975,
+                187.472
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "m",
+              "bbox": [
+                253.939,
+                175.472,
+                263.273,
+                187.472
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "s",
+              "bbox": [
+                265.949,
+                175.472,
+                270.616,
+                187.472
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "ố",
+              "bbox": [
+                270.48,
+                175.472,
+                276.479,
+                187.472
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "c",
+              "bbox": [
+                279.839,
+                175.472,
+                285.166,
+                187.472
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "ó",
+              "bbox": [
+                285.13,
+                175.472,
+                291.129,
+                187.472
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "b",
+              "bbox": [
+                294.24,
+                175.472,
+                300.239,
+                187.472
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "a",
+              "bbox": [
+                300.011,
+                175.472,
+                305.338,
+                187.472
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "o",
+              "bbox": [
+                305.302,
+                175.472,
+                311.301,
+                187.472
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "n",
+              "bbox": [
+                314.66,
+                175.472,
+                320.659,
+                187.472
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "h",
+              "bbox": [
+                320.431,
+                175.472,
+                326.43,
+                187.472
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "i",
+              "bbox": [
+                326.43,
+                175.472,
+                329.765,
+                187.472
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "ê",
+              "bbox": [
+                329.561,
+                175.472,
+                334.888,
+                187.472
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "u",
+              "bbox": [
+                334.852,
+                175.472,
+                340.851,
+                187.472
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "đ",
+              "bbox": [
+                343.919,
+                175.472,
+                349.918,
+                187.472
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "i",
+              "bbox": [
+                350.158,
+                175.472,
+                353.493,
+                187.472
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "ể",
+              "bbox": [
+                353.04,
+                175.472,
+                358.367,
+                187.472
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "m",
+              "bbox": [
+                358.56,
+                175.472,
+                367.894,
+                187.472
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "c",
+              "bbox": [
+                370.81,
+                175.472,
+                376.136,
+                187.472
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "ự",
+              "bbox": [
+                376.08,
+                175.472,
+                382.583,
+                187.472
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "c",
+              "bbox": [
+                382.56,
+                175.472,
+                387.887,
+                187.472
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "t",
+              "bbox": [
+                390.97,
+                175.472,
+                394.306,
+                187.472
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "r",
+              "bbox": [
+                394.57,
+                175.472,
+                398.565,
+                187.472
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "ị",
+              "bbox": [
+                398.64,
+                175.472,
+                401.975,
+                187.472
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "?",
+              "bbox": [
+                401.76,
+                175.472,
+                407.087,
+                187.472
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          ],
+          "review_flags": [
+            "PRIVATE_USE_GLYPHS"
+          ],
+          "is_margin": false
+        }
+      ],
+      "images": [
+        {
+          "bbox": [
+            165.84,
+            34.4,
+            458.4,
+            134.96
+          ]
+        }
+      ],
+      "vectors": [
+        {
+          "kind": "line",
+          "bbox": [
+            185.67,
+            180.65,
+            186.885,
+            181.4
+          ]
+        },
+        {
+          "kind": "line",
+          "bbox": [
+            186.885,
+            180.65,
+            189.795,
+            186.02
+          ]
+        },
+        {
+          "kind": "line",
+          "bbox": [
+            189.795,
+            171.815,
+            192.99,
+            186.02
+          ]
+        },
+        {
+          "kind": "line",
+          "bbox": [
+            192.99,
+            171.815,
+            228.045,
+            171.815
+          ]
+        },
+        {
+          "kind": "curve",
+          "bbox": [
+            185.58,
+            171.53,
+            228.045,
+            186.02
+          ]
+        }
+      ],
+      "image_path": "pages/page-013.png",
+      "image_dpi": 120,
+      "extraction_status": "NATIVE_EXTRACTED",
+      "seconds": 0.0728,
+      "content_bounds": [
+        0.0,
+        36.217,
+        595,
+        805.417
+      ],
+      "content_block_count": 31
+    },
+    "candidate": {
+      "block_id": "p013-l0002:native-geometry",
+      "source_block_id": "p013-l0002",
+      "parser_id": "native-baseline-math/v1",
+      "page_number": 13,
+      "bbox": [
+        167.52,
+        174.13,
+        227.344,
+        187.487
+      ],
+      "latex": "y = x^{2} − 2x",
+      "status": "NATIVE_GEOMETRY_CANDIDATE_NOT_VERIFIED",
+      "superscript_evidence": [
+        {
+          "glyph_index": 18,
+          "bbox": [
+            199.92,
+            174.13,
+            203.408,
+            181.107
+          ],
+          "size": 6.977,
+          "baseline_size": 12.069,
+          "baseline_bottom": 187.487
+        }
+      ],
+      "function_label": "y"
+    },
+    "source_pdf_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927"
+  },
+  {
+    "case_id": "P21",
+    "page": {
+      "schema_version": "page-document/v1",
+      "source_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927",
+      "parser_id": "pdfplumber-native",
+      "parser_version": "native-lines/v1",
+      "library_version": "0.11.9",
+      "page_number": 17,
+      "width": 595,
+      "height": 842,
+      "rotation": 0,
+      "coordinate_origin": "top-left",
+      "coordinate_unit": "pdf_point",
+      "blocks": [
+        {
+          "block_id": "p017-l0036",
+          "block_type": "native_line",
+          "bbox": [
+            57.6,
+            557.661,
+            328.676,
+            571.241
+          ],
+          "reading_order": 36,
+          "text_raw": "Câu 187. Hàm số y  x2  5x  6 có mấy điểm cực trị ?",
+          "glyphs": [
+            {
+              "text": "C",
+              "bbox": [
+                57.6,
+                559.232,
+                66.262,
+                571.232
+              ],
+              "font": "TimesNewRomanPS-BoldMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                1.0
+              ]
+            },
+            {
+              "text": "â",
+              "bbox": [
+                66.25,
+                559.232,
+                72.249,
+                571.232
+              ],
+              "font": "TimesNewRomanPS-BoldMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                1.0
+              ]
+            },
+            {
+              "text": "u",
+              "bbox": [
+                72.249,
+                559.232,
+                78.92,
+                571.232
+              ],
+              "font": "TimesNewRomanPS-BoldMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                1.0
+              ]
+            },
+            {
+              "text": "1",
+              "bbox": [
+                82.087,
+                559.232,
+                88.086,
+                571.232
+              ],
+              "font": "TimesNewRomanPS-BoldMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                1.0
+              ]
+            },
+            {
+              "text": "8",
+              "bbox": [
+                88.086,
+                559.232,
+                94.085,
+                571.232
+              ],
+              "font": "TimesNewRomanPS-BoldMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                1.0
+              ]
+            },
+            {
+              "text": "7",
+              "bbox": [
+                94.085,
+                559.232,
+                100.084,
+                571.232
+              ],
+              "font": "TimesNewRomanPS-BoldMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                1.0
+              ]
+            },
+            {
+              "text": ".",
+              "bbox": [
+                100.084,
+                559.232,
+                103.083,
+                571.232
+              ],
+              "font": "TimesNewRomanPS-BoldMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                1.0
+              ]
+            },
+            {
+              "text": "H",
+              "bbox": [
+                104.4,
+                559.232,
+                113.062,
+                571.232
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "à",
+              "bbox": [
+                113.05,
+                559.232,
+                118.377,
+                571.232
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "m",
+              "bbox": [
+                118.569,
+                559.232,
+                127.903,
+                571.232
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "s",
+              "bbox": [
+                130.579,
+                559.232,
+                135.246,
+                571.232
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "ố",
+              "bbox": [
+                135.12,
+                559.232,
+                141.119,
+                571.232
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "y",
+              "bbox": [
+                147.36,
+                559.198,
+                152.706,
+                571.241
+              ],
+              "font": "TimesNewRomanPS-ItalicMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "",
+              "bbox": [
+                155.76,
+                559.198,
+                162.371,
+                571.241
+              ],
+              "font": "FNTSBS+SymbolMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "x",
+              "bbox": [
+                167.758,
+                559.198,
+                173.104,
+                571.241
+              ],
+              "font": "TimesNewRomanPS-ItalicMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "2",
+              "bbox": [
+                173.76,
+                557.661,
+                177.241,
+                564.624
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 6.963,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "",
+              "bbox": [
+                180.228,
+                559.198,
+                186.838,
+                571.241
+              ],
+              "font": "FNTSBS+SymbolMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "5",
+              "bbox": [
+                188.88,
+                559.198,
+                194.901,
+                571.241
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "x",
+              "bbox": [
+                195.356,
+                559.198,
+                200.702,
+                571.241
+              ],
+              "font": "TimesNewRomanPS-ItalicMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "",
+              "bbox": [
+                202.781,
+                559.198,
+                209.391,
+                571.241
+              ],
+              "font": "FNTSBS+SymbolMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "6",
+              "bbox": [
+                211.433,
+                559.198,
+                217.454,
+                571.241
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.044,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "c",
+              "bbox": [
+                224.639,
+                559.232,
+                229.966,
+                571.232
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "ó",
+              "bbox": [
+                229.69,
+                559.232,
+                235.689,
+                571.232
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "m",
+              "bbox": [
+                239.048,
+                559.232,
+                248.383,
+                571.232
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "ấ",
+              "bbox": [
+                247.92,
+                559.232,
+                253.247,
+                571.232
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "y",
+              "bbox": [
+                253.439,
+                559.232,
+                259.438,
+                571.232
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "đ",
+              "bbox": [
+                262.089,
+                559.232,
+                268.088,
+                571.232
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "i",
+              "bbox": [
+                268.328,
+                559.232,
+                271.663,
+                571.232
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "ể",
+              "bbox": [
+                271.459,
+                559.232,
+                276.786,
+                571.232
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "m",
+              "bbox": [
+                276.978,
+                559.232,
+                286.312,
+                571.232
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "c",
+              "bbox": [
+                289.228,
+                559.232,
+                294.555,
+                571.232
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "ự",
+              "bbox": [
+                294.519,
+                559.232,
+                301.021,
+                571.232
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "c",
+              "bbox": [
+                301.009,
+                559.232,
+                306.336,
+                571.232
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "t",
+              "bbox": [
+                309.42,
+                559.232,
+                312.755,
+                571.232
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "r",
+              "bbox": [
+                313.019,
+                559.232,
+                317.014,
+                571.232
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "ị",
+              "bbox": [
+                317.098,
+                559.232,
+                320.433,
+                571.232
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "?",
+              "bbox": [
+                323.349,
+                559.232,
+                328.676,
+                571.232
+              ],
+              "font": "FNTSBS+TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          ],
+          "review_flags": [
+            "PRIVATE_USE_GLYPHS"
+          ],
+          "is_margin": false
+        }
+      ],
+      "images": [],
+      "vectors": [
+        {
+          "kind": "line",
+          "bbox": [
+            165.705,
+            556.895,
+            165.705,
+            574.145
+          ]
+        },
+        {
+          "kind": "line",
+          "bbox": [
+            218.4,
+            556.895,
+            218.4,
+            574.145
+          ]
+        }
+      ],
+      "image_path": "pages/page-017.png",
+      "image_dpi": 120,
+      "extraction_status": "NATIVE_EXTRACTED",
+      "seconds": 0.0791,
+      "content_bounds": [
+        0.0,
+        36.217,
+        595,
+        805.417
+      ],
+      "content_block_count": 45
+    },
+    "candidate": {
+      "block_id": "p017-l0036:native-geometry",
+      "source_block_id": "p017-l0036",
+      "parser_id": "native-baseline-math/v1",
+      "page_number": 17,
+      "bbox": [
+        147.36,
+        557.661,
+        217.454,
+        571.241
+      ],
+      "latex": "y = x^{2} + 5x + 6",
+      "status": "NATIVE_GEOMETRY_CANDIDATE_NOT_VERIFIED",
+      "superscript_evidence": [
+        {
+          "glyph_index": 15,
+          "bbox": [
+            173.76,
+            557.661,
+            177.241,
+            564.624
+          ],
+          "size": 6.963,
+          "baseline_size": 12.044,
+          "baseline_bottom": 571.241
+        }
+      ],
+      "function_label": "y"
+    },
+    "source_pdf_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927"
+  },
+  {
+    "case_id": "P22",
+    "page": {
+      "schema_version": "page-document/v1",
+      "source_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927",
+      "parser_id": "pdfplumber-native",
+      "parser_version": "native-lines/v1",
+      "library_version": "0.11.9",
+      "page_number": 21,
+      "width": 595,
+      "height": 842,
+      "rotation": 0,
+      "coordinate_origin": "top-left",
+      "coordinate_unit": "pdf_point",
+      "blocks": [
+        {
+          "block_id": "p021-l0016",
+          "block_type": "native_line",
+          "bbox": [
+            88.08,
+            415.777,
+            107.622,
+            433.817
+          ],
+          "reading_order": 16,
+          "text_raw": " ",
+          "glyphs": [
+            {
+              "text": "",
+              "bbox": [
+                88.08,
+                415.777,
+                92.022,
+                433.817
+              ],
+              "font": "FNTSBS+SymbolMT",
+              "size": 18.04,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "",
+              "bbox": [
+                103.68,
+                415.777,
+                107.622,
+                433.817
+              ],
+              "font": "FNTSBS+SymbolMT",
+              "size": 18.04,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          ],
+          "review_flags": [
+            "PRIVATE_USE_GLYPHS"
+          ],
+          "is_margin": false
+        },
+        {
+          "block_id": "p021-l0017",
+          "block_type": "native_line",
+          "bbox": [
+            60.48,
+            419.175,
+            120.778,
+            431.552
+          ],
+          "reading_order": 17,
+          "text_raw": "y  f x là",
+          "glyphs": [
+            {
+              "text": "y",
+              "bbox": [
+                60.48,
+                419.175,
+                65.884,
+                431.35
+              ],
+              "font": "TimesNewRomanPS-ItalicMT",
+              "size": 12.174,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "",
+              "bbox": [
+                69.12,
+                419.175,
+                75.802,
+                431.35
+              ],
+              "font": "FNTSBS+SymbolMT",
+              "size": 12.174,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "f",
+              "bbox": [
+                80.637,
+                419.175,
+                84.021,
+                431.35
+              ],
+              "font": "TimesNewRomanPS-ItalicMT",
+              "size": 12.174,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "x",
+              "bbox": [
+                95.511,
+                419.175,
+                100.916,
+                431.35
+              ],
+              "font": "TimesNewRomanPS-ItalicMT",
+              "size": 12.174,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "l",
+              "bbox": [
+                112.799,
+                419.552,
+                116.135,
+                431.552
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "text": "à",
+              "bbox": [
+                115.451,
+                419.552,
+                120.778,
+                431.552
+              ],
+              "font": "TimesNewRomanPSMT",
+              "size": 12.0,
+              "color": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            }
+          ],
+          "review_flags": [
+            "PRIVATE_USE_GLYPHS"
+          ],
+          "is_margin": false
+        }
+      ],
+      "images": [],
+      "vectors": [
+        {
+          "kind": "line",
+          "bbox": [
+            93.405,
+            418.49,
+            93.405,
+            432.95
+          ]
+        },
+        {
+          "kind": "line",
+          "bbox": [
+            101.985,
+            418.49,
+            101.985,
+            432.95
+          ]
+        }
+      ],
+      "image_path": "pages/page-021.png",
+      "image_dpi": 120,
+      "extraction_status": "NATIVE_EXTRACTED",
+      "seconds": 0.123,
+      "content_bounds": [
+        0.0,
+        36.217,
+        595,
+        805.417
+      ],
+      "content_block_count": 36
+    },
+    "candidate": {
+      "block_id": "p021-l0017:native-geometry",
+      "source_block_id": "p021-l0017",
+      "parser_id": "native-baseline-math/v1",
+      "page_number": 21,
+      "bbox": [
+        60.48,
+        419.175,
+        100.916,
+        431.35
+      ],
+      "latex": "y = f x",
+      "status": "NATIVE_GEOMETRY_CANDIDATE_NOT_VERIFIED",
+      "superscript_evidence": [],
+      "function_label": "y"
+    },
+    "source_pdf_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927"
+  }
+]
