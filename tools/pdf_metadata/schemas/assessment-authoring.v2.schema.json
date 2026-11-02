@@ -1,0 +1,306 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Font-normalized assessment authoring draft, not a production import",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "question_id",
+    "source_number",
+    "topic_label_candidate",
+    "source",
+    "student_view",
+    "answer_spec",
+    "math_spec",
+    "reference_solution",
+    "editorial_formula_corrections",
+    "review",
+    "academic_review",
+    "grading_support",
+    "publishable"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "assessment-authoring/v2"
+    },
+    "question_id": {
+      "type": "string"
+    },
+    "source_number": {
+      "type": "integer"
+    },
+    "topic_label_candidate": {
+      "type": "string"
+    },
+    "source": {
+      "type": "object",
+      "required": [
+        "sha256",
+        "candidate_generation",
+        "stem_spans",
+        "answer_spans",
+        "solution_spans"
+      ]
+    },
+    "student_view": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "content_markdown",
+        "assets",
+        "visual_required"
+      ],
+      "properties": {
+        "content_markdown": {
+          "type": "string",
+          "minLength": 1
+        },
+        "assets": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^assets/[^/]*-stem[-.]"
+          }
+        },
+        "visual_required": {
+          "type": "boolean"
+        }
+      }
+    },
+    "answer_spec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "expected_decimal",
+        "source_answer_raw",
+        "editorial_answer",
+        "comparison_policy_candidate",
+        "rounding_instruction",
+        "unit",
+        "status"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "NUMBER",
+            "UNRESOLVED"
+          ]
+        },
+        "expected_decimal": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^-?[0-9]+(?:\\.[0-9]+)?$"
+        },
+        "source_answer_raw": {
+          "type": "string"
+        },
+        "editorial_answer": {
+          "type": "string"
+        },
+        "comparison_policy_candidate": {
+          "const": "EXACT_DECIMAL_COMMA_OR_DOT"
+        },
+        "rounding_instruction": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "unit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status": {
+          "const": "DRAFT"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "NUMBER"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "expected_decimal": {
+                "type": "string"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "expected_decimal": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "math_spec": {
+      "type": "object",
+      "required": [
+        "expression_latex",
+        "variable_names",
+        "domain_latex",
+        "status"
+      ],
+      "properties": {
+        "expression_latex": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "variable_names": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "domain_latex": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status": {
+          "const": "DRAFT_NEEDS_ACADEMIC_REVIEW"
+        }
+      }
+    },
+    "reference_solution": {
+      "type": "object",
+      "required": [
+        "editorial_markdown",
+        "step_candidates",
+        "status"
+      ],
+      "properties": {
+        "editorial_markdown": {
+          "type": "string"
+        },
+        "step_candidates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "step_id",
+              "kind_candidate",
+              "text_candidate",
+              "text_format",
+              "latex_candidates",
+              "source_spans",
+              "raw_reference",
+              "normalization",
+              "status",
+              "math_expression",
+              "checker",
+              "rubric_weight"
+            ],
+            "properties": {
+              "step_id": {
+                "type": "string"
+              },
+              "kind_candidate": {
+                "type": "string"
+              },
+              "text_candidate": {
+                "type": "string"
+              },
+              "text_format": {
+                "const": "NORMALIZED_NATIVE_TEXT_LOSSY"
+              },
+              "latex_candidates": {
+                "type": "array"
+              },
+              "source_spans": {
+                "type": "array"
+              },
+              "raw_reference": {
+                "type": "object",
+                "required": [
+                  "file",
+                  "question_id",
+                  "step_id"
+                ]
+              },
+              "normalization": {
+                "type": "object",
+                "required": [
+                  "method",
+                  "mapped_glyph_count",
+                  "unresolved_glyph_count",
+                  "quality_flags"
+                ]
+              },
+              "status": {
+                "const": "SOURCE_EXCERPT_NEEDS_REVIEW"
+              },
+              "math_expression": {
+                "type": "null"
+              },
+              "checker": {
+                "type": "null"
+              },
+              "rubric_weight": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        "status": {
+          "const": "NOT_ACADEMICALLY_REVIEWED"
+        }
+      }
+    },
+    "editorial_formula_corrections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "block_id",
+          "latex"
+        ],
+        "properties": {
+          "block_id": {
+            "type": "string"
+          },
+          "latex": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "review": {
+      "type": "object",
+      "required": [
+        "source_status",
+        "revision",
+        "stale",
+        "stem_answer_visual_check",
+        "source_issues",
+        "field_checks"
+      ]
+    },
+    "academic_review": {
+      "const": "PENDING"
+    },
+    "grading_support": {
+      "const": "NOT_ASSESSED"
+    },
+    "publishable": {
+      "const": false
+    }
+  }
+}
