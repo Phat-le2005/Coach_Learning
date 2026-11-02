@@ -1,5 +1,5 @@
 param(
-    [ValidateSet('native', 'ocr', 'formula', 'fallback', 'hybrid', 'enrich', 'curate', 'steps', 'pilot-trial', 'gemini-preflight', 'gemini-review', 'local-setup', 'local-start', 'local-stop', 'local-preflight', 'local-review', 'corpus-plan', 'corpus-run', 'corpus-review', 'pipeline', 'review', 'recheck', 'check', 'test')][string]$Action = 'native',
+    [ValidateSet('native', 'ocr', 'formula', 'fallback', 'hybrid', 'enrich', 'curate', 'steps', 'pilot-trial', 'layout-refine', 'gemini-preflight', 'gemini-review', 'local-setup', 'local-start', 'local-stop', 'local-preflight', 'local-review', 'corpus-plan', 'corpus-run', 'corpus-review', 'pipeline', 'review', 'recheck', 'check', 'test')][string]$Action = 'native',
     [string]$Pdf,
     [string]$Output,
     [string]$TrialOutput,
@@ -90,6 +90,13 @@ try {
             $trialArgs += @('--max-output-tokens', [Math]::Min($MaxOutputTokens, 768))
             if ($MathOnly) { $trialArgs += '--math-only' }
             & $pythonPath -u -m pdfmeta.pilot_trial @trialArgs
+        }
+        'layout-refine' {
+            if (-not $Questions) { throw 'Select table questions explicitly with -Questions.' }
+            if (-not $TrialOutput) { $TrialOutput = Join-Path $Output 'layout-trial-v1' }
+            $TrialOutput = [IO.Path]::GetFullPath($TrialOutput)
+            if ($TrialOutput -notmatch '^[Ee]:\\') { throw 'Keep layout outputs on drive E.' }
+            & $pythonPath -B -u -m pdfmeta.layout_refinement --pilot $Output --pdf $Pdf --output $TrialOutput --runtime $Runtime --questions $Questions --limit $Limit
         }
         'gemini-preflight' { & $pythonPath -m pdfmeta.gemini_review --pilot $Output --preflight @geminiArgs }
         'gemini-review' {
