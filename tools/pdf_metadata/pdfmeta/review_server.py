@@ -72,6 +72,20 @@ class ReviewHandler(SimpleHTTPRequestHandler):
         return super().do_HEAD()
 
     def do_POST(self):
+        # Consume a bounded body before responding, including rejected requests.
+        # Closing a Windows socket with unread request bytes can reset it before
+        # the client receives the 403 response. Parsing/saving still follows auth.
+        try:
+            length = int(self.headers.get("Content-Length", "0"))
+        except ValueError:
+            return self.json_response(400, {"error": "Invalid content length"})
+        if length <= 0 or length > 512_000 or self.headers.get('Transfer-Encoding'):
+            return self.json_response(413, {"error": "Invalid review payload size"})
+        self.connection.settimeout(5)
+        try:
+            payload = self.rfile.read(length)
+        except TimeoutError:
+            return self.json_response(408, {"error": "Incomplete review payload"})
         origins = {"http://" + host for host in self.allowed_hosts()}
         if (not self.valid_host() or self.headers.get("Origin") not in origins
                 or not secrets.compare_digest(self.headers.get("X-Review-Token", ""), self.token)):
@@ -82,10 +96,7 @@ class ReviewHandler(SimpleHTTPRequestHandler):
         if self.headers.get_content_type() != "application/json":
             return self.json_response(415, {"error": "JSON required"})
         try:
-            length = int(self.headers.get("Content-Length", "0"))
-            if length <= 0 or length > 512_000:
-                return self.json_response(413, {"error": "Invalid review payload size"})
-            body = json.loads(self.rfile.read(length))
+            body = json.loads(payload)
             if endpoint == "/api/export":
                 from .curate import build_batch
                 result = build_batch(self.store.pilot, self.store.snapshot())

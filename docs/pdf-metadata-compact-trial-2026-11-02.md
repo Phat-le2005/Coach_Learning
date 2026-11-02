@@ -2,6 +2,8 @@
 
 Ngày 02/11/2026. Kết luận: **chưa đủ điều kiện chạy toàn bộ kho để tạo dữ liệu chấm tự động**. Native/OCR và tách câu có thể dùng làm bản nháp có nguồn, nhưng kiểm tra toán và review Qwen chưa đạt độ tin cậy cần thiết.
 
+**Đính chính sau đối chiếu crop 240 DPI:** nhận xét ban đầu về hai dấu âm ở bảng câu 161 là sai. Nét dọc rất mảnh của dấu cộng bị khó nhìn ở ảnh xem trước 120 DPI. Crop rõ hơn cho thấy bảng là `+ 0 −`, phù hợp với công thức đạo hàm. Không dùng câu này như một ca lỗi nguồn. Các số đo Qwen phía dưới vẫn là số đo của lượt thử trước.
+
 ## Phạm vi thực tế
 
 PDF được người dùng chỉ định:
@@ -75,7 +77,7 @@ Lượt 2 chạy trên server đã được làm nóng bởi lượt 1 và có t
 | 213 | Lời giải chia cho `m`, viết điều kiện `m≠0` rồi kết luận `m=0`. Cần xét riêng `m=0`: hàm thành `−x²+2`, có cực trị. | Có nhắc vấn đề điều kiện `m≠0` nhưng không giải quyết nhánh `m=0`; kèm nhận xét không có bảng chưa đúng trọng tâm. |
 | 260 | Đề hỏi **hoành độ** hai cực trị cùng dấu; lời giải xét `y₁y₂>0`, là **tung độ**. Với đúng câu chữ đề: `m<2` và `m>−2`, ba số nguyên là `−1,0,1`; đáp án in 6 giải điều kiện khác. | Không phát hiện sự khác nhau hoành độ/tung độ, lại yêu cầu bảng dữ liệu không cần thiết. |
 | 157 | Bài logistic có đạo hàm dài và bảng; OCR còn khó đọc. | Nhận xét đạo hàm có lỗi rất chung, không cung cấp chứng cứ để sửa. |
-| 161 | Đạo hàm in ra dương khi `0≤x<10`, âm khi `10<x≤20`, nhưng bảng nguồn in dấu âm ở cả hai khoảng. | Nhận xét chung về lỗi đạo hàm, không chỉ đúng mâu thuẫn trong bảng. Đây là lỗi nguồn mới thấy ở câu ngoài bộ biên tập cũ. |
+| 161 | Crop nguồn 240 DPI cho thấy bảng `+ 0 −`, khớp dấu của đạo hàm trên hai khoảng. Ảnh xem trước 120 DPI làm nét dọc của dấu cộng khó nhìn. | Nhận xét chung của Qwen về lỗi đạo hàm không có chứng cứ đủ để sửa. Rút lại ghi chú ban đầu cho rằng bảng nguồn có hai dấu âm. |
 
 Vì có lỗi đã biết bị bỏ sót và nhận xét không có căn cứ, không báo một tỷ lệ “đúng nội dung” từ tám phản hồi này. Không sửa đáp án nguồn hoặc rubric tự động.
 
@@ -113,7 +115,7 @@ Chỉ chạy audit không inference bằng `-Action pilot-trial -MathOnly` với
 ## Việc cần làm trước kho lớn
 
 1. Tăng chất lượng lớp công thức trước: phục hồi số mũ/phân thức từ native glyph khi đủ bằng chứng, chỉ OCR lại các crop có xung đột. Chuẩn hóa một biểu thức có nguồn cho từng dòng; giữ các bản đọc chưa thống nhất ở hàng chờ.
-2. Cấu trúc hóa bảng dấu/biến thiên thành mốc, khoảng, dấu, giá trị và miền; kiểm từng hàng với biểu thức đã xác minh. Câu 161 là ca hồi quy tốt.
+2. Cấu trúc hóa bảng dấu/biến thiên thành mốc, khoảng, dấu, giá trị và miền; kiểm từng hàng với biểu thức đã xác minh. Câu 161 là ca hồi quy cho nét dấu cộng rất mảnh và độ phân giải ảnh.
 3. Mở rộng kiểm toán có giới hạn theo loại bài: đạo hàm, nghiệm tới hạn, nhánh tham số bằng 0, đối chiếu điều kiện đề với kết luận. Câu 260 phải kiểm được đại lượng đang hỏi trước khi nhận đáp án.
 4. Dùng model local để gắn cờ ngắn; chưa dùng model 2B này làm người duyệt cuối hoặc áp dụng đề xuất tách/gộp tự động. Tách việc báo lỗi nội dung khỏi việc sửa cấu trúc sẽ giảm gánh nặng hợp đồng.
 5. Đánh giá bằng bộ câu đã đối chiếu nguồn, giữ riêng các câu chưa dùng chỉnh prompt. Sau khi cải thiện, thử một batch 50–100 trang thuộc nhiều PDF/layout ở chế độ bản nháp, đo độ phủ và lỗi còn sót rồi mới tăng quy mô.

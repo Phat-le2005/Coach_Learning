@@ -116,6 +116,7 @@ def test_http_save_requires_session_token_and_same_origin(pilot):
                    "X-Review-Token": config["token"]}
         assert request(port, "POST", "/api/review", payload(), {**headers, "Origin": "https://external.invalid"})[0] == 403
         assert request(port, "POST", "/api/review", payload(), {"Content-Type": "application/json"})[0] == 403
+        assert not ReviewStore(pilot).snapshot()['reviews']
         assert request(port, "POST", "/api/review", payload(), headers)[0] == 200
         assert request(port, "POST", "/api/review", payload(), headers)[0] == 409
 
