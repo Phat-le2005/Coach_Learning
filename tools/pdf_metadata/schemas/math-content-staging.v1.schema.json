@@ -1,0 +1,304 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "math-content-staging/v1"
+    },
+    "unit_id": {
+      "type": "string"
+    },
+    "job_key": {
+      "type": "string"
+    },
+    "document_id": {
+      "type": "string"
+    },
+    "source_sha256": {
+      "type": "string"
+    },
+    "source_references": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "content": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "QUESTION",
+            "KNOWLEDGE"
+          ]
+        },
+        "source_label": {
+          "type": "string"
+        },
+        "source_number": {
+          "type": "string"
+        },
+        "start_page": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "end_page": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "complete": {
+          "type": "boolean"
+        },
+        "continuation_from_previous": {
+          "type": "boolean"
+        },
+        "continues_after_window": {
+          "type": "boolean"
+        },
+        "question_type": {
+          "enum": [
+            "MULTIPLE_CHOICE",
+            "TRUE_FALSE",
+            "SHORT_ANSWER",
+            "OPEN_RESPONSE",
+            "UNKNOWN",
+            "NOT_APPLICABLE"
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "content_markdown": {
+          "type": "string"
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "content_markdown": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "label",
+              "content_markdown"
+            ]
+          }
+        },
+        "source_answer": {
+          "type": "string"
+        },
+        "source_solution_markdown": {
+          "type": "string"
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "order": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "kind": {
+                "enum": [
+                  "ASSUMPTION",
+                  "MODEL_SETUP",
+                  "TRANSFORMATION",
+                  "DERIVATIVE_CALCULATION",
+                  "ROOT_FINDING",
+                  "SIGN_TABLE",
+                  "CONCLUSION",
+                  "OTHER"
+                ]
+              },
+              "title": {
+                "type": "string"
+              },
+              "content_markdown": {
+                "type": "string"
+              },
+              "formulas_latex": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "conditions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "text": {
+                      "type": "string"
+                    },
+                    "evidence_ids": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "minItems": 1
+                    },
+                    "basis": {
+                      "enum": [
+                        "VISIBLE_SOURCE",
+                        "PROPOSED_ADDITION"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "text",
+                    "evidence_ids",
+                    "basis"
+                  ]
+                }
+              },
+              "evidence_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1
+              },
+              "basis": {
+                "enum": [
+                  "VISIBLE_SOURCE",
+                  "PROPOSED_ADDITION"
+                ]
+              },
+              "uncertain": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "order",
+              "kind",
+              "title",
+              "content_markdown",
+              "formulas_latex",
+              "conditions",
+              "evidence_ids",
+              "basis",
+              "uncertain"
+            ]
+          },
+          "maxItems": 40
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        },
+        "issues": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "code": {
+                "type": "string"
+              },
+              "severity": {
+                "enum": [
+                  "INFO",
+                  "WARNING",
+                  "ERROR"
+                ]
+              },
+              "message": {
+                "type": "string"
+              },
+              "evidence_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1
+              },
+              "proposed_correction": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "code",
+              "severity",
+              "message",
+              "evidence_ids",
+              "proposed_correction"
+            ]
+          },
+          "maxItems": 40
+        }
+      },
+      "required": [
+        "kind",
+        "source_label",
+        "source_number",
+        "start_page",
+        "end_page",
+        "complete",
+        "continuation_from_previous",
+        "continues_after_window",
+        "question_type",
+        "title",
+        "content_markdown",
+        "options",
+        "source_answer",
+        "source_solution_markdown",
+        "steps",
+        "evidence_ids",
+        "issues"
+      ]
+    },
+    "review_flags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "ai_review_status": {
+      "enum": [
+        "AI_REVIEWED",
+        "AI_FLAGGED"
+      ]
+    },
+    "academic_review": {
+      "const": "PENDING"
+    },
+    "grading_support": {
+      "const": "NOT_ASSESSED"
+    },
+    "publishable": {
+      "const": false
+    },
+    "content_fingerprint": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "unit_id",
+    "job_key",
+    "document_id",
+    "source_sha256",
+    "source_references",
+    "content",
+    "review_flags",
+    "ai_review_status",
+    "academic_review",
+    "grading_support",
+    "publishable",
+    "content_fingerprint"
+  ]
+}
