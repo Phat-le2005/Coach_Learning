@@ -4,6 +4,9 @@ import { useMemo, useState } from "react";
 import type { InkStroke } from "@/lib/api/contracts";
 import type { PageOcrRegion } from "../utils/page-ocr";
 import { buildOcrShadowQaReport } from "../utils/ocr-shadow-qa";
+import { proposeIntegralExpressionUnits, type IntegralExpressionUnit } from "../utils/expression-reconstruction";
+import { recognizeHandwrittenMath } from "../utils/handwritten-ocr";
+import { renderOcrLatexHtml } from "../utils/ocr-math-preview";
 import { OcrInkPreview } from "./OcrInkPreview";
 import styles from "../MathWorkspace.module.css";
 
@@ -26,6 +29,9 @@ export function PageOcrShadowQaPanel({
     () => buildOcrShadowQaReport(pageStrokes, initialRegions),
     [pageStrokes, initialRegions],
   );
+  const integralUnits = useMemo(
+    () => proposeIntegralExpressionUnits(pageStrokes), [pageStrokes],
+  );
   const [selectedCandidate, setSelectedCandidate] = useState(0);
   const selected = report.candidates[selectedCandidate];
   const penById = useMemo(
@@ -39,6 +45,41 @@ export function PageOcrShadowQaPanel({
       return stroke ? [stroke] : [];
     })
     : [];
+
+  const [ocrLoadingByUnit, setOcrLoadingByUnit] = useState<Record<string, boolean>>({});
+  const [ocrResultByUnit, setOcrResultByUnit] = useState<Record<string, { latex: string; html: string | null; durationMs: number }>>({});
+  const [ocrErrorByUnit, setOcrErrorByUnit] = useState<Record<string, string>>({});
+
+  const handleRecognizeUnit = async (unit: IntegralExpressionUnit) => {
+    const unitStrokes = unit.sourceStrokeIds.flatMap((id) => {
+      const stroke = penById.get(id);
+      return stroke ? [stroke] : [];
+    });
+    if (unitStrokes.length === 0) return;
+
+    setOcrLoadingByUnit((prev) => ({ ...prev, [unit.id]: true }));
+    setOcrErrorByUnit((prev) => {
+      const next = { ...prev };
+      delete next[unit.id];
+      return next;
+    });
+
+    const t0 = performance.now();
+    try {
+      const response = await recognizeHandwrittenMath(unitStrokes);
+      const durationMs = performance.now() - t0;
+      const html = renderOcrLatexHtml(response.latex);
+      setOcrResultByUnit((prev) => ({
+        ...prev,
+        [unit.id]: { latex: response.latex, html, durationMs: Math.round(durationMs) },
+      }));
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      setOcrErrorByUnit((prev) => ({ ...prev, [unit.id]: msg }));
+    } finally {
+      setOcrLoadingByUnit((prev) => ({ ...prev, [unit.id]: false }));
+    }
+  };
 
   return (
     <section aria-label="Đối chiếu cấu trúc OCR QA" className={styles.pageReviewNotice}
@@ -103,6 +144,69 @@ export function PageOcrShadowQaPanel({
           ) : null}
         </>
       )}
+      <div style={{ marginTop: "0.75rem", borderTop: "1px solid #b7cfbf", paddingTop: "0.5rem" }}>
+        <h4>Đề xuất ghép biểu thức (Core OCR V2 — thử nghiệm)</h4>
+        {integralUnits.length === 0 ? (
+          <p>Chưa có đề xuất tích phân đủ bằng chứng hình học.</p>
+        ) : integralUnits.map((unit) => (
+          <div key={unit.id} data-testid="ocr-integral-expression-proposal">
+            <p><strong>INTEGRAL · {unit.sourceStrokeIds.length} nét</strong>
+              {" · "}cận trên: {unit.upperLimitStrokeIds.length}
+              {" · "}cận dưới: {unit.lowerLimitStrokeIds.length}
+              {" · "}biểu thức: {unit.bodyStrokeIds.length}
+            </p>
+            <OcrInkPreview strokes={unit.sourceStrokeIds.flatMap((id) => {
+              const stroke = penById.get(id);
+              return stroke ? [stroke] : [];
+            })} />
+            <div style={{ marginBlock: "0.5rem" }}>
+              <button
+                type="button"
+                className={styles.buttonSecondary}
+                data-testid="btn-recognize-integral-expression"
+                disabled={ocrLoadingByUnit[unit.id]}
+                onClick={() => handleRecognizeUnit(unit)}
+              >
+                {ocrLoadingByUnit[unit.id] ? "Đang nhận diện toàn bộ biểu thức..." : "Thử OCR toàn bộ biểu thức"}
+              </button>
+            </div>
+            {ocrResultByUnit[unit.id] ? (
+              <div
+                data-testid="integral-expression-ocr-result"
+                style={{
+                  background: "#ffffff",
+                  border: "1px solid #16a34a",
+                  borderRadius: "6px",
+                  padding: "8px 12px",
+                  marginBlock: "0.5rem",
+                }}
+              >
+                <p style={{ margin: "0 0 4px 0", color: "#16a34a", fontWeight: "bold" }}>
+                  Kết quả nhận diện toàn bộ biểu thức ({ocrResultByUnit[unit.id].durationMs}ms):
+                </p>
+                <p style={{ margin: "0 0 6px 0" }}>
+                  <code data-testid="integral-ocr-latex" style={{ background: "#f1f5f9", padding: "2px 6px", borderRadius: "4px" }}>
+                    {ocrResultByUnit[unit.id].latex}
+                  </code>
+                </p>
+                {ocrResultByUnit[unit.id].html ? (
+                  <div
+                    data-testid="integral-ocr-preview"
+                    style={{ padding: "4px", fontSize: "1.1rem" }}
+                    dangerouslySetInnerHTML={{ __html: ocrResultByUnit[unit.id].html! }}
+                  />
+                ) : null}
+              </div>
+            ) : null}
+            {ocrErrorByUnit[unit.id] ? (
+              <p style={{ color: "#dc2626", margin: "4px 0" }}>
+                Không thể nhận diện: {ocrErrorByUnit[unit.id]}
+              </p>
+            ) : null}
+            <p style={{ fontSize: "12px", color: "#64748b" }}>Chỉ là đề xuất thử nghiệm trong Shadow QA; không thay đổi các bước giải đã lưu.</p>
+          </div>
+        ))}
+      </div>
       <p>Chưa có ground truth: không thể coi các nhóm này là cấu trúc đúng của bài viết.</p>
     </section>
   );

@@ -36,7 +36,7 @@ function main() {
   const captureRaw = JSON.parse(rawBytes.toString("utf8"));
 
   // Check required compiled modules
-  const required = ["page-ocr.js", "structural-candidate-engine.js", "ocr-shadow-qa.js", "ocr-eval-replay.js"];
+  const required = ["page-ocr.js", "structural-candidate-engine.js", "ocr-shadow-qa.js", "ocr-eval-replay.js", "expression-reconstruction.js"];
   for (const f of required) {
     if (!fs.existsSync(path.join(buildPath, f))) {
       console.error(`Missing compiled module ${f}. Please run 'npm run test:compile' in frontend`);
@@ -49,6 +49,7 @@ function main() {
   const { segmentPageInk_v2 } = require(path.join(buildPath, "page-ocr.js"));
   const { detectStructuralCandidates } = require(path.join(buildPath, "structural-candidate-engine.js"));
   const { buildOcrShadowQaReport } = require(path.join(buildPath, "ocr-shadow-qa.js"));
+  const { proposeIntegralExpressionUnits } = require(path.join(buildPath, "expression-reconstruction.js"));
 
   // 1. Validate OcrEvalCaptureV1
   const capture = validateOcrEvalCapture(captureRaw);
@@ -125,6 +126,16 @@ function main() {
   // 5. Shadow QA Report
   const shadowReport = buildOcrShadowQaReport(strokes, replayedRegions);
 
+  // Core OCR V2: proposal only. This MUST NOT alter baseline regions or drafts.
+  const integralUnits = proposeIntegralExpressionUnits(strokes);
+  const expressionSummary = {
+    unitCount: integralUnits.length,
+    units: integralUnits,
+    baselineRegionsUnchanged: replayResult.identicalToCapture,
+  };
+  fs.writeFileSync(path.join(outputDir, "expression_reconstruction.json"),
+    JSON.stringify(expressionSummary, null, 2), "utf8");
+
   // 6. Stroke Integrity Checks
   const expectedPenIds = new Set(strokes.filter(s => s.tool === "PEN").map(s => s.id));
   const assignedStrokeIds = candidates.flatMap(c => c.sourceStrokeIds);
@@ -172,6 +183,15 @@ function main() {
       pass: replayResult.capturedRegionsCount === 4 && replayResult.replayedRegionsCount === 4 && replayResult.identicalToCapture,
     },
     {
+      name: "Full integral proposal joins limits and body without creating an OCR step",
+      pass: integralUnits.length === 1 &&
+        integralUnits[0].sourceStrokeIds.length === 10 &&
+        integralUnits[0].upperLimitStrokeIds.length === 1 &&
+        integralUnits[0].lowerLimitStrokeIds.length === 1 &&
+        integralUnits[0].bodyStrokeIds.length === 7 &&
+        replayResult.identicalToCapture,
+    },
+    {
       name: "Shadow QA report reports zero missing and duplicate strokes",
       pass: shadowReport.shadowMissingStrokeIds.length === 0 && shadowReport.shadowDuplicateStrokeIds.length === 0 && shadowReport.shadowUnknownStrokeIds.length === 0,
     },
@@ -193,7 +213,7 @@ function main() {
   console.log(`Integral Guard (No false SYSTEM): ${!structuralResult.hasSystemCandidate ? "PASS" : "FAIL"}`);
   console.log(`No false ALTERNATIVES: ${!structuralResult.hasAlternativesCandidate ? "PASS" : "FAIL"}`);
   console.log(`Stroke Conservation: ${strokeIntegrity.strokeConservationPass ? "PASS" : "FAIL"}`);
-  console.log(`Overall Invariants: ${allPassed ? "ALL 7 TESTS PASSED" : "SOME TESTS FAILED"}`);
+  console.log(`Overall Invariants: ${allPassed ? "ALL 8 TESTS PASSED" : "SOME TESTS FAILED"}`);
   console.log(`Artifacts saved in: ${outputDir}`);
 
   if (!allPassed) {
