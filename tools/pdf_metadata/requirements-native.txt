@@ -1,0 +1,8 @@
+pdfplumber==0.11.9
+Pillow>=10,<14
+psutil>=6,<8
+jsonschema>=4.23,<5
+pytest>=8,<10
+httpx>=0.27,<1
+pypdfium2>=4.30,<6
+SymPy==1.14.0
