@@ -19,6 +19,7 @@ import {
 import { toConfirmedLatex, insertCorrectionKey, CORRECTION_KEYS } from '../utils/ocr-correction';
 import { renderOcrLatexHtml } from '../utils/ocr-math-preview';
 import { OcrInkPreview } from './OcrInkPreview';
+import { PageOcrShadowQaPanel } from './PageOcrShadowQaPanel';
 import { OcrMathPreview } from './OcrMathPreview';
 import { SequentialBatchManager, type BatchJournal } from '../utils/batch-manager';
 import { IndexedDbBatchJournal, BrowserBatchLock } from '../utils/batch-journal';
@@ -102,6 +103,8 @@ export function PageOcrReviewModal({
   const [pausedJournal, setPausedJournal] = useState<BatchJournal | null>(null);
   const [cutPercent, setCutPercent] = useState(50);
   const [reviewError, setReviewError] = useState<string | null>(null);
+  // This toggle is QA-only. Shadow results never feed into rows, drafts or persistence.
+  const [shadowQaOpen, setShadowQaOpen] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const activeRunRef = useRef<{ cancelled: boolean } | null>(null);
@@ -583,7 +586,18 @@ export function PageOcrReviewModal({
             <button type='button' className={styles.buttonSecondary} onClick={exportDevOcrCapture}>
               Xuất nét và phân vùng (QA)
             </button>
+            {' '}
+            <button type='button' className={styles.buttonSecondary}
+              onClick={() => setShadowQaOpen((open) => !open)}
+              aria-expanded={shadowQaOpen} aria-controls='ocr-shadow-qa-panel'>
+              {shadowQaOpen ? 'Ẩn đối chiếu cấu trúc (QA)' : 'Xem đề xuất cấu trúc (QA)'}
+            </button>
             <p>File chỉ tải về máy, chứa chữ viết tay gốc. Không chia sẻ nếu chưa được phép.</p>
+          </div>
+        ) : null}
+        {process.env.NODE_ENV !== 'production' && shadowQaOpen ? (
+          <div id='ocr-shadow-qa-panel' style={{ maxHeight: 'min(35dvh, 300px)', overflowY: 'auto', flexShrink: 0 }}>
+            <PageOcrShadowQaPanel pageStrokes={pageStrokes} initialRegions={regions} />
           </div>
         ) : null}
         <div className={styles.pageReviewProgress} role='status' aria-live='polite'>

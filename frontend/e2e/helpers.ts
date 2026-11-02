@@ -15,7 +15,12 @@ export const REPO_ROOT = path.resolve(__dirname, "..", "..");
 export const ARTIFACT_DIR = path.join(REPO_ROOT, ".tmp", "tri-ocr-e2e");
 export const SCREENSHOT_DIR = path.join(ARTIFACT_DIR, "screenshots");
 export const TELEMETRY_DIR = path.join(ARTIFACT_DIR, "telemetry");
-export const PYTHON_EXE = path.join(REPO_ROOT, "backend", ".venv", "Scripts", "python.exe");
+export const PYTHON_EXE =
+  process.env.PYTHON_EXE && fs.existsSync(process.env.PYTHON_EXE)
+    ? process.env.PYTHON_EXE
+    : fs.existsSync(path.join(REPO_ROOT, "backend", ".venv", "Scripts", "python.exe"))
+      ? path.join(REPO_ROOT, "backend", ".venv", "Scripts", "python.exe")
+      : path.resolve(REPO_ROOT, "..", "Coach_Learning", "backend", ".venv", "Scripts", "python.exe");
 export const DB_HELPER = path.join(__dirname, "qa_db_helper.py");
 export const DEFAULT_UNTRACKED_ENV_FILE = path.join(ARTIFACT_DIR, ".qa-e2e.env");
 
