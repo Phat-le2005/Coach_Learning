@@ -596,7 +596,7 @@ export function PageOcrReviewModal({
           </div>
         ) : null}
         {process.env.NODE_ENV !== 'production' && shadowQaOpen ? (
-          <div id='ocr-shadow-qa-panel'>
+          <div id='ocr-shadow-qa-panel' style={{ maxHeight: 'min(35dvh, 300px)', overflowY: 'auto', flexShrink: 0 }}>
             <PageOcrShadowQaPanel pageStrokes={pageStrokes} initialRegions={regions} />
           </div>
         ) : null}
