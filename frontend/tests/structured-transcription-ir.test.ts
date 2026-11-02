@@ -1,336 +1,323 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import type { InkStroke } from "../src/lib/api/contracts.js";
+import type { StructureCandidate } from "../src/features/math-workspace/utils/structural-candidate-engine.js";
 import { segmentPageInk_v2 } from "../src/features/math-workspace/utils/page-ocr.js";
+import { detectStructuralCandidates } from "../src/features/math-workspace/utils/structural-candidate-engine.js";
 import {
-  computeBounds,
-  buildStructuredTranscriptionIR,
-  applyOcrToContentUnit,
-  editContentUnit,
-  approveContentUnit,
-  projectTranscriptionToLegacySteps,
-  validateSolutionTranscriptionIR,
+  computeBounds, buildStructuredTranscriptionIR, applyOcrToContentUnit, editContentUnit,
+  approveContentUnit, editContainerRelation, confirmTranscriptionReadingOrder,
+  setSiblingReadingOrder, getRootContentUnits, getOrderedReviewUnits,
+  projectTranscriptionToLegacySteps, validateSolutionTranscriptionIR,
+  requireApprovedTranscriptionIR,
+  type SolutionTranscriptionIR,
 } from "../src/features/math-workspace/utils/structured-transcription-ir.js";
 
-function makeStroke(id: string, x: number, y: number, w = 0.15, h = 0.02): InkStroke {
-  return {
-    id,
-    tool: "PEN",
-    color: "#000000",
-    width: 2,
-    points: [
-      { x, y, pressure: 0.5 },
-      { x: x + w * 0.5, y: y + h * 0.5, pressure: 0.5 },
-      { x: x + w, y: y + h, pressure: 0.5 },
-    ],
-  };
+function stroke(id: string, x = 0.1, y = 0.1, w = 0.15, h = 0.02): InkStroke {
+  return { id, tool: "PEN", color: "#000000", width: 2, points: [
+    { x, y, pressure: 0.5 }, { x: x + w, y: y + h, pressure: 0.5 },
+  ] };
 }
+function simple(count = 1) {
+  const strokes = Array.from({ length: count }, (_, i) => stroke(`s${i}`, 0.1, 0.1 + i * 0.15));
+  return buildStructuredTranscriptionIR({ pageIndex: 0, strokes, regions: segmentPageInk_v2(strokes) });
+}
+function system(nested = false) {
+  const strokes = [stroke("a", 0.15, 0.1), stroke("b", 0.15, 0.3), stroke("brace", 0.08, 0.08, 0.02, 0.3)];
+  const leaf = (id: string, sid: string): StructureCandidate => ({ id, kind: "INDEPENDENT", sourceStrokeIds: [sid],
+    bounds: computeBounds(strokes.filter((s) => s.id === sid)), children: [], reasons: [] });
+  const candidate: StructureCandidate = { id: "system", kind: "SYSTEM", sourceStrokeIds: strokes.map((s) => s.id),
+    bounds: computeBounds(strokes), children: [leaf("A", "a"), leaf("B", "b")], reasons: [] };
+  if (nested) candidate.children[0] = { ...candidate.children[0], id: "nested", kind: "ALTERNATIVES", children: [leaf("A", "a")] };
+  return buildStructuredTranscriptionIR({ pageIndex: 0, strokes, regions: segmentPageInk_v2(strokes), structuralCandidates: [candidate] });
+}
+function approveAll(input: SolutionTranscriptionIR) {
+  let ir = input;
+  for (const { unit } of getOrderedReviewUnits(ir.contentUnits).reverse()) {
+    if (unit.role === "ATOMIC") ir = editContentUnit(ir, unit.id, { content: `${unit.id}=2` });
+    ir = approveContentUnit(ir, unit.id);
+  }
+  return confirmTranscriptionReadingOrder(ir);
+}
+function unit(ir: SolutionTranscriptionIR, id: string) { return ir.contentUnits.find((u) => u.id === id)!; }
 
-// ============================================================================
-// 1. P0.1 — Bounding Box Geometry Tests
-// ============================================================================
-
-test("P0.1 — Bounding box: stroke with X > Y computes correct right boundary", () => {
-  // Stroke where X (0.75 - 0.90) is much larger than Y (0.05 - 0.10)
-  const stroke = makeStroke("large_x", 0.75, 0.05, 0.15, 0.05);
-  const bounds = computeBounds([stroke]);
-
-  assert.equal(bounds.left, 0.75);
-  assert.equal(bounds.right, 0.90, "bounds.right must be 0.90, not distorted by small Y!");
-  assert.equal(bounds.top, 0.05);
-  assert.equal(bounds.bottom, 0.10);
-  assert.ok(bounds.left <= bounds.right);
-  assert.ok(bounds.top <= bounds.bottom);
+test("bounds remain exact for wide/tall strokes and large x, small y", () => {
+  assert.deepEqual(computeBounds([stroke("wide", 0.75, 0.05, 0.15, 0.05)]), { left: 0.75, right: 0.9, top: 0.05, bottom: 0.1 });
+  assert.deepEqual(computeBounds([stroke("tall", 0.08, 0.05, 0.02, 0.4)]), { left: 0.08, right: 0.1, top: 0.05, bottom: 0.45 });
 });
 
-test("P0.1 — Bounding box: asymmetric strokes (wide vs tall) across A4 quadrants", () => {
-  // Wide horizontal stroke at bottom right: x in [0.60, 0.95], y in [0.80, 0.82]
-  const wideStroke = makeStroke("wide", 0.60, 0.80, 0.35, 0.02);
-  const wideBounds = computeBounds([wideStroke]);
-  assert.equal(wideBounds.left, 0.60);
-  assert.equal(wideBounds.right, 0.95);
-  assert.equal(wideBounds.top, 0.80);
-  assert.ok(Math.abs(wideBounds.bottom - 0.82) < 1e-5);
-
-  // Tall vertical stroke at top left: x in [0.08, 0.10], y in [0.05, 0.45]
-  const tallStroke = makeStroke("tall", 0.08, 0.05, 0.02, 0.40);
-  const tallBounds = computeBounds([tallStroke]);
-  assert.equal(tallBounds.left, 0.08);
-  assert.equal(tallBounds.right, 0.10);
-  assert.equal(tallBounds.top, 0.05);
-  assert.equal(tallBounds.bottom, 0.45);
-});
-
-// ============================================================================
-// 2. P0.2 — Source Conservation Tests
-// ============================================================================
-
-test("P0.2 — Source conservation: all pen strokes represented even if omitted by segmentation", () => {
-  const s1 = makeStroke("s1", 0.1, 0.1);
-  const s2 = makeStroke("s2", 0.1, 0.2);
-  const orphanStroke = makeStroke("orphan_isolated", 0.85, 0.85);
-
-  // Simulate a segmentation that completely omitted 'orphan_isolated'
-  const mockRegions = [
-    { id: "reg-1", strokes: [s1], bounds: computeBounds([s1]) },
-    { id: "reg-2", strokes: [s2], bounds: computeBounds([s2]) },
-  ];
-
-  const ir = buildStructuredTranscriptionIR({
-    pageIndex: 0,
-    strokes: [s1, s2, orphanStroke],
-    regions: mockRegions,
-  });
-
-  const allAssignedIds = ir.contentUnits.flatMap((u) => u.sourceStrokeIds);
-  assert.equal(allAssignedIds.includes("orphan_isolated"), true, "Orphan stroke must be captured in IR!");
-  assert.equal(new Set(allAssignedIds).size, 3);
-  assert.equal(ir.rawStrokeCount, 3);
-
-  const orphanUnit = ir.contentUnits.find((u) => u.sourceStrokeIds.includes("orphan_isolated"));
-  assert.ok(orphanUnit);
-  assert.equal(orphanUnit.kind, "UNKNOWN");
-  assert.equal(orphanUnit.recognitionStatus, "UNRESOLVED");
-});
-
-// ============================================================================
-// 3. P0.3 — Projection Safety & Blocked States Tests
-// ============================================================================
-
-test("P0.3 — Projection safety: unapproved or UNRESOLVED units block projection without fake placeholders", () => {
-  const strokes = [makeStroke("s1", 0.1, 0.1), makeStroke("s2", 0.1, 0.2)];
-  const regions = segmentPageInk_v2(strokes);
-  let ir = buildStructuredTranscriptionIR({ pageIndex: 0, strokes, regions });
-
-  // Unit 1 is approved with math
-  ir = applyOcrToContentUnit(ir, ir.contentUnits[0].id, "y = x^2");
-  ir = approveContentUnit(ir, ir.contentUnits[0].id);
-
-  // Unit 2 is left UNRESOLVED / unapproved
-  const projection = projectTranscriptionToLegacySteps(ir);
-
-  // Projection must be BLOCKED because unit 2 is unapproved!
-  assert.equal(projection.isProjectionBlocked, true);
-  assert.equal(projection.blockedUnits.length, 1);
-  assert.equal(projection.blockedUnits[0].unitId, ir.contentUnits[1].id);
-  assert.ok(projection.blockedUnits[0].reason.includes("not APPROVED"));
-
-  // Only approved unit 1 is emitted in steps; no fake '(UNKNOWN content unit)' placeholder
-  assert.equal(projection.projectedStepCount, 1);
-  assert.equal(projection.steps[0].content_latex, "y = x^2");
-  assert.ok(!JSON.stringify(projection).includes("(UNKNOWN content unit)"));
-});
-
-test("P0.3 — Projection safety: unit of kind UNKNOWN blocks projection with clear warnings", () => {
-  const strokes = [makeStroke("s1", 0.1, 0.1)];
-  const regions = segmentPageInk_v2(strokes);
-  let ir = buildStructuredTranscriptionIR({ pageIndex: 0, strokes, regions });
-  const unitId = ir.contentUnits[0].id;
-
-  ir = editContentUnit(ir, unitId, { content: "Ambiguous blob", kind: "UNKNOWN" });
-  ir = approveContentUnit(ir, unitId);
-
-  const projection = projectTranscriptionToLegacySteps(ir);
-  assert.equal(projection.isProjectionBlocked, true);
-  assert.equal(projection.blockedUnits.length, 1);
-  assert.equal(projection.blockedUnits[0].kind, "UNKNOWN");
-  assert.ok(projection.blockedUnits[0].reason.includes("UNKNOWN"));
-  assert.equal(projection.projectedStepCount, 0, "UNKNOWN unit must NOT be projected into legacy step");
-});
-
-// ============================================================================
-// 4. P0.4 — Approval Consistency & Parent-Child Tests
-// ============================================================================
-
-test("P0.4 — Approval consistency: parent SYSTEM cannot be approved if a child is unapproved", () => {
-  const strokes = [makeStroke("p1", 0.1, 0.1), makeStroke("p2", 0.1, 0.2)];
-  const regions = segmentPageInk_v2(strokes);
-  const cand = {
-    id: "system-1",
-    kind: "SYSTEM" as const,
-    sourceStrokeIds: ["p1", "p2"],
-    bounds: { left: 0.1, top: 0.1, right: 0.3, bottom: 0.3 },
-    children: [
-      { id: "eq1", kind: "INDEPENDENT" as const, sourceStrokeIds: ["p1"], bounds: { left: 0.1, top: 0.1, right: 0.3, bottom: 0.15 }, children: [], reasons: [] },
-      { id: "eq2", kind: "INDEPENDENT" as const, sourceStrokeIds: ["p2"], bounds: { left: 0.1, top: 0.2, right: 0.3, bottom: 0.25 }, children: [], reasons: [] },
-    ],
-    reasons: [],
-  };
-
-  let ir = buildStructuredTranscriptionIR({
-    pageIndex: 0,
-    strokes,
-    regions,
-    structuralCandidates: [cand],
-  });
-
-  const parentUnit = ir.contentUnits.find((u) => u.id === "system-1")!;
-  const child1 = ir.contentUnits.find((u) => u.id === "sub-eq1")!;
-  const child2 = ir.contentUnits.find((u) => u.id === "sub-eq2")!;
-
-  // Apply OCR to both children
-  ir = applyOcrToContentUnit(ir, child1.id, "x + y = 1");
-  ir = applyOcrToContentUnit(ir, child2.id, "x - y = 0");
-
-  // Approve ONLY child 1
-  ir = approveContentUnit(ir, child1.id);
-  assert.equal(ir.contentUnits.find((u) => u.id === child1.id)!.reviewStatus, "APPROVED");
-  assert.equal(ir.contentUnits.find((u) => u.id === child2.id)!.reviewStatus, "NEEDS_REVIEW");
-
-  // Attempting to approve parent while child 2 is unapproved MUST throw!
-  assert.throws(
-    () => approveContentUnit(ir, parentUnit.id),
-    /TRANSCRIPTION_PARENT_CHILDREN_UNAPPROVED/,
-  );
-
-  // Overall IR reviewStatus must remain NEEDS_REVIEW
-  assert.equal(ir.reviewStatus, "NEEDS_REVIEW");
-
-  // Now approve child 2
-  ir = approveContentUnit(ir, child2.id);
-  assert.equal(ir.contentUnits.find((u) => u.id === child2.id)!.reviewStatus, "APPROVED");
-
-  // Now parent approval succeeds!
-  ir = approveContentUnit(ir, parentUnit.id);
-  assert.equal(ir.contentUnits.find((u) => u.id === parentUnit.id)!.reviewStatus, "APPROVED");
+test("two-equation parent has reviewable children, delimiter provenance, no invented content", () => {
+  let ir = system();
+  assert.equal(ir.contentUnits.length, 3);
+  assert.equal(getRootContentUnits(ir.contentUnits).length, 1);
+  assert.deepEqual(unit(ir, "system").childIds, ["sub-A", "sub-B"]);
+  assert.throws(() => approveContentUnit(ir, "system"), /CHILDREN_UNAPPROVED/);
+  ir = applyOcrToContentUnit(ir, "sub-A", "x+y=1");
+  ir = approveContentUnit(ir, "sub-A");
+  assert.throws(() => approveContentUnit(ir, "system"), /CHILDREN_UNAPPROVED/);
+  ir = applyOcrToContentUnit(ir, "sub-B", "x-y=0");
+  ir = approveContentUnit(ir, "sub-B");
+  assert.equal(unit(ir, "system").reviewStatus, "NEEDS_REVIEW", "children never approve their parent automatically");
+  ir = approveContentUnit(ir, "system");
+  assert.equal(unit(ir, "system").approvedContent, null);
+  assert.equal(unit(ir, "system").recognitionStatus, "NOT_APPLICABLE");
+  assert.equal(ir.reviewStatus, "NEEDS_REVIEW", "reading order also needs explicit confirmation");
+  ir = confirmTranscriptionReadingOrder(ir);
   assert.equal(ir.reviewStatus, "APPROVED");
+  assert.doesNotThrow(() => validateSolutionTranscriptionIR(JSON.parse(JSON.stringify(ir)), ir.sourceSnapshot.strokes));
 });
 
-// ============================================================================
-// 5. P0.5 — Comprehensive Validation Tests
-// ============================================================================
-
-test("P0.5 — Validation: rejects duplicate unit IDs, malformed bounds, and invalid child references", () => {
-  const validStrokes = [makeStroke("s1", 0.1, 0.1)];
-  const validRegions = segmentPageInk_v2(validStrokes);
-  const ir = buildStructuredTranscriptionIR({ pageIndex: 0, strokes: validStrokes, regions: validRegions });
-
-  // Valid IR passes
-  assert.doesNotThrow(() => validateSolutionTranscriptionIR(ir));
-
-  // Reject duplicate unit ID
-  const dupIr = {
-    ...ir,
-    contentUnits: [
-      ir.contentUnits[0],
-      { ...ir.contentUnits[0] },
-    ],
-  };
-  assert.throws(() => validateSolutionTranscriptionIR(dupIr), /DUPLICATE_UNIT_ID/);
-
-  // Reject inverted bounds (left > right)
-  const invertedBoundsIr = {
-    ...ir,
-    contentUnits: [
-      {
-        ...ir.contentUnits[0],
-        bounds: { left: 0.9, right: 0.1, top: 0.1, bottom: 0.2 },
-      },
-    ],
-  };
-  assert.throws(() => validateSolutionTranscriptionIR(invertedBoundsIr), /MALFORMED_UNIT_BOUNDS/);
-
-  // Reject child referencing non-existent child ID
-  const brokenChildIr = {
-    ...ir,
-    contentUnits: [
-      {
-        ...ir.contentUnits[0],
-        childIds: ["missing-child-999"],
-      },
-    ],
-  };
-  assert.throws(() => validateSolutionTranscriptionIR(brokenChildIr), /MISSING_CHILD_UNIT/);
-
-  // Reject approved unit with empty content
-  const emptyApprovedIr = {
-    ...ir,
-    contentUnits: [
-      {
-        ...ir.contentUnits[0],
-        reviewStatus: "APPROVED" as const,
-        approvedContent: "   ",
-      },
-    ],
-  };
-  assert.throws(() => validateSolutionTranscriptionIR(emptyApprovedIr), /APPROVED_UNIT_EMPTY_CONTENT/);
-});
-
-// ============================================================================
-// 6. Invariant 4 & 5 (Manual Correction & Faithful Math Mistake)
-// ============================================================================
-
-test("Invariant 4: Re-running recognition NEVER overwrites student manual corrections", () => {
-  const strokes = [makeStroke("s1", 0.1, 0.1)];
-  const regions = segmentPageInk_v2(strokes);
-  let ir = buildStructuredTranscriptionIR({ pageIndex: 0, strokes, regions });
-  const unitId = ir.contentUnits[0].id;
-
-  ir = applyOcrToContentUnit(ir, unitId, "x = 1");
-  ir = editContentUnit(ir, unitId, { content: "x = 2" });
-  assert.equal(ir.contentUnits[0].approvedContent, "x = 2");
-
-  // Re-run OCR
-  ir = applyOcrToContentUnit(ir, unitId, "x = 3");
-  assert.equal(ir.contentUnits[0].approvedContent, "x = 2", "Manual edit must be preserved!");
-  assert.equal(ir.contentUnits[0].recognitionStatus, "MANUALLY_CORRECTED");
-});
-
-test("Invariant 5: Student mathematical mistake transcribed faithfully without SymPy auto-correction", () => {
-  const strokes = [makeStroke("s1", 0.1, 0.1)];
-  const regions = segmentPageInk_v2(strokes);
-  let ir = buildStructuredTranscriptionIR({ pageIndex: 0, strokes, regions });
-  const unitId = ir.contentUnits[0].id;
-
-  const wrongMath = "3x^2 - 3 = 0 \\Leftrightarrow x = 2";
-  ir = editContentUnit(ir, unitId, { content: wrongMath });
-  ir = approveContentUnit(ir, unitId);
-
-  const projection = projectTranscriptionToLegacySteps(ir);
-  assert.equal(projection.steps[0].content_latex, wrongMath);
-  assert.ok(!projection.steps[0].content_latex?.includes("\\pm 1"));
-});
-
-// ============================================================================
-// 7. Multi-line Calculus Solution Scenario (Grade 12 Demo)
-// ============================================================================
-
-test("Grade 12 Calculus Demo: 4-line solution transcription, human review, and projection", () => {
-  const line1 = makeStroke("l1_txt", 0.1, 0.10);
-  const line2 = makeStroke("l2_der", 0.1, 0.18);
-  const line3 = makeStroke("l3_root", 0.1, 0.26);
-  const line4 = makeStroke("l4_ext", 0.1, 0.34);
-
-  const strokes = [line1, line2, line3, line4];
-  const regions = segmentPageInk_v2(strokes);
-
-  let ir = buildStructuredTranscriptionIR({ pageIndex: 0, strokes, regions });
+test("nested construction retains every child; edit invalidates all dependent ancestors", () => {
+  let ir = approveAll(system(true));
   assert.equal(ir.contentUnits.length, 4);
-
-  const [u1, u2, u3, u4] = ir.contentUnits;
-  ir = applyOcrToContentUnit(ir, u1.id, "Tập xác định: D = R");
-  ir = editContentUnit(ir, u1.id, { kind: "TEXT" });
-
-  ir = applyOcrToContentUnit(ir, u2.id, "y' = 3x^2 - 3");
-  ir = applyOcrToContentUnit(ir, u3.id, "y' = 0 \\Leftrightarrow x = \\pm 1");
-  ir = applyOcrToContentUnit(ir, u4.id, "y(1) = -1,\\quad y(-1) = 3");
-
-  // Approve all units
-  ir = approveContentUnit(ir, u1.id);
-  ir = approveContentUnit(ir, u2.id);
-  ir = approveContentUnit(ir, u3.id);
-  ir = approveContentUnit(ir, u4.id);
   assert.equal(ir.reviewStatus, "APPROVED");
+  ir = editContentUnit(ir, "sub-A", { content: "x=3" });
+  for (const id of ["sub-A", "sub-nested", "system"]) assert.equal(unit(ir, id).reviewStatus, "NEEDS_REVIEW");
+  assert.equal(unit(ir, "sub-B").reviewStatus, "APPROVED");
+  assert.equal(ir.approvedUnitCount, 1);
+  assert.equal(ir.reviewStatus, "NEEDS_REVIEW");
+  assert.throws(() => approveContentUnit(ir, "system"), /CHILDREN_UNAPPROVED/);
+  ir = approveContentUnit(ir, "sub-A");
+  ir = approveContentUnit(ir, "sub-nested");
+  assert.equal(unit(ir, "system").reviewStatus, "NEEDS_REVIEW");
+  ir = approveContentUnit(ir, "system");
+  assert.equal(ir.reviewStatus, "APPROVED");
+});
 
+test("OCR rerun preserves approved manual content and structure, updates only raw evidence", () => {
+  let ir = approveAll(system());
+  const provenance = structuredClone(ir.sourceSnapshot);
+  const accepted = unit(ir, "sub-A").approvedContent;
+  ir = applyOcrToContentUnit(ir, "sub-A", "x=999");
+  assert.equal(unit(ir, "sub-A").approvedContent, accepted);
+  assert.equal(unit(ir, "sub-A").rawRecognition, "x=999");
+  assert.equal(ir.reviewStatus, "APPROVED");
+  assert.equal(unit(ir, "sub-A").recognitionStatus, "MANUALLY_CORRECTED");
+  assert.deepEqual(ir.sourceSnapshot, provenance);
+});
+
+test("changed OCR without manual correction invalidates accepted raw content and parent", () => {
+  let ir = system();
+  for (const id of ["sub-A", "sub-B"]) { ir = applyOcrToContentUnit(ir, id, "x=1"); ir = approveContentUnit(ir, id); }
+  ir = confirmTranscriptionReadingOrder(approveContentUnit(ir, "system"));
+  ir = applyOcrToContentUnit(ir, "sub-A", "x=2");
+  assert.equal(unit(ir, "sub-A").approvedContent, null);
+  assert.equal(unit(ir, "system").reviewStatus, "NEEDS_REVIEW");
+  assert.equal(ir.reviewStatus, "NEEDS_REVIEW");
+});
+
+test("manual edit during pending OCR wins when model result arrives", () => {
+  let ir = simple(); const id = ir.contentUnits[0].id;
+  ir = editContentUnit(ir, id, { content: "learner correction" });
+  ir = applyOcrToContentUnit(ir, id, "late model output");
+  assert.equal(unit(ir, id).approvedContent, "learner correction");
+});
+
+test("containers, TEXT and UNKNOWN cannot be sent to CoMER", () => {
+  const ir = system();
+  assert.throws(() => applyOcrToContentUnit(ir, "system", "fake system"), /ATOMIC_MATH/);
+  assert.throws(() => editContentUnit(ir, "system", { content: "fake system" }), /STRUCTURE_REVIEW/);
+  for (const kind of ["TEXT", "UNKNOWN"] as const) {
+    const text = editContentUnit(ir, "sub-A", { kind });
+    assert.throws(() => applyOcrToContentUnit(text, "sub-A", "fake Vietnamese"), /ATOMIC_MATH/);
+  }
+});
+
+test("UNKNOWN relation blocks approval; explicit relation edit invalidates ancestors", () => {
+  let ir = approveAll(system(true));
+  ir = editContainerRelation(ir, "sub-nested", "UNKNOWN");
+  assert.equal(unit(ir, "system").reviewStatus, "NEEDS_REVIEW");
+  assert.throws(() => approveContentUnit(ir, "sub-nested"), /CHILDREN_UNAPPROVED/);
+  ir = editContainerRelation(ir, "sub-nested", "INDEPENDENT");
+  ir = approveContentUnit(ir, "sub-nested");
+  assert.doesNotThrow(() => approveContentUnit(ir, "system"));
+});
+
+test("root detection and review order are independent of ID prefixes and storage array", () => {
+  const ir = system();
+  const parent = unit(ir, "system"); parent.id = "sub-root-with-misleading-prefix";
+  unit(ir, "sub-A").id = "ordinary-child"; parent.childIds[0] = "ordinary-child";
+  ir.contentUnits.reverse();
+  validateSolutionTranscriptionIR(ir);
+  assert.equal(getRootContentUnits(ir.contentUnits)[0].id, parent.id);
+  assert.deepEqual(getOrderedReviewUnits(ir.contentUnits).map((r) => [r.unit.id, r.depth]), [
+    [parent.id, 0], ["ordinary-child", 1], ["sub-B", 1],
+  ]);
+});
+
+test("reading order is spatial, not drawing or serialization order", () => {
+  const strokes = [stroke("bottom", 0.1, 0.4), stroke("top", 0.1, 0.1)];
+  const regions = strokes.map((s) => ({ id: s.id, strokes: [s], bounds: computeBounds([s]) }));
+  const ir = buildStructuredTranscriptionIR({ pageIndex: 0, strokes, regions });
+  assert.deepEqual(getRootContentUnits(ir.contentUnits).map((u) => u.sourceStrokeIds[0]), ["top", "bottom"]);
+  assert.deepEqual(ir.sourceSnapshot.strokes.map((s) => s.id), ["bottom", "top"]);
+});
+
+test("two columns remain ambiguous until human orders and confirms them", () => {
+  const strokes = [stroke("left", 0.1, 0.1), stroke("right", 0.65, 0.1)];
+  let ir = buildStructuredTranscriptionIR({ pageIndex: 0, strokes,
+    regions: strokes.map((s) => ({ id: s.id, strokes: [s], bounds: computeBounds([s]) })) });
+  assert.equal(ir.readingOrderStatus, "AMBIGUOUS");
+  assert.ok(ir.readingOrderWarnings.length);
+  ir = setSiblingReadingOrder(ir, null, ["unit-right", "unit-left"]);
+  assert.equal(ir.readingOrderStatus, "AMBIGUOUS");
+  assert.deepEqual(getRootContentUnits(ir.contentUnits).map((u) => u.id), ["unit-right", "unit-left"]);
+  ir = confirmTranscriptionReadingOrder(ir);
+  assert.equal(ir.readingOrderStatus, "CONFIRMED");
+  assert.equal(ir.reviewStatus, "NEEDS_REVIEW");
+  assert.throws(() => setSiblingReadingOrder(ir, null, ["unit-left", "unit-left"]), /INVALID_ORDER/);
+});
+
+test("reordering children invalidates parent relation and page order confirmation", () => {
+  let ir = approveAll(system());
+  ir = setSiblingReadingOrder(ir, "system", ["sub-B", "sub-A"]);
+  assert.equal(unit(ir, "system").reviewStatus, "NEEDS_REVIEW");
+  assert.equal(unit(ir, "sub-A").reviewStatus, "APPROVED");
+  assert.notEqual(ir.readingOrderStatus, "CONFIRMED");
+});
+
+test("orphan ink is conserved as UNKNOWN; annotation strokes are outside pen source", () => {
+  const a = stroke("a"), orphan = stroke("orphan", 0.8, 0.8);
+  const ir = buildStructuredTranscriptionIR({ pageIndex: 0, strokes: [a, orphan, { ...stroke("highlight"), tool: "HIGHLIGHTER" }],
+    regions: [{ id: "one", strokes: [a], bounds: computeBounds([a]) }] });
+  assert.equal(ir.rawStrokeCount, 2);
+  assert.equal(unit(ir, "orphan-orphan").kind, "UNKNOWN");
+  assert.equal(unit(ir, "orphan-orphan").recognitionStatus, "UNRESOLVED");
+  assert.equal(ir.sourceSnapshot.strokes.length, 2);
+  assert.throws(() => approveContentUnit(ir, "orphan-orphan"), /EMPTY_CONTENT/);
+});
+
+test("source is copied once; JSON roundtrip preserves physical ink and legal ancestor references", () => {
+  const ir = system();
+  const decoded = JSON.parse(JSON.stringify(ir));
+  validateSolutionTranscriptionIR(decoded, ir.sourceSnapshot.strokes);
+  assert.equal(decoded.sourceSnapshot.strokes.length, 3);
+  assert.equal(decoded.contentUnits.flatMap((u: { sourceStrokeIds: string[] }) => u.sourceStrokeIds).length, 5);
+  assert.equal(new Set(decoded.sourceSnapshot.strokes.map((s: InkStroke) => s.id)).size, 3);
+  const original = [stroke("a")];
+  const copy = buildStructuredTranscriptionIR({ pageIndex: 0, strokes: original, regions: [] });
+  original[0].points[0].x = 0.9;
+  assert.equal(copy.sourceSnapshot.strokes[0].points[0].x, 0.1);
+  assert.throws(() => validateSolutionTranscriptionIR(copy, original), /SNAPSHOT_MISMATCH/);
+});
+
+const malformedCases: [string, (ir: SolutionTranscriptionIR) => void, RegExp][] = [
+  ["duplicate child", (ir) => unit(ir, "system").childIds.push("sub-A"), /DUPLICATE_OR_INVALID_CHILD/],
+  ["missing child", (ir) => unit(ir, "system").childIds.push("absent"), /MISSING_CHILD/],
+  ["cycle", (ir) => unit(ir, "system").childIds.push("system"), /CYCLIC_CHILD/],
+  ["multiple parents", (ir) => unit(ir, "sub-B").childIds.push("sub-A"), /MULTIPLE_CHILD_PARENTS|CHILD_STROKE_NOT_IN_PARENT/],
+  ["duplicate unit ID", (ir) => ir.contentUnits.push(structuredClone(ir.contentUnits[0])), /DUPLICATE_UNIT_ID/],
+  ["unknown source", (ir) => unit(ir, "sub-A").sourceStrokeIds.push("fabricated"), /UNKNOWN_SOURCE_STROKE/],
+  ["duplicate source snapshot", (ir) => ir.sourceSnapshot.strokes.push(ir.sourceSnapshot.strokes[0]), /DUPLICATE_SOURCE_STROKE/],
+  ["duplicate stroke reference", (ir) => unit(ir, "sub-A").sourceStrokeIds.push("a"), /DUPLICATE_OR_INVALID_STROKE/],
+  ["inverted bounds", (ir) => { unit(ir, "sub-A").bounds.left = 0.9; }, /MALFORMED_UNIT_BOUNDS/],
+  ["NaN geometry", (ir) => { unit(ir, "sub-A").bounds.top = NaN; }, /INVALID_UNIT_BOUNDS/],
+  ["wrong geometry", (ir) => { unit(ir, "sub-A").bounds.right = 0.8; }, /SOURCE_BOUNDS_MISMATCH/],
+  ["bad enum", (ir) => { (unit(ir, "sub-A") as unknown as { kind: string }).kind = "GRADING_STEP"; }, /INVALID_UNIT_STATE/],
+  ["wrong counter", (ir) => { ir.approvedUnitCount = 100; }, /INCONSISTENT_IR_COUNTERS/],
+  ["forged global approval", (ir) => { ir.reviewStatus = "APPROVED"; }, /INCONSISTENT_IR_APPROVAL/],
+  ["forged parent approval", (ir) => { unit(ir, "system").reviewStatus = "APPROVED"; }, /APPROVED_PARENT_UNRESOLVED/],
+  ["empty approved atom", (ir) => { unit(ir, "sub-A").reviewStatus = "APPROVED"; }, /APPROVED_UNIT_EMPTY_CONTENT/],
+  ["duplicate sibling order", (ir) => { unit(ir, "sub-B").readingOrder = 0; }, /DUPLICATE_SIBLING_READING_ORDER/],
+];
+for (const [name, corrupt, pattern] of malformedCases) test(`validator rejects ${name}; mutations share validator rules`, () => {
+  const ir = system(); corrupt(ir);
+  assert.throws(() => validateSolutionTranscriptionIR(ir), pattern);
+  assert.throws(() => approveContentUnit(ir, "system"), pattern);
+  assert.throws(() => projectTranscriptionToLegacySteps(ir), pattern);
+});
+
+test("missing source coverage and unrelated top-level ownership are rejected", () => {
+  const missing = simple(2); missing.contentUnits.pop();
+  assert.throws(() => validateSolutionTranscriptionIR(missing), /MISSING_SOURCE_STROKE_COVERAGE/);
+  const dup = simple(); dup.contentUnits.push({ ...structuredClone(dup.contentUnits[0]), id: "unrelated-root", readingOrder: 1 });
+  assert.throws(() => validateSolutionTranscriptionIR(dup), /DUPLICATE_SIBLING_STROKE_OWNERSHIP/);
+});
+
+test("different sibling IDs cannot conceal duplicate physical stroke ownership", () => {
+  const ir = system();
+  const a = unit(ir, "sub-A"), b = unit(ir, "sub-B");
+  b.sourceStrokeIds = [...a.sourceStrokeIds]; b.bounds = { ...a.bounds };
+  assert.throws(() => validateSolutionTranscriptionIR(ir), /DUPLICATE_SIBLING_STROKE_OWNERSHIP/);
+});
+
+test("approved handoff guard validates the original source and rejects incomplete review", () => {
+  const draft = system();
+  assert.throws(() => requireApprovedTranscriptionIR(draft), /REVIEW_INCOMPLETE/);
+  const approved = approveAll(draft);
+  assert.equal(requireApprovedTranscriptionIR(approved, draft.sourceSnapshot.strokes).reviewStatus, "APPROVED");
+  const changed = structuredClone(draft.sourceSnapshot.strokes); changed[0].points[0].y += 0.001;
+  assert.throws(() => requireApprovedTranscriptionIR(approved, changed), /SOURCE_SNAPSHOT_MISMATCH/);
+});
+
+test("construction rejects collisions, nonexistent proposal strokes and invalid nested ownership", () => {
+  const ir = system();
+  assert.throws(() => buildStructuredTranscriptionIR({ pageIndex: 0, strokes: [stroke("same"), stroke("same")], regions: [] }), /DUPLICATE_SOURCE/);
+  const candidate: StructureCandidate = { id: "bad", kind: "SYSTEM", sourceStrokeIds: ["a"], bounds: computeBounds([stroke("a")]),
+    reasons: [], children: [{ id: "missing-source", kind: "INDEPENDENT", sourceStrokeIds: ["invented"], bounds: computeBounds([stroke("a")]), reasons: [], children: [] }] };
+  assert.throws(() => buildStructuredTranscriptionIR({ pageIndex: 0, strokes: ir.sourceSnapshot.strokes, regions: [], structuralCandidates: [candidate] }), /UNKNOWN_SOURCE_STROKE/);
+  const colliding = { ...candidate, children: [{ ...candidate.children[0], id: "same", sourceStrokeIds: ["a"] }, { ...candidate.children[0], id: "same", sourceStrokeIds: ["a"] }] };
+  assert.throws(() => buildStructuredTranscriptionIR({ pageIndex: 0, strokes: ir.sourceSnapshot.strokes, regions: [], structuralCandidates: [colliding] }), /DUPLICATE_UNIT_ID/);
+});
+
+test("two independent lines are not converted into a system", () => {
+  const strokes = [stroke("a"), stroke("b", 0.1, 0.35)];
+  const candidates = detectStructuralCandidates(strokes);
+  assert.ok(candidates.every((c) => c.kind !== "SYSTEM" && c.kind !== "ALTERNATIVES"));
+  const ir = buildStructuredTranscriptionIR({ pageIndex: 0, strokes, regions: segmentPageInk_v2(strokes), structuralCandidates: candidates });
+  assert.equal(getRootContentUnits(ir.contentUnits).length, 2);
+});
+
+test("student math errors are preserved as transcription, never solved or corrected", () => {
+  let ir = simple(); const id = ir.contentUnits[0].id;
+  const written = "3x^2 - 3 = 0 \\Leftrightarrow x = 2";
+  ir = editContentUnit(ir, id, { content: written });
+  ir = confirmTranscriptionReadingOrder(approveContentUnit(ir, id));
+  assert.equal(ir.reviewStatus, "APPROVED");
+  assert.equal(projectTranscriptionToLegacySteps(ir).candidateUnits[0].approvedContent, written);
+});
+
+test("three approved units plus UNKNOWN cannot leak a partial legacy payload", () => {
+  let ir = simple(4);
+  for (const u of ir.contentUnits.slice(0, 3)) { ir = editContentUnit(ir, u.id, { content: "x=1" }); ir = approveContentUnit(ir, u.id); }
+  ir = editContentUnit(ir, ir.contentUnits[3].id, { kind: "UNKNOWN", content: "" });
   const projection = projectTranscriptionToLegacySteps(ir);
-  assert.equal(projection.isProjectionBlocked, false);
-  assert.equal(projection.blockedUnits.length, 0);
-  assert.equal(projection.projectedStepCount, 4);
+  assert.equal(projection.isProjectionBlocked, true);
+  assert.equal(projection.readyToSubmit, false);
+  assert.equal(projection.submitPayload, null);
+  assert.deepEqual(projection.steps, []);
+  assert.equal(projection.allUnitsMapped, false);
+  assert.equal(projection.candidateUnits.length, 4);
+  assert.equal(projection.blockedUnits.length, 4);
+});
 
-  assert.equal(projection.steps[0].step_type, "EXPLANATION");
-  assert.equal(projection.steps[0].explanation_text, "Tập xác định: D = R");
-  assert.equal(projection.steps[1].step_type, "DERIVATIVE_CALCULATION");
-  assert.equal(projection.steps[1].content_latex, "y' = 3x^2 - 3");
-  assert.equal(projection.steps[2].step_type, "ROOT_FINDING");
-  assert.equal(projection.steps[2].content_latex, "y' = 0 \\Leftrightarrow x = \\pm 1");
+test("approved mixed TEXT/UNKNOWN/structure is lossless preview; boundaries remain blocked", () => {
+  let ir = system();
+  ir = editContentUnit(ir, "sub-A", { kind: "TEXT", content: "Suy ra" });
+  ir = editContentUnit(ir, "sub-B", { kind: "UNKNOWN", content: "ký hiệu chưa phân loại" });
+  ir = approveContentUnit(ir, "sub-A"); ir = approveContentUnit(ir, "sub-B");
+  ir = confirmTranscriptionReadingOrder(approveContentUnit(ir, "system"));
+  const p = projectTranscriptionToLegacySteps(ir);
+  assert.equal(ir.reviewStatus, "APPROVED");
+  assert.equal(p.mode, "PREVIEW_ONLY");
+  assert.equal(p.isProjectionBlocked, true);
+  assert.equal(p.steps.length, 0);
+  assert.equal(p.candidateUnits[0].approvedContent, null);
+  assert.ok(p.candidateUnits.some((u) => u.kind === "TEXT" && u.approvedContent === "Suy ra"));
+  assert.ok(p.blockedUnits.some((u) => u.reason.includes("UNKNOWN")));
+  assert.ok(!JSON.stringify(p).includes("predictedType"));
+});
+
+test("synthetic four-line plumbing is not a recognition accuracy test", () => {
+  let ir = simple(4);
+  const contents = ["Tập xác định: R", "y'=3x^2-3", "y'=0 \\Leftrightarrow x=2", "y(1)=-1"];
+  for (const [i, u] of ir.contentUnits.entries()) {
+    ir = editContentUnit(ir, u.id, { kind: i === 0 ? "TEXT" : "MATH", content: contents[i] });
+    ir = approveContentUnit(ir, u.id);
+  }
+  ir = confirmTranscriptionReadingOrder(ir);
+  assert.equal(ir.reviewStatus, "APPROVED");
+  assert.equal(ir.recognizedUnitCount, 0, "manual examples are not model outputs");
+  assert.equal(projectTranscriptionToLegacySteps(ir).submitPayload, null);
+  validateSolutionTranscriptionIR(ir);
 });

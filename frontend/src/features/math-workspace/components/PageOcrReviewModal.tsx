@@ -50,6 +50,7 @@ interface PageOcrReviewModalProps {
   pageIndex: number;
   regions: PageOcrRegion[];
   pageStrokes: InkStroke[];
+  sourceRevision?: number;
   onClose: () => void;
   onConfirmStep: (stepType: StepKind, latex: string | null, explanation: string, actionId: string) => Promise<void>;
   attemptId?: string;
@@ -87,6 +88,7 @@ export function PageOcrReviewModal({
   pageIndex,
   regions,
   pageStrokes,
+  sourceRevision,
   onClose,
   onConfirmStep,
   attemptId,
@@ -612,6 +614,8 @@ export function PageOcrReviewModal({
         {process.env.NODE_ENV !== 'production' && transcriptionReviewOpen ? (
           <div id='ocr-transcription-review-panel' style={{ maxHeight: 'min(40dvh, 360px)', overflowY: 'auto', flexShrink: 0 }}>
             <PageOcrTranscriptionReviewPanel
+              attemptId={attemptId}
+              sourceRevision={sourceRevision}
               pageIndex={pageIndex}
               pageStrokes={pageStrokes}
               regions={regions}

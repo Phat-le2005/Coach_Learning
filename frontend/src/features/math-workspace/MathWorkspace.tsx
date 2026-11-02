@@ -116,7 +116,7 @@ export function MathWorkspace({
   // OCR recognition & confirmation state
   const [isRecognizingOCR, setIsRecognizingOCR] = useState(false);
   const [pageOcrReview, setPageOcrReview] = useState<{
-    pageIndex: number; regions: PageOcrRegion[]; pageStrokes: InkStroke[];
+    pageIndex: number; regions: PageOcrRegion[]; pageStrokes: InkStroke[]; sourceRevision: number;
   } | null>(null);
   const [ocrError, setOcrError] = useState<string | null>(null);
   const [variationTableEditor, setVariationTableEditor] = useState<{ stepId?: string; initial?: VariationTablePayload } | null>(null);
@@ -557,7 +557,7 @@ export function MathWorkspace({
       }
       const regions = segmentPageInk(penStrokes);
       if (!regions.length) return;
-      setPageOcrReview({ pageIndex: currentPageIndex, regions, pageStrokes: currentPageMemory.strokes });
+      setPageOcrReview({ pageIndex: currentPageIndex, regions, pageStrokes: currentPageMemory.strokes, sourceRevision: revisionRef.current });
     } catch (error: unknown) {
       setOcrError(error instanceof ApiResponseError && error.status === 401
         ? "Phiên đăng nhập đã hết hạn. Đăng nhập lại để lưu nét viết."
@@ -1354,6 +1354,7 @@ export function MathWorkspace({
           pageIndex={pageOcrReview.pageIndex}
           regions={pageOcrReview.regions}
           pageStrokes={pageOcrReview.pageStrokes}
+          sourceRevision={pageOcrReview.sourceRevision}
           onClose={() => {
             setPageOcrReview(null);
             void checkPendingBatch();
