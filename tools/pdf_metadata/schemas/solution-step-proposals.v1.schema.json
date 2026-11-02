@@ -5,7 +5,7 @@
   "required": ["schema_version", "algorithm", "question_id", "source_number", "source_sha256", "legacy_group_count", "steps", "review_flags", "source_review_notes", "academic_review", "grading_support", "publishable", "candidate_generation", "review_document_revision"],
   "properties": {
     "schema_version": {"const": "solution-step-proposals/v1"},
-    "algorithm": {"const": "layout-reasoning/v1"},
+    "algorithm": {"enum": ["layout-reasoning/v1", "layout-reasoning/v2"]},
     "question_id": {"type": "string"},
     "source_number": {"type": "integer"},
     "source_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},

@@ -14,7 +14,7 @@ from .storage import file_hash, read_json, write_json, write_jsonl
 from .text_cleanup import is_suspicious, normalize_block, overlap
 
 
-VERSION = "layout-reasoning/v1"
+VERSION = "layout-reasoning/v2"
 TITLES = {
     "MODEL_SETUP": "Lập quan hệ / mô hình",
     "DERIVATIVE_CALCULATION": "Tính đạo hàm",
@@ -32,12 +32,12 @@ ROOT = re.compile(r"[A-Za-z]\s*" + PRIME + r"\s*(?:\([^)]*\))?\s*=\s*0(?![\d.,])
 NEW_IDEA = re.compile(
     r"^\s*(?:ta có|xét |gọi |đặt |khi |thời gian|vận tốc|năng lượng|doanh thu|lợi nhuận|"
     r"chi phí|diện tích|thể tích|quãng đường|gia tốc|tính |giải |điều kiện|miền xác định|"
-    r"tập xác định|vậy|do đó|suy ra|kết luận|từ bảng|bảng biến thiên|bảng xét dấu)", re.I)
+    r"tập xác định|vậy|do đó|suy ra|kết luận|từ bảng|có bảng|bảng biến thiên|bảng xét dấu)", re.I)
 
 
 def classify(text: str) -> str:
     low = text.strip().casefold()
-    if re.match(r"^(?:bảng biến thiên|bảng xét dấu)", low):
+    if re.match(r"^(?:(?:ta\s+)?có\s+)?bảng\s+(?:biến thiên|xét dấu)", low):
         return "SIGN_TABLE"
     if re.match(r"^(?:vậy|do đó|suy ra|kết luận|từ bảng)", low):
         return "CONCLUSION"
