@@ -78,6 +78,10 @@ FUNCTIONS = {"sqrt": sp.sqrt, "sin": sp.sin, "cos": sp.cos, "tan": sp.tan,
 class ArithmeticParser:
     def __init__(self, text):
         text = latex_plain(text.strip().strip("$"))
+        if re.search(r'(?<![A-Za-z])[A-Za-z]\s*\(\s*[A-Za-z]\s*\)',text):
+            # An unknown f(x) is not the product f*x. This grammar has no
+            # declarations for user-defined functions, so keep it unresolved.
+            raise UnsupportedMath('UNDECLARED_FUNCTION_OR_AMBIGUOUS_PRODUCT')
         if re.search(r"[A-Za-zν]\d", text):
             raise UnsupportedMath("AMBIGUOUS_LOST_SUPERSCRIPT")
         self.tokens, cursor = [], 0
@@ -193,10 +197,24 @@ def parse_expression(text):
 
 
 def assignment(latex):
-    main = re.split(r"\\(?:Leftrightarrow|Rightarrow|quad|qquad|text|mathrm)\b|[;；]", latex.strip().strip("$"), maxsplit=1)[0]
+    original = latex.strip().strip("$").replace("\\left", "").replace("\\right", "")
+    conditions = ""
+    atom = r"[-+]?(?:\d+(?:[.,]\d+)?|[A-Za-zν])"
+    relation = r"(?:[<>≤≥]|\\(?:leq?|geq?))"
+    domain = re.compile(rf"\s*{atom}(?:\s*{relation}\s*{atom}){{1,2}}\s*[.]?\s*")
+    depth = 0
+    for index, char in enumerate(original):
+        if char in "({[":
+            depth += 1
+        elif char in ")}]":
+            depth -= 1
+        elif char in ",;" and depth == 0 and domain.fullmatch(original[index+1:]):
+            conditions, original = original[index+1:].strip(), original[:index]
+            break
+    main = re.split(r"\\(?:Leftrightarrow|Rightarrow|quad|qquad|text|mathrm)\b|[;；]", original, maxsplit=1)[0]
     main = main.replace("\\left", "").replace("\\right", "")
     suffix = re.search(r"(?:,\s*)?(?:\(\s*)?[A-Za-zν]\s*(?:[<>≤≥]|\\geq|\\leq)[^=]*$", main)
-    conditions = suffix[0] if suffix else ""
+    conditions = suffix[0] if suffix else conditions
     if suffix:
         main = main[:suffix.start()].rstrip(" ,")
     for token in (r"^{\prime}", r"^{'}", r"^\prime", r"\prime", "′", "’"):
