@@ -2,6 +2,58 @@
 
 Isolated from the running FastAPI/Next.js app. The source PDF is read-only. Packages, weights, caches, temp files and output are stored on E for the Windows pilot. Native/Paddle and Qwen stages run locally; explicit Gemini actions send selected source images and metadata to Google. No stage writes the production database.
 
+## Start here: give the workflow one PDF
+
+The default entry now completes extraction → text-to-LaTeX → local Qwen review → a consolidated `pdf-final/v1` export. Open each job's **`final.html`**; **`final.json`** identifies `questions.final.jsonl` and its pretty JSON. These contain the immutable source metadata plus LaTeX candidates and machine review. See `docs/pdf-complete-pipeline-2026-11-02.md` for the current workflow, validation and limits. `-ReviewLimit 3` is a short trial; default 0 reviews all discovered questions. `-SkipQwen` still creates the final artifact using rules and marks model review deferred.
+
+Latest source audit: 40 manually source-transcribed formula regions across two PDFs, with 24 development and 16 held-out cases. Source geometry now recovers vector radicals/trailing terms and blocks dropped absolute bars, overlines and subscripts; model formatting cannot override those warnings. The suite, including progress monitoring, has 230 passing tests. See `docs/pdf-formula-source-audit-2026-11-02.md` for the split counts and limitations; these are formula-region fidelity results, not full-book grading accuracy.
+
+Drag a PDF onto `tools/pdf_metadata/process_pdf.cmd`, or run:
+
+```powershell
+.\tools\pdf_metadata\process_pdf.ps1 'E:\materials\your-document.pdf'
+```
+
+The local progress dashboard starts with each run (normally `http://127.0.0.1:8789/`). Drag/drop or `-Open` opens it immediately: live stages, page/question counts, checkpoint usage, pipeline RAM/CPU, and links to the final viewer/JSONL. Trial Qwen scope is shown separately from the whole document. See `docs/pdf-progress-dashboard-2026-11-02.md`; use `-NoProgress` for console only. The monitor is read-only and does not load inference models.
+
+The workflow chooses an isolated job by PDF hash, routes native versus scanned pages, runs local OCR only as needed, assembles questions/steps, discovers tables, checks supported math and exports metadata plus a review page. It does not need question numbers, page selections, editorial fixtures or a Qwen/Gemini key. Install/model setup happens only when missing and stays on E. A second run resumes valid checkpoints. Renaming an identical PDF reuses the same job; changed PDF bytes create another job.
+
+Open `.tmp/pdf-jobs/review.html` for the processed-document library. The command prints the exact metadata path, and every job has `result.json` with artifact locations. `versions/<fingerprint>/` preserves results across pipeline changes. The stable job-level `review.html` opens the latest version.
+
+This automates **draft acquisition**, not academic approval. Unknown layouts still produce page metadata and a review queue. OCR can lose Vietnamese accents or mathematical notation; inferred section boundaries are flagged and raw text/images remain available. Nothing is imported into production grading automatically. See `docs/pdf-metadata-one-file-workflow-2026-11-02.md` for evidence and supported boundaries.
+
+The commands below are optional development/benchmark tools; normal ingestion uses `process_pdf` above.
+
+### Automatic Qwen review
+
+`process_pdf` now follows extraction with a local Qwen metadata review, one question at a time. OCR runs in a separate process and exits before Qwen loads. The wrapper stops only a Qwen server it started; an already-running server is preserved. Default `-ReviewLimit 0` means all questions; use `-ReviewLimit 3` for a short trial or `-SkipQwen` for extraction only.
+
+Review an already-extracted PDF without running extraction again:
+
+```powershell
+.\tools\pdf_metadata\review_pdf.ps1 -Job '.tmp\pdf-jobs\<PDF-hash-prefix>'
+```
+
+The wrapper now normalizes LaTeX first and opens stable `final.html`; `qwen-review.html` remains a component viewer. `qwen-review.json` points to the versioned review directory, containing `questions.qwen-reviewed.jsonl`, `machine-cleared.jsonl`, `machine-flagged.jsonl` and `deferred.jsonl`. Question IDs, rather than printed question numbers, key the work. Successful question jobs are cached by source metadata, asset hashes, model weights, prompt/schema and output settings. `-RetryFailed` explicitly retries failed/in-flight jobs; no cloud fallback occurs.
+
+Qwen sees bounded text/OCR and formula candidates, **not PDF images**. `MACHINE_CLEARED` means no issue found within complete metadata plus passing local gates. Existing OCR/math flags, missing source fields, truncated input and model issues prevent clearance. `MACHINE_FLAGGED` is automatically isolated; `DEFERRED` includes model failure, unavailable server and questions beyond a trial limit. All three are machine routing states; source metadata, answers, step boundaries and grading approval are unchanged. Qwen proposals are saved, never silently applied. The small installed model has missed known errors before; machine review is not a correctness benchmark or academic approval.
+
+## Native formula and sign-table refinement
+
+After native/OCR extraction, use `layout-refine` to recover bounded formulas from font size, glyph position and fraction bars, then inspect explicitly selected raster tables. It uses existing local FormulaNet-M weights for small label/number crops, while interval signs and arrow directions come from pixels. A constrained local font matcher can supply an unverified number/infinity candidate when OCR fails; valid disagreements remain queued. Complex/unreadable tables remain in review; this action does not load Qwen or call Gemini.
+
+```powershell
+.\tools\pdf_metadata\run.ps1 -Action layout-refine -Questions '151,154,161' -Limit 3
+
+# Broader pilot trial; keep prior artifacts separate.
+.\tools\pdf_metadata\run.ps1 -Action layout-refine -Questions '151,154,161,153,159,163' -Limit 6 `
+  -TrialOutput 'E:\HocTap\Hackathon-SGU2026\Coach_Learning\.tmp\pdf-metadata-pilot-v1\layout-trial-v2'
+```
+
+The sample numbers above belong to the pilot. Another PDF requires its own extracted pilot and explicit `-Pdf`, `-Output`, and question selection. Results include `review.html`, `layout-report.json`, `tables.jsonl`, `review-queue.json` and `questions.math-audit.jsonl`. Existing raw pages, OCR, editorial state and prior benchmark artifacts remain unchanged. See `docs/pdf-metadata-fractions-variation-2026-11-02.md` for the latest measured coverage and limitations; `docs/pdf-metadata-native-layout-2026-11-02.md` describes the earlier single-baseline trial.
+
+For the text-only Qwen experiment use `pilot-trial`; it reviews a bounded subset, not the full document. Its compact metadata results remain unapproved even when JSON and source-reference gates pass. See `docs/pdf-metadata-compact-trial-2026-11-02.md`.
+
 ## Default: local Qwen review
 
 The Windows wrapper now defaults to `-Provider local`. The Python entry points read `PDF_REVIEW_PROVIDER=local` from `.env`. There is no automatic cloud fallback. The existing Gemini key is preserved for an explicit future choice and is never sent to the local model server.
