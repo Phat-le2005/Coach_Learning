@@ -17,6 +17,7 @@
 
 const fs = require("node:fs");
 const path = require("node:path");
+const { execFileSync } = require("node:child_process");
 
 const root = path.resolve(__dirname, "../..");
 const { chromium } = require(path.join(root, "frontend", "node_modules", "playwright"));
@@ -30,9 +31,47 @@ if (!fs.existsSync(screenshotsDir)) {
 const targetPort = process.env.NEXT_PORT || 3001;
 const baseUrl = `http://localhost:${targetPort}`;
 
+
+// Fail closed: use the existing QA database helper instead of demo credentials.
+// QA secrets are loaded from a gitignored local env file, never committed.
+function prepareQaAttempt() {
+  const envPath = path.join(root, ".tmp", "tri-ocr-e2e", ".qa-e2e.env");
+  if (fs.existsSync(envPath)) {
+    for (const entry of fs.readFileSync(envPath, "utf8").split(/\r?\n/)) {
+      const i = entry.indexOf("=");
+      if (i < 1 || entry.trimStart().startsWith("#")) continue;
+      const key = entry.slice(0, i).trim();
+      if (!process.env[key]) process.env[key] = entry.slice(i + 1).trim().replace(/^["\x27]|["\x27]$/g, "");
+    }
+  }
+  if (process.env.APP_ENV !== "test" ||
+      !process.env.QA_E2E_DATABASE_NAME ||
+      process.env.DATABASE_NAME !== process.env.QA_E2E_DATABASE_NAME ||
+      !/_qa(?:_|$)/i.test(process.env.QA_E2E_DATABASE_NAME) ||
+      !process.env.QA_E2E_PASSWORD || process.env.QA_E2E_PASSWORD.length < 12) {
+    throw new Error("QA_E2E_SAFETY_ERROR: isolated QA database and local QA password required");
+  }
+  const python = process.env.PYTHON_EXE ||
+    path.join(root, "backend", ".venv", "Scripts", "python.exe");
+  const helper = path.join(root, "frontend", "e2e", "qa_db_helper.py");
+  const opts = { cwd: root, encoding: "utf8", env: process.env, stdio: ["ignore","pipe","pipe"] };
+  // This helper verifies the actual connected PostgreSQL current_database().
+  execFileSync(python, [helper, "verify-safety"], opts);
+  const data = JSON.parse(execFileSync(python,
+    [helper, "create-attempt", "--label", "shadow-qa-046"], opts).trim());
+  if (!/^[a-f0-9-]{36}$/i.test(data.attempt_id || "")) {
+    throw new Error("QA_E2E_SAFETY_ERROR: no isolated attempt created");
+  }
+  return {
+    email: "qa.ocr.e2e.isolated@edums.edu.vn",
+    password: process.env.QA_E2E_PASSWORD,
+    attemptId: data.attempt_id,
+  };
+}
 async function main() {
   console.log(`=== RUNNING REAL-APP BROWSER E2E TEST ON ${baseUrl} ===`);
 
+  const qa = prepareQaAttempt();
   const browser = await chromium.launch({
     executablePath: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
     headless: true,
@@ -67,15 +106,15 @@ async function main() {
     // 1. Log in to real Next.js application
     console.log(`1. Logging into Next.js app on ${baseUrl}/login ...`);
     await page.goto(`${baseUrl}/login`, { waitUntil: "domcontentloaded" });
-    await page.locator('input[type="email"], input[name="email"]').first().fill("student01.demo@example.com");
-    await page.locator('input[type="password"], input[name="password"]').first().fill("EduMSDemo@2026!Pass");
+    await page.locator('input[type="email"], input[name="email"]').first().fill(qa.email);
+    await page.locator('input[type="password"], input[name="password"]').first().fill(qa.password);
     await page.locator('button[type="submit"]').click();
     await page.waitForURL((url) => !url.pathname.startsWith("/login"), { timeout: 15000 });
     console.log("   Authenticated successfully.");
 
     // 2. Open student attempt workspace
-    console.log("2. Navigating to MathWorkspace (/student/attempts/2e3f9e6b-42e1-4d54-9f55-453abaceee10) ...");
-    await page.goto(`${baseUrl}/student/attempts/2e3f9e6b-42e1-4d54-9f55-453abaceee10`, {
+    console.log("2. Navigating to isolated QA attempt workspace ...");
+    await page.goto(`${baseUrl}/student/attempts/${qa.attemptId}`, {
       waitUntil: "domcontentloaded",
       timeout: 20000,
     });
