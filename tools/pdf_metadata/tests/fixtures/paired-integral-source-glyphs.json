@@ -1,0 +1,2468 @@
+{
+  "provenance": {
+    "source_pdf_sha256": "95d86a9f7884138e32962dbf7b1409cb0caa60c913926f3f66bd5914d77ef79d",
+    "original_page": 16,
+    "source_label": "Câu 33.",
+    "description": "Glyph geometry regression fixture; observed source formulas kept in tests only."
+  },
+  "page": {
+    "page_number": 16,
+    "source_sha256": "95d86a9f7884138e32962dbf7b1409cb0caa60c913926f3f66bd5914d77ef79d",
+    "width": 612,
+    "height": 792,
+    "blocks": [
+      {
+        "block_id": "p0016-font-l0020",
+        "bbox": [
+          144.589,
+          323.744,
+          385.32,
+          334.722
+        ],
+        "text_raw": "3 3",
+        "glyphs": [
+          {
+            "text": "3",
+            "bbox": [
+              144.589,
+              323.744,
+              150.159,
+              334.722
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 10.977333917294004
+          },
+          {
+            "text": "3",
+            "bbox": [
+              379.746,
+              323.744,
+              385.32,
+              334.722
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 10.977333917294004
+          }
+        ]
+      },
+      {
+        "block_id": "p0016-font-l0021",
+        "bbox": [
+          42.6,
+          334.679,
+          335.11,
+          353.089
+        ],
+        "text_raw": "Câu 33. Họ nguyên hàm của hàm số f  x   x  4x2  2  là",
+        "glyphs": [
+          {
+            "text": "C",
+            "bbox": [
+              42.6,
+              339.082,
+              50.917,
+              350.602
+            ],
+            "font": "ABCDEE+Palatino Linotype,Bold",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "â",
+            "bbox": [
+              50.883,
+              339.082,
+              56.643,
+              350.602
+            ],
+            "font": "ABCDEE+Palatino Linotype,Bold",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "u",
+            "bbox": [
+              56.643,
+              339.082,
+              63.682,
+              350.602
+            ],
+            "font": "ABCDEE+Palatino Linotype,Bold",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "3",
+            "bbox": [
+              66.596,
+              339.082,
+              72.356,
+              350.602
+            ],
+            "font": "ABCDEE+Palatino Linotype,Bold",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "3",
+            "bbox": [
+              72.356,
+              339.082,
+              78.116,
+              350.602
+            ],
+            "font": "ABCDEE+Palatino Linotype,Bold",
+            "size": 11.519999999999982
+          },
+          {
+            "text": ".",
+            "bbox": [
+              78.116,
+              339.082,
+              80.996,
+              350.602
+            ],
+            "font": "ABCDEE+Palatino Linotype,Bold",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "H",
+            "bbox": [
+              92.304,
+              339.082,
+              101.889,
+              350.602
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "ọ",
+            "bbox": [
+              101.9,
+              339.082,
+              108.19,
+              350.602
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "n",
+            "bbox": [
+              111.02,
+              339.082,
+              117.725,
+              350.602
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "g",
+            "bbox": [
+              117.725,
+              339.082,
+              124.13,
+              350.602
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "u",
+            "bbox": [
+              124.13,
+              339.082,
+              131.076,
+              350.602
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "y",
+            "bbox": [
+              131.076,
+              339.082,
+              137.481,
+              350.602
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "ê",
+            "bbox": [
+              137.424,
+              339.082,
+              142.942,
+              350.602
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "n",
+            "bbox": [
+              142.942,
+              339.082,
+              149.647,
+              350.602
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "h",
+            "bbox": [
+              152.527,
+              339.082,
+              159.231,
+              350.602
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "à",
+            "bbox": [
+              159.231,
+              339.082,
+              164.991,
+              350.602
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "m",
+            "bbox": [
+              164.991,
+              339.082,
+              175.163,
+              350.602
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "c",
+            "bbox": [
+              178.089,
+              339.082,
+              183.204,
+              350.602
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "ủ",
+            "bbox": [
+              183.14,
+              339.082,
+              190.087,
+              350.602
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "a",
+            "bbox": [
+              190.1,
+              339.082,
+              195.86,
+              350.602
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "h",
+            "bbox": [
+              198.74,
+              339.082,
+              205.445,
+              350.602
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "à",
+            "bbox": [
+              205.445,
+              339.082,
+              211.205,
+              350.602
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "m",
+            "bbox": [
+              211.101,
+              339.082,
+              221.273,
+              350.602
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "s",
+            "bbox": [
+              224.153,
+              339.082,
+              229.038,
+              350.602
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "ố",
+            "bbox": [
+              229.13,
+              339.082,
+              235.42,
+              350.602
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "f",
+            "bbox": [
+              241.868,
+              339.503,
+              244.948,
+              350.402
+            ],
+            "font": "ABCDEE+Palatino Linotype,Italic",
+            "size": 10.899480474750021
+          },
+          {
+            "text": "",
+            "bbox": [
+              247.696,
+              335.807,
+              251.323,
+              351.99
+            ],
+            "font": "Symbol",
+            "size": 16.18315671747598
+          },
+          {
+            "text": "x",
+            "bbox": [
+              252.358,
+              339.503,
+              257.896,
+              350.402
+            ],
+            "font": "ABCDEE+Palatino Linotype,Italic",
+            "size": 10.899480474750021
+          },
+          {
+            "text": "",
+            "bbox": [
+              258.604,
+              335.807,
+              262.232,
+              351.99
+            ],
+            "font": "Symbol",
+            "size": 16.18315671747598
+          },
+          {
+            "text": "",
+            "bbox": [
+              264.527,
+              338.762,
+              270.608,
+              349.661
+            ],
+            "font": "Symbol",
+            "size": 10.899480474750021
+          },
+          {
+            "text": "x",
+            "bbox": [
+              273.127,
+              339.503,
+              278.665,
+              350.402
+            ],
+            "font": "ABCDEE+Palatino Linotype,Italic",
+            "size": 10.899480474750021
+          },
+          {
+            "text": "",
+            "bbox": [
+              279.673,
+              334.679,
+              283.303,
+              353.089
+            ],
+            "font": "Symbol",
+            "size": 18.410079784361983
+          },
+          {
+            "text": "4",
+            "bbox": [
+              284.2,
+              339.503,
+              289.739,
+              350.402
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 10.899480474750021
+          },
+          {
+            "text": "x",
+            "bbox": [
+              290.163,
+              339.503,
+              295.701,
+              350.402
+            ],
+            "font": "ABCDEE+Palatino Linotype,Italic",
+            "size": 10.899480474750021
+          },
+          {
+            "text": "2",
+            "bbox": [
+              296.143,
+              337.883,
+              299.358,
+              344.21
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 6.326401372548617
+          },
+          {
+            "text": "",
+            "bbox": [
+              302.668,
+              338.762,
+              308.749,
+              349.661
+            ],
+            "font": "Symbol",
+            "size": 10.899480474750021
+          },
+          {
+            "text": "2",
+            "bbox": [
+              310.976,
+              339.503,
+              316.514,
+              350.402
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 10.899480474750021
+          },
+          {
+            "text": "",
+            "bbox": [
+              317.213,
+              334.679,
+              320.843,
+              353.089
+            ],
+            "font": "Symbol",
+            "size": 18.410079784361983
+          },
+          {
+            "text": "l",
+            "bbox": [
+              325.99,
+              339.082,
+              329.342,
+              350.602
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "à",
+            "bbox": [
+              329.35,
+              339.082,
+              335.11,
+              350.602
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          }
+        ]
+      },
+      {
+        "block_id": "p0016-font-l0022",
+        "bbox": [
+          142.792,
+          359.745,
+          206.325,
+          372.585
+        ],
+        "text_raw": "x2  4x3 ",
+        "glyphs": [
+          {
+            "text": "x",
+            "bbox": [
+              142.792,
+              361.566,
+              148.383,
+              372.585
+            ],
+            "font": "ABCDEE+Palatino Linotype,Italic",
+            "size": 11.019442900000001
+          },
+          {
+            "text": "2",
+            "bbox": [
+              148.72,
+              359.929,
+              151.961,
+              366.317
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 6.388173919999986
+          },
+          {
+            "text": "",
+            "bbox": [
+              155.058,
+              359.745,
+              159.352,
+              370.765
+            ],
+            "font": "Symbol",
+            "size": 11.019442900000001
+          },
+          {
+            "text": "4",
+            "bbox": [
+              161.662,
+              361.566,
+              167.253,
+              372.585
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.019442900000001
+          },
+          {
+            "text": "x",
+            "bbox": [
+              167.684,
+              361.566,
+              173.275,
+              372.585
+            ],
+            "font": "ABCDEE+Palatino Linotype,Italic",
+            "size": 11.019442900000001
+          },
+          {
+            "text": "3",
+            "bbox": [
+              173.614,
+              359.929,
+              176.855,
+              366.317
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 6.388173919999986
+          },
+          {
+            "text": "",
+            "bbox": [
+              202.031,
+              359.745,
+              206.325,
+              370.765
+            ],
+            "font": "Symbol",
+            "size": 11.019442900000001
+          }
+        ]
+      },
+      {
+        "block_id": "p0016-font-l0023",
+        "bbox": [
+          92.184,
+          364.711,
+          431.868,
+          381.18
+        ],
+        "text_raw": "A. F  x     2xC. B. F  x   x4  2x2 C.",
+        "glyphs": [
+          {
+            "text": "A",
+            "bbox": [
+              92.184,
+              368.122,
+              101.147,
+              379.642
+            ],
+            "font": "ABCDEE+Palatino Linotype,Bold",
+            "size": 11.519999999999982
+          },
+          {
+            "text": ".",
+            "bbox": [
+              101.184,
+              368.122,
+              104.064,
+              379.642
+            ],
+            "font": "ABCDEE+Palatino Linotype,Bold",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "F",
+            "bbox": [
+              108.86,
+              368.565,
+              115.078,
+              379.585
+            ],
+            "font": "ABCDEE+Palatino Linotype,Italic",
+            "size": 11.019442900000001
+          },
+          {
+            "text": "",
+            "bbox": [
+              116.403,
+              364.818,
+              120.066,
+              381.18
+            ],
+            "font": "Symbol",
+            "size": 16.362232849999998
+          },
+          {
+            "text": "x",
+            "bbox": [
+              121.094,
+              368.565,
+              126.685,
+              379.585
+            ],
+            "font": "ABCDEE+Palatino Linotype,Italic",
+            "size": 11.019442900000001
+          },
+          {
+            "text": "",
+            "bbox": [
+              127.344,
+              364.818,
+              131.007,
+              381.18
+            ],
+            "font": "Symbol",
+            "size": 16.362232849999998
+          },
+          {
+            "text": "",
+            "bbox": [
+              133.272,
+              367.816,
+              139.411,
+              378.835
+            ],
+            "font": "Symbol",
+            "size": 11.019442900000001
+          },
+          {
+            "text": "",
+            "bbox": [
+              155.058,
+              369.744,
+              159.352,
+              380.764
+            ],
+            "font": "Symbol",
+            "size": 11.019442900000001
+          },
+          {
+            "text": "",
+            "bbox": [
+              180.954,
+              367.816,
+              187.093,
+              378.835
+            ],
+            "font": "Symbol",
+            "size": 11.019442900000001
+          },
+          {
+            "text": "2",
+            "bbox": [
+              189.255,
+              368.565,
+              194.846,
+              379.585
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.019442900000001
+          },
+          {
+            "text": "x",
+            "bbox": [
+              195.266,
+              368.565,
+              200.857,
+              379.585
+            ],
+            "font": "ABCDEE+Palatino Linotype,Italic",
+            "size": 11.019442900000001
+          },
+          {
+            "text": "",
+            "bbox": [
+              202.031,
+              369.744,
+              206.325,
+              380.764
+            ],
+            "font": "Symbol",
+            "size": 11.019442900000001
+          },
+          {
+            "text": "",
+            "bbox": [
+              208.25,
+              367.816,
+              214.389,
+              378.835
+            ],
+            "font": "Symbol",
+            "size": 11.019442900000001
+          },
+          {
+            "text": "C",
+            "bbox": [
+              216.009,
+              368.565,
+              223.468,
+              379.585
+            ],
+            "font": "ABCDEE+Palatino Linotype,Italic",
+            "size": 11.019442900000001
+          },
+          {
+            "text": ".",
+            "bbox": [
+              223.594,
+              368.565,
+              226.39,
+              379.585
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.019442900000001
+          },
+          {
+            "text": "B",
+            "bbox": [
+              326.11,
+              368.122,
+              333.725,
+              379.642
+            ],
+            "font": "ABCDEE+Palatino Linotype,Bold",
+            "size": 11.519999999999982
+          },
+          {
+            "text": ".",
+            "bbox": [
+              333.67,
+              368.122,
+              336.55,
+              379.642
+            ],
+            "font": "ABCDEE+Palatino Linotype,Bold",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "F",
+            "bbox": [
+              341.406,
+              368.446,
+              347.545,
+              379.374
+            ],
+            "font": "ABCDEE+Palatino Linotype,Italic",
+            "size": 10.928038615997025
+          },
+          {
+            "text": "",
+            "bbox": [
+              348.959,
+              364.711,
+              352.578,
+              380.948
+            ],
+            "font": "Symbol",
+            "size": 16.237011884718015
+          },
+          {
+            "text": "x",
+            "bbox": [
+              353.64,
+              368.446,
+              359.16,
+              379.374
+            ],
+            "font": "ABCDEE+Palatino Linotype,Italic",
+            "size": 10.928038615997025
+          },
+          {
+            "text": "",
+            "bbox": [
+              359.879,
+              364.711,
+              363.498,
+              380.948
+            ],
+            "font": "Symbol",
+            "size": 16.237011884718015
+          },
+          {
+            "text": "",
+            "bbox": [
+              365.821,
+              367.703,
+              371.883,
+              378.631
+            ],
+            "font": "Symbol",
+            "size": 10.928038615996968
+          },
+          {
+            "text": "x",
+            "bbox": [
+              374.463,
+              368.446,
+              379.983,
+              379.374
+            ],
+            "font": "ABCDEE+Palatino Linotype,Italic",
+            "size": 10.928038615997025
+          },
+          {
+            "text": "4",
+            "bbox": [
+              380.397,
+              366.796,
+              383.596,
+              373.129
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 6.332867779530659
+          },
+          {
+            "text": "",
+            "bbox": [
+              386.953,
+              367.703,
+              393.015,
+              378.631
+            ],
+            "font": "Symbol",
+            "size": 10.928038615996968
+          },
+          {
+            "text": "2",
+            "bbox": [
+              395.262,
+              368.446,
+              400.782,
+              379.374
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 10.928038615997025
+          },
+          {
+            "text": "x",
+            "bbox": [
+              401.27,
+              368.446,
+              406.79,
+              379.374
+            ],
+            "font": "ABCDEE+Palatino Linotype,Italic",
+            "size": 10.928038615997025
+          },
+          {
+            "text": "2",
+            "bbox": [
+              407.217,
+              366.796,
+              410.416,
+              373.129
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 6.332867779530659
+          },
+          {
+            "text": "",
+            "bbox": [
+              413.76,
+              367.703,
+              419.822,
+              378.631
+            ],
+            "font": "Symbol",
+            "size": 10.928038615996968
+          },
+          {
+            "text": "C",
+            "bbox": [
+              421.508,
+              368.446,
+              428.872,
+              379.374
+            ],
+            "font": "ABCDEE+Palatino Linotype,Italic",
+            "size": 10.928038615997025
+          },
+          {
+            "text": ".",
+            "bbox": [
+              429.108,
+              368.446,
+              431.868,
+              379.374
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 10.928038615997025
+          }
+        ]
+      },
+      {
+        "block_id": "p0016-font-l0024",
+        "bbox": [
+          145.129,
+          377.232,
+          206.325,
+          390.693
+        ],
+        "text_raw": "2  3 ",
+        "glyphs": [
+          {
+            "text": "2",
+            "bbox": [
+              145.129,
+              377.232,
+              150.72,
+              388.251
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.019442900000001
+          },
+          {
+            "text": "",
+            "bbox": [
+              155.058,
+              379.673,
+              159.352,
+              390.693
+            ],
+            "font": "Symbol",
+            "size": 11.019442900000001
+          },
+          {
+            "text": "3",
+            "bbox": [
+              167.152,
+              377.232,
+              172.743,
+              388.251
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.019442900000001
+          },
+          {
+            "text": "",
+            "bbox": [
+              202.031,
+              379.673,
+              206.325,
+              390.693
+            ],
+            "font": "Symbol",
+            "size": 11.019442900000001
+          }
+        ]
+      },
+      {
+        "block_id": "p0016-font-l0025",
+        "bbox": [
+          92.184,
+          392.061,
+          427.983,
+          408.298
+        ],
+        "text_raw": "C. F  x   4x4  x2 C. D. F  x   x4  x2 C.",
+        "glyphs": [
+          {
+            "text": "C",
+            "bbox": [
+              92.184,
+              395.482,
+              100.501,
+              407.002
+            ],
+            "font": "ABCDEE+Palatino Linotype,Bold",
+            "size": 11.519999999999982
+          },
+          {
+            "text": ".",
+            "bbox": [
+              100.464,
+              395.482,
+              103.344,
+              407.002
+            ],
+            "font": "ABCDEE+Palatino Linotype,Bold",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "F",
+            "bbox": [
+              108.256,
+              395.796,
+              114.395,
+              406.724
+            ],
+            "font": "ABCDEE+Palatino Linotype,Italic",
+            "size": 10.928038615997025
+          },
+          {
+            "text": "",
+            "bbox": [
+              115.809,
+              392.061,
+              119.428,
+              408.298
+            ],
+            "font": "Symbol",
+            "size": 16.237011884718015
+          },
+          {
+            "text": "x",
+            "bbox": [
+              120.49,
+              395.796,
+              126.01,
+              406.724
+            ],
+            "font": "ABCDEE+Palatino Linotype,Italic",
+            "size": 10.928038615997025
+          },
+          {
+            "text": "",
+            "bbox": [
+              126.729,
+              392.061,
+              130.348,
+              408.298
+            ],
+            "font": "Symbol",
+            "size": 16.237011884718015
+          },
+          {
+            "text": "",
+            "bbox": [
+              132.671,
+              395.053,
+              138.733,
+              405.981
+            ],
+            "font": "Symbol",
+            "size": 10.928038615996968
+          },
+          {
+            "text": "4",
+            "bbox": [
+              141.162,
+              395.796,
+              146.682,
+              406.724
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 10.928038615997025
+          },
+          {
+            "text": "x",
+            "bbox": [
+              147.175,
+              395.796,
+              152.696,
+              406.724
+            ],
+            "font": "ABCDEE+Palatino Linotype,Italic",
+            "size": 10.928038615997025
+          },
+          {
+            "text": "4",
+            "bbox": [
+              153.116,
+              394.146,
+              156.315,
+              400.479
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 6.332867779530659
+          },
+          {
+            "text": "",
+            "bbox": [
+              159.677,
+              395.053,
+              165.738,
+              405.981
+            ],
+            "font": "Symbol",
+            "size": 10.928038615996968
+          },
+          {
+            "text": "x",
+            "bbox": [
+              168.12,
+              395.796,
+              173.64,
+              406.724
+            ],
+            "font": "ABCDEE+Palatino Linotype,Italic",
+            "size": 10.928038615997025
+          },
+          {
+            "text": "2",
+            "bbox": [
+              174.068,
+              394.146,
+              177.267,
+              400.479
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 6.332867779530659
+          },
+          {
+            "text": "",
+            "bbox": [
+              180.622,
+              395.053,
+              186.683,
+              405.981
+            ],
+            "font": "Symbol",
+            "size": 10.928038615996968
+          },
+          {
+            "text": "C",
+            "bbox": [
+              188.358,
+              395.796,
+              195.722,
+              406.724
+            ],
+            "font": "ABCDEE+Palatino Linotype,Italic",
+            "size": 10.928038615997025
+          },
+          {
+            "text": ".",
+            "bbox": [
+              195.954,
+              395.796,
+              198.714,
+              406.724
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 10.928038615997025
+          },
+          {
+            "text": "D",
+            "bbox": [
+              326.11,
+              395.482,
+              335.683,
+              407.002
+            ],
+            "font": "ABCDEE+Palatino Linotype,Bold",
+            "size": 11.519999999999982
+          },
+          {
+            "text": ".",
+            "bbox": [
+              335.71,
+              395.482,
+              338.59,
+              407.002
+            ],
+            "font": "ABCDEE+Palatino Linotype,Bold",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "F",
+            "bbox": [
+              343.458,
+              395.796,
+              349.6,
+              406.724
+            ],
+            "font": "ABCDEE+Palatino Linotype,Italic",
+            "size": 10.928038615997025
+          },
+          {
+            "text": "",
+            "bbox": [
+              351.015,
+              392.061,
+              354.636,
+              408.298
+            ],
+            "font": "Symbol",
+            "size": 16.237011884718015
+          },
+          {
+            "text": "x",
+            "bbox": [
+              355.677,
+              395.796,
+              361.201,
+              406.724
+            ],
+            "font": "ABCDEE+Palatino Linotype,Italic",
+            "size": 10.928038615997025
+          },
+          {
+            "text": "",
+            "bbox": [
+              361.919,
+              392.061,
+              365.54,
+              408.298
+            ],
+            "font": "Symbol",
+            "size": 16.237011884718015
+          },
+          {
+            "text": "",
+            "bbox": [
+              367.863,
+              395.053,
+              373.929,
+              405.981
+            ],
+            "font": "Symbol",
+            "size": 10.928038615996968
+          },
+          {
+            "text": "x",
+            "bbox": [
+              376.491,
+              395.796,
+              382.015,
+              406.724
+            ],
+            "font": "ABCDEE+Palatino Linotype,Italic",
+            "size": 10.928038615997025
+          },
+          {
+            "text": "4",
+            "bbox": [
+              382.426,
+              394.146,
+              385.627,
+              400.479
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 6.332867779530659
+          },
+          {
+            "text": "",
+            "bbox": [
+              388.965,
+              395.053,
+              395.031,
+              405.981
+            ],
+            "font": "Symbol",
+            "size": 10.928038615996968
+          },
+          {
+            "text": "x",
+            "bbox": [
+              397.416,
+              395.796,
+              402.94,
+              406.724
+            ],
+            "font": "ABCDEE+Palatino Linotype,Italic",
+            "size": 10.928038615997025
+          },
+          {
+            "text": "2",
+            "bbox": [
+              403.362,
+              394.146,
+              406.563,
+              400.479
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 6.332867779530659
+          },
+          {
+            "text": "",
+            "bbox": [
+              409.89,
+              395.053,
+              415.956,
+              405.981
+            ],
+            "font": "Symbol",
+            "size": 10.928038615996968
+          },
+          {
+            "text": "C",
+            "bbox": [
+              417.645,
+              395.796,
+              425.014,
+              406.724
+            ],
+            "font": "ABCDEE+Palatino Linotype,Italic",
+            "size": 10.928038615997025
+          },
+          {
+            "text": ".",
+            "bbox": [
+              425.22,
+              395.796,
+              427.983,
+              406.724
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 10.928038615997025
+          }
+        ]
+      },
+      {
+        "block_id": "p0016-font-l0026",
+        "bbox": [
+          92.184,
+          414.462,
+          135.02,
+          425.982
+        ],
+        "text_raw": "Lời giải:",
+        "glyphs": [
+          {
+            "text": "L",
+            "bbox": [
+              92.184,
+              414.462,
+              99.223,
+              425.982
+            ],
+            "font": "ABCDEE+Palatino Linotype,BoldItalic",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "ờ",
+            "bbox": [
+              99.264,
+              414.462,
+              105.669,
+              425.982
+            ],
+            "font": "ABCDEE+Palatino Linotype,BoldItalic",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "i",
+            "bbox": [
+              105.62,
+              414.462,
+              109.456,
+              425.982
+            ],
+            "font": "ABCDEE+Palatino Linotype,BoldItalic",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "g",
+            "bbox": [
+              112.344,
+              414.462,
+              118.104,
+              425.982
+            ],
+            "font": "ABCDEE+Palatino Linotype,BoldItalic",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "i",
+            "bbox": [
+              118.108,
+              414.462,
+              121.944,
+              425.982
+            ],
+            "font": "ABCDEE+Palatino Linotype,BoldItalic",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "ả",
+            "bbox": [
+              121.94,
+              414.462,
+              128.345,
+              425.982
+            ],
+            "font": "ABCDEE+Palatino Linotype,BoldItalic",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "i",
+            "bbox": [
+              128.3,
+              414.462,
+              132.136,
+              425.982
+            ],
+            "font": "ABCDEE+Palatino Linotype,BoldItalic",
+            "size": 11.519999999999982
+          },
+          {
+            "text": ":",
+            "bbox": [
+              132.14,
+              414.462,
+              135.02,
+              425.982
+            ],
+            "font": "ABCDEE+Palatino Linotype,BoldItalic",
+            "size": 11.519999999999982
+          }
+        ]
+      },
+      {
+        "block_id": "p0016-font-l0027",
+        "bbox": [
+          92.184,
+          426.979,
+          306.02,
+          447.058
+        ],
+        "text_raw": "Ta có:  f  x dx    4x3  2x  dx  x4  x2 C.",
+        "glyphs": [
+          {
+            "text": "T",
+            "bbox": [
+              92.184,
+              431.382,
+              99.246,
+              442.902
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "a",
+            "bbox": [
+              99.246,
+              431.382,
+              105.006,
+              442.902
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "c",
+            "bbox": [
+              107.886,
+              431.382,
+              113.001,
+              442.902
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "ó",
+            "bbox": [
+              113.058,
+              431.382,
+              119.348,
+              442.902
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": ":",
+            "bbox": [
+              119.302,
+              431.382,
+              122.182,
+              442.902
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "",
+            "bbox": [
+              126.964,
+              430.709,
+              131.527,
+              447.058
+            ],
+            "font": "Symbol",
+            "size": 16.34873084783402
+          },
+          {
+            "text": "f",
+            "bbox": [
+              134.93,
+              431.803,
+              138.017,
+              442.702
+            ],
+            "font": "ABCDEE+Palatino Linotype,Italic",
+            "size": 10.899480474750021
+          },
+          {
+            "text": "",
+            "bbox": [
+              140.772,
+              428.107,
+              144.409,
+              444.29
+            ],
+            "font": "Symbol",
+            "size": 16.18315671747598
+          },
+          {
+            "text": "x",
+            "bbox": [
+              145.446,
+              431.803,
+              150.998,
+              442.702
+            ],
+            "font": "ABCDEE+Palatino Linotype,Italic",
+            "size": 10.899480474750021
+          },
+          {
+            "text": "",
+            "bbox": [
+              151.682,
+              428.107,
+              155.319,
+              444.29
+            ],
+            "font": "Symbol",
+            "size": 16.18315671747598
+          },
+          {
+            "text": "d",
+            "bbox": [
+              156.318,
+              431.073,
+              161.87,
+              441.972
+            ],
+            "font": "ABCEEE+.VnTime",
+            "size": 10.899480474750021
+          },
+          {
+            "text": "x",
+            "bbox": [
+              161.802,
+              431.803,
+              167.355,
+              442.702
+            ],
+            "font": "ABCDEE+Palatino Linotype,Italic",
+            "size": 10.899480474750021
+          },
+          {
+            "text": "",
+            "bbox": [
+              169.812,
+              431.062,
+              175.908,
+              441.961
+            ],
+            "font": "Symbol",
+            "size": 10.899480474750021
+          },
+          {
+            "text": "",
+            "bbox": [
+              178.45,
+              430.709,
+              183.014,
+              447.058
+            ],
+            "font": "Symbol",
+            "size": 16.34873084783402
+          },
+          {
+            "text": "",
+            "bbox": [
+              184.199,
+              426.979,
+              187.838,
+              445.389
+            ],
+            "font": "Symbol",
+            "size": 18.410079784361983
+          },
+          {
+            "text": "4",
+            "bbox": [
+              188.713,
+              431.803,
+              194.265,
+              442.702
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 10.899480474750021
+          },
+          {
+            "text": "x",
+            "bbox": [
+              194.738,
+              431.803,
+              200.29,
+              442.702
+            ],
+            "font": "ABCDEE+Palatino Linotype,Italic",
+            "size": 10.899480474750021
+          },
+          {
+            "text": "3",
+            "bbox": [
+              200.687,
+              430.183,
+              203.909,
+              436.51
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 6.326401372548617
+          },
+          {
+            "text": "",
+            "bbox": [
+              207.145,
+              431.062,
+              213.241,
+              441.961
+            ],
+            "font": "Symbol",
+            "size": 10.899480474750021
+          },
+          {
+            "text": "2",
+            "bbox": [
+              215.43,
+              431.803,
+              220.982,
+              442.702
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 10.899480474750021
+          },
+          {
+            "text": "x",
+            "bbox": [
+              221.455,
+              431.803,
+              227.008,
+              442.702
+            ],
+            "font": "ABCDEE+Palatino Linotype,Italic",
+            "size": 10.899480474750021
+          },
+          {
+            "text": "",
+            "bbox": [
+              227.72,
+              426.979,
+              231.359,
+              445.389
+            ],
+            "font": "Symbol",
+            "size": 18.410079784361983
+          },
+          {
+            "text": "d",
+            "bbox": [
+              232.36,
+              431.073,
+              237.912,
+              441.972
+            ],
+            "font": "ABCEEE+.VnTime",
+            "size": 10.899480474750021
+          },
+          {
+            "text": "x",
+            "bbox": [
+              237.812,
+              431.803,
+              243.364,
+              442.702
+            ],
+            "font": "ABCDEE+Palatino Linotype,Italic",
+            "size": 10.899480474750021
+          },
+          {
+            "text": "",
+            "bbox": [
+              245.833,
+              431.062,
+              251.929,
+              441.961
+            ],
+            "font": "Symbol",
+            "size": 10.899480474750021
+          },
+          {
+            "text": "x",
+            "bbox": [
+              254.436,
+              431.803,
+              259.988,
+              442.702
+            ],
+            "font": "ABCDEE+Palatino Linotype,Italic",
+            "size": 10.899480474750021
+          },
+          {
+            "text": "4",
+            "bbox": [
+              260.429,
+              430.183,
+              263.651,
+              436.51
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 6.326401372548617
+          },
+          {
+            "text": "",
+            "bbox": [
+              266.965,
+              431.062,
+              273.061,
+              441.961
+            ],
+            "font": "Symbol",
+            "size": 10.899480474750021
+          },
+          {
+            "text": "x",
+            "bbox": [
+              275.379,
+              431.803,
+              280.931,
+              442.702
+            ],
+            "font": "ABCDEE+Palatino Linotype,Italic",
+            "size": 10.899480474750021
+          },
+          {
+            "text": "2",
+            "bbox": [
+              281.376,
+              430.183,
+              284.599,
+              436.51
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 6.326401372548617
+          },
+          {
+            "text": "",
+            "bbox": [
+              287.908,
+              431.062,
+              294.004,
+              441.961
+            ],
+            "font": "Symbol",
+            "size": 10.899480474750021
+          },
+          {
+            "text": "C",
+            "bbox": [
+              295.644,
+              431.803,
+              303.051,
+              442.702
+            ],
+            "font": "ABCDEE+Palatino Linotype,Italic",
+            "size": 10.899480474750021
+          },
+          {
+            "text": ".",
+            "bbox": [
+              303.244,
+              431.803,
+              306.02,
+              442.702
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 10.899480474750021
+          }
+        ]
+      },
+      {
+        "block_id": "p0016-font-l0028",
+        "bbox": [
+          42.6,
+          449.712,
+          352.15,
+          465.933
+        ],
+        "text_raw": "Câu 34. Họ nguyên hàm của hàm số f  x   x  3 x,x  0 là",
+        "glyphs": [
+          {
+            "text": "C",
+            "bbox": [
+              42.6,
+              453.102,
+              50.917,
+              464.622
+            ],
+            "font": "ABCDEE+Palatino Linotype,Bold",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "â",
+            "bbox": [
+              50.883,
+              453.102,
+              56.643,
+              464.622
+            ],
+            "font": "ABCDEE+Palatino Linotype,Bold",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "u",
+            "bbox": [
+              56.643,
+              453.102,
+              63.682,
+              464.622
+            ],
+            "font": "ABCDEE+Palatino Linotype,Bold",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "3",
+            "bbox": [
+              66.596,
+              453.102,
+              72.356,
+              464.622
+            ],
+            "font": "ABCDEE+Palatino Linotype,Bold",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "4",
+            "bbox": [
+              72.356,
+              453.102,
+              78.116,
+              464.622
+            ],
+            "font": "ABCDEE+Palatino Linotype,Bold",
+            "size": 11.519999999999982
+          },
+          {
+            "text": ".",
+            "bbox": [
+              78.116,
+              453.102,
+              80.996,
+              464.622
+            ],
+            "font": "ABCDEE+Palatino Linotype,Bold",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "H",
+            "bbox": [
+              92.304,
+              453.102,
+              101.889,
+              464.622
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "ọ",
+            "bbox": [
+              101.9,
+              453.102,
+              108.19,
+              464.622
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "n",
+            "bbox": [
+              111.02,
+              453.102,
+              117.725,
+              464.622
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "g",
+            "bbox": [
+              117.725,
+              453.102,
+              124.13,
+              464.622
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "u",
+            "bbox": [
+              124.13,
+              453.102,
+              131.076,
+              464.622
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "y",
+            "bbox": [
+              131.076,
+              453.102,
+              137.481,
+              464.622
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "ê",
+            "bbox": [
+              137.424,
+              453.102,
+              142.942,
+              464.622
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "n",
+            "bbox": [
+              142.942,
+              453.102,
+              149.647,
+              464.622
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "h",
+            "bbox": [
+              152.527,
+              453.102,
+              159.231,
+              464.622
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "à",
+            "bbox": [
+              159.231,
+              453.102,
+              164.991,
+              464.622
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "m",
+            "bbox": [
+              164.991,
+              453.102,
+              175.163,
+              464.622
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "c",
+            "bbox": [
+              178.089,
+              453.102,
+              183.204,
+              464.622
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "ủ",
+            "bbox": [
+              183.14,
+              453.102,
+              190.087,
+              464.622
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "a",
+            "bbox": [
+              190.1,
+              453.102,
+              195.86,
+              464.622
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "h",
+            "bbox": [
+              198.74,
+              453.102,
+              205.445,
+              464.622
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "à",
+            "bbox": [
+              205.445,
+              453.102,
+              211.205,
+              464.622
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "m",
+            "bbox": [
+              211.101,
+              453.102,
+              221.273,
+              464.622
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "s",
+            "bbox": [
+              224.153,
+              453.102,
+              229.038,
+              464.622
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "ố",
+            "bbox": [
+              229.13,
+              453.102,
+              235.42,
+              464.622
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "f",
+            "bbox": [
+              241.887,
+              453.417,
+              244.962,
+              464.341
+            ],
+            "font": "ABCDEE+Palatino Linotype,Italic",
+            "size": 10.924364952625012
+          },
+          {
+            "text": "",
+            "bbox": [
+              247.73,
+              449.712,
+              251.353,
+              465.933
+            ],
+            "font": "Symbol",
+            "size": 16.220104295501983
+          },
+          {
+            "text": "x",
+            "bbox": [
+              252.428,
+              453.417,
+              257.959,
+              464.341
+            ],
+            "font": "ABCDEE+Palatino Linotype,Italic",
+            "size": 10.924364952625012
+          },
+          {
+            "text": "",
+            "bbox": [
+              258.696,
+              449.712,
+              262.318,
+              465.933
+            ],
+            "font": "Symbol",
+            "size": 16.220104295501983
+          },
+          {
+            "text": "",
+            "bbox": [
+              264.634,
+              452.674,
+              270.707,
+              463.598
+            ],
+            "font": "Symbol",
+            "size": 10.924364952625012
+          },
+          {
+            "text": "x",
+            "bbox": [
+              280.767,
+              453.417,
+              286.298,
+              464.341
+            ],
+            "font": "ABCDEE+Palatino Linotype,Italic",
+            "size": 10.924364952625012
+          },
+          {
+            "text": "",
+            "bbox": [
+              289.29,
+              452.674,
+              295.362,
+              463.598
+            ],
+            "font": "Symbol",
+            "size": 10.924364952625012
+          },
+          {
+            "text": "3",
+            "bbox": [
+              298.539,
+              451.93,
+              301.737,
+              458.247
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 6.31708154397586
+          },
+          {
+            "text": "x",
+            "bbox": [
+              305.235,
+              453.417,
+              310.765,
+              464.341
+            ],
+            "font": "ABCDEE+Palatino Linotype,Italic",
+            "size": 10.924364952625012
+          },
+          {
+            "text": ",",
+            "bbox": [
+              312.173,
+              453.417,
+              314.939,
+              464.341
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 10.924364952625012
+          },
+          {
+            "text": "x",
+            "bbox": [
+              316.097,
+              453.417,
+              321.628,
+              464.341
+            ],
+            "font": "ABCDEE+Palatino Linotype,Italic",
+            "size": 10.924364952625012
+          },
+          {
+            "text": "",
+            "bbox": [
+              324.122,
+              452.674,
+              330.194,
+              463.598
+            ],
+            "font": "Symbol",
+            "size": 10.924364952625012
+          },
+          {
+            "text": "0",
+            "bbox": [
+              332.448,
+              453.417,
+              337.978,
+              464.341
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 10.924364952625012
+          },
+          {
+            "text": "l",
+            "bbox": [
+              343.03,
+              453.102,
+              346.382,
+              464.622
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          },
+          {
+            "text": "à",
+            "bbox": [
+              346.39,
+              453.102,
+              352.15,
+              464.622
+            ],
+            "font": "ABCDEE+Palatino Linotype",
+            "size": 11.519999999999982
+          }
+        ]
+      }
+    ],
+    "vectors": [
+      {
+        "kind": "line",
+        "bbox": [
+          141.293,
+          320.218,
+          152.962,
+          320.218
+        ]
+      },
+      {
+        "kind": "line",
+        "bbox": [
+          376.471,
+          320.218,
+          388.15,
+          320.218
+        ]
+      },
+      {
+        "kind": "line",
+        "bbox": [
+          141.9,
+          373.694,
+          153.684,
+          373.694
+        ]
+      },
+      {
+        "kind": "line",
+        "bbox": [
+          160.938,
+          373.694,
+          178.482,
+          373.694
+        ]
+      },
+      {
+        "kind": "line",
+        "bbox": [
+          273.616,
+          457.822,
+          274.721,
+          458.512
+        ]
+      },
+      {
+        "kind": "line",
+        "bbox": [
+          274.746,
+          457.822,
+          277.439,
+          462.489
+        ]
+      },
+      {
+        "kind": "line",
+        "bbox": [
+          277.439,
+          450.131,
+          280.349,
+          462.512
+        ]
+      },
+      {
+        "kind": "line",
+        "bbox": [
+          280.349,
+          450.131,
+          287.057,
+          450.131
+        ]
+      },
+      {
+        "kind": "line",
+        "bbox": [
+          298.094,
+          457.822,
+          299.2,
+          458.512
+        ]
+      },
+      {
+        "kind": "line",
+        "bbox": [
+          299.224,
+          457.822,
+          301.917,
+          462.489
+        ]
+      },
+      {
+        "kind": "line",
+        "bbox": [
+          301.917,
+          450.131,
+          304.827,
+          462.512
+        ]
+      },
+      {
+        "kind": "line",
+        "bbox": [
+          304.827,
+          450.131,
+          311.512,
+          450.131
+        ]
+      },
+      {
+        "kind": "rect",
+        "bbox": [
+          326.11,
+          391.01,
+          429.43,
+          410.69
+        ]
+      },
+      {
+        "kind": "curve",
+        "bbox": [
+          273.315,
+          449.643,
+          286.828,
+          462.262
+        ]
+      },
+      {
+        "kind": "curve",
+        "bbox": [
+          297.769,
+          449.643,
+          311.307,
+          462.262
+        ]
+      }
+    ]
+  },
+  "question_span": {
+    "page_number": 16,
+    "bbox": [
+      0,
+      334.152,
+      612.0,
+      412.863
+    ],
+    "block_ids": [
+      "p0016-l0098",
+      "p0016-l0097",
+      "p0016-l0099",
+      "p0016-l0101",
+      "p0016-l0100",
+      "p0016-l0108",
+      "p0016-l0104",
+      "p0016-l0107",
+      "p0016-l0103",
+      "p0016-l0112",
+      "p0016-l0111",
+      "p0016-l0102",
+      "p0016-l0109",
+      "p0016-l0105",
+      "p0016-l0110",
+      "p0016-l0106",
+      "p0016-l0115",
+      "p0016-l0114",
+      "p0016-l0118",
+      "p0016-l0117",
+      "p0016-l0113",
+      "p0016-l0116"
+    ],
+    "column": null,
+    "layout_method": "SINGLE_PAGE_FLOW"
+  },
+  "solution_span": {
+    "page_number": 16,
+    "bbox": [
+      0,
+      426.913,
+      612.0,
+      450.249
+    ],
+    "block_ids": [
+      "p0016-l0122",
+      "p0016-l0121",
+      "p0016-l0120"
+    ],
+    "column": null,
+    "layout_method": "SINGLE_PAGE_FLOW"
+  }
+}
