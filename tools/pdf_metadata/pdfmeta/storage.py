@@ -6,6 +6,8 @@ import json
 import os
 from pathlib import Path
 import tempfile
+import time
+import uuid
 
 
 def configure_storage(root: Path) -> dict[str, str]:
@@ -56,9 +58,21 @@ def inference_versions() -> dict[str, str]:
 
 def write_json(path: Path, data: object) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    pending = path.with_suffix(path.suffix + ".pending")
-    pending.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
-    pending.replace(path)
+    pending = path.with_name(path.name + '.' + uuid.uuid4().hex + '.pending')
+    try:
+        pending.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+        # A dashboard reader or antivirus can briefly hold the old file on
+        # Windows. Distinct temporary files also prevent concurrent publishers
+        # from renaming each other's partial writes.
+        for attempt in range(20):
+            try:
+                pending.replace(path)
+                break
+            except PermissionError:
+                if attempt == 19:raise
+                time.sleep(.05)
+    finally:
+        pending.unlink(missing_ok=True)
 
 
 def read_json(path: Path) -> object:
@@ -67,8 +81,17 @@ def read_json(path: Path) -> object:
 
 def write_jsonl(path: Path, records: list[dict]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    pending = path.with_suffix(path.suffix + ".pending")
-    with pending.open("w", encoding="utf-8", newline="\n") as stream:
-        for record in records:
-            stream.write(json.dumps(record, ensure_ascii=False) + "\n")
-    pending.replace(path)
+    pending = path.with_name(path.name + '.' + uuid.uuid4().hex + '.pending')
+    try:
+        with pending.open("w", encoding="utf-8", newline="\n") as stream:
+            for record in records:
+                stream.write(json.dumps(record, ensure_ascii=False) + "\n")
+        for attempt in range(20):
+            try:
+                pending.replace(path)
+                break
+            except PermissionError:
+                if attempt == 19:raise
+                time.sleep(.05)
+    finally:
+        pending.unlink(missing_ok=True)
