@@ -1,0 +1,2422 @@
+{
+  "page": {
+    "page_number": 47,
+    "source_sha256": "3298956d1d00de01e9ada735d3ca87c69599beca07169ff4d86e7f86d469dec1",
+    "width": 595.32,
+    "height": 841.92,
+    "blocks": [
+      {
+        "block_id": "p0047-font-l0009",
+        "bbox": [
+          101.442,
+          339.157,
+          118.815,
+          357.063
+        ],
+        "text_raw": "( )",
+        "glyphs": [
+          {
+            "text": "(",
+            "bbox": [
+              101.442,
+              339.157,
+              105.377,
+              357.063
+            ],
+            "font": "AGTFEY+SymbolMT",
+            "size": 17.906200000000013
+          },
+          {
+            "text": ")",
+            "bbox": [
+              114.88,
+              339.157,
+              118.815,
+              357.063
+            ],
+            "font": "AGTFEY+SymbolMT",
+            "size": 17.906200000000013
+          }
+        ]
+      },
+      {
+        "block_id": "p0047-font-l0011",
+        "bbox": [
+          42.48,
+          364.704,
+          552.84,
+          376.956
+        ],
+        "text_raw": "Câu 54: Trong hộp có 20 nắp khoen bia Tiger, trong đó có 2 nắp ghi “Chúc mừng bạn đã trúng thưởng",
+        "glyphs": [
+          {
+            "text": "C",
+            "bbox": [
+              42.48,
+              364.956,
+              51.144,
+              376.956
+            ],
+            "font": "EWVIIQ+TimesNewRomanPS-BoldMT",
+            "size": 12.0
+          },
+          {
+            "text": "â",
+            "bbox": [
+              51.12,
+              364.956,
+              57.12,
+              376.956
+            ],
+            "font": "EWVIIQ+TimesNewRomanPS-BoldMT",
+            "size": 12.0
+          },
+          {
+            "text": "u",
+            "bbox": [
+              57.12,
+              364.956,
+              63.792,
+              376.956
+            ],
+            "font": "EWVIIQ+TimesNewRomanPS-BoldMT",
+            "size": 12.0
+          },
+          {
+            "text": "5",
+            "bbox": [
+              66.78,
+              364.956,
+              72.78,
+              376.956
+            ],
+            "font": "EWVIIQ+TimesNewRomanPS-BoldMT",
+            "size": 12.0
+          },
+          {
+            "text": "4",
+            "bbox": [
+              72.78,
+              364.956,
+              78.78,
+              376.956
+            ],
+            "font": "EWVIIQ+TimesNewRomanPS-BoldMT",
+            "size": 12.0
+          },
+          {
+            "text": ":",
+            "bbox": [
+              78.78,
+              364.956,
+              82.776,
+              376.956
+            ],
+            "font": "EWVIIQ+TimesNewRomanPS-BoldMT",
+            "size": 12.0
+          },
+          {
+            "text": "T",
+            "bbox": [
+              92.1,
+              364.704,
+              99.432,
+              376.704
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "r",
+            "bbox": [
+              99.42,
+              364.704,
+              103.416,
+              376.704
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "o",
+            "bbox": [
+              103.44,
+              364.704,
+              109.44,
+              376.704
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "n",
+            "bbox": [
+              109.44,
+              364.704,
+              115.44,
+              376.704
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "g",
+            "bbox": [
+              115.44,
+              364.704,
+              121.44,
+              376.704
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "h",
+            "bbox": [
+              124.92,
+              364.704,
+              130.92,
+              376.704
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "ộ",
+            "bbox": [
+              130.92,
+              364.704,
+              136.92,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "p",
+            "bbox": [
+              136.92,
+              364.704,
+              142.92,
+              376.704
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "c",
+            "bbox": [
+              146.4,
+              364.704,
+              151.728,
+              376.704
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "ó",
+            "bbox": [
+              151.68,
+              364.704,
+              157.68,
+              376.704
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "2",
+            "bbox": [
+              161.16,
+              364.704,
+              167.16,
+              376.704
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "0",
+            "bbox": [
+              167.16,
+              364.704,
+              173.16,
+              376.704
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "n",
+            "bbox": [
+              176.64,
+              364.704,
+              182.64,
+              376.704
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "ắ",
+            "bbox": [
+              182.64,
+              364.704,
+              187.968,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "p",
+            "bbox": [
+              187.98,
+              364.704,
+              193.98,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "k",
+            "bbox": [
+              197.46,
+              364.704,
+              203.46,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "h",
+            "bbox": [
+              203.46,
+              364.704,
+              209.46,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "o",
+            "bbox": [
+              209.4,
+              364.704,
+              215.4,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "e",
+            "bbox": [
+              215.4,
+              364.704,
+              220.728,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "n",
+            "bbox": [
+              220.74,
+              364.704,
+              226.74,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "b",
+            "bbox": [
+              230.22,
+              364.704,
+              236.22,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "i",
+            "bbox": [
+              236.22,
+              364.704,
+              239.556,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "a",
+            "bbox": [
+              239.58,
+              364.704,
+              244.908,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "T",
+            "bbox": [
+              248.34,
+              364.704,
+              255.672,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "i",
+            "bbox": [
+              255.66,
+              364.704,
+              258.996,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "g",
+            "bbox": [
+              259.02,
+              364.704,
+              265.02,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "e",
+            "bbox": [
+              265.02,
+              364.704,
+              270.348,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "r",
+            "bbox": [
+              270.3,
+              364.704,
+              274.296,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": ",",
+            "bbox": [
+              274.32,
+              364.704,
+              277.32,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "t",
+            "bbox": [
+              280.8,
+              364.704,
+              284.136,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "r",
+            "bbox": [
+              284.1,
+              364.704,
+              288.096,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "o",
+            "bbox": [
+              288.12,
+              364.704,
+              294.12,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "n",
+            "bbox": [
+              294.12,
+              364.704,
+              300.12,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "g",
+            "bbox": [
+              300.12,
+              364.704,
+              306.12,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "đ",
+            "bbox": [
+              309.6,
+              364.704,
+              315.6,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "ó",
+            "bbox": [
+              315.6,
+              364.704,
+              321.6,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "c",
+            "bbox": [
+              325.08,
+              364.704,
+              330.408,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "ó",
+            "bbox": [
+              330.36,
+              364.704,
+              336.36,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "2",
+            "bbox": [
+              339.84,
+              364.704,
+              345.84,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "n",
+            "bbox": [
+              349.32,
+              364.704,
+              355.32,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "ắ",
+            "bbox": [
+              355.32,
+              364.704,
+              360.648,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "p",
+            "bbox": [
+              360.66,
+              364.704,
+              366.66,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "g",
+            "bbox": [
+              370.14,
+              364.704,
+              376.14,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "h",
+            "bbox": [
+              376.14,
+              364.704,
+              382.14,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "i",
+            "bbox": [
+              382.08,
+              364.704,
+              385.416,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "“",
+            "bbox": [
+              388.86,
+              364.704,
+              394.188,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "C",
+            "bbox": [
+              394.2,
+              364.704,
+              402.204,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "h",
+            "bbox": [
+              402.18,
+              364.704,
+              408.18,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "ú",
+            "bbox": [
+              408.18,
+              364.704,
+              414.18,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "c",
+            "bbox": [
+              414.18,
+              364.704,
+              419.508,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "m",
+            "bbox": [
+              423.0,
+              364.704,
+              432.336,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "ừ",
+            "bbox": [
+              432.3,
+              364.704,
+              438.804,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "n",
+            "bbox": [
+              438.78,
+              364.704,
+              444.78,
+              376.704
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "g",
+            "bbox": [
+              444.84,
+              364.704,
+              450.84,
+              376.704
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "b",
+            "bbox": [
+              454.32,
+              364.704,
+              460.32,
+              376.704
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "ạ",
+            "bbox": [
+              460.32,
+              364.704,
+              465.648,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "n",
+            "bbox": [
+              465.66,
+              364.704,
+              471.66,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "đ",
+            "bbox": [
+              475.14,
+              364.704,
+              481.14,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "ã",
+            "bbox": [
+              481.14,
+              364.704,
+              486.468,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "t",
+            "bbox": [
+              489.9,
+              364.704,
+              493.236,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "r",
+            "bbox": [
+              493.26,
+              364.704,
+              497.256,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "ú",
+            "bbox": [
+              497.28,
+              364.704,
+              503.28,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "n",
+            "bbox": [
+              503.22,
+              364.704,
+              509.22,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "g",
+            "bbox": [
+              509.22,
+              364.704,
+              515.22,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "t",
+            "bbox": [
+              518.7,
+              364.704,
+              522.036,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "h",
+            "bbox": [
+              522.06,
+              364.704,
+              528.06,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "ư",
+            "bbox": [
+              528.06,
+              364.704,
+              534.564,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "ở",
+            "bbox": [
+              534.54,
+              364.704,
+              540.888,
+              376.704
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "n",
+            "bbox": [
+              540.9,
+              364.704,
+              546.9,
+              376.704
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "g",
+            "bbox": [
+              546.84,
+              364.704,
+              552.84,
+              376.704
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          }
+        ]
+      },
+      {
+        "block_id": "p0047-font-l0012",
+        "bbox": [
+          92.1,
+          380.604,
+          552.756,
+          392.604
+        ],
+        "text_raw": "xe Camry”. Bạn Minh Hiền được chọn lên rút thăm lần lượt hai nắp khoen, xác suất để cả hai",
+        "glyphs": [
+          {
+            "text": "x",
+            "bbox": [
+              92.1,
+              380.604,
+              98.1,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "e",
+            "bbox": [
+              98.1,
+              380.604,
+              103.428,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "C",
+            "bbox": [
+              107.1,
+              380.604,
+              115.104,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "a",
+            "bbox": [
+              115.08,
+              380.604,
+              120.408,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "m",
+            "bbox": [
+              120.42,
+              380.604,
+              129.756,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "r",
+            "bbox": [
+              129.66,
+              380.604,
+              133.656,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "y",
+            "bbox": [
+              133.68,
+              380.604,
+              139.68,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "”",
+            "bbox": [
+              139.68,
+              380.604,
+              145.008,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": ".",
+            "bbox": [
+              145.02,
+              380.604,
+              148.02,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "B",
+            "bbox": [
+              151.68,
+              380.604,
+              159.684,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "ạ",
+            "bbox": [
+              159.66,
+              380.604,
+              164.988,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "n",
+            "bbox": [
+              165.0,
+              380.604,
+              171.0,
+              392.604
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "M",
+            "bbox": [
+              174.66,
+              380.604,
+              185.328,
+              392.604
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "i",
+            "bbox": [
+              185.34,
+              380.604,
+              188.676,
+              392.604
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "n",
+            "bbox": [
+              188.7,
+              380.604,
+              194.7,
+              392.604
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "h",
+            "bbox": [
+              194.7,
+              380.604,
+              200.7,
+              392.604
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "H",
+            "bbox": [
+              204.36,
+              380.604,
+              213.024,
+              392.604
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "i",
+            "bbox": [
+              212.94,
+              380.604,
+              216.276,
+              392.604
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "ề",
+            "bbox": [
+              216.3,
+              380.604,
+              221.628,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "n",
+            "bbox": [
+              221.64,
+              380.604,
+              227.64,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "đ",
+            "bbox": [
+              231.3,
+              380.604,
+              237.3,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "ư",
+            "bbox": [
+              237.3,
+              380.604,
+              243.804,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "ợ",
+            "bbox": [
+              243.78,
+              380.604,
+              250.128,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "c",
+            "bbox": [
+              250.14,
+              380.604,
+              255.468,
+              392.604
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "c",
+            "bbox": [
+              259.08,
+              380.604,
+              264.408,
+              392.604
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "h",
+            "bbox": [
+              264.42,
+              380.604,
+              270.42,
+              392.604
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "ọ",
+            "bbox": [
+              270.36,
+              380.604,
+              276.36,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "n",
+            "bbox": [
+              276.36,
+              380.604,
+              282.36,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "l",
+            "bbox": [
+              286.02,
+              380.604,
+              289.356,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "ê",
+            "bbox": [
+              289.38,
+              380.604,
+              294.708,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "n",
+            "bbox": [
+              294.72,
+              380.604,
+              300.72,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "r",
+            "bbox": [
+              304.32,
+              380.604,
+              308.316,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "ú",
+            "bbox": [
+              308.34,
+              380.604,
+              314.34,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "t",
+            "bbox": [
+              314.34,
+              380.604,
+              317.676,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "t",
+            "bbox": [
+              321.3,
+              380.604,
+              324.636,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "h",
+            "bbox": [
+              324.66,
+              380.604,
+              330.66,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "ă",
+            "bbox": [
+              330.6,
+              380.604,
+              335.928,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "m",
+            "bbox": [
+              335.94,
+              380.604,
+              345.276,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "l",
+            "bbox": [
+              348.84,
+              380.604,
+              352.176,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "ầ",
+            "bbox": [
+              352.2,
+              380.604,
+              357.528,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "n",
+            "bbox": [
+              357.54,
+              380.604,
+              363.54,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "l",
+            "bbox": [
+              367.2,
+              380.604,
+              370.536,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "ư",
+            "bbox": [
+              370.56,
+              380.604,
+              377.064,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "ợ",
+            "bbox": [
+              377.04,
+              380.604,
+              383.388,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "t",
+            "bbox": [
+              383.4,
+              380.604,
+              386.736,
+              392.604
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "h",
+            "bbox": [
+              390.36,
+              380.604,
+              396.36,
+              392.604
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "a",
+            "bbox": [
+              396.36,
+              380.604,
+              401.688,
+              392.604
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "i",
+            "bbox": [
+              401.7,
+              380.604,
+              405.036,
+              392.604
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "n",
+            "bbox": [
+              408.72,
+              380.604,
+              414.72,
+              392.604
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "ắ",
+            "bbox": [
+              414.72,
+              380.604,
+              420.048,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "p",
+            "bbox": [
+              420.06,
+              380.604,
+              426.06,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "k",
+            "bbox": [
+              429.66,
+              380.604,
+              435.66,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "h",
+            "bbox": [
+              435.66,
+              380.604,
+              441.66,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "o",
+            "bbox": [
+              441.66,
+              380.604,
+              447.66,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "e",
+            "bbox": [
+              447.6,
+              380.604,
+              452.928,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "n",
+            "bbox": [
+              452.94,
+              380.604,
+              458.94,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": ",",
+            "bbox": [
+              458.94,
+              380.604,
+              461.94,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "x",
+            "bbox": [
+              465.6,
+              380.604,
+              471.6,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "á",
+            "bbox": [
+              471.6,
+              380.604,
+              476.928,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "c",
+            "bbox": [
+              476.94,
+              380.604,
+              482.268,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "s",
+            "bbox": [
+              485.88,
+              380.604,
+              490.548,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "u",
+            "bbox": [
+              490.56,
+              380.604,
+              496.56,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "ấ",
+            "bbox": [
+              496.56,
+              380.604,
+              501.888,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "t",
+            "bbox": [
+              501.9,
+              380.604,
+              505.236,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "đ",
+            "bbox": [
+              508.8,
+              380.604,
+              514.8,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "ể",
+            "bbox": [
+              514.8,
+              380.604,
+              520.128,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "c",
+            "bbox": [
+              523.8,
+              380.604,
+              529.128,
+              392.604
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "ả",
+            "bbox": [
+              529.14,
+              380.604,
+              534.468,
+              392.604
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "h",
+            "bbox": [
+              538.14,
+              380.604,
+              544.14,
+              392.604
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "a",
+            "bbox": [
+              544.08,
+              380.604,
+              549.408,
+              392.604
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "i",
+            "bbox": [
+              549.42,
+              380.604,
+              552.756,
+              392.604
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          }
+        ]
+      },
+      {
+        "block_id": "p0047-font-l0013",
+        "bbox": [
+          92.1,
+          396.444,
+          210.336,
+          408.444
+        ],
+        "text_raw": "nắp đều trúng thưởng là:",
+        "glyphs": [
+          {
+            "text": "n",
+            "bbox": [
+              92.1,
+              396.444,
+              98.1,
+              408.444
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "ắ",
+            "bbox": [
+              98.1,
+              396.444,
+              103.428,
+              408.444
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "p",
+            "bbox": [
+              103.44,
+              396.444,
+              109.44,
+              408.444
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "đ",
+            "bbox": [
+              112.44,
+              396.444,
+              118.44,
+              408.444
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "ề",
+            "bbox": [
+              118.44,
+              396.444,
+              123.768,
+              408.444
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "u",
+            "bbox": [
+              123.78,
+              396.444,
+              129.78,
+              408.444
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "t",
+            "bbox": [
+              132.78,
+              396.444,
+              136.116,
+              408.444
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "r",
+            "bbox": [
+              136.14,
+              396.444,
+              140.136,
+              408.444
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "ú",
+            "bbox": [
+              140.16,
+              396.444,
+              146.16,
+              408.444
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "n",
+            "bbox": [
+              146.16,
+              396.444,
+              152.16,
+              408.444
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "g",
+            "bbox": [
+              152.1,
+              396.444,
+              158.1,
+              408.444
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "t",
+            "bbox": [
+              161.1,
+              396.444,
+              164.436,
+              408.444
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "h",
+            "bbox": [
+              164.46,
+              396.444,
+              170.46,
+              408.444
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "ư",
+            "bbox": [
+              170.46,
+              396.444,
+              176.964,
+              408.444
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "ở",
+            "bbox": [
+              176.94,
+              396.444,
+              183.288,
+              408.444
+            ],
+            "font": "UHVAYK+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "n",
+            "bbox": [
+              183.3,
+              396.444,
+              189.3,
+              408.444
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "g",
+            "bbox": [
+              189.3,
+              396.444,
+              195.3,
+              408.444
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "l",
+            "bbox": [
+              198.3,
+              396.444,
+              201.636,
+              408.444
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "à",
+            "bbox": [
+              201.66,
+              396.444,
+              206.988,
+              408.444
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": ":",
+            "bbox": [
+              207.0,
+              396.444,
+              210.336,
+              408.444
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          }
+        ]
+      },
+      {
+        "block_id": "p0047-font-l0014",
+        "bbox": [
+          112.546,
+          413.608,
+          464.606,
+          425.627
+        ],
+        "text_raw": "1 1 1 1",
+        "glyphs": [
+          {
+            "text": "1",
+            "bbox": [
+              112.546,
+              413.608,
+              118.696,
+              425.627
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.018700000000024
+          },
+          {
+            "text": "1",
+            "bbox": [
+              231.393,
+              413.608,
+              237.206,
+              425.627
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.018800000000056
+          },
+          {
+            "text": "1",
+            "bbox": [
+              348.567,
+              413.608,
+              354.58,
+              425.627
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.018700000000024
+          },
+          {
+            "text": "1",
+            "bbox": [
+              458.793,
+              413.608,
+              464.606,
+              425.627
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.018800000000056
+          }
+        ]
+      },
+      {
+        "block_id": "p0047-font-l0015",
+        "bbox": [
+          92.1,
+          421.164,
+          472.44,
+          433.416
+        ],
+        "text_raw": "A. . B. . C. . D. .",
+        "glyphs": [
+          {
+            "text": "A",
+            "bbox": [
+              92.1,
+              421.416,
+              100.764,
+              433.416
+            ],
+            "font": "EWVIIQ+TimesNewRomanPS-BoldMT",
+            "size": 12.0
+          },
+          {
+            "text": ".",
+            "bbox": [
+              100.74,
+              421.416,
+              103.74,
+              433.416
+            ],
+            "font": "EWVIIQ+TimesNewRomanPS-BoldMT",
+            "size": 12.0
+          },
+          {
+            "text": ".",
+            "bbox": [
+              125.22,
+              421.164,
+              128.22,
+              433.164
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "B",
+            "bbox": [
+              212.58,
+              421.416,
+              220.584,
+              433.416
+            ],
+            "font": "EWVIIQ+TimesNewRomanPS-BoldMT",
+            "size": 12.0
+          },
+          {
+            "text": ".",
+            "bbox": [
+              220.56,
+              421.416,
+              223.56,
+              433.416
+            ],
+            "font": "EWVIIQ+TimesNewRomanPS-BoldMT",
+            "size": 12.0
+          },
+          {
+            "text": ".",
+            "bbox": [
+              242.04,
+              421.164,
+              245.04,
+              433.164
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "C",
+            "bbox": [
+              325.92,
+              421.416,
+              334.584,
+              433.416
+            ],
+            "font": "EWVIIQ+TimesNewRomanPS-BoldMT",
+            "size": 12.0
+          },
+          {
+            "text": ".",
+            "bbox": [
+              334.56,
+              421.416,
+              337.56,
+              433.416
+            ],
+            "font": "EWVIIQ+TimesNewRomanPS-BoldMT",
+            "size": 12.0
+          },
+          {
+            "text": ".",
+            "bbox": [
+              362.58,
+              421.164,
+              365.58,
+              433.164
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          },
+          {
+            "text": "D",
+            "bbox": [
+              439.32,
+              421.416,
+              447.984,
+              433.416
+            ],
+            "font": "EWVIIQ+TimesNewRomanPS-BoldMT",
+            "size": 12.0
+          },
+          {
+            "text": ".",
+            "bbox": [
+              447.96,
+              421.416,
+              450.96,
+              433.416
+            ],
+            "font": "EWVIIQ+TimesNewRomanPS-BoldMT",
+            "size": 12.0
+          },
+          {
+            "text": ".",
+            "bbox": [
+              469.44,
+              421.164,
+              472.44,
+              433.164
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.0
+          }
+        ]
+      },
+      {
+        "block_id": "p0047-font-l0016",
+        "bbox": [
+          109.663,
+          430.566,
+          467.058,
+          442.591
+        ],
+        "text_raw": "20 19 190 10",
+        "glyphs": [
+          {
+            "text": "2",
+            "bbox": [
+              109.663,
+              430.572,
+              115.813,
+              442.59
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.018700000000024
+          },
+          {
+            "text": "0",
+            "bbox": [
+              115.813,
+              430.572,
+              121.963,
+              442.59
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.018700000000024
+          },
+          {
+            "text": "1",
+            "bbox": [
+              228.034,
+              430.566,
+              233.846,
+              442.585
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.018799999999999
+          },
+          {
+            "text": "9",
+            "bbox": [
+              233.846,
+              430.566,
+              239.659,
+              442.585
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.018799999999999
+          },
+          {
+            "text": "1",
+            "bbox": [
+              342.083,
+              430.572,
+              348.097,
+              442.591
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.018700000000024
+          },
+          {
+            "text": "9",
+            "bbox": [
+              348.097,
+              430.572,
+              354.111,
+              442.591
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.018700000000024
+          },
+          {
+            "text": "0",
+            "bbox": [
+              354.111,
+              430.572,
+              360.124,
+              442.591
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.018700000000024
+          },
+          {
+            "text": "1",
+            "bbox": [
+              455.433,
+              430.572,
+              461.246,
+              442.591
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.018799999999999
+          },
+          {
+            "text": "0",
+            "bbox": [
+              461.246,
+              430.572,
+              467.058,
+              442.591
+            ],
+            "font": "BCKLSW+TimesNewRomanPSMT",
+            "size": 12.018799999999999
+          }
+        ]
+      },
+      {
+        "block_id": "p0047-font-l0017",
+        "bbox": [
+          303.06,
+          446.424,
+          341.856,
+          458.424
+        ],
+        "text_raw": "Lời giải",
+        "glyphs": [
+          {
+            "text": "L",
+            "bbox": [
+              303.06,
+              446.424,
+              310.392,
+              458.424
+            ],
+            "font": "JYKMAG+TimesNewRomanPS-BoldItalicMT",
+            "size": 12.0
+          },
+          {
+            "text": "ờ",
+            "bbox": [
+              310.38,
+              446.424,
+              316.824,
+              458.424
+            ],
+            "font": "JYKMAG+TimesNewRomanPS-BoldItalicMT",
+            "size": 12.0
+          },
+          {
+            "text": "i",
+            "bbox": [
+              316.8,
+              446.424,
+              320.136,
+              458.424
+            ],
+            "font": "JYKMAG+TimesNewRomanPS-BoldItalicMT",
+            "size": 12.0
+          },
+          {
+            "text": "g",
+            "bbox": [
+              323.16,
+              446.424,
+              329.16,
+              458.424
+            ],
+            "font": "JYKMAG+TimesNewRomanPS-BoldItalicMT",
+            "size": 12.0
+          },
+          {
+            "text": "i",
+            "bbox": [
+              329.16,
+              446.424,
+              332.496,
+              458.424
+            ],
+            "font": "JYKMAG+TimesNewRomanPS-BoldItalicMT",
+            "size": 12.0
+          },
+          {
+            "text": "ả",
+            "bbox": [
+              332.52,
+              446.424,
+              338.52,
+              458.424
+            ],
+            "font": "JYKMAG+TimesNewRomanPS-BoldItalicMT",
+            "size": 12.0
+          },
+          {
+            "text": "i",
+            "bbox": [
+              338.52,
+              446.424,
+              341.856,
+              458.424
+            ],
+            "font": "JYKMAG+TimesNewRomanPS-BoldItalicMT",
+            "size": 12.0
+          }
+        ]
+      }
+    ],
+    "vectors": [
+      {
+        "kind": "line",
+        "bbox": [
+          108.83,
+          426.507,
+          122.411,
+          426.507
+        ]
+      },
+      {
+        "kind": "line",
+        "bbox": [
+          228.518,
+          426.507,
+          240.082,
+          426.507
+        ]
+      },
+      {
+        "kind": "line",
+        "bbox": [
+          342.585,
+          426.507,
+          360.563,
+          426.507
+        ]
+      },
+      {
+        "kind": "line",
+        "bbox": [
+          455.918,
+          426.507,
+          467.482,
+          426.507
+        ]
+      },
+      {
+        "kind": "rect",
+        "bbox": [
+          92.1,
+          361.8,
+          552.78,
+          375.66
+        ]
+      },
+      {
+        "kind": "rect",
+        "bbox": [
+          92.1,
+          377.7,
+          552.78,
+          391.5
+        ]
+      },
+      {
+        "kind": "rect",
+        "bbox": [
+          92.1,
+          393.54,
+          129.78,
+          407.4
+        ]
+      },
+      {
+        "kind": "rect",
+        "bbox": [
+          132.78,
+          393.54,
+          210.3,
+          407.4
+        ]
+      },
+      {
+        "kind": "rect",
+        "bbox": [
+          325.92,
+          430.8,
+          334.56,
+          431.94
+        ]
+      }
+    ],
+    "images": []
+  },
+  "span": {
+    "page_number": 47,
+    "bbox": [
+      0,
+      360.172,
+      595.32,
+      445.496
+    ],
+    "block_ids": [
+      "p0047-l0011",
+      "p0047-l0012",
+      "p0047-l0013",
+      "p0047-l0014",
+      "p0047-l0015",
+      "p0047-l0016",
+      "p0047-l0017",
+      "p0047-l0018"
+    ],
+    "column": null,
+    "layout_method": "SINGLE_PAGE_FLOW"
+  }
+}
