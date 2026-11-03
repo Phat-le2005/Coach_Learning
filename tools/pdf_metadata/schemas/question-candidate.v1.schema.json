@@ -9,6 +9,7 @@
     "question_id": {"type": "string", "minLength": 1},
     "source_sha256": {"type": "string", "minLength": 1},
     "source_number": {"type": "integer", "minimum": 0},
+    "source_label": {"type": "string"},
     "question_type_candidate": {"enum": ["SHORT_ANSWER", "UNKNOWN"]},
     "stem": {"$ref": "#/$defs/textPart"},
     "solution": {"$ref": "#/$defs/textPart"},

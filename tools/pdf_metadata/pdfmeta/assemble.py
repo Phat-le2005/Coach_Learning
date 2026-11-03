@@ -1,12 +1,24 @@
 from __future__ import annotations
 
 import re
+import unicodedata
 
 
-QUESTION = re.compile(r"^\s*(?:Câu|Cau|Bài|Bai|Question|Exercise)\s+(\d+)\s*[.:)]", re.IGNORECASE)
-SOLUTION = re.compile(r"^\s*(?:Lời giải|Loi giai|Solution|Hướng dẫn giải|Hướng dẫn)\s*[:.]?\s*$", re.IGNORECASE)
-ANSWER = re.compile(r"^\s*(?:Đáp án|Đáp số|Dap an|Dap so|Answer)(?:\s*:\s*|\s+)(.*)$", re.IGNORECASE)
-RESPONSE = re.compile(r"^\s*(?:Trả lời|Tra loi)\s*:", re.IGNORECASE)
+DECOR = r'[\s\uE000-\uF8FF☞☛◆►➤•✓✔»›→]*'
+QUESTION = re.compile(r"^"+DECOR+r"(?:Câu|Cau|Bài|Bai|Ví dụ|Vi du|Question|Exercise|Example)\s+(\d+)(?:\.\d+)*\s*(?:[.:)]|$)", re.IGNORECASE)
+SOLUTION = re.compile(r"^"+DECOR+r"(?:Lời giải|Loi giai|Giải|Giai|Solution|Hướng dẫn giải|Hướng dẫn)\s*[:.]?\s*$", re.IGNORECASE)
+ANSWER = re.compile(r"^"+DECOR+r"(?:Đáp án|Đáp số|Dap an|Dap so|Answer)(?:\s*:\s*|\s+)(.*)$", re.IGNORECASE)
+RESPONSE = re.compile(r"^"+DECOR+r"(?:Trả lời|Tra loi)\s*:", re.IGNORECASE)
+
+
+def is_contents_page(page):
+    """Require a contents heading plus list structure; do not drop lesson pages."""
+    texts=[b['text_raw'].strip() for b in page['blocks']]
+    plain=lambda s:''.join(c for c in unicodedata.normalize('NFKD',s) if not unicodedata.combining(c)).lower()
+    heading=any(re.fullmatch(r'mu[a-z]{0,2}c\s+lu[a-z]{0,2}c|table of contents|contents',plain(s)) for s in texts[:12])
+    leaders=sum(bool(re.search(r'(?:\.\s*){6,}',s)) for s in texts)
+    lessons=sum(bool(re.match(r'^(?:Bài|Bai|Chapter|Chương)\s+\d+',s,re.I)) for s in texts)
+    return heading and (leaders>=3 or lessons>=3)
 
 
 def span(page: dict, bbox: list[float], blocks: list[dict]) -> dict:
@@ -34,6 +46,11 @@ def assemble(pages: list[dict], source_hash: str) -> tuple[list[dict], list[dict
     current = None
     section = "stem"
     for page in pages:
+        if is_contents_page(page):
+            orphans.extend({'page_number':page['page_number'],'block_id':b['block_id'],
+                            'text_raw':b['text_raw'],'reason':'TABLE_OF_CONTENTS_PAGE_EXCLUDED'} for b in page['blocks'])
+            current=None
+            continue
         blocks = [block for block in page["blocks"] if not block.get("is_margin")]
         starts = []
         for index, block in enumerate(blocks):
@@ -71,6 +88,7 @@ def assemble(pages: list[dict], source_hash: str) -> tuple[list[dict], list[dict
                     "schema_version": "math-question-candidate/v1",
                     "question_id": f"{source_hash[:16]}:q{match.group(1)}:n{len(items) + 1}",
                     "source_sha256": source_hash, "source_number": int(match.group(1)),
+                    "source_label": match.group(0).strip(),
                     "question_type_candidate": "UNKNOWN",
                     "stem": {"text_raw": "", "source_spans": []},
                     "answer": {"text_raw": None, "source_spans": [], "verification": "UNREVIEWED"},
@@ -102,7 +120,10 @@ def assemble(pages: list[dict], source_hash: str) -> tuple[list[dict], list[dict
                 text = block["text_raw"]
                 marker=block.get('section_marker_candidate',{}).get('kind')
                 if marker:current['review_flags'].append('OCR_SECTION_MARKER_INFERRED')
-                if RESPONSE.match(text) or marker=='RESPONSE':
+                # A filled "Trả lời:" inside a solution is an answer, not a
+                # student's empty response area. Keep the following proof lines.
+                response_answer = RESPONSE.match(text) if section == "solution" else None
+                if (RESPONSE.match(text) or marker=='RESPONSE') and section != "solution":
                     current["question_type_candidate"] = "SHORT_ANSWER"
                     if stem_top is not None and block["bbox"][1] - 1 > stem_top:
                         current["stem"]["source_spans"].append(span(page, [0, stem_top, page["width"], block["bbox"][1] - 1], section_blocks["stem"]))
@@ -117,10 +138,13 @@ def assemble(pages: list[dict], source_hash: str) -> tuple[list[dict], list[dict
                     solution_top = block["bbox"][3] + 1
                     continue
                 answer = ANSWER.match(text)
-                if answer:
+                response_value = RESPONSE.sub('', text).strip() if response_answer else ''
+                if response_answer and re.fullmatch(r'[\s.…_]*', response_value):
+                    response_value = ''
+                if answer or response_value:
                     if current["answer"]["text_raw"] is not None:
                         current["review_flags"].append("MULTIPLE_ANSWER_MARKERS")
-                    current["answer"]["text_raw"] = answer.group(1).strip()
+                    current["answer"]["text_raw"] = answer.group(1).strip() if answer else response_value
                     current["answer"]["source_spans"].append(span(page, block["bbox"], [block]))
                     if section != "solution":
                         current["review_flags"].append("ANSWER_OUTSIDE_SOLUTION")
