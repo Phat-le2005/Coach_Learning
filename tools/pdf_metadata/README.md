@@ -4,9 +4,35 @@ Isolated from the running FastAPI/Next.js app. The source PDF is read-only. Pack
 
 ## Start here: give the workflow one PDF
 
+The entry also runs bounded image-to-formula checks and exports a provisional step-checking contract. `process_corpus.ps1` / `.cmd` accepts a folder or ZIP, runs one PDF at a time, preserves checkpoints, and exposes queue progress. Default batch budgets are 100 pages per invocation, 3 Qwen metadata questions and 8 image regions per PDF; 0 removes a particular limit. See `docs/pdf-readiness-batch-core-2026-11-03.md` for commands, actual multi-PDF results and core integration boundaries. The core adapter returns provisional matches, never production scores.
+
 The default entry now completes extraction → text-to-LaTeX → local Qwen review → a consolidated `pdf-final/v1` export. Open each job's **`final.html`**; **`final.json`** identifies `questions.final.jsonl` and its pretty JSON. These contain the immutable source metadata plus LaTeX candidates and machine review. See `docs/pdf-complete-pipeline-2026-11-02.md` for the current workflow, validation and limits. `-ReviewLimit 3` is a short trial; default 0 reviews all discovered questions. `-SkipQwen` still creates the final artifact using rules and marks model review deferred.
 
-Latest source audit: 40 manually source-transcribed formula regions across two PDFs, with 24 development and 16 held-out cases. Source geometry now recovers vector radicals/trailing terms and blocks dropped absolute bars, overlines and subscripts; model formatting cannot override those warnings. The suite, including progress monitoring, has 230 passing tests. See `docs/pdf-formula-source-audit-2026-11-02.md` for the split counts and limitations; these are formula-region fidelity results, not full-book grading accuracy.
+Latest source audit: 40 manually source-transcribed formula regions across two PDFs, with 24 development and 16 held-out cases. Source geometry now recovers vector radicals/trailing terms and blocks dropped absolute bars, overlines and subscripts; model formatting cannot override those warnings. The full PDF suite, including progress monitoring, paired-source conversion and the separate calculus grading trial, has 326 passing tests. See `docs/pdf-formula-source-audit-2026-11-02.md` for the split counts and limitations; these are formula-region fidelity results, not full-book grading accuracy.
+
+### Convert adjacent questions and solutions into one readable file
+
+For native-text PDFs with printed question/solution labels, `convert_pairs.ps1` creates one portable HTML containing source images plus searchable lossy text. It then reads metadata directly from that file; it does not OCR the converted file again. The main JSONL includes only occurrences with both question and solution regions. Unpaired occurrences remain separate; repeated printed question numbers are never used alone to join unrelated chapters.
+
+```powershell
+.\tools\pdf_metadata\convert_pairs.ps1 'E:\materials\with-solutions.pdf' -Open
+```
+
+Each job's `paired.json` points to `questions-and-solutions.html`, `questions.metadata.json`, `questions.metadata.jsonl` and a review queue under `paired/versions/<hash>`. The HTML opens offline with embedded PNGs, while the metadata export has crop paths/hashes and PDF page/bbox provenance. Metadata JSON preserves unpaired records in `unpaired_questions`; JSONL sends them to `questions.unpaired.jsonl`. A moved HTML can recreate its metadata and PNG assets with `python -m pdfmeta.paired metadata --html <file> --output <folder>`.
+
+The probability trial processed all 167 source pages: 508 question occurrences, 251 paired candidates, 257 unpaired occurrences, and 7 paired candidates with a possible following-section boundary. This is source acquisition, not source-mathematics approval or a text-to-LaTeX upgrade. Image-only pages are flagged `OCR_REQUIRED`; this lightweight lane does not load an OCR/LLM model or replace the full PDF workflow. See `docs/pdf-paired-source-conversion-2026-11-03.md`.
+
+The subsequent solved-only export recognizes standalone `Giải` labels and detaches explicitly labelled next sections into context with an audit trail. It finds 253 paired occurrences and 255 unpaired occurrences; all 7 previous boundary warnings and 5 additional transitions are addressed by source-backed rules. `python -m pdfmeta.paired solved-collection --job <job> --output <folder>` physically excludes unpaired records from its HTML/metadata. A separate PDF renderer preserves each question and solution as one source-image region. The delivered PDF has 253 entries, 151 pages and PDF-page/bbox mappings in its companion metadata. This output uses source images, not a new OCR pass or a claim that LaTeX is corrected. See `docs/pdf-solved-only-collection-2026-11-03.md`.
+
+### Separate calculus grading sandbox
+
+`trial_grading.ps1` builds proposed, versioned 10-point rubrics for a manually source-reviewed development cohort of 12 questions from the derivative PDF. Ten can receive sandbox scores; two are held because printed solution claims conflict with independent calculations. The 149 labelled synthetic scenarios cover correct/equivalent work, common errors, missing steps, unsupported inputs and valid polynomial-division/critical-ratio methods. They are regression checks, not measured accuracy on real students or new PDFs.
+
+```powershell
+.\tools\pdf_metadata\trial_grading.ps1 -Job '.tmp\pdf-jobs\5db1fc66ab0a42553e882981' -Open
+```
+
+The dashboard's **Xem điểm chấm thử** opens source images, rubric weights and criterion feedback. `grading-trial.json` identifies the immutable-version rubric package and results. This command uses existing local Python only: no model inference, cloud request or database write. It does not alter the general extraction pipeline, the final acquisition file, or approval flags. Another PDF needs its own reviewed function/domain/task annotations before this sandbox can grade it. See `docs/pdf-calculus-grading-pilot-2026-11-03.md` for adapter input, evidence and limitations.
 
 Drag a PDF onto `tools/pdf_metadata/process_pdf.cmd`, or run:
 
@@ -274,3 +300,185 @@ The pilot viewer is `http://localhost:8787/gemini/review.html` when the existing
 Use `-Documents '<document_id>'` or `-Jobs '<document_id>:p0003,...'` from `plan.json` for representative tests. `-SamplePerDocument` interleaves documents to avoid testing only the first PDF. The Python entry points run on other hosts with explicit paths/env secrets; PowerShell enforces E-drive outputs on this Windows machine. No GPU/Kaggle execution or full-corpus quality benchmark has been claimed.
 
 See `docs/pdf-metadata-gemini-pipeline-2026-11-02.md` for the tested cases, known model failures and rollout instructions.
+
+## Local collection of questions with printed solutions, across all Toan12 chapters
+
+`collect_solved.ps1` is the source-image collection route. It inventories every
+PDF in a ZIP/folder, keeps its own page cache and processes documents sequentially.
+It does not call Gemini or Qwen, approve mathematics, build grading rubrics or
+write to the production database. The established pilot/math-transcription route
+is separate.
+
+```powershell
+# A new collection. Keep source, model cache and output storage on E.
+.\tools\pdf_metadata\collect_solved.ps1 `
+  -InputPath 'E:\HocTap\Hackathon-SGU2026\Coach_Learning\data\Toan12.zip' `
+  -Archive 'E:\HocTap\Hackathon-SGU2026\Coach_Learning\data\Toan12.zip' `
+  -Work 'E:\CoachLearningPdf\solved-toan12' `
+  -Output 'E:\CoachLearningPdf\solved-toan12\export' `
+  -Storage 'E:\HocTap\Hackathon-SGU2026\Coach_Learning\.tmp' `
+  -PdfPython 'C:\Users\ADMIN\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe'
+```
+
+Rerun the same command to resume. To resume an existing `profile.json` without
+inventorying/extracting the ZIP again, omit `-InputPath`. A single unfamiliar PDF
+needs `-Chapter integrals` (or another listed chapter); an unknown topic is not
+silently assigned. This adapter currently groups derivative applications,
+integrals, grouped statistics and conditional probability.
+
+Outputs include `Toan12_Cau_hoi_co_loi_giai.pdf`,
+`cau-hoi-co-loi-giai.metadata.jsonl` (with collection PDF page mappings),
+`index.html`, `report.json`, `review-queue.jsonl`, and
+`page-review-queue.jsonl`. Supply `-PdfPython` with ReportLab and Pillow to export
+the PDF; otherwise metadata is saved and PDF export is explicitly pending.
+That Python also needs pypdf for the automatic structural verification step.
+The PDF uses JPEG quality-94 derivatives to limit file size; the metadata/viewer
+retain the original PNG source crops for comparison.
+
+Question IDs bind the PDF hash to the printed number and occurrence, since book
+sections restart numbering. The count is source occurrences, not deduplicated
+unique problems. Each exported question retains its real PDF name/hash, physical
+page, PDF-point bbox, source block IDs and crop hash. ZIP identity is recorded
+separately. Two detected source columns are cropped separately and uncertain
+cross-column regions go to the review queue.
+
+A printed “Lời giải” followed only by writing lines does not qualify as a solved
+item. Explicit following-section labels detach unrelated lesson material; removed
+blocks remain in the document audit. Missing solutions, uncertain layouts, OCR
+failures and pages without accepted pairs remain accounted for in queues. Pairs
+whose question, answer or solution spans depend on unverified OCR are also held for source review,
+since a missed question heading can attach the next exercise as a solution. Text is
+only a lossy search helper; source images preserve the printed math. This does not
+establish complete extraction recall or mathematical correctness.
+
+`controller.json` and per-document `worker.log` show progress. The worker uses
+BelowNormal priority and the local OCR adapter uses three CPU threads. Page/image
+hashes and adapter identity are checked for resume. Any failed document blocks
+the combined export instead of silently disappearing.
+
+For independent structural verification after export, run `collection_check.py`
+with `--metadata <output>/cau-hoi-co-loi-giai.metadata.json` and
+`--report <output>/verification.json` using Python with pypdf. It checks PDF page
+mapping, bookmarks, image hashes, bounds and overlaps. Visual QA and mathematical
+review are separate checks.
+
+### Readable metadata
+
+JSONL keeps one complete question on each line for streaming imports. To inspect
+the same data, open `metadata.html` in the local artifact viewer. It separates
+question, solution, source pages and review state; source images and full JSON
+have their own tabs. It supports chapter/document filters, a download for one
+question, and a two-space-indented JSON array for the full collection.
+
+```powershell
+$env:PYTHONPATH = 'E:\HocTap\Hackathon-SGU2026\Coach_Learning\tools\pdf_metadata'
+& '.\.tmp\pdf-pipeline-runtime\.venv\Scripts\python.exe' -B -m pdfmeta.paired.metadata_readable `
+  --input 'E:\HocTap\Hackathon-SGU2026\Coach_Learning\.tmp\pdf-jobs\4ebd40c425c242baa4faf416\corpus\cau-hoi-co-loi-giai.metadata.jsonl'
+```
+
+This writes `cau-hoi-co-loi-giai.metadata.pretty.json`, `metadata.html`, a compact
+`metadata-catalog.json`, individual JSON files under `metadata-records/`, and
+`metadata-format.json` with source/output hashes. Only the selected record loads
+in the viewer; opening it does not load the entire JSON array or the large PDF.
+The formatting stage uses no inference, preserves every original field value,
+and never upgrades review/grading states. Both the metadata-only workflow and
+the standalone PDF exporter now generate this presentation automatically.
+
+The readable viewer detects unmapped private-use/replacement characters. For a
+damaged record it shows the source crops first and collapses the damaged helper
+text. The JSON download still contains the original values. This is a display
+safeguard; absence of these characters does not establish correct math layout.
+
+### Recover formula candidates from the original source
+
+`pdfmeta.paired.math_recovery` adds a separate, bounded recovery trial for 1–40
+explicit collection numbers. It reopens the hash-matched original PDF with real
+font/glyph coordinates, finds assignment/integral anchors, includes floating
+fraction glyphs, and reads 288-DPI formula crops with local PP-FormulaNet_plus-M.
+PDFium helper text is never passed to the formula recognizer. Use installed local
+weights under the E-drive runtime; the stage refuses missing weights rather than
+starting a download. CPU inference uses three threads and BelowNormal priority.
+
+```powershell
+$env:PYTHONPATH = 'E:\HocTap\Hackathon-SGU2026\Coach_Learning\tools\pdf_metadata'
+$env:PYTHONUTF8 = '1'
+& 'E:\HocTap\Hackathon-SGU2026\Coach_Learning\.tmp\pdf-pipeline-runtime\.venv\Scripts\python.exe' -B -m pdfmeta.paired.math_recovery `
+  --input 'E:\HocTap\Hackathon-SGU2026\Coach_Learning\.tmp\pdf-jobs\4ebd40c425c242baa4faf416\corpus\cau-hoi-co-loi-giai.metadata.jsonl' `
+  --plan 'E:\HocTap\Hackathon-SGU2026\Coach_Learning\.tmp\toan12-local-corpus\plan.json' `
+  --output 'E:\HocTap\Hackathon-SGU2026\Coach_Learning\.tmp\pdf-jobs\4ebd40c425c242baa4faf416\latex-recovery-20261103' `
+  --runtime 'E:\HocTap\Hackathon-SGU2026\Coach_Learning\.tmp\pdf-pipeline-runtime' `
+  --numbers 1461 `
+  --katex 'E:\HocTap\Hackathon-SGU2026\Coach_Learning\frontend\node_modules\katex\dist'
+```
+
+Outputs: `formula-candidates.json`, true-font `font-pages/`, source crops, an OCR
+cache bound to image/weight/package/adapter hashes, `report.json`, and an offline
+KaTeX `review.html` when `--katex` is supplied. There are no cloud calls. The
+canonical metadata is unchanged and academic/grading states remain pending.
+
+Coverage is deliberately `PARTIAL_ANCHORED_FORMULAS_ONLY`. Standalone
+non-assignment expressions, full Vietnamese prose, tables, figures, unrecognized
+fonts, and scanned pages need additional extraction paths. Native/model agreement
+checks transcription consistency; it does not verify mathematical truth or approve
+an item for grading. Different choices must remain different even when some are
+mathematically wrong. Do not promote an OCR-only reading because it renders in
+KaTeX or because algebraically equivalent output can be parsed.
+
+### Chapter-balanced text and LaTeX trial
+
+`transcribe_corpus.ps1` processes a fixed, reproducible sample from paired-corpus
+metadata. The current 100-record trial uses 25 records per chapter, round-robins
+over all 12 contributing PDFs, and fixes 40 evaluation records before inference.
+The inventoried PDF with no selected solved items is not silently counted as a
+contributing source. This is a balanced diagnostic sample, not a corpus-weighted
+accuracy estimate or a manually transcribed gold dataset.
+
+```powershell
+& 'E:\HocTap\Hackathon-SGU2026\Coach_Learning\tools\pdf_metadata\transcribe_corpus.ps1' `
+  -Metadata 'E:\HocTap\Hackathon-SGU2026\Coach_Learning\.tmp\pdf-jobs\4ebd40c425c242baa4faf416\corpus\cau-hoi-co-loi-giai.metadata.jsonl' `
+  -Plan 'E:\HocTap\Hackathon-SGU2026\Coach_Learning\.tmp\toan12-local-corpus\plan.json' `
+  -Output 'E:\HocTap\Hackathon-SGU2026\Coach_Learning\.tmp\pdf-jobs\4ebd40c425c242baa4faf416\transcription-100-20261103' `
+  -Count 100 -Workers 2 -Open
+```
+
+All models and environments stay on E. No new weights are downloaded. There are
+at most two resident OCR workers, three CPU threads each, BelowNormal priority.
+Native unambiguous single-baseline notation avoids unnecessary image inference.
+Complex formulas use local PP-FormulaNet_plus-M and S. Their notation agreement,
+source digit/sign preservation, source structure guards and local KaTeX syntax
+checks control whether the main Markdown shows a formula or its source crop.
+Agreement remains a draft consistency check, never academic approval. Tables,
+figures, unmapped rows and unresolved formula regions retain source images.
+
+Every record has a source/checkpoint/pipeline identity. Rerunning the same command
+reuses completed matching records; one failed question gets a failure record and
+does not discard the other questions. Changing input, code, model weights or
+library identity invalidates the relevant record checkpoint. The source corpus
+is never overwritten. Concurrent publishers use distinct temporary files and
+retry brief Windows reader locks.
+
+Outputs include `metadata.transcribed.draft.jsonl`, its `.pretty.json` counterpart,
+one JSON file per record, source/formula PNGs, `selection.json`, runtime telemetry,
+and a live `review.html`. The structured draft keeps `parts.question.markdown`,
+separate choices where one A–D set is recognized, `parts.solution.markdown`,
+explicit answer text, original raw text and source spans. Repeated choice groups
+remain inline, preserving their source order. The schema requires pending review,
+unassessed grading support and `publishable=false`.
+
+Qwen local reviews the fixed evaluation subset as text-only advisory triage; its
+results explicitly say that source images were not provided. It cannot clear a
+truncated input or mark content academically approved. `evaluation-40.json`,
+`reference-checks.jsonl` and `quality-summary.json` distinguish syntax, held image
+regions, model disagreements, source glyph warnings and numeric equality
+inconsistency candidates in solutions. False answer alternatives are preserved.
+Full formula recall, full transcription accuracy and whole-solution mathematical
+correctness are not established by this trial. These drafts must not be directly
+ingested into the grading core.
+
+If a model returns an invalid/oversize output, `transcript_rescue` retains the
+failed question as `SOURCE_IMAGE_ONLY_EXTRACTION_FAILED`, with original images,
+the failure record/hash and `math_transcription_completed=false`. This is counted
+separately from transcribed drafts. It performs no new inference and does not
+claim a known total for model calls made by the failed attempt. A normal resume
+retries extraction for this record. Failed Qwen responses can be retried with
+`transcript_triage --retry-failed`; the old failed response is retained in history.

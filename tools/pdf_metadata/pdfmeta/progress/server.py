@@ -111,6 +111,22 @@ def snapshot(job):
             latex_cache_hits=final.get('latex',{}).get('cache_hits',0),review_cache_hits=final.get('qwen_review',{}).get('cache_hits',0))
     state['completed_stages']=sum(s['status'] in {'completed','cached','partial','skipped'} for s in state.get('stages',[]))
     state['total_stages']=len(STAGES)
+    check=read(job/'readiness-status.json') or {}
+    image_report=read(job/'image-check.json') or {};core_report=read(job/'core-package.json') or {}
+    current_path=final.get('final_jsonl')
+    state['readiness']={'image':image_report if image_report.get('source_final_file')==current_path else None,
+        'core':core_report if core_report.get('source_final_file')==current_path else None,
+        'review':artifact_link(job,job/'readiness/review.html'),'status':check.get('status'),
+        'done':check.get('done'),'total':check.get('total')}
+    trial=read(job/'grading-trial.json') or {}
+    if trial.get('source_final_file')==current_path:
+        state['readiness']['trial']={k:trial.get(k) for k in ['questions','ready_for_sandbox','held_for_source_conflict','synthetic_scenarios','assertions_passed','assertions_failed']}
+        state['readiness']['trial']['review']=artifact_link(job,job/'grading-trial/review.html')
+    if check.get('status')=='RUNNING':
+        if alive(check.get('owner',{})):
+            state['_post_owner']=check['owner']
+            state['readiness']['status']='RUNNING'
+        else:state['readiness']['status']='INTERRUPTED'
     # Only expose the few owner fields needed by resource sampling internally.
     return state
 
@@ -121,6 +137,7 @@ class Resources:
         try:import psutil
         except ImportError:return {'available':False}
         records=[j.get('owner',{}) for j in jobs if j['status'] in RUNNING]
+        records.extend(j['_post_owner'] for j in jobs if j.get('_post_owner'))
         model=False
         manifest=read(runtime/'local-qwen-runtime.json') or {}
         try:
@@ -172,14 +189,29 @@ class Handler(BaseHTTPRequestHandler):
                 if state:jobs.append(state)
             jobs.sort(key=lambda j:j.get('updated_at') or '',reverse=True)
             resources=self.sampler.get(jobs,self.runtime)
-            for job in jobs:job.pop('owner',None);job.pop('controller',None)
-            return self.json({'jobs':jobs,'resources':resources,'server_time':datetime.now(timezone.utc).isoformat()},head=head)
+            for job in jobs:job.pop('owner',None);job.pop('controller',None);job.pop('_post_owner',None)
+            queue=None;queue_root=self.root.parent/'pdf-queues';pointer=read(queue_root/'latest.json') or {}
+            if pointer.get('queue'):
+                target=Path(pointer['queue']).resolve()
+                if target.is_relative_to(queue_root.resolve()):
+                    record=read(target) or {}
+                    queue={k:record.get(k) for k in ['queue_id','status','counts','updated_at']}
+                    queue['total']=len(record.get('items',[]))
+                    queue['review']='/queue/'+str(record.get('queue_id'))+'/evaluation.html' if (target.parent/'evaluation.html').is_file() else None
+            return self.json({'jobs':jobs,'resources':resources,'queue':queue,'server_time':datetime.now(timezone.utc).isoformat()},head=head)
+        if path.startswith('/queue/'):
+            parts=path.split('/')
+            if len(parts)!=4 or not JOB.fullmatch(parts[2]) or parts[3] not in {'evaluation.html','evaluation.json'}:
+                return self.json({'error':'Queue report not allowed'},403,head)
+            root=(self.root.parent/'pdf-queues').resolve();target=(root/parts[2]/parts[3]).resolve()
+            if not target.is_relative_to(root) or not target.is_file():return self.json({'error':'Queue report not found'},404,head)
+            return self.send(target.read_bytes(),'text/html; charset=utf-8' if target.suffix=='.html' else 'application/json; charset=utf-8',head=head)
         if path.startswith('/artifacts/'):
             parts=path[len('/artifacts/'):].split('/')
             if len(parts)<2 or not JOB.fullmatch(parts[0]) or any(p.startswith('.') or p in {'jobs','runs'} for p in parts[1:]):
                 return self.json({'error':'Artifact not allowed'},403,head)
             job=(self.root/parts[0]).resolve();target=(job/('/'.join(parts[1:]))).resolve()
-            allowed={'.html','.json','.jsonl','.png','.jpg','.jpeg','.css','.js','.woff','.woff2','.ttf'}
+            allowed={'.html','.json','.jsonl','.png','.jpg','.jpeg','.pdf','.css','.js','.woff','.woff2','.ttf'}
             if not job.is_relative_to(self.root) or not target.is_relative_to(job) or target.suffix.lower() not in allowed or not target.is_file():
                 return self.json({'error':'Artifact not found'},404,head)
             kind=mimetypes.guess_type(target.name)[0] or 'application/octet-stream'

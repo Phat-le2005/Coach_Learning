@@ -148,6 +148,10 @@ def test_monitor_serves_results_and_rejects_writes_and_escape_paths(monitor):
         link = jobs[0]['result']['jsonl']
     with request(link) as r: assert r.read() == b'{}\n'
     with request('/artifacts/' + job.name + '/final.html') as r: assert r.status == 200
+    (job / 'collection.pdf').write_bytes(b'%PDF-1.7\n')
+    with request('/artifacts/' + job.name + '/collection.pdf') as r:
+        assert r.read() == b'%PDF-1.7\n'
+        assert r.headers['Content-Type'] == 'application/pdf'
     for path, kwargs, expected in [
         ('/api/jobs', {'method': 'POST', 'data': b'{}'}, 405),
         ('/api/jobs', {'headers': {'Host': 'evil.example'}}, 403),
@@ -165,3 +169,27 @@ def test_resource_view_does_not_load_inference_models(monitor):
     with request('/api/jobs') as r: resources = json.load(r)['resources']
     assert resources['available'] and resources['process_count'] == 0
     assert not resources['model_loaded'] and resources['ram_mb'] == 0
+
+
+def test_queue_evaluation_route_stays_inside_queue_storage(monitor):
+    root, request = monitor
+    queue = root.parent / 'pdf-queues' / ('b' * 24)
+    save(queue / 'queue.json', {'queue_id': queue.name, 'status': 'COMPLETED', 'counts': {'COMPLETED': 1}, 'items': [{}]})
+    (queue / 'evaluation.html').write_text('<h1>Evaluation</h1>', encoding='utf-8')
+    save(queue.parent / 'latest.json', {'queue': str(queue / 'queue.json')})
+    with request('/api/jobs') as r: link = json.load(r)['queue']['review']
+    with request(link) as r: assert b'Evaluation' in r.read()
+    with pytest.raises(HTTPError) as error: request('/queue/' + queue.name + '/%2e%2e/secret.json')
+    assert error.value.code == 403
+    save(queue.parent / 'latest.json', {'queue': str(root.parent / 'private.json')})
+    with request('/api/jobs') as r: assert json.load(r)['queue'] is None
+
+
+def test_image_worker_is_measured_without_exposing_its_owner_fields(monitor):
+    from pdfmeta.progress import owner
+    root, request = monitor; job = stored_job(root)
+    save(job / 'readiness-status.json', {'status': 'RUNNING', 'owner': owner(), 'done': 1, 'total': 2})
+    with request('/api/jobs') as r: result = json.load(r)
+    assert result['jobs'][0]['readiness']['done'] == 1
+    assert '_post_owner' not in result['jobs'][0]
+    assert result['resources']['process_count'] == 1

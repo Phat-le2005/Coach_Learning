@@ -5,6 +5,8 @@ param(
     [ValidateRange(0,100000)][int]$ReviewLimit=0,
     [switch]$Open,
     [switch]$NoProgress,
+    [ValidateRange(0,100000)][int]$VisualLimit=12,
+    [switch]$SkipImageCheck,
     [ValidateRange(1024,65525)][int]$ProgressPort=8789
 )
 $ErrorActionPreference='Stop'
@@ -78,6 +80,12 @@ if (-not $SkipQwen) {
     if ($LASTEXITCODE) { throw 'Final artifact generation failed.' }
 }
 $review=Join-Path $documentJob 'final.html'
+if ($SkipImageCheck) {
+    & $python -B -u -m pdfmeta.readiness export --job $documentJob
+} else {
+    & $python -B -u -m pdfmeta.readiness all --job $documentJob --runtime $runtime --limit $VisualLimit
+}
+if ($LASTEXITCODE) { throw 'Image/core checks stopped. The final draft remains available; rerun to resume.' }
 Write-Host "Review: $review"
 if ($dashboardUrl) { Write-Host "Progress: $dashboardUrl" }
 if ($Open -and -not $dashboardUrl) { Invoke-Item -LiteralPath $review }
