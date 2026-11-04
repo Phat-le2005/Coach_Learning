@@ -379,6 +379,11 @@ def score_line_heading(
             # Must not be multiple '=' without formula structure like 'x = a x = b'
             if txt.count("=") > 1 and not any(f in txt for f in ("lim", "int", "∫", "sin", "cos", "tan", "ln", "log", "e^")):
                 return None
+            # Reject broken formula fragments with empty parentheses or detached primes (e.g. "' tan ' cos = u")
+            if re.search(r"\(\s*\)", txt) or re.match(r"^['\"`]", txt) or re.search(r"['\"`]\s*=", txt) or re.search(r"=\s*['\"`]", txt):
+                return None
+            if "tan" in txt and "cos" in txt and "'" in txt and "(" not in txt:
+                return None
             lhs, _, rhs = txt.partition("=")
             lhs_s, rhs_s = lhs.strip(), rhs.strip()
             # Must look like a real mathematical identity (few words, math operators)

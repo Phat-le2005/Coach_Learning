@@ -139,6 +139,29 @@ def _page_blocks(page, page_number: int) -> list[dict]:
             if not 48 <= top <= height - 52:
                 continue
             anchors.append((top, title, kind))
+        # Detect multiline chapter headings (e.g. "CHƯƠNG\n4\nCÔNG THỨC NGUYÊN HÀM")
+        page_lines = [_clean_line(r) for r in text.splitlines() if _clean_line(r)]
+        for i, l in enumerate(page_lines):
+            if _CHAPTER_SOLO.fullmatch(l) and i + 2 < len(page_lines):
+                num_line = page_lines[i + 1]
+                title_line = page_lines[i + 2]
+                if _CHAPTER_NUMBER_SOLO.fullmatch(num_line) and _is_uppercase_vietnamese_heading(title_line):
+                    name = _dedup_repeated_banner(title_line)
+                    if i + 3 < len(page_lines) and _is_uppercase_vietnamese_heading(page_lines[i + 3]):
+                        extra = _dedup_repeated_banner(page_lines[i + 3])
+                        if extra != name:
+                            name = f"{name} - {extra}"
+                    chap_full_title = f"Chương {num_line} · {name}"
+                    pos = text.find(l)
+                    top_y = 60.0
+                    if pos >= 0:
+                        try:
+                            top_y = height - textpage.get_charbox(pos)[3]
+                        except Exception:
+                            pass
+                    anchors.append((top_y, chap_full_title, "CHAPTER"))
+                    break
+
         anchors.sort(key=lambda entry: entry[0])
         # PDF text-stream order need not match vertical reading order.
         distinct: list[tuple[float, str, str]] = []
@@ -308,13 +331,13 @@ def notebook_index(content: bytes, page_texts: list[str]) -> dict:
         if new_theory:
             theory_chapter += 1
         is_boundary = (
-            block["kind"] == "METHOD"
-            or (not has_methods and block["kind"] == "TOPIC")
+            block["kind"] in ("METHOD", "CHAPTER")
+            or (not has_methods and block["kind"] in ("TOPIC", "CHAPTER"))
             or new_theory
             or current is None
         )
         if is_boundary:
-            sec_title = block["title"] if block["kind"] in ("METHOD", "TOPIC") else "Lý thuyết và ghi nhớ"
+            sec_title = block["title"] if block["kind"] in ("METHOD", "TOPIC", "CHAPTER") else "Lý thuyết và ghi nhớ"
             current = {"id": f"section-{len(sections) + 1}",
                        "title": sec_title,
                        "chapter_number": theory_chapter if new_theory else None,
@@ -369,18 +392,31 @@ def notebook_image(content: bytes, page_number: int, ordinal: int) -> bytes:
                 raise ApplicationError(404, "NOTEBOOK_BLOCK_NOT_FOUND", "Notebook page was not found.")
             page = document[page_number - 1]
             try:
-                blocks = _page_blocks(page, page_number)
-                if not 0 <= ordinal < len(blocks):
-                    raise ApplicationError(404, "NOTEBOOK_BLOCK_NOT_FOUND", "Notebook card was not found.")
-                block = blocks[ordinal]
+                block = None
+                with _CACHE_LOCK:
+                    cached_nb = _NOTEBOOK_INDEX_CACHE.get(digest)
+                if cached_nb:
+                    for sec in cached_nb.get("sections", []):
+                        for b in sec.get("blocks", []):
+                            if b.get("page") == page_number and b.get("ordinal") == ordinal:
+                                block = b
+                                break
+                        if block:
+                            break
+                if block is None:
+                    blocks = _page_blocks(page, page_number)
+                    if 0 <= ordinal < len(blocks):
+                        block = blocks[ordinal]
+                    else:
+                        block = {"top": 50.0, "bottom": page.get_height() - 48.0}
                 page_width = max(1.0, page.get_width())
                 page_height = max(1.0, page.get_height())
                 scale = min(1.8, 1800 / page_width, 2200 / page_height)
                 image = page.render(scale=scale, optimize_mode="lcd").to_pil().convert("RGB")
-                left = max(0, round(20 * scale))
-                right = min(image.width, round((page_width - 20) * scale))
-                upper = max(0, min(image.height - 10, round(block["top"] * scale)))
-                lower = max(upper + 10, min(image.height, round(block["bottom"] * scale)))
+                left = max(0, round(15 * scale))
+                right = min(image.width, round((page_width - 15) * scale))
+                upper = max(0, min(image.height - 10, round((block["top"] - 8.0) * scale)))
+                lower = max(upper + 10, min(image.height, round((block["bottom"] + 4.0) * scale)))
                 region = image.crop((left, upper, right, lower))
                 output = BytesIO()
                 region.save(output, format="PNG")

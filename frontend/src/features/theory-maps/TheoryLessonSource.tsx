@@ -40,10 +40,37 @@ export function TheoryLessonSource({ node, sourceUrl }: {
     <button type="button" className={styles.drawerSecondaryActionBtn} onClick={() => setRetry((value) => value + 1)}>Thử tải lại</button>
   </div>;
   if (!book) return <p role="status">Đang mở nội dung và công thức từ tài liệu gốc…</p>;
-  if (regions.length === 0) return <div className={styles.lessonSource}>
-    <p>Chưa tách được riêng mục này. Trang nguồn được hiển thị bên dưới để em đọc đầy đủ.</p>
-    <TheorySourceViewer url={sourceUrl} title={node.title} pageCount={book.page_count} page={node.source_page} />
-  </div>;
+  if (regions.length === 0) {
+    const fallbackBlock = book.sections.flatMap((s) => s.blocks).find((b) => b.page === node.source_page);
+    if (fallbackBlock && role && documentId) {
+      const blockUrl = `/api/${role}/theory/${documentId}/notebook/blocks/${fallbackBlock.page}/${fallbackBlock.ordinal}`;
+      return (
+        <section className={styles.lessonSource} aria-label="Nội dung bài học từ PDF">
+          <div className={styles.lessonSourceHeading}>
+            <strong>Nội dung từ tài liệu gốc (Trang {node.source_page})</strong>
+            <span>Giữ nguyên công thức, bảng và hình</span>
+          </div>
+          <article className={styles.lessonSourceBlock}>
+            <div className={styles.lessonSourceBlockHeader}>
+              <span>Trang {fallbackBlock.page} · {fallbackBlock.title}</span>
+            </div>
+            <img
+              src={blockUrl}
+              alt={fallbackBlock.title}
+              style={{ width: "100%", height: "auto", display: "block", borderRadius: "4px" }}
+              loading="lazy"
+            />
+          </article>
+        </section>
+      );
+    }
+    return (
+      <div className={styles.lessonSource}>
+        <p>Chưa tách được riêng mục này. Trang nguồn được hiển thị bên dưới để em đọc đầy đủ.</p>
+        <TheorySourceViewer url={sourceUrl} title={node.title} pageCount={book.page_count} page={node.source_page} />
+      </div>
+    );
+  }
 
   return <section className={styles.lessonSource} aria-label="Nội dung bài học từ PDF">
     <div className={styles.lessonSourceHeading}>

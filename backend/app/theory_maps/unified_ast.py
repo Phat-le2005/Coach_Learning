@@ -29,6 +29,7 @@ from app.theory_maps.layout_engine import (
     is_reliable_text,
 )
 from app.theory_maps.schemas import NodeKind, TheoryLearningStep, TheoryNode
+from app.theory_maps.visual_layout import detect_document_visual_blocks, is_in_table_region
 
 logger = logging.getLogger(__name__)
 
@@ -128,6 +129,9 @@ def build_unified_ast(
             except Exception:
                 pass
 
+    # Detect visual layout (tables, figures, banners)
+    doc_visual_blocks = detect_document_visual_blocks(content) if content else {}
+
     # Score headings across all pages
     scored_by_page: list[list[ScoredHeading]] = []
     for pno, lines in enumerate(all_page_lines, 1):
@@ -141,6 +145,9 @@ def build_unified_ast(
             if heights:
                 median_h = heights[len(heights) // 2]
         for idx, line in enumerate(lines):
+            # Suppress lines located within detected 2D table boxes to avoid splitting formulas
+            if is_in_table_region(pno, line.top, line.bottom, doc_visual_blocks):
+                continue
             sh = score_line_heading(line, lines, idx, median_h)
             if sh:
                 page_scored.append(sh)
@@ -337,6 +344,29 @@ def build_unified_ast(
             blocks=page_blocks,
         )
         active_chap.topics.append(top_node)
+
+    # Ensure every chapter has at least one topic representing its cover page
+    for ch in ast.chapters:
+        if not any(t.source_page == ch.source_page for t in ch.topics):
+            ch.topics.insert(0, TopicNode(
+                id=f"topic-ch{ch.number}-cover",
+                title=ch.title,
+                source_page=ch.source_page,
+                source_quote=ch.source_quote,
+                kind="THEORY",
+                blocks=[
+                    ContentBlock(
+                        id=f"p{ch.source_page}-b0",
+                        page=ch.source_page,
+                        ordinal=0,
+                        title=ch.title,
+                        source_quote=ch.source_quote,
+                        kind="THEORY",
+                        top=50.0,
+                        bottom=780.0,
+                    )
+                ],
+            ))
 
     # Sort topics chronologically by source_page within every chapter using numeric id order
     for ch in ast.chapters:
@@ -587,18 +617,26 @@ def export_mindmap_nodes(
         return nid
 
     for ch in ast.chapters:
+        ch_b_id = f"p{ch.source_page}-b0"
         ch_id = add_node(
             kind=NodeKind.SECTION,
             title=ch.title,
             page=ch.source_page,
             default_parent="n0",
             quote=ch.source_quote,
+            block_id=ch_b_id,
+            top=50.0,
+            bottom=780.0,
         )
         numbered_stack.clear()
         current_roman_sec_id = ch_id
         for top in ch.topics:
             m_roman = _ROMAN_SEC_PREFIX.match(top.title)
             m_num = _NUMBERED_PREFIX.match(top.title)
+            top_first_b = top.blocks[0] if top.blocks else None
+            top_b_id = top_first_b.id if top_first_b else f"p{top.source_page}-b0"
+            top_top = top_first_b.top if top_first_b else 50.0
+            top_bot = top_first_b.bottom if top_first_b else 780.0
 
             if m_roman:
                 top_kind = NodeKind.SECTION
@@ -608,6 +646,9 @@ def export_mindmap_nodes(
                     page=top.source_page,
                     default_parent=ch_id,
                     quote=top.source_quote,
+                    block_id=top_b_id,
+                    top=top_top,
+                    bottom=top_bot,
                 )
                 current_roman_sec_id = top_id
                 numbered_stack.clear()
@@ -624,6 +665,9 @@ def export_mindmap_nodes(
                     page=top.source_page,
                     default_parent=current_roman_sec_id,
                     quote=top.source_quote,
+                    block_id=top_b_id,
+                    top=top_top,
+                    bottom=top_bot,
                 )
             # Group multi-step procedures (Bước 1, Bước 2, Bước 3...) into a single METHOD node
             step_blocks = [
