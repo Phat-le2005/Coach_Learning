@@ -934,7 +934,9 @@
           "CONCEPT",
           "FORMULA",
           "EXAMPLE",
-          "NOTE"
+          "NOTE",
+          "METHOD",
+          "QUICK_TRICK"
         ],
         "title": "NodeKind",
         "type": "string"
@@ -2438,11 +2440,36 @@
       "TheoryNode": {
         "additionalProperties": false,
         "properties": {
+          "block_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Block Id"
+          },
           "body": {
             "default": "",
             "maxLength": 2000,
             "title": "Body",
             "type": "string"
+          },
+          "bounding_box": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "number"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bounding Box"
           },
           "id": {
             "maxLength": 40,
@@ -2473,6 +2500,17 @@
             "maxItems": 12,
             "title": "Learning Steps",
             "type": "array"
+          },
+          "origin": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Origin"
           },
           "parent_id": {
             "anyOf": [

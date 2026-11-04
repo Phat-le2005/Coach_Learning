@@ -28,6 +28,8 @@ function getKindBadgeClass(kind: NodeKind): string {
     case "EXAMPLE": return styles.kindBadgeExample;
     case "NOTE": return styles.kindBadgeNote;
     case "CONCEPT": return styles.kindBadgeConcept;
+    case "METHOD": return styles.kindBadgeConcept;
+    case "QUICK_TRICK": return styles.kindBadgeFormula;
     default: return styles.kindBadgeDefault;
   }
 }
@@ -40,6 +42,9 @@ function getKindLabel(kind: NodeKind): string {
     case "FORMULA": return "Công thức KaTeX";
     case "EXAMPLE": return "Dạng bài & Ví dụ";
     case "NOTE": return "Lưu ý & Bẫy lỗi";
+    case "METHOD": return "Dạng toán & Phương pháp";
+    case "QUICK_TRICK": return "Mẹo giải nhanh";
+    default: return "Mục kiến thức";
   }
 }
 
@@ -66,6 +71,7 @@ export function TeacherTheoryClient({
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [isBranchEditorCollapsed, setIsBranchEditorCollapsed] = useState(true);
   const [docViewMode, setDocViewMode] = useState<"map" | "notebook">("map");
+  const [notebookPage, setNotebookPage] = useState<number | undefined>(undefined);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
@@ -472,6 +478,14 @@ export function TeacherTheoryClient({
                       )}
                       <span className={styles.badgeMuted}>{nodes.length} nhánh tri thức</span>
                       <span className={styles.badgeMuted}>{map.page_count} trang PDF</span>
+                      {map.extraction_warning_pages && map.extraction_warning_pages.length > 0 && (
+                        <span
+                          className={styles.badgeWarning}
+                          title={`Các trang có font/ký hiệu toán học cần kiểm tra mắt: trang ${map.extraction_warning_pages.join(", ")}`}
+                        >
+                          ⚠️ {map.extraction_warning_pages.length} trang có font toán cần đối chiếu
+                        </span>
+                      )}
                       {map.source_available ? (
                         <span className={styles.badgeInfo}>📄 PDF: Đang chia sẻ</span>
                       ) : (
@@ -603,6 +617,7 @@ export function TeacherTheoryClient({
                   <TheoryNotebookView
                     documentId={map.id}
                     role="teacher"
+                    initialPage={notebookPage}
                   />
                 ) : nodes.length === 0 ? (
                   <div className={styles.emptyStateCard}>
@@ -662,6 +677,10 @@ export function TeacherTheoryClient({
                       }}
                       onDeleteNode={(id) => {
                         removeNode(id);
+                      }}
+                      onOpenNotebook={(page) => {
+                        setNotebookPage(page);
+                        setDocViewMode("notebook");
                       }}
                       isTeacher={true}
                     />

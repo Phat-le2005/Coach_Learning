@@ -84,3 +84,46 @@ test("organizeTheoryNotebook preserves standalone or orphan nodes without data l
   const allTopicConcepts = sections.flatMap((s) => s.topics.map((t) => t.concept.id));
   assert.ok(allTopicConcepts.includes("orphan1"));
 });
+
+test("organizeTheoryNotebook resolves nested dạng bài under intermediate section containers", () => {
+  const nodes: TheoryNode[] = [
+    makeNode("root", null, "ROOT", "Chuyên đề"),
+    makeNode("sec2", "root", "SECTION", "Chủ đề 02. Cực trị hàm số"),
+    makeNode("sec2_theory", "sec2", "SECTION", "A. LÝ THUYẾT CHUNG."),
+    makeNode("th1", "sec2_theory", "SECTION", "Định nghĩa 01."),
+    makeNode("sec2_exercises", "sec2", "SECTION", "B. CÁC DẠNG BÀI TẬP."),
+    makeNode("d29", "sec2_exercises", "SECTION", "Dạng 2.9. Cực trị hàm hợp y=f(u(x))."),
+  ];
+
+  const { sections } = organizeTheoryNotebook(nodes);
+  assert.equal(sections.length, 1);
+  assert.equal(sections[0].section.title, "Chủ đề 02. Cực trị hàm số");
+  assert.equal(sections[0].topics.length, 1);
+  assert.equal(sections[0].topics[0].concept.title, "Dạng 2.9. Cực trị hàm hợp y=f(u(x)).");
+  assert.equal(sections[0].standaloneItems.length, 1);
+  assert.equal(sections[0].standaloneItems[0].title, "Định nghĩa 01.");
+});
+
+test("parseNotebook safely accepts TOPIC and SECTION blocks from unified AST", () => {
+  const { parseNotebook } = require("../src/features/theory-maps/api.js");
+  const payload = {
+    total_blocks: 2,
+    page_count: 5,
+    sections: [
+      {
+        id: "sec1",
+        title: "I. BẢNG ĐẠO HÀM",
+        chapter_number: 1,
+        chapter_title: "Chương 1",
+        blocks: [
+          { id: "b1", page: 1, ordinal: 0, kind: "TOPIC", title: "Bảng đạo hàm" },
+          { id: "b2", page: 2, ordinal: 1, kind: "SECTION", title: "Định lý 01" },
+        ],
+      },
+    ],
+  };
+  const parsed = parseNotebook(payload);
+  assert.equal(parsed.total_blocks, 2);
+  assert.equal(parsed.sections[0].blocks[0].kind, "TOPIC");
+  assert.equal(parsed.sections[0].blocks[1].kind, "SECTION");
+});

@@ -1,7 +1,7 @@
 import { getCsrfToken, refreshBrowserSession } from "../../lib/auth/browser";
 import { array, boolean, integer, record, string } from "../../lib/api/validation";
 
-export type NodeKind = "ROOT" | "SECTION" | "CONCEPT" | "FORMULA" | "EXAMPLE" | "NOTE";
+export type NodeKind = "ROOT" | "SECTION" | "CONCEPT" | "FORMULA" | "EXAMPLE" | "NOTE" | "METHOD" | "QUICK_TRICK";
 export interface TheoryLearningStep {
   instruction: string; latex: string | null; source_page: number | null; source_quote: string | null;
 }
@@ -9,6 +9,9 @@ export interface TheoryNode {
   id: string; parent_id: string | null; kind: NodeKind; title: string; body: string;
   latex: string | null; learning_steps: TheoryLearningStep[];
   source_page: number; source_quote: string; reviewed: boolean;
+  block_id?: string | null;
+  bounding_box?: { top: number; bottom: number } | null;
+  origin?: string | null;
 }
 export interface TheorySummary {
   id: string; classroom_id: string; subject_id: string; title: string; file_name: string;
@@ -36,7 +39,7 @@ export function parseSummary(value: unknown, path = "map"): TheorySummary {
 function parseNode(value: unknown, path: string): TheoryNode {
   const x = record(value, path);
   const kind = string(x.kind, `${path}.kind`);
-  if (!["ROOT", "SECTION", "CONCEPT", "FORMULA", "EXAMPLE", "NOTE"].includes(kind)) throw new Error("Loại nút không hợp lệ.");
+  if (!["ROOT", "SECTION", "CONCEPT", "FORMULA", "EXAMPLE", "NOTE", "METHOD", "QUICK_TRICK"].includes(kind)) throw new Error("Loại nút không hợp lệ.");
   return {
     id: string(x.id, `${path}.id`), parent_id: x.parent_id === null ? null : string(x.parent_id, `${path}.parent_id`),
     kind: kind as NodeKind, title: string(x.title, `${path}.title`), body: string(x.body, `${path}.body`),
@@ -50,6 +53,9 @@ function parseNode(value: unknown, path: string): TheoryNode {
     }),
     source_page: integer(x.source_page, `${path}.source_page`),
     source_quote: string(x.source_quote, `${path}.source_quote`), reviewed: boolean(x.reviewed, `${path}.reviewed`),
+    block_id: typeof x.block_id === "string" ? x.block_id : null,
+    bounding_box: x.bounding_box && typeof x.bounding_box === "object" ? (x.bounding_box as { top: number; bottom: number }) : null,
+    origin: typeof x.origin === "string" ? x.origin : null,
   };
 }
 export function parseMap(value: unknown): TheoryMap {
@@ -67,8 +73,10 @@ export function parseMap(value: unknown): TheoryMap {
 
 export interface NotebookBlock {
   id: string; page: number; ordinal: number;
-  kind: "METHOD" | "STEP" | "THEORY" | "NOTE" | "EXAMPLE" | "CONTINUATION";
+  kind: "METHOD" | "STEP" | "THEORY" | "NOTE" | "EXAMPLE" | "CONTINUATION" | "TOPIC" | "SECTION" | "FORMULA" | "CONCEPT" | "CHAPTER" | string;
   title: string;
+  top?: number;
+  bottom?: number;
 }
 export interface NotebookSection {
   id: string; title: string; chapter_number: number | null; chapter_title: string;
@@ -79,14 +87,13 @@ export interface TheoryNotebook {
 }
 export function parseNotebook(value: unknown): TheoryNotebook {
   const x = record(value, "notebook");
+  const knownKinds = new Set(["METHOD", "STEP", "THEORY", "NOTE", "EXAMPLE", "CONTINUATION", "TOPIC", "SECTION", "FORMULA", "CONCEPT", "CHAPTER"]);
   const sections = array(x.sections, "notebook.sections", (item, path) => {
     const section = record(item, path);
     const blocks = array(section.blocks, path + ".blocks", (part, partPath) => {
       const block = record(part, partPath);
-      const kind = string(block.kind, partPath + ".kind");
-      if (!["METHOD", "STEP", "THEORY", "NOTE", "EXAMPLE", "CONTINUATION"].includes(kind)) {
-        throw new Error("Loại thẻ sổ học không hợp lệ.");
-      }
+      const rawKind = string(block.kind, partPath + ".kind");
+      const kind = knownKinds.has(rawKind.toUpperCase()) ? rawKind.toUpperCase() : "THEORY";
       return { id: string(block.id, partPath + ".id"),
         page: integer(block.page, partPath + ".page"),
         ordinal: integer(block.ordinal, partPath + ".ordinal"),

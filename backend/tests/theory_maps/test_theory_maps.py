@@ -610,3 +610,126 @@ def test_delete_theory_document(domain):
     assert service.session.get(TheoryDocument, row.id) is None
     with pytest.raises(OSError):
         service.storage.read(row.storage_key)
+
+
+def test_source_heading_match_rejects_wrong_first_card_and_preserves_number():
+    from app.theory_maps.notebook import find_heading_block
+    blocks = [
+        {"page": 4, "title": "Nhận xét 01", "id": "p4-b0"},
+        {"page": 4, "title": "Định lý. 01", "id": "p4-b1"},
+    ]
+    assert find_heading_block(blocks, 4, "Nhận xét 02") is None
+    assert find_heading_block(blocks, 8, "Nhận xét 01") is None
+    assert find_heading_block(blocks, 4, "Định lý 1.")["id"] == "p4-b1"
+
+
+def test_notebook_regions_follow_vertical_order_without_overlapping_next_heading():
+    from app.theory_maps.notebook import notebook_index
+    writer = PdfWriter()
+    font = writer._add_object(DictionaryObject({
+        NameObject("/Type"): NameObject("/Font"), NameObject("/Subtype"): NameObject("/Type1"),
+        NameObject("/BaseFont"): NameObject("/Helvetica"),
+    }))
+    page = writer.add_blank_page(width=612, height=792)
+    page[NameObject("/Resources")] = DictionaryObject({NameObject("/Font"): DictionaryObject({NameObject("/F1"): font})})
+    stream = DecodedStreamObject()
+    # Text objects are intentionally stored bottom-first, as in real PDFs.
+    stream.set_data(b"BT /F1 14 Tf 50 400 Td (Example 2.) Tj ET\n"
+                    b"BT /F1 14 Tf 50 650 Td (Definition 1.) Tj ET\n")
+    page[NameObject("/Contents")] = writer._add_object(stream)
+    output = BytesIO(); writer.write(output)
+    book = notebook_index(output.getvalue(), ["Definition 1.\nExample 2."])
+    blocks = [b for section in book["sections"] for b in section["blocks"]]
+    assert [b["title"] for b in blocks] == ["Definition 1", "Example 2"]
+    assert blocks[0]["bottom"] <= blocks[1]["top"]
+
+
+def test_full_page_coverage_in_prompt_without_dropping_pages():
+    from app.theory_maps.ai_generator import build_ai_mindmap_prompt
+    pages = [f"Chương 1. Bài học trang {i}\nNội dung chi tiết trang {i}." for i in range(1, 65)]
+    prompt = build_ai_mindmap_prompt("Toán 12", pages)
+    for i in range(1, 65):
+        assert f"--- [TRANG {i}/64] ---" in prompt
+
+
+def test_analyze_page_statuses():
+    from app.theory_maps.pdf_extraction import analyze_page_statuses
+    pages = [
+        "Trang sạch bình thường",
+        "Trang có ký tự đặc biệt \ue001 \ue002 \ue003 \ue004 \ue005 \ue006 \ue007 \ue008",
+        "   \n\t  ",
+    ]
+    statuses = analyze_page_statuses(pages)
+    assert statuses[0]["status"] == "PROCESSED_NATIVE"
+    assert statuses[1]["status"] == "HAS_PUA_MATH"
+    assert statuses[2]["status"] == "EMPTY"
+
+
+def test_local_draft_lineage_and_notebook_correlation():
+    from app.theory_maps.local_draft import build_local_draft
+    pages = ["Chủ đề 01 · Đơn điệu hàm số\nDạng 1.1 Tìm khoảng đơn điệu\nBước 1: Tính đạo hàm."]
+    draft = build_local_draft("Đơn điệu", pages)
+    assert len(draft) >= 2
+    assert draft[0].origin == "SOURCE_EXTRACTION"
+    assert draft[1].origin == "SOURCE_EXTRACTION"
+
+
+def test_pedagogical_enricher_does_not_hallucinate_fake_data():
+    from app.theory_maps.pedagogical_enricher import enrich_mindmap
+    from app.theory_maps.schemas import NodeKind, TheoryNode
+    node = TheoryNode(
+        id="n1",
+        parent_id=None,
+        kind=NodeKind.CONCEPT,
+        title="Dạng 99.9 Dạng không có trong sgk",
+        source_page=1,
+        source_quote="Dạng 99.9 Dạng không có trong sgk",
+    )
+    result = enrich_mindmap([node], ["Dạng 99.9 Dạng không có trong sgk"])
+    assert len(result) == 1
+    assert result[0].id == "n1"
+
+
+def test_unified_ast_formula_tables_satisfy_validation():
+    from app.theory_maps.unified_ast import build_unified_ast, export_mindmap_nodes
+    from app.theory_maps.service import validate_nodes
+    pages = [
+        "CHƯƠNG 1. NGUYÊN HÀM\nI. ĐỊNH NGHĨA\nNguyên hàm của hàm số f(x)...",
+        "∫ f(x)dx = F(x) + C\nBảng nguyên hàm hàm số cơ bản\n∫ x^n dx = ...",
+        "Bảng nguyên hàm hàm hợp u(x)\n∫ u'(x)f(u) dx = ...",
+    ]
+    ast = build_unified_ast("Nguyên hàm", pages)
+    nodes = export_mindmap_nodes(ast, pages)
+    validate_nodes(nodes, pages)
+    formula_nodes = [n for n in nodes if n.kind == "FORMULA"]
+    for fn in formula_nodes:
+        assert (fn.latex or "").strip()
+
+
+def test_unified_ast_groups_multi_step_procedures_into_single_method_node():
+    from app.theory_maps.unified_ast import build_unified_ast, export_mindmap_nodes
+    from app.theory_maps.service import validate_nodes
+    page = (
+        "CHƯƠNG 1. HÀM SỐ\n"
+        "II. SƠ ĐỒ KHẢO SÁT VÀ VẼ ĐỒ THỊ\n"
+        "Bước 1: Tìm tập xác định của hàm số\n"
+        "Bước 2: Xét sự biến thiên của hàm số\n"
+        "Bước 3: Vẽ đồ thị hàm số\n"
+    )
+    ast = build_unified_ast("Hàm số", [page])
+    nodes = export_mindmap_nodes(ast, [page])
+    validate_nodes(nodes, [page])
+
+    # Must NOT have separate nodes for Bước 1, Bước 2, Bước 3
+    step_titles = [n.title for n in nodes if n.title.startswith(("Bước 1", "Bước 2", "Bước 3"))]
+    assert step_titles == []
+
+    # Must have exactly 1 METHOD node grouping the steps
+    method_nodes = [n for n in nodes if n.kind == "METHOD"]
+    assert len(method_nodes) == 1
+    proc_node = method_nodes[0]
+    assert "Quy trình" in proc_node.title
+    assert len(proc_node.learning_steps) == 3
+    assert proc_node.learning_steps[0].instruction == "Tìm tập xác định của hàm số"
+    assert proc_node.learning_steps[1].instruction == "Xét sự biến thiên của hàm số"
+    assert proc_node.learning_steps[2].instruction == "Vẽ đồ thị hàm số"

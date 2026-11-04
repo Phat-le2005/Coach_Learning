@@ -38,3 +38,7 @@ backend/var/
 *.sqlite3
 *.zip
 *.backend-draft.json
+artifacts/
+*.png
+*.jpg
+*.jpeg

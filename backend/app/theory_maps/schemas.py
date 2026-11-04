@@ -13,6 +13,8 @@ class NodeKind(StrEnum):
     FORMULA = "FORMULA"
     EXAMPLE = "EXAMPLE"
     NOTE = "NOTE"
+    METHOD = "METHOD"
+    QUICK_TRICK = "QUICK_TRICK"
 
 
 class TheoryLearningStep(BaseModel):
@@ -35,6 +37,9 @@ class TheoryNode(BaseModel):
     source_page: int = Field(ge=1)
     source_quote: str = Field(min_length=1, max_length=500)
     reviewed: bool = False
+    block_id: str | None = None
+    bounding_box: dict[str, float] | None = None
+    origin: str | None = None
 
 
 class TheoryMapWrite(BaseModel):

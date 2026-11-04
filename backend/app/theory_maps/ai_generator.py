@@ -198,45 +198,21 @@ def extract_table_of_contents_text(page_texts: list[str]) -> str:
     return ""
 
 
-async def generate_ai_mindmap(
-    title: str,
-    page_texts: list[str],
-    gateway: AIGateway,
-    user_id: Any = None,
-) -> list[TheoryNode]:
-    """Call Gemini through AIGateway to synthesize a full TheoryNode mind map."""
+def build_ai_mindmap_prompt(title: str, page_texts: list[str]) -> str:
+    """Build a comprehensive, source-faithful prompt covering all pages without skipping."""
     total_pages = len(page_texts)
-
-    # Extract Table of Contents if available in early pages
     toc_text = extract_table_of_contents_text(page_texts)
 
-    # Comprehensive sampling across the document up to 65,000 chars (~15k tokens)
     sampled_pages: list[str] = []
-    current_length = 0
     max_budget = 65000
+    per_page_budget = max(500, max_budget // max(1, total_pages))
 
-    # Ensure early overview and TOC pages are included
-    early_indices = list(range(min(5, total_pages)))
-
-    # Step through remaining pages to cover all chapters evenly
-    step = max(1, total_pages // 25)
-    remaining_indices = list(range(5, total_pages, step))
-    if total_pages > 0 and (total_pages - 1) not in remaining_indices:
-        remaining_indices.append(total_pages - 1)
-
-    selected_indices = sorted(list(set(early_indices + remaining_indices)))
-
-    for idx in selected_indices:
-        if idx >= total_pages:
-            continue
+    for idx in range(total_pages):
         clean_text = _clean_pua(page_texts[idx])
         if not clean_text:
             continue
-        entry = f"--- [TRANG {idx + 1}/{total_pages}] ---\n{clean_text[:2000]}"
-        if current_length + len(entry) > max_budget:
-            break
+        entry = f"--- [TRANG {idx + 1}/{total_pages}] ---\n{clean_text[:per_page_budget]}"
         sampled_pages.append(entry)
-        current_length += len(entry)
 
     document_content = "\n\n".join(sampled_pages)
 
@@ -253,13 +229,24 @@ LƯU Ý BẮT BUỘC VỀ SƯ PHẠM:
 3. Dùng các trang tài liệu trích xuất bên dưới để điền: công thức KaTeX, tóm tắt bản chất, các bước giải, và các ví dụ minh họa / lưu ý cho từng dạng bài.
 """
 
-    user_prompt = f"""Tài liệu: {title}
+    return f"""Tài liệu: {title}
 Tổng số trang: {total_pages} trang
 {toc_section}
 Nội dung chi tiết trích xuất từ các trang tài liệu:
 {document_content}
 
 Hãy tạo Sơ đồ tư duy (Mindmap) sư phạm toàn diện cho chuyên đề này theo đúng cấu trúc JSON yêu cầu. Bắt buộc bao quát ĐẦY ĐỦ 100% các Chủ đề và mọi Dạng bài toán trong mục lục!"""
+
+
+async def generate_ai_mindmap(
+    title: str,
+    page_texts: list[str],
+    gateway: AIGateway,
+    user_id: Any = None,
+) -> list[TheoryNode]:
+    """Call Gemini through AIGateway to synthesize a full TheoryNode mind map."""
+    total_pages = len(page_texts)
+    user_prompt = build_ai_mindmap_prompt(title, page_texts)
 
     messages = [
         AIMessage(role=AIRole.SYSTEM, content=SYSTEM_PROMPT),
@@ -346,22 +333,41 @@ Hãy tạo Sơ đồ tư duy (Mindmap) sư phạm toàn diện cho chuyên đề
             raw_latex = node_dict.get("latex")
             node_latex = str(raw_latex).strip()[:1000] if raw_latex else None
 
-            # For node source quote, ensure it exists in page_text so validate_nodes passes
-            raw_quote = str(node_dict.get("source_quote") or node_title).strip()
+            # For node source quote, ensure it actually exists in page_text without fabricating citations
+            raw_quote = str(node_dict.get("source_quote") or "").strip()
+            source_quote = ""
             if raw_quote and " ".join(raw_quote.split()).casefold() in page_norm:
                 source_quote = raw_quote[:500]
+            elif " ".join(node_title.split()).casefold() in page_norm:
+                source_quote = node_title[:250]
             else:
-                # Find best matching phrase from page text
                 lines = [line.strip() for line in page_text.splitlines() if len(line.strip()) >= 4]
                 matching_line = next((l for l in lines if any(w.lower() in l.lower() for w in node_title.split() if len(w) > 3)), None)
                 if matching_line:
                     source_quote = matching_line[:120]
-                elif lines:
-                    source_quote = lines[0][:120]
-                elif page_text.strip():
-                    source_quote = page_text.strip()[:80]
-                else:
-                    source_quote = node_title[:80]
+                elif page_norm:
+                    words = [w for w in raw_quote.split() if len(w) >= 3]
+                    for w in words:
+                        if w.casefold() in page_norm:
+                            for l in lines:
+                                if w.casefold() in l.casefold():
+                                    source_quote = l[:120]
+                                    break
+                            if source_quote:
+                                break
+
+            # If not found on page_num, search other pages for genuine occurrences
+            if not source_quote:
+                for other_idx, other_text in enumerate(page_texts):
+                    other_norm = " ".join(other_text.split()).casefold()
+                    if " ".join(node_title.split()).casefold() in other_norm:
+                        page_num = other_idx + 1
+                        source_quote = node_title[:250]
+                        break
+
+            # If still completely ungrounded, skip hallucinated node
+            if not source_quote:
+                continue
 
             theory_nodes.append(
                 TheoryNode(
@@ -375,11 +381,17 @@ Hãy tạo Sơ đồ tư duy (Mindmap) sư phạm toàn diện cho chuyên đề
                     source_page=page_num,
                     source_quote=source_quote,
                     reviewed=False,  # Draft nodes require teacher academic review before publication
+                    origin="AI_STRUCTURAL",
                 )
             )
 
         # Ensure we have at least one valid root
         if not has_root or not theory_nodes:
+            first_page = page_texts[0] if page_texts else ""
+            lines = [l.strip() for l in first_page.splitlines() if len(l.strip()) >= 3]
+            quote = next((l for l in lines if title.casefold() in l.casefold()), None)
+            if not quote and lines:
+                quote = lines[0]
             root_node = TheoryNode(
                 id="n_root",
                 parent_id=None,
@@ -389,8 +401,9 @@ Hãy tạo Sơ đồ tư duy (Mindmap) sư phạm toàn diện cho chuyên đề
                 latex=None,
                 learning_steps=[],
                 source_page=1,
-                source_quote=title[:100],
-                reviewed=True,
+                source_quote=(quote or title)[:100],
+                reviewed=False,
+                origin="AI_STRUCTURAL",
             )
             for n in theory_nodes:
                 if n.parent_id is None:

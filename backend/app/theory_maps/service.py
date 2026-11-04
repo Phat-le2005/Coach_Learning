@@ -260,15 +260,18 @@ class TheoryMapService:
             raise ApplicationError(409, "MAP_PUBLISHED", "Published maps cannot be regenerated; save a draft first.")
         if row.nodes:
             raise ApplicationError(409, "MAP_ALREADY_HAS_NODES", "Save or remove the existing draft before generating a new one.")
+        content = None
+        try:
+            content = self.storage.read(row.storage_key)
+        except OSError:
+            pass
         if any(not page for page in row.page_texts):
-            try:
-                content = self.storage.read(row.storage_key)
-            except OSError as exc:
-                raise ApplicationError(503, "SOURCE_UNAVAILABLE", "Original PDF is unavailable.") from exc
+            if not content:
+                raise ApplicationError(503, "SOURCE_UNAVAILABLE", "Original PDF is unavailable.")
             if sha256(content).hexdigest() != row.sha256:
                 raise ApplicationError(503, "SOURCE_HASH_MISMATCH", "Original PDF failed integrity check.")
             row.page_texts = extract_page_texts(content)
-        nodes = build_local_draft(row.title, row.page_texts)
+        nodes = build_local_draft(row.title, row.page_texts, content=content)
         validate_nodes(nodes, row.page_texts)
         row.nodes = [node.model_dump(mode="json") for node in nodes]
         row.ai_model = None
@@ -283,26 +286,41 @@ class TheoryMapService:
             raise ApplicationError(409, "MAP_PUBLISHED", "Published maps cannot be regenerated; save a draft first.")
         if row.nodes:
             raise ApplicationError(409, "MAP_ALREADY_HAS_NODES", "Save or remove the existing draft before generating a new one.")
+        content = None
+        try:
+            content = self.storage.read(row.storage_key)
+        except OSError:
+            pass
         if any(not page for page in row.page_texts):
-            try:
-                content = self.storage.read(row.storage_key)
-            except OSError as exc:
-                raise ApplicationError(503, "SOURCE_UNAVAILABLE", "Original PDF is unavailable.") from exc
+            if not content:
+                raise ApplicationError(503, "SOURCE_UNAVAILABLE", "Original PDF is unavailable.")
             if sha256(content).hexdigest() != row.sha256:
                 raise ApplicationError(503, "SOURCE_HASH_MISMATCH", "Original PDF failed integrity check.")
             row.page_texts = extract_page_texts(content)
 
         nodes = None
-        if gateway:
-            try:
-                nodes = await generate_ai_mindmap(row.title, row.page_texts, gateway, user_id=user_id)
-                row.ai_model = "gemini"
-            except Exception as exc:
-                logger.warning("AI mindmap generation failed, falling back to local draft: %s", exc)
-                nodes = None
+        # 1. Build authoritative Unified AST: 100% page coverage, true document taxonomy
+        from app.theory_maps.unified_ast import build_unified_ast, export_mindmap_nodes
+        try:
+            ast = build_unified_ast(row.title, row.page_texts, content=content)
+            nodes = export_mindmap_nodes(ast, row.page_texts)
+        except Exception as exc:
+            logger.warning("Unified AST generation failed, falling back to local draft: %s", exc)
+            nodes = None
 
-        if not nodes:
-            nodes = build_local_draft(row.title, row.page_texts)
+        # 2. If AI gateway is available, enrich the verified AST nodes
+        if gateway and nodes:
+            try:
+                from app.theory_maps.pedagogical_enricher import enrich_mindmap_with_ai
+                nodes = await enrich_mindmap_with_ai(nodes, row.title, row.page_texts, gateway, user_id=user_id)
+                row.ai_model = "gemini_enriched"
+            except Exception as exc:
+                logger.warning("AI pedagogical enrichment failed, keeping AST draft: %s", exc)
+                row.ai_model = "unified_ast"
+        elif nodes:
+            row.ai_model = "unified_ast"
+        else:
+            nodes = build_local_draft(row.title, row.page_texts, content=content)
             row.ai_model = "local_heuristic"
 
         validate_nodes(nodes, row.page_texts)
@@ -318,7 +336,12 @@ class TheoryMapService:
             raise ApplicationError(409, "REVISION_CONFLICT", "The map changed; reload before regenerating.")
         if row.status == TheoryMapStatus.PUBLISHED or any(node.get("reviewed") for node in row.nodes):
             raise ApplicationError(409, "MAP_REVIEWED", "Published or reviewed maps cannot be replaced automatically.")
-        nodes = build_local_draft(row.title, row.page_texts)
+        content = None
+        try:
+            content = self.storage.read(row.storage_key)
+        except OSError:
+            pass
+        nodes = build_local_draft(row.title, row.page_texts, content=content)
         old_nodes = [TheoryNode.model_validate(node) for node in row.nodes]
         # Older generated drafts have no learning steps. A new draft may have
         # source-cited steps, but any teacher change must survive regeneration.
@@ -345,17 +368,35 @@ class TheoryMapService:
         if row.status == TheoryMapStatus.PUBLISHED:
             raise ApplicationError(409, "MAP_PUBLISHED", "Published maps cannot be replaced; unpublish first.")
 
-        nodes = None
-        if gateway:
-            try:
-                nodes = await generate_ai_mindmap(row.title, row.page_texts, gateway, user_id=user_id)
-                row.ai_model = "gemini"
-            except Exception as exc:
-                logger.warning("AI mindmap regeneration failed, falling back to local draft: %s", exc)
-                nodes = None
+        content = None
+        try:
+            content = self.storage.read(row.storage_key)
+        except OSError:
+            pass
 
-        if not nodes:
-            nodes = build_local_draft(row.title, row.page_texts)
+        nodes = None
+        # 1. Build authoritative Unified AST: 100% page coverage, true document taxonomy
+        from app.theory_maps.unified_ast import build_unified_ast, export_mindmap_nodes
+        try:
+            ast = build_unified_ast(row.title, row.page_texts, content=content)
+            nodes = export_mindmap_nodes(ast, row.page_texts)
+        except Exception as exc:
+            logger.warning("Unified AST regeneration failed, falling back to local draft: %s", exc)
+            nodes = None
+
+        # 2. If AI gateway is available, enrich the verified AST nodes
+        if gateway and nodes:
+            try:
+                from app.theory_maps.pedagogical_enricher import enrich_mindmap_with_ai
+                nodes = await enrich_mindmap_with_ai(nodes, row.title, row.page_texts, gateway, user_id=user_id)
+                row.ai_model = "gemini_enriched"
+            except Exception as exc:
+                logger.warning("AI pedagogical enrichment failed, keeping AST draft: %s", exc)
+                row.ai_model = "unified_ast"
+        elif nodes:
+            row.ai_model = "unified_ast"
+        else:
+            nodes = build_local_draft(row.title, row.page_texts, content=content)
             row.ai_model = "local_heuristic"
 
         validate_nodes(nodes, row.page_texts)

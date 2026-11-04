@@ -11,20 +11,40 @@ interface MathRendererProps {
 
 /**
  * Pre-processes and normalizes math formula strings before KaTeX parsing.
- * Handles common issues like unclosed '$', equations starting with '= \frac...', etc.
  */
 function normalizeMathText(text: string): string {
   if (!text) return "";
+  return text;
+}
 
-  let cleaned = text;
+function enhanceTextWithInlineMath(text: string): string {
+  if (!text) return "";
+  let s = text;
+  // Replace x_ngang, y_ngang
+  s = s.replace(/\b([xyz])_ngang\b/gi, (_m, p1) => `$\\bar{${p1}}$`);
+  // Replace B_ngang, A_ngang
+  s = s.replace(/\b([A-Z])_ngang\b/g, (_m, p1) => `$\\overline{${p1}}$`);
+  // Replace x_i, y_i, n_i, x_0, y_0
+  s = s.replace(/\b([xyn])_([ijk0-9])\b/g, (_m, p1, p2) => `$${p1}_{${p2}}$`);
+  // Replace s^2, R^2
+  s = s.replace(/\b([sR])\^2\b/g, (_m, p1) => `$${p1}^2$`);
+  // Replace !=
+  s = s.replace(/\s+!=\s+/g, " $\\neq$ ");
+  return s;
+}
 
-  // Handle common typo where an equation starts with '= \frac' or similar and ends with '$'
-  // e.g. "hàm số = \frac{1}{3}x^3 - x^2 - 3x + 1$." -> "hàm số $y = \frac{1}{3}x^3 - x^2 - 3x + 1$."
-  if (/=\s*\\frac/.test(cleaned) && !cleaned.includes("$=") && !cleaned.includes("$y =")) {
-    cleaned = cleaned.replace(/=\s*\\frac([^$]+)\$/, "$$y = \\frac$1$$");
-  }
-
-  return cleaned;
+function formatPlainText(text: string): string {
+  return text
+    .replace(/\r\n?/g, "\n")
+    .split(/\n{2,}/)
+    .map((paragraph) =>
+      paragraph
+        .replace(/[ \t]*\n[ \t]*/g, " ")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+    )
+    .join("<br/><br/>");
 }
 
 interface Segment {
@@ -169,13 +189,29 @@ function renderKatexSafe(expression: string, isDisplay: boolean): string {
 export function MathRenderer({ content, className = "", inline = false }: MathRendererProps) {
   const renderedHtml = useMemo(() => {
     if (!content) return "";
-
-    // A sentence containing '=' is not a standalone formula. Render whole-input
-    // KaTeX only for compact formula-like values without prose or PDF line breaks.
     const trimmed = content.trim();
+
+    // 1. Check if content is a single wrapped display math expression: $$...$$ or \[...\]
     if (
-      (trimmed.startsWith("\\") || trimmed.includes("=") || trimmed.includes("^") || trimmed.includes("_")) &&
-      trimmed.length <= 200 &&
+      (trimmed.startsWith("$$") && trimmed.endsWith("$$") && trimmed.length >= 4) ||
+      (trimmed.startsWith("\\[") && trimmed.endsWith("\\]") && trimmed.length >= 4)
+    ) {
+      const inner = trimmed.startsWith("$$") ? trimmed.slice(2, -2).trim() : trimmed.slice(2, -2).trim();
+      return renderKatexSafe(inner, true);
+    }
+
+    // 2. Check if content is a single wrapped inline math expression: \(...\) or $...$
+    if (
+      (trimmed.startsWith("\\(") && trimmed.endsWith("\\)") && trimmed.length >= 4) ||
+      (trimmed.startsWith("$") && trimmed.endsWith("$") && trimmed.length >= 2 && !trimmed.slice(1, -1).includes("$"))
+    ) {
+      const inner = trimmed.startsWith("\\(") ? trimmed.slice(2, -2).trim() : trimmed.slice(1, -1).trim();
+      return renderKatexSafe(inner, false);
+    }
+
+    // 3. Pure standalone formula without delimiters (e.g. from node.latex)
+    if (
+      (trimmed.startsWith("\\") || trimmed.includes("=") || trimmed.includes("^") || trimmed.includes("_") || trimmed.includes("\\frac") || trimmed.includes("\\sum")) &&
       !/[\r\n]/.test(trimmed) &&
       !/[\u00c0-\u1ef9]/iu.test(trimmed) &&
       !/\b[A-Za-z]{4,}\s+[A-Za-z]{4,}\b/.test(trimmed) &&
@@ -191,14 +227,18 @@ export function MathRenderer({ content, className = "", inline = false }: MathRe
     return segments
       .map((segment) => {
         if (segment.type === "text") {
-          // PDF text extraction often inserts soft wraps inside one sentence.
-          // Preserve paragraph breaks while joining single source line wraps.
-          return segment.value.replace(/\r\n?/g, "\n").split(/\n{2,}/).map((paragraph) =>
-            paragraph.replace(/[ \t]*\n[ \t]*/g, " ")
-              .replace(/&/g, "&amp;")
-              .replace(/</g, "&lt;")
-              .replace(/>/g, "&gt;"),
-          ).join("<br/><br/>");
+          const enhanced = enhanceTextWithInlineMath(segment.value);
+          if (enhanced.includes("$")) {
+            const subSegments = parseMathSegments(enhanced);
+            return subSegments
+              .map((sub) =>
+                sub.type === "text"
+                  ? formatPlainText(sub.value)
+                  : renderKatexSafe(sub.value, sub.type === "display_math")
+              )
+              .join("");
+          }
+          return formatPlainText(segment.value);
         }
 
         const isDisplay = segment.type === "display_math";

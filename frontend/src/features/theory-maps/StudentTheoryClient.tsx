@@ -13,6 +13,7 @@ export function StudentTheoryClient() {
   const [document, setDocument] = useState<TheoryMap | null>(null);
   const [selectedNodeId, setSelectedNodeId] = useState("");
   const [page, setPage] = useState(1);
+  const [notebookPage, setNotebookPage] = useState<number | undefined>(undefined);
   const [view, setView] = useState<"map" | "notebook" | "source">("map");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -224,6 +225,14 @@ export function StudentTheoryClient() {
                 onSelectNode={setSelectedNodeId}
                 sourceUrl={document.source_available ? `/api/student/theory/${document.id}/source` : undefined}
                 isTeacher={false}
+                onOpenNotebook={(p) => {
+                  setNotebookPage(p);
+                  setView("notebook");
+                }}
+                onOpenSource={(p) => {
+                  setPage(p);
+                  setView("source");
+                }}
               />
             )}
 
@@ -232,6 +241,7 @@ export function StudentTheoryClient() {
               <TheoryNotebookView
                 documentId={document.id}
                 role="student"
+                initialPage={notebookPage}
               />
             )}
 

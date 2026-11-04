@@ -13,7 +13,15 @@ const kinds: Record<NotebookBlock["kind"], string> = {
   CONTINUATION: "Tiếp theo",
 };
 
-export function TheoryNotebookView({ documentId, role }: { documentId: string; role: "student" | "teacher" }) {
+export function TheoryNotebookView({
+  documentId,
+  role,
+  initialPage,
+}: {
+  documentId: string;
+  role: "student" | "teacher";
+  initialPage?: number;
+}) {
   const [book, setBook] = useState<TheoryNotebook | null>(null);
   const [sectionIndex, setSectionIndex] = useState(0);
   const [cardIndex, setCardIndex] = useState(0);
@@ -23,10 +31,50 @@ export function TheoryNotebookView({ documentId, role }: { documentId: string; r
   useEffect(() => {
     let active = true;
     (role === "teacher" ? theoryApi.teacherNotebook(documentId) : theoryApi.studentNotebook(documentId))
-      .then((next) => { if (active) { setBook(next); setSectionIndex(0); setCardIndex(0); setError(""); } })
-      .catch((reason) => { if (active) setError(reason instanceof Error ? reason.message : "Không thể mở sổ học."); });
-    return () => { active = false; };
-  }, [documentId, role, retry]);
+      .then((next) => {
+        if (active) {
+          setBook(next);
+          if (initialPage && next.sections.length > 0) {
+            const foundSecIdx = next.sections.findIndex((s) =>
+              s.blocks.some((b) => b.page === initialPage)
+            );
+            if (foundSecIdx !== -1) {
+              setSectionIndex(foundSecIdx);
+              const foundCardIdx = next.sections[foundSecIdx].blocks.findIndex(
+                (b) => b.page === initialPage
+              );
+              setCardIndex(foundCardIdx !== -1 ? foundCardIdx : 0);
+              setError("");
+              return;
+            }
+          }
+          setSectionIndex(0);
+          setCardIndex(0);
+          setError("");
+        }
+      })
+      .catch((reason) => {
+        if (active) setError(reason instanceof Error ? reason.message : "Không thể mở sổ học.");
+      });
+    return () => {
+      active = false;
+    };
+  }, [documentId, role, retry, initialPage]);
+
+  // Handle external initialPage change while book is already loaded
+  useEffect(() => {
+    if (!book || !initialPage) return;
+    const foundSecIdx = book.sections.findIndex((s) =>
+      s.blocks.some((b) => b.page === initialPage)
+    );
+    if (foundSecIdx !== -1) {
+      setSectionIndex(foundSecIdx);
+      const foundCardIdx = book.sections[foundSecIdx].blocks.findIndex(
+        (b) => b.page === initialPage
+      );
+      setCardIndex(foundCardIdx !== -1 ? foundCardIdx : 0);
+    }
+  }, [book, initialPage]);
 
   const chapters = useMemo(() => {
     const result: { title: string; first: number; count: number }[] = [];

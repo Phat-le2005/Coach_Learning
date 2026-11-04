@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Users, BookOpen, ClipboardList, BarChart3, ArrowRight, AlertCircle, RefreshCw, Network } from "lucide-react";
 import Link from "next/link";
 import canvasStyles from "@/features/math-canvas/MathCanvas.module.css";
+import { Users, BookOpen, ClipboardList, BarChart3, ArrowRight, AlertCircle, RefreshCw, Network } from "lucide-react";
 import {
   teacherApi,
   TeacherApiError,
@@ -34,26 +34,19 @@ const getErrorMessage = (error: unknown) =>
 export function TeacherDashboardClient({
   teacherName,
   teacherEmail,
+  initialTab = "classes",
 }: {
   teacherName: string;
   teacherEmail: string;
+  initialTab?: TabKey;
 }) {
-  const [tab, setTab] = useState<TabKey>(() => {
-    if (typeof window !== "undefined") {
-      const params = new URLSearchParams(window.location.search);
-      const urlTab = params.get("tab");
-      if (
-        urlTab === "theory" ||
-        urlTab === "materials" ||
-        urlTab === "submissions" ||
-        urlTab === "analytics" ||
-        urlTab === "classes"
-      ) {
-        return urlTab as TabKey;
-      }
+  const [tab, setTab] = useState<TabKey>(initialTab);
+
+  useEffect(() => {
+    if (initialTab) {
+      setTab(initialTab);
     }
-    return "classes";
-  });
+  }, [initialTab]);
 
   const handleSelectTab = (nextTab: TabKey) => {
     setTab(nextTab);
@@ -277,8 +270,8 @@ export function TeacherDashboardClient({
 
   return (
     <div className={styles.dashboard}>
+      <Link href="/teacher/math-canvas" className={canvasStyles.teacherLink}>Math Canvas</Link>
       {/* 1. Header */}
-      <Link href="/teacher/math-canvas" className={canvasStyles.teacherLink}>Math Canvas · Xem bài khám phá học sinh →</Link>
       <TeacherHeader
         teacherName={teacherName}
         teacherEmail={teacherEmail}

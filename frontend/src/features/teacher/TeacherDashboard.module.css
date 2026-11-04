@@ -2047,6 +2047,12 @@
 }
 
 @media (max-width: 640px) {
+  .headerLeft, .headerRight, .teacherInfo { min-width: 0; max-width: 100%; }
+  .teacherName { overflow-wrap: anywhere; }
+  .classSelectorCard { min-width: 0; width: 100%; }
+  .classSelectWrap { min-width: 0; flex: 1; }
+  .classSelectControl { min-width: 0; width: 100%; max-width: 100%; text-overflow: ellipsis; }
+
   .mainContent {
     padding: 0 1rem;
   }
