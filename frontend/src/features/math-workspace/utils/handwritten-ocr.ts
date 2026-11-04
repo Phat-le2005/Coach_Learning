@@ -4,7 +4,8 @@ import { A4_HEIGHT, A4_WIDTH } from "../types";
 import { renderOcrLatexHtml } from "./ocr-math-preview";
 
 const MODEL_ROOT = "/ocr/comer/v0_1";
-let modelPromise: Promise<{ recognize: (strokes: Stroke[]) => Promise<string> }> | null = null;
+export interface HandwrittenMathEvidence { rawLatex: string; latex: string; tokenIds: number[]; durationMs: number; encoderMs: number; decoderMs: number }
+let modelPromise: Promise<{ recognize: (strokes: Stroke[]) => Promise<HandwrittenMathEvidence> }> | null = null;
 let inferenceQueue: Promise<void> = Promise.resolve();
 
 /** Preserve pen geometry and stroke order; never infer the formula from exercise text. */
@@ -41,9 +42,9 @@ async function loadModel() {
       await engine.init();
       return {
         recognize: async (strokes: Stroke[]) => {
-          if (!isStrokeMeaningful(strokes)) return "";
+          if (!isStrokeMeaningful(strokes)) throw new Error("OCR_NOT_RECOGNIZED");
           const result = await engine.recognize(preprocessStrokes(strokes), vocab, "expression");
-          return result.latex.trim();
+          return { rawLatex: core.decodeToTokenArray(result.tokenIds, vocab).join(" "), latex: result.latex.trim(), tokenIds: [...result.tokenIds], durationMs: result.totalMs, encoderMs: result.encoderMs, decoderMs: result.decoderMs };
         },
       };
     })().catch((error: unknown) => {
@@ -54,23 +55,19 @@ async function loadModel() {
   return modelPromise;
 }
 
-/** Uncalibrated suggestion only; students compare with their ink before saving. */
-export async function recognizeHandwrittenMath(strokes: InkStroke[]): Promise<OCRRecognizeResponse> {
+/** Shared sessions and vendor preprocessing remain identical for Math View and page OCR. */
+export async function recognizeHandwrittenMathEvidence(strokes: InkStroke[]): Promise<HandwrittenMathEvidence> {
   const modelStrokes = toModelStrokes(strokes);
-  if (modelStrokes.length === 0) throw new Error("OCR_NOT_RECOGNIZED");
+  if (!modelStrokes.length) throw new Error("OCR_NOT_RECOGNIZED");
   const model = await loadModel();
-  // ONNX sessions are shared; serialize inference across requests in this page.
   const run = inferenceQueue.then(() => model.recognize(modelStrokes));
   inferenceQueue = run.then(() => undefined, () => undefined);
-  const latex = await run;
-  if (!renderOcrLatexHtml(latex)) throw new Error("OCR_NOT_RECOGNIZED");
-  return {
-    latex,
-    confidence: 0,
-    suggested_step_type: "EXPLANATION",
-    explanation_text: null,
-    detected_symbols: [],
-    alternative_latex: [],
-  };
+  return run;
 }
 
+/** Legacy response contract retained for Math View and single-region tools. */
+export async function recognizeHandwrittenMath(strokes: InkStroke[]): Promise<OCRRecognizeResponse> {
+  const { latex } = await recognizeHandwrittenMathEvidence(strokes);
+  if (!renderOcrLatexHtml(latex)) throw new Error("OCR_NOT_RECOGNIZED");
+  return { latex, confidence: 0, suggested_step_type: "EXPLANATION", explanation_text: null, detected_symbols: [], alternative_latex: [] };
+}

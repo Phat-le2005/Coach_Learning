@@ -4,12 +4,14 @@ import { toConfirmedLatex } from "./ocr-correction";
 import type { OcrReviewDraft } from "./ocr-review-draft";
 import type { ApprovedStepIntent, BatchApi, BatchJournal } from "./batch-manager";
 
-export function createBatchApi(apiClient: ApiClient, accessToken = ""): BatchApi {
+export function createBatchApi(apiClient: ApiClient, accessToken = "", beforeStep?: () => Promise<void>): BatchApi {
   return {
     getAttempt: (attemptId: string): Promise<SolutionAttemptRead> =>
       apiClient.getMathAttempt(accessToken, attemptId),
-    addStep: (attemptId: string, request: StepMutationRequest): Promise<SolutionAttemptRead> =>
-      apiClient.createMathStep(accessToken, attemptId, request),
+    addStep: async (attemptId: string, request: StepMutationRequest): Promise<SolutionAttemptRead> => {
+      await beforeStep?.();
+      return apiClient.createMathStep(accessToken, attemptId, request);
+    },
   };
 }
 

@@ -50,6 +50,7 @@ interface WorkspaceToolbarProps {
   onZoomOut: () => void;
   onResetZoom: () => void;
   onTriggerOCR?: () => void;
+  ocrBlocked?: boolean;
   onOpenVariationTable?: () => void;
   onTogglePaper: () => void;
   paperMode: boolean;
@@ -80,6 +81,7 @@ export function WorkspaceToolbar({
   onZoomOut,
   onResetZoom,
   onTriggerOCR,
+  ocrBlocked,
   onOpenVariationTable,
   onTogglePaper,
   paperMode,
@@ -266,11 +268,11 @@ export function WorkspaceToolbar({
               type="button"
               className={styles.ocrButton}
               onClick={onTriggerOCR}
-              disabled={isRecognizingOCR || strokeCount === 0}
+              disabled={ocrBlocked || isRecognizingOCR || strokeCount === 0}
               title={
                 strokeCount === 0
                   ? "Vẽ công thức lên trang để nhận diện"
-                  : "Chia trang viết thành các bước giải để em kiểm tra"
+                  : "Nhận diện bản chép OCR V2 để em kiểm tra"
               }
             >
               {isRecognizingOCR ? (
