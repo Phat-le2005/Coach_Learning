@@ -1,7 +1,7 @@
 """Bound raw ink PUT bodies before FastAPI parses potentially huge JSON.
 
 Pure ASGI buffering is intentionally restricted to the Ink page write route.
-Only a bounded buffer (384 KiB) can be allocated, regardless of a missing or
+Only a bounded buffer (768 KiB) can be allocated, regardless of a missing or
 misleading Content-Length header.
 """
 from __future__ import annotations
@@ -11,7 +11,7 @@ from typing import Any
 from starlette.responses import JSONResponse
 from starlette.types import ASGIApp, Receive, Scope, Send
 
-MAX_INK_REQUEST_BYTES = 384 * 1024
+MAX_INK_REQUEST_BYTES = 768 * 1024
 
 
 class InkWriteBodyLimitMiddleware:

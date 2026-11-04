@@ -1,5 +1,7 @@
 # OCR V2 trong MathWorkspace
 
+> Cập nhật budget sau tích hợp: giới hạn lưu trang hiện là **512 KiB raw / 320 KiB compressed / 768 KiB request**. Giữ nguyên 400 nét/15.000 điểm và kiểm tra giải nén. Capture71 từng bị chặn ở mức256KiB đã được lưu/tải nguyên vẹn qua API QA (HTTP200, 71 nét/4.114 điểm); mô tả giới hạn256KiB bên dưới là kết quả lịch sử trước cập nhật này.
+
 Nhánh `feat/ocr-v2-core-integration` lấy nền từ main `f73b93618a151814558e294be8b7aa7c708d784d`. **Trích xuất trang dùng OCR V2 mặc định**, không cần research flag. Không thêm canvas khác, không có route Lab/evaluation/dataset/Oracle trên nhánh này.
 
 ## Luồng đang chạy

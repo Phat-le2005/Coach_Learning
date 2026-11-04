@@ -5,8 +5,9 @@ import zlib
 from app.core.exceptions import ApplicationError
 from app.math_ink.schemas import InkStroke
 
-MAX_RAW_BYTES = 256 * 1024
-MAX_COMPRESSED_BYTES = 160 * 1024
+# Keep dense handwriting lossless while retaining bounded encode/decode memory.
+MAX_RAW_BYTES = 512 * 1024
+MAX_COMPRESSED_BYTES = 320 * 1024
 
 
 def encode_strokes(strokes: list[InkStroke]) -> tuple[bytes, str, int]:
