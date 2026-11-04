@@ -1,6 +1,18 @@
 # PDF metadata pilot
 
+For one PDF to routed metadata, use `build_dataset.ps1 -Pdf <file.pdf> -Profile native -Open`.
+It exports source-backed questions, explicit final-answer candidates, image references,
+and held records. See [the usable PDF pipeline](../../docs/pdf-usable-pipeline.md).
+Final-answer matching is supported; full-solution and step grading remain unassessed.
+
 Isolated from the running FastAPI/Next.js app. The source PDF is read-only. Packages, weights, caches, temp files and output are stored on E for the Windows pilot. Native/Paddle and Qwen stages run locally; explicit Gemini actions send selected source images and metadata to Google. No stage writes the production database.
+
+The separate [layout-first transcription v2 trial](../../docs/pdf-transcription-v2.md)
+keeps native table cells out of formula detection, preserves source-backed image
+fallbacks, and lets local Qwen read actual source crops. Its fixed 100-item trial
+and outside-PDF page smoke are draft diagnostics; they do not replace the current
+entry point or establish grading accuracy. The PDF suite passed 397 tests on
+2026-11-04. See the linked document for commands, scope and limitations.
 
 ## Start here: give the workflow one PDF
 
@@ -482,3 +494,16 @@ separately from transcribed drafts. It performs no new inference and does not
 claim a known total for model calls made by the failed attempt. A normal resume
 retries extraction for this record. Failed Qwen responses can be retried with
 `transcript_triage --retry-failed`; the old failed response is retained in history.
+## Chạy thử v2 trên corpus lớn
+
+Từ ngày 2026-11-04, `transcribe_corpus.ps1 -Version v2` hỗ trợ selection mới,
+loại ID đã thử, chế độ OCR cold, nhóm câu hoàn chỉnh, timeout/RAM/disk budget,
+checkpoint có hash record và ảnh, cùng xuất JSON tổng hợp bằng streaming.
+Xem [hướng dẫn chạy theo từng đợt](../../docs/pdf-scale-runner-2026-11-04.md).
+Lệnh nhập PDF thô và ghép đề–lời giải vẫn là giai đoạn trước transcription;
+đầu ra v2 chưa được tự phê duyệt cho core chấm.
+
+Lượt 200 câu mới đã hoàn thành với 417 test qua, 4.572 ảnh được kiểm hash,
+khoảng 49 phút xử lý cold và peak RSS khoảng 3,78 GB thập phân. Xem
+[báo cáo thực nghiệm và giới hạn](../../docs/pdf-scale-trial-200-2026-11-04.md).
+Chế độ `-All -PlanOnly -SkipQwen` chỉ lập kế hoạch toàn kho, chưa suy luận.
