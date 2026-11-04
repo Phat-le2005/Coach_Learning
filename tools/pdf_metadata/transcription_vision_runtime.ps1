@@ -5,9 +5,9 @@ param(
     [int]$Port = 8792
 )
 $ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot 'paths.ps1')
 $Runtime = [IO.Path]::GetFullPath($Runtime)
 $State = [IO.Path]::GetFullPath($State)
-if ($Runtime -notmatch '^[Ee]:\\' -or $State -notmatch '^[Ee]:\\') { throw 'Keep model and vision state on E.' }
 $visionSource = Get-Content -LiteralPath (Join-Path $Runtime 'local-qwen-runtime.json') -Raw -Encoding UTF8 | ConvertFrom-Json
 New-Item -ItemType Directory -Force -Path $State | Out-Null
 $visionPidPath = Join-Path $State 'server.pid'

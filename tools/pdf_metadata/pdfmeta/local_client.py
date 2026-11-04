@@ -12,9 +12,10 @@ import httpx
 
 from .gemini_client import GeminiError, read_env
 from .storage import read_json, write_json
+from .paths import runtime_root
 
 
-DEFAULT_RUNTIME = Path(__file__).parents[3] / ".tmp" / "pdf-pipeline-runtime"
+DEFAULT_RUNTIME = runtime_root()
 
 
 def local_schema(value):

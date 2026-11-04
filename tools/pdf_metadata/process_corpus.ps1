@@ -12,11 +12,12 @@ param(
     [switch]$Open
 )
 $ErrorActionPreference='Stop'
+. (Join-Path $PSScriptRoot 'paths.ps1')
 $corpusRepo=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..\..')).Path
-if (-not $Storage) { $Storage=if ($corpusRepo -match '^[Ee]:\\') { Join-Path $corpusRepo '.tmp' } else { 'E:\CoachLearningPdf' } }
+if (-not $Storage) { $Storage=$PdfStorageRoot }
 $Storage=[IO.Path]::GetFullPath($Storage)
-if ($Storage -notmatch '^[Ee]:\\') { throw 'Keep all corpus storage on drive E.' }
 $runtime=Join-Path $Storage 'pdf-pipeline-runtime'
+$env:PDFMETA_RUNTIME_ROOT=$runtime
 $corpusPython=Join-Path $runtime '.venv\Scripts\python.exe'
 if (-not (Test-Path -LiteralPath $corpusPython)) { throw 'Initialize the local environment by running process_pdf.ps1 on one PDF first.' }
 $env:PYTHONPATH=$PSScriptRoot

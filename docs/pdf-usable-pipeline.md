@@ -1,11 +1,12 @@
 # Pipeline PDF sang metadata có thể đưa vào core
 
-Chạy từ repo trên ổ E bằng một lệnh. Đầu vào là PDF gốc, không cần tự tạo
+Chạy từ thư mục repo bằng một lệnh. Runtime và kết quả mặc định nằm trong
+`C:\CoachLearningPdf`, độc lập với ổ đĩa chứa repo. Đầu vào là PDF gốc, không cần tự tạo
 metadata, plan hoặc danh sách câu. Pipeline tự tách đề, đáp án, lời giải,
 giữ ảnh nguồn, đọc nội dung native và phân loại cả câu.
 
 ```powershell
-cd E:\HocTap\Hackathon-SGU2026\Coach_Learning
+cd 'D:\Học\hackathon\Coach_Learning'
 .\tools\pdf_metadata\build_dataset.ps1 `
   -Pdf '.\data\tu-luan-va-trac-nghiem-ung-dung-dao-ham-de-khao-sat-va-ve-do-thi-ham-so-toan-12-knttvcs9.pdf' `
   -Profile native -Open
@@ -42,7 +43,7 @@ thể cần ảnh. Việc qua kiểm kỹ thuật không chứng minh mọi côn
 ## File cuối và ý nghĩa nhóm
 
 Sau khi chạy, console in đường dẫn chính xác. Con trỏ mới nhất của mỗi PDF
-nằm ở `.tmp/pdf-jobs/<24 ký tự đầu SHA256>/dataset-final.json`.
+nằm ở `C:\CoachLearningPdf\pdf-jobs\<24 ký tự đầu SHA256>\dataset-final.json`.
 
 | File | Mục đích |
 | --- | --- |
@@ -91,8 +92,8 @@ chạy eval, không cho model quyết định kết quả, không ghi điểm s�
 
 ```powershell
 $env:PYTHONPATH = 'tools\pdf_metadata'
-& '.tmp\pdf-pipeline-runtime\.venv\Scripts\python.exe' -B -m pdfmeta.curation `
-  --transcripts '<thư mục transcription>' --output '<thư mục mới trên E>' `
+& 'C:\CoachLearningPdf\pdf-pipeline-runtime\.venv\Scripts\python.exe' -B -m pdfmeta.curation `
+  --transcripts '<thư mục transcription>' --output '<thư mục kết quả mới>' `
   --plan '<plan.json>' --katex 'frontend\node_modules\katex\dist'
 ```
 

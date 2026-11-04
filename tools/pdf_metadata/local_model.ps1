@@ -4,10 +4,10 @@ param(
     [int]$Port = 8790
 )
 $ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot 'paths.ps1')
 $localRepoRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..\..')).Path
-if (-not $Runtime) { $Runtime = Join-Path $localRepoRoot '.tmp\pdf-pipeline-runtime' }
+if (-not $Runtime) { $Runtime = $PdfRuntimeRoot }
 $Runtime = [IO.Path]::GetFullPath($Runtime)
-if ($Runtime -notmatch '^[Ee]:\\') { throw 'Keep the local model runtime on E.' }
 $localManifestPath = Join-Path $Runtime 'local-qwen-runtime.json'
 if (-not (Test-Path -LiteralPath $localManifestPath)) { throw 'Run run.ps1 -Action local-setup first.' }
 $localManifest = Get-Content -LiteralPath $localManifestPath -Raw -Encoding UTF8 | ConvertFrom-Json

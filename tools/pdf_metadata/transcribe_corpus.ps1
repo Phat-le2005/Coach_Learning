@@ -2,6 +2,8 @@ param(
     [Parameter(Mandatory=$true)][string]$Metadata,
     [Parameter(Mandatory=$true)][string]$Plan,
     [Parameter(Mandatory=$true)][string]$Output,
+    [string]$Storage,
+    [string]$Runtime,
     [ValidateRange(4,100000)][int]$Count=100,
     [ValidateSet(1,2)][int]$Workers=2,
     [ValidateSet('v1','v2')][string]$Version='v1',
@@ -20,13 +22,15 @@ param(
     [switch]$Open
 )
 $ErrorActionPreference='Stop'
+. (Join-Path $PSScriptRoot 'paths.ps1')
 $taskRepo=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..\..')).Path
-$taskRuntime=Join-Path $taskRepo '.tmp\pdf-pipeline-runtime'
+if (-not $Storage) { $Storage=$PdfStorageRoot }
+$Storage=[IO.Path]::GetFullPath($Storage)
+if (-not $Runtime) { $Runtime=Join-Path $Storage 'pdf-pipeline-runtime' }
+$taskRuntime=[IO.Path]::GetFullPath($Runtime)
 $taskPython=Join-Path $taskRuntime '.venv\Scripts\python.exe'
 $taskKatex=Join-Path $taskRepo 'frontend\node_modules\katex\dist'
-if ($taskRuntime -notmatch '^[Ee]:\\') { throw 'Keep runtime, caches and outputs on E.' }
 $taskOutput=[IO.Path]::GetFullPath($Output)
-if ($taskOutput -notmatch '^[Ee]:\\') { throw 'Keep transcription output on E.' }
 foreach ($taskPath in @($Metadata,$Plan,$taskPython,(Join-Path $taskKatex 'katex.js'))) {
     if (-not (Test-Path -LiteralPath $taskPath -PathType Leaf)) { throw "Required local file missing: $taskPath" }
 }
@@ -82,7 +86,7 @@ if ($Version -eq 'v2') {
     Write-Output "V2 draft: $(Join-Path $taskOutput 'content.draft.pretty.json')"
     Write-Output "Benchmark: $(Join-Path $taskOutput 'benchmark.json')"
     if ($Open) {
-        $taskJobs=Join-Path $taskRepo '.tmp\pdf-jobs'
+        $taskJobs=Join-Path $Storage 'pdf-jobs'
         if ($taskOutput.StartsWith($taskJobs.TrimEnd('\')+'\',[StringComparison]::OrdinalIgnoreCase)) {
             $taskBase=(& $taskPython -B -m pdfmeta.progress ensure --root $taskJobs --runtime $taskRuntime --port 8789 | Select-Object -Last 1).Trim()
             $taskRelative=$taskOutput.Substring($taskJobs.TrimEnd('\').Length+1).Replace('\','/')
@@ -113,7 +117,7 @@ if (-not $SkipQwen) {
 & $taskPython -B -m pdfmeta.paired.transcript_audit --output $taskOutput
 if ($LASTEXITCODE) { throw 'Draft quality audit failed; check its log before using the output.' }
 if ($Open) {
-    $taskJobs=Join-Path $taskRepo '.tmp\pdf-jobs'
+        $taskJobs=Join-Path $Storage 'pdf-jobs'
     if ($taskOutput.StartsWith($taskJobs.TrimEnd('\')+'\',[StringComparison]::OrdinalIgnoreCase)) {
         $taskBase=(& $taskPython -B -m pdfmeta.progress ensure --root $taskJobs --runtime $taskRuntime --port 8789 | Select-Object -Last 1).Trim()
         if ($LASTEXITCODE) { throw 'Could not start the local artifact viewer.' }

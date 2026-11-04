@@ -10,6 +10,7 @@ param(
     [ValidateRange(1024,65525)][int]$ProgressPort=8789
 )
 $ErrorActionPreference='Stop'
+. (Join-Path $PSScriptRoot 'paths.ps1')
 $repoRoot=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..\..')).Path
 if (-not $Pdf) { $Pdf=Read-Host 'Enter the PDF file path' }
 $Pdf=$Pdf.Trim().Trim('"')
@@ -17,11 +18,11 @@ if (-not (Test-Path -LiteralPath $Pdf -PathType Leaf)) { throw 'PDF file not fou
 $Pdf=(Resolve-Path -LiteralPath $Pdf).Path
 if ([IO.Path]::GetExtension($Pdf) -ine '.pdf') { throw 'Select a PDF file.' }
 if (-not $Storage) {
-    $Storage=if ($repoRoot -match '^[Ee]:\\') { Join-Path $repoRoot '.tmp' } else { 'E:\CoachLearningPdf' }
+    $Storage=$PdfStorageRoot
 }
 $Storage=[IO.Path]::GetFullPath($Storage)
-if ($Storage -notmatch '^[Ee]:\\') { throw 'Keep environments, downloads, caches and outputs on drive E.' }
 $runtime=Join-Path $Storage 'pdf-pipeline-runtime'
+$env:PDFMETA_RUNTIME_ROOT=$runtime
 $jobs=Join-Path $Storage 'pdf-jobs'
 foreach ($folder in @($runtime,$jobs,(Join-Path $runtime 'temp'),(Join-Path $runtime 'pip-cache'))) {
     New-Item -ItemType Directory -Force -Path $folder | Out-Null

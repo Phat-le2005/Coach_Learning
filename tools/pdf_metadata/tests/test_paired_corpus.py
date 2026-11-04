@@ -29,6 +29,23 @@ def test_pdfium_cache_and_worked_example_keep_source_hash(tmp_path):
     assert items[0]['source_label'].startswith('Example 2')
 
 
+def test_pdfium_keeps_embedded_images_when_native_captions_exist(tmp_path):
+    import pypdfium2 as pdfium
+    from PIL import Image
+    pdf=source_pdf(tmp_path)
+    image_path=tmp_path/'exercise.jpg';Image.new('RGB',(200,100),'white').save(image_path)
+    doc=pdfium.PdfDocument(pdf);pg=doc[0]
+    try:
+        image=pdfium.PdfImage.new(doc);image.load_jpeg(image_path,inline=True)
+        image.set_matrix(pdfium.PdfMatrix(400,0,0,200,40,100));pg.insert_obj(image)
+        pg.gen_content()
+        record=extract_page(pg,1,file_hash(pdf),110)
+        assert record['blocks']
+        assert len(record['images'])==1
+        assert record['images'][0]['bbox']==pytest.approx([40,record['height']-300,440,record['height']-100])
+    finally:pg.close();doc.close()
+
+
 def test_vietnamese_worked_example_keeps_full_printed_subnumber():
     items,_=assemble([page(1,['\uf046 Ví dụ 6.4.2','Giải','Lời giải nguồn.'])],'source')
     assert len(items)==1 and items[0]['source_number']==6
@@ -39,6 +56,37 @@ def test_decorated_book_question_and_solution_labels_are_structural_markers():
     items,_=assemble([page(1,['» Câu 3. A printed source question.','\uf040 Lời giải','Printed proof.'])],'source')
     assert len(items)==1 and items[0]['source_number']==3
     assert items[0]['solution']['text_raw'].strip()=='Printed proof.'
+
+
+def test_source_book_preserves_inner_label_without_splitting_its_pair():
+    from copy import deepcopy
+    from pdfmeta.auto_ocr import apply_section_hints
+    from pdfmeta.paired.corpus_layout import source_book_labels
+    source=page(1,['Câu 007','Bài 25 | TL a2878305 | Trang nguồn 19, 20',
+        'Đề bài và lời giải nguồn','Bài 25. A printed exercise.','Gii','A printed proof.',
+        'Câu 008','Ví dụ 9 | TL a2878305 | Trang nguồn 21',
+        'Ví dụ 9. A different exercise.','Giài','A different proof.'])
+    for i,b in enumerate(source['blocks']):b['bbox']=[40,40+i*20,550,54+i*20]
+    original=deepcopy(source)
+    prepared=source_book_labels(apply_section_hints(source))
+    virtual,_,issues=split_columns([prepared]);items,_=assemble(virtual,'source')
+    assert not issues and len(items)==2
+    assert [q['source_number'] for q in items]==[7,8]
+    assert 'Bài 25.' in items[0]['stem']['text_raw']
+    assert 'Ví dụ 9.' in items[1]['stem']['text_raw']
+    assert 'printed proof' in items[0]['solution']['text_raw']
+    assert 'different proof' in items[1]['solution']['text_raw']
+    assert source==original
+
+
+def test_ordinary_adjacent_labels_are_not_merged_without_book_provenance():
+    from pdfmeta.paired.corpus_layout import source_book_labels
+    source=page(1,['Câu 7','A question without a solution.','Bài 25. Another question.',
+        'Giải','A separate printed proof.'])
+    prepared=source_book_labels(source)
+    items,_=assemble([prepared],'source')
+    assert len(items)==2 and [q['source_number'] for q in items]==[7,25]
+    assert not any(b.get('source_book_inner_label') for b in prepared['blocks'])
 
 
 def test_corpus_theory_and_decorated_sections_do_not_leak_into_solution():

@@ -15,7 +15,7 @@ from ..native import mark_margins
 from ..storage import file_hash,read_json,write_json
 
 
-VERSION='pdfium-source-lines/v1'
+VERSION='pdfium-source-lines/v2'
 
 
 def extract_page(page, index, digest, dpi):
@@ -50,10 +50,15 @@ def extract_page(page, index, digest, dpi):
     finally:tp.close()
     blocks.sort(key=lambda b:(round(b['bbox'][1]/2),b['bbox'][0]))
     for i,b in enumerate(blocks):b['reading_order']=i
+    images=[]
+    for obj in page.get_objects(filter=[raw.FPDF_PAGEOBJ_IMAGE]):
+        left,bottom,right,top=obj.get_bounds()
+        box=[max(0,left),max(0,height-top),min(width,right),min(height,height-bottom)]
+        if box[2]>box[0] and box[3]>box[1]:images.append({'bbox':box})
     return {'schema_version':'page-document/v1','source_sha256':digest,'parser_id':VERSION,'parser_version':VERSION,
         'library_version':importlib.metadata.version('pypdfium2'),'page_number':index,'width':width,'height':height,
         'rotation':page.get_rotation(),'coordinate_origin':'top-left','coordinate_unit':'pdf_point','blocks':blocks,
-        'vectors':[],'images':[{'bbox':[0,0,width,height]}] if not blocks else [],
+        'vectors':[],'images':images,
         'image_path':f'pages/page-{index:04}.png','image_dpi':dpi,
         'extraction_status':'NATIVE_TEXT_CANDIDATE' if blocks else 'OCR_REQUIRED'}
 
