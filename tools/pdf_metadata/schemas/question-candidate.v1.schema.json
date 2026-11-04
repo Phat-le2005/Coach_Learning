@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Offline math question candidate - not a production Question payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "question_id", "source_sha256", "source_number", "question_type_candidate", "stem", "answer", "solution", "source_regions", "reference_steps", "review_flags", "academic_review", "grading_support", "publishable"],
+  "properties": {
+    "schema_version": {"const": "math-question-candidate/v1"},
+    "question_id": {"type": "string", "minLength": 1},
+    "source_sha256": {"type": "string", "minLength": 1},
+    "source_number": {"type": "integer", "minimum": 0},
+    "source_label": {"type": "string"},
+    "question_type_candidate": {"enum": ["SHORT_ANSWER", "UNKNOWN"]},
+    "stem": {"$ref": "#/$defs/textPart"},
+    "solution": {"$ref": "#/$defs/textPart"},
+    "answer": {
+      "type": "object", "additionalProperties": false,
+      "required": ["text_raw", "source_spans", "verification"],
+      "properties": {
+        "text_raw": {"type": ["string", "null"]},
+        "source_spans": {"$ref": "#/$defs/spans"},
+        "verification": {"const": "UNREVIEWED"}
+      }
+    },
+    "source_regions": {"$ref": "#/$defs/spans"},
+    "reference_steps": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["step_id", "kind_candidate", "text_raw", "status", "source_spans", "math_expression", "checker", "rubric_weight"],
+        "properties": {
+          "step_id": {"type": "string"},
+          "kind_candidate": {"enum": ["ASSUMPTION", "DERIVATIVE_CALCULATION", "SIGN_TABLE", "CONCLUSION", "UNCLASSIFIED"]},
+          "text_raw": {"type": "string"},
+          "status": {"const": "SOURCE_EXCERPT_NEEDS_REVIEW"},
+          "source_spans": {"$ref": "#/$defs/spans"},
+          "math_expression": {"type": "null"},
+          "checker": {"type": "null"},
+          "rubric_weight": {"type": "null"}
+        }
+      }
+    },
+    "review_flags": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "academic_review": {"const": "PENDING"},
+    "grading_support": {"const": "NOT_ASSESSED"},
+    "publishable": {"const": false},
+    "ocr_evidence": {
+      "type": "array", "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["page_number", "parser_id", "status", "block_id", "block_type", "text_raw", "bbox", "reading_order"],
+        "properties": {
+          "page_number": {"type": "integer", "minimum": 1},
+          "parser_id": {"enum": ["PaddleOCR-VL-1.6", "PP-FormulaNet_plus-S", "PP-FormulaNet_plus-M"]},
+          "status": {"const": "INFERRED_NOT_REVIEWED"},
+          "block_id": {"type": "string"},
+          "block_type": {"type": ["string", "null"]},
+          "text_raw": {"type": "string"},
+          "bbox": {"type": "array", "minItems": 4, "maxItems": 4, "items": {"type": "number"}},
+          "reading_order": {"type": ["integer", "null"]}
+        }
+      }
+    }
+  },
+  "$defs": {
+    "spans": {"type": "array", "items": {"$ref": "#/$defs/span"}},
+    "span": {
+      "type": "object", "additionalProperties": false,
+      "required": ["page_number", "bbox", "block_ids"],
+      "properties": {
+        "page_number": {"type": "integer", "minimum": 1},
+        "bbox": {"type": "array", "minItems": 4, "maxItems": 4, "items": {"type": "number"}},
+        "block_ids": {"type": "array", "items": {"type": "string"}},
+        "asset_path": {"type": "string", "pattern": "^assets/[a-zA-Z0-9_.-]+\\.png$"}
+      }
+    },
+    "textPart": {
+      "type": "object", "additionalProperties": false,
+      "required": ["text_raw", "source_spans"],
+      "properties": {"text_raw": {"type": "string"}, "source_spans": {"$ref": "#/$defs/spans"}}
+    }
+  }
+}

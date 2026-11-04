@@ -19,6 +19,7 @@ interface Props {
   onSubmitSolution?: () => Promise<void>;
   isSubmitting?: boolean;
   isReviewing?: boolean;
+  submissionBlocked?: boolean;
   hasConfirmedSteps?: boolean;
 }
 
@@ -34,6 +35,7 @@ export function PaperUploadPanel({
   onSubmitSolution,
   isSubmitting,
   isReviewing,
+  submissionBlocked,
   hasConfirmedSteps,
 }: Props) {
   const [files, setFiles] = useState<PaperAttachmentRead[]>([]);
@@ -261,7 +263,7 @@ export function PaperUploadPanel({
             type="button"
             className={styles.primaryGradeButton}
             onClick={() => void onSubmitSolution()}
-            disabled={isSubmitting || isReviewing}
+            disabled={isSubmitting || isReviewing || submissionBlocked}
           >
             <Sparkles size={16} />
             {isSubmitting ? "Đang nộp bài..." : isReviewing ? "Đang kiểm tra bài..." : "Nộp bài & kiểm tra"}

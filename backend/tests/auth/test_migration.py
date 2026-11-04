@@ -84,6 +84,8 @@ def test_migration_chain_matches_models_and_can_downgrade(db_engine: Engine) -> 
             "math_solution_operations",
             # STEP-MATH-INK-01: independent compressed ink document/page/action tables.
             "math_ink_documents", "math_ink_pages", "math_ink_operations",
+            "math_paper_attachments", "theory_documents",
+            "math_canvas_explanations", "math_canvas_snapshots",
         }
         context = MigrationContext.configure(connection)
         assert compare_metadata(context, Base.metadata) == []

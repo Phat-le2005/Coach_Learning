@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "algorithm", "question_id", "source_number", "source_sha256", "legacy_group_count", "steps", "review_flags", "source_review_notes", "academic_review", "grading_support", "publishable", "candidate_generation", "review_document_revision"],
+  "properties": {
+    "schema_version": {"const": "solution-step-proposals/v1"},
+    "algorithm": {"enum": ["layout-reasoning/v1", "layout-reasoning/v2"]},
+    "question_id": {"type": "string"},
+    "source_number": {"type": "integer"},
+    "source_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "candidate_generation": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "review_document_revision": {"type": "integer", "minimum": 0},
+    "legacy_group_count": {"type": "integer", "minimum": 0},
+    "review_flags": {"type": "array", "items": {"type": "string"}},
+    "source_review_notes": {"type": "array", "items": {
+      "type": "object", "additionalProperties": false, "required": ["code", "note"],
+      "properties": {"code": {"type": "string"}, "note": {"type": "string"},
+                     "proposed_answer_candidate": {"type": "string"}, "status": {"const": "NEEDS_ACADEMIC_REVIEW"}}
+    }},
+    "academic_review": {"const": "PENDING"},
+    "grading_support": {"const": "NOT_ASSESSED"},
+    "publishable": {"const": false},
+    "steps": {"type": "array", "items": {"$ref": "#/$defs/step"}}
+  },
+  "$defs": {
+    "span": {
+      "type": "object", "additionalProperties": false,
+      "required": ["page_number", "bbox", "block_ids"],
+      "properties": {
+        "page_number": {"type": "integer", "minimum": 1},
+        "bbox": {"type": "array", "items": {"type": "number"}, "minItems": 4, "maxItems": 4},
+        "block_ids": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "step": {
+      "type": "object", "additionalProperties": false,
+      "required": ["step_id", "kind_candidate", "title", "text_candidate", "text_slices", "source_spans", "context_spans", "latex_candidates", "conditions_candidate", "boundary_reasons", "review_flags", "status", "previous_step_id", "dependency_status", "math_expression", "checker", "rubric_weight"],
+      "properties": {
+        "step_id": {"type": "string"},
+        "kind_candidate": {"enum": ["MODEL_SETUP", "DERIVATIVE_CALCULATION", "ROOT_FINDING", "SIGN_TABLE", "CONCLUSION", "ASSUMPTION", "UNCLASSIFIED"]},
+        "title": {"type": "string"}, "text_candidate": {"type": "string"},
+        "text_slices": {"type": "array", "minItems": 1, "items": {
+          "type": "object", "additionalProperties": false,
+          "required": ["page_number", "block_id", "normalized_start", "normalized_end"],
+          "properties": {"page_number": {"type": "integer", "minimum": 1}, "block_id": {"type": "string"},
+            "normalized_start": {"type": "integer", "minimum": 0}, "normalized_end": {"type": "integer", "minimum": 0}}
+        }},
+        "source_spans": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/span"}},
+        "context_spans": {"type": "array", "items": {"$ref": "#/$defs/span"}},
+        "latex_candidates": {"type": "array", "items": {
+          "type": "object", "additionalProperties": false,
+          "required": ["block_id", "parser_id", "page_number", "bbox", "latex", "status"],
+          "properties": {
+            "block_id": {"type": "string"}, "parser_id": {"type": "string"},
+            "page_number": {"type": "integer", "minimum": 1},
+            "bbox": {"type": "array", "items": {"type": "number"}, "minItems": 4, "maxItems": 4},
+            "latex": {"type": "string"}, "status": {"enum": ["EDITORIAL_CANDIDATE", "OCR_CANDIDATE_NOT_VERIFIED"]}
+          }
+        }},
+        "conditions_candidate": {"type": "array", "items": {
+          "type": "object", "additionalProperties": false, "required": ["text", "source_block_id", "status"],
+          "properties": {"text": {"type": "string"}, "source_block_id": {"type": "string"},
+                         "status": {"const": "EXPLICIT_SOURCE_TEXT_NOT_VERIFIED"}}
+        }},
+        "boundary_reasons": {"type": "array", "items": {"type": "string"}},
+        "review_flags": {"type": "array", "items": {"type": "string"}},
+        "status": {"const": "PROPOSED_NEEDS_REVIEW"},
+        "previous_step_id": {"type": ["string", "null"]},
+        "dependency_status": {"const": "ORDER_ONLY_NOT_LOGICAL_PROOF"},
+        "math_expression": {"type": "null"}, "checker": {"type": "null"}, "rubric_weight": {"type": "null"}
+      }
+    }
+  }
+}

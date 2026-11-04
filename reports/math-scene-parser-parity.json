@@ -1,0 +1,16 @@
+{
+  "canonical_frontend_cases": 84,
+  "backend_accepts_all": true,
+  "coverage": [
+    "equations",
+    "strict and inclusive inequalities",
+    "eight built-in functions",
+    "implicit multiplication",
+    "chained intervals",
+    "forward function references",
+    "shared parameters",
+    "function composition",
+    "constant function domain guard",
+    "overlay and AND/OR modes"
+  ]
+}

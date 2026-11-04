@@ -1,0 +1,198 @@
+{
+  "description": "Proposed module handoffs for design discussion. All IDs, content, source hashes and states are illustrative. These envelopes are not current API payloads or imported/published data.",
+  "design_document": "team-integration-design.md",
+  "examples": [
+    {
+      "schema_version": 1,
+      "contract": "KnowledgeBundleV1",
+      "example_only": true,
+      "payload": {
+        "bundle_code": "EXAMPLE_M12_MONOTONICITY_V1",
+        "status": "DRAFT",
+        "subject_code": "MATH_G12",
+        "sources": [
+          {
+            "source_code": "EXAMPLE_TEAM_AUTHORED_001",
+            "source_type": "TEAM_AUTHORED_EXAMPLE",
+            "title": "Ví dụ đa thức dùng để thảo luận tích hợp",
+            "reference_url": null,
+            "source_page_number": null,
+            "source_sha256": null,
+            "rights_review_status": "PENDING",
+            "academic_review_status": "PENDING",
+            "ai_assistance_disclosure": "Fixture được soạn trong phiên thiết kế với trợ lý AI; chưa duyệt học thuật, không phải dữ liệu thu thập thực tế."
+          }
+        ],
+        "questions": [
+          {
+            "local_question_code": "EXAMPLE_Q_MONOTONICITY_001",
+            "status": "DRAFT",
+            "question_type": "OPEN_RESPONSE",
+            "content": "Cho hàm số y=x^3/3-x^2-3*x. Tìm các khoảng đồng biến và nghịch biến.",
+            "correct_answer": "Đồng biến trên (-∞,-1) và (3,+∞); nghịch biến trên (-1,3).",
+            "reference_solution": [
+              { "step_type": "ASSUMPTION", "latex": "D=\\mathbb{R}" },
+              { "step_type": "DERIVATIVE_CALCULATION", "latex": "y'=x^2-2x-3" },
+              { "step_type": "ROOT_FINDING", "latex": "y'=0\\Leftrightarrow x=-1\\text{ hoặc }x=3" },
+              { "step_type": "SIGN_TABLE", "description": "Dấu y': dương trên (-∞,-1), âm trên (-1,3), dương trên (3,+∞)." },
+              { "step_type": "CONCLUSION", "description": "Đồng biến trên hai khoảng ngoài; nghịch biến trên khoảng giữa." }
+            ],
+            "concept_codes": ["EXAMPLE_M12_DERIVATIVE", "EXAMPLE_M12_DERIVATIVE_SIGN"],
+            "problem_type_codes": ["EXAMPLE_M12_POLYNOMIAL_MONOTONICITY"],
+            "source_code": "EXAMPLE_TEAM_AUTHORED_001",
+            "rubric_code": "EXAMPLE_RUBRIC_MONOTONICITY_001"
+          }
+        ],
+        "knowledge_cards": [
+          {
+            "card_code": "EXAMPLE_CARD_DERIVATIVE_SIGN_001",
+            "status": "DRAFT",
+            "content_role": "CONCEPT",
+            "title": "Liên hệ dấu đạo hàm và tính đơn điệu",
+            "condition": "Xét một khoảng mà hàm số khả vi. Đây là phát biểu điều kiện đủ đơn giản; không thay thế mô tả đầy đủ của chủ đề.",
+            "content": "Nếu f'(x)>0 trên khoảng thì f đồng biến trên khoảng; nếu f'(x)<0 trên khoảng thì f nghịch biến trên khoảng.",
+            "common_error": "Đổi nhầm dấu của đạo hàm thành chiều biến thiên.",
+            "concept_codes": ["EXAMPLE_M12_DERIVATIVE_SIGN"],
+            "source_code": "EXAMPLE_TEAM_AUTHORED_001"
+          }
+        ],
+        "rubrics": [
+          {
+            "rubric_code": "EXAMPLE_RUBRIC_MONOTONICITY_001",
+            "rubric_version": 1,
+            "status": "DRAFT",
+            "criteria": [
+              { "id": "step_domain", "step_type": "ASSUMPTION", "weight": 0.1 },
+              { "id": "step_derivative", "step_type": "DERIVATIVE_CALCULATION", "weight": 0.3 },
+              { "id": "step_roots", "step_type": "ROOT_FINDING", "weight": 0.2 },
+              { "id": "step_sign_table", "step_type": "SIGN_TABLE", "weight": 0.25 },
+              { "id": "step_conclusion", "step_type": "CONCLUSION", "weight": 0.15 }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "schema_version": 1,
+      "contract": "OcrPageDraftV1",
+      "example_only": true,
+      "payload": {
+        "attempt_id": "10000000-0000-4000-8000-000000000001",
+        "attempt_revision": 3,
+        "page_index": 0,
+        "ink_revision": 2,
+        "page_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+        "bbox_coordinate_system": "NORMALIZED_TOP_LEFT_XYWH",
+        "regions": [
+          {
+            "region_id": "local-region-derivative",
+            "bbox": { "x": 0.08, "y": 0.2, "width": 0.7, "height": 0.12 },
+            "stroke_ids": ["20000000-0000-4000-8000-000000000001"]
+          }
+        ],
+        "steps": [
+          {
+            "draft_id": "local-step-derivative",
+            "source_region_ids": ["local-region-derivative"],
+            "source_stroke_ids": ["20000000-0000-4000-8000-000000000001"],
+            "raw_ocr_latex": "y'=x^2-2x-3",
+            "edited_latex": null,
+            "suggested_step_type": "DERIVATIVE_CALCULATION",
+            "review_status": "NEEDS_REVIEW",
+            "recognition_confidence": null,
+            "recognizer": "browser-comer",
+            "mathematical_validity": "UNDETERMINED"
+          }
+        ]
+      }
+    },
+    {
+      "schema_version": 1,
+      "contract": "MathViewContextV1",
+      "example_only": true,
+      "payload": {
+        "context_id": "40000000-0000-4000-8000-000000000001",
+        "attempt_id": "10000000-0000-4000-8000-000000000001",
+        "attempt_revision": 4,
+        "question_id": "30000000-0000-4000-8000-000000000001",
+        "source": {
+          "kind": "STEP_REVISION",
+          "step_id": "50000000-0000-4000-8000-000000000001",
+          "step_revision_id": "60000000-0000-4000-8000-000000000001",
+          "step_revision_number": 1,
+          "page_index": 0,
+          "source_ink_revision": 2,
+          "source_status": "OCR_REVIEWED",
+          "raw_latex": "y'=x^2-2x-3"
+        },
+        "formula_role": "DERIVATIVE",
+        "display_label": "Đạo hàm y′ của hàm số đang xét",
+        "renderer": "SINGLE_FORMULA",
+        "render_spec": {
+          "expression": "y=x^2-2*x-3",
+          "settings": {
+            "parameters": {},
+            "scale": 1,
+            "offset": 0,
+            "shift_x": 0,
+            "shift_y": 0,
+            "domain": 3,
+            "view_mode": "2D",
+            "slice_y": 0,
+            "scene": null,
+            "lab": null
+          }
+        },
+        "renderer_adaptation": "Output-axis alias for a derivative curve; preserves the original step text and derivative label. Not an algebraic correction.",
+        "mathematical_validity": "UNDETERMINED",
+        "concept_ids": ["70000000-0000-4000-8000-000000000001"],
+        "knowledge_refs": [],
+        "knowledge_availability": "PENDING_PUBLICATION",
+        "reference_answer_included": false
+      }
+    },
+    {
+      "schema_version": 1,
+      "contract": "AssessmentResultV1",
+      "example_only": true,
+      "payload": {
+        "attempt_id": "10000000-0000-4000-8000-000000000001",
+        "attempt_revision": 5,
+        "assessment_status": "NEEDS_REVIEW",
+        "evaluator_type": "NOT_RUN",
+        "is_final": false,
+        "official_score": null,
+        "needs_teacher_review": true,
+        "reason_code": "REFERENCE_NOT_APPROVED",
+        "step_findings": [],
+        "publish_learning_evidence": false,
+        "learning_evidence_event_id": null
+      }
+    },
+    {
+      "schema_version": 1,
+      "contract": "LearnerContextV1",
+      "example_only": true,
+      "payload": {
+        "subject_code": "MATH_G12",
+        "basis": "BACKEND_LEARNING_STATE_PROJECTION",
+        "targets": [
+          {
+            "concept_id": "70000000-0000-4000-8000-000000000001",
+            "concept_code": "EXAMPLE_M12_DERIVATIVE_SIGN",
+            "display_state": "INSUFFICIENT_EVIDENCE",
+            "mastery_score": null,
+            "confidence": null,
+            "explanation": "Mở đồ thị và nhận AI review tham khảo chưa tạo bằng chứng học tập chính thức."
+          }
+        ],
+        "next_action": {
+          "kind": "VERIFY_PREREQUISITE",
+          "target_concept_id": "70000000-0000-4000-8000-000000000001",
+          "reason": "Dùng bài kiểm tra đã duyệt để bổ sung bằng chứng khi phù hợp với luồng học."
+        },
+        "evidence_event_ids": []
+      }
+    }
+  ]
+}

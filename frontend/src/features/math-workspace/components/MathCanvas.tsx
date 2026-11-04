@@ -10,6 +10,7 @@ import {
   strokeIntersectsPoint,
 } from "../utils/ink-math";
 import styles from "../MathWorkspace.module.css";
+import { selectLassoStrokes } from "../utils/lasso";
 
 interface MathCanvasProps {
   strokes: InkStroke[];
@@ -21,6 +22,8 @@ interface MathCanvasProps {
   paperGrid: PaperGrid;
   zoomLevel: number;
   isReadOnly?: boolean;
+  selectedStrokeIds?: string[];
+  onLassoSelect?: (strokes: InkStroke[]) => void;
 }
 
 export function MathCanvas({
@@ -33,11 +36,17 @@ export function MathCanvas({
   paperGrid,
   zoomLevel,
   isReadOnly = false,
+  selectedStrokeIds = [],
+  onLassoSelect,
 }: MathCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const activeStrokeRef = useRef<InkStroke | null>(null);
   const isPointerDownRef = useRef(false);
   const [isDrawing, setIsDrawing] = useState(false);
+  const lassoRef = useRef<InkPoint[]>([]);
+  const [lassoPath, setLassoPath] = useState<InkPoint[]>([]);
+
+  useEffect(() => { lassoRef.current = []; setLassoPath([]); }, [currentTool]);
 
   // Redraw all strokes on canvas
   const redrawAllStrokes = useCallback(
@@ -123,7 +132,7 @@ export function MathCanvas({
 
   // Pointer event handlers
   const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
-    if (isReadOnly) return;
+    if ((isReadOnly && currentTool !== "lasso") || e.button !== 0) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -138,6 +147,12 @@ export function MathCanvas({
     const normX = normalizeCoordinate(clientX, rect.width);
     const normY = normalizeCoordinate(clientY, rect.height);
     const pressure = e.pressure && e.pressure > 0 ? e.pressure : 0.5;
+
+    if (currentTool === "lasso") {
+      lassoRef.current = [{ x: normX, y: normY, pressure }];
+      setLassoPath([...lassoRef.current]);
+      return;
+    }
 
     if (currentTool === "eraser") {
       // Stroke eraser: detect and delete any stroke near cursor
@@ -199,6 +214,15 @@ export function MathCanvas({
     const normX = normalizeCoordinate(clientX, rect.width);
     const normY = normalizeCoordinate(clientY, rect.height);
 
+    if (currentTool === "lasso") {
+      const last = lassoRef.current[lassoRef.current.length - 1];
+      if (!last || Math.hypot(last.x - normX, last.y - normY) > 0.002) {
+        if (lassoRef.current.length < 1000) lassoRef.current.push({ x: normX, y: normY, pressure: 0.5 });
+        setLassoPath([...lassoRef.current]);
+      }
+      return;
+    }
+
     if (currentTool === "eraser") {
       const threshold = 16 / rect.width;
       const updated = strokes.filter(
@@ -259,6 +283,12 @@ export function MathCanvas({
     const completed = activeStrokeRef.current;
     activeStrokeRef.current = null;
 
+    if (currentTool === "lasso") {
+      onLassoSelect?.(selectLassoStrokes(strokes, lassoRef.current));
+      lassoRef.current = []; setLassoPath([]);
+      return;
+    }
+
     if (completed && completed.points.length > 0) {
       onStrokesChange([...strokes, completed]);
     }
@@ -291,12 +321,26 @@ export function MathCanvas({
             width: `${A4_WIDTH}px`,
             height: `${A4_HEIGHT}px`,
             touchAction: "none",
+            cursor: currentTool === "lasso" ? "crosshair" : undefined,
           }}
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
-          onPointerCancel={handlePointerUp}
+          onPointerCancel={(event) => {
+            isPointerDownRef.current = false; activeStrokeRef.current = null;
+            lassoRef.current = []; setLassoPath([]); setIsDrawing(false);
+            if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
+            redrawAllStrokes(event.currentTarget, strokes);
+          }}
         />
+        <svg viewBox={`0 0 ${A4_WIDTH} ${A4_HEIGHT}`} aria-hidden="true"
+          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" }}>
+          {strokes.filter((stroke) => selectedStrokeIds.includes(stroke.id)).map((stroke) => <polyline key={stroke.id}
+            points={stroke.points.map((p) => `${p.x * A4_WIDTH},${p.y * A4_HEIGHT}`).join(" ")}
+            fill="none" stroke="#23bba3" strokeOpacity="0.35" strokeWidth={stroke.width + 9} strokeLinecap="round" strokeLinejoin="round" />)}
+          {lassoPath.length > 1 ? <polygon points={lassoPath.map((p) => `${p.x * A4_WIDTH},${p.y * A4_HEIGHT}`).join(" ")}
+            fill="#1cb59818" stroke="#13896d" strokeWidth="2" strokeDasharray="7 4" /> : null}
+        </svg>
       </div>
     </div>
   );

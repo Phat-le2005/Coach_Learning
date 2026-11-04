@@ -1,0 +1,762 @@
+{
+  "schema_version": "calculus-cohort-annotations/v1",
+  "source_pdf_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927",
+  "selection": "TARGETED_DEVELOPMENT_COHORT_NOT_RANDOM_OR_HELDOUT",
+  "review_scope": "CODEX_VISUAL_SOURCE_TRANSCRIPTION_AND_INDEPENDENT_CALCULUS_SANDBOX_ONLY",
+  "reviewed_page_images": [
+    {
+      "page_number": 3,
+      "sha256": "cc9e295de83e986440193505db00cc5ef22a23966b8a7c34665f03a35d5a13d2"
+    },
+    {
+      "page_number": 12,
+      "sha256": "f1dfde65e73535f360af3e226da7970f3de618ce7a5681236ddf0ea78ad27697"
+    },
+    {
+      "page_number": 13,
+      "sha256": "dab35fe4627e1b5a3198647b9a3016688e8e8d70ad7daab9130aceb1e592bdca"
+    },
+    {
+      "page_number": 14,
+      "sha256": "3e98b556a85de1d78847e81775ab579713505786dcf3aba0ab902fc919515c7a"
+    },
+    {
+      "page_number": 15,
+      "sha256": "33edcc617dbf1fe7b97e60284495e693f68c0974acbce52b66bc01706e9a2c10"
+    },
+    {
+      "page_number": 16,
+      "sha256": "522622a9c130f47638016ce5174dda3c44403e47967e026713e02d4e61d170e8"
+    }
+  ],
+  "expected_ready_numbers": [
+    154,
+    171,
+    172,
+    175,
+    176,
+    177,
+    178,
+    179,
+    180,
+    181
+  ],
+  "expected_held_numbers": [
+    173,
+    182
+  ],
+  "cases": [
+    {
+      "source_number": 154,
+      "question_id": "5db1fc66ab0a4255:q154:n4",
+      "variable": "I",
+      "function_latex": "P(I)=12*I-I^2/2",
+      "domain": {
+        "intervals": [
+          {
+            "left": "0",
+            "right": "inf",
+            "left_open": true,
+            "right_open": true
+          }
+        ],
+        "excluded": []
+      },
+      "task": {
+        "kind": "INCREASING_ENDPOINT_LINEAR",
+        "left_coefficient": "1",
+        "right_coefficient": "1"
+      },
+      "printed_answer": "12",
+      "source_claims": {
+        "increasing": {
+          "intervals": [
+            {
+              "left": "0",
+              "right": "12",
+              "left_open": true,
+              "right_open": true
+            }
+          ],
+          "excluded": []
+        }
+      },
+      "reference_work": {
+        "derivative": "P'(I)=12-I",
+        "critical_points": [
+          "12"
+        ],
+        "final": "12",
+        "increasing": {
+          "intervals": [
+            {
+              "left": "0",
+              "right": "12",
+              "left_open": true,
+              "right_open": true
+            }
+          ],
+          "excluded": []
+        }
+      },
+      "annotation_notes": [
+        "Đề yêu cầu I>0. Bảng biến thiên trong lời giải kéo dài đến biên I=0; khoảng đồng biến được hỏi vẫn là khoảng mở."
+      ],
+      "reference_work_basis": "SOURCE_TRANSCRIPTION_PLUS_INDEPENDENT_MANUAL_CALCULUS_FOR_UNPRINTED_INTERMEDIATE_STEPS"
+    },
+    {
+      "source_number": 171,
+      "question_id": "5db1fc66ab0a4255:q171:n21",
+      "variable": "x",
+      "function_latex": "y=-x^3/3+2*x^2+5*x-44",
+      "domain": {
+        "intervals": [
+          {
+            "left": "-inf",
+            "right": "inf",
+            "left_open": true,
+            "right_open": true
+          }
+        ],
+        "excluded": []
+      },
+      "task": {
+        "kind": "INCREASING_ENDPOINT_LINEAR",
+        "left_coefficient": "1",
+        "right_coefficient": "1"
+      },
+      "printed_answer": "4",
+      "source_claims": {
+        "increasing": {
+          "intervals": [
+            {
+              "left": "-1",
+              "right": "5",
+              "left_open": true,
+              "right_open": true
+            }
+          ],
+          "excluded": []
+        }
+      },
+      "reference_work": {
+        "derivative": "y'=-x^2+4*x+5",
+        "critical_points": [
+          "-1",
+          "5"
+        ],
+        "final": "4",
+        "increasing": {
+          "intervals": [
+            {
+              "left": "-1",
+              "right": "5",
+              "left_open": true,
+              "right_open": true
+            }
+          ],
+          "excluded": []
+        }
+      },
+      "annotation_notes": [],
+      "reference_work_basis": "SOURCE_TRANSCRIPTION_PLUS_INDEPENDENT_MANUAL_CALCULUS_FOR_UNPRINTED_INTERMEDIATE_STEPS"
+    },
+    {
+      "source_number": 172,
+      "question_id": "5db1fc66ab0a4255:q172:n22",
+      "variable": "x",
+      "function_latex": "y=-x^3+3*x^2+9*x+4",
+      "domain": {
+        "intervals": [
+          {
+            "left": "-inf",
+            "right": "inf",
+            "left_open": true,
+            "right_open": true
+          }
+        ],
+        "excluded": []
+      },
+      "task": {
+        "kind": "INCREASING_ENDPOINT_LINEAR",
+        "left_coefficient": "-1",
+        "right_coefficient": "1"
+      },
+      "printed_answer": "4",
+      "source_claims": {
+        "increasing": {
+          "intervals": [
+            {
+              "left": "-1",
+              "right": "3",
+              "left_open": true,
+              "right_open": true
+            }
+          ],
+          "excluded": []
+        }
+      },
+      "reference_work": {
+        "derivative": "y'=-3*x^2+6*x+9",
+        "critical_points": [
+          "-1",
+          "3"
+        ],
+        "final": "4",
+        "increasing": {
+          "intervals": [
+            {
+              "left": "-1",
+              "right": "3",
+              "left_open": true,
+              "right_open": true
+            }
+          ],
+          "excluded": []
+        }
+      },
+      "annotation_notes": [],
+      "reference_work_basis": "SOURCE_TRANSCRIPTION_PLUS_INDEPENDENT_MANUAL_CALCULUS_FOR_UNPRINTED_INTERMEDIATE_STEPS"
+    },
+    {
+      "source_number": 173,
+      "question_id": "5db1fc66ab0a4255:q173:n23",
+      "variable": "x",
+      "function_latex": "y=(x^2-2*x+5)/(x-1)",
+      "domain": {
+        "intervals": [
+          {
+            "left": "-inf",
+            "right": "inf",
+            "left_open": true,
+            "right_open": true
+          }
+        ],
+        "excluded": [
+          "1"
+        ]
+      },
+      "task": {
+        "kind": "RIGHT_INCREASING_START"
+      },
+      "printed_answer": "3",
+      "source_claims": {
+        "increasing": {
+          "intervals": [
+            {
+              "left": "-inf",
+              "right": "1",
+              "left_open": true,
+              "right_open": true
+            },
+            {
+              "left": "3",
+              "right": "inf",
+              "left_open": true,
+              "right_open": true
+            }
+          ],
+          "excluded": []
+        }
+      },
+      "reference_work": {
+        "derivative": "y'=(x^2-2*x-3)/(x-1)^2",
+        "critical_points": [
+          "-1",
+          "3"
+        ],
+        "final": "3",
+        "increasing": {
+          "intervals": [
+            {
+              "left": "-inf",
+              "right": "-1",
+              "left_open": true,
+              "right_open": true
+            },
+            {
+              "left": "3",
+              "right": "inf",
+              "left_open": true,
+              "right_open": true
+            }
+          ],
+          "excluded": []
+        }
+      },
+      "annotation_notes": [
+        "Dòng kết luận in khoảng đồng biến (-∞;1), trong khi đạo hàm và bảng xét dấu của chính bài cho (-∞;-1). Giữ nguyên mâu thuẫn này dù đáp án a=3 vẫn đúng."
+      ],
+      "reference_work_basis": "SOURCE_TRANSCRIPTION_PLUS_INDEPENDENT_MANUAL_CALCULUS_FOR_UNPRINTED_INTERMEDIATE_STEPS"
+    },
+    {
+      "source_number": 175,
+      "question_id": "5db1fc66ab0a4255:q175:n25",
+      "variable": "x",
+      "function_latex": "y=x^3-3*x^2+2",
+      "domain": {
+        "intervals": [
+          {
+            "left": "-inf",
+            "right": "inf",
+            "left_open": true,
+            "right_open": true
+          }
+        ],
+        "excluded": []
+      },
+      "task": {
+        "kind": "SECANT_LINEAR_COMBINATION",
+        "a_coefficient": "-1",
+        "b_coefficient": "1"
+      },
+      "printed_answer": "4",
+      "source_claims": {
+        "secant_line": "y=-2*x+2"
+      },
+      "reference_work": {
+        "derivative": "y'=3*x^2-6*x",
+        "critical_points": [
+          "0",
+          "2"
+        ],
+        "final": "4",
+        "points": [
+          [
+            "0",
+            "2"
+          ],
+          [
+            "2",
+            "-2"
+          ]
+        ],
+        "line": "y=-2*x+2"
+      },
+      "annotation_notes": [],
+      "reference_work_basis": "SOURCE_TRANSCRIPTION_PLUS_INDEPENDENT_MANUAL_CALCULUS_FOR_UNPRINTED_INTERMEDIATE_STEPS",
+      "alternate_work": {
+        "polynomial_division": {
+          "derivative": "y'=3*x^2-6*x",
+          "division": {
+            "quotient": "(x-1)/3",
+            "remainder": "-2*x+2"
+          },
+          "line": "y=-2*x+2",
+          "final": "4"
+        }
+      }
+    },
+    {
+      "source_number": 176,
+      "question_id": "5db1fc66ab0a4255:q176:n26",
+      "variable": "x",
+      "function_latex": "y=x^3+3*x^2-9*x",
+      "domain": {
+        "intervals": [
+          {
+            "left": "-inf",
+            "right": "inf",
+            "left_open": true,
+            "right_open": true
+          }
+        ],
+        "excluded": []
+      },
+      "task": {
+        "kind": "SECANT_LINEAR_COMBINATION",
+        "a_coefficient": "-1",
+        "b_coefficient": "4"
+      },
+      "printed_answer": "20",
+      "source_claims": {
+        "secant_line": "y=-8*x+3"
+      },
+      "reference_work": {
+        "derivative": "y'=3*x^2+6*x-9",
+        "critical_points": [
+          "-3",
+          "1"
+        ],
+        "final": "20",
+        "points": [
+          [
+            "-3",
+            "27"
+          ],
+          [
+            "1",
+            "-5"
+          ]
+        ],
+        "line": "y=-8*x+3"
+      },
+      "annotation_notes": [],
+      "reference_work_basis": "SOURCE_TRANSCRIPTION_PLUS_INDEPENDENT_MANUAL_CALCULUS_FOR_UNPRINTED_INTERMEDIATE_STEPS",
+      "alternate_work": {
+        "polynomial_division": {
+          "derivative": "y'=3*x^2+6*x-9",
+          "division": {
+            "quotient": "(x+1)/3",
+            "remainder": "-8*x+3"
+          },
+          "line": "y=-8*x+3",
+          "final": "20"
+        }
+      }
+    },
+    {
+      "source_number": 177,
+      "question_id": "5db1fc66ab0a4255:q177:n27",
+      "variable": "x",
+      "function_latex": "y=x^3-3*x^2+5",
+      "domain": {
+        "intervals": [
+          {
+            "left": "-inf",
+            "right": "inf",
+            "left_open": true,
+            "right_open": true
+          }
+        ],
+        "excluded": []
+      },
+      "task": {
+        "kind": "EXTREMA_DISTANCE"
+      },
+      "printed_answer": "4.47",
+      "source_claims": {
+        "extrema_points": [
+          [
+            "0",
+            "5"
+          ],
+          [
+            "2",
+            "1"
+          ]
+        ]
+      },
+      "reference_work": {
+        "derivative": "y'=3*x^2-6*x",
+        "critical_points": [
+          "0",
+          "2"
+        ],
+        "final": "4.47",
+        "points": [
+          [
+            "0",
+            "5"
+          ],
+          [
+            "2",
+            "1"
+          ]
+        ],
+        "metric": "2*sqrt(5)"
+      },
+      "annotation_notes": [],
+      "reference_work_basis": "SOURCE_TRANSCRIPTION_PLUS_INDEPENDENT_MANUAL_CALCULUS_FOR_UNPRINTED_INTERMEDIATE_STEPS",
+      "round_digits": 2
+    },
+    {
+      "source_number": 178,
+      "question_id": "5db1fc66ab0a4255:q178:n28",
+      "variable": "x",
+      "function_latex": "y=x^3-3*x^2-9*x+1",
+      "domain": {
+        "intervals": [
+          {
+            "left": "-inf",
+            "right": "inf",
+            "left_open": true,
+            "right_open": true
+          }
+        ],
+        "excluded": []
+      },
+      "task": {
+        "kind": "ORIGIN_LINE_DISTANCE"
+      },
+      "printed_answer": "0.25",
+      "source_claims": {
+        "extrema_points": [
+          [
+            "-1",
+            "6"
+          ],
+          [
+            "3",
+            "-26"
+          ]
+        ],
+        "secant_line": "y=-8*x-2"
+      },
+      "reference_work": {
+        "derivative": "y'=3*x^2-6*x-9",
+        "critical_points": [
+          "-1",
+          "3"
+        ],
+        "final": "0.25",
+        "points": [
+          [
+            "-1",
+            "6"
+          ],
+          [
+            "3",
+            "-26"
+          ]
+        ],
+        "line": "y=-8*x-2"
+      },
+      "annotation_notes": [],
+      "reference_work_basis": "SOURCE_TRANSCRIPTION_PLUS_INDEPENDENT_MANUAL_CALCULUS_FOR_UNPRINTED_INTERMEDIATE_STEPS",
+      "round_digits": 2
+    },
+    {
+      "source_number": 179,
+      "question_id": "5db1fc66ab0a4255:q179:n29",
+      "variable": "x",
+      "function_latex": "y=(3*x^2+13*x+19)/(x+3)",
+      "domain": {
+        "intervals": [
+          {
+            "left": "-inf",
+            "right": "inf",
+            "left_open": true,
+            "right_open": true
+          }
+        ],
+        "excluded": [
+          "-3"
+        ]
+      },
+      "task": {
+        "kind": "SECANT_LINEAR_COMBINATION",
+        "a_coefficient": "1",
+        "b_coefficient": "1"
+      },
+      "printed_answer": "19",
+      "source_claims": {
+        "secant_line": "y=6*x+13"
+      },
+      "reference_work": {
+        "derivative": "y'=(3*x^2+18*x+20)/(x+3)^2",
+        "critical_points": [
+          "-3-sqrt(21)/3",
+          "-3+sqrt(21)/3"
+        ],
+        "final": "19",
+        "points": [
+          [
+            "-3-sqrt(21)/3",
+            "-5-2*sqrt(21)"
+          ],
+          [
+            "-3+sqrt(21)/3",
+            "-5+2*sqrt(21)"
+          ]
+        ],
+        "line": "y=6*x+13"
+      },
+      "annotation_notes": [],
+      "reference_work_basis": "SOURCE_TRANSCRIPTION_PLUS_INDEPENDENT_MANUAL_CALCULUS_FOR_UNPRINTED_INTERMEDIATE_STEPS",
+      "alternate_work": {
+        "rational_critical_ratio": {
+          "numerator_derivative": "u'=6*x+13",
+          "denominator_derivative": "v'=1",
+          "critical_rule": {
+            "rule": "F_EQUALS_U_PRIME_OVER_V_PRIME_AT_CRITICAL",
+            "ratio": "y=6*x+13"
+          },
+          "line": "y=6*x+13",
+          "final": "19"
+        }
+      }
+    },
+    {
+      "source_number": 180,
+      "question_id": "5db1fc66ab0a4255:q180:n30",
+      "variable": "x",
+      "function_latex": "y=(-x^2+2*x-1)/(x+2)",
+      "domain": {
+        "intervals": [
+          {
+            "left": "-inf",
+            "right": "inf",
+            "left_open": true,
+            "right_open": true
+          }
+        ],
+        "excluded": [
+          "-2"
+        ]
+      },
+      "task": {
+        "kind": "SECANT_LINEAR_COMBINATION",
+        "a_coefficient": "-4",
+        "b_coefficient": "5"
+      },
+      "printed_answer": "18",
+      "source_claims": {
+        "secant_line": "y=-2*x+2"
+      },
+      "reference_work": {
+        "derivative": "y'=(-x^2-4*x+5)/(x+2)^2",
+        "critical_points": [
+          "-5",
+          "1"
+        ],
+        "final": "18",
+        "points": [
+          [
+            "-5",
+            "12"
+          ],
+          [
+            "1",
+            "0"
+          ]
+        ],
+        "line": "y=-2*x+2"
+      },
+      "annotation_notes": [],
+      "reference_work_basis": "SOURCE_TRANSCRIPTION_PLUS_INDEPENDENT_MANUAL_CALCULUS_FOR_UNPRINTED_INTERMEDIATE_STEPS",
+      "alternate_work": {
+        "rational_critical_ratio": {
+          "numerator_derivative": "u'=-2*x+2",
+          "denominator_derivative": "v'=1",
+          "critical_rule": {
+            "rule": "F_EQUALS_U_PRIME_OVER_V_PRIME_AT_CRITICAL",
+            "ratio": "y=-2*x+2"
+          },
+          "line": "y=-2*x+2",
+          "final": "18"
+        }
+      }
+    },
+    {
+      "source_number": 181,
+      "question_id": "5db1fc66ab0a4255:q181:n31",
+      "variable": "x",
+      "function_latex": "y=-x+1-1/(x+2)",
+      "domain": {
+        "intervals": [
+          {
+            "left": "-inf",
+            "right": "inf",
+            "left_open": true,
+            "right_open": true
+          }
+        ],
+        "excluded": [
+          "-2"
+        ]
+      },
+      "task": {
+        "kind": "SECANT_LINEAR_COMBINATION",
+        "a_coefficient": "1",
+        "b_coefficient": "-2025"
+      },
+      "printed_answer": "2023",
+      "source_claims": {
+        "secant_line": "y=-2*x-1"
+      },
+      "reference_work": {
+        "derivative": "y'=(-x^2-4*x-3)/(x+2)^2",
+        "critical_points": [
+          "-3",
+          "-1"
+        ],
+        "final": "2023",
+        "points": [
+          [
+            "-3",
+            "5"
+          ],
+          [
+            "-1",
+            "1"
+          ]
+        ],
+        "line": "y=-2*x-1"
+      },
+      "annotation_notes": [],
+      "reference_work_basis": "SOURCE_TRANSCRIPTION_PLUS_INDEPENDENT_MANUAL_CALCULUS_FOR_UNPRINTED_INTERMEDIATE_STEPS",
+      "alternate_work": {
+        "rational_critical_ratio": {
+          "numerator_derivative": "u'=-2*x-1",
+          "denominator_derivative": "v'=1",
+          "critical_rule": {
+            "rule": "F_EQUALS_U_PRIME_OVER_V_PRIME_AT_CRITICAL",
+            "ratio": "y=-2*x-1"
+          },
+          "line": "y=-2*x-1",
+          "final": "2023"
+        }
+      }
+    },
+    {
+      "source_number": 182,
+      "question_id": "5db1fc66ab0a4255:q182:n32",
+      "variable": "x",
+      "function_latex": "y=(x^2-4*x+5)/(x-1)",
+      "domain": {
+        "intervals": [
+          {
+            "left": "-inf",
+            "right": "inf",
+            "left_open": true,
+            "right_open": true
+          }
+        ],
+        "excluded": [
+          "1"
+        ]
+      },
+      "task": {
+        "kind": "AXIS_TRIANGLE_AREA"
+      },
+      "printed_answer": "4",
+      "source_claims": {
+        "extrema_points": [
+          [
+            "1-sqrt(2)",
+            "2*sqrt(2)-2"
+          ],
+          [
+            "1+sqrt(2)",
+            "-2-2*sqrt(2)"
+          ]
+        ],
+        "secant_line": "y=2*x-4"
+      },
+      "reference_work": {
+        "derivative": "y'=(x^2-2*x-1)/(x-1)^2",
+        "critical_points": [
+          "1-sqrt(2)",
+          "1+sqrt(2)"
+        ],
+        "final": "4",
+        "points": [
+          [
+            "1-sqrt(2)",
+            "-2-2*sqrt(2)"
+          ],
+          [
+            "1+sqrt(2)",
+            "-2+2*sqrt(2)"
+          ]
+        ],
+        "line": "y=2*x-4"
+      },
+      "annotation_notes": [
+        "Hai tung độ A và B bị in hoán đổi. Đường thẳng y=2x-4 và diện tích 4 khớp phép tính độc lập, nhưng không khớp cặp tọa độ đã in. Không tự sửa nguồn."
+      ],
+      "reference_work_basis": "SOURCE_TRANSCRIPTION_PLUS_INDEPENDENT_MANUAL_CALCULUS_FOR_UNPRINTED_INTERMEDIATE_STEPS"
+    }
+  ]
+}

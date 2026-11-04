@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { Users, BookOpen, ClipboardList, BarChart3, ArrowRight, AlertCircle, RefreshCw, Network } from "lucide-react";
+import Link from "next/link";
+import canvasStyles from "@/features/math-canvas/MathCanvas.module.css";
 import {
   teacherApi,
   TeacherApiError,
@@ -276,6 +278,7 @@ export function TeacherDashboardClient({
   return (
     <div className={styles.dashboard}>
       {/* 1. Header */}
+      <Link href="/teacher/math-canvas" className={canvasStyles.teacherLink}>Math Canvas · Xem bài khám phá học sinh →</Link>
       <TeacherHeader
         teacherName={teacherName}
         teacherEmail={teacherEmail}

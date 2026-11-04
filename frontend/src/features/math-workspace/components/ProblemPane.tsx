@@ -19,6 +19,7 @@ interface ProblemPaneProps {
   attempt: SolutionAttemptRead | null;
   isCollapsed: boolean;
   onToggleCollapse: () => void;
+  onVisualizeFormula?: (formula: string) => void;
   onDeleteStep: (stepId: string) => Promise<void>;
   onEditVariationTable: (stepId: string, payload: VariationTablePayload) => void;
   onSubmitSolution: () => Promise<void>;
@@ -29,6 +30,7 @@ interface ProblemPaneProps {
   gradingError: string | null;
   isSubmitting: boolean;
   isReviewing: boolean;
+  submissionBlocked: boolean;
 }
 
 function variationPayload(step: SolutionStepRead): VariationTablePayload | null {
@@ -42,6 +44,7 @@ export function ProblemPane({
   attempt,
   isCollapsed,
   onToggleCollapse,
+  onVisualizeFormula,
   onDeleteStep,
   onEditVariationTable,
   onSubmitSolution,
@@ -52,6 +55,7 @@ export function ProblemPane({
   gradingError,
   isSubmitting,
   isReviewing,
+  submissionBlocked,
 }: ProblemPaneProps) {
   const [confirmStepId, setConfirmStepId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -197,6 +201,8 @@ export function ProblemPane({
                     return <li key={step.id}>
                       <div className={styles.savedStepHeader}>
                         <strong>Bước {step.step_index}</strong>
+                        {!table && step.content_latex && onVisualizeFormula ? <button type="button" className={styles.buttonSecondary}
+                          onClick={() => onVisualizeFormula(step.content_latex!)}>Xem hình 2D/3D</button> : null}
                         {canDelete && table ? (
                           <button type="button" className={styles.buttonSecondary}
                             onClick={() => onEditVariationTable(step.id, table)}>Sửa bảng</button>
@@ -326,8 +332,8 @@ export function ProblemPane({
                 type="button"
                 className={styles.primaryGradeButton}
                 onClick={() => void onSubmitSolution()}
-                disabled={isSubmitting || isReviewing || !submission.canSubmit}
-                title={!attempt.steps?.length ? "Hãy xác nhận ít nhất một bước giải để nộp bài" : "Nộp bài và kiểm tra các bước đã xác nhận"}
+                disabled={isSubmitting || isReviewing || submissionBlocked || !submission.canSubmit}
+                title={submissionBlocked ? "Hãy hoàn tất phục hồi lưu OCR trước khi nộp bài" : !attempt.steps?.length ? "Hãy xác nhận ít nhất một bước giải để nộp bài" : "Nộp bài và kiểm tra các bước đã xác nhận"}
               >
                 <Sparkles size={16} />
                 {isSubmitting ? "Đang nộp bài..." : isReviewing ? "Đang kiểm tra bài..." : "Nộp bài & kiểm tra"}

@@ -1,0 +1,2779 @@
+{
+  "source": {
+    "name": "chuyen-de-nguyen-ham-tich-phan-va-ung-dung-toan-12-phan-nhat-linh.pdf",
+    "catalog_label": "Toan12/integrals/theory_and_examples/chuyen-de-nguyen-ham-tich-phan-va-ung-dung-toan-12-phan-nhat-linh.pdf",
+    "sha256": "821a6676326fbe3b4205f126c35baed1ccf5e01a9b26f3bd3f5930e17bff5dde",
+    "page_count": 364,
+    "coordinate_unit": "pdf_point",
+    "coordinate_origin": "top-left"
+  },
+  "page": {
+    "page_number": 307,
+    "source_sha256": "821a6676326fbe3b4205f126c35baed1ccf5e01a9b26f3bd3f5930e17bff5dde",
+    "width": 595.32,
+    "height": 841.92,
+    "blocks": [
+      {
+        "block_id": "p0307-font-l0011",
+        "bbox": [
+          42.48,
+          171.796,
+          513.34,
+          185.132
+        ],
+        "text_raw": "Câu 27: Diện tích hình phẳng giới hạn bởi đồ thị hàm số y = x2 + 2 và đường thẳng y = 6 bằng",
+        "glyphs": [
+          {
+            "text": "C",
+            "bbox": [
+              42.48,
+              173.132,
+              51.144,
+              185.132
+            ],
+            "font": "TimesNewRomanPS-BoldMT",
+            "size": 12.0,
+            "original_text": "C",
+            "source_key": "p0307-font-l0011:0",
+            "mapping_flag": null
+          },
+          {
+            "text": "â",
+            "bbox": [
+              51.144,
+              173.132,
+              57.144,
+              185.132
+            ],
+            "font": "TimesNewRomanPS-BoldMT",
+            "size": 12.0,
+            "original_text": "â",
+            "source_key": "p0307-font-l0011:1",
+            "mapping_flag": null
+          },
+          {
+            "text": "u",
+            "bbox": [
+              57.144,
+              173.132,
+              63.816,
+              185.132
+            ],
+            "font": "TimesNewRomanPS-BoldMT",
+            "size": 12.0,
+            "original_text": "u",
+            "source_key": "p0307-font-l0011:2",
+            "mapping_flag": null
+          },
+          {
+            "text": "2",
+            "bbox": [
+              66.816,
+              173.132,
+              72.816,
+              185.132
+            ],
+            "font": "TimesNewRomanPS-BoldMT",
+            "size": 12.0,
+            "original_text": "2",
+            "source_key": "p0307-font-l0011:3",
+            "mapping_flag": null
+          },
+          {
+            "text": "7",
+            "bbox": [
+              72.816,
+              173.132,
+              78.816,
+              185.132
+            ],
+            "font": "TimesNewRomanPS-BoldMT",
+            "size": 12.0,
+            "original_text": "7",
+            "source_key": "p0307-font-l0011:4",
+            "mapping_flag": null
+          },
+          {
+            "text": ":",
+            "bbox": [
+              78.816,
+              173.132,
+              82.812,
+              185.132
+            ],
+            "font": "TimesNewRomanPS-BoldMT",
+            "size": 12.0,
+            "original_text": ":",
+            "source_key": "p0307-font-l0011:5",
+            "mapping_flag": null
+          },
+          {
+            "text": "D",
+            "bbox": [
+              92.064,
+              173.132,
+              100.728,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "D",
+            "source_key": "p0307-font-l0011:6",
+            "mapping_flag": null
+          },
+          {
+            "text": "i",
+            "bbox": [
+              100.704,
+              173.132,
+              104.04,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "i",
+            "source_key": "p0307-font-l0011:7",
+            "mapping_flag": null
+          },
+          {
+            "text": "ệ",
+            "bbox": [
+              104.06,
+              173.132,
+              109.388,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "ệ",
+            "source_key": "p0307-font-l0011:8",
+            "mapping_flag": null
+          },
+          {
+            "text": "n",
+            "bbox": [
+              109.34,
+              173.132,
+              115.34,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "n",
+            "source_key": "p0307-font-l0011:9",
+            "mapping_flag": null
+          },
+          {
+            "text": "t",
+            "bbox": [
+              118.34,
+              173.132,
+              121.676,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "t",
+            "source_key": "p0307-font-l0011:10",
+            "mapping_flag": null
+          },
+          {
+            "text": "í",
+            "bbox": [
+              121.676,
+              173.132,
+              125.012,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "í",
+            "source_key": "p0307-font-l0011:11",
+            "mapping_flag": null
+          },
+          {
+            "text": "c",
+            "bbox": [
+              125.048,
+              173.132,
+              130.376,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "c",
+            "source_key": "p0307-font-l0011:12",
+            "mapping_flag": null
+          },
+          {
+            "text": "h",
+            "bbox": [
+              130.328,
+              173.132,
+              136.328,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "h",
+            "source_key": "p0307-font-l0011:13",
+            "mapping_flag": null
+          },
+          {
+            "text": "h",
+            "bbox": [
+              139.328,
+              173.132,
+              145.328,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "h",
+            "source_key": "p0307-font-l0011:14",
+            "mapping_flag": null
+          },
+          {
+            "text": "ì",
+            "bbox": [
+              145.328,
+              173.132,
+              148.664,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "ì",
+            "source_key": "p0307-font-l0011:15",
+            "mapping_flag": null
+          },
+          {
+            "text": "n",
+            "bbox": [
+              148.664,
+              173.132,
+              154.664,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "n",
+            "source_key": "p0307-font-l0011:16",
+            "mapping_flag": null
+          },
+          {
+            "text": "h",
+            "bbox": [
+              154.664,
+              173.132,
+              160.664,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "h",
+            "source_key": "p0307-font-l0011:17",
+            "mapping_flag": null
+          },
+          {
+            "text": "p",
+            "bbox": [
+              163.664,
+              173.132,
+              169.664,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "p",
+            "source_key": "p0307-font-l0011:18",
+            "mapping_flag": null
+          },
+          {
+            "text": "h",
+            "bbox": [
+              169.664,
+              173.132,
+              175.664,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "h",
+            "source_key": "p0307-font-l0011:19",
+            "mapping_flag": null
+          },
+          {
+            "text": "ẳ",
+            "bbox": [
+              175.7,
+              173.132,
+              181.028,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "ẳ",
+            "source_key": "p0307-font-l0011:20",
+            "mapping_flag": null
+          },
+          {
+            "text": "n",
+            "bbox": [
+              181.01,
+              173.132,
+              187.01,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "n",
+            "source_key": "p0307-font-l0011:21",
+            "mapping_flag": null
+          },
+          {
+            "text": "g",
+            "bbox": [
+              187.01,
+              173.132,
+              193.01,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "g",
+            "source_key": "p0307-font-l0011:22",
+            "mapping_flag": null
+          },
+          {
+            "text": "g",
+            "bbox": [
+              196.01,
+              173.132,
+              202.01,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "g",
+            "source_key": "p0307-font-l0011:23",
+            "mapping_flag": null
+          },
+          {
+            "text": "i",
+            "bbox": [
+              202.01,
+              173.132,
+              205.346,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "i",
+            "source_key": "p0307-font-l0011:24",
+            "mapping_flag": null
+          },
+          {
+            "text": "ớ",
+            "bbox": [
+              205.37,
+              173.132,
+              211.718,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "ớ",
+            "source_key": "p0307-font-l0011:25",
+            "mapping_flag": null
+          },
+          {
+            "text": "i",
+            "bbox": [
+              211.73,
+              173.132,
+              215.066,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "i",
+            "source_key": "p0307-font-l0011:26",
+            "mapping_flag": null
+          },
+          {
+            "text": "h",
+            "bbox": [
+              218.066,
+              173.132,
+              224.066,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "h",
+            "source_key": "p0307-font-l0011:27",
+            "mapping_flag": null
+          },
+          {
+            "text": "ạ",
+            "bbox": [
+              224.09,
+              173.132,
+              229.418,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "ạ",
+            "source_key": "p0307-font-l0011:28",
+            "mapping_flag": null
+          },
+          {
+            "text": "n",
+            "bbox": [
+              229.37,
+              173.132,
+              235.37,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "n",
+            "source_key": "p0307-font-l0011:29",
+            "mapping_flag": null
+          },
+          {
+            "text": "b",
+            "bbox": [
+              238.37,
+              173.132,
+              244.37,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "b",
+            "source_key": "p0307-font-l0011:30",
+            "mapping_flag": null
+          },
+          {
+            "text": "ở",
+            "bbox": [
+              244.37,
+              173.132,
+              250.718,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "ở",
+            "source_key": "p0307-font-l0011:31",
+            "mapping_flag": null
+          },
+          {
+            "text": "i",
+            "bbox": [
+              250.73,
+              173.132,
+              254.066,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "i",
+            "source_key": "p0307-font-l0011:32",
+            "mapping_flag": null
+          },
+          {
+            "text": "đ",
+            "bbox": [
+              257.066,
+              173.132,
+              263.066,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "đ",
+            "source_key": "p0307-font-l0011:33",
+            "mapping_flag": null
+          },
+          {
+            "text": "ồ",
+            "bbox": [
+              263.09,
+              173.132,
+              269.09,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "ồ",
+            "source_key": "p0307-font-l0011:34",
+            "mapping_flag": null
+          },
+          {
+            "text": "t",
+            "bbox": [
+              272.09,
+              173.132,
+              275.426,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "t",
+            "source_key": "p0307-font-l0011:35",
+            "mapping_flag": null
+          },
+          {
+            "text": "h",
+            "bbox": [
+              275.45,
+              173.132,
+              281.45,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "h",
+            "source_key": "p0307-font-l0011:36",
+            "mapping_flag": null
+          },
+          {
+            "text": "ị",
+            "bbox": [
+              281.45,
+              173.132,
+              284.786,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "ị",
+            "source_key": "p0307-font-l0011:37",
+            "mapping_flag": null
+          },
+          {
+            "text": "h",
+            "bbox": [
+              287.81,
+              173.132,
+              293.81,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "h",
+            "source_key": "p0307-font-l0011:38",
+            "mapping_flag": null
+          },
+          {
+            "text": "à",
+            "bbox": [
+              293.81,
+              173.132,
+              299.138,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "à",
+            "source_key": "p0307-font-l0011:39",
+            "mapping_flag": null
+          },
+          {
+            "text": "m",
+            "bbox": [
+              299.09,
+              173.132,
+              308.426,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "m",
+            "source_key": "p0307-font-l0011:40",
+            "mapping_flag": null
+          },
+          {
+            "text": "s",
+            "bbox": [
+              311.426,
+              173.132,
+              316.094,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "s",
+            "source_key": "p0307-font-l0011:41",
+            "mapping_flag": null
+          },
+          {
+            "text": "ố",
+            "bbox": [
+              316.15,
+              173.132,
+              322.15,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "ố",
+            "source_key": "p0307-font-l0011:42",
+            "mapping_flag": null
+          },
+          {
+            "text": "y",
+            "bbox": [
+              328.09,
+              173.2,
+              333.411,
+              185.051
+            ],
+            "font": "TimesNewRomanPS-ItalicMT",
+            "size": 11.85017259999995,
+            "original_text": "y",
+            "source_key": "p0307-font-l0011:43",
+            "mapping_flag": null
+          },
+          {
+            "text": "=",
+            "bbox": [
+              336.617,
+              173.2,
+              343.196,
+              185.051
+            ],
+            "font": "SymbolMT",
+            "size": 11.85017259999995,
+            "original_text": "=",
+            "source_key": "p0307-font-l0011:44",
+            "mapping_flag": null
+          },
+          {
+            "text": "x",
+            "bbox": [
+              346.63,
+              173.2,
+              351.951,
+              185.051
+            ],
+            "font": "TimesNewRomanPS-ItalicMT",
+            "size": 11.85017259999995,
+            "original_text": "x",
+            "source_key": "p0307-font-l0011:45",
+            "mapping_flag": null
+          },
+          {
+            "text": "2",
+            "bbox": [
+              352.516,
+              171.796,
+              355.975,
+              178.635
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 6.839379945000019,
+            "original_text": "2",
+            "source_key": "p0307-font-l0011:46",
+            "mapping_flag": null
+          },
+          {
+            "text": "+",
+            "bbox": [
+              359.414,
+              173.2,
+              365.994,
+              185.051
+            ],
+            "font": "SymbolMT",
+            "size": 11.85017259999995,
+            "original_text": "+",
+            "source_key": "p0307-font-l0011:47",
+            "mapping_flag": null
+          },
+          {
+            "text": "2",
+            "bbox": [
+              368.56,
+              173.2,
+              374.553,
+              185.051
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 11.85017259999995,
+            "original_text": "2",
+            "source_key": "p0307-font-l0011:48",
+            "mapping_flag": null
+          },
+          {
+            "text": "v",
+            "bbox": [
+              380.11,
+              173.132,
+              386.11,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "v",
+            "source_key": "p0307-font-l0011:49",
+            "mapping_flag": null
+          },
+          {
+            "text": "à",
+            "bbox": [
+              386.11,
+              173.132,
+              391.438,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "à",
+            "source_key": "p0307-font-l0011:50",
+            "mapping_flag": null
+          },
+          {
+            "text": "đ",
+            "bbox": [
+              394.39,
+              173.132,
+              400.39,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "đ",
+            "source_key": "p0307-font-l0011:51",
+            "mapping_flag": null
+          },
+          {
+            "text": "ư",
+            "bbox": [
+              400.39,
+              173.132,
+              406.894,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "ư",
+            "source_key": "p0307-font-l0011:52",
+            "mapping_flag": null
+          },
+          {
+            "text": "ờ",
+            "bbox": [
+              406.87,
+              173.132,
+              413.218,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "ờ",
+            "source_key": "p0307-font-l0011:53",
+            "mapping_flag": null
+          },
+          {
+            "text": "n",
+            "bbox": [
+              413.23,
+              173.132,
+              419.23,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "n",
+            "source_key": "p0307-font-l0011:54",
+            "mapping_flag": null
+          },
+          {
+            "text": "g",
+            "bbox": [
+              419.23,
+              173.132,
+              425.23,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "g",
+            "source_key": "p0307-font-l0011:55",
+            "mapping_flag": null
+          },
+          {
+            "text": "t",
+            "bbox": [
+              428.23,
+              173.132,
+              431.566,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "t",
+            "source_key": "p0307-font-l0011:56",
+            "mapping_flag": null
+          },
+          {
+            "text": "h",
+            "bbox": [
+              431.566,
+              173.132,
+              437.566,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "h",
+            "source_key": "p0307-font-l0011:57",
+            "mapping_flag": null
+          },
+          {
+            "text": "ẳ",
+            "bbox": [
+              437.62,
+              173.132,
+              442.948,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "ẳ",
+            "source_key": "p0307-font-l0011:58",
+            "mapping_flag": null
+          },
+          {
+            "text": "n",
+            "bbox": [
+              442.9,
+              173.132,
+              448.9,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "n",
+            "source_key": "p0307-font-l0011:59",
+            "mapping_flag": null
+          },
+          {
+            "text": "g",
+            "bbox": [
+              448.9,
+              173.132,
+              454.9,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "g",
+            "source_key": "p0307-font-l0011:60",
+            "mapping_flag": null
+          },
+          {
+            "text": "y",
+            "bbox": [
+              460.894,
+              173.24,
+              466.167,
+              185.03
+            ],
+            "font": "TimesNewRomanPS-ItalicMT",
+            "size": 11.789832625615986,
+            "original_text": "y",
+            "source_key": "p0307-font-l0011:61",
+            "mapping_flag": null
+          },
+          {
+            "text": "=",
+            "bbox": [
+              469.48,
+              173.24,
+              476.001,
+              185.03
+            ],
+            "font": "SymbolMT",
+            "size": 11.789832625615986,
+            "original_text": "=",
+            "source_key": "p0307-font-l0011:62",
+            "mapping_flag": null
+          },
+          {
+            "text": "6",
+            "bbox": [
+              478.782,
+              173.24,
+              484.721,
+              185.03
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 11.789832625615986,
+            "original_text": "6",
+            "source_key": "p0307-font-l0011:63",
+            "mapping_flag": null
+          },
+          {
+            "text": "b",
+            "bbox": [
+              490.06,
+              173.132,
+              496.06,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "b",
+            "source_key": "p0307-font-l0011:64",
+            "mapping_flag": null
+          },
+          {
+            "text": "ằ",
+            "bbox": [
+              496.06,
+              173.132,
+              501.388,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "ằ",
+            "source_key": "p0307-font-l0011:65",
+            "mapping_flag": null
+          },
+          {
+            "text": "n",
+            "bbox": [
+              501.34,
+              173.132,
+              507.34,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "n",
+            "source_key": "p0307-font-l0011:66",
+            "mapping_flag": null
+          },
+          {
+            "text": "g",
+            "bbox": [
+              507.34,
+              173.132,
+              513.34,
+              185.132
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "g",
+            "source_key": "p0307-font-l0011:67",
+            "mapping_flag": null
+          }
+        ]
+      },
+      {
+        "block_id": "p0307-font-l0012",
+        "bbox": [
+          109.093,
+          191.691,
+          462.029,
+          203.712
+        ],
+        "text_raw": "32 40 16 8",
+        "glyphs": [
+          {
+            "text": "3",
+            "bbox": [
+              109.093,
+              191.696,
+              115.117,
+              203.712
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.016467135504058,
+            "original_text": "3",
+            "source_key": "p0307-font-l0012:0",
+            "mapping_flag": null
+          },
+          {
+            "text": "2",
+            "bbox": [
+              115.022,
+              191.696,
+              121.045,
+              203.712
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.016467135504058,
+            "original_text": "2",
+            "source_key": "p0307-font-l0012:1",
+            "mapping_flag": null
+          },
+          {
+            "text": "4",
+            "bbox": [
+              229.474,
+              191.691,
+              235.486,
+              203.683
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 11.992899658896022,
+            "original_text": "4",
+            "source_key": "p0307-font-l0012:2",
+            "mapping_flag": null
+          },
+          {
+            "text": "0",
+            "bbox": [
+              235.403,
+              191.691,
+              241.415,
+              203.683
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 11.992899658896022,
+            "original_text": "0",
+            "source_key": "p0307-font-l0012:3",
+            "mapping_flag": null
+          },
+          {
+            "text": "1",
+            "bbox": [
+              342.01,
+              191.691,
+              348.003,
+              203.683
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 11.992899658896022,
+            "original_text": "1",
+            "source_key": "p0307-font-l0012:4",
+            "mapping_flag": null
+          },
+          {
+            "text": "6",
+            "bbox": [
+              347.896,
+              191.691,
+              353.89,
+              203.683
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 11.992899658896022,
+            "original_text": "6",
+            "source_key": "p0307-font-l0012:5",
+            "mapping_flag": null
+          },
+          {
+            "text": "8",
+            "bbox": [
+              456.252,
+              191.691,
+              462.029,
+              203.683
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 11.992899658896022,
+            "original_text": "8",
+            "source_key": "p0307-font-l0012:6",
+            "mapping_flag": null
+          }
+        ]
+      },
+      {
+        "block_id": "p0307-font-l0013",
+        "bbox": [
+          92.064,
+          199.292,
+          468.1,
+          211.292
+        ],
+        "text_raw": "A. . B. . C. . D. .",
+        "glyphs": [
+          {
+            "text": "A",
+            "bbox": [
+              92.064,
+              199.292,
+              100.728,
+              211.292
+            ],
+            "font": "TimesNewRomanPS-BoldMT",
+            "size": 12.0,
+            "original_text": "A",
+            "source_key": "p0307-font-l0013:0",
+            "mapping_flag": null
+          },
+          {
+            "text": ".",
+            "bbox": [
+              100.7,
+              199.292,
+              103.7,
+              211.292
+            ],
+            "font": "TimesNewRomanPS-BoldMT",
+            "size": 12.0,
+            "original_text": ".",
+            "source_key": "p0307-font-l0013:1",
+            "mapping_flag": null
+          },
+          {
+            "text": ".",
+            "bbox": [
+              123.74,
+              199.292,
+              126.74,
+              211.292
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": ".",
+            "source_key": "p0307-font-l0013:2",
+            "mapping_flag": null
+          },
+          {
+            "text": "B",
+            "bbox": [
+              212.69,
+              199.292,
+              220.694,
+              211.292
+            ],
+            "font": "TimesNewRomanPS-BoldMT",
+            "size": 12.0,
+            "original_text": "B",
+            "source_key": "p0307-font-l0013:3",
+            "mapping_flag": null
+          },
+          {
+            "text": ".",
+            "bbox": [
+              220.718,
+              199.292,
+              223.718,
+              211.292
+            ],
+            "font": "TimesNewRomanPS-BoldMT",
+            "size": 12.0,
+            "original_text": ".",
+            "source_key": "p0307-font-l0013:4",
+            "mapping_flag": null
+          },
+          {
+            "text": ".",
+            "bbox": [
+              244.73,
+              199.292,
+              247.73,
+              211.292
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": ".",
+            "source_key": "p0307-font-l0013:5",
+            "mapping_flag": null
+          },
+          {
+            "text": "C",
+            "bbox": [
+              325.99,
+              199.292,
+              334.654,
+              211.292
+            ],
+            "font": "TimesNewRomanPS-BoldMT",
+            "size": 12.0,
+            "original_text": "C",
+            "source_key": "p0307-font-l0013:6",
+            "mapping_flag": null
+          },
+          {
+            "text": ".",
+            "bbox": [
+              334.654,
+              199.292,
+              337.654,
+              211.292
+            ],
+            "font": "TimesNewRomanPS-BoldMT",
+            "size": 12.0,
+            "original_text": ".",
+            "source_key": "p0307-font-l0013:7",
+            "mapping_flag": null
+          },
+          {
+            "text": ".",
+            "bbox": [
+              356.59,
+              199.292,
+              359.59,
+              211.292
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": ".",
+            "source_key": "p0307-font-l0013:8",
+            "mapping_flag": null
+          },
+          {
+            "text": "D",
+            "bbox": [
+              439.42,
+              199.292,
+              448.084,
+              211.292
+            ],
+            "font": "TimesNewRomanPS-BoldMT",
+            "size": 12.0,
+            "original_text": "D",
+            "source_key": "p0307-font-l0013:9",
+            "mapping_flag": null
+          },
+          {
+            "text": ".",
+            "bbox": [
+              448.084,
+              199.292,
+              451.084,
+              211.292
+            ],
+            "font": "TimesNewRomanPS-BoldMT",
+            "size": 12.0,
+            "original_text": ".",
+            "source_key": "p0307-font-l0013:10",
+            "mapping_flag": null
+          },
+          {
+            "text": ".",
+            "bbox": [
+              465.1,
+              199.292,
+              468.1,
+              211.292
+            ],
+            "font": "TimesNewRomanPS-BoldMT",
+            "size": 12.0,
+            "original_text": ".",
+            "source_key": "p0307-font-l0013:11",
+            "mapping_flag": null
+          }
+        ]
+      },
+      {
+        "block_id": "p0307-font-l0014",
+        "bbox": [
+          112.26,
+          208.929,
+          462.212,
+          220.951
+        ],
+        "text_raw": "3 3 3 3",
+        "glyphs": [
+          {
+            "text": "3",
+            "bbox": [
+              112.26,
+              208.934,
+              118.283,
+              220.951
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.016467135504058,
+            "original_text": "3",
+            "source_key": "p0307-font-l0014:0",
+            "mapping_flag": null
+          },
+          {
+            "text": "3",
+            "bbox": [
+              232.451,
+              208.929,
+              238.462,
+              220.922
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 11.992899658896022,
+            "original_text": "3",
+            "source_key": "p0307-font-l0014:1",
+            "mapping_flag": null
+          },
+          {
+            "text": "3",
+            "bbox": [
+              345.618,
+              208.929,
+              351.611,
+              220.922
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 11.992899658896022,
+            "original_text": "3",
+            "source_key": "p0307-font-l0014:2",
+            "mapping_flag": null
+          },
+          {
+            "text": "3",
+            "bbox": [
+              456.435,
+              208.929,
+              462.212,
+              220.922
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 11.992899658896022,
+            "original_text": "3",
+            "source_key": "p0307-font-l0014:3",
+            "mapping_flag": null
+          }
+        ]
+      },
+      {
+        "block_id": "p0307-font-l0015",
+        "bbox": [
+          302.71,
+          224.492,
+          342.382,
+          236.492
+        ],
+        "text_raw": "Lời giải",
+        "glyphs": [
+          {
+            "text": "L",
+            "bbox": [
+              302.71,
+              224.492,
+              310.714,
+              236.492
+            ],
+            "font": "TimesNewRomanPS-BoldMT",
+            "size": 12.0,
+            "original_text": "L",
+            "source_key": "p0307-font-l0015:0",
+            "mapping_flag": null
+          },
+          {
+            "text": "ờ",
+            "bbox": [
+              310.738,
+              224.492,
+              317.386,
+              236.492
+            ],
+            "font": "TimesNewRomanPS-BoldMT",
+            "size": 12.0,
+            "original_text": "ờ",
+            "source_key": "p0307-font-l0015:1",
+            "mapping_flag": null
+          },
+          {
+            "text": "i",
+            "bbox": [
+              317.338,
+              224.492,
+              320.674,
+              236.492
+            ],
+            "font": "TimesNewRomanPS-BoldMT",
+            "size": 12.0,
+            "original_text": "i",
+            "source_key": "p0307-font-l0015:2",
+            "mapping_flag": null
+          },
+          {
+            "text": "g",
+            "bbox": [
+              323.674,
+              224.492,
+              329.674,
+              236.492
+            ],
+            "font": "TimesNewRomanPS-BoldMT",
+            "size": 12.0,
+            "original_text": "g",
+            "source_key": "p0307-font-l0015:3",
+            "mapping_flag": null
+          },
+          {
+            "text": "i",
+            "bbox": [
+              329.674,
+              224.492,
+              333.01,
+              236.492
+            ],
+            "font": "TimesNewRomanPS-BoldMT",
+            "size": 12.0,
+            "original_text": "i",
+            "source_key": "p0307-font-l0015:4",
+            "mapping_flag": null
+          },
+          {
+            "text": "ả",
+            "bbox": [
+              333.046,
+              224.492,
+              339.046,
+              236.492
+            ],
+            "font": "TimesNewRomanPS-BoldMT",
+            "size": 12.0,
+            "original_text": "ả",
+            "source_key": "p0307-font-l0015:5",
+            "mapping_flag": null
+          },
+          {
+            "text": "i",
+            "bbox": [
+              339.046,
+              224.492,
+              342.382,
+              236.492
+            ],
+            "font": "TimesNewRomanPS-BoldMT",
+            "size": 12.0,
+            "original_text": "i",
+            "source_key": "p0307-font-l0015:6",
+            "mapping_flag": null
+          }
+        ]
+      },
+      {
+        "block_id": "p0307-font-l0016",
+        "bbox": [
+          92.064,
+          240.915,
+          354.197,
+          254.252
+        ],
+        "text_raw": "Phương trình hoành độ giao điểm x2 + 2 = 6 ⇔ x = ±2",
+        "glyphs": [
+          {
+            "text": "P",
+            "bbox": [
+              92.064,
+              242.252,
+              98.736,
+              254.252
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "P",
+            "source_key": "p0307-font-l0016:0",
+            "mapping_flag": null
+          },
+          {
+            "text": "h",
+            "bbox": [
+              98.772,
+              242.252,
+              104.772,
+              254.252
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "h",
+            "source_key": "p0307-font-l0016:1",
+            "mapping_flag": null
+          },
+          {
+            "text": "ư",
+            "bbox": [
+              104.772,
+              242.252,
+              111.276,
+              254.252
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "ư",
+            "source_key": "p0307-font-l0016:2",
+            "mapping_flag": null
+          },
+          {
+            "text": "ơ",
+            "bbox": [
+              111.276,
+              242.252,
+              117.624,
+              254.252
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "ơ",
+            "source_key": "p0307-font-l0016:3",
+            "mapping_flag": null
+          },
+          {
+            "text": "n",
+            "bbox": [
+              117.624,
+              242.252,
+              123.624,
+              254.252
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "n",
+            "source_key": "p0307-font-l0016:4",
+            "mapping_flag": null
+          },
+          {
+            "text": "g",
+            "bbox": [
+              123.624,
+              242.252,
+              129.624,
+              254.252
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "g",
+            "source_key": "p0307-font-l0016:5",
+            "mapping_flag": null
+          },
+          {
+            "text": "t",
+            "bbox": [
+              132.624,
+              242.252,
+              135.96,
+              254.252
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "t",
+            "source_key": "p0307-font-l0016:6",
+            "mapping_flag": null
+          },
+          {
+            "text": "r",
+            "bbox": [
+              135.96,
+              242.252,
+              139.956,
+              254.252
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "r",
+            "source_key": "p0307-font-l0016:7",
+            "mapping_flag": null
+          },
+          {
+            "text": "ì",
+            "bbox": [
+              139.956,
+              242.252,
+              143.292,
+              254.252
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "ì",
+            "source_key": "p0307-font-l0016:8",
+            "mapping_flag": null
+          },
+          {
+            "text": "n",
+            "bbox": [
+              143.292,
+              242.252,
+              149.292,
+              254.252
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "n",
+            "source_key": "p0307-font-l0016:9",
+            "mapping_flag": null
+          },
+          {
+            "text": "h",
+            "bbox": [
+              149.292,
+              242.252,
+              155.292,
+              254.252
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "h",
+            "source_key": "p0307-font-l0016:10",
+            "mapping_flag": null
+          },
+          {
+            "text": "h",
+            "bbox": [
+              158.292,
+              242.252,
+              164.292,
+              254.252
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "h",
+            "source_key": "p0307-font-l0016:11",
+            "mapping_flag": null
+          },
+          {
+            "text": "o",
+            "bbox": [
+              164.292,
+              242.252,
+              170.292,
+              254.252
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "o",
+            "source_key": "p0307-font-l0016:12",
+            "mapping_flag": null
+          },
+          {
+            "text": "à",
+            "bbox": [
+              170.292,
+              242.252,
+              175.62,
+              254.252
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "à",
+            "source_key": "p0307-font-l0016:13",
+            "mapping_flag": null
+          },
+          {
+            "text": "n",
+            "bbox": [
+              175.572,
+              242.252,
+              181.572,
+              254.252
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "n",
+            "source_key": "p0307-font-l0016:14",
+            "mapping_flag": null
+          },
+          {
+            "text": "h",
+            "bbox": [
+              181.572,
+              242.252,
+              187.572,
+              254.252
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "h",
+            "source_key": "p0307-font-l0016:15",
+            "mapping_flag": null
+          },
+          {
+            "text": "đ",
+            "bbox": [
+              190.572,
+              242.252,
+              196.572,
+              254.252
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "đ",
+            "source_key": "p0307-font-l0016:16",
+            "mapping_flag": null
+          },
+          {
+            "text": "ộ",
+            "bbox": [
+              196.572,
+              242.252,
+              202.572,
+              254.252
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "ộ",
+            "source_key": "p0307-font-l0016:17",
+            "mapping_flag": null
+          },
+          {
+            "text": "g",
+            "bbox": [
+              205.572,
+              242.252,
+              211.572,
+              254.252
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "g",
+            "source_key": "p0307-font-l0016:18",
+            "mapping_flag": null
+          },
+          {
+            "text": "i",
+            "bbox": [
+              211.572,
+              242.252,
+              214.908,
+              254.252
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "i",
+            "source_key": "p0307-font-l0016:19",
+            "mapping_flag": null
+          },
+          {
+            "text": "a",
+            "bbox": [
+              214.908,
+              242.252,
+              220.236,
+              254.252
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "a",
+            "source_key": "p0307-font-l0016:20",
+            "mapping_flag": null
+          },
+          {
+            "text": "o",
+            "bbox": [
+              220.236,
+              242.252,
+              226.236,
+              254.252
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "o",
+            "source_key": "p0307-font-l0016:21",
+            "mapping_flag": null
+          },
+          {
+            "text": "đ",
+            "bbox": [
+              229.236,
+              242.252,
+              235.236,
+              254.252
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "đ",
+            "source_key": "p0307-font-l0016:22",
+            "mapping_flag": null
+          },
+          {
+            "text": "i",
+            "bbox": [
+              235.236,
+              242.252,
+              238.572,
+              254.252
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "i",
+            "source_key": "p0307-font-l0016:23",
+            "mapping_flag": null
+          },
+          {
+            "text": "ể",
+            "bbox": [
+              238.572,
+              242.252,
+              243.9,
+              254.252
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "ể",
+            "source_key": "p0307-font-l0016:24",
+            "mapping_flag": null
+          },
+          {
+            "text": "m",
+            "bbox": [
+              243.852,
+              242.252,
+              253.188,
+              254.252
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "m",
+            "source_key": "p0307-font-l0016:25",
+            "mapping_flag": null
+          },
+          {
+            "text": "x",
+            "bbox": [
+              258.64,
+              242.31,
+              263.955,
+              254.1
+            ],
+            "font": "TimesNewRomanPS-ItalicMT",
+            "size": 11.789832625615986,
+            "original_text": "x",
+            "source_key": "p0307-font-l0016:26",
+            "mapping_flag": null
+          },
+          {
+            "text": "2",
+            "bbox": [
+              264.553,
+              240.915,
+              268.015,
+              247.733
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 6.81811385093647,
+            "original_text": "2",
+            "source_key": "p0307-font-l0016:27",
+            "mapping_flag": null
+          },
+          {
+            "text": "+",
+            "bbox": [
+              271.476,
+              242.31,
+              278.049,
+              254.1
+            ],
+            "font": "SymbolMT",
+            "size": 11.789832625615986,
+            "original_text": "+",
+            "source_key": "p0307-font-l0016:28",
+            "mapping_flag": null
+          },
+          {
+            "text": "2",
+            "bbox": [
+              280.682,
+              242.31,
+              286.668,
+              254.1
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 11.789832625615986,
+            "original_text": "2",
+            "source_key": "p0307-font-l0016:29",
+            "mapping_flag": null
+          },
+          {
+            "text": "=",
+            "bbox": [
+              289.421,
+              242.31,
+              295.993,
+              254.1
+            ],
+            "font": "SymbolMT",
+            "size": 11.789832625615986,
+            "original_text": "=",
+            "source_key": "p0307-font-l0016:30",
+            "mapping_flag": null
+          },
+          {
+            "text": "6",
+            "bbox": [
+              298.747,
+              242.31,
+              304.732,
+              254.1
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 11.789832625615986,
+            "original_text": "6",
+            "source_key": "p0307-font-l0016:31",
+            "mapping_flag": null
+          },
+          {
+            "text": "⇔",
+            "bbox": [
+              307.486,
+              242.31,
+              319.96,
+              254.1
+            ],
+            "font": "SymbolMT",
+            "size": 11.789832625615986,
+            "original_text": "",
+            "source_key": "p0307-font-l0016:32",
+            "mapping_flag": null
+          },
+          {
+            "text": "x",
+            "bbox": [
+              323.761,
+              242.31,
+              329.076,
+              254.1
+            ],
+            "font": "TimesNewRomanPS-ItalicMT",
+            "size": 11.789832625615986,
+            "original_text": "x",
+            "source_key": "p0307-font-l0016:33",
+            "mapping_flag": null
+          },
+          {
+            "text": "=",
+            "bbox": [
+              332.11,
+              242.31,
+              338.682,
+              254.1
+            ],
+            "font": "SymbolMT",
+            "size": 11.789832625615986,
+            "original_text": "=",
+            "source_key": "p0307-font-l0016:34",
+            "mapping_flag": null
+          },
+          {
+            "text": "±",
+            "bbox": [
+              341.591,
+              242.31,
+              348.164,
+              254.1
+            ],
+            "font": "SymbolMT",
+            "size": 11.789832625615986,
+            "original_text": "",
+            "source_key": "p0307-font-l0016:35",
+            "mapping_flag": null
+          },
+          {
+            "text": "2",
+            "bbox": [
+              348.212,
+              242.31,
+              354.197,
+              254.1
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 11.789832625615986,
+            "original_text": "2",
+            "source_key": "p0307-font-l0016:36",
+            "mapping_flag": null
+          }
+        ]
+      },
+      {
+        "block_id": "p0307-font-l0017",
+        "bbox": [
+          275.82,
+          258.614,
+          351.08,
+          272.713
+        ],
+        "text_raw": "2 32",
+        "glyphs": [
+          {
+            "text": "2",
+            "bbox": [
+              275.82,
+              258.614,
+              279.345,
+              265.572
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 6.958195895000017,
+            "original_text": "2",
+            "source_key": "p0307-font-l0017:0",
+            "mapping_flag": null
+          },
+          {
+            "text": "3",
+            "bbox": [
+              338.978,
+              260.697,
+              345.066,
+              272.713
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.016122150000001,
+            "original_text": "3",
+            "source_key": "p0307-font-l0017:1",
+            "mapping_flag": null
+          },
+          {
+            "text": "2",
+            "bbox": [
+              344.993,
+              260.697,
+              351.08,
+              272.713
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.016122150000001,
+            "original_text": "2",
+            "source_key": "p0307-font-l0017:2",
+            "mapping_flag": null
+          }
+        ]
+      },
+      {
+        "block_id": "p0307-font-l0018",
+        "bbox": [
+          92.064,
+          266.995,
+          356.47,
+          286.082
+        ],
+        "text_raw": "Diện tích hình phẳng cần tính là: S = ∫ x2 − 4dx = .",
+        "glyphs": [
+          {
+            "text": "D",
+            "bbox": [
+              92.064,
+              268.322,
+              100.728,
+              280.322
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "D",
+            "source_key": "p0307-font-l0018:0",
+            "mapping_flag": null
+          },
+          {
+            "text": "i",
+            "bbox": [
+              100.704,
+              268.322,
+              104.04,
+              280.322
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "i",
+            "source_key": "p0307-font-l0018:1",
+            "mapping_flag": null
+          },
+          {
+            "text": "ệ",
+            "bbox": [
+              104.06,
+              268.322,
+              109.388,
+              280.322
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "ệ",
+            "source_key": "p0307-font-l0018:2",
+            "mapping_flag": null
+          },
+          {
+            "text": "n",
+            "bbox": [
+              109.34,
+              268.322,
+              115.34,
+              280.322
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "n",
+            "source_key": "p0307-font-l0018:3",
+            "mapping_flag": null
+          },
+          {
+            "text": "t",
+            "bbox": [
+              118.34,
+              268.322,
+              121.676,
+              280.322
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "t",
+            "source_key": "p0307-font-l0018:4",
+            "mapping_flag": null
+          },
+          {
+            "text": "í",
+            "bbox": [
+              121.676,
+              268.322,
+              125.012,
+              280.322
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "í",
+            "source_key": "p0307-font-l0018:5",
+            "mapping_flag": null
+          },
+          {
+            "text": "c",
+            "bbox": [
+              125.048,
+              268.322,
+              130.376,
+              280.322
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "c",
+            "source_key": "p0307-font-l0018:6",
+            "mapping_flag": null
+          },
+          {
+            "text": "h",
+            "bbox": [
+              130.328,
+              268.322,
+              136.328,
+              280.322
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "h",
+            "source_key": "p0307-font-l0018:7",
+            "mapping_flag": null
+          },
+          {
+            "text": "h",
+            "bbox": [
+              139.328,
+              268.322,
+              145.328,
+              280.322
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "h",
+            "source_key": "p0307-font-l0018:8",
+            "mapping_flag": null
+          },
+          {
+            "text": "ì",
+            "bbox": [
+              145.328,
+              268.322,
+              148.664,
+              280.322
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "ì",
+            "source_key": "p0307-font-l0018:9",
+            "mapping_flag": null
+          },
+          {
+            "text": "n",
+            "bbox": [
+              148.664,
+              268.322,
+              154.664,
+              280.322
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "n",
+            "source_key": "p0307-font-l0018:10",
+            "mapping_flag": null
+          },
+          {
+            "text": "h",
+            "bbox": [
+              154.664,
+              268.322,
+              160.664,
+              280.322
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "h",
+            "source_key": "p0307-font-l0018:11",
+            "mapping_flag": null
+          },
+          {
+            "text": "p",
+            "bbox": [
+              163.664,
+              268.322,
+              169.664,
+              280.322
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "p",
+            "source_key": "p0307-font-l0018:12",
+            "mapping_flag": null
+          },
+          {
+            "text": "h",
+            "bbox": [
+              169.664,
+              268.322,
+              175.664,
+              280.322
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "h",
+            "source_key": "p0307-font-l0018:13",
+            "mapping_flag": null
+          },
+          {
+            "text": "ẳ",
+            "bbox": [
+              175.7,
+              268.322,
+              181.028,
+              280.322
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "ẳ",
+            "source_key": "p0307-font-l0018:14",
+            "mapping_flag": null
+          },
+          {
+            "text": "n",
+            "bbox": [
+              181.01,
+              268.322,
+              187.01,
+              280.322
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "n",
+            "source_key": "p0307-font-l0018:15",
+            "mapping_flag": null
+          },
+          {
+            "text": "g",
+            "bbox": [
+              187.01,
+              268.322,
+              193.01,
+              280.322
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "g",
+            "source_key": "p0307-font-l0018:16",
+            "mapping_flag": null
+          },
+          {
+            "text": "c",
+            "bbox": [
+              196.01,
+              268.322,
+              201.338,
+              280.322
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "c",
+            "source_key": "p0307-font-l0018:17",
+            "mapping_flag": null
+          },
+          {
+            "text": "ầ",
+            "bbox": [
+              201.29,
+              268.322,
+              206.618,
+              280.322
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "ầ",
+            "source_key": "p0307-font-l0018:18",
+            "mapping_flag": null
+          },
+          {
+            "text": "n",
+            "bbox": [
+              206.57,
+              268.322,
+              212.57,
+              280.322
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "n",
+            "source_key": "p0307-font-l0018:19",
+            "mapping_flag": null
+          },
+          {
+            "text": "t",
+            "bbox": [
+              215.678,
+              268.322,
+              219.014,
+              280.322
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "t",
+            "source_key": "p0307-font-l0018:20",
+            "mapping_flag": null
+          },
+          {
+            "text": "í",
+            "bbox": [
+              219.014,
+              268.322,
+              222.35,
+              280.322
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "í",
+            "source_key": "p0307-font-l0018:21",
+            "mapping_flag": null
+          },
+          {
+            "text": "n",
+            "bbox": [
+              222.386,
+              268.322,
+              228.386,
+              280.322
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "n",
+            "source_key": "p0307-font-l0018:22",
+            "mapping_flag": null
+          },
+          {
+            "text": "h",
+            "bbox": [
+              228.386,
+              268.322,
+              234.386,
+              280.322
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "h",
+            "source_key": "p0307-font-l0018:23",
+            "mapping_flag": null
+          },
+          {
+            "text": "l",
+            "bbox": [
+              237.386,
+              268.322,
+              240.722,
+              280.322
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "l",
+            "source_key": "p0307-font-l0018:24",
+            "mapping_flag": null
+          },
+          {
+            "text": "à",
+            "bbox": [
+              240.722,
+              268.322,
+              246.05,
+              280.322
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": "à",
+            "source_key": "p0307-font-l0018:25",
+            "mapping_flag": null
+          },
+          {
+            "text": ":",
+            "bbox": [
+              246.05,
+              268.322,
+              249.386,
+              280.322
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": ":",
+            "source_key": "p0307-font-l0018:26",
+            "mapping_flag": null
+          },
+          {
+            "text": "S",
+            "bbox": [
+              254.407,
+              268.434,
+              260.494,
+              280.45
+            ],
+            "font": "TimesNewRomanPS-ItalicMT",
+            "size": 12.016122150000001,
+            "original_text": "S",
+            "source_key": "p0307-font-l0018:27",
+            "mapping_flag": null
+          },
+          {
+            "text": "=",
+            "bbox": [
+              264.296,
+              268.434,
+              270.979,
+              280.45
+            ],
+            "font": "SymbolMT",
+            "size": 12.016122150000001,
+            "original_text": "=",
+            "source_key": "p0307-font-l0018:28",
+            "mapping_flag": null
+          },
+          {
+            "text": "∫",
+            "bbox": [
+              275.026,
+              268.057,
+              280.03,
+              286.082
+            ],
+            "font": "SymbolMT",
+            "size": 18.02467420000005,
+            "original_text": "",
+            "source_key": "p0307-font-l0018:29",
+            "mapping_flag": null
+          },
+          {
+            "text": "x",
+            "bbox": [
+              285.353,
+              268.434,
+              290.759,
+              280.45
+            ],
+            "font": "TimesNewRomanPS-ItalicMT",
+            "size": 12.016122150000001,
+            "original_text": "x",
+            "source_key": "p0307-font-l0018:30",
+            "mapping_flag": null
+          },
+          {
+            "text": "2",
+            "bbox": [
+              291.291,
+              266.995,
+              294.816,
+              273.953
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 6.958195895000017,
+            "original_text": "2",
+            "source_key": "p0307-font-l0018:31",
+            "mapping_flag": null
+          },
+          {
+            "text": "−",
+            "bbox": [
+              298.237,
+              268.434,
+              304.92,
+              280.45
+            ],
+            "font": "SymbolMT",
+            "size": 12.016122150000001,
+            "original_text": "−",
+            "source_key": "p0307-font-l0018:32",
+            "mapping_flag": null
+          },
+          {
+            "text": "4",
+            "bbox": [
+              307.267,
+              268.434,
+              313.354,
+              280.45
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.016122150000001,
+            "original_text": "4",
+            "source_key": "p0307-font-l0018:33",
+            "mapping_flag": null
+          },
+          {
+            "text": "d",
+            "bbox": [
+              314.538,
+              268.434,
+              320.625,
+              280.45
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.016122150000001,
+            "original_text": "d",
+            "source_key": "p0307-font-l0018:34",
+            "mapping_flag": null
+          },
+          {
+            "text": "x",
+            "bbox": [
+              320.463,
+              268.434,
+              325.869,
+              280.45
+            ],
+            "font": "TimesNewRomanPS-ItalicMT",
+            "size": 12.016122150000001,
+            "original_text": "x",
+            "source_key": "p0307-font-l0018:35",
+            "mapping_flag": null
+          },
+          {
+            "text": "=",
+            "bbox": [
+              328.879,
+              268.434,
+              335.563,
+              280.45
+            ],
+            "font": "SymbolMT",
+            "size": 12.016122150000001,
+            "original_text": "=",
+            "source_key": "p0307-font-l0018:36",
+            "mapping_flag": null
+          },
+          {
+            "text": ".",
+            "bbox": [
+              353.47,
+              268.322,
+              356.47,
+              280.322
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.0,
+            "original_text": ".",
+            "source_key": "p0307-font-l0018:37",
+            "mapping_flag": null
+          }
+        ]
+      },
+      {
+        "block_id": "p0307-font-l0019",
+        "bbox": [
+          342.178,
+          277.958,
+          348.265,
+          289.975
+        ],
+        "text_raw": "3",
+        "glyphs": [
+          {
+            "text": "3",
+            "bbox": [
+              342.178,
+              277.958,
+              348.265,
+              289.975
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 12.016122150000001,
+            "original_text": "3",
+            "source_key": "p0307-font-l0019:0",
+            "mapping_flag": null
+          }
+        ]
+      },
+      {
+        "block_id": "p0307-font-l0020",
+        "bbox": [
+          273.896,
+          285.376,
+          281.222,
+          292.334
+        ],
+        "text_raw": "−2",
+        "glyphs": [
+          {
+            "text": "−",
+            "bbox": [
+              273.896,
+              285.376,
+              277.766,
+              292.334
+            ],
+            "font": "SymbolMT",
+            "size": 6.958195895000017,
+            "original_text": "−",
+            "source_key": "p0307-font-l0020:0",
+            "mapping_flag": null
+          },
+          {
+            "text": "2",
+            "bbox": [
+              277.697,
+              285.376,
+              281.222,
+              292.334
+            ],
+            "font": "TimesNewRomanPSMT",
+            "size": 6.958195895000017,
+            "original_text": "2",
+            "source_key": "p0307-font-l0020:1",
+            "mapping_flag": null
+          }
+        ]
+      }
+    ],
+    "vectors": [
+      {
+        "kind": "line",
+        "bbox": [
+          108.736,
+          205.807,
+          121.308,
+          205.807
+        ]
+      },
+      {
+        "kind": "line",
+        "bbox": [
+          228.736,
+          205.807,
+          241.713,
+          205.807
+        ]
+      },
+      {
+        "kind": "line",
+        "bbox": [
+          342.58,
+          205.807,
+          354.162,
+          205.807
+        ]
+      },
+      {
+        "kind": "line",
+        "bbox": [
+          456.046,
+          205.807,
+          462.589,
+          205.807
+        ]
+      },
+      {
+        "kind": "line",
+        "bbox": [
+          283.11,
+          266.213,
+          283.11,
+          283.474
+        ]
+      },
+      {
+        "kind": "line",
+        "bbox": [
+          314.173,
+          266.213,
+          314.173,
+          283.474
+        ]
+      },
+      {
+        "kind": "line",
+        "bbox": [
+          338.617,
+          274.832,
+          351.369,
+          274.832
+        ]
+      },
+      {
+        "kind": "rect",
+        "bbox": [
+          92.064,
+          210.02,
+          100.704,
+          211.22
+        ]
+      }
+    ],
+    "unmapped_glyph_keys": []
+  },
+  "spans": {
+    "question": {
+      "page_number": 307,
+      "bbox": [
+        0,
+        169.692,
+        595.32,
+        224.56
+      ],
+      "block_ids": [
+        "p0307-l0028",
+        "p0307-l0029",
+        "p0307-l0031",
+        "p0307-l0033",
+        "p0307-l0030",
+        "p0307-l0032",
+        "p0307-l0035",
+        "p0307-l0038",
+        "p0307-l0041",
+        "p0307-l0044",
+        "p0307-l0034",
+        "p0307-l0037",
+        "p0307-l0040",
+        "p0307-l0043",
+        "p0307-l0046",
+        "p0307-l0036",
+        "p0307-l0039",
+        "p0307-l0042",
+        "p0307-l0045"
+      ],
+      "column": null,
+      "layout_method": "SINGLE_PAGE_FLOW"
+    },
+    "solution": {
+      "page_number": 307,
+      "bbox": [
+        0,
+        237.48,
+        595.32,
+        294.882
+      ],
+      "block_ids": [
+        "p0307-l0048",
+        "p0307-l0049",
+        "p0307-l0050",
+        "p0307-l0052",
+        "p0307-l0055",
+        "p0307-l0051",
+        "p0307-l0059",
+        "p0307-l0053",
+        "p0307-l0057",
+        "p0307-l0060",
+        "p0307-l0056",
+        "p0307-l0054",
+        "p0307-l0058"
+      ],
+      "column": null,
+      "layout_method": "SINGLE_PAGE_FLOW"
+    }
+  }
+}

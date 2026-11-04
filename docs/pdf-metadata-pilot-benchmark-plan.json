@@ -1,0 +1,96 @@
+{
+  "schema_version": "benchmark-plan/v1",
+  "status": "PILOT_EXECUTED_PARTIAL_MODEL_COMPARISON",
+  "survey_date": "2026-11-02",
+  "pilot": {
+    "path": "data/tu-luan-va-trac-nghiem-ung-dung-dao-ham-de-khao-sat-va-ve-do-thi-ham-so-toan-12-knttvcs9.pdf",
+    "sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927",
+    "profiled_page_count": 57,
+    "observed_question_heading_count": 120,
+    "observed_question_number_range": [
+      151,
+      270
+    ],
+    "counts_are_fixture_assertions_not_parser_rules": true
+  },
+  "gold_annotations_status": "PARTIAL_SOURCE_FIXTURES_8_CASES_AND_4_FORMULA_CONTROL_REGIONS",
+  "results_report": "docs/pdf-metadata-pilot-results-2026-11-02.md",
+  "evaluation_split_policy": "hold out entire PDFs, authors or layout families; do not tune on held-out pages",
+  "runs": [
+    {
+      "id": "native_baseline",
+      "backend": "native_pdf",
+      "status": "EXECUTED_ALL_57_PAGES_STRUCTURE_VALIDATED_NOT_ACADEMICALLY_APPROVED"
+    },
+    {
+      "id": "paddleocr_vl",
+      "model_id": "PaddlePaddle/PaddleOCR-VL-1.6",
+      "model_revision": "c5630abae1d940eafe0697512a0325494b02ab42",
+      "backend": "official_full_page_pipeline",
+      "status": "EXECUTED_PAGE_1_NOT_QUALITY_APPROVED"
+    },
+    {
+      "id": "mineru_vlm",
+      "model_id": "opendatalab/MinerU2.5-2509-1.2B",
+      "model_revision": null,
+      "backend": "two_stage_layout_and_region_recognition",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "fast_hybrid_cpu",
+      "models": ["PP-DocLayoutV3", "PP-FormulaNet_plus-S"],
+      "status": "EXECUTED_ALL_57_PAGES_190_DETECTED_FORMULA_REGIONS",
+      "seconds": 329.095,
+      "quality_status": "REVIEW_REQUIRED"
+    },
+    {
+      "id": "formula_fallback_cpu",
+      "model": "PP-FormulaNet_plus-M",
+      "status": "EXECUTED_42_FLAGGED_REGIONS_AND_4_SEPARATE_CONTROL_REGIONS",
+      "inference_seconds_for_flagged_regions": 89.283,
+      "quality_status": "REVIEW_REQUIRED"
+    },
+    {
+      "id": "docling_standard",
+      "backend": "docling_standard_pipeline",
+      "ocr_engine": null,
+      "formula_model": null,
+      "status": "OPTIONAL_NOT_RUN"
+    }
+  ],
+  "shared_components": [
+    "intermediate_document_schema",
+    "question_assembler",
+    "reference_step_schema",
+    "validators",
+    "export_adapter"
+  ],
+  "required_metrics": [
+    "critical_math_symbol_error",
+    "vietnamese_text_error",
+    "formula_fidelity",
+    "table_fidelity",
+    "reading_order",
+    "question_boundary_precision_recall",
+    "answer_solution_link_accuracy",
+    "cross_page_link_accuracy",
+    "step_source_grounding",
+    "seconds_per_page_p50_p95",
+    "peak_vram_mb",
+    "manual_review_minutes_per_item"
+  ],
+  "record_before_running": [
+    "engine_version",
+    "model_revision",
+    "config_hash",
+    "prompt_revision",
+    "hardware",
+    "dtype",
+    "resolution",
+    "batch_size"
+  ],
+  "notes": [
+    "Model shortlist is based on official documentation, not local GPU measurements.",
+    "Do not infer academic correctness from extraction completion or model confidence."
+  ]
+}

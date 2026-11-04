@@ -24,7 +24,7 @@ export type {
   SolutionAttemptRead,
 };
 
-export type DrawingTool = "pen" | "highlighter" | "eraser";
+export type DrawingTool = "pen" | "highlighter" | "eraser" | "lasso";
 export type PaperGrid = "grid" | "lines" | "plain";
 export type SyncStatus = "saved" | "saving" | "unsaved" | "offline" | "conflict" | "error";
 

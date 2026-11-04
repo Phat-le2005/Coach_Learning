@@ -18,6 +18,8 @@ import {
   Table2,
   Upload,
   Loader2,
+  Lasso,
+  Box,
 } from "lucide-react";
 import type { DrawingTool, PaperGrid } from "../types";
 import {
@@ -48,12 +50,14 @@ interface WorkspaceToolbarProps {
   onZoomOut: () => void;
   onResetZoom: () => void;
   onTriggerOCR?: () => void;
+  ocrBlocked?: boolean;
   onOpenVariationTable?: () => void;
   onTogglePaper: () => void;
   paperMode: boolean;
   isRecognizingOCR?: boolean;
   strokeCount?: number;
   isReadOnly?: boolean;
+  onOpenGraph?: () => void;
 }
 
 export function WorkspaceToolbar({
@@ -77,17 +81,26 @@ export function WorkspaceToolbar({
   onZoomOut,
   onResetZoom,
   onTriggerOCR,
+  ocrBlocked,
   onOpenVariationTable,
   onTogglePaper,
   paperMode,
   isRecognizingOCR = false,
   strokeCount = 0,
   isReadOnly = false,
+  onOpenGraph,
 }: WorkspaceToolbarProps) {
   return (
     <div className={styles.toolbar} role="toolbar" aria-label="Thanh công cụ vẽ">
       {/* Group: Primary Tools */}
       <div className={styles.toolGroup}>
+        <button type="button" className={`${styles.toolButton} ${currentTool === "lasso" ? styles.active : ""}`}
+          onClick={() => onSelectTool("lasso")} title="Khoanh vùng công thức để nhận dạng" aria-pressed={currentTool === "lasso"}>
+          <Lasso size={18} /><span className={styles.toolLabel}>Khoanh vùng</span>
+        </button>
+        {onOpenGraph ? <button type="button" className={styles.toolButton} onClick={onOpenGraph} title="Math View: tự nhận diện và khám phá công thức 2D/3D">
+          <Box size={18} /><span className={styles.toolLabel}>Math View</span>
+        </button> : null}
         <button
           type="button"
           className={`${styles.toolButton} ${currentTool === "pen" ? styles.active : ""}`}
@@ -255,11 +268,11 @@ export function WorkspaceToolbar({
               type="button"
               className={styles.ocrButton}
               onClick={onTriggerOCR}
-              disabled={isRecognizingOCR || strokeCount === 0}
+              disabled={ocrBlocked || isRecognizingOCR || strokeCount === 0}
               title={
                 strokeCount === 0
                   ? "Vẽ công thức lên trang để nhận diện"
-                  : "Chia trang viết thành các bước giải để em kiểm tra"
+                  : "Nhận diện bản chép OCR V2 để em kiểm tra"
               }
             >
               {isRecognizingOCR ? (

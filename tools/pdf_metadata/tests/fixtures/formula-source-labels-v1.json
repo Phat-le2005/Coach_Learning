@@ -1,0 +1,689 @@
+{
+  "selection": "TARGETED_NOT_RANDOM",
+  "source_count": 2,
+  "scope": "SOURCE_EXPRESSION_FIDELITY_NOT_ANSWER_OR_GRADING_VALIDATION",
+  "cases": [
+    {
+      "id": "P01",
+      "expected_latex": "G(x)=0.025x^{2}(30-x)",
+      "required_features": [],
+      "label_basis": "MANUALLY_TRANSCRIBED_FROM_RENDERED_SOURCE_CROP",
+      "split": "development",
+      "scope": "SOURCE_EXPRESSION_TRANSCRIPTION_NOT_SOLUTION_CORRECTNESS",
+      "source_pdf_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927",
+      "page_number": 1,
+      "source_bbox": [
+        418.56,
+        56.926,
+        534.816,
+        72.582
+      ],
+      "source_crop_sha256": "02183051319de312b03db0b26d07e1068daafd6248dad0f5e10b9e61ff8382b7"
+    },
+    {
+      "id": "P02",
+      "expected_latex": "G'(x)=1.5x-0.075x^{2}",
+      "required_features": [],
+      "label_basis": "MANUALLY_TRANSCRIBED_FROM_RENDERED_SOURCE_CROP",
+      "split": "development",
+      "scope": "SOURCE_EXPRESSION_TRANSCRIPTION_NOT_SOLUTION_CORRECTNESS",
+      "source_pdf_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927",
+      "page_number": 1,
+      "source_bbox": [
+        54.381,
+        218.095,
+        172.943,
+        238.288
+      ],
+      "source_crop_sha256": "6e12b69d2ed66d49901142fee2f136bb41b21aff785c93bf5c1db4f3ad8d17a7"
+    },
+    {
+      "id": "P03",
+      "expected_latex": "E(v)=cv^{3}t",
+      "required_features": [],
+      "label_basis": "MANUALLY_TRANSCRIBED_FROM_RENDERED_SOURCE_CROP",
+      "split": "development",
+      "scope": "SOURCE_EXPRESSION_TRANSCRIPTION_NOT_SOLUTION_CORRECTNESS",
+      "source_pdf_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927",
+      "page_number": 1,
+      "source_bbox": [
+        132.24,
+        528.352,
+        183.818,
+        541.712
+      ],
+      "source_crop_sha256": "5e64532de4757b38b17e96d39e890dfb4c4e6dd55dc9e9a9537a01751e135f09"
+    },
+    {
+      "id": "P04",
+      "expected_latex": "t=\\frac{300}{v-6}",
+      "required_features": [],
+      "label_basis": "MANUALLY_TRANSCRIBED_FROM_RENDERED_SOURCE_CROP",
+      "split": "development",
+      "scope": "SOURCE_EXPRESSION_TRANSCRIPTION_NOT_SOLUTION_CORRECTNESS",
+      "source_conditions": "v>6",
+      "source_pdf_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927",
+      "page_number": 1,
+      "source_bbox": [
+        276.24,
+        663.644,
+        315.111,
+        692.429
+      ],
+      "source_crop_sha256": "423586d795d6704a7e63c8219cc1d9de59c4e5584cea195f7e0afa0132abc9ec"
+    },
+    {
+      "id": "P05",
+      "expected_latex": "E(v)=cv^{3}\\frac{300}{v-6}=300c\\frac{v^{3}}{v-6}",
+      "required_features": [],
+      "label_basis": "MANUALLY_TRANSCRIBED_FROM_RENDERED_SOURCE_CROP",
+      "split": "development",
+      "scope": "SOURCE_EXPRESSION_TRANSCRIPTION_NOT_SOLUTION_CORRECTNESS",
+      "source_pdf_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927",
+      "page_number": 1,
+      "source_bbox": [
+        352.8,
+        702.092,
+        486.971,
+        732.521
+      ],
+      "source_crop_sha256": "a3ceabc90dfc110a6ecfceefb5c5fe8a8ecba9f245a5ef77ae6c0ece152fa99a"
+    },
+    {
+      "id": "P06",
+      "expected_latex": "E'(v)=600cv^{2}\\frac{v-9}{(v-6)^{2}}",
+      "required_features": [],
+      "label_basis": "MANUALLY_TRANSCRIBED_FROM_RENDERED_SOURCE_CROP",
+      "split": "development",
+      "scope": "SOURCE_EXPRESSION_TRANSCRIPTION_NOT_SOLUTION_CORRECTNESS",
+      "source_pdf_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927",
+      "page_number": 1,
+      "source_bbox": [
+        58.18,
+        740.048,
+        312.495,
+        770.634
+      ],
+      "source_crop_sha256": "aed010ce348eb2d6a897d2b3b944b6c2d2479f38fe011c7d022350d5f69865d0"
+    },
+    {
+      "id": "P07",
+      "expected_latex": "P=12I-0.5I^{2}",
+      "required_features": [],
+      "label_basis": "MANUALLY_TRANSCRIBED_FROM_RENDERED_SOURCE_CROP",
+      "split": "development",
+      "scope": "SOURCE_EXPRESSION_TRANSCRIPTION_NOT_SOLUTION_CORRECTNESS",
+      "source_pdf_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927",
+      "page_number": 3,
+      "source_bbox": [
+        472.08,
+        36.641,
+        544.668,
+        49.952
+      ],
+      "source_crop_sha256": "c6c56d02f102d942b3c8499d56160678849111c3ce0d75ca7c5105ccdc8548e0"
+    },
+    {
+      "id": "P08",
+      "expected_latex": "y=-2x^{4}+36x^{2}-90",
+      "required_features": [],
+      "label_basis": "MANUALLY_TRANSCRIBED_FROM_RENDERED_SOURCE_CROP",
+      "split": "development",
+      "scope": "SOURCE_EXPRESSION_TRANSCRIPTION_NOT_SOLUTION_CORRECTNESS",
+      "source_pdf_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927",
+      "page_number": 3,
+      "source_bbox": [
+        254.4,
+        680.168,
+        353.252,
+        694.587
+      ],
+      "source_crop_sha256": "53402588691dd4fba34aed0489fb55ba84b944285dcf9295796be1d344a41eb7"
+    },
+    {
+      "id": "P09",
+      "expected_latex": "h'(t)=\\frac{-25000e^{-t}(1+5e^{-t})^{2}-2(-5e^{-t})(1+5e^{-t})25000e^{-t}}{(1+5e^{-t})^{4}}=\\frac{-25000e^{-t}(1-5e^{-t})}{(1+5e^{-t})^{3}}",
+      "required_features": [],
+      "label_basis": "MANUALLY_TRANSCRIBED_FROM_RENDERED_SOURCE_CROP",
+      "split": "development",
+      "scope": "SOURCE_EXPRESSION_TRANSCRIPTION_NOT_SOLUTION_CORRECTNESS",
+      "source_pdf_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927",
+      "page_number": 4,
+      "source_bbox": [
+        25.590725806451612,
+        441.1894586894587,
+        333.08870967741933,
+        555.5370370370371
+      ],
+      "source_crop_sha256": "7c45149a8f4ec5ac8769e4d7ffffa85dcc2aa09265c90d4d37adbcbc4a32d4f0"
+    },
+    {
+      "id": "P10",
+      "expected_latex": "C(x)=0.01x^{2}+20x+1000",
+      "required_features": [
+        "constant_tail"
+      ],
+      "label_basis": "MANUALLY_TRANSCRIBED_FROM_RENDERED_SOURCE_CROP",
+      "split": "development",
+      "scope": "SOURCE_EXPRESSION_TRANSCRIPTION_NOT_SOLUTION_CORRECTNESS",
+      "source_pdf_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927",
+      "page_number": 4,
+      "source_bbox": [
+        30.24,
+        759.166,
+        128.167,
+        774.822
+      ],
+      "source_crop_sha256": "b02eecb9bc032cda9ceb91a288a069bc896457a2efe231f6de686f21a89eb9fd"
+    },
+    {
+      "id": "P11",
+      "expected_latex": "\\overline{C}(x)=\\frac{C(x)}{x}=\\frac{x}{4}+3+\\frac{400}{x}",
+      "required_features": [
+        "overline"
+      ],
+      "label_basis": "MANUALLY_TRANSCRIBED_FROM_RENDERED_SOURCE_CROP",
+      "split": "development",
+      "scope": "SOURCE_EXPRESSION_TRANSCRIPTION_NOT_SOLUTION_CORRECTNESS",
+      "source_pdf_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927",
+      "page_number": 5,
+      "source_bbox": [
+        89.04,
+        472.992,
+        225.719,
+        505.001
+      ],
+      "source_crop_sha256": "bd0bc6576bb4404519a16ce3483212fd7b1307a33693c7467ea32f81621e30df"
+    },
+    {
+      "id": "P12",
+      "expected_latex": "P(x)=-0.000001x^{3}+0.001x^{2}+5x-500",
+      "required_features": [],
+      "label_basis": "MANUALLY_TRANSCRIBED_FROM_RENDERED_SOURCE_CROP",
+      "split": "development",
+      "scope": "SOURCE_EXPRESSION_TRANSCRIPTION_NOT_SOLUTION_CORRECTNESS",
+      "source_pdf_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927",
+      "page_number": 5,
+      "source_bbox": [
+        59.76,
+        759.368,
+        257.704,
+        773.787
+      ],
+      "source_crop_sha256": "b48d78b5286e5dfd165ab1fc98864467d5abb54fd5a7e31d0c39421ca5d41879"
+    },
+    {
+      "id": "P13",
+      "expected_latex": "R'(x)=\\frac{(0.01x^{2}+1)50-50x(0.02x)}{(0.01x^{2}+1)^{2}}=\\frac{50(0.01x^{2}+1-0.02x^{2})}{(0.01x^{2}+1)^{2}}=\\frac{50(1-0.01x^{2})}{(0.01x^{2}+1)^{2}}",
+      "required_features": [],
+      "label_basis": "MANUALLY_TRANSCRIBED_FROM_RENDERED_SOURCE_CROP",
+      "split": "development",
+      "scope": "SOURCE_EXPRESSION_TRANSCRIPTION_NOT_SOLUTION_CORRECTNESS",
+      "source_conditions": "0<=x<=20",
+      "source_pdf_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927",
+      "page_number": 6,
+      "source_bbox": [
+        26.191,
+        577.925,
+        484.838,
+        630.501
+      ],
+      "source_crop_sha256": "f3dd154ba81241161eba58cb173852f121a6b3ba2dd8851f381862a5dd2ac9cc"
+    },
+    {
+      "id": "P14",
+      "expected_latex": "t=0(s)",
+      "required_features": [
+        "unit_suffix"
+      ],
+      "label_basis": "MANUALLY_TRANSCRIBED_FROM_RENDERED_SOURCE_CROP",
+      "split": "development",
+      "scope": "SOURCE_EXPRESSION_TRANSCRIPTION_NOT_SOLUTION_CORRECTNESS",
+      "source_pdf_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927",
+      "page_number": 7,
+      "source_bbox": [
+        424.08,
+        669.886,
+        464.252,
+        685.542
+      ],
+      "source_crop_sha256": "9b750343cf7e741f6241967324f53ab730d845a17f4313cf132d95c5cb5093c9"
+    },
+    {
+      "id": "P15",
+      "expected_latex": "f(x)=(x_{0}-x)x^{2}",
+      "required_features": [
+        "subscript"
+      ],
+      "label_basis": "MANUALLY_TRANSCRIBED_FROM_RENDERED_SOURCE_CROP",
+      "split": "development",
+      "scope": "SOURCE_EXPRESSION_TRANSCRIPTION_NOT_SOLUTION_CORRECTNESS",
+      "source_pdf_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927",
+      "page_number": 9,
+      "source_bbox": [
+        119.28,
+        438.917,
+        201.251,
+        455.202
+      ],
+      "source_crop_sha256": "1a66ba85fcf760e284392dfa5f036dbb153526f86d3589cf28b817d89efd9a8e"
+    },
+    {
+      "id": "P16",
+      "expected_latex": "y'=-x^{2}+4x+5",
+      "required_features": [],
+      "label_basis": "MANUALLY_TRANSCRIBED_FROM_RENDERED_SOURCE_CROP",
+      "split": "development",
+      "scope": "SOURCE_EXPRESSION_TRANSCRIPTION_NOT_SOLUTION_CORRECTNESS",
+      "source_pdf_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927",
+      "page_number": 12,
+      "source_bbox": [
+        25.590725806451612,
+        177.9145299145299,
+        114.16229838709677,
+        196.30769230769232
+      ],
+      "source_crop_sha256": "8f3cdf9c81c60da7fd61332ca9b8b6c5b6b3e08ada74238e3207914d1fd4af5d"
+    },
+    {
+      "id": "P17",
+      "expected_latex": "y=\\sqrt{x^{2}-2x}",
+      "required_features": [
+        "sqrt"
+      ],
+      "label_basis": "MANUALLY_TRANSCRIBED_FROM_RENDERED_SOURCE_CROP",
+      "split": "development",
+      "scope": "SOURCE_EXPRESSION_TRANSCRIPTION_NOT_SOLUTION_CORRECTNESS",
+      "source_pdf_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927",
+      "page_number": 13,
+      "source_bbox": [
+        167.52,
+        174.13,
+        227.344,
+        187.487
+      ],
+      "source_crop_sha256": "37dc77938410a7ab061ac94569065e03b573029e8e4ef5096e98ebec31b79b97"
+    },
+    {
+      "id": "P18",
+      "expected_latex": "y=\\frac{(3x^{2}+13x+19)'}{(x+3)'}\\Leftrightarrow y=6x+13",
+      "required_features": [],
+      "label_basis": "MANUALLY_TRANSCRIBED_FROM_RENDERED_SOURCE_CROP",
+      "split": "development",
+      "scope": "SOURCE_EXPRESSION_TRANSCRIPTION_NOT_SOLUTION_CORRECTNESS",
+      "source_pdf_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927",
+      "page_number": 14,
+      "source_bbox": [
+        26.190524193548388,
+        715.8589743589744,
+        267.710685483871,
+        764.8376068376068
+      ],
+      "source_crop_sha256": "d2f73fed36105b6b1aa2e84f73b10441d9fc02ec43cc5edcf79d9ae6b61eb08d"
+    },
+    {
+      "id": "P19",
+      "expected_latex": "y=-x+1-\\frac{1}{x+2}=\\frac{-x^{2}-x+1}{x+2}",
+      "required_features": [],
+      "label_basis": "MANUALLY_TRANSCRIBED_FROM_RENDERED_SOURCE_CROP",
+      "split": "development",
+      "scope": "SOURCE_EXPRESSION_TRANSCRIPTION_NOT_SOLUTION_CORRECTNESS",
+      "source_pdf_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927",
+      "page_number": 15,
+      "source_bbox": [
+        53.78125,
+        399.20940170940173,
+        208.33064516129033,
+        435.5940170940171
+      ],
+      "source_crop_sha256": "9078e246b24fb3e25de84cb3e19293cbc4947fa5e02c9dd78940da6108a34e15"
+    },
+    {
+      "id": "P20",
+      "expected_latex": "y'=3x^{2}+2bx+c",
+      "required_features": [],
+      "label_basis": "MANUALLY_TRANSCRIBED_FROM_RENDERED_SOURCE_CROP",
+      "split": "development",
+      "scope": "SOURCE_EXPRESSION_TRANSCRIPTION_NOT_SOLUTION_CORRECTNESS",
+      "note": "Source itself prints 3x^2 without a; transcribe it faithfully, do not repair its mathematics.",
+      "source_pdf_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927",
+      "page_number": 17,
+      "source_bbox": [
+        90.48,
+        78.161,
+        171.632,
+        91.472
+      ],
+      "source_crop_sha256": "c8a1a4443160b2522c741c36b87de39a897be2a244ebbacbc0d479ee0aa77c6d"
+    },
+    {
+      "id": "P21",
+      "expected_latex": "y=|x^{2}+5x+6|",
+      "required_features": [
+        "absolute_value"
+      ],
+      "label_basis": "MANUALLY_TRANSCRIBED_FROM_RENDERED_SOURCE_CROP",
+      "split": "development",
+      "scope": "SOURCE_EXPRESSION_TRANSCRIPTION_NOT_SOLUTION_CORRECTNESS",
+      "source_pdf_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927",
+      "page_number": 17,
+      "source_bbox": [
+        147.36,
+        557.661,
+        217.454,
+        571.241
+      ],
+      "source_crop_sha256": "b420ff403f176c452f2541f19a415bef605fbe84164127821b3f164957c5e885"
+    },
+    {
+      "id": "P22",
+      "expected_latex": "y=f(|x|)",
+      "required_features": [
+        "absolute_value",
+        "function_application"
+      ],
+      "label_basis": "MANUALLY_TRANSCRIBED_FROM_RENDERED_SOURCE_CROP",
+      "split": "development",
+      "scope": "SOURCE_EXPRESSION_TRANSCRIPTION_NOT_SOLUTION_CORRECTNESS",
+      "source_pdf_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927",
+      "page_number": 21,
+      "source_bbox": [
+        60.48,
+        419.175,
+        100.916,
+        431.35
+      ],
+      "source_crop_sha256": "aa7997129a2c78ba49e7efc0eedcab963669c6a5a5340f5107f45e3a82e8f4dd"
+    },
+    {
+      "id": "P23",
+      "expected_latex": "y=x^{3}-3x^{2}+mx-2",
+      "required_features": [],
+      "label_basis": "MANUALLY_TRANSCRIBED_FROM_RENDERED_SOURCE_CROP",
+      "split": "development",
+      "scope": "SOURCE_EXPRESSION_TRANSCRIPTION_NOT_SOLUTION_CORRECTNESS",
+      "source_pdf_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927",
+      "page_number": 21,
+      "source_bbox": [
+        147.36,
+        609.761,
+        244.788,
+        623.072
+      ],
+      "source_crop_sha256": "108408322d893d8310c1fec23e3afd0a710d586dec90df579df06ff0435f7da5"
+    },
+    {
+      "id": "P24",
+      "expected_latex": "y=x^{3}+3mx^{2}+4m^{2}-2",
+      "required_features": [],
+      "label_basis": "MANUALLY_TRANSCRIBED_FROM_RENDERED_SOURCE_CROP",
+      "split": "development",
+      "scope": "SOURCE_EXPRESSION_TRANSCRIPTION_NOT_SOLUTION_CORRECTNESS",
+      "source_pdf_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927",
+      "page_number": 48,
+      "source_bbox": [
+        141.84,
+        353.921,
+        256.065,
+        367.232
+      ],
+      "source_crop_sha256": "465da23bd4202b099e95aed140b2ad957883d39994369c36ebc01118e5a5967d"
+    },
+    {
+      "id": "P25",
+      "expected_latex": "y''=2x+2(m^2-m+2)",
+      "required_features": [],
+      "split": "pilot_holdout",
+      "label_basis": "MANUALLY_TRANSCRIBED_AFTER_PRODUCTION_FREEZE",
+      "source_pdf_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927",
+      "page_number": 22,
+      "source_bbox": [
+        25.590725806451612,
+        175.51566951566952,
+        144.75201612903226,
+        195.1082621082621
+      ],
+      "source_crop_sha256": "dc7154018bd9c55b4c9373ba4cd6e4037f9e3997bc341fa107f0bb22ff00562e"
+    },
+    {
+      "id": "P26",
+      "expected_latex": "y=-(m^2+5m)x^3+6mx^2+6x-6",
+      "required_features": [],
+      "split": "pilot_holdout",
+      "label_basis": "MANUALLY_TRANSCRIBED_AFTER_PRODUCTION_FREEZE",
+      "source_pdf_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927",
+      "page_number": 22,
+      "source_bbox": [
+        373.68,
+        250.457,
+        535.754,
+        269.67
+      ],
+      "source_crop_sha256": "228d066d14fd9ce425d7afb4338840fcda7a5f919d794c7965597da940872491"
+    },
+    {
+      "id": "P27",
+      "expected_latex": "y'=3(m+2)x^2+6x+m",
+      "required_features": [],
+      "split": "pilot_holdout",
+      "label_basis": "MANUALLY_TRANSCRIBED_AFTER_PRODUCTION_FREEZE",
+      "source_pdf_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927",
+      "page_number": 23,
+      "source_bbox": [
+        54.381048387096776,
+        661.8846153846154,
+        193.93548387096774,
+        683.8760683760684
+      ],
+      "source_crop_sha256": "a30ed234da3ce7d7890c8fa4cbab9e57c87d2acd8e2241e7e401fc093ca812ad"
+    },
+    {
+      "id": "P28",
+      "expected_latex": "y=mx^3+3mx^2-(m-1)x-1",
+      "required_features": [],
+      "split": "pilot_holdout",
+      "label_basis": "MANUALLY_TRANSCRIBED_AFTER_PRODUCTION_FREEZE",
+      "source_pdf_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927",
+      "page_number": 24,
+      "source_bbox": [
+        31.68,
+        62.982,
+        169.494,
+        78.26
+      ],
+      "source_crop_sha256": "2f701094949f0179559217fd674a4266dc0afef7b81e3ea7974f17d9e546dcac"
+    },
+    {
+      "id": "P29",
+      "expected_latex": "y=x^3+(m-1)x^2+3x-2",
+      "required_features": [],
+      "split": "pilot_holdout",
+      "label_basis": "MANUALLY_TRANSCRIBED_AFTER_PRODUCTION_FREEZE",
+      "source_pdf_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927",
+      "page_number": 25,
+      "source_bbox": [
+        408.24,
+        35.862,
+        531.174,
+        51.14
+      ],
+      "source_crop_sha256": "dc4b30f030c7ceadf05c1fa6a52d67f3c800e5ad409878c4efdeccfc29c32baa"
+    },
+    {
+      "id": "P30",
+      "expected_latex": "y'=2x^2-2mx-2(3m^2-1)",
+      "required_features": [],
+      "split": "pilot_holdout",
+      "label_basis": "MANUALLY_TRANSCRIBED_AFTER_PRODUCTION_FREEZE",
+      "source_pdf_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927",
+      "page_number": 48,
+      "source_bbox": [
+        65.04,
+        195.335,
+        197.152,
+        214.755
+      ],
+      "source_crop_sha256": "8f2345004a954dd5f73f4aec70d505cab85fbff0fada492de7ddbf59af51871d"
+    },
+    {
+      "id": "P31",
+      "expected_latex": "y=x^3-6x^2+3(m+2)x-m-6",
+      "required_features": [],
+      "split": "pilot_holdout",
+      "label_basis": "MANUALLY_TRANSCRIBED_AFTER_PRODUCTION_FREEZE",
+      "source_pdf_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927",
+      "page_number": 50,
+      "source_bbox": [
+        141.84,
+        611.566,
+        293.705,
+        627.222
+      ],
+      "source_crop_sha256": "50e1aa2236520a50ae6c8a8c7d1f7960f6064f78e4fcf50dd49c6e97911ef863"
+    },
+    {
+      "id": "P32",
+      "expected_latex": "y'=\\frac{x^2-2x+m^2-3m+3}{(x-1)^2}=0",
+      "required_features": [],
+      "split": "pilot_holdout",
+      "label_basis": "MANUALLY_TRANSCRIBED_AFTER_PRODUCTION_FREEZE",
+      "source_pdf_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927",
+      "page_number": 57,
+      "source_bbox": [
+        54.381,
+        54.373,
+        509.429,
+        95.556
+      ],
+      "source_crop_sha256": "8d154cb1f76fa1c11288bc919ab4c4949d56e1e325554c7c2fc6372966b55a81"
+    },
+    {
+      "id": "E01",
+      "split": "external_holdout",
+      "expected_latex": "y=-\\frac{1}{3}x^3-x-3",
+      "required_features": [],
+      "label_basis": "MANUALLY_TRANSCRIBED_AFTER_PRODUCTION_FREEZE",
+      "source_pdf_sha256": "12ca911c6a275d90a6ba4767e79caa4d4df80fd4727852df6e24629136fd4463",
+      "page_number": 6,
+      "source_bbox": [
+        140.623,
+        36.265,
+        217.332,
+        72.382
+      ],
+      "source_crop_sha256": "45354f6e13fca9052f0e69145bed331965fcfdc32b03e501bb287b8434eefd65"
+    },
+    {
+      "id": "E02",
+      "split": "external_holdout",
+      "expected_latex": "y=-x^3+3x+2",
+      "required_features": [],
+      "label_basis": "MANUALLY_TRANSCRIBED_AFTER_PRODUCTION_FREEZE",
+      "source_pdf_sha256": "12ca911c6a275d90a6ba4767e79caa4d4df80fd4727852df6e24629136fd4463",
+      "page_number": 6,
+      "source_bbox": [
+        345.443,
+        129.161,
+        419.761,
+        165.278
+      ],
+      "source_crop_sha256": "4c71d998368c80866b389e3b9918352cfd8290e844bb2f360c8b520b4ec6d89f"
+    },
+    {
+      "id": "E03",
+      "split": "external_holdout",
+      "expected_latex": "y=x^3-3x^2+4",
+      "required_features": [],
+      "label_basis": "MANUALLY_TRANSCRIBED_AFTER_PRODUCTION_FREEZE",
+      "source_pdf_sha256": "12ca911c6a275d90a6ba4767e79caa4d4df80fd4727852df6e24629136fd4463",
+      "page_number": 6,
+      "source_bbox": [
+        345.157,
+        172.043,
+        417.027,
+        208.16
+      ],
+      "source_crop_sha256": "1c9bc29bf1b7e0babb81d5f6b1d86b1a559bf5269e820463b7534d8f5325a879"
+    },
+    {
+      "id": "E04",
+      "split": "external_holdout",
+      "expected_latex": "y=-\\frac{1}{4}x^4+\\frac{1}{2}x^2-3",
+      "required_features": [],
+      "label_basis": "MANUALLY_TRANSCRIBED_AFTER_PRODUCTION_FREEZE",
+      "source_pdf_sha256": "12ca911c6a275d90a6ba4767e79caa4d4df80fd4727852df6e24629136fd4463",
+      "page_number": 6,
+      "source_bbox": [
+        146.732,
+        261.495,
+        236.247,
+        297.612
+      ],
+      "source_crop_sha256": "480874bb7442ce0f603dc3a572ab69bc27b8dd7af395ec7d6f8d0337fc35ff63"
+    },
+    {
+      "id": "E05",
+      "split": "external_holdout",
+      "expected_latex": "y=\\frac{3x-1}{x-2}",
+      "required_features": [],
+      "label_basis": "MANUALLY_TRANSCRIBED_AFTER_PRODUCTION_FREEZE",
+      "source_pdf_sha256": "12ca911c6a275d90a6ba4767e79caa4d4df80fd4727852df6e24629136fd4463",
+      "page_number": 6,
+      "source_bbox": [
+        146.241,
+        326.507,
+        164.406,
+        362.42
+      ],
+      "source_crop_sha256": "bca70e05835bd4ad6b109a556ee34610f38fc17b255a459b15857b6f604186ae"
+    },
+    {
+      "id": "E06",
+      "split": "external_holdout",
+      "expected_latex": "y=\\frac{x-2}{x+3}",
+      "required_features": [],
+      "label_basis": "MANUALLY_TRANSCRIBED_AFTER_PRODUCTION_FREEZE",
+      "source_pdf_sha256": "12ca911c6a275d90a6ba4767e79caa4d4df80fd4727852df6e24629136fd4463",
+      "page_number": 6,
+      "source_bbox": [
+        146.732,
+        424.136,
+        164.897,
+        460.049
+      ],
+      "source_crop_sha256": "bca70e05835bd4ad6b109a556ee34610f38fc17b255a459b15857b6f604186ae"
+    },
+    {
+      "id": "E07",
+      "split": "external_holdout",
+      "expected_latex": "f(x)=(x-3)e^x",
+      "required_features": [],
+      "label_basis": "MANUALLY_TRANSCRIBED_AFTER_PRODUCTION_FREEZE",
+      "source_pdf_sha256": "12ca911c6a275d90a6ba4767e79caa4d4df80fd4727852df6e24629136fd4463",
+      "page_number": 6,
+      "source_bbox": [
+        238.194,
+        585.613,
+        307.989,
+        621.769
+      ],
+      "source_crop_sha256": "3e0e3453f9715a83825e67bf6245b9d9d8bb80718ea4b5372c25a5d71b969a6a"
+    },
+    {
+      "id": "E08",
+      "split": "external_holdout",
+      "expected_latex": "y=x^2+4ln(3-x)",
+      "required_features": [],
+      "label_basis": "MANUALLY_TRANSCRIBED_AFTER_PRODUCTION_FREEZE",
+      "source_pdf_sha256": "12ca911c6a275d90a6ba4767e79caa4d4df80fd4727852df6e24629136fd4463",
+      "page_number": 6,
+      "source_bbox": [
+        146.732,
+        628.533,
+        231.046,
+        664.65
+      ],
+      "source_crop_sha256": "bd9ddb2b81a70b3a3b19ee68a61b15771eb13231b92660097487198e1341c551"
+    }
+  ]
+}

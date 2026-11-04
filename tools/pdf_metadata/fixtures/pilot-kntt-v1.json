@@ -1,0 +1,20 @@
+{
+  "schema_version": "pilot-fixture/v1",
+  "source_sha256": "5db1fc66ab0a42553e882981d1b22935967295b9a73cd2c96840e6ee5dd76927",
+  "expected_page_count": 57,
+  "expected_source_numbers": {"start": 151, "end": 270, "count": 120},
+  "review_scope": "source transcription and geometric linkage only; not academic solution validation",
+  "formula_control_regions": [
+    {"id": "q151-inline-coefficient", "page_number": 1, "bbox": [416, 54, 538, 75], "expected_source_latex": "G(x)=0,025x^2(30-x)"}
+  ],
+  "visual_cases": [
+    {"number": 151, "source_answer": "20", "source_pages": [1]},
+    {"number": 152, "source_answer": "15", "source_pages": [1, 2], "solution_contains": "a", "notes": "Variation table continues above first text line on page 2."},
+    {"number": 153, "source_answer": "149", "source_pages": [2]},
+    {"number": 183, "source_answer": "3", "source_pages": [16], "notes": "Answer marker has no colon. Absolute-value bars must be preserved from image/model."},
+    {"number": 184, "source_answer": "2026", "source_pages": [16], "stem_contains": "x  a", "notes": "Raised numerator belongs to q184 rather than q183."},
+    {"number": 213, "source_answer": "1", "source_pages": [29], "notes": "Source derivation divides by m before concluding m=0. A separate m=0 case is needed before treating the solution as a verified rubric."},
+    {"number": 214, "source_answer": "4", "source_pages": [29]},
+    {"number": 270, "source_answer": "1,4", "source_pages": [56,57], "solution_contains": "1,4", "notes": "Final page contains continuation only. Preserve decimal comma."}
+  ]
+}

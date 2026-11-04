@@ -1,0 +1,188 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "question_id": {
+      "type": "string"
+    },
+    "verdict": {
+      "enum": [
+        "CONSISTENT",
+        "ISSUES_FOUND",
+        "UNCERTAIN"
+      ]
+    },
+    "source_transcription": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "stem_markdown": {
+          "type": "string"
+        },
+        "answer_text": {
+          "type": "string"
+        },
+        "solution_markdown": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "stem_markdown",
+        "answer_text",
+        "solution_markdown"
+      ]
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "order": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "kind": {
+            "enum": [
+              "ASSUMPTION",
+              "MODEL_SETUP",
+              "TRANSFORMATION",
+              "DERIVATIVE_CALCULATION",
+              "ROOT_FINDING",
+              "SIGN_TABLE",
+              "CONCLUSION",
+              "OTHER"
+            ]
+          },
+          "title": {
+            "type": "string"
+          },
+          "content_markdown": {
+            "type": "string"
+          },
+          "formulas_latex": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "conditions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "text": {
+                  "type": "string"
+                },
+                "evidence_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1
+                },
+                "basis": {
+                  "enum": [
+                    "VISIBLE_SOURCE",
+                    "PROPOSED_ADDITION"
+                  ]
+                }
+              },
+              "required": [
+                "text",
+                "evidence_ids",
+                "basis"
+              ]
+            }
+          },
+          "evidence_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1
+          },
+          "basis": {
+            "enum": [
+              "VISIBLE_SOURCE",
+              "PROPOSED_ADDITION"
+            ]
+          },
+          "uncertain": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "order",
+          "kind",
+          "title",
+          "content_markdown",
+          "formulas_latex",
+          "conditions",
+          "evidence_ids",
+          "basis",
+          "uncertain"
+        ]
+      },
+      "minItems": 1,
+      "maxItems": 40
+    },
+    "issues": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "severity": {
+            "enum": [
+              "INFO",
+              "WARNING",
+              "ERROR"
+            ]
+          },
+          "message": {
+            "type": "string"
+          },
+          "evidence_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1
+          },
+          "proposed_correction": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "severity",
+          "message",
+          "evidence_ids",
+          "proposed_correction"
+        ]
+      },
+      "maxItems": 40
+    },
+    "missing_source_content": {
+      "type": "boolean"
+    },
+    "unreadable_source": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "question_id",
+    "verdict",
+    "source_transcription",
+    "steps",
+    "issues",
+    "missing_source_content",
+    "unreadable_source"
+  ]
+}

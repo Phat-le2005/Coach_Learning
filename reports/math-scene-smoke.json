@@ -1,0 +1,25 @@
+{
+  "frontend": "http://localhost:3000",
+  "backend": "http://127.0.0.1:8000",
+  "checks": {
+    "student_bff_login": true,
+    "versioned_scene_saved": true,
+    "idempotent_replay": true,
+    "all_rows_colors_visibility_restored": true,
+    "shared_parameter_restored": true,
+    "camera_restored": true,
+    "scene_classified_2D": true,
+    "changed_payload_cannot_reuse_action": true,
+    "unsafe_cycles_missing_functions_invalid_operators_rejected": true,
+    "parameter_mismatch_rejected": true,
+    "csrf_required": true,
+    "student_teacher_role_isolated": true,
+    "teacher_bff_login": true,
+    "teacher_restores_complete_scene": true,
+    "teacher_page_available": true,
+    "legacy_snapshots_remain_readable": true
+  },
+  "snapshot_id": "fc852f1f-8e93-4128-9d05-aaebfd3724e8",
+  "attempt_id": "b7bb5f25-e9de-48d3-9ae9-42d49bcff0fb",
+  "all_checks_passed": true
+}
