@@ -20,7 +20,7 @@ def inspect(page,bbox):
     head=[g for g in regular if g['bbox'][0]<bbox[0]+min(32,(bbox[2]-bbox[0])*.4)]
     bottom=median(g['bbox'][3] for g in head or regular) if regular else bbox[3]
     vectors=page.get('vectors',[])
-    verticals=[v['bbox'] for v in vectors if v['kind']=='line' and v['bbox'][2]-v['bbox'][0]<.4
+    verticals=[v['bbox'] for v in vectors if v['kind'] in {'line','rect'} and v['bbox'][2]-v['bbox'][0]<.9
                and size*.8<v['bbox'][3]-v['bbox'][1]<size*2.8
                and bbox[0]-2<v['bbox'][0]<bbox[2]+size*.6
                and v['bbox'][1]<bottom-size*.55 and v['bbox'][3]>bottom-size*.15]

@@ -209,7 +209,13 @@ def assemble(rows, formulas):
             value=pieces[0].strip()
     # Unknown encodings cannot become clean math merely by being pretty-printed.
     if any(is_suspicious(c) for c in value):raise ValueError('UNMAPPED_GLYPH_IN_TRANSCRIPT')
-    return {'markdown':value,'choices':choices}
+    choice_issues=[]
+    from .choice_layout import meaningful,recover
+    if choices and any(not meaningful(c['markdown']) for c in choices):
+        recovered=recover(rows,formulas,owned,insertions)
+        if recovered:value,choices=recovered['markdown'],recovered['choices']
+        else:choice_issues.append('CHOICE_LAYOUT_AMBIGUOUS_SOURCE_REQUIRED')
+    return {'markdown':value,'choices':choices,'choice_issues':choice_issues}
 
 
 def audit_coverage(rows, formulas, errors):

@@ -104,7 +104,7 @@ def document(source,work,runtime,*,use_ocr=True):
             'source_spans':[restore(s,mapping) for s in item[raw_name]['source_spans']]}
             for name,raw_name in [('question','stem'),('solution','solution')]}
         q={'question_id':item['question_id'],'source_number':item['source_number'],'source_label':item.get('source_label'),
-            'chapter_id':record['chapter'],'chapter_title':CHAPTERS[record['chapter']],
+            'chapter_id':record['chapter'],'chapter_title':CHAPTERS.get(record['chapter'],'Chưa phân loại'),
             'document_id':record['document_id'],'source':{'name':Path(record['label']).name,
                 'catalog_label':record['label'],'sha256':record['sha256'],'page_count':record['pages'],
                 'coordinate_unit':'pdf_point','coordinate_origin':'top-left'}, **parts,

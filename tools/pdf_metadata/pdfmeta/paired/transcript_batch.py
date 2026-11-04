@@ -38,7 +38,7 @@ def content_hash(value):
 
 def code_identity():
     root=Path(__file__).parent
-    paths=[root/n for n in ['transcript_batch.py','transcript_regions.py','transcript_quality.py','transcript_plan.py','transcript_syntax.cjs','math_recovery.py']]
+    paths=[root/n for n in ['transcript_batch.py','transcript_regions.py','choice_layout.py','transcript_quality.py','transcript_plan.py','transcript_syntax.cjs','math_recovery.py']]
     paths += [root.parent/n for n in ['native_math.py','text_cleanup.py','safe_math.py','source_layout/__init__.py']]
     return content_hash({str(p.name):file_hash(p) for p in paths})
 

@@ -19,6 +19,8 @@ def check_source_tokens(source,latex):
     if digits(source)!=digits(latex):issues.append('SOURCE_DIGITS_CHANGED')
     signs=lambda s:Counter(c for c in s.replace('−','-').replace('–','-') if c in '=+')
     if signs(source)!=signs(latex):issues.append('SOURCE_EQUALITY_OR_PLUS_CHANGED')
+    minus=lambda s:s.replace('−','-').replace('–','-').count('-')
+    if minus(source)!=minus(latex):issues.append('SOURCE_MINUS_SIGNS_CHANGED')
     return issues
 
 
