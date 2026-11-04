@@ -205,11 +205,11 @@ class FormulaReader:
         self.instance = None
         self.calls = self.hits = 0
 
-    def read(self, image):
+    def read(self, image, *, use_cache=True):
         identity = {**self.identity, 'image_sha256': file_hash(image)}
         key = hashlib.sha256(json.dumps(identity, sort_keys=True).encode()).hexdigest()
         target = self.output / 'ocr-cache' / (key + '.json')
-        if target.is_file() and read_json(target).get('identity') == identity:
+        if use_cache and target.is_file() and read_json(target).get('identity') == identity:
             self.hits += 1
             return read_json(target)['latex']
         if self.instance is None:

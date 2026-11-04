@@ -19,6 +19,7 @@ def main():
     c.add_argument('--max-pages',type=int,default=100);c.add_argument('--max-pdfs',type=int,default=0)
     c.add_argument('--timeout',type=int,default=3600);c.add_argument('--skip-qwen',action='store_true')
     c.add_argument('--retry-failed',action='store_true')
+    c.add_argument('--oversize-policy',choices=['run','defer'],default='run')
     c=commands.add_parser('evaluate');c.add_argument('--queue',type=Path,required=True);c.add_argument('--manifest',type=Path)
     args=vars(p.parse_args());action=args.pop('action')
     if action=='evaluate':

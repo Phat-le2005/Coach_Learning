@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:coach-learning:layout-first-transcription:v2",
+  "title": "Source-backed mathematical content draft; never grading approval",
+  "type": "object",
+  "required": ["schema_version", "question_id", "collection_number", "source", "parts", "formula_candidates", "tables", "figures", "issues", "academic_review", "grading_support", "publishable"],
+  "properties": {
+    "schema_version": {"const": "layout-first-transcription/v2"},
+    "question_id": {"type": "string", "minLength": 1},
+    "collection_number": {"type": "integer", "minimum": 1},
+    "source": {"type": "object", "required": ["sha256", "name"], "properties": {"sha256": {"$ref": "#/$defs/sha256"}, "name": {"type": "string"}}},
+    "academic_review": {"const": "PENDING"},
+    "grading_support": {"const": "NOT_ASSESSED"},
+    "publishable": {"const": false},
+    "parts": {"type": "object", "required": ["question", "solution", "answer"], "additionalProperties": {"$ref": "#/$defs/part"}},
+    "formula_candidates": {"type": "array", "items": {"type": "object", "required": ["formula_id", "role", "page_number", "bbox", "source_glyph_keys", "asset_path", "asset_sha256", "display_latex", "syntax"], "properties": {
+      "formula_id": {"type": "string"}, "role": {"enum": ["question", "solution", "answer"]}, "page_number": {"type": "integer", "minimum": 1},
+      "bbox": {"$ref": "#/$defs/bbox"}, "source_glyph_keys": {"$ref": "#/$defs/keys"},
+      "asset_path": {"$ref": "#/$defs/asset"}, "asset_sha256": {"$ref": "#/$defs/sha256"}, "display_latex": {"type": ["string", "null"]}, "syntax": {"type": "object"}
+    }}},
+    "tables": {"type": "array", "items": {"type": "object", "required": ["table_id", "role", "page_number", "bbox", "rows", "columns", "cells", "source_glyph_keys", "asset_path", "asset_sha256"], "properties": {
+      "rows": {"type": "integer", "minimum": 2}, "columns": {"type": "integer", "minimum": 2}, "bbox": {"$ref": "#/$defs/bbox"},
+      "source_glyph_keys": {"$ref": "#/$defs/keys"}, "asset_path": {"$ref": "#/$defs/asset"}, "asset_sha256": {"$ref": "#/$defs/sha256"},
+      "cells": {"type": "array", "items": {"type": "object", "required": ["row", "column", "bbox", "source_glyph_keys", "kind", "display_text", "status"], "properties": {
+        "row": {"type": "integer", "minimum": 0}, "column": {"type": "integer", "minimum": 0}, "bbox": {"$ref": "#/$defs/bbox"},
+        "source_glyph_keys": {"$ref": "#/$defs/keys"}, "display_text": {"type": ["string", "null"]},
+        "asset_path": {"$ref": "#/$defs/asset"}, "asset_sha256": {"$ref": "#/$defs/sha256"},
+        "status": {"enum": ["NATIVE_DRAFT", "SOURCE_IMAGE_REQUIRED"]}
+      }}}
+    }}},
+    "figures": {"type": "array"}, "issues": {"type": "array"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "asset": {"type": "string", "pattern": "^assets/[A-Za-z0-9_/-]+\\.png$"},
+    "bbox": {"type": "array", "items": {"type": "number"}, "minItems": 4, "maxItems": 4},
+    "keys": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "part": {"type": "object", "required": ["markdown", "choices", "source_spans", "fragments"], "properties": {
+      "markdown": {"type": "string"}, "choices": {"type": "array"}, "source_spans": {"type": "array"},
+      "fragments": {"type": "array", "items": {"type": "object", "required": ["page_number", "bbox", "source_asset", "source_asset_sha256", "markdown", "blocks", "coverage"], "properties": {
+        "page_number": {"type": "integer", "minimum": 1}, "bbox": {"$ref": "#/$defs/bbox"}, "source_asset": {"$ref": "#/$defs/asset"},
+        "source_asset_sha256": {"$ref": "#/$defs/sha256"}, "markdown": {"type": "string"}, "blocks": {"type": "array"}, "coverage": {"type": "object"}
+      }}}
+    }}
+  }
+}

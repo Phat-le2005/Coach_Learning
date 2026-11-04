@@ -172,6 +172,26 @@ def test_failed_queue_item_does_not_loop_automatically(tmp_path):
     batch_run([pdf],**args,retry_failed=True);assert len(calls)==2
 
 
+def test_oversize_document_runs_whole_or_is_explicitly_deferred(tmp_path):
+    pdf=tmp_path/'large.pdf'
+    document=pdfium.PdfDocument.new()
+    for _ in range(2):document.new_page(600,800).close()
+    document.save(pdf);document.close()
+    calls=[]
+    def worker(item,**kwargs):
+        calls.append(item['job_id']);job=tmp_path/'storage/pdf-jobs'/item['job_id'];job.mkdir(parents=True,exist_ok=True)
+        for name in ['final.json','image-check.json','core-package.json']:write_json(job/name,{'stub':True})
+        return {'job':str(job),'final':str(job/'final.json')}
+    args=dict(repo=Path(__file__).parents[3],storage=tmp_path/'storage',executor=worker,max_pages=1)
+    deferred=batch_run([pdf],**args,oversize_policy='defer')
+    queue=read_json(Path(deferred['queue']))
+    assert not calls and queue['items'][0]['defer_reason']=='DOCUMENT_EXCEEDS_PAGE_BUDGET'
+    completed=batch_run([pdf],**args,oversize_policy='run')
+    queue=read_json(Path(completed['queue']))
+    assert len(calls)==1 and completed['status']=='COMPLETED'
+    assert queue['items'][0]['pages']==2 and queue['items'][0]['budget_overrun_pages']==1
+
+
 def test_evaluation_does_not_mix_new_artifacts_with_an_old_queue(tmp_path):
     artifact=tmp_path/'result.json';write_json(artifact,{'v':1})
     queue=tmp_path/'queue.json'

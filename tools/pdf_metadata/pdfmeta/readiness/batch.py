@@ -109,10 +109,11 @@ def execute(item,*,repo,storage,log,review_limit,visual_limit,skip_qwen,timeout)
 
 
 def run(inputs,*,repo,storage,review_limit=3,visual_limit=8,skip_qwen=False,max_pages=100,max_pdfs=0,
-        timeout=3600,retry_failed=False,executor=None):
+        timeout=3600,retry_failed=False,oversize_policy='run',executor=None):
     repo,storage=Path(repo).resolve(),Path(storage).resolve()
     if os.name=='nt' and storage.drive.upper()!='E:':raise ValueError('KEEP_BATCH_STORAGE_ON_E')
     if min(review_limit,visual_limit,max_pages,max_pdfs)<0 or timeout<=0:raise ValueError('INVALID_QUEUE_BUDGET')
+    if oversize_policy not in {'run','defer'}:raise ValueError('INVALID_OVERSIZE_POLICY')
     import pypdfium2 as pdfium
     items=discover(inputs,storage)
     for item in items:
@@ -137,7 +138,8 @@ def run(inputs,*,repo,storage,review_limit=3,visual_limit=8,skip_qwen=False,max_
                 else:entry['result_hashes']=hashes
             entries.append(entry)
         state={'schema_version':'pdf-batch/v1','queue_id':identity,'owner':owner(),'config':config,
-               'status':'RUNNING','started_at':now(),'items':entries,'max_pages_this_run':max_pages,'max_pdfs_this_run':max_pdfs}
+               'status':'RUNNING','started_at':now(),'items':entries,'max_pages_this_run':max_pages,'max_pdfs_this_run':max_pdfs,
+               'page_budget_policy':'SOFT_WHOLE_DOCUMENT_BUDGET_PRESERVES_CROSS_PAGE_SOLUTIONS','oversize_policy':oversize_policy}
         def save():
             state.update(updated_at=now(),counts=dict(Counter(i['status'] for i in entries)))
             write_json(state_path,state);write_json(storage/'pdf-queues/latest.json',{'queue':str(state_path),'queue_id':identity})
@@ -146,7 +148,16 @@ def run(inputs,*,repo,storage,review_limit=3,visual_limit=8,skip_qwen=False,max_
             for item in entries:
                 if item['status']=='COMPLETED':continue
                 if item['status'] in {'FAILED','INTERRUPTED'} and not retry_failed:continue
-                if (max_pdfs and count>=max_pdfs) or (max_pages and pages+item['pages']>max_pages):continue
+                if max_pdfs and count>=max_pdfs:
+                    item['defer_reason']='MAX_PDFS_THIS_RUN';save();continue
+                if max_pages and pages+item['pages']>max_pages:
+                    if count==0 and item['pages']>max_pages and oversize_policy=='run':
+                        item['budget_overrun_pages']=item['pages']-max_pages
+                        print('[queue] OVERSIZE_DOCUMENT_RUN_WHOLE · '+item['pdf'],flush=True)
+                    else:
+                        item['defer_reason']='DOCUMENT_EXCEEDS_PAGE_BUDGET' if item['pages']>max_pages else 'PAGE_BUDGET_THIS_RUN'
+                        save();continue
+                item.pop('defer_reason',None)
                 if file_hash(Path(item['pdf']))!=item['sha256']:raise ValueError('QUEUED_SOURCE_CHANGED')
                 item.update(status='RUNNING',attempts=item['attempts']+1,started_at=now());save()
                 started=time.perf_counter()

@@ -6,6 +6,7 @@ param(
     [ValidateRange(0,100000)][int]$MaxPages=100,
     [ValidateRange(0,100000)][int]$MaxPdfs=0,
     [ValidateRange(30,86400)][int]$Timeout=3600,
+    [ValidateSet('run','defer')][string]$OversizePolicy='run',
     [switch]$SkipQwen,
     [switch]$RetryFailed,
     [switch]$Open
@@ -27,7 +28,7 @@ if ($LASTEXITCODE) { throw 'Progress dashboard failed to start.' }
 Write-Host "Progress: $url"
 if ($Open) { Start-Process ($url | Select-Object -Last 1) }
 $arguments=@('-B','-u','-m','pdfmeta.readiness','batch','--repo',$corpusRepo,'--storage',$Storage,
-    '--review-limit',$ReviewLimit,'--visual-limit',$VisualLimit,'--max-pages',$MaxPages,'--max-pdfs',$MaxPdfs,'--timeout',$Timeout)
+    '--review-limit',$ReviewLimit,'--visual-limit',$VisualLimit,'--max-pages',$MaxPages,'--max-pdfs',$MaxPdfs,'--timeout',$Timeout,'--oversize-policy',$OversizePolicy)
 if ($SkipQwen) { $arguments+='--skip-qwen' }
 if ($RetryFailed) { $arguments+='--retry-failed' }
 $arguments+='--'
