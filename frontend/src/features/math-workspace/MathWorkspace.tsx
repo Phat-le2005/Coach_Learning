@@ -20,8 +20,6 @@ import { generateUuid } from "./utils/ink-math";
 import { mathInkStorage } from "./storage/indexeddb";
 import { ensureLatestInkSaved } from "./utils/ocr-sync";
 import { getOcrPenStrokes } from "./utils/ocr-ink";
-import { segmentPageInk } from "./utils/page-ocr";
-import type { PageOcrRegion } from "./utils/page-ocr";
 import { canSafelyRebaseInkDraft, restoreDirtyPageDrafts } from "./utils/draft-recovery";
 import { WorkspaceToolbar } from "./components/WorkspaceToolbar";
 import { PaperUploadPanel } from "./components/PaperUploadPanel";
@@ -29,7 +27,7 @@ import { PageNavigator } from "./components/PageNavigator";
 import { ProblemPane } from "./components/ProblemPane";
 import { MathCanvas } from "./components/MathCanvas";
 import { SyncStatusBadge } from "./components/SyncStatusBadge";
-import { PageOcrReviewModal } from "./components/PageOcrReviewModal";
+import { PageOcrV2ReviewModal } from "./components/PageOcrV2ReviewModal";
 import { VariationTableModal } from "./components/VariationTableModal";
 import { AIReviewWorkspace } from "./components/ai-review/AIReviewWorkspace";
 import type { AIReviewRead, AIReviewAvailabilityRead, StepKind, VariationTablePayload } from "@/lib/api/contracts";
@@ -116,7 +114,7 @@ export function MathWorkspace({
   // OCR recognition & confirmation state
   const [isRecognizingOCR, setIsRecognizingOCR] = useState(false);
   const [pageOcrReview, setPageOcrReview] = useState<{
-    pageIndex: number; regions: PageOcrRegion[]; pageStrokes: InkStroke[];
+    pageIndex: number; pageStrokes: InkStroke[]; sourceRevision: number;
   } | null>(null);
   const [ocrError, setOcrError] = useState<string | null>(null);
   const [variationTableEditor, setVariationTableEditor] = useState<{ stepId?: string; initial?: VariationTablePayload } | null>(null);
@@ -124,6 +122,7 @@ export function MathWorkspace({
   // PR3-C: Batch recovery state
   const [pendingBatch, setPendingBatch] = useState<BatchJournal | null>(null);
   const [batchJournalLoadError, setBatchJournalLoadError] = useState<string | null>(null);
+  const [batchJournalReady, setBatchJournalReady] = useState(false);
   const [batchResuming, setBatchResuming] = useState(false);
   const [recoveryMessage, setRecoveryMessage] = useState<string | null>(null);
 
@@ -292,7 +291,7 @@ export function MathWorkspace({
       setPendingBatch(null);
       setBatchJournalLoadError(code);
       setRecoveryMessage(`Lỗi đọc dữ liệu đợt lưu từ bộ nhớ trình duyệt (${code}). Đã tạm khóa tạo bước mới để bảo toàn dữ liệu máy chủ.`);
-    }
+    } finally { setBatchJournalReady(true); }
   }, [attemptId]);
 
   useEffect(() => {
@@ -527,7 +526,9 @@ export function MathWorkspace({
 
   // Persist the page before reviewing it; recognition only suggests step content.
   const handleTriggerOCR = useCallback(async () => {
-    const penStrokes = getOcrPenStrokes(currentPageMemory.strokes);
+    const capturedStrokes = currentPageMemory.strokes;
+    const penStrokes = getOcrPenStrokes(capturedStrokes);
+    if (!batchJournalReady) { setOcrError("Đang kiểm tra nhật ký lưu trước. Hãy thử lại sau khi hoàn tất."); return; }
     if (pendingBatch || batchJournalLoadError) {
       setOcrError(
         batchJournalLoadError
@@ -536,7 +537,7 @@ export function MathWorkspace({
       );
       return;
     }
-    if (penStrokes.length === 0 || pageOcrReview) return;
+    if (penStrokes.length === 0 || pageOcrReview || authExpired || syncStatus === "conflict") return;
     setOcrError(null);
     setIsRecognizingOCR(true);
     try {
@@ -555,9 +556,11 @@ export function MathWorkspace({
           return;
         }
       }
-      const regions = segmentPageInk(penStrokes);
-      if (!regions.length) return;
-      setPageOcrReview({ pageIndex: currentPageIndex, regions, pageStrokes: currentPageMemory.strokes });
+      await saveQueueRef.current;
+      if (latestStrokesRef.current.get(currentPageIndex) !== capturedStrokes) {
+        setOcrError("Nét viết đã thay đổi khi đồng bộ. Hãy trích xuất lại trang mới nhất."); return;
+      }
+      setPageOcrReview({ pageIndex: currentPageIndex, pageStrokes: structuredClone(capturedStrokes), sourceRevision: Math.max(1, revisionRef.current) });
     } catch (error: unknown) {
       setOcrError(error instanceof ApiResponseError && error.status === 401
         ? "Phiên đăng nhập đã hết hạn. Đăng nhập lại để lưu nét viết."
@@ -566,7 +569,7 @@ export function MathWorkspace({
       setIsRecognizingOCR(false);
     }
   }, [currentPageMemory.strokes, currentPageMemory.isDirty, currentPageIndex,
-    flushSavePage, authExpired, pageOcrReview, pendingBatch, batchJournalLoadError]);
+    flushSavePage, authExpired, syncStatus, pageOcrReview, pendingBatch, batchJournalLoadError, batchJournalReady]);
 
   const handleConfirmStep = useCallback(
     async (stepType: StepKind, latex: string | null, explanation: string, actionId: string) => {
@@ -1242,6 +1245,7 @@ export function MathWorkspace({
         onZoomOut={() => setZoomLevel((z) => Math.max(0.6, z - 0.1))}
         onResetZoom={() => setZoomLevel(1.0)}
         onTriggerOCR={paperMode || attempt?.status === "SUBMITTED" || problem?.is_read_only ? undefined : handleTriggerOCR}
+        ocrBlocked={!batchJournalReady || Boolean(pendingBatch || batchJournalLoadError || batchResuming || pageOcrReview)}
         onOpenVariationTable={attempt && ["DRAFT", "IN_PROGRESS"].includes(attempt.status) && !pageOcrReview && !problem?.is_read_only
           ? () => setVariationTableEditor({}) : undefined}
         onTogglePaper={() => setPaperMode((current) => !current)}
@@ -1350,10 +1354,16 @@ export function MathWorkspace({
         onClose={() => setGraphOpen(false)} /> : null}
 
       {pageOcrReview ? (
-        <PageOcrReviewModal
+        <PageOcrV2ReviewModal
           pageIndex={pageOcrReview.pageIndex}
-          regions={pageOcrReview.regions}
-          pageStrokes={pageOcrReview.pageStrokes}
+          source={{ pageIndex: pageOcrReview.pageIndex, sourceRevision: pageOcrReview.sourceRevision, sourceKind: "INK", strokes: pageOcrReview.pageStrokes }}
+          blockedByBatch={Boolean(pendingBatch || batchJournalLoadError)}
+          isSourceCurrent={() => !authExpired && documentRevision === pageOcrReview.sourceRevision && currentPageIndex === pageOcrReview.pageIndex && JSON.stringify(latestStrokesRef.current.get(pageOcrReview.pageIndex)) === JSON.stringify(pageOcrReview.pageStrokes)}
+          beforeSave={async () => {
+            if (authExpired || syncStatus !== "saved" || revisionRef.current !== pageOcrReview.sourceRevision || JSON.stringify(latestStrokesRef.current.get(pageOcrReview.pageIndex)) !== JSON.stringify(pageOcrReview.pageStrokes)) throw Error("SOURCE_CHANGED_OR_UNSYNCED; hãy đồng bộ và trích xuất lại");
+            const fresh = await apiClient.getMathInkPage(accessToken, attemptId, pageOcrReview.pageIndex);
+            if (fresh.document_revision !== pageOcrReview.sourceRevision || JSON.stringify(fresh.strokes) !== JSON.stringify(pageOcrReview.pageStrokes)) throw Error("SERVER_INK_REVISION_CHANGED; snapshot cũ được giữ, hãy đối chiếu lại");
+          }}
           onClose={() => {
             setPageOcrReview(null);
             void checkPendingBatch();

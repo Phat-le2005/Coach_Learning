@@ -43,7 +43,11 @@ interface ReviewRow {
   serverStepId?: string | null;
 }
 
-interface PageOcrReviewModalProps {
+export interface PreparedOcrStep { region: PageOcrRegion; draft: OcrReviewDraft; actionId: string }
+export interface PageOcrReviewModalProps {
+  beforePreparedSave?: () => Promise<void>;
+  preparedSteps?: PreparedOcrStep[];
+  onPreparedSaved?: (steps: { unitId: string; stepId?: string | null; actionId: string }[]) => void;
   pageIndex: number;
   regions: PageOcrRegion[];
   pageStrokes: InkStroke[];
@@ -81,6 +85,7 @@ function newRow(region: PageOcrRegion, pageIndex: number): ReviewRow {
 }
 
 export function PageOcrReviewModal({
+  preparedSteps, onPreparedSaved, beforePreparedSave,
   pageIndex,
   regions,
   pageStrokes,
@@ -92,9 +97,9 @@ export function PageOcrReviewModal({
   onBatchComplete,
   onBatchUpdate,
 }: PageOcrReviewModalProps) {
-  const [rows, setRows] = useState<ReviewRow[]>(() => regions.map((region) => newRow(region, pageIndex)));
+  const [rows, setRows] = useState<ReviewRow[]>(() => preparedSteps ? preparedSteps.map(p => ({ ...newRow(p.region, pageIndex), draft: p.draft, actionId: p.actionId, status: 'approved' })) : regions.map((region) => newRow(region, pageIndex)));
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [processing, setProcessing] = useState(true);
+  const [processing, setProcessing] = useState(!preparedSteps);
   const [saving, setSaving] = useState(false);
   const [batchSaving, setBatchSaving] = useState(false);
   const [batchProgress, setBatchProgress] = useState<{ current: number; total: number; message: string } | null>(null);
@@ -114,7 +119,7 @@ export function PageOcrReviewModal({
     row && pausedJournal?.entries.some((e) => e.actionId === row.actionId && e.frozen !== null)
   );
   const reviewMutationLocked = !canMutateReviewState(saving, batchSaving, pausedJournal);
-  const isRowContentLocked = reviewMutationLocked || row?.status === 'saved' || row?.retryOnly || isRowFrozenInPausedBatch;
+  const isRowContentLocked = Boolean(preparedSteps) || reviewMutationLocked || row?.status === 'saved' || row?.retryOnly || isRowFrozenInPausedBatch;
 
   useEffect(() => {
     const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
@@ -122,7 +127,10 @@ export function PageOcrReviewModal({
     return () => previousFocus?.focus();
   }, []);
 
+  const savedCallback = useRef(onPreparedSaved); savedCallback.current = onPreparedSaved;
+  useEffect(() => { if (preparedSteps) savedCallback.current?.(rows.filter(r => r.status === 'saved').map(r => ({ unitId: r.draft.localId, stepId: r.serverStepId, actionId: r.actionId }))); }, [rows, preparedSteps]);
   useEffect(() => {
+    if (preparedSteps) return;
     const run = { cancelled: false };
     activeRunRef.current = run;
     async function recognizePage() {
@@ -410,7 +418,8 @@ export function PageOcrReviewModal({
     });
 
     try {
-      const batchApi = createBatchApi(apiClient, accessToken ?? '');
+      await beforePreparedSave?.();
+      const batchApi = createBatchApi(apiClient, accessToken ?? '', beforePreparedSave);
       const store = new IndexedDbBatchJournal();
       const lock = new BrowserBatchLock();
       const manager = new SequentialBatchManager(batchApi, store, lock);
@@ -461,7 +470,8 @@ export function PageOcrReviewModal({
       message: 'Đang đối soát và lưu tiếp các bước...',
     });
     try {
-      const batchApi = createBatchApi(apiClient, accessToken ?? '');
+      await beforePreparedSave?.();
+      const batchApi = createBatchApi(apiClient, accessToken ?? '', beforePreparedSave);
       const store = new IndexedDbBatchJournal();
       const lock = new BrowserBatchLock();
       const manager = new SequentialBatchManager(batchApi, store, lock);
@@ -627,7 +637,7 @@ export function PageOcrReviewModal({
               {row.error ? <p className={styles.pageReviewWarning} role='status'>{row.error}</p> : null}
               {earlierUnreviewed ? <p className={styles.pageReviewWarning}>Duyệt các vùng phía trên trước để lưu đúng thứ tự bài giải.</p> : null}
               {reviewError ? <p className={styles.ocrErrorBanner} role='alert'>{reviewError}</p> : null}
-              <div className={styles.pageReviewActions}>
+              {!preparedSteps && <><div className={styles.pageReviewActions}>
                 {row.status === 'approved' ? (
                   <button type='button' className={styles.buttonSecondary} onClick={unapproveCurrentDraft}
                     disabled={reviewMutationLocked}>Hủy duyệt bước này</button>
@@ -676,6 +686,7 @@ export function PageOcrReviewModal({
                 <button type='button' className={styles.buttonSecondary} onClick={splitHere}
                   disabled={processing || reviewMutationLocked || row.status === 'saved' || row.retryOnly || row.region.strokes.length < 2}>Tách tại vạch</button>
               </div>
+              </>}
               {isRowFrozenInPausedBatch ? (
                 <p className={styles.pageReviewWarning} role='status'>
                   Bước này đã được gửi lên máy chủ trong đợt lưu trước và đã bị khóa để giữ nguyên tính bất biến. Bấm &ldquo;Lưu tiếp đợt này&rdquo; để tiếp tục.
@@ -744,8 +755,8 @@ export function PageOcrReviewModal({
                   {row.status === 'skipped' ? 'Xem lại vùng' : 'Bỏ qua vùng'}
                 </button>
                 <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                  <button type='button' className={styles.buttonSecondary} onClick={() => void saveStep()}
-                    disabled={reviewMutationLocked || earlierUnreviewed || row.status === 'saved' || row.status === 'skipped'}>
+                  <button type='button' className={styles.buttonSecondary} onClick={() => void (preparedSteps ? saveBatchSteps() : saveStep())}
+                    disabled={reviewMutationLocked || earlierUnreviewed || row.status === 'saved' || row.status === 'skipped' || Boolean(preparedSteps && rows.length !== 1)}>
                     {saving ? 'Đang lưu...' : row.status === 'saved' ? 'Đã lưu' : row.retryOnly ? 'Lưu lại' : 'Lưu ngay bước này'}
                   </button>
                   {pausedJournal ? (
