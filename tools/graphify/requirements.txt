@@ -1,0 +1,2 @@
+# Development tool only. Do not add to backend requirements or frontend packages.
+graphifyy[mcp,leiden]==0.9.102

@@ -42,3 +42,8 @@ artifacts/
 *.png
 *.jpg
 *.jpeg
+
+# Graphify: development-only generated graph and machine-specific Codex config
+/graphify-out/
+/.codex/config.toml
+/.codex/hooks.json.bak*

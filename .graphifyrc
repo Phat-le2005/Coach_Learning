@@ -1,0 +1,4 @@
+# Local AST analysis only; see tools/graphify/build.ps1.
+query_budget=2400
+query_depth=2
+viz_node_limit=1800
