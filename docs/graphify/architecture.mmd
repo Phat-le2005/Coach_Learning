@@ -1,0 +1,37 @@
+flowchart LR
+  subgraph FE["Frontend · Next.js / React"]
+    UI["Student / Teacher / Parent UI"]
+    CLIENT["API client + Next route proxies"]
+    OCR["Browser OCR / ONNX + Math Canvas / 3D"]
+    UI --> CLIENT
+    UI --> OCR
+  end
+  subgraph BE["Backend · FastAPI modular monolith"]
+    API["Root API + /api/v2 + /api/v3"]
+    CORE["Practice / Assignments / Mastery / Recommendations"]
+    MATH["Math solutions / Paper / Canvas / PDF practice"]
+    API --> CORE
+    API --> MATH
+  end
+  subgraph AI["AI modules inside Backend"]
+    GW["AIGateway + routing + validator + policy"]
+    RAG["RAG / Tutor / EmbeddingService"]
+    PAPER["GeminiPaperTranscriber"]
+    RAG --> GW
+  end
+  DB[("PostgreSQL + pgvector")]
+  PROVIDER["Gemini / Mock provider"]
+  OFFLINE["Offline tools · PDF pipeline / learning_baseline"]
+  DEV["Development only · Graphify AST → graph.json / MCP / HTML"]
+  CLIENT -->|"HTTP · reviewed boundary"| API
+  CORE -->|"domain service calls"| GW
+  MATH -->|"AI review"| GW
+  MATH -->|"Paper OCR"| PAPER
+  GW --> PROVIDER
+  PAPER -->|"direct HTTP OCR"| PROVIDER
+  CORE -->|"SQLAlchemy"| DB
+  MATH -->|"SQLAlchemy"| DB
+  RAG -->|"retrieval"| DB
+  OFFLINE -.->|"offline artifacts; no automatic runtime link"| MATH
+  DEV -.->|"reads source only"| FE
+  DEV -.->|"reads source only"| BE
