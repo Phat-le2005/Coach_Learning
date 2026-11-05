@@ -248,6 +248,14 @@
   max-width: 1600px;
 }
 
+.mainContentClassroom {
+  max-width: 1760px;
+}
+
+.classroomDashboard .headerInner {
+  max-width: 1760px;
+}
+
 .systemAlertBar {
   display: flex;
   align-items: center;
@@ -719,7 +727,7 @@
    ========================================================================== */
 .classCardGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
   gap: 1rem;
 }
 

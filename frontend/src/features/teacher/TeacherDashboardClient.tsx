@@ -86,6 +86,8 @@ export function TeacherDashboardClient({
   // Classroom-scoped data states
   const [classLoading, setClassLoading] = useState(false);
   const [classErrors, setClassErrors] = useState<string[]>([]);
+  const [studentError, setStudentError] = useState("");
+  const [focusedStudent, setFocusedStudent] = useState<{ id: string; name: string } | null>(null);
   const [students, setStudents] = useState<TeacherStudent[]>([]);
   const [materials, setMaterials] = useState<TeacherMaterial[]>([]);
   const [assignments, setAssignments] = useState<TeacherAssignment[]>([]);
@@ -137,6 +139,8 @@ export function TeacherDashboardClient({
 
   // 2. Load Classroom Details when classId changes
   useEffect(() => {
+    setFocusedStudent(null);
+    setStudentError("");
     if (!classId) {
       setStudents([]);
       setMaterials([]);
@@ -169,7 +173,9 @@ export function TeacherDashboardClient({
         if (results[0].status === "fulfilled") {
           setStudents(results[0].value.filter((student) => !student.is_synthetic));
         } else {
-          errors.push(`Học sinh: ${getErrorMessage(results[0].reason)}`);
+          const message = `Học sinh: ${getErrorMessage(results[0].reason)}`;
+          setStudentError(message);
+          errors.push(message);
         }
         if (results[1].status === "fulfilled") {
           setMaterials(results[1].value);
@@ -268,8 +274,16 @@ export function TeacherDashboardClient({
     setReloadCount((v) => v + 1);
   };
 
+  function handleViewStudentWorkspace(studentId: string) {
+    const student = students.find((item) => item.student_id === studentId);
+    if (!student) return;
+    setFocusedStudent({ id: student.student_id, name: student.full_name });
+    setAssignmentId((current) => assignments.some((item) => item.id === current) ? current : assignments[0]?.id ?? "");
+    handleSelectTab("submissions");
+  }
+
   return (
-    <div className={styles.dashboard}>
+    <div className={`${styles.dashboard} ${tab === "classes" ? styles.classroomDashboard : ""}`}>
       <Link href="/teacher/math-canvas" className={canvasStyles.teacherLink}>Math Canvas</Link>
       {/* 1. Header */}
       <TeacherHeader
@@ -284,7 +298,7 @@ export function TeacherDashboardClient({
         onOpenUpload={() => setIsUploadOpen(true)}
       />
 
-      <main className={`${styles.mainContent} ${tab === "theory" ? styles.mainContentWide : ""}`}>
+      <main className={`${styles.mainContent} ${tab === "classes" ? styles.mainContentClassroom : tab === "theory" ? styles.mainContentWide : ""}`}>
         {/* Error notification bar */}
         {initialError && (
           <div className={styles.systemAlertBar} role="alert">
@@ -303,8 +317,8 @@ export function TeacherDashboardClient({
           </div>
         )}
 
-        {/* 2. Cockpit Welcome Banner & KPI Cards (hidden on theory tab to provide full workspace) */}
-        {tab !== "theory" && (
+        {/* 2. Keep classroom and theory workspaces focused on their main content. */}
+        {tab !== "theory" && tab !== "classes" && (
           <TeacherCockpitBanner
             teacherName={teacherName}
             selectedClass={selectedClass}
@@ -388,7 +402,9 @@ export function TeacherDashboardClient({
               selectedClassId={classId}
               onSelectClass={setClassId}
               students={students}
-              isLoading={classLoading}
+              isLoading={initialLoading || classLoading}
+              studentError={initialError || studentError}
+              onViewStudentWorkspace={handleViewStudentWorkspace}
               onOpenCreateClass={() => setIsCreateClassOpen(true)}
             />
           )}
@@ -419,6 +435,8 @@ export function TeacherDashboardClient({
               onSelectAssignment={setAssignmentId}
               roster={roster}
               rosterError={rosterError}
+              focusedStudent={focusedStudent}
+              onClearStudent={() => setFocusedStudent(null)}
               isLoading={classLoading}
             />
           )}

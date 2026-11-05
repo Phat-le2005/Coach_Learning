@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { Users, Search, Plus, CheckCircle2, UserCheck, Calendar } from "lucide-react";
 import type { TeacherClassroom, TeacherStudent } from "../api";
+import { ClassroomExperience } from "./ClassroomExperience";
 import styles from "../TeacherDashboard.module.css";
 
 export interface ClassroomsTabProps {
@@ -12,6 +13,8 @@ export interface ClassroomsTabProps {
   students: TeacherStudent[];
   isLoading: boolean;
   onOpenCreateClass: () => void;
+  onViewStudentWorkspace: (studentId: string) => void;
+  studentError?: string;
 }
 
 export function ClassroomsTab({
@@ -21,7 +24,11 @@ export function ClassroomsTab({
   students,
   isLoading,
   onOpenCreateClass,
+  onViewStudentWorkspace,
+  studentError,
 }: ClassroomsTabProps) {
+  const [view, setView] = useState<"3d" | "list">("3d");
+  const [preview, setPreview] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<"ALL" | "ACTIVE" | "INACTIVE">("ALL");
 
@@ -42,6 +49,8 @@ export function ClassroomsTab({
 
   return (
     <div className={styles.tabContentWrap}>
+      <ClassroomExperience students={students} selectedClass={selectedClass} isLoading={isLoading} error={studentError} preview={preview} onPreview={setPreview} view={view} onView={setView} query={searchQuery} onQuery={setSearchQuery} onViewStudentWorkspace={onViewStudentWorkspace} />
+
       {/* Section 1: Danh sách lớp học giáo viên quản lý */}
       <div className={styles.sectionCard}>
         <div className={styles.sectionCardHeader}>
@@ -120,8 +129,8 @@ export function ClassroomsTab({
         )}
       </div>
 
-      {/* Section 2: Danh sách học sinh trong lớp */}
-      {selectedClass && (
+      {/* Keep the existing API-backed student table available. */}
+      {selectedClass && view === "list" && !preview && !studentError && (
         <div className={styles.sectionCard}>
           <div className={styles.sectionCardHeader}>
             <div>

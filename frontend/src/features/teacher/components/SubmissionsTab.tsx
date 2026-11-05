@@ -12,6 +12,8 @@ export interface SubmissionsTabProps {
   roster: TeacherRoster | null;
   rosterError?: string;
   isLoading: boolean;
+  focusedStudent?: { id: string; name: string } | null;
+  onClearStudent?: () => void;
 }
 
 export function SubmissionsTab({
@@ -22,7 +24,10 @@ export function SubmissionsTab({
   roster,
   rosterError,
   isLoading,
+  focusedStudent,
+  onClearStudent,
 }: SubmissionsTabProps) {
+  const visibleRoster = roster?.roster.filter((student) => !focusedStudent || student.student_id === focusedStudent.id) ?? [];
   const formatDate = (dateStr: string | null) => {
     if (!dateStr) return "Không có hạn";
     try {
@@ -70,6 +75,8 @@ export function SubmissionsTab({
             </p>
           </div>
         </div>
+
+        {focusedStudent && <div className={styles.tableToolbar} role="status"><span>Đang xem bài của <strong>{focusedStudent.name}</strong></span><button type="button" className={styles.btnSecondary} onClick={onClearStudent}>Xem cả lớp</button></div>}
 
         {isLoading ? (
           <div className={styles.tableLoadingState}>
@@ -156,10 +163,10 @@ export function SubmissionsTab({
                     </div>
                   </div>
 
-                  {roster.roster.length === 0 ? (
+                  {visibleRoster.length === 0 ? (
                     <div className={styles.emptyCard}>
                       <User size={28} className={styles.emptyIcon} aria-hidden="true" />
-                      <p className={styles.emptyDesc}>Chưa có học sinh nào nộp bài tập này.</p>
+                      <p className={styles.emptyDesc}>{focusedStudent ? "Chưa có bài làm của học sinh này trong bài tập đã chọn." : "Chưa có học sinh nào nộp bài tập này."}</p>
                     </div>
                   ) : (
                     <div className={styles.tableWrap}>
@@ -174,7 +181,7 @@ export function SubmissionsTab({
                           </tr>
                         </thead>
                         <tbody>
-                          {roster.roster.map((student, idx) => (
+                          {visibleRoster.map((student, idx) => (
                             <tr key={student.student_id}>
                               <td className={styles.tdIndex}>{idx + 1}</td>
                               <td>
