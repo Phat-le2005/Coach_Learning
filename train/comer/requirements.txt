@@ -1,0 +1,11 @@
+# Keep Kaggle's preinstalled matching CUDA torch + torchvision pair.
+# Local QA used torch 2.9.0+cpu, torchvision 0.24.0+cpu, Python 3.13.
+einops==0.8.1
+pytorch-lightning==2.5.5
+torchmetrics==1.8.2
+wandb==0.22.3
+onnx==1.19.1
+onnxruntime==1.23.2
+numpy>=1.26,<3
+Pillow>=10,<12
+opencv-python-headless>=4.8,<5

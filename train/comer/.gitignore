@@ -1,0 +1,13 @@
+.cache/
+data/
+runs/
+wandb/
+wandb-data/
+wandb-cache/
+*.ckpt
+*.pt
+*.onnx
+*.zip
+__pycache__/
+*.pyc
+.env*

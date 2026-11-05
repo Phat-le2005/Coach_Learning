@@ -53,6 +53,7 @@ requirements-lock.txt
 *.bin
 *.pt
 *.pth
+*.ckpt
 *.safetensors
 *.pdf
 *.docx
@@ -64,6 +65,14 @@ requirements-lock.txt
 *.webp
 *.mp4
 *.mp3
+
+# Offline training data, run artifacts and downloaded upstream code.
+/train/comer/.cache/
+/train/comer/data/
+/train/comer/runs/
+/train/comer/wandb/
+/train/comer/wandb-data/
+/train/comer/wandb-cache/
 
 # Generated reports must not index themselves.
 /docs/graphify/architecture.md

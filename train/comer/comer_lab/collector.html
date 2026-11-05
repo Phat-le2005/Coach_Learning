@@ -1,0 +1,31 @@
+<!doctype html><html lang="vi"><meta charset="utf-8"><meta name="viewport" content="width=device-width">
+<title>Coach Learning · Thu thập công thức</title>
+<style>
+*{box-sizing:border-box}body{background:#101728;color:#e7eeff;font:16px system-ui;margin:32px auto;max-width:960px;padding:0 20px}h1{font-size:28px}p{color:#aebcda;line-height:1.6}label{display:block;margin:14px 0}input,select,button{font:inherit;border-radius:8px;border:1px solid #405270;padding:10px;background:#17243d;color:white}input[type=text]{width:100%}canvas{background:#fff;width:100%;touch-action:none;border-radius:12px;border:2px solid #5f77ac}button{cursor:pointer;background:#345ee8;margin-right:10px}#status{white-space:pre-wrap;color:#74e8cf}.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.check{font-size:14px}#preview{max-width:100%;background:#000;margin-top:12px}
+</style>
+<h1>Thu thập công thức viết tay</h1>
+<p>Mỗi mẫu là một công thức. Viết bằng chuột hoặc bút, nhập đúng LaTeX nhìn thấy trên bảng rồi kiểm tra trước khi lưu. Dữ liệu được lưu trên máy này. Giữ cùng một người viết trong cùng một split; dùng mã ẩn danh.</p>
+<div class="grid"><label>Mã người viết<input id="writer" type="text" value="writer_001"></label><label>Split<select id="split" style="display:block;width:100%;margin-top:4px"><option>train</option><option>val</option><option>test</option></select></label></div>
+<canvas id="ink" width="794" height="420"></canvas>
+<p><button id="undo">Hoàn tác nét</button><button id="clear">Xóa bảng</button><button id="freeze">Xem ảnh đầu vào model</button></p>
+<img id="preview" alt="Ảnh đã chuẩn hóa" hidden>
+<label>LaTeX đúng với nét viết<input id="latex" type="text" placeholder="Ví dụ: x^{2}+1=0" autocomplete="off"></label>
+<label>Nhóm dạng công thức (tùy chọn)<input id="family" type="text" placeholder="Ví dụ: quadratic_01"></label>
+<label class="check"><input type="checkbox" id="review"> Tôi đã kiểm tra nhãn khớp với nét viết.</label>
+<label class="check"><input type="checkbox" id="permission"> Mẫu này được phép dùng để huấn luyện.</label>
+<label class="check"><input type="checkbox" id="media"> Cho phép ghi ảnh mẫu này lên W&B để xem lỗi.</label>
+<button id="save">Lưu mẫu đã duyệt</button><p id="status"></p>
+<script type="module">
+import {preprocessStrokes,isStrokeMeaningful} from '/ocr/ink-on/core.js';
+const $=id=>document.getElementById(id),canvas=$('ink'),ctx=canvas.getContext('2d');
+const {token}=await(await fetch('/api/config')).json();let strokes=[],active=null;
+function draw(){ctx.fillStyle='white';ctx.fillRect(0,0,794,420);ctx.strokeStyle='#101010';ctx.lineWidth=5;ctx.lineCap='round';ctx.lineJoin='round';for(const s of strokes){ctx.beginPath();s.points.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.stroke()}}
+function point(e){const r=canvas.getBoundingClientRect();return{x:(e.clientX-r.left)*794/r.width,y:(e.clientY-r.top)*420/r.height}}
+canvas.onpointerdown=e=>{canvas.setPointerCapture(e.pointerId);active={lineWidth:5,points:[point(e)]};strokes.push(active);draw()};
+canvas.onpointermove=e=>{if(active){active.points.push(point(e));draw()}};
+canvas.onpointerup=canvas.onpointercancel=()=>{active=null};
+$('undo').onclick=()=>{strokes.pop();draw()};$('clear').onclick=()=>{strokes=[];draw();$('preview').hidden=true};
+function freeze(){if(!isStrokeMeaningful(strokes))throw Error('Cần nét viết rõ và đủ dài.');const p=preprocessStrokes(strokes),c=document.createElement('canvas');c.width=p.width;c.height=p.height;const g=c.getContext('2d'),d=g.createImageData(c.width,c.height);for(let i=0;i<p.tensor.length;i++){const v=Math.round(p.tensor[i]*255);d.data.set([v,v,v,255],i*4)}g.putImageData(d,0,0);let cw=0,ch=0;while(cw<p.width&&p.mask[cw]===0)cw++;while(ch<p.height&&p.mask[ch*p.width]===0)ch++;const url=c.toDataURL('image/png');$('preview').src=url;$('preview').hidden=false;return{png_base64:url.split(',')[1],content_height:ch,content_width:cw,model_strokes:strokes}}
+$('freeze').onclick=()=>{try{freeze()}catch(e){$('status').textContent=e.message}};
+$('save').onclick=async()=>{try{const payload={...freeze(),writer_id:$('writer').value.trim(),split:$('split').value,latex_verbatim:$('latex').value.trim(),expression_family_id:$('family').value.trim(),reviewed:$('review').checked,training_permission:$('permission').checked,media_permission:$('media').checked};const r=await fetch('/api/sample',{method:'POST',headers:{'Content-Type':'application/json','X-Collector-Token':token},body:JSON.stringify(payload)}),v=await r.json();if(!r.ok)throw Error(v.error);$('status').textContent=`Đã lưu ${v.saved} · Tổng ${v.total} mẫu`;strokes=[];draw();$('latex').value='';$('review').checked=false;$('preview').hidden=true}catch(e){$('status').textContent=e.message}};draw();
+</script></html>

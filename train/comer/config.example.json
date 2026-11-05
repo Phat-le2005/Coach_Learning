@@ -1,0 +1,26 @@
+{
+  "manifest": "/kaggle/input/coach-learning-ink/manifest.jsonl",
+  "output": "/kaggle/working/comer-run-01",
+  "epochs": 20,
+  "batch_size": 4,
+  "accumulate": 4,
+  "decoder_lr": 0.0001,
+  "encoder_lr": 0.00001,
+  "weight_decay": 0.01,
+  "freeze_encoder_epochs": 2,
+  "clip_grad_norm": 1.0,
+  "max_decode_tokens": 192,
+  "seed": 42,
+  "amp": true,
+  "device": "cuda",
+  "media_samples": 16,
+  "wandb": {
+    "mode": "online",
+    "project": "coach-learning-comer",
+    "entity": null,
+    "name": "comer-domain-adaptation-01",
+    "group": "writer-disjoint-v1",
+    "log_images": true,
+    "log_checkpoints": true
+  }
+}

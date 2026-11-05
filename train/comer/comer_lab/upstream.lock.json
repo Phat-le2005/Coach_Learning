@@ -1,0 +1,141 @@
+{
+  "commit": "ee15cdbe02467fd29f386fd554b4bc2185110fcc",
+  "files": [
+    {
+      "path": "README.md",
+      "sha": "fed6033dfe21d2752f925274dfded8f657163df6",
+      "size": 2821
+    },
+    {
+      "path": "comer/__init__.py",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0
+    },
+    {
+      "path": "comer/datamodule/__init__.py",
+      "sha": "38e1f694506202a8201dabb84c0cda890eace17d",
+      "size": 181
+    },
+    {
+      "path": "comer/datamodule/datamodule.py",
+      "sha": "9de3c51aff92d395e4f34dc4a75ad7de8514c79b",
+      "size": 6806
+    },
+    {
+      "path": "comer/datamodule/dataset.py",
+      "sha": "f3dcf21cd06faa6a0215309c8298086e78c0fbfb",
+      "size": 883
+    },
+    {
+      "path": "comer/datamodule/dictionary.txt",
+      "sha": "42dd529b86c2ee890509c88452ebb14b452038e8",
+      "size": 368
+    },
+    {
+      "path": "comer/datamodule/transforms.py",
+      "sha": "6557c321530294020ec08b753baef37acbbcfef9",
+      "size": 1661
+    },
+    {
+      "path": "comer/datamodule/vocab.py",
+      "sha": "8b826ca6e63116be58c60124207a15e56b7f78bd",
+      "size": 1249
+    },
+    {
+      "path": "comer/lit_comer.py",
+      "sha": "a1b55d9ba6eb5117339a5c6befa12d6817ef8fa9",
+      "size": 4578
+    },
+    {
+      "path": "comer/model/__init__.py",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0
+    },
+    {
+      "path": "comer/model/comer.py",
+      "sha": "c227822849e5883feb0e38076ab4b7c9ef87af2d",
+      "size": 2463
+    },
+    {
+      "path": "comer/model/decoder.py",
+      "sha": "36a14d7e419b7433ee4c75fbfb51d0dadc333669",
+      "size": 3840
+    },
+    {
+      "path": "comer/model/encoder.py",
+      "sha": "786dc42c667c0775bcd470f2545fb6ffb9f66ec6",
+      "size": 6069
+    },
+    {
+      "path": "comer/model/pos_enc.py",
+      "sha": "5914be21b5e6d9de642ab05143b502f375d1622d",
+      "size": 6809
+    },
+    {
+      "path": "comer/model/transformer/__init__.py",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0
+    },
+    {
+      "path": "comer/model/transformer/arm.py",
+      "sha": "bf710280b2e89a3130105580c54c28fe4377f682",
+      "size": 2742
+    },
+    {
+      "path": "comer/model/transformer/attention.py",
+      "sha": "b8710a3e0d7505e764ab0280f8b1bdf2839c00ed",
+      "size": 14604
+    },
+    {
+      "path": "comer/model/transformer/transformer_decoder.py",
+      "sha": "9713d64a3342512e8bf72a99f7694224afa58b24",
+      "size": 4317
+    },
+    {
+      "path": "comer/utils/__init__.py",
+      "sha": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "size": 0
+    },
+    {
+      "path": "comer/utils/beam_search.py",
+      "sha": "8e40c4574ef054c4e87c30d64eac5c2afdd13f2c",
+      "size": 8018
+    },
+    {
+      "path": "comer/utils/generation_utils.py",
+      "sha": "3a4052012b466c1b7647ffc4dd7c073066e00d5b",
+      "size": 8335
+    },
+    {
+      "path": "comer/utils/utils.py",
+      "sha": "ba0fe47a7ae7e8694b7f30e97ec41c65f91fa4d9",
+      "size": 4355
+    },
+    {
+      "path": "config.yaml",
+      "sha": "a0cda0232c51514943c712f70be731c83f716005",
+      "size": 993
+    },
+    {
+      "path": "example/UN19_1041_em_595.bmp",
+      "sha": "c777f796a2a7559c515a1ed219350b45f08e8b89",
+      "size": 37366
+    },
+    {
+      "path": "lightning_logs/version_0/checkpoints/epoch=151-step=57151-val_ExpRate=0.6365.ckpt",
+      "sha": "455481570a5fd0136657dd3fa20027f3a829b47f",
+      "size": 52054106
+    },
+    {
+      "path": "lightning_logs/version_0/hparams.yaml",
+      "sha": "7f5b89244212b272eb8a6b663d941cdfe2849ef6",
+      "size": 268
+    },
+    {
+      "path": "requirements.txt",
+      "sha": "65b43df5f82b5340749f2e73474d1bc192be50b5",
+      "size": 278
+    }
+  ],
+  "repository": "https://github.com/Green-Wood/CoMER"
+}
