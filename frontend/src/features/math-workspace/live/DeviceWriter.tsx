@@ -73,7 +73,7 @@ function ConnectedWriter({session, onEnd}: {session: DevicePairing; onEnd: () =>
       <button type="button" className={styles.textButton} disabled={drawing} onClick={() => void finish()}>Kết thúc</button></header>
     <WritingToolbar tool={tool} onTool={setTool} color={color} onColor={setColor} canUndo={live.canUndo} canRedo={live.canRedo} onUndo={live.undo} onRedo={live.redo} disabled={!live.initialized}/>
     {error || live.error ? <p role="alert" className={styles.error}>{error || live.error}</p> : null}
-    <section className={styles.writerPaper} aria-label="Bảng viết cảm ứng"><MathCanvas strokes={strokes} onStrokesChange={live.change} currentTool={tool} penColor={color} penWidth={2.5} highlighterWidth={16} paperGrid="grid" zoomLevel={1}
+    <section className={styles.writerPaper} aria-label="Bảng viết cảm ứng"><MathCanvas strokes={strokes} onStrokesChange={(next, observed) => live.change(next, observed ?? strokes)} currentTool={tool} penColor={color} penWidth={2.5} highlighterWidth={16} paperGrid="grid" zoomLevel={1}
       responsive isReadOnly={!live.initialized} remoteDrafts={live.drafts} onLiveStroke={live.stream} onDrawingStateChange={setDrawing}/></section>
     <nav className={styles.writerPage} aria-label="Điều hướng trang viết"><button type="button" disabled={page === 0 || drawing} onClick={() => void navigate(page - 1)} aria-label="Trang trước"><ChevronLeft size={16}/></button>
       <span>Trang {page + 1} / {pageCount}</span><button type="button" disabled={page === 29 || drawing} onClick={() => void navigate(page + 1)} aria-label={page === pageCount - 1 ? "Thêm trang" : "Trang sau"}><ChevronRight size={16}/></button></nav>
