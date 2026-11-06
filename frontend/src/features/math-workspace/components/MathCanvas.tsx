@@ -14,7 +14,7 @@ import { selectLassoStrokes } from "../utils/lasso";
 
 interface MathCanvasProps {
   strokes: InkStroke[];
-  onStrokesChange: (strokes: InkStroke[]) => void;
+  onStrokesChange: (strokes: InkStroke[], observedStrokes?: InkStroke[]) => void;
   currentTool: DrawingTool;
   penColor: string;
   penWidth: number;
@@ -171,7 +171,7 @@ export function MathCanvas({
         (s) => !strokeIntersectsPoint(s, normX, normY, threshold),
       );
       if (updated.length !== strokes.length) {
-        onStrokesChange(updated);
+        onStrokesChange(updated, strokes);
       }
       return;
     }
@@ -240,7 +240,7 @@ export function MathCanvas({
         (s) => !strokeIntersectsPoint(s, normX, normY, threshold),
       );
       if (updated.length !== strokes.length) {
-        onStrokesChange(updated);
+        onStrokesChange(updated, strokes);
       }
       return;
     }
@@ -306,7 +306,7 @@ export function MathCanvas({
 
     if (completed && completed.points.length > 0) {
       onLiveStroke?.("STROKE_END", completed);
-      onStrokesChange([...strokes, completed]);
+      onStrokesChange([...strokes, completed], strokes);
     }
   };
 
