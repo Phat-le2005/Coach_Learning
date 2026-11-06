@@ -5,6 +5,12 @@
 .mobileWriting .mainLayout { display: block; overflow: auto; }
 .mobileWriting .canvasPane { width: 100%; padding: 4px; min-width: 0; overflow: auto; justify-content: flex-start; }
 .mobileWriting .canvasViewport { margin: 0; }
+.mobileWriting .headerTitle { display: none; }
+.mobileWriting .topHeader { gap: 8px; padding: 10px 14px; }
+.mobileWriting .headerLeft { gap: 8px; }
+.liveConnectionStatus { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: #63806d; white-space: nowrap; }
+.liveConnectionStatus > span { width: 6px; height: 6px; background: #75a785; border-radius: 50%; }
+.liveDisconnectButton { border: 0; padding: 4px; background: transparent; color: #819287; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; font-size: 11px; }
 .workspaceContainer {
   display: flex;
   flex-direction: column;

@@ -1,8 +1,10 @@
 # MathCanvas: kết nối thiết bị viết
 
 Tính năng nằm trong **MathWorkspace chính**: `/student/attempts/<attemptId>`.
-Chọn **Kết nối thiết bị viết**, đăng nhập cùng tài khoản STUDENT trên điện thoại/iPad,
-rồi mở link/QR. Link chỉ chứa attempt, trang và chế độ hiển thị; không cấp quyền đọc bài.
+Chọn **Kết nối thiết bị viết** trên laptop đã đăng nhập, quét QR bằng điện thoại/iPad,
+rồi nhấn **Cho phép viết** trên laptop khi mã đối chiếu giống nhau.
+Điện thoại **không cần đăng nhập**: chỉ được cấp quyền tạm thời với nét viết trong bài
+đã kết nối, không có quyền tài khoản, xem đề/đáp án, tạo bước hoặc nộp bài.
 Không có thay đổi schema database, OCR, CAS, Evaluator hay định dạng InkStroke.
 
 ## Khởi động và dùng qua LAN
@@ -36,7 +38,8 @@ npm run dev -- --hostname 0.0.0.0
 ```
 
 Thay `192.168.1.20` bằng IP LAN thật của laptop (`ipconfig`). Mở cùng địa chỉ
-`http://192.168.1.20:3000` trên cả hai máy, đăng nhập và mở bài đang chỉnh sửa.
+`http://192.168.1.20:3000` trên laptop, đăng nhập và mở bài đang chỉnh sửa; điện thoại
+mở link từ QR và chờ laptop cho phép. Không cần đăng nhập lại trên điện thoại.
 Frontend và backend phải cùng truy cập được từ điện thoại; localhost trên điện thoại
 không trỏ về laptop. Nếu firewall chặn, chỉ cho phép các cổng cần thiết trên mạng
 Private tin cậy theo chính sách máy. Không tự mở firewall hoặc public tunnel.
@@ -44,17 +47,40 @@ Private tin cậy theo chính sách máy. Không tự mở firewall hoặc publi
 trước khi khởi động/build. Không cho phép Origin lạ chỉ dựa vào Host do client gửi.
 
 Trong hộp kết nối có QR, link sao chép, danh sách thiết bị **trên trang hiện tại**,
-trạng thái và số thao tác chưa có ACK. QR localhost được thay bằng hướng dẫn nhập
-địa chỉ LAN. Nhấn **Ngắt kết nối thiết bị này** chỉ ngắt thiết bị hiện tại sau khi
-đã lưu hết. Để dừng toàn bộ, ngắt trên từng thiết bị/đóng trang; logout làm mất quyền
-khi heartbeat kiểm tra lại session. Không có link chia sẻ ẩn danh.
+trạng thái kết nối và hướng dẫn ngắn. Link sao chép nằm trong mục
+**Không quét được mã?**, không phải thao tác bắt buộc. Sau kết nối, **Ngắt thiết bị**
+thu hồi quyền điện thoại; **Dừng đồng bộ** ở workspace lưu hết nét, thu hồi grant đang
+cấp cho điện thoại và ngắt transport laptop. Logout laptop cũng thu
+hồi grant phụ thuộc. Không có link công khai cho phép đọc bài ngay khi quét.
 
 Chế độ **viết cảm ứng** dùng chính MathCanvas, Pointer Events/pointer capture,
 tọa độ [0,1], DPR và tỷ lệ A4; không gửi ảnh màn hình. Toolbar có bút, tẩy, undo/redo,
 zoom và chuyển trang. Một pointer ghi nét tại một thời điểm; pointer phụ không kết
 thúc nét đang viết. Pointer cancel giữ phần nét đã thu nhận như một stroke hoàn tất.
 Không chuyển trang hoặc đổi transport khi đang giữ bút. Chọn **Về MathWorkspace**
-để trở lại bố cục đầy đủ, vẫn giữ cùng trang và transport.
+để trở lại đúng bố cục đề bài/zoom/chế độ giấy trước đó, vẫn giữ nét, trang và transport.
+Trang `/write` chỉ hiển thị giấy viết, bút/tẩy/undo và chuyển trang, không hiển thị
+dashboard hay thông số triển khai.
+
+### Cấp quyền qua QR
+
+QR chứa `/write#code=<mã ngẫu nhiên 256 bit>` dùng một lần trong 120 giây. Fragment
+không gửi trong URL tới server và được xóa khỏi address bar ngay khi trang khởi tạo.
+Claim chỉ tạo yêu cầu chờ; laptop hiển thị tên thiết bị và mã đối chiếu 6 số để chủ bài
+cho phép. Mã 6 số chỉ để đối chiếu, không phải credential đăng nhập.
+
+Grant sau phê duyệt tối đa 2 giờ, giới hạn **ink của đúng attempt**. BFF lưu opaque
+credential trong cookie HttpOnly/SameSite=Strict (Secure trên production), không cấp
+access/refresh/student session token. Reload điện thoại vẫn dùng grant; backend kiểm
+tra parent auth session, ownership/editable và grant mỗi lần đọc/ghi/cấp WS ticket.
+Logout, thu hồi, hết hạn hoặc backend restart làm mất quyền; scan QR mới để kết nối lại.
+REST bị chặn ngay sau thu hồi; WS bị ngắt ở lần kiểm tra quyền tiếp theo (tối đa khoảng
+5 giây qua heartbeat). Grant/pending approvals dùng cùng giới hạn single-worker.
+
+Endpoint chủ bài: `/ink/pairings`, `/ink/pairings/{id}`, `/{id}/approve`, `/{id}/revoke`,
+đều yêu cầu STUDENT JWT/ownership và BFF CSRF cho mutation. API thiết bị riêng dưới
+`/api/v2/math-ink-device` chỉ có claim/session/ink/live-ticket/disconnect. Browser BFF
+`/api/ink-device/*` có allowlist path/method, CSRF, body limit; không proxy arbitrary API.
 
 ## Kiến trúc và protocol
 
@@ -142,6 +168,7 @@ cd backend
 
 Để chạy thêm race test PostgreSQL, đặt `EDUMS_TEST_DATABASE_URL` tới database QA riêng.
 Fixture tạo schema ngẫu nhiên, chỉ dọn schema của chính nó. Không dùng DB production.
+Các test cấp quyền nằm trong `tests/math_solutions/test_ink_pairing.py`.
 
 Browser acceptance có harness thật, database QA riêng, không mock WS/auth/persistence:
 
@@ -171,12 +198,16 @@ $env:LIVE_QA_SESSION_FILE = '<repo>\.tmp\tri-mathcanvas-live-sync\qa-session.jso
 $env:LIVE_QA_ARTIFACT_DIR = '<repo>\.tmp\tri-mathcanvas-live-sync'
 $env:PW_HEADLESS = '1'
 npx playwright test e2e/live-ink.spec.ts --reporter=list
+npx playwright test e2e/writing-device-ux.spec.ts --reporter=list
 ```
 
 Harness mới cho mỗi lượt acceptance (mỗi lần khởi động tạo schema/attempt mới).
-Spec kiểm tra stream trước pointerup, hai chiều, concurrent append, offline outbox,
+Spec live-ink kiểm tra stream trước pointerup, hai chiều, concurrent append, offline outbox,
 reconnect, reload, erase/clear/undo/redo, page navigation, QR UI và không gọi steps/submit.
 Trace/video tắt để không ghi auth cookies/tickets. PNG và JSON acceptance không chứa token.
+Spec writing-device-ux có thể chạy trên QA attempt hiện tại: không xóa nét cũ, chỉ thêm
+một nét pointer replay rồi undo chính nét đó; kiểm tra phục hồi bố cục và điện thoại
+chưa đăng nhập → chờ → chủ bài cho phép → stream/persist → reload → thu hồi quyền.
 
 Frontend targeted checks:
 

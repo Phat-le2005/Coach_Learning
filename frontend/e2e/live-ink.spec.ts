@@ -43,14 +43,14 @@ test("desktop/mobile stream before pointerup, persist, reverse direction and rec
   }
   try {
     await login(a, false); await login(b, true);
-    await expect(a.locator("[data-live-status]")).toContainText("2 thiết bị");
+    await expect(a.locator("[data-live-status]")).toHaveAttribute("data-live-status", "connected");
     await drawStart(b, .2, .15);
     await expect(a.locator("[data-live-draft]")).toHaveCount(1);
     expect((await read(a)).strokes).toHaveLength(0); // Still pointer down; no durable commit yet.
     await a.screenshot({ path: `${process.env.LIVE_QA_ARTIFACT_DIR}/stream-before-pointerup.png` });
     await b.mouse.up();
     await expect.poll(async () => (await read(a)).strokes.length).toBe(1);
-    await expect(b.locator("[data-live-status]")).toContainText("0 chờ lưu");
+    await expect(b.locator("[data-live-status]")).toHaveAttribute("data-pending", "0");
     await a.reload();
     await expect(a.locator("[data-live-status]")).toHaveAttribute("data-live-status", "connected");
     expect((await read(a)).strokes).toHaveLength(1);
@@ -62,10 +62,10 @@ test("desktop/mobile stream before pointerup, persist, reverse direction and rec
     await Promise.all([drawStart(a, .5, .22), drawStart(b, .65, .26)]);
     await Promise.all([a.mouse.up(), b.mouse.up()]);
     await expect.poll(async () => (await read(a)).strokes.length).toBe(4);
-    await expect(b.locator("[data-live-status]")).toContainText("0 chờ lưu");
+    await expect(b.locator("[data-live-status]")).toHaveAttribute("data-pending", "0");
     await mobile.setOffline(true);
     await drawStart(b, .2, .3); await b.mouse.up();
-    await expect(b.locator("[data-live-status]")).toContainText("1 chờ lưu");
+    await expect(b.locator("[data-live-status]")).toHaveAttribute("data-pending", "1");
     await drawStart(a, .4, .32); await a.mouse.up();
     await expect.poll(async () => (await read(a)).strokes.length).toBe(5);
     await mobile.setOffline(false);
@@ -105,14 +105,12 @@ test("desktop/mobile stream before pointerup, persist, reverse direction and rec
     await expect(b.locator("[data-live-status]")).toHaveAttribute("data-live-status", "connected");
     expect((await read(b, 1)).strokes).toHaveLength(1);
     await a.getByRole("button", { name: "Kết nối thiết bị viết", exact: true }).click();
-    await a.getByLabel("Địa chỉ frontend LAN").fill("http://192.168.1.10:3050");
-    await expect(a.getByAltText("QR mở trang viết, cần đăng nhập")).toBeVisible();
-    await expect(a.getByRole("dialog")).toContainText("page=1");
+    await expect(a.getByAltText("Quét mã để kết nối thiết bị viết")).toBeVisible();
+    await expect(a.getByRole("dialog")).toContainText("không cần đăng nhập lại");
     await a.getByRole("button", { name: "Đóng", exact: true }).click();
     expect(mutations.filter(url => /\/steps|\/submit|\/evaluate/.test(url))).toEqual([]);
     expect(mutations.filter(url => /\/ink\/pages\/\d+$/.test(url))).toEqual([]); // No legacy PUT alongside live operations.
-    await a.getByRole("button", { name: "Kết nối thiết bị viết", exact: true }).click();
-    await a.getByRole("button", { name: "Ngắt kết nối thiết bị này", exact: true }).click();
+    await a.getByRole("button", { name: "Dừng đồng bộ", exact: true }).click();
     await expect(a.locator("[data-live-status]")).toHaveCount(0);
     await drawStart(a, .5, .3); await a.mouse.up();
     await expect.poll(async () => (await read(a, 1)).strokes.length).toBe(2);

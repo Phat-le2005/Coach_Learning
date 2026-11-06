@@ -44,11 +44,14 @@ async function forward(request: NextRequest, context: Context): Promise<NextResp
         }
       }
       body = Buffer.concat(chunks).toString("utf8");
-      if (path.endsWith("/ink/live-ticket")) {
+      if (path.endsWith("/ink/live-ticket") || path.endsWith("/ink/pairings")) {
         const value = JSON.parse(body);
         // CSRF validation above already checked this Origin. Preserve the actual
         // browser origin (Next may normalize 127.0.0.1 to localhost internally).
-        body = JSON.stringify({ page_index: value.page_index, origin: request.headers.get("origin") });
+        const origin = path.endsWith("/ink/pairings")
+          ? new URL(process.env.NEXT_PUBLIC_APP_URL?.trim() || request.headers.get("origin")!).origin
+          : request.headers.get("origin");
+        body = JSON.stringify({ page_index: value.page_index, origin });
       }
     }
     if (request.method !== "GET" && !inkRequest) body = await request.text();

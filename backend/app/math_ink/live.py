@@ -8,6 +8,7 @@ import json
 import secrets
 import time
 from dataclasses import dataclass, field
+from threading import RLock
 from hashlib import sha256
 from typing import Annotated
 from uuid import UUID
@@ -126,11 +127,18 @@ class Peer:
 
 class LiveHub:
     def __init__(self):
+        from app.math_ink.pairing import PairingStore
+        self.pairings = PairingStore()
+        self.lock = RLock()
         self.tickets: dict[str, tuple] = {}
         self.rooms: dict[tuple, set[Peer]] = {}
         self.writes: dict[UUID, tuple[float, int]] = {}
 
     def allow_write(self, actor):
+        with self.lock:
+            self._allow_write(actor)
+
+    def _allow_write(self, actor):
         now = time.monotonic()
         self.writes = {key: value for key, value in self.writes.items() if now - value[0] < 1}
         start, count = self.writes.get(actor, (now, 0))
@@ -139,6 +147,14 @@ class LiveHub:
         self.writes[actor] = (start, count + 1)
 
     def issue(self, actor, attempt, page, origin, credential=""):
+        with self.lock:
+            return self._issue(actor, attempt, page, origin, credential)
+
+    def consume(self, token):
+        with self.lock:
+            return self.tickets.pop(token, None)
+
+    def _issue(self, actor, attempt, page, origin, credential=""):
         now = time.monotonic()
         self.tickets = {k: v for k, v in self.tickets.items() if v[-1] > now}
         if len(self.tickets) >= 2048 or sum(v[0] == actor for v in self.tickets.values()) >= 16:
@@ -226,7 +242,7 @@ async def live(socket: WebSocket, attempt_id: UUID, db: Database):
             raise ValueError("Invalid ticket")
         if isinstance(auth_message.get("label"), str):
             peer.label = auth_message["label"][:40]
-        grant = relay.tickets.pop(token, None)
+        grant = relay.consume(token)
         if not grant or grant[1] != attempt_id or grant[3] != origin or grant[-1] < time.monotonic():
             await socket.close(code=4401)
             return
@@ -239,7 +255,14 @@ async def live(socket: WebSocket, attempt_id: UUID, db: Database):
 
         def snapshot():
             db.rollback()  # Fresh DB view, including revocations/legacy PUTs.
-            user = AuthService(db, socket.app.state.settings).current_user(credential)
+            if credential.startswith("device:"):
+                from app.math_ink.pairing import resolve_device
+                grant = resolve_device(socket, db, credential[7:])
+                if grant.actor != actor or grant.attempt != attempt_id:
+                    raise ApplicationError(403, "FORBIDDEN", "Invalid writing scope")
+                user = db.get(User, actor)
+            else:
+                user = AuthService(db, socket.app.state.settings).current_user(credential)
             if user is None or not user.is_active or user.role != Role.STUDENT:
                 raise ApplicationError(403, "FORBIDDEN", "Session revoked")
             service._editable(service._attempt(actor, attempt_id))

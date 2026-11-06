@@ -32,7 +32,15 @@ export function isTrustedMutationOrigin(origin: string | null, expectedOrigin: s
 }
 
 /** Explicit public origin supports LAN/reverse proxies without trusting arbitrary Host headers. */
-export function isTrustedFrontendMutation(origin: string | null, internalOrigin: string, fetchSite: string | null, publicOrigin?: string): boolean {
-  return isTrustedMutationOrigin(origin, internalOrigin, fetchSite)
-    || Boolean(publicOrigin?.trim() && isTrustedMutationOrigin(origin, publicOrigin.trim(), fetchSite));
+export function isTrustedFrontendMutation(origin: string | null, internalOrigin: string, fetchSite: string | null, publicOrigin?: string, devLoopback = false): boolean {
+  if (isTrustedMutationOrigin(origin, internalOrigin, fetchSite)
+      || Boolean(publicOrigin?.trim() && isTrustedMutationOrigin(origin, publicOrigin.trim(), fetchSite))) return true;
+  try {
+    const expected = new URL(internalOrigin);
+    if (devLoopback && ["0.0.0.0", "[::]"].includes(expected.hostname)) {
+      expected.hostname = "localhost";
+      return isTrustedMutationOrigin(origin, expected.origin, fetchSite);
+    }
+  } catch { /* Invalid origin is never trusted. */ }
+  return false;
 }

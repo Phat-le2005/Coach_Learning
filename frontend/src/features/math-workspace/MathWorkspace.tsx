@@ -39,6 +39,8 @@ import styles from "./MathWorkspace.module.css";
 import { useLiveInk } from "./live/useLiveInk";
 import { DeviceConnection } from "./live/DeviceConnection";
 import type { LiveSnapshot } from "./live/protocol";
+import { deviceRequest, type DevicePairing } from "./live/device-client";
+import { WritingToolbar } from "./live/WritingToolbar";
 
 const MathCanvasPanel = dynamic(() => import("@/features/math-canvas/MathCanvasPanel").then((module) => module.MathCanvasPanel), {
   ssr: false,
@@ -85,6 +87,8 @@ export function MathWorkspace({
   const [liveStarting, setLiveStarting] = useState(false);
   const [draftRecoveryReady, setDraftRecoveryReady] = useState(false);
   const [canvasDrawing, setCanvasDrawing] = useState(false);
+  const [devicePairing, setDevicePairing] = useState<DevicePairing | null>(null);
+  const writingLayoutRef = useRef({collapsed: false, zoom: 1, paper: false});
   const [zoomLevel, setZoomLevel] = useState(1.0);
   const [graphOpen, setGraphOpen] = useState(false);
   const [graphSelection, setGraphSelection] = useState<{ page: number; strokes: InkStroke[]; formula?: string }>({ page: 0, strokes: [] });
@@ -557,6 +561,16 @@ export function MathWorkspace({
   const stopLive = async () => {
     if (canvasDrawing) { setSyncErrorMessage("Nhả bút trước khi ngắt kết nối."); return; }
     if (!await live.flush()) { setSyncErrorMessage("Chưa nhận xác nhận lưu. Giữ kết nối hoặc xuất bản nháp trước khi rời trang."); return; }
+    if (devicePairing && !["REVOKED", "EXPIRED"].includes(devicePairing.status)) {
+      try {
+        await deviceRequest(`/api/v2/math-solutions/attempts/${attemptId}/ink/pairings/${devicePairing.id}/revoke`, {});
+        setDevicePairing({...devicePairing, status: "REVOKED", code: undefined});
+      } catch (failure) {
+        if (![404, 410].includes((failure as {status?: number}).status ?? 0)) {
+          setSyncErrorMessage("Chưa ngắt được thiết bị. Kiểm tra mạng rồi thử lại."); return;
+        }
+      }
+    }
     setLiveEnabled(false); setPairingOpen(false);
     const url = new URL(window.location.href); url.searchParams.delete("live");
     window.history.replaceState(null, "", url);
@@ -1205,6 +1219,17 @@ export function MathWorkspace({
 
   const isReadOnlyAttempt = Boolean(problem?.is_read_only ||
     attempt && ["SUBMITTED", "EVALUATED", "ABANDONED"].includes(attempt.status));
+  const toggleWritingMode = () => {
+    if (canvasDrawing) return;
+    if (writingMode) {
+      setWritingMode(false);
+      setIsProblemPaneCollapsed(writingLayoutRef.current.collapsed);
+      setZoomLevel(writingLayoutRef.current.zoom); setPaperMode(writingLayoutRef.current.paper);
+    } else {
+      writingLayoutRef.current = {collapsed: isProblemPaneCollapsed, zoom: zoomLevel, paper: paperMode};
+      setWritingMode(true); setIsProblemPaneCollapsed(true); setZoomLevel(1); setPaperMode(false);
+    }
+  };
 
   return (
     <div className={`${styles.workspaceContainer} ${writingMode ? styles.mobileWriting : ""}`}>
@@ -1215,10 +1240,13 @@ export function MathWorkspace({
           {!isReadOnlyAttempt ? <button type="button" className={styles.buttonSecondary} disabled={liveStarting || canvasDrawing || !draftRecoveryReady} onClick={() => void startLive()}>
             {liveStarting ? "Đang kết nối…" : "Kết nối thiết bị viết"}
           </button> : null}
-          <button type="button" className={styles.buttonSecondary} onClick={() => { setWritingMode(value => !value); setIsProblemPaneCollapsed(true); }}>
+          <button type="button" className={styles.buttonSecondary} disabled={canvasDrawing} onClick={toggleWritingMode}>
             {writingMode ? "Về MathWorkspace" : "Chế độ viết cảm ứng"}
           </button>
-          {liveEnabled ? <span role="status" data-live-status={live.status}>Trực tiếp: {live.status} · {live.devices} thiết bị · {live.pendingCount} chờ lưu{live.drafts.length ? " · Thiết bị khác đang viết, chưa lưu" : ""}</span> : null}
+          {liveEnabled ? <span className={styles.liveConnectionStatus} role="status" data-live-status={live.status} data-pending={live.pendingCount}>
+            <span/>{live.pendingCount ? "Đang lưu nét viết…" : live.drafts.length ? "Thiết bị khác đang viết…" : live.status === "connected" ? live.devices > 1 ? "Đã kết nối thiết bị viết" : "Sẵn sàng kết nối thiết bị" : live.status === "offline" ? "Mất mạng · Đang giữ nét viết" : "Đang kết nối lại…"}
+          </span> : null}
+          {liveEnabled && !writingMode ? <button type="button" className={styles.liveDisconnectButton} onClick={() => void stopLive()}>Dừng đồng bộ</button> : null}
           <SyncStatusBadge
             status={syncStatus}
             errorMessage={syncErrorMessage}
@@ -1227,7 +1255,7 @@ export function MathWorkspace({
             onResolveConflict={handleResolveConflict}
             onExportDraft={handleExportDraft}
           />
-          {attempt && (!problem?.is_read_only || ["SUBMITTED", "EVALUATED"].includes(attempt.status)) ? (
+          {!writingMode && attempt && (!problem?.is_read_only || ["SUBMITTED", "EVALUATED"].includes(attempt.status)) ? (
             <button
               type="button"
               className={styles.headerGradeButton}
@@ -1271,8 +1299,7 @@ export function MathWorkspace({
           isReadOnly={isReadOnlyAttempt}
         />
       </header>
-      {pairingOpen ? <DeviceConnection page={currentPageIndex} status={live.status} devices={live.devices} peers={live.peers}
-        pending={live.pendingCount} error={live.error} onClose={() => setPairingOpen(false)} onDisconnect={() => void stopLive()} /> : null}
+      {pairingOpen ? <DeviceConnection attemptId={attemptId} page={currentPageIndex} pairing={devicePairing} onPairingChange={setDevicePairing} onClose={() => setPairingOpen(false)} /> : null}
 
       {/* PR3-C: Unfinished Batch Recovery Banner & Corrupted Journal Fail-Closed Banner */}
       {pendingBatch ? (
@@ -1329,7 +1356,10 @@ export function MathWorkspace({
       ) : null}
 
       {/* Floating or Top Toolbar */}
-      <WorkspaceToolbar
+      {writingMode ? <WritingToolbar tool={currentTool} onTool={setCurrentTool} color={penColor} onColor={setPenColor}
+        canUndo={!isReadOnlyAttempt && (liveEnabled ? live.canUndo : currentPageMemory.past.length > 0)}
+        canRedo={!isReadOnlyAttempt && (liveEnabled ? live.canRedo : currentPageMemory.future.length > 0)}
+        onUndo={handleUndo} onRedo={handleRedo} disabled={isReadOnlyAttempt}/> : <WorkspaceToolbar
         currentTool={currentTool}
         onSelectTool={setCurrentTool}
         penColor={penColor}
@@ -1359,7 +1389,7 @@ export function MathWorkspace({
         strokeCount={getOcrPenStrokes(currentPageMemory.strokes).length}
         isReadOnly={isReadOnlyAttempt}
         onOpenGraph={() => { setGraphSelection({ page: currentPageIndex, strokes: [] }); setGraphOpen(true); }}
-      />
+      />}
 
       {ocrError && !pageOcrReview ? (
         <div className={styles.ocrErrorBanner} role="alert">

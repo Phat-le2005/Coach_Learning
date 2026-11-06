@@ -23,7 +23,7 @@ export function verifyMutationRequest(request: NextRequest): NextResponse | null
   const origin = request.headers.get("origin");
   const site = request.headers.get("sec-fetch-site");
   const publicOrigin = process.env.NEXT_PUBLIC_APP_URL?.trim();
-  if (!isTrustedFrontendMutation(origin, request.nextUrl.origin, site, publicOrigin)) {
+  if (!isTrustedFrontendMutation(origin, request.nextUrl.origin, site, publicOrigin, process.env.NODE_ENV === "development")) {
     return errorResponse(403, "CSRF_ORIGIN_REJECTED", "Nguồn yêu cầu không hợp lệ.");
   }
   const cookieToken = request.cookies.get(AUTH_COOKIES.csrf)?.value;

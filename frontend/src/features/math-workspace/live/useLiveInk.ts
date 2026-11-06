@@ -12,7 +12,7 @@ async function request<T>(url: string, body?: unknown): Promise<T> {
     const response = await fetch(url, { method: body === undefined ? "GET" : "POST", credentials: "same-origin",
       headers: { "Content-Type": "application/json", "X-EduMS-BFF": "1", ...(body === undefined ? {} : { "X-CSRF-Token": await getCsrfToken() }) },
       body: body === undefined ? undefined : JSON.stringify(body), signal: AbortSignal.timeout(22000) });
-    if (response.status === 401 && attempt === 0) { await refreshBrowserSession(); continue; }
+    if (response.status === 401 && attempt === 0 && !url.startsWith("/api/ink-device/")) { await refreshBrowserSession(); continue; }
     const value = await response.json();
     if (!response.ok) throw Object.assign(new Error(value.error?.message ?? "Đồng bộ thất bại"), { code: value.error?.code, status: response.status });
     return value as T;
@@ -21,6 +21,7 @@ async function request<T>(url: string, body?: unknown): Promise<T> {
 }
 
 export function useLiveInk(options: { attemptId: string; pageIndex: number; enabled: boolean;
+  apiBase?: string;
   onSnapshot: (snapshot: LiveSnapshot, pending: boolean) => void;
   onPageAvailable?: (pageIndex: number) => void }) {
   const { attemptId, pageIndex, enabled } = options;
@@ -39,7 +40,7 @@ export function useLiveInk(options: { attemptId: string; pageIndex: number; enab
     canonical: { document_revision: -1, page_index: pageIndex, strokes: [] }, pending: [], undo: [], redo: [],
     ready: false, pumping: false, alive: false, generation: 0, seq: 0, remote: new Map(), durable: Promise.resolve(),
   });
-  const base = `/api/v2/math-solutions/attempts/${attemptId}/ink`;
+  const base = options.apiBase ?? `/api/v2/math-solutions/attempts/${attemptId}/ink`;
   const emit = useCallback(() => {
     const s = state.current;
     setPendingCount(s.pending.length);

@@ -52,4 +52,8 @@ test("LAN mutations require explicit public origin and still reject cross-site o
   assert.equal(isTrustedFrontendMutation(lan, internal, "cross-site", lan), false);
   assert.equal(isTrustedFrontendMutation("https://evil.invalid", internal, "same-origin", lan), false);
   assert.equal(isTrustedFrontendMutation(null, internal, null, lan), false);
+  assert.equal(isTrustedFrontendMutation("http://localhost:3000", "http://0.0.0.0:3000", "same-origin", lan, true), true);
+  assert.equal(isTrustedFrontendMutation("http://localhost:3000", "http://0.0.0.0:3000", "same-origin", lan, false), false);
+  assert.equal(isTrustedFrontendMutation("http://localhost:4000", "http://0.0.0.0:3000", "same-origin", lan, true), false);
+  assert.equal(isTrustedFrontendMutation("https://evil.invalid", "http://0.0.0.0:3000", "same-origin", lan, true), false);
 });
