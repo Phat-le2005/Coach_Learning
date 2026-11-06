@@ -614,7 +614,14 @@ export function MathWorkspace({
     setOcrError(null);
     setIsRecognizingOCR(true);
     try {
-      if (currentPageMemory.isDirty) {
+      if (liveEnabledRef.current) {
+        // Live Ink persists with operation ACKs; a legacy full-page PUT here
+        // could overwrite another device's committed strokes.
+        if (!await liveRef.current.flush()) {
+          setOcrError("Nét viết trực tiếp chưa được máy chủ xác nhận. Hãy đồng bộ rồi thử lại.");
+          return;
+        }
+      } else if (currentPageMemory.isDirty) {
         if (saveTimeoutRef.current) {
           clearTimeout(saveTimeoutRef.current);
           saveTimeoutRef.current = null;
@@ -794,7 +801,13 @@ export function MathWorkspace({
       }
       if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
       await saveQueueRef.current;
+      if (liveEnabledRef.current && !await liveRef.current.flush()) {
+        throw new Error("Nét viết trực tiếp chưa được xác nhận lưu. Không thể nộp bài.");
+      }
       for (const [pageIndex, page] of pagesMap) {
+        // The active live page was already persisted via operations above.
+        // Never submit a stale full-page PUT over another device's ink.
+        if (liveEnabledRef.current && pageIndex === currentPageIndex) continue;
         if (page.isDirty && !await flushSavePage(pageIndex, page.strokes)) {
           throw new Error("Không thể lưu toàn bộ trang viết. Hãy thử lại trước khi nộp.");
         }
@@ -864,11 +877,15 @@ export function MathWorkspace({
     }
   }, [attempt, isSubmitting, pageOcrReview, syncStatus, authExpired, pagesMap,
     flushSavePage, attemptId, apiClient, accessToken, problem?.question_type, executeAIReview,
-    pendingBatch, batchJournalLoadError, batchResuming, checkPendingBatch]);
+    pendingBatch, batchJournalLoadError, batchResuming, checkPendingBatch, currentPageIndex]);
   // Keep stroke persistence separate from history updates. Undo/redo must not
   // append another history entry or erase the redo stack.
   const queueInkSave = useCallback((pageIndex: number, newStrokes: InkStroke[]) => {
-    if (liveEnabledRef.current) { liveRef.current.change(newStrokes); return; }
+    if (liveEnabledRef.current) {
+      // Only the operation-based handler may edit ink during live mode.
+      // Never let legacy snapshot autosave overwrite concurrent remote strokes.
+      throw new Error("Legacy ink saving is disabled while Live Ink is active.");
+    }
     locallyEditedPagesRef.current.add(pageIndex);
     latestStrokesRef.current.set(pageIndex, newStrokes);
     setSyncStatus("unsaved");
@@ -897,8 +914,11 @@ export function MathWorkspace({
 
   // 3. Handle strokes update with Undo stack & autosave debounce
   const handleStrokesChange = useCallback(
-    (newStrokes: InkStroke[]) => {
-      if (liveEnabledRef.current) { liveRef.current.change(newStrokes); return; }
+    (newStrokes: InkStroke[], observedStrokes?: InkStroke[]) => {
+      if (liveEnabledRef.current) {
+        liveRef.current.change(newStrokes, observedStrokes ?? currentPageMemory.strokes);
+        return;
+      }
       queueInkSave(currentPageIndex, newStrokes);
       setPagesMap((prev) => {
         const updated = new Map(prev);
@@ -921,7 +941,7 @@ export function MathWorkspace({
         return updated;
       });
     },
-    [currentPageIndex, queueInkSave],
+    [currentPageIndex, queueInkSave, currentPageMemory.strokes],
   );
 
   // 4. Undo / Redo
@@ -972,7 +992,7 @@ export function MathWorkspace({
   const handleClearPage = useCallback(() => {
     if (currentPageMemory.strokes.length === 0) return;
     if (window.confirm("Bạn có chắc chắn muốn xóa toàn bộ nét vẽ trên trang này không?")) {
-      handleStrokesChange([]);
+      handleStrokesChange([], currentPageMemory.strokes);
     }
   }, [currentPageMemory.strokes, handleStrokesChange]);
 
@@ -987,7 +1007,7 @@ export function MathWorkspace({
 
       // Do not navigate away from ink that the server has not accepted.
       const pageStrokesAtStart = latestStrokesRef.current.get(currentPageIndex);
-      if (currentPageMemory.isDirty) {
+      if (!liveEnabledRef.current && currentPageMemory.isDirty) {
         if (saveTimeoutRef.current) {
           clearTimeout(saveTimeoutRef.current);
           saveTimeoutRef.current = null;
@@ -1062,7 +1082,7 @@ export function MathWorkspace({
     if (liveEnabledRef.current && !await liveRef.current.flush()) return;
     if (pageCount >= MAX_PAGES) return;
     const pageStrokesAtStart = latestStrokesRef.current.get(currentPageIndex);
-    if (currentPageMemory.isDirty) {
+    if (!liveEnabledRef.current && currentPageMemory.isDirty) {
       if (saveTimeoutRef.current) {
         clearTimeout(saveTimeoutRef.current);
         saveTimeoutRef.current = null;
@@ -1454,7 +1474,11 @@ export function MathWorkspace({
         ensureInkSaved={async () => {
           if (authExpired || syncStatus === "conflict" || syncStatus === "offline") throw new Error("Hãy đồng bộ nét viết trước khi lưu đồ thị.");
           await saveQueueRef.current;
-          if (currentPageMemory.isDirty) {
+          if (liveEnabledRef.current) {
+            if (!await liveRef.current.flush()) {
+              throw new Error("Nét viết trực tiếp chưa được xác nhận lưu. Hãy đồng bộ rồi thử lại.");
+            }
+          } else if (currentPageMemory.isDirty) {
             const saved = await flushSavePage(currentPageIndex, latestStrokesRef.current.get(currentPageIndex) ?? currentPageMemory.strokes);
             if (!saved) throw new Error("Nét viết chưa được lưu lên máy chủ. Hãy đồng bộ rồi thử lại.");
           }
