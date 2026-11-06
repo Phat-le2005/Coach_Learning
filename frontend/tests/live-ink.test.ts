@@ -23,3 +23,24 @@ test("undo fixed local intent cannot restore a whole stale page over remote edit
   assert.deepEqual(replayIntents([a, b], [inverse]), [b]);
   assert.throws(() => inkDiff([a], [{ ...a, width: 4 }]), /stroke ID/);
 });
+
+test("stale observed canvas never deletes a newer remote stroke on local pointerup", () => {
+  const prior = stroke("prior"), remote = stroke("remote"), local = stroke("local");
+  // The UI was showing only 'prior' when the finger began drawing.
+  // Remote commit arrives before React can rerender the visible canvas.
+  const intent: InkIntent = {
+    ...inkDiff([prior], [prior, local]), createdAt: 3, client_action_id: "local-draw",
+  };
+  assert.deepEqual(intent.remove, []);
+  assert.deepEqual(replayIntents([prior, remote], [intent]).map(s => s.id),
+    ["prior", "remote", "local"]);
+});
+
+test("stale observed clear/eraser never removes remote strokes not seen by the user", () => {
+  const prior = stroke("prior"), remote = stroke("remote");
+  const intent: InkIntent = {
+    ...inkDiff([prior], []), createdAt: 4, client_action_id: "local-clear",
+  };
+  assert.deepEqual(intent.remove.map(s => s.id), ["prior"]);
+  assert.deepEqual(replayIntents([prior, remote], [intent]).map(s => s.id), ["remote"]);
+});
