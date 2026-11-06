@@ -24,6 +24,10 @@ interface MathCanvasProps {
   isReadOnly?: boolean;
   selectedStrokeIds?: string[];
   onLassoSelect?: (strokes: InkStroke[]) => void;
+  remoteDrafts?: InkStroke[];
+  onLiveStroke?: (type: "STROKE_BEGIN" | "STROKE_POINTS" | "STROKE_END", stroke: InkStroke) => void;
+  responsive?: boolean;
+  onDrawingStateChange?: (drawing: boolean) => void;
 }
 
 export function MathCanvas({
@@ -38,10 +42,13 @@ export function MathCanvas({
   isReadOnly = false,
   selectedStrokeIds = [],
   onLassoSelect,
+  remoteDrafts = [], onLiveStroke, responsive = false,
+  onDrawingStateChange,
 }: MathCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const activeStrokeRef = useRef<InkStroke | null>(null);
   const isPointerDownRef = useRef(false);
+  const activePointerId = useRef<number | null>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const lassoRef = useRef<InkPoint[]>([]);
   const [lassoPath, setLassoPath] = useState<InkPoint[]>([]);
@@ -127,18 +134,21 @@ export function MathCanvas({
     canvas.width = A4_WIDTH * dpr;
     canvas.height = A4_HEIGHT * dpr;
 
-    redrawAllStrokes(canvas, strokes);
+    redrawAllStrokes(canvas, [...strokes, ...(activeStrokeRef.current ? [activeStrokeRef.current] : [])]);
   }, [strokes, redrawAllStrokes]);
 
   // Pointer event handlers
   const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    if (isPointerDownRef.current || !e.isPrimary) return;
     if ((isReadOnly && currentTool !== "lasso") || e.button !== 0) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     canvas.setPointerCapture(e.pointerId);
+    activePointerId.current = e.pointerId;
     isPointerDownRef.current = true;
     setIsDrawing(true);
+    onDrawingStateChange?.(true);
 
     const rect = canvas.getBoundingClientRect();
     const clientX = e.clientX - rect.left;
@@ -181,6 +191,7 @@ export function MathCanvas({
     };
 
     activeStrokeRef.current = newStroke;
+    onLiveStroke?.("STROKE_BEGIN", newStroke);
 
     // Draw initial point on canvas
     const ctx = canvas.getContext("2d");
@@ -204,7 +215,7 @@ export function MathCanvas({
   };
 
   const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
-    if (!isPointerDownRef.current) return;
+    if (!isPointerDownRef.current || activePointerId.current !== e.pointerId) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -241,7 +252,9 @@ export function MathCanvas({
     const prevPoint = activeStroke.points[activeStroke.points.length - 1];
     const newPoint: InkPoint = { x: normX, y: normY, pressure };
 
+    if (activeStroke.points.length >= 3000) return;
     activeStroke.points.push(newPoint);
+    onLiveStroke?.("STROKE_POINTS", activeStroke);
 
     // Incremental draw: only draw line segment from prev to current
     const ctx = canvas.getContext("2d");
@@ -271,9 +284,11 @@ export function MathCanvas({
   };
 
   const handlePointerUp = (e: React.PointerEvent<HTMLCanvasElement>) => {
-    if (!isPointerDownRef.current) return;
+    if (!isPointerDownRef.current || activePointerId.current !== e.pointerId) return;
     isPointerDownRef.current = false;
+    activePointerId.current = null;
     setIsDrawing(false);
+    onDrawingStateChange?.(false);
 
     const canvas = canvasRef.current;
     if (canvas && canvas.hasPointerCapture(e.pointerId)) {
@@ -290,6 +305,7 @@ export function MathCanvas({
     }
 
     if (completed && completed.points.length > 0) {
+      onLiveStroke?.("STROKE_END", completed);
       onStrokesChange([...strokes, completed]);
     }
   };
@@ -309,32 +325,33 @@ export function MathCanvas({
     <div
       className={styles.canvasViewport}
       style={{
-        transform: `scale(${zoomLevel})`,
+        transform: responsive ? undefined : `scale(${zoomLevel})`,
         transformOrigin: "top center",
+        ...(responsive ? { width: `${zoomLevel * 100}%`, minWidth: 0, flexShrink: 0 } : {}),
       }}
     >
-      <div className={`${styles.a4Sheet} ${getGridClassName()}`}>
+      <div className={`${styles.a4Sheet} ${getGridClassName()}`} style={responsive ? { width: "100%", height: "auto", aspectRatio: `${A4_WIDTH} / ${A4_HEIGHT}` } : undefined}>
         <canvas
           ref={canvasRef}
           className={`${styles.drawingCanvas} ${currentTool === "eraser" ? styles.eraserCursor : styles.penCursor}`}
           style={{
-            width: `${A4_WIDTH}px`,
-            height: `${A4_HEIGHT}px`,
+            width: responsive ? "100%" : `${A4_WIDTH}px`,
+            height: responsive ? "100%" : `${A4_HEIGHT}px`,
             touchAction: "none",
             cursor: currentTool === "lasso" ? "crosshair" : undefined,
           }}
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
-          onPointerCancel={(event) => {
-            isPointerDownRef.current = false; activeStrokeRef.current = null;
-            lassoRef.current = []; setLassoPath([]); setIsDrawing(false);
-            if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
-            redrawAllStrokes(event.currentTarget, strokes);
-          }}
+          onPointerCancel={handlePointerUp}
+          onLostPointerCapture={handlePointerUp}
+          aria-label="Giấy viết MathCanvas"
         />
         <svg viewBox={`0 0 ${A4_WIDTH} ${A4_HEIGHT}`} aria-hidden="true"
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" }}>
+          {remoteDrafts.filter(s => !strokes.some(saved => saved.id === s.id)).map(s => <polyline key={s.id}
+            data-live-draft={s.id} points={s.points.map(p => `${p.x * A4_WIDTH},${p.y * A4_HEIGHT}`).join(" ")}
+            fill="none" stroke={s.color} strokeWidth={s.width} strokeLinecap="round" strokeLinejoin="round" opacity="0.65" />)}
           {strokes.filter((stroke) => selectedStrokeIds.includes(stroke.id)).map((stroke) => <polyline key={stroke.id}
             points={stroke.points.map((p) => `${p.x * A4_WIDTH},${p.y * A4_HEIGHT}`).join(" ")}
             fill="none" stroke="#23bba3" strokeOpacity="0.35" strokeWidth={stroke.width + 9} strokeLinecap="round" strokeLinejoin="round" />)}

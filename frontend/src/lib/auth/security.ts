@@ -30,3 +30,9 @@ export function isTrustedMutationOrigin(origin: string | null, expectedOrigin: s
     return false;
   }
 }
+
+/** Explicit public origin supports LAN/reverse proxies without trusting arbitrary Host headers. */
+export function isTrustedFrontendMutation(origin: string | null, internalOrigin: string, fetchSite: string | null, publicOrigin?: string): boolean {
+  return isTrustedMutationOrigin(origin, internalOrigin, fetchSite)
+    || Boolean(publicOrigin?.trim() && isTrustedMutationOrigin(origin, publicOrigin.trim(), fetchSite));
+}

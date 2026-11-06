@@ -1,4 +1,10 @@
 /* Main Container */
+.mobileWriting .topHeader { flex-wrap: wrap; padding: 6px; }
+.mobileWriting .headerLeft { flex-wrap: wrap; gap: 6px; }
+.mobileWriting .toolbar { flex-wrap: nowrap; overflow-x: auto; flex-shrink: 0; }
+.mobileWriting .mainLayout { display: block; overflow: auto; }
+.mobileWriting .canvasPane { width: 100%; padding: 4px; min-width: 0; overflow: auto; justify-content: flex-start; }
+.mobileWriting .canvasViewport { margin: 0; }
 .workspaceContainer {
   display: flex;
   flex-direction: column;
