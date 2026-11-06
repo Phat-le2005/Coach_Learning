@@ -184,9 +184,10 @@ export function useLiveInk(options: { attemptId: string; pageIndex: number; enab
     s.durable = s.durable.then(async () => { await liveOutbox.put(attemptId, pageIndex, intent); });
     emit(); void pump();
   }, [attemptId, pageIndex, emit, pump]);
-  const change = useCallback((next: InkStroke[]) => {
-    const s = state.current;
-    enqueue(inkDiff(replayIntents(s.canonical.strokes, s.pending), next));
+  const change = useCallback((next: InkStroke[], observedStrokes: InkStroke[]) => {
+    // Never infer deletion of remote strokes which arrived after the user's
+    // drawing/erasing event. Diff only against the strokes actually observed.
+    enqueue(inkDiff(observedStrokes, next));
   }, [enqueue]);
   const undo = () => {
     const intent = state.current.undo.pop(); if (!intent) return;
