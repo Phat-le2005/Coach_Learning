@@ -2,6 +2,8 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
 import { getBackendBaseUrl } from "@/lib/api/client";
+import { inkWebSocketUrl } from "@/lib/api/ink-websocket";
+import { pairingOrigin } from "@/lib/network/lan";
 import { mathWorkspaceProxyPath } from "@/lib/api/math-workspace-path";
 import { AUTH_COOKIES } from "@/lib/auth/constants";
 import { errorResponse, verifyMutationRequest } from "@/lib/auth/route-utils";
@@ -49,7 +51,7 @@ async function forward(request: NextRequest, context: Context): Promise<NextResp
         // CSRF validation above already checked this Origin. Preserve the actual
         // browser origin (Next may normalize 127.0.0.1 to localhost internally).
         const origin = path.endsWith("/ink/pairings")
-          ? new URL(process.env.NEXT_PUBLIC_APP_URL?.trim() || request.headers.get("origin")!).origin
+          ? pairingOrigin(request.headers.get("origin"))
           : request.headers.get("origin");
         body = JSON.stringify({ page_index: value.page_index, origin });
       }
@@ -68,28 +70,16 @@ async function forward(request: NextRequest, context: Context): Promise<NextResp
     });
     if (upstream.ok && path.endsWith("/ink/live-ticket")) {
       const result = await upstream.json();
-      const configuredOrigin = process.env.MATH_INK_WS_ORIGIN?.trim();
-      const endpoint = new URL(configuredOrigin || getBackendBaseUrl());
-      if (!["http:", "https:", "ws:", "wss:"].includes(endpoint.protocol) || endpoint.username || endpoint.password || endpoint.search || endpoint.hash
-          || (configuredOrigin && endpoint.pathname !== "/")) return errorResponse(503, "LIVE_CONFIG_INVALID", "Cấu hình địa chỉ WebSocket không hợp lệ.");
-      if (!configuredOrigin && process.env.NODE_ENV !== "production"
-          && ["127.0.0.1", "localhost"].includes(endpoint.hostname)) {
-        endpoint.hostname = new URL(request.headers.get("origin")!).hostname;
-      }
-      endpoint.protocol = ["https:", "wss:"].includes(endpoint.protocol) ? "wss:" : "ws:";
-      if ((process.env.NODE_ENV === "production" || request.headers.get("origin")?.startsWith("https:"))
-          && (!configuredOrigin || endpoint.protocol !== "wss:")) {
-        return errorResponse(503, "LIVE_WSS_REQUIRED", "Cần cấu hình MATH_INK_WS_ORIGIN bằng địa chỉ wss:// cho HTTPS/production.");
-      }
-      endpoint.pathname = `${path.replace(/\/live-ticket$/, "/live")}`;
-      endpoint.search = "";
-      return NextResponse.json({ ...result, websocket_url: endpoint.toString() }, { headers: { "Cache-Control": "no-store" } });
+      return NextResponse.json({ ...result, websocket_url: inkWebSocketUrl(path.replace(/\/live-ticket$/, "/live"), request.headers.get("origin")!) }, { headers: { "Cache-Control": "no-store" } });
     }
     return new NextResponse(await upstream.text(), {
       status: upstream.status,
       headers: { "Content-Type": upstream.headers.get("Content-Type") ?? "application/json", "Cache-Control": "no-store" },
     });
-  } catch {
+  } catch (error) {
+    if (error instanceof Error && error.message === "LAN_ADDRESS_UNAVAILABLE") return errorResponse(503, "LAN_ADDRESS_UNAVAILABLE", "Chưa tìm thấy địa chỉ mạng nội bộ. Kết nối Wi-Fi hoặc cáp mạng rồi thử lại.");
+    if (error instanceof Error && error.message === "LIVE_WSS_REQUIRED") return errorResponse(503, "LIVE_WSS_REQUIRED", "Cần cấu hình địa chỉ wss:// cho HTTPS/production.");
+    if (error instanceof Error && error.message === "LIVE_CONFIG_INVALID") return errorResponse(503, "LIVE_CONFIG_INVALID", "Cấu hình địa chỉ WebSocket không hợp lệ.");
     return errorResponse(503, "API_UNAVAILABLE", "Không thể kết nối đến dịch vụ bài làm.");
   }
 }

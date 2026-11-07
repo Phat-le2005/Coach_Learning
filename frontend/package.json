@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "test:lan": "npm run test:compile && node --test .test-build-run/tests/lan-network.test.js .test-build-run/tests/auth-security.test.js .test-build-run/tests/live-ink.test.js",
     "dev": "next dev --hostname localhost --port 3000",
     "build": "next build",
     "start": "next start --hostname localhost --port 3000",

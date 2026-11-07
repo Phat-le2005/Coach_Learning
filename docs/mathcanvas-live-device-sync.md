@@ -9,7 +9,35 @@ Không có thay đổi schema database, OCR, CAS, Evaluator hay định dạng I
 
 ## Khởi động và dùng qua LAN
 
-Dùng feature branch `feat/mathcanvas-live-device-sync`. Cài theo README của dự án,
+**Ưu tiên chế độ LAN tự động trên checkout hiện tại:**
+
+```powershell
+# Terminal backend, từ repo root (giữ nguyên .env/DB hiện tại):
+./tools/start-backend.ps1 -Lan -Port 8000 -FrontendPort 3000
+# Terminal frontend, từ repo root:
+./tools/start-local.ps1 -Lan -Port 3000 -ApiUrl http://127.0.0.1:8000
+```
+
+Laptop dùng `localhost:3000`; QR lấy IPv4 private của interface đang hoạt động,
+loại adapter ảo/WSL/VPN khỏi đề xuất mặc định. Khi đã mở laptop qua một địa chỉ LAN
+hợp lệ, pairing ưu tiên địa chỉ đó. `/api/lan` chỉ cung cấp thông tin mạng cho phiên
+STUDENT đã đăng nhập. BFF CSRF và backend WS chỉ chấp nhận origin loopback/các IP
+của máy chủ trên đúng port frontend. Không tin Host tùy ý, không dùng wildcard CORS.
+`NEXT_PUBLIC_APP_URL`/WS origin cố định không ghi đè chế độ tự động.
+
+Launcher kiểm tra thay đổi interface mỗi5 giây; tự restart frontend để cập nhật
+`allowedDevOrigins` chính xác của Next. Backend không restart. Hộp kết nối kiểm tra
+địa chỉ hiện tại, không hiển thị QR cho origin cũ và thay phiên khi địa chỉ hết hợp lệ.
+Sau đổi mạng, mở lại hộp nếu dev reload đóng hộp, quét mã mới và laptop duyệt lại.
+Điện thoại không phải đăng nhập tài khoản. Grant/cookie/IndexedDB của origin cũ
+không tự chuyển sang IP mới; nét chưa ACK cần giữ trang/draft cũ để phục hồi riêng.
+Không tuyên bố chuyển mạng liền mạch khi đang viết. Nét đã ACK vẫn ở database.
+
+Hai thiết bị phải có đường mạng tới laptop; mạng khách/client isolation có thể chặn.
+Không tự sửa firewall. `-Lan` là local development IPv4 private, production tiếp tục
+dùng origin HTTPS/WSS được cấu hình rõ ràng. Backend từ chối LAN mode trong production.
+
+**Cấu hình địa chỉ tường minh (nâng cao/triển khai):** Cài theo README của dự án,
 với PostgreSQL và cấu hình xác thực hiện có. Ví dụ PowerShell, từ repository:
 
 ```powershell
