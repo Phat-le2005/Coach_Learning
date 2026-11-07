@@ -21,7 +21,7 @@ from torch.utils.data.distributed import DistributedSampler
 from .data import audit, fit_vocabulary, resolve_metadata, PREPROCESS, PREPROCESSORS, configure_preprocess
 from .metrics import InkDataset, collate, teacher_loss, evaluate, CONTRACT
 from .model import UPSTREAM, load_model, expand_vocabulary
-from .tracking import write_json, init_run, log_predictions, append_history, log_model, bundle
+from .tracking import write_json, init_run, log_predictions, append_history, log_model, log_final_model, bundle
 from .distributed import Context, TrainingModel, restore_rng
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -49,6 +49,7 @@ def read_config(path):
     if not isinstance(cfg['experiment_version'],str) or not cfg['experiment_version']:raise ValueError('INVALID_VERSION')
     if cfg['wandb']['mode'] not in ('online','offline','disabled'): raise ValueError('INVALID_WANDB_MODE')
     if cfg['preprocess'] not in PREPROCESSORS: raise ValueError('INVALID_PREPROCESS')
+    if cfg['checkpoint_upload'] not in ('every_epoch','final_inference'): raise ValueError('INVALID_CHECKPOINT_UPLOAD')
     for k in ('log_images','log_checkpoints'):
         if type(cfg['wandb'][k]) is not bool: raise ValueError('INVALID_WANDB_'+k)
     if cfg['max_decode_tokens']>256: raise ValueError('DECODE_LIMIT_TOO_LARGE')
@@ -66,7 +67,7 @@ def seed_all(seed):
 
 def signature(cfg):
     return {k:cfg[k] for k in DEFAULTS if k not in ('data','output','wandb','epochs','media_samples',
-                                                   'experiment_version','compare_before_after')}
+                                                   'experiment_version','compare_before_after','checkpoint_upload')}
 
 
 def save_checkpoint(path,model,hparams,vocab,optimizer,scheduler,scaler,epoch,step,best,stale,cfg,digest,run_id,qa,
@@ -294,6 +295,7 @@ def _train(cfg,resume,qa,ctx):
         run.summary.update({'best/epoch':best['epoch'],'best/val_exp_rate':best['exp_rate'],
             'best/val_loss':best['loss'],'epochs_completed':epoch,'qa_only':qa})
         if baseline: run.summary['best/exp_rate_delta_from_baseline']=best['exp_rate']-baseline['exp_rate']
+        log_final_model(run,out,cfg)
         (out/'evidence.md').write_text('# CoMER HME500 experiment\n\n'+
             ('Local real-JPEG QA only; not a full training accuracy result.\n\n' if qa else '')+
             f"Dataset SHA256 fingerprint: {report['fingerprint']}\n\n"+

@@ -15,7 +15,7 @@ PROFILES={
     'v2':dict(label='finetune-ddp2',devices=2,accumulate=2,compare_before_after=False),
     'v3':dict(label='prepost-ddp2',devices=2,accumulate=2,compare_before_after=True),
     'v4':dict(label='otsu-local-cuda1-prepost',devices=1,batch_size=1,accumulate=16,
-              epochs=30,amp_init_scale=1024,compare_before_after=True,
+              epochs=30,amp_init_scale=1024,compare_before_after=True,checkpoint_upload='final_inference',
               preprocess='jpeg-gray-invert-aspect128x1024-min32-pad32-v1-otsu-v2'),
 }
 _THREAD_LOCK=threading.Lock()

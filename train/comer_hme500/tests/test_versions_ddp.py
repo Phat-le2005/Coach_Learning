@@ -42,6 +42,7 @@ class Versions(unittest.TestCase):
             self.assertEqual(cfg['devices'],1);self.assertEqual(cfg['batch_size'],1)
             self.assertEqual(cfg['accumulate'],16);self.assertTrue(cfg['compare_before_after'])
             self.assertEqual(cfg['preprocess'],OTSU_PREPROCESS)
+            self.assertEqual(cfg['checkpoint_upload'],'final_inference')
             self.assertIn('otsu-local-cuda1',cfg['wandb']['name'])
             self.assertEqual(read_config(path)['preprocess'],OTSU_PREPROCESS)
 

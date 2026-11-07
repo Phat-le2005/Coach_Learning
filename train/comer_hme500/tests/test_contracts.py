@@ -9,7 +9,7 @@ from PIL import Image
 import torch
 from hme_comer.data import tokens, safe_path, resolve_metadata, fit_vocabulary, input_array, configure_preprocess, PREPROCESS, OTSU_PREPROCESS
 from hme_comer.metrics import collate, edit_distance
-from hme_comer.tracking import bundle, write_json
+from hme_comer.tracking import bundle, write_json, log_model, log_final_model
 from hme_comer.train import read_config, DEFAULTS, signature
 
 
@@ -73,6 +73,23 @@ class Contracts(unittest.TestCase):
     def test_secrets_cannot_enter_config(self):
         p=self.root/'config.json';write_json(p,{'wandb':{'api_key':'unit-test-not-a-key'}})
         with self.assertRaisesRegex(ValueError,'UNKNOWN_WANDB'):read_config(p)
+    def test_compact_model_export_preserves_fp32_weights_and_local_resume_checkpoint(self):
+        full=dict(state_dict={'weight':torch.tensor([[1.,2.]])},hyper_parameters={'fixture':True},
+            vocabulary={'x':0},epoch=5,dataset_fingerprint='fixture',qa_only=True,
+            optimizer={'large':'fixture-only'},torch_rng=torch.get_rng_state())
+        path=self.root/'best.pt';torch.save(full,path);before=path.read_bytes()
+        cfg={'checkpoint_upload':'final_inference','preprocess':OTSU_PREPROCESS,'wandb':{'mode':'disabled'}}
+        exported=log_final_model(None,self.root,cfg)
+        value=torch.load(exported,map_location='cpu',weights_only=True)
+        self.assertTrue(torch.equal(value['state_dict']['weight'],full['state_dict']['weight']))
+        self.assertEqual(value['state_dict']['weight'].dtype,torch.float32)
+        self.assertNotIn('optimizer',value);self.assertNotIn('torch_rng',value)
+        self.assertEqual(path.read_bytes(),before)
+        self.assertEqual(value['source_full_checkpoint_sha256'],hashlib.sha256(before).hexdigest())
+    def test_compact_policy_does_not_upload_per_epoch_checkpoints(self):
+        cfg={'checkpoint_upload':'final_inference','wandb':{'mode':'online','log_checkpoints':True}}
+        log_model(None,self.root,cfg,[],{})
+        self.assertFalse(list(self.root.iterdir()))
     def test_resume_signature_allows_only_epoch_extension(self):
         a=dict(DEFAULTS);b={**a,'epochs':100,'decoder_lr':2e-4}
         self.assertNotEqual(signature(a),signature(b))

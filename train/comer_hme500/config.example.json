@@ -20,6 +20,7 @@
   "devices": 1,
   "experiment_version": "v1",
   "compare_before_after": false,
+  "checkpoint_upload": "every_epoch",
   "media_samples": 12,
   "wandb": {
     "mode": "online",

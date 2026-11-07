@@ -23,6 +23,8 @@ Luồng local: xác thực W&B → QA 4 train/2 validation, 2 epoch freeze/unfre
 
 Mặc định lưu dưới `.tmp/comer-local-experiments/` của checkout: session JSON, log đã che key, config, checkpoint, curves, dự đoán, ZIP. W&B có run QA và group riêng cho run train/`-before`/`-after`; không tạo project mới cho từng phiên. Nếu bị ngắt sau khi đã có `last.pt`, resume cùng config bằng `python -m hme_comer.train --config <config> --resume <output>/last.pt`; giữ lại W&B ID và điều kiện thí nghiệm. Config/checkpoint có ràng buộc preprocessing để chặn đánh giá/resume nhầm cách xử lý nền.
 
+v4 dùng `checkpoint_upload=final_inference`: vẫn ghi ảnh, metrics và curves theo epoch lên W&B, nhưng chỉ upload model best một lần ở cuối (`best-inference.pt`, giữ nguyên FP32 tensors, vocabulary và hparams). Optimizer/RNG được bỏ khỏi bản upload để giảm dung lượng; full `best.pt`/`last.pt` cho resume vẫn nằm trong output local và ZIP. v1/v2/v3 giữ chính sách `every_epoch`. Không cần gửi lại các checkpoint trung gian để có lịch sử train đầy đủ.
+
 ## Chạy trên Kaggle
 
 1. Upload notebook `CoachLearning_CoMER_HME500_Kaggle.ipynb` vào Kaggle. Mặc định clone `https://github.com/Phat-le2005/Coach_Learning.git`, nhánh `main`, vào `/kaggle/working/Coach_Learning`.
