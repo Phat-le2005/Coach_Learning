@@ -24,7 +24,7 @@ test("clean checkout Lab supports real CoMER and annotation without private data
   const strokes = paths.map((points,i) => ({ id: `software-ink-${i}`, tool: "PEN", color: "#101010", width: 2, points: points.map(([x,y]) => ({x,y,pressure:.5})) }));
   const file = { schemaVersion: "ocr-v2-experimental/1", source: { pageIndex: 0, strokes } };
   await page.getByLabel("Import capture V2", { exact: true }).setInputFiles({name: "software-fixture.json", mimeType: "application/json", buffer: Buffer.from(JSON.stringify(file))});
-  await page.getByLabel("Profile OCR V2", { exact: true }).selectOption("GEOMETRY");
+  await page.getByLabel("Chế độ OCR V2", { exact: true }).selectOption("GEOMETRY");
   await page.getByTestId("v2-run").click();
   await expect(page.getByTestId("ocr-v2-panel")).toHaveAttribute("aria-busy", "false", {timeout: 90000});
   await expect(page.getByTestId("v2-wrapper-output")).not.toHaveText("UNRESOLVED");
@@ -33,7 +33,7 @@ test("clean checkout Lab supports real CoMER and annotation without private data
   await page.getByTestId("eval-transfer").click();
   const annotation = await popup;
   await expect(annotation).toHaveURL(/\/ocr-v2-lab\/evaluation\?transfer=/);
-  await expect(annotation.getByText(/live-/).first()).toBeVisible();
+  await expect(annotation.locator("body")).toContainText("MathCanvas trang 1");
   expect(writes).toEqual([]);
   if (process.env.LIVE_QA_ARTIFACT_DIR) await page.screenshot({path: `${process.env.LIVE_QA_ARTIFACT_DIR}/clean-lab.png`});
 });
