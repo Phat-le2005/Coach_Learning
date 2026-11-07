@@ -1,5 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { createHash, webcrypto } from "node:crypto";
+import { transcriptionKey } from "../src/features/math-workspace/utils/ocr-transcription-storage.js";
 import type { InkStroke } from "../src/lib/api/contracts.js";
 import { prepareCoreReview, applyRecognition, declareStepBoundary, sourceIdentity, recognizeCoreUnit } from "../src/features/math-workspace/utils/ocr-v2-core.js";
 import { scopeIntegrity, strokeCoverage, renderTransform, groupIrUnits, ungroupIrUnit } from "../src/features/math-workspace/utils/ocr-v2-geometry.js";
@@ -11,6 +13,33 @@ import type { ApiClient } from "../src/lib/api/client.js";
 const stroke=(id:string,points:number[][]):InkStroke=>({id,tool:"PEN",color:"#101010",width:2,points:points.map(([x,y])=>({x,y,pressure:.5}))});
 const ink=[stroke("x1",[[.1,.1],[.12,.13]]),stroke("x2",[[.12,.1],[.1,.13]]),stroke("e1",[[.15,.11],[.19,.11]]),stroke("e2",[[.15,.12],[.19,.12]]),stroke("zero",[[.21,.1],[.23,.1],[.23,.13],[.21,.13],[.21,.1]])];
 const source={sourceKind:"INK" as const,pageIndex:0,sourceRevision:3,strokes:ink};
+
+test("LAN and secure origins derive identical SHA-256 review keys, including Vietnamese ink metadata",async()=>{
+ const descriptor=Object.getOwnPropertyDescriptor(globalThis,"crypto");
+ const identity=JSON.stringify({source,annotation:"Ta có — Nên — Xét đề bài ta"});
+ const expected=`attempt:${createHash("sha256").update(identity,"utf8").digest("hex")}`;
+ try {
+  Object.defineProperty(globalThis,"crypto",{configurable:true,value:webcrypto});
+  assert.equal(await transcriptionKey("attempt",identity),expected);
+  Object.defineProperty(globalThis,"crypto",{configurable:true,value:{}}); // HTTP LAN browser.
+  assert.equal(await transcriptionKey("attempt",identity),expected);
+  Object.defineProperty(globalThis,"crypto",{configurable:true,value:undefined});
+  assert.equal(await transcriptionKey("attempt",identity),expected);
+  assert.notEqual(await transcriptionKey("attempt",identity+"changed"),expected);
+ } finally {if(descriptor)Object.defineProperty(globalThis,"crypto",descriptor);else Reflect.deleteProperty(globalThis,"crypto");}
+});
+
+test("Grouping review units on HTTP LAN preserves stroke ownership without randomUUID",async()=>{
+ const r=await prepareCoreReview({...source,strokes:[...ink,...ink.map(s=>({...s,id:s.id+'-row2',points:s.points.map(p=>({...p,y:p.y+.2}))}))]},"a");
+ const descriptor=Object.getOwnPropertyDescriptor(globalThis,"crypto");
+ try {
+  Object.defineProperty(globalThis,"crypto",{configurable:true,value:{}});
+  const grouped=groupIrUnits(r.ir,r.ir.contentUnits.map(u=>u.id),"UNKNOWN");
+  const container=grouped.contentUnits.find(u=>u.role==="CONTAINER")!;
+  assert.match(container.id,/^container-[0-9a-f-]{36}$/);
+  assert.deepEqual(new Set(container.sourceStrokeIds),new Set(r.ir.sourceSnapshot.strokes.map(s=>s.id)));
+ } finally {if(descriptor)Object.defineProperty(globalThis,"crypto",descriptor);else Reflect.deleteProperty(globalThis,"crypto");}
+});
 test("Geometry core retains every physical stroke and immutable source; detector/render failure never falls back to legacy",async()=>{
  const before=structuredClone(source),plain=await prepareCoreReview(source,"attempt"),failed=await prepareCoreReview(source,"attempt",async()=>{throw Error("offline");});
  assert.deepEqual(source,before);assert.equal(plain.mode,"GEOMETRY");assert.equal(failed.mode,"GEOMETRY");assert.deepEqual(scopeIntegrity(source,plain.scopes).missing,[]);assert.deepEqual(scopeIntegrity(source,plain.scopes).duplicateOwnership,[]);assert.deepEqual(plain.scopes,failed.scopes);

@@ -40,7 +40,6 @@ import { useLiveInk } from "./live/useLiveInk";
 import { DeviceConnection } from "./live/DeviceConnection";
 import type { LiveSnapshot } from "./live/protocol";
 import { deviceRequest, type DevicePairing } from "./live/device-client";
-import { WritingToolbar } from "./live/WritingToolbar";
 
 const MathCanvasPanel = dynamic(() => import("@/features/math-canvas/MathCanvasPanel").then((module) => module.MathCanvasPanel), {
   ssr: false,
@@ -1376,10 +1375,7 @@ export function MathWorkspace({
       ) : null}
 
       {/* Floating or Top Toolbar */}
-      {writingMode ? <WritingToolbar tool={currentTool} onTool={setCurrentTool} color={penColor} onColor={setPenColor}
-        canUndo={!isReadOnlyAttempt && (liveEnabled ? live.canUndo : currentPageMemory.past.length > 0)}
-        canRedo={!isReadOnlyAttempt && (liveEnabled ? live.canRedo : currentPageMemory.future.length > 0)}
-        onUndo={handleUndo} onRedo={handleRedo} disabled={isReadOnlyAttempt}/> : <WorkspaceToolbar
+      <WorkspaceToolbar
         currentTool={currentTool}
         onSelectTool={setCurrentTool}
         penColor={penColor}
@@ -1400,7 +1396,8 @@ export function MathWorkspace({
         onZoomOut={() => setZoomLevel((z) => Math.max(0.6, z - 0.1))}
         onResetZoom={() => setZoomLevel(1.0)}
         onTriggerOCR={paperMode || isReadOnlyAttempt ? undefined : handleTriggerOCR}
-        ocrBlocked={!batchJournalReady || Boolean(pendingBatch || batchJournalLoadError || batchResuming || pageOcrReview)}
+        ocrBlocked={!batchJournalReady || Boolean(pendingBatch || batchJournalLoadError || batchResuming || pageOcrReview)
+          || (liveEnabled && (!live.ready || live.pendingCount > 0 || live.drafts.length > 0))}
         onOpenVariationTable={attempt && ["DRAFT", "IN_PROGRESS"].includes(attempt.status) && !pageOcrReview && !isReadOnlyAttempt
           ? () => setVariationTableEditor({}) : undefined}
         onTogglePaper={() => setPaperMode((current) => !current)}
@@ -1409,7 +1406,7 @@ export function MathWorkspace({
         strokeCount={getOcrPenStrokes(currentPageMemory.strokes).length}
         isReadOnly={isReadOnlyAttempt}
         onOpenGraph={() => { setGraphSelection({ page: currentPageIndex, strokes: [] }); setGraphOpen(true); }}
-      />}
+      />
 
       {ocrError && !pageOcrReview ? (
         <div className={styles.ocrErrorBanner} role="alert">

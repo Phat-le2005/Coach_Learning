@@ -18,6 +18,7 @@
     "@types/qrcode": "^1.5.6",
     "@types/three": "^0.186.0",
     "ink-on": "0.1.0",
+    "js-sha256": "1.0.0",
     "katex": "^0.18.7",
     "lucide-react": "^1.52.0",
     "markmap-view": "^0.18.12",

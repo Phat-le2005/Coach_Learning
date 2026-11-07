@@ -220,6 +220,41 @@ npm run build
 
 ## Xử lý sự cố
 
+### Công cụ cảm ứng và trích xuất nét từ thiết bị viết
+
+Chế độ viết cảm ứng trong MathWorkspace dùng **cùng WorkspaceToolbar**, cùng callback
+và cùng trang nét với chế độ thông thường: Khoanh vùng, Math View, bút/dạ quang/tẩy,
+màu/độ dày, undo/redo, Trích xuất trang, Bảng biến thiên, Tải bài giấy và zoom.
+Các quyền đọc/chỉnh sửa, điều kiện batch recovery và chế độ bài giấy vẫn được áp dụng.
+Trên màn hình thấp, thanh công cụ có thể cuộn dọc để giữ chỗ cho giấy viết.
+Thiết bị ghép qua QR vẫn là thiết bị ngoại vi chỉ có quyền viết được chủ bài cho phép;
+không được cấp quyền tài khoản, chấm bài hoặc quản lý bước giải.
+
+Trích xuất trang lấy snapshot PEN đã được server xác nhận, gồm cả nét đến từ thiết bị
+ghép đôi. Nút chờ khi kết nối chưa sẵn sàng, nét còn pending hoặc thiết bị khác đang
+viết. Không dùng snapshot PUT cũ để lưu lại toàn trang trong chế độ trực tiếp.
+
+HTTP qua IP LAN không cung cấp `crypto.subtle`/`crypto.randomUUID` trong trình duyệt.
+Khóa bản chép dùng SHA-256 native khi có, fallback `js-sha256@1.0.0` khi thiếu;
+hai đường cho cùng khóa. ID bản chép/phạm vi dùng helper UUID của MathCanvas.
+Đây là tương thích lưu trữ OCR local; không thay cơ chế sinh ticket/auth phía server.
+IndexedDB vẫn tách theo origin: đổi IP/port/HTTP sang HTTPS không tự chuyển bản sửa
+giữa các origin; hãy xuất bản chép trước khi chuyển.
+
+Acceptance bổ sung (tạo riêng một attempt trống trong schema QA, không dùng bài đang viết):
+
+```powershell
+$env:WORKSPACE_QA_SESSION_FILE = '<manifest của attempt QA trống, gồm attemptId/email/password/schema>'
+$env:E2E_BASE_URL = 'http://<IP-LAN>:3050'
+$env:LIVE_QA_ARTIFACT_DIR = '<thư mục artifact local>'
+$env:PW_HEADLESS = '1'
+npx playwright test e2e/workspace-capabilities.spec.ts --reporter=list
+```
+
+Spec so sánh công cụ hai chế độ, ghép thiết bị chưa đăng nhập, vẽ bằng pointer replay,
+kiểm tra stream trước pointerup, canonical stroke IDs sau reload, inference CoMER thật
+trên HTTP LAN và giữ correction sau retry/reload. Không gọi mutation lưu/chấm bước.
+
 `LIVE_ORIGIN_DENIED`: thêm đúng origin frontend vào allowlist backend, không nới wildcard.
 `LIVE_WSS_REQUIRED`: cấu hình địa chỉ WSS công khai cho HTTPS/production và restart frontend.
 `reconnecting/offline`: kiểm tra điện thoại tới được cổng backend WS; để nguyên trang/outbox.
