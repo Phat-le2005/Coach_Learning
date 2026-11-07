@@ -8,7 +8,7 @@
   width: 100%;
   height: calc(100vh - 72px);
   min-height: 640px;
-  background: radial-gradient(ellipse at 50% 45%, #0d1238 0%, #06091c 55%, #02030a 100%);
+  background: radial-gradient(ellipse at 50% 45%, #08211b 0%, #041410 55%, #020a08 100%);
   overflow: hidden;
   user-select: none;
   font-family: inherit;

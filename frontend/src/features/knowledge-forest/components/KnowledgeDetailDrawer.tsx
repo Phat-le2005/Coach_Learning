@@ -1,6 +1,7 @@
 "use client";
 
-import { AlertCircle, Calendar, CheckCircle2, Clock, Info, RotateCcw, Target, X } from "lucide-react";
+import { AlertCircle, BookOpen, Calendar, CheckCircle2, Clock, Info, RotateCcw, Target, X, Zap } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useId, useRef } from "react";
 
 import { GradientButton } from "@/components/ui/GradientButton";
@@ -15,10 +16,11 @@ export type SelectedKnowledgeItem =
 
 export interface KnowledgeDetailDrawerProps {
   item: SelectedKnowledgeItem;
+  subjectId?: string;
   onClose: () => void;
 }
 
-export function KnowledgeDetailDrawer({ item, onClose }: KnowledgeDetailDrawerProps) {
+export function KnowledgeDetailDrawer({ item, subjectId, onClose }: KnowledgeDetailDrawerProps) {
   const titleId = useId();
   const drawerRef = useRef<HTMLDivElement>(null);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
@@ -219,10 +221,63 @@ export function KnowledgeDetailDrawer({ item, onClose }: KnowledgeDetailDrawerPr
           </div>
         </div>
 
-        <div className={styles.drawerFooter}>
-          <GradientButton style={{ width: "100%" }} onClick={onClose}>
-            Đã xem thông tin
-          </GradientButton>
+        <div className={styles.drawerFooter} style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+          {isProblemType ? (
+            <>
+              <GradientButton
+                href={`/student/practice?problem_type_id=${encodeURIComponent(data.id)}${
+                  subjectId ? `&subject_id=${encodeURIComponent(subjectId)}` : ""
+                }`}
+                style={{ width: "100%" }}
+              >
+                <Zap size={16} aria-hidden="true" />
+                Luyện ngay dạng bài này (~5p)
+              </GradientButton>
+              <div style={{ display: "flex", gap: "8px", width: "100%" }}>
+                <Link
+                  href={`/student/theory?topic=${encodeURIComponent((data as KnowledgeProblemTypeNode).topicName || data.name)}`}
+                  style={{
+                    flex: 1,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "6px",
+                    padding: "8px 12px",
+                    borderRadius: "10px",
+                    background: "rgba(35, 166, 122, 0.12)",
+                    border: "1px solid rgba(139, 229, 194, 0.28)",
+                    color: "#23a67a",
+                    fontSize: "0.85rem",
+                    fontWeight: 600,
+                    textDecoration: "none",
+                  }}
+                >
+                  <BookOpen size={15} aria-hidden="true" />
+                  Xem lý thuyết
+                </Link>
+                <button
+                  type="button"
+                  onClick={onClose}
+                  style={{
+                    padding: "8px 16px",
+                    borderRadius: "10px",
+                    background: "transparent",
+                    border: "1px solid rgba(16, 46, 38, 0.15)",
+                    color: "var(--text-secondary)",
+                    fontSize: "0.85rem",
+                    fontWeight: 600,
+                    cursor: "pointer",
+                  }}
+                >
+                  Đóng
+                </button>
+              </div>
+            </>
+          ) : (
+            <GradientButton style={{ width: "100%" }} onClick={onClose}>
+              Đã xem thông tin
+            </GradientButton>
+          )}
         </div>
       </div>
     </div>

@@ -31,9 +31,10 @@ export function StudentTopNav({
   const isKnowledge = currentRoute.startsWith("/student/knowledge");
   const isAttempts = currentRoute.startsWith("/student/attempts");
   const isTheory = currentRoute.startsWith("/student/theory");
+  const isAssignments = currentRoute.startsWith("/student/assignments");
   const isHome =
     currentRoute === "/student" ||
-    (!isKnowledge && !isAttempts && !isTheory && currentRoute.startsWith("/student"));
+    (!isKnowledge && !isAttempts && !isTheory && !isAssignments && currentRoute.startsWith("/student"));
 
   const knowledgeHref = subjectId
     ? `/student/knowledge?subject_id=${encodeURIComponent(subjectId)}`
@@ -45,9 +46,10 @@ export function StudentTopNav({
 
   const navItems = [
     { label: "Khu vườn học tập", href: homeHref, current: isHome },
+    { label: "Bài tập của lớp", href: "/student/assignments", current: isAssignments },
     { label: "Vũ trụ tri thức", href: knowledgeHref, current: isKnowledge },
     { label: "Kho lý thuyết", href: "/student/theory", current: isTheory },
-    { label: "Bài làm & Luyện tập", href: "/student/attempts", current: isAttempts },
+    { label: "Tự luyện toán", href: "/student/attempts", current: isAttempts },
   ];
 
   const effectsActive = ambientEnabled;

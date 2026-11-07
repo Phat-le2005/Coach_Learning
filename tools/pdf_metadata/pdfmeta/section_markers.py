@@ -16,6 +16,11 @@ def hint(text):
     plain=''.join(c for c in unicodedata.normalize('NFD',text.casefold().replace('đ','d')) if not unicodedata.combining(c))
     plain=re.sub(r'[.:…]+$','',plain.strip()).strip()
     plain=re.sub(r'\s+',' ',plain)
+    # Short standalone labels lose accents (or one character) in scanned books.
+    # Keep this allowlist narrow: arbitrary short prose is not a solution label.
+    if plain in {'giai','gii'}:
+        return {'kind':'SOLUTION','normalized_ocr':plain,'matched_label':'giai',
+                'edit_distance':distance(plain,'giai'),'status':'OCR_SECTION_HINT_REQUIRES_SOURCE_REVIEW'}
     if not re.fullmatch(r'[a-z ]{4,18}',plain):return None
     options={'SOLUTION':['loi giai','huong dan','solution'],'RESPONSE':['tra loi']}
     matches=[]

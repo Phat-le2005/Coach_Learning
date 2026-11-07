@@ -6,11 +6,13 @@ the suggestions with the retained original and confirm each step separately.
 
 from __future__ import annotations
 
+import asyncio
 import base64
 import json
+import logging
+import random
 import re
 from io import BytesIO
-from pathlib import Path
 from typing import Literal
 from uuid import UUID
 
@@ -27,6 +29,9 @@ from app.math_paper.service import MathPaperService
 
 _MODEL_ID = re.compile(r"^[a-zA-Z0-9._-]+$")
 _ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models"
+_REQUEST_BUDGET_SECONDS = 60.0
+_RETRYABLE_STATUSES = {408, 500, 502, 503, 504}
+logger = logging.getLogger(__name__)
 
 
 class PaperOcrSuggestion(BaseModel):
@@ -84,24 +89,56 @@ class GeminiPaperTranscriber:
                 )},
             ]}],
             "systemInstruction": {"parts": [{"text": _INSTRUCTIONS}]},
-            "generationConfig": {"temperature": 0, "responseMimeType": "application/json"},
+            "generationConfig": {"responseMimeType": "application/json"},
         }
         try:
-            async with httpx.AsyncClient(timeout=60, transport=self.transport) as client:
-                response = await client.post(
-                    f"{_ENDPOINT}/{model}:generateContent",
-                    headers={"x-goog-api-key": settings.ai_api_key.get_secret_value(),
-                             "Content-Type": "application/json"}, json=body,
-                )
-        except httpx.TimeoutException as exc:
+            # One deadline covers every attempt and backoff. Never retry quota,
+            # credentials, invalid input, or a completed generation/invalid JSON.
+            async with asyncio.timeout(_REQUEST_BUDGET_SECONDS):
+                async with httpx.AsyncClient(timeout=_REQUEST_BUDGET_SECONDS, transport=self.transport) as client:
+                    for attempt in range(settings.ai_max_retries + 1):
+                        try:
+                            response = await client.post(
+                                f"{_ENDPOINT}/{model}:generateContent",
+                                headers={"x-goog-api-key": settings.ai_api_key.get_secret_value(),
+                                         "Content-Type": "application/json"}, json=body,
+                            )
+                        except httpx.RequestError:
+                            if attempt == settings.ai_max_retries:
+                                raise
+                            upstream_status = "NETWORK"
+                        else:
+                            if (response.status_code not in _RETRYABLE_STATUSES
+                                    or attempt == settings.ai_max_retries):
+                                break
+                            upstream_status = str(response.status_code)
+                        # Provider bodies, uploaded images and API keys must not
+                        # appear in logs or in the student-facing error envelope.
+                        logger.warning("Paper OCR retry %s/%s (upstream=%s)",
+                                       attempt + 1, settings.ai_max_retries, upstream_status)
+                        await asyncio.sleep(min(2 ** attempt, 4) + random.uniform(0, 0.25))
+        except (TimeoutError, httpx.TimeoutException) as exc:
             raise ApplicationError(503, "PAPER_OCR_TIMEOUT", "Paper recognition timed out. Try again.") from exc
         except httpx.RequestError as exc:
             raise ApplicationError(503, "PAPER_OCR_UNAVAILABLE", "Could not reach paper recognition.") from exc
         if response.status_code == 429:
             raise ApplicationError(503, "PAPER_OCR_RATE_LIMITED", "Gemini quota is currently exhausted.")
-        if response.status_code in {401, 403, 404}:
+        if response.status_code in {401, 402, 403, 404}:
             raise ApplicationError(503, "PAPER_OCR_NOT_CONFIGURED", "Gemini OCR configuration is unavailable.")
+        if response.status_code == 400:
+            try:
+                error = response.json().get("error", {})
+                details = error.get("details", []) if isinstance(error, dict) else []
+                details = details if isinstance(details, list) else []
+                key_error = any(isinstance(detail, dict)
+                                and str(detail.get("reason", "")).startswith("API_KEY_")
+                                for detail in details)
+            except (ValueError, AttributeError, TypeError):
+                key_error = False
+            code = "PAPER_OCR_NOT_CONFIGURED" if key_error else "PAPER_OCR_REQUEST_REJECTED"
+            raise ApplicationError(503, code, "Paper recognition request was rejected; no steps were saved.")
         if response.status_code != 200:
+            logger.warning("Paper OCR unavailable (upstream=%s)", response.status_code)
             raise ApplicationError(503, "PAPER_OCR_UNAVAILABLE", "Paper recognition failed; no steps were saved.")
         try:
             payload = response.json()
@@ -112,38 +149,6 @@ class GeminiPaperTranscriber:
             return PaperOcrOutput.model_validate_json(raw)
         except (ValueError, KeyError, IndexError, TypeError, ValidationError) as exc:
             raise ApplicationError(503, "PAPER_OCR_INVALID", "Paper recognition returned an invalid result; no steps were saved.") from exc
-
-
-_CACHE_DIR = Path(__file__).resolve().parents[2] / "var"
-_OCR_CACHE_FILE = _CACHE_DIR / "paper_ocr_cache.json"
-
-
-def _load_ocr_cache_from_disk() -> dict[str, PaperOcrRead]:
-    cache: dict[str, PaperOcrRead] = {}
-    if not _OCR_CACHE_FILE.exists():
-        return cache
-    try:
-        with open(_OCR_CACHE_FILE, "r", encoding="utf-8") as f:
-            raw = json.load(f)
-        for item in raw:
-            sha = item["file_sha256"]
-            cache[sha] = PaperOcrRead.model_validate(item)
-    except Exception:
-        pass
-    return cache
-
-
-def _save_ocr_cache_to_disk(cache: dict[str, PaperOcrRead]) -> None:
-    try:
-        _CACHE_DIR.mkdir(parents=True, exist_ok=True)
-        data = [v.model_dump(mode="json") for v in cache.values()]
-        with open(_OCR_CACHE_FILE, "w", encoding="utf-8") as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
-    except Exception:
-        pass
-
-
-_PAPER_OCR_CACHE: dict[str, PaperOcrRead] = _load_ocr_cache_from_disk()
 
 
 class MathPaperOcrService:
@@ -157,12 +162,7 @@ class MathPaperOcrService:
         paper_service = MathPaperService(self.session)
         paper_service._attempt(actor_user_id, attempt_id, editable=True)
         info, data = paper_service.read(actor_user_id, attempt_id, paper_id)
-        settings = get_settings()
         sha = info["sha256"]
-        if settings.app_env != "test" and sha in _PAPER_OCR_CACHE:
-            cached = _PAPER_OCR_CACHE[sha]
-            return PaperOcrRead(paper_id=paper_id, file_sha256=sha, suggestions=cached.suggestions)
-
         mime = info["content_type"]
         page_count = len(PdfReader(BytesIO(data), strict=False).pages) if mime == "application/pdf" else 1
         if self.limiter is not None:
@@ -170,12 +170,9 @@ class MathPaperOcrService:
             self.limiter.check_rate_limit(actor_user_id,
                 minute_limit=settings.ai_rate_limit_per_minute,
                 daily_limit=settings.ai_daily_requests_limit_per_student)
-        # The OCR input is the uploaded original only. The reference answer is never sent.
+        # Every explicit OCR request transcribes the original afresh. Never reuse
+        # a previous transcription or send the reference answer to the provider.
         output = await self.transcriber.transcribe(data, mime)
         if any(suggestion.page_number > page_count for suggestion in output.suggestions):
             raise ApplicationError(503, "PAPER_OCR_INVALID", "OCR referenced a page that is not in the uploaded file.")
-        result = PaperOcrRead(paper_id=paper_id, file_sha256=sha, suggestions=output.suggestions)
-        if settings.app_env != "test":
-            _PAPER_OCR_CACHE[sha] = result
-            _save_ocr_cache_to_disk(_PAPER_OCR_CACHE)
-        return result
+        return PaperOcrRead(paper_id=paper_id, file_sha256=sha, suggestions=output.suggestions)

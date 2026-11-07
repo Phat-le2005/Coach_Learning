@@ -287,6 +287,65 @@ class StudyPlanService:
             updated_at=plan.updated_at,
         )
 
+    def complete_matching_tasks(
+        self,
+        student_id: UUID,
+        *,
+        problem_type_ids: list[UUID] | None = None,
+        concept_ids: list[UUID] | None = None,
+        subject_id: UUID | None = None,
+        as_of: date | None = None,
+    ) -> list[StudyTask]:
+        """Mark matching pending study task(s) for today as COMPLETED upon attempt completion."""
+        current_date = as_of or date.today()
+        plan = self.session.scalar(
+            select(StudyPlan)
+            .where(
+                StudyPlan.student_id == student_id,
+                StudyPlan.status == StudyPlanStatus.ACTIVE,
+            )
+            .order_by(StudyPlan.created_at.desc())
+        )
+        if plan is None:
+            return []
+
+        today_pending_tasks = list(
+            self.session.scalars(
+                select(StudyTask)
+                .where(
+                    StudyTask.study_plan_id == plan.id,
+                    StudyTask.planned_date == current_date,
+                    StudyTask.status == StudyTaskStatus.PENDING,
+                )
+                .order_by(StudyTask.order_index.asc())
+            )
+        )
+        if not today_pending_tasks:
+            return []
+
+        pt_set = set(problem_type_ids or [])
+        c_set = set(concept_ids or [])
+
+        matched_tasks: list[StudyTask] = []
+        for task in today_pending_tasks:
+            if (task.problem_type_id and task.problem_type_id in pt_set) or (
+                task.concept_id and task.concept_id in c_set
+            ):
+                task.status = StudyTaskStatus.COMPLETED
+                task.completed_at = datetime.now(timezone.utc)
+                matched_tasks.append(task)
+                break
+
+        if not matched_tasks and today_pending_tasks:
+            candidate = today_pending_tasks[0]
+            if subject_id is None or candidate.subject_id is None or candidate.subject_id == subject_id:
+                candidate.status = StudyTaskStatus.COMPLETED
+                candidate.completed_at = datetime.now(timezone.utc)
+                matched_tasks.append(candidate)
+
+        self.session.flush()
+        return matched_tasks
+
     def recalculate_study_plan(
         self,
         student_id: UUID,
@@ -300,7 +359,7 @@ class StudyPlanService:
         # 1. Skip past pending tasks (No giant backlog rule)
         self._skip_past_pending_tasks(plan.id, current_date)
 
-        # 2. Delete future pending tasks (so we can freshly regenerate)
+        # 2. Delete future pending tasks (preserving COMPLETED tasks of today)
         self.session.execute(
             delete(StudyTask).where(
                 StudyTask.study_plan_id == plan.id,
@@ -312,9 +371,28 @@ class StudyPlanService:
         # 3. Gather planning inputs
         ctx = self._gather_context(student_id, current_date)
 
+        # Compute remaining budget for today after accounting for already completed tasks
+        daily_budget = self._get_daily_budget(plan)
+        completed_today_minutes = sum(
+            t.estimated_duration_minutes
+            for t in self.session.scalars(
+                select(StudyTask).where(
+                    StudyTask.study_plan_id == plan.id,
+                    StudyTask.planned_date == current_date,
+                    StudyTask.status == StudyTaskStatus.COMPLETED,
+                )
+            )
+        )
+        remaining_today_budget = max(0, daily_budget - completed_today_minutes)
+
         # 4. Generate candidates & schedule horizon
         candidates = self.policy.generate_candidate_tasks(ctx)
-        schedule = self.policy.schedule_horizon(ctx, candidates, horizon_days=horizon_days)
+        schedule = self.policy.schedule_horizon(
+            ctx,
+            candidates,
+            horizon_days=horizon_days,
+            day0_budget_minutes=remaining_today_budget,
+        )
 
         # 5. Insert newly planned tasks
         for plan_date, daily_candidates in schedule.items():

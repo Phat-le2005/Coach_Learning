@@ -80,6 +80,14 @@ def test_image_page_with_only_a_header_gets_ocr_but_digital_page_does_not():
     assert not needs_text_ocr({**base,'images':[],'blocks':[{'text_raw':'Câu 1. Một đề bài đủ dài. '*30,'is_margin':False}]})
 
 
+def test_source_book_captions_do_not_hide_image_only_exercises():
+    page={'width':600,'height':800,'images':[{'bbox':[40,100,560,350]}],
+          'blocks':[{'text_raw':'Printed source caption. '*14,'is_margin':False}]}
+    assert needs_text_ocr(page)
+    assert not needs_text_ocr({**page,'images':[]})
+    assert not needs_text_ocr({**page,'blocks':[{'text_raw':'Actual native exercise text. '*30}]})
+
+
 def test_expression_endpoint_is_checked_exactly_without_approving_the_source():
     from pdfmeta.sign_table import check
     from pdfmeta.safe_math import assignment
@@ -156,24 +164,39 @@ def test_document_without_question_markers_retains_page_metadata(tmp_path,monkey
     assert Path(report['output_directory'],'metadata/pages.jsonl').is_file()
 
 
-@pytest.mark.parametrize('raw,kind',[('Li gii','SOLUTION'),('Li giái','SOLUTION'),('Lời giải','SOLUTION'),('Trá li','RESPONSE')])
+def test_complete_document_workflow_keeps_source_book_inner_label_in_one_question(tmp_path,monkeypatch):
+    workflow=fake_ocr(monkeypatch)
+    pdf=tmp_path/'book.pdf';small_pdf(pdf,['Cau 007','Bai 25 | TL a2878305 | Trang nguon 19, 20',
+        'Bai 25. A printed exercise with enough native text to skip text OCR.',
+        'Giai','The full printed proof belongs to this source-book entry.'])
+    result=workflow.run(pdf,repo=tmp_path,output_root=tmp_path/'jobs',runtime=tmp_path/'runtime')
+    assert result['question_count']==1
+    item=json.loads(Path(result['artifacts']['metadata_jsonl']).read_text(encoding='utf-8'))
+    assert item['source_number']==7
+    assert 'Bai 25.' in item['student_view']['stem_text_lossy']
+    assert 'full printed proof' in item['reference_solution']['raw_text']
+
+
+@pytest.mark.parametrize('raw,kind',[('Li gii','SOLUTION'),('Li giái','SOLUTION'),('Lời giải','SOLUTION'),('Trá li','RESPONSE'),
+    ('Giài','SOLUTION'),('Giåi','SOLUTION'),('Gii','SOLUTION'),('Giải','SOLUTION')])
 def test_ocr_whole_line_section_hints_keep_the_original_wording(raw,kind):
     from pdfmeta.section_markers import hint
     assert hint(raw)['kind']==kind
     assert hint(raw)['status']=='OCR_SECTION_HINT_REQUIRES_SOURCE_REVIEW'
 
 
-@pytest.mark.parametrize('raw',['x = 1','lời giải của bài toán này','tôi giải','f(x)'])
+@pytest.mark.parametrize('raw',['x = 1','lời giải của bài toán này','tôi giải','f(x)','gain','gai','gii = 2'])
 def test_section_hint_is_not_inferred_from_math_or_prose(raw):
     from pdfmeta.section_markers import hint
     assert hint(raw) is None
 
 
-def test_scanned_solution_marker_never_moves_the_solution_into_the_stem():
+@pytest.mark.parametrize('label',['Li gii','Giài','Giåi','Gii'])
+def test_scanned_solution_marker_never_moves_the_solution_into_the_stem(label):
     from copy import deepcopy
     from pdfmeta.auto_ocr import apply_section_hints
     from pdfmeta.assemble import assemble
-    texts=['Câu 901. Tính đạo hàm của hàm số này.','Li gii','Đáp án: 2x',"Ta có y' = 2x"]
+    texts=['Câu 901. Tính đạo hàm của hàm số này.',label,'Đáp án: 2x',"Ta có y' = 2x"]
     page={'page_number':1,'width':600,'height':800,'content_bounds':[0,0,600,800],
           'blocks':[{'block_id':str(i),'text_raw':t,'bbox':[20,50+i*30,550,65+i*30],
                      'review_flags':['OCR_TEXT_NOT_SOURCE_VERIFIED'],'glyphs':[]} for i,t in enumerate(texts)]}

@@ -134,7 +134,7 @@ def _save_cache_to_disk(cache: dict[tuple[UUID, str], AIReviewRead]) -> None:
 
 
 _REVIEW_CACHE: dict[tuple[UUID, str], AIReviewRead] = _load_cache_from_disk()
-_POLICY_VERSION = "hybrid-v1"
+_POLICY_VERSION = "hybrid-solution-first-v2"
 
 
 def _final_review(session: Session, attempt_id: UUID, decision: EvaluationDecision) -> AIReviewRead:
@@ -195,7 +195,7 @@ def get_ai_review_availability(
     cached = _REVIEW_CACHE.get((attempt_id, f"{_POLICY_VERSION}:{ref.content_sha256}"))
     return AIReviewAvailabilityRead(
         available=True,
-        reason_code=None if ref.correct_answer else "PROVISIONAL_WITHOUT_ANSWER",
+        reason_code=None if ref.has_reviewed_reference else "PROVISIONAL_WITHOUT_ANSWER",
         cached_review=cached,
     )
 
@@ -223,7 +223,7 @@ async def review_submitted_steps(
 
     # Only an approved, pinned rubric and a reviewed answer can produce a final
     # grade. Unsupported/uncertain mathematics falls through to provisional AI.
-    if ref.correct_answer and attempt.rubric_id is not None:
+    if ref.has_reviewed_reference and attempt.rubric_id is not None:
         try:
             decision = MathEvaluatorService(session).evaluate_attempt(attempt_id)
         except ApplicationError as exc:
@@ -259,19 +259,25 @@ async def review_submitted_steps(
             async def _run() -> AIReviewRead:
                 review = await (
                     AnswerGroundedAIService(session, gateway).review_attempt(attempt_id)
-                    if ref.correct_answer else
+                    if ref.has_reviewed_reference else
                     UnansweredAIService(session, gateway).review_attempt(attempt_id)
                 )
-                if ref.correct_answer:
-                    # Gating Rule: Provisional AI reviews must NOT mutate official student mastery
-                    # if flagged for teacher review, or if any step is unverified / low confidence.
+                # Preserve legacy backdrop eligibility: solution-only references
+                # do not start writing mastery merely because they are readable.
+                if ref.correct_answer and ref.allow_legacy_ai_backdrop:
+                    # Granular Gating: An Answer-Grounded AI review updates student mastery and study plan
+                    # as long as the review is not flagged for teacher review, and at least 50% of steps
+                    # have a verified verdict with confidence >= 0.70.
+                    verified_steps_count = sum(
+                        1
+                        for step in review.step_grades
+                        if step.verdict in ("VALID", "INVALID")
+                        and (step.confidence is None or step.confidence >= 0.70)
+                    )
                     is_unverified = (
                         review.needs_teacher_review
-                        or any(
-                            step.verdict in ("NEEDS_REVIEW", "UNDETERMINED")
-                            or (step.confidence is not None and step.confidence < 0.85)
-                            for step in review.step_grades
-                        )
+                        or len(review.step_grades) == 0
+                        or (verified_steps_count / max(1, len(review.step_grades)) < 0.50)
                     )
                     if is_unverified:
                         logger.info(
@@ -309,7 +315,7 @@ async def review_submitted_steps(
                         error_nature=getattr(step, "error_nature", None),
                     ) for step in review.step_grades],
                     needs_teacher_review=review.needs_teacher_review,
-                    review_source="ANSWER_GROUNDED_AI" if ref.correct_answer else "UNANSWERED_AI",
+                    review_source="ANSWER_GROUNDED_AI" if ref.has_reviewed_reference else "UNANSWERED_AI",
                 )
                 _REVIEW_CACHE[cache_key] = res
                 _save_cache_to_disk(_REVIEW_CACHE)

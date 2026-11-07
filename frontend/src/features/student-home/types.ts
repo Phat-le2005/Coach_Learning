@@ -52,6 +52,21 @@ export interface StudentHomeSubjectViewModel {
   name: string;
 }
 
+export interface StudyTaskItemViewModel {
+  id: string;
+  title: string;
+  taskType: string;
+  status: string;
+  isCompleted: boolean;
+  estimatedMinutes: number;
+  problemTypeId?: string | null;
+  problemTypeName?: string | null;
+  conceptId?: string | null;
+  conceptName?: string | null;
+  topicName?: string | null;
+  reasonCode?: string | null;
+}
+
 export interface StudentHomeViewModel {
   student: {
     displayName: string;
@@ -120,6 +135,7 @@ export interface StudentHomeViewModel {
     totalEstimatedMinutes: number;
     availableMinutes: number;
     notice?: string | null;
+    tasks: StudyTaskItemViewModel[];
   } | null;
   momentum: {
     activeDays?: number;

@@ -12,6 +12,7 @@ class CanonicalQuestionGradeRequest(BaseModel):
     score: float = Field(ge=0, le=1)
     is_correct: bool
     feedback: str | None = Field(default=None, max_length=4000)
+    allow_override: bool = False
 
 
 class CanonicalQuestionGradeRead(BaseModel):

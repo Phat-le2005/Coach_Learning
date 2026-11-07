@@ -60,6 +60,21 @@ export interface StudyDayRead {
   tasks: StudyTaskRead[]; completed_count: number; total_count: number;
   days_to_exam: number | null; notice: string | null;
 }
+export interface StudyPlanRead {
+  id: string;
+  student_id: string;
+  academic_goal_id: string | null;
+  start_date: string;
+  target_date: string | null;
+  status: string;
+  days_to_exam: number | null;
+  available_daily_minutes: number;
+  total_tasks: number;
+  completed_tasks: number;
+  tasks: StudyTaskRead[];
+  created_at: string;
+  updated_at: string;
+}
 export type StudentTodayPlanSnapshotRead = StudyDayRead;
 export interface StudentLearningStateRead {
   student_id: string; as_of: string; available_subjects: StudentLearningSubjectRead[]; focus_subject_id: string | null;

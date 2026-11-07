@@ -15,6 +15,8 @@ from app.assignments.schemas import (
     AssignmentUpdate,
     StudentAssignmentRead,
     TeacherAssignmentRosterRead,
+    TeacherFinalizeSubmissionResponse,
+    TeacherStudentSubmissionDetail,
 )
 from app.assignments.service import AssignmentService
 from app.auth.dependencies import require_role
@@ -163,6 +165,32 @@ def grade_material_item(
     return service.grade_material_item(
         user.id, assignment_id, student_id, student_material_item_id, data
     )
+
+
+@teacher_router.get(
+    "/assignments/{assignment_id}/students/{student_id}",
+    response_model=TeacherStudentSubmissionDetail,
+)
+def get_student_submission(
+    assignment_id: UUID,
+    student_id: UUID,
+    user: TeacherUser,
+    service: Annotated[AssignmentService, Depends(get_assignment_service)],
+) -> TeacherStudentSubmissionDetail:
+    return service.get_student_submission_for_teacher(user.id, assignment_id, student_id)
+
+
+@teacher_router.post(
+    "/assignments/{assignment_id}/students/{student_id}/finalize",
+    response_model=TeacherFinalizeSubmissionResponse,
+)
+def finalize_student_submission(
+    assignment_id: UUID,
+    student_id: UUID,
+    user: TeacherUser,
+    service: Annotated[AssignmentService, Depends(get_assignment_service)],
+) -> TeacherFinalizeSubmissionResponse:
+    return service.finalize_student_submission(user.id, assignment_id, student_id)
 
 
 # -------------------------------------------------------------------------

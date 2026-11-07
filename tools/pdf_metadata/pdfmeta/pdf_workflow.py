@@ -29,6 +29,8 @@ from .storage import configure_storage,file_hash,read_json,write_json,write_json
 from .text_cleanup import normalize_block
 from .validate import validate_candidates
 from .progress import Progress
+from .paths import storage_root, runtime_root
+from .paired.corpus_layout import source_book_labels
 
 
 VERSION='one-pdf-workflow/v1'
@@ -36,7 +38,7 @@ VERSION='one-pdf-workflow/v1'
 
 def fingerprint():
     root=Path(__file__).parent
-    files=[*root.glob('*.py'),*(root.parent/'schemas').glob('*.json')]
+    files=[*root.glob('*.py'),root/'paired/corpus_layout.py',*(root.parent/'schemas').glob('*.json')]
     return content_hash({p.name:file_hash(p) for p in sorted(files)})[:16]
 
 
@@ -198,7 +200,7 @@ def _run(pdf:Path,*,repo:Path,output_root:Path,runtime:Path):
         routes=checkpoints.run('page-routing',{'native':file_hash(native/'manifest.json'),
             'packages':ocr.packages,'text_weights':ocr.weights(['PP-OCRv5_mobile_det','latin_PP-OCRv5_mobile_rec']) if any(needs_text_ocr(p) for p in native_pages) else None,
             'pages':[file_hash(native/'pages'/f"page-{p['page_number']:03}.json") for p in native_pages]},effective_pages)
-        pages=[read_json(pilot/'pages'/f"page-{p['page_number']:03}.json") for p in native_pages]
+        pages=[source_book_labels(read_json(pilot/'pages'/f"page-{p['page_number']:03}.json")) for p in native_pages]
         page_lookup={p['page_number']:p for p in pages}
         def questions():
             items,orphans=assemble(pages,digest);crop_sources(items,pages,pilot)
@@ -342,7 +344,7 @@ def main():
     parser.add_argument('--repo',type=Path,default=Path(__file__).parents[3])
     parser.add_argument('--output-root',type=Path);parser.add_argument('--runtime',type=Path)
     args=parser.parse_args();repo=args.repo.resolve()
-    result=run(args.pdf,repo=repo,output_root=args.output_root or repo/'.tmp/pdf-jobs',runtime=args.runtime or repo/'.tmp/pdf-pipeline-runtime')
+    result=run(args.pdf,repo=repo,output_root=args.output_root or storage_root()/'pdf-jobs',runtime=args.runtime or runtime_root())
     print(json.dumps(result,ensure_ascii=False,indent=2))
 
 

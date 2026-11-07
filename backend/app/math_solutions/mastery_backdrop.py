@@ -23,6 +23,9 @@ from app.assignments.models import (
     AssignmentMaterialItem,
     AssignmentMaterialItemConcept,
     AssignmentMaterialItemProblemType,
+    AssignmentStudentQuestion,
+    StudentAssignment,
+    StudentAssignmentMaterialItem,
 )
 from app.concepts.models import Concept
 from app.curriculum.models import Chapter, ProblemType, ProblemTypeConcept, Topic
@@ -85,6 +88,26 @@ _STEP_CONCEPT_KEYWORDS: tuple[tuple[tuple[str, ...], tuple[str, ...]], ...] = (
     (
         ("CONCLUSION", "đồng biến", "nghịch biến", "cực trị", "cực đại", "cực tiểu", "đồ thị"),
         ("MONOTONICITY_CRITERION", "FUNCTION_GRAPH", "DERIVATIVE_SIGN"),
+    ),
+    (
+        ("ASYMPTOTE", "tiệm cận", "tiệm cận đứng", "tiệm cận ngang", "tiệm cận xiên", "lim", "giới hạn"),
+        ("ASYMPTOTE", "VERTICAL_ASYMPTOTE", "HORIZONTAL_ASYMPTOTE", "FUNCTION_LIMIT"),
+    ),
+    (
+        ("EXTREMUM", "OPTIMIZATION", "gtln", "gtnn", "giá trị lớn nhất", "giá trị nhỏ nhất", "max", "min"),
+        ("EXTREMUM", "FUNCTION_EXTREMUM", "OPTIMIZATION"),
+    ),
+    (
+        ("INTEGRAL", "ANTIDERIVATIVE", "nguyên hàm", "tích phân", "\\int", "vi phân"),
+        ("ANTIDERIVATIVE", "DEFINITE_INTEGRAL", "INTEGRAL_TECHNIQUE"),
+    ),
+    (
+        ("COORDINATE", "OXYZ", "vectơ", "pháp tuyến", "chỉ phương", "mặt phẳng", "mặt cầu", "đường thẳng", "toạ độ"),
+        ("VECTORS_3D", "PLANE_EQUATION", "LINE_EQUATION", "SPHERE_EQUATION"),
+    ),
+    (
+        ("PROBABILITY", "STATISTICS", "xác suất", "biến cố", "tổ hợp", "chỉnh hợp", "kỳ vọng"),
+        ("PROBABILITY", "RANDOM_VARIABLE", "COMBINATORICS"),
     ),
 )
 
@@ -406,11 +429,16 @@ class MasteryBackdropService:
             active_steps, review, rubric=rubric
         )
 
-        # 3. Gating: Unverified steps cannot mutate official student competencies
-        if any(c.category == ErrorPedagogicalCategory.NEEDS_REVIEW for c in classifications):
+        # 3. Granular Gating: Only skip if the majority of steps are unverified
+        needs_review_count = sum(
+            1 for c in classifications if c.category == ErrorPedagogicalCategory.NEEDS_REVIEW
+        )
+        if classifications and (needs_review_count / len(classifications) > 0.50):
             logger.info(
-                "Skipping backdrop for attempt %s: contains unverified steps (NEEDS_REVIEW)",
+                "Skipping backdrop for attempt %s: majority of steps unverified (%s/%s)",
                 attempt.id,
+                needs_review_count,
+                len(classifications),
             )
             return
 
@@ -587,7 +615,37 @@ class MasteryBackdropService:
                 self.session,
             )
 
+        attempt.total_score = score
+        attempt.is_correct = is_correct
+        attempt.evaluated_at = occurred_at
         self.session.flush()
+
+        # Sync classroom assignment item and score if this attempt belongs to a classroom assignment
+        if attempt.context_type == "CLASSROOM_ASSIGNMENT":
+            if attempt.student_assignment_material_item_id:
+                smi = self.session.get(StudentAssignmentMaterialItem, attempt.student_assignment_material_item_id)
+                if smi:
+                    smi.score = score
+                    smi.is_correct = is_correct
+                    smi.evaluation_status = EvaluationStatus.EVALUATED
+                    smi.evaluation_details = {"evaluation": "ai_step_review", "attempt_id": str(attempt.id)}
+                    smi.graded_at = occurred_at
+                    if smi.answered_at is None:
+                        smi.answered_at = occurred_at
+            elif attempt.assignment_student_question_id:
+                asq = self.session.get(AssignmentStudentQuestion, attempt.assignment_student_question_id)
+                if asq:
+                    asq.score = score
+                    asq.is_correct = is_correct
+                    if asq.answered_at is None:
+                        asq.answered_at = occurred_at
+
+            if attempt.student_assignment_id:
+                student_assignment = self.session.get(StudentAssignment, attempt.student_assignment_id)
+                if student_assignment:
+                    from app.assignments.scoring import recalculate_student_assignment_score
+                    recalculate_student_assignment_score(student_assignment, finalize=False)
+            self.session.flush()
 
         # 5. Trigger Root-Cause Diagnosis when errors occurred
         if not is_correct:
@@ -599,10 +657,27 @@ class MasteryBackdropService:
             except Exception:
                 logger.debug("Root-cause diagnosis skipped for event %s", event.id, exc_info=True)
 
-        # 6. Regenerate Student Adaptive Study Plan from updated Mastery & TeachingPlan
+        # 6. Complete matching today's study plan tasks for this attempt
         try:
             with self.session.begin_nested():
-                StudyPlanService(self.session).recalculate_study_plan(attempt.student_id)
+                pt_ids = [pt.problem_type_id for pt in problem_types]
+                c_ids = [c.concept_id for c in concepts]
+                StudyPlanService(self.session).complete_matching_tasks(
+                    attempt.student_id,
+                    problem_type_ids=pt_ids,
+                    concept_ids=c_ids,
+                    subject_id=subject_id,
+                    as_of=occurred_at.date(),
+                )
+        except Exception:
+            logger.debug("Study task completion skipped for attempt %s", attempt.id, exc_info=True)
+
+        # 7. Regenerate Student Adaptive Study Plan from updated Mastery & TeachingPlan
+        try:
+            with self.session.begin_nested():
+                StudyPlanService(self.session).recalculate_study_plan(
+                    attempt.student_id, as_of=occurred_at.date()
+                )
         except Exception:
             logger.debug("Study plan recalculation skipped for student %s", attempt.student_id, exc_info=True)
 

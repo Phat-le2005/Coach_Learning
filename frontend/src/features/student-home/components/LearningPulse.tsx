@@ -1,6 +1,19 @@
 "use client";
 
-import { BookMarked, CalendarCheck, ClipboardCheck, Sprout } from "lucide-react";
+import {
+  BookMarked,
+  CalendarCheck,
+  CheckCircle2,
+  ClipboardCheck,
+  Compass,
+  RotateCcw,
+  Sparkles,
+  Sprout,
+  X,
+} from "lucide-react";
+import { StudyPlanRoadmapModal } from "./StudyPlanRoadmapModal";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { motion } from "motion/react";
 import { useId } from "react";
 
@@ -107,6 +120,63 @@ function MasteryWreathVisual({
 }
 
 export function LearningPulse({ data }: LearningPulseProps) {
+  const router = useRouter();
+  const [showGoalModal, setShowGoalModal] = useState(false);
+  const [showRoadmapModal, setShowRoadmapModal] = useState(false);
+  const [targetScore, setTargetScore] = useState<number>(8.0);
+  const [dailyMinutes, setDailyMinutes] = useState<number>(30);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isRecalculating, setIsRecalculating] = useState(false);
+  const [feedbackMsg, setFeedbackMsg] = useState<string | null>(null);
+
+  const handleCreateGoal = async () => {
+    setIsSubmitting(true);
+    setFeedbackMsg(null);
+    try {
+      const res = await fetch("/api/student/study-plan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "create_goal",
+          subject_id: data.subject.id,
+          target_score: targetScore,
+          available_daily_minutes: dailyMinutes,
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.message || "Không thể khởi tạo mục tiêu.");
+      }
+      setFeedbackMsg("🌱 Đã gieo lộ trình 7 ngày thành công!");
+      setTimeout(() => {
+        setShowGoalModal(false);
+        router.refresh();
+      }, 900);
+    } catch (e: any) {
+      setFeedbackMsg(e.message || "Có lỗi xảy ra.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleRecalculate = async () => {
+    setIsRecalculating(true);
+    try {
+      const res = await fetch("/api/student/study-plan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "recalculate", horizon_days: 7 }),
+      });
+      if (res.ok) {
+        router.refresh();
+      }
+    } catch {
+      // ignore
+    } finally {
+      setIsRecalculating(false);
+    }
+  };
+
   const { shouldAnimate } = useGardenMotion();
   const { ref, isInView } = useGardenSectionInView<HTMLElement>("180px 0px");
   const active = shouldAnimate && isInView;
@@ -259,7 +329,18 @@ export function LearningPulse({ data }: LearningPulseProps) {
 
         {/* Card 3: Classroom Assignments — Organic Garden Task Board */}
         <motion.div variants={fadeUp}>
-          <article className={`${styles.pulseGardenCard} ${styles.pulseCardAssignment}`}>
+          <article
+            className={`${styles.pulseGardenCard} ${styles.pulseCardAssignment}`}
+            style={{ cursor: "pointer" }}
+            onClick={() => router.push("/student/assignments")}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                router.push("/student/assignments");
+              }
+            }}
+          >
             <div className={styles.metricCopy}>
               <span
                 className={`${styles.metricIcon} ${styles.metricIconAssignment}`}
@@ -349,9 +430,372 @@ export function LearningPulse({ data }: LearningPulseProps) {
               </div>
               <small>{todayPlan ? `${todayPlan.totalEstimatedMinutes} phút` : "Chưa lập lịch"}</small>
             </div>
+
+            {!todayPlan || todayPlan.totalCount === 0 ? (
+              <button
+                type="button"
+                onClick={() => setShowGoalModal(true)}
+                style={{
+                  marginTop: "12px",
+                  width: "100%",
+                  padding: "8px 12px",
+                  borderRadius: "10px",
+                  border: "1px solid rgba(35, 166, 122, 0.4)",
+                  background: "linear-gradient(135deg, rgba(35, 166, 122, 0.22), rgba(139, 229, 194, 0.15))",
+                  color: "#14533f",
+                  fontWeight: 700,
+                  fontSize: "0.82rem",
+                  cursor: "pointer",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "6px",
+                  transition: "all 0.2s ease",
+                }}
+              >
+                <Sparkles size={14} aria-hidden="true" />
+                Gieo lộ trình 7 ngày
+              </button>
+            ) : (
+              <div style={{ marginTop: "12px", display: "flex", flexDirection: "column", gap: "6px" }}>
+                <button
+                  type="button"
+                  onClick={() => setShowRoadmapModal(true)}
+                  style={{
+                    width: "100%",
+                    padding: "7px 10px",
+                    borderRadius: "8px",
+                    border: "1px solid rgba(35, 166, 122, 0.45)",
+                    background: "linear-gradient(135deg, rgba(35, 166, 122, 0.18), rgba(139, 229, 194, 0.12))",
+                    color: "#14533f",
+                    fontWeight: 700,
+                    fontSize: "0.8rem",
+                    cursor: "pointer",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "6px",
+                  }}
+                >
+                  <Compass size={13} aria-hidden="true" />
+                  Xem lộ trình 7 ngày
+                </button>
+                <button
+                  type="button"
+                  onClick={handleRecalculate}
+                  disabled={isRecalculating}
+                  style={{
+                    width: "100%",
+                    padding: "5px 8px",
+                    borderRadius: "6px",
+                    border: "1px solid rgba(35, 166, 122, 0.2)",
+                    background: "rgba(255, 255, 255, 0.5)",
+                    color: "#556d63",
+                    fontWeight: 600,
+                    fontSize: "0.74rem",
+                    cursor: isRecalculating ? "wait" : "pointer",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "5px",
+                  }}
+                  title="Tái cân bằng khối lượng học 7 ngày theo nhịp mới"
+                >
+                  <RotateCcw size={11} aria-hidden="true" />
+                  {isRecalculating ? "Đang tính..." : "Tái tính nhịp học 7 ngày"}
+                </button>
+              </div>
+            )}
           </article>
         </motion.div>
       </motion.div>
+
+      {/* Actionable Today's Tasks Banner */}
+      {todayPlan && todayPlan.tasks && todayPlan.tasks.length > 0 && (
+        <div className={styles.todayTasksSection}>
+          <div className={styles.todayTasksHeader}>
+            <div>
+              <span className={styles.todayTasksEyebrow}>Kế hoạch ngày thích ứng</span>
+              <h3 className={styles.todayTasksTitle}>🌱 Nhiệm vụ học tập cần hoàn thành hôm nay</h3>
+              <p className={styles.todayTasksDescription}>
+                Dựa trên năng lực hiện tại và mục tiêu thi cử 2026. Hoàn thành bài tập sẽ tự động cập nhật độ vững của Cây Tri Thức và nhịp học 7 ngày.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowRoadmapModal(true)}
+              className={styles.openRoadmapButton}
+            >
+              <CalendarCheck size={16} />
+              <span>Xem toàn bộ lộ trình 7 ngày →</span>
+            </button>
+          </div>
+
+          <div className={styles.todayTasksGrid}>
+            {todayPlan.tasks.map((task, idx) => (
+              <div
+                key={task.id || idx}
+                className={`${styles.todayTaskCard} ${task.isCompleted ? styles.todayTaskCardCompleted : ""}`}
+              >
+                <div className={styles.todayTaskCardHeader}>
+                  <span
+                    className={`${styles.todayTaskBadge} ${
+                      task.taskType === "REPAIR" || task.taskType === "REMEDIAL_PRACTICE"
+                        ? styles.badgeRemedial
+                        : task.taskType === "REVIEW" || task.taskType === "SPACED_REVIEW"
+                        ? styles.badgeReview
+                        : task.taskType === "LEARN" || task.taskType === "CONCEPT_ACQUISITION"
+                        ? styles.badgeRemedial
+                        : styles.badgePractice
+                    }`}
+                  >
+                    {task.taskType === "REPAIR" || task.taskType === "REMEDIAL_PRACTICE"
+                      ? "🛠️ Vá lỗ hổng"
+                      : task.taskType === "REVIEW" || task.taskType === "SPACED_REVIEW"
+                      ? "🔄 Ôn ngắt quãng"
+                      : task.taskType === "LEARN"
+                      ? "📖 Bài trọng tâm"
+                      : task.taskType === "MINI_TEST"
+                      ? "🏆 Kiểm tra ngắn"
+                      : task.taskType === "EXAM"
+                      ? "📝 Luyện đề"
+                      : "✍️ Luyện dạng toán"}
+                  </span>
+                  <span className={styles.todayTaskDuration}>
+                    ⏱️ {task.estimatedMinutes} phút
+                  </span>
+                </div>
+
+                <h4 className={styles.todayTaskTitle}>{task.title}</h4>
+
+                {task.topicName && (
+                  <span className={styles.todayTaskTopic}>{task.topicName}</span>
+                )}
+
+                <div className={styles.todayTaskFooter}>
+                  {task.isCompleted ? (
+                    <span className={styles.todayTaskCompletedPill}>
+                      <CheckCircle2 size={14} />
+                      Đã hoàn thành
+                    </span>
+                  ) : (
+                    <a
+                      href={
+                        task.problemTypeId
+                          ? `/student/practice?problem_type_id=${task.problemTypeId}&subject_id=${data.subject.id}`
+                          : `/student/practice?subject_id=${data.subject.id}`
+                      }
+                      className={styles.todayTaskActionBtn}
+                    >
+                      ✍️ Luyện ngay
+                    </a>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {showGoalModal && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="goal-modal-title"
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 9999,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "16px",
+            background: "rgba(9, 45, 37, 0.65)",
+            backdropFilter: "blur(12px)",
+          }}
+          onClick={() => setShowGoalModal(false)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              width: "min(100%, 480px)",
+              background: "#ffffff",
+              borderRadius: "20px",
+              padding: "24px",
+              boxShadow: "0 20px 48px rgba(9, 45, 37, 0.35)",
+              border: "1px solid rgba(139, 229, 194, 0.4)",
+              display: "flex",
+              flexDirection: "column",
+              gap: "18px",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
+              <div>
+                <span
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    padding: "4px 10px",
+                    borderRadius: "999px",
+                    background: "rgba(35, 166, 122, 0.12)",
+                    color: "#23a67a",
+                    fontSize: "0.76rem",
+                    fontWeight: 700,
+                    marginBottom: "6px",
+                  }}
+                >
+                  <Sparkles size={13} />
+                  Cá nhân hóa lộ trình
+                </span>
+                <h3 id="goal-modal-title" style={{ margin: 0, fontSize: "1.25rem", fontWeight: 800, color: "#092d25" }}>
+                  Gieo mục tiêu & Sinh lộ trình 7 ngày
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowGoalModal(false)}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  cursor: "pointer",
+                  color: "#6b7280",
+                  padding: "4px",
+                }}
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <p style={{ margin: 0, fontSize: "0.85rem", color: "#4b5563", lineHeight: 1.5 }}>
+              EduMS sẽ phân tích mục tiêu điểm số và thời lượng học của bạn để sinh lịch học 7 ngày tối ưu nhất cho môn {data.subject.name}.
+            </p>
+
+            {/* Step 1: Target Score */}
+            <div>
+              <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "#111827", marginBottom: "8px" }}>
+                1. Mục tiêu điểm số môn {data.subject.name}:
+              </label>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "8px" }}>
+                {[
+                  { score: 7.0, label: "7.0+", sub: "Vững cơ bản" },
+                  { score: 8.0, label: "8.0+", sub: "Bứt phá khá giỏi" },
+                  { score: 9.0, label: "9.0+", sub: "Vận dụng cao" },
+                ].map((item) => (
+                  <button
+                    key={item.score}
+                    type="button"
+                    onClick={() => setTargetScore(item.score)}
+                    style={{
+                      padding: "10px 8px",
+                      borderRadius: "12px",
+                      border: targetScore === item.score ? "2px solid #23a67a" : "1px solid #e5e7eb",
+                      background: targetScore === item.score ? "rgba(35, 166, 122, 0.08)" : "#f9fafb",
+                      cursor: "pointer",
+                      textAlign: "center",
+                      transition: "all 0.15s ease",
+                    }}
+                  >
+                    <strong style={{ display: "block", fontSize: "0.95rem", color: targetScore === item.score ? "#23a67a" : "#111827" }}>
+                      {item.label}
+                    </strong>
+                    <span style={{ fontSize: "0.72rem", color: "#6b7280" }}>{item.sub}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Step 2: Available minutes */}
+            <div>
+              <label style={{ display: "block", fontSize: "0.82rem", fontWeight: 700, color: "#111827", marginBottom: "8px" }}>
+                2. Quỹ thời gian tự học mỗi ngày:
+              </label>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "8px" }}>
+                {[15, 30, 45, 60].map((mins) => (
+                  <button
+                    key={mins}
+                    type="button"
+                    onClick={() => setDailyMinutes(mins)}
+                    style={{
+                      padding: "8px 6px",
+                      borderRadius: "10px",
+                      border: dailyMinutes === mins ? "2px solid #23a67a" : "1px solid #e5e7eb",
+                      background: dailyMinutes === mins ? "rgba(35, 166, 122, 0.08)" : "#f9fafb",
+                      cursor: "pointer",
+                      textAlign: "center",
+                      fontWeight: 700,
+                      fontSize: "0.86rem",
+                      color: dailyMinutes === mins ? "#23a67a" : "#374151",
+                    }}
+                  >
+                    {mins} phút
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Step 3: Exam */}
+            <div
+              style={{
+                padding: "10px 14px",
+                borderRadius: "12px",
+                background: "#f0fdf4",
+                border: "1px solid #bbf7d0",
+                fontSize: "0.82rem",
+                color: "#166534",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+              }}
+            >
+              <CalendarCheck size={16} />
+              <span>Kỳ thi: <strong>Tốt nghiệp THPT & Tuyển sinh ĐH 2026 (25/06/2026)</strong></span>
+            </div>
+
+            {feedbackMsg && (
+              <div
+                style={{
+                  padding: "8px 12px",
+                  borderRadius: "8px",
+                  background: feedbackMsg.includes("thành công") ? "#dcfce7" : "#fee2e2",
+                  color: feedbackMsg.includes("thành công") ? "#15803d" : "#b91c1c",
+                  fontSize: "0.82rem",
+                  fontWeight: 600,
+                }}
+              >
+                {feedbackMsg}
+              </div>
+            )}
+
+            <button
+              type="button"
+              onClick={handleCreateGoal}
+              disabled={isSubmitting}
+              style={{
+                width: "100%",
+                padding: "12px",
+                borderRadius: "12px",
+                background: "linear-gradient(135deg, #23a67a 0%, #10b981 100%)",
+                color: "#ffffff",
+                border: "none",
+                fontWeight: 750,
+                fontSize: "0.95rem",
+                cursor: isSubmitting ? "wait" : "pointer",
+                boxShadow: "0 4px 14px rgba(35, 166, 122, 0.35)",
+              }}
+            >
+              {isSubmitting ? "Đang sinh lộ trình..." : "Khởi tạo lộ trình học tập ngay"}
+            </button>
+          </div>
+        </div>
+      )}
+
+      <StudyPlanRoadmapModal
+        isOpen={showRoadmapModal}
+        onClose={() => setShowRoadmapModal(false)}
+        subjectId={data.subject.id}
+        onRecalculateDone={() => router.refresh()}
+      />
     </section>
   );
 }

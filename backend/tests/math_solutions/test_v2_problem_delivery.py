@@ -1563,13 +1563,15 @@ def test_postgres_concurrency_prepare_two_transactions(postgres_engine: Engine) 
 
 
 
+@pytest.mark.parametrize("solution_only", [False, True])
 def test_new_attempt_pins_latest_approved_rubric_only_for_answered_source(
-    db_client: TestClient, db_session: Session, delivery_domain: DeliveryDomain, auth_headers,
+    db_client: TestClient, db_session: Session, delivery_domain: DeliveryDomain, auth_headers, solution_only,
 ):
     question = delivery_domain.canonical_question
     question.question_type = QuestionType.OPEN_RESPONSE
     question.content = "Khảo sát hàm số y=x^3."
-    question.correct_answer = "y'=3x^2"
+    question.correct_answer = None if solution_only else "y'=3x^2"
+    question.explanation = "The power rule gives y'=3x^2."
     first = SolutionRubric(
         question_id=question.id, rubric_version=1, title="Reviewed derivative rubric",
         criteria=[{"id": "derivative", "step_type": "DERIVATIVE_CALCULATION", "weight": 1.0}],
@@ -1600,6 +1602,7 @@ def test_new_attempt_pins_latest_approved_rubric_only_for_answered_source(
     assert replayed.json()["id"] == str(attempt_id)
 
     question.correct_answer = None
+    question.explanation = None
     db_session.commit()
     payload["create_idempotency_key"] = "unanswered-no-rubric-pin"
     unanswered = db_client.post("/api/v2/math-solutions/attempts", headers=headers, json=payload)
@@ -1607,9 +1610,10 @@ def test_new_attempt_pins_latest_approved_rubric_only_for_answered_source(
     assert db_session.get(SolutionAttempt, UUID(unanswered.json()["id"])).rubric_id is None
 
 
+@pytest.mark.parametrize("solution_only", [False, True])
 def test_hybrid_review_persists_verified_grade_without_ai(
     db_client: TestClient, db_app, db_session: Session,
-    delivery_domain: DeliveryDomain, auth_headers,
+    delivery_domain: DeliveryDomain, auth_headers, solution_only,
 ) -> None:
     from app.learning_evidence.models import LearningEvidenceEvent
     from app.math_solutions.ai_review_router import get_step_ai_gateway
@@ -1618,7 +1622,8 @@ def test_hybrid_review_persists_verified_grade_without_ai(
     question = delivery_domain.canonical_question
     question.question_type = QuestionType.OPEN_RESPONSE
     question.content = "Find the derivative of y=x^3."
-    question.correct_answer = "y'=3x^2"
+    question.correct_answer = None if solution_only else "y'=3x^2"
+    question.explanation = "The power rule gives y'=3x^2."
     rubric = SolutionRubric(
         question_id=question.id, rubric_version=1, title="Reviewed derivative rubric",
         criteria=[{"id": "derivative", "step_type": "DERIVATIVE_CALCULATION", "weight": 1.0}],
@@ -1750,6 +1755,7 @@ def test_v3_gemini_review_is_owner_scoped_provisional_and_answer_grounded(
     assert db_session.scalar(select(LearningEvidenceEvent.id)) is not None
 
     delivery_domain.canonical_question.correct_answer = None
+    delivery_domain.canonical_question.explanation = None
     db_session.commit()
     no_answer = db_client.post(url, headers=headers_a)
     assert no_answer.status_code == 200, no_answer.text

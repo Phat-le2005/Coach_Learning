@@ -27,7 +27,7 @@ class FakeSession:
 def sample_without_answer():
     question = Question(id=uuid4(), subject_id=uuid4(), content="Find monotonicity",
         question_type=QuestionType.OPEN_RESPONSE, status=QuestionStatus.APPROVED,
-        correct_answer=None, explanation="An incomplete hint.")
+        correct_answer=None, explanation=None)
     attempt = SimpleNamespace(id=uuid4(), status="SUBMITTED", source_kind="CANONICAL",
         context_type="SELF_PRACTICE", question_id=question.id)
     return FakeSession(attempt, question), attempt
@@ -75,3 +75,12 @@ def test_assigned_solution_waits_for_whole_assignment_submission(monkeypatch):
     monkeypatch.setattr(router, "require_pending_assignment_item", lambda *_args: None)
     allowed = router.get_ai_review_availability(attempt.id, SimpleNamespace(id=uuid4()), session)
     assert allowed.available is True
+
+
+def test_solution_only_is_a_reference_not_unanswered_feedback(monkeypatch):
+    session, attempt = sample_without_answer()
+    session.question.explanation = "Compute the derivative, solve its roots, then determine monotonicity."
+    monkeypatch.setattr(router, "MathSolutionService", lambda _session: SimpleNamespace(get=lambda *_: None))
+    availability = router.get_ai_review_availability(attempt.id, SimpleNamespace(id=uuid4()), session)
+    assert availability.available is True
+    assert availability.reason_code is None

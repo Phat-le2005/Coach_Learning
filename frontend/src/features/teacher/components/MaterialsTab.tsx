@@ -1,8 +1,10 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { UploadCloud, Search, FileText, Calendar, Filter, Sparkles, AlertCircle } from "lucide-react";
-import type { TeacherClassroom, TeacherMaterial, TeacherSubject } from "../api";
+import { UploadCloud, Search, FileText, Calendar, Filter, Sparkles, AlertCircle, Eye, Send } from "lucide-react";
+import type { TeacherAssignment, TeacherClassroom, TeacherMaterial, TeacherSubject } from "../api";
+import { MaterialPreviewModal } from "./MaterialPreviewModal";
+import { AssignMaterialModal } from "./AssignMaterialModal";
 import styles from "../TeacherDashboard.module.css";
 
 export interface MaterialsTabProps {
@@ -11,6 +13,7 @@ export interface MaterialsTabProps {
   subjects: TeacherSubject[];
   isLoading: boolean;
   onOpenUpload: () => void;
+  onAssignmentCreated?: (assignment: TeacherAssignment) => void;
 }
 
 export function MaterialsTab({
@@ -19,9 +22,12 @@ export function MaterialsTab({
   subjects,
   isLoading,
   onOpenUpload,
+  onAssignmentCreated,
 }: MaterialsTabProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSubjectFilter, setSelectedSubjectFilter] = useState("");
+  const [selectedPreviewMaterial, setSelectedPreviewMaterial] = useState<TeacherMaterial | null>(null);
+  const [selectedAssignMaterial, setSelectedAssignMaterial] = useState<TeacherMaterial | null>(null);
 
   const formatSize = (bytes: number) => {
     if (bytes < 1024) return `${bytes} B`;
@@ -203,12 +209,47 @@ export function MaterialsTab({
                       Đã lưu trữ an toàn
                     </span>
                   </div>
+
+                  <div className={styles.materialCardActions}>
+                    <button
+                      type="button"
+                      className={styles.btnSecondarySmall}
+                      onClick={() => setSelectedPreviewMaterial(item)}
+                    >
+                      <Eye size={13} /> Xem câu hỏi
+                    </button>
+                    <button
+                      type="button"
+                      className={styles.btnPrimarySmall}
+                      onClick={() => setSelectedAssignMaterial(item)}
+                    >
+                      <Send size={13} /> Giao cho lớp
+                    </button>
+                  </div>
                 </article>
               );
             })}
           </div>
         )}
       </div>
+
+      {/* Modals */}
+      <MaterialPreviewModal
+        isOpen={Boolean(selectedPreviewMaterial)}
+        onClose={() => setSelectedPreviewMaterial(null)}
+        material={selectedPreviewMaterial}
+        onOpenAssign={(mat) => setSelectedAssignMaterial(mat)}
+      />
+
+      <AssignMaterialModal
+        isOpen={Boolean(selectedAssignMaterial)}
+        onClose={() => setSelectedAssignMaterial(null)}
+        selectedClass={selectedClass}
+        material={selectedAssignMaterial}
+        onSuccess={(created) => {
+          onAssignmentCreated?.(created);
+        }}
+      />
     </div>
   );
 }

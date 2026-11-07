@@ -940,6 +940,189 @@
   font-size: 0.69rem;
 }
 
+/* Today's Tasks Section under Learning Pulse */
+.todayTasksSection {
+  margin-top: 24px;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(35, 166, 122, 0.22);
+  border-radius: 20px;
+  padding: 20px 24px;
+  box-shadow: 0 8px 24px rgba(9, 45, 37, 0.04);
+}
+
+.todayTasksHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.todayTasksEyebrow {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #23a67a;
+}
+
+.todayTasksTitle {
+  margin: 2px 0 4px;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #092d25;
+}
+
+.todayTasksDescription {
+  margin: 0;
+  font-size: 0.78rem;
+  color: #556d63;
+  max-width: 580px;
+}
+
+.openRoadmapButton {
+  padding: 8px 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(35, 166, 122, 0.35);
+  background: linear-gradient(135deg, rgba(35, 166, 122, 0.15), rgba(139, 229, 194, 0.1));
+  color: #14533f;
+  font-size: 0.8rem;
+  font-weight: 750;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.openRoadmapButton:hover {
+  background: linear-gradient(135deg, rgba(35, 166, 122, 0.25), rgba(139, 229, 194, 0.2));
+  transform: translateY(-1px);
+}
+
+.todayTasksGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+.todayTaskCard {
+  background: #ffffff;
+  border: 1px solid rgba(9, 45, 37, 0.09);
+  border-radius: 14px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+  transition: all 0.2s ease;
+}
+
+.todayTaskCard:hover {
+  border-color: rgba(35, 166, 122, 0.35);
+  box-shadow: 0 4px 12px rgba(9, 45, 37, 0.06);
+}
+
+.todayTaskCardCompleted {
+  background: rgba(240, 249, 245, 0.65);
+  border-color: rgba(35, 166, 122, 0.2);
+  opacity: 0.88;
+}
+
+.todayTaskCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.todayTaskBadge {
+  font-size: 0.68rem;
+  font-weight: 750;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.badgeRemedial {
+  background: rgba(239, 68, 68, 0.1);
+  color: #b91c1c;
+}
+
+.badgeReview {
+  background: rgba(245, 158, 11, 0.14);
+  color: #b45309;
+}
+
+.badgePractice {
+  background: rgba(35, 166, 122, 0.15);
+  color: #14533f;
+}
+
+.todayTaskDuration {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.todayTaskTitle {
+  margin: 0;
+  font-size: 0.88rem;
+  font-weight: 750;
+  color: #092d25;
+  line-height: 1.35;
+}
+
+.todayTaskCardCompleted .todayTaskTitle {
+  text-decoration: line-through;
+  color: #6b7280;
+}
+
+.todayTaskTopic {
+  font-size: 0.72rem;
+  color: #6b7280;
+}
+
+.todayTaskFooter {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+
+.todayTaskCompletedPill {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #14533f;
+  background: rgba(35, 166, 122, 0.15);
+  padding: 4px 10px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.todayTaskActionBtn {
+  font-size: 0.78rem;
+  font-weight: 750;
+  color: #ffffff;
+  background: linear-gradient(135deg, #14533f 0%, #23a67a 100%);
+  padding: 6px 14px;
+  border-radius: 8px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(20, 83, 63, 0.18);
+}
+
+.todayTaskActionBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(20, 83, 63, 0.28);
+}
+
 /* ==========================================================================
    SECTION 4 — KNOWLEDGE GARDEN: FOREST OF KNOWLEDGE
    ========================================================================== */

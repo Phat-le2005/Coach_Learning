@@ -416,6 +416,11 @@ export function TeacherDashboardClient({
               subjects={subjects}
               isLoading={classLoading}
               onOpenUpload={() => setIsUploadOpen(true)}
+              onAssignmentCreated={(newAssignment) => {
+                setAssignments((current) => [newAssignment, ...current]);
+                setAssignmentId(newAssignment.id);
+                handleSelectTab("submissions");
+              }}
             />
           )}
 
@@ -438,6 +443,11 @@ export function TeacherDashboardClient({
               focusedStudent={focusedStudent}
               onClearStudent={() => setFocusedStudent(null)}
               isLoading={classLoading}
+              onRefreshRoster={() => {
+                if (assignmentId) {
+                  teacherApi.roster(assignmentId).then(setRoster).catch(() => {});
+                }
+              }}
             />
           )}
 

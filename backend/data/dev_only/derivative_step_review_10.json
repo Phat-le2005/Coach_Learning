@@ -1,0 +1,1141 @@
+{
+  "schema_version": "derivative-step-review-10/v1",
+  "source_metadata_sha256": "6f94f6646d985bf0a96b078b3268101bce52949b6ad5acc7b4b0f7ff2e709a83",
+  "purpose": "LOCAL_WORKSPACE_TEST_ONLY",
+  "academic_publication_approved": false,
+  "official_grading_approved": false,
+  "transcription_note": "Separate readable local copies, checked against source crops; original metadata, PNG bytes and PENDING decisions unchanged. No official rubric or taxonomy mapping.",
+  "questions": [
+    {
+      "id": "c0000000-0000-0000-0000-000000000101",
+      "title": "Khoảng đơn điệu của hàm bậc ba",
+      "source_question_id": "a287830565130826:q8:n8",
+      "source_pdf_sha256": "a287830565130826c0f48c8c43ffa3dcef4b6c57477e8621650800506fe72e56",
+      "source_fragments": {
+        "question": [
+          {
+            "page_number": 5,
+            "bbox": [
+              0,
+              164.152,
+              612.0,
+              191.804
+            ],
+            "source_asset": "assets/q0004/question-00-source.png",
+            "source_asset_sha256": "71663788483a3aceea4fce3bd7cd3e65aaa64cf993da7453ca01601ef76b4e38",
+            "markdown": "Ví dụ 8. Tìm khoảng đơn điệu của hàm số $f (x) = 2x^{3} - 9x^{2} - 24x + 1$         .",
+            "choices": [],
+            "blocks": [
+              {
+                "kind": "TRANSCRIBED_TEXT_DRAFT",
+                "bbox": [
+                  0,
+                  164.152,
+                  612.0,
+                  191.804
+                ],
+                "markdown": "Ví dụ 8. Tìm khoảng đơn điệu của hàm số $f (x) = 2x^{3} - 9x^{2} - 24x + 1$         ."
+              }
+            ],
+            "coverage": {
+              "method": "FONT_STYLE_AND_SYMBOL_HEURISTIC_NOT_FORMULA_RECALL",
+              "suspect_glyphs": 13,
+              "covered_suspect_glyphs": 13,
+              "uncovered_suspect_glyph_keys": [],
+              "unmapped_source_rows": 0,
+              "source_glyphs": 49,
+              "complete_formula_recall_established": false
+            },
+            "source_errors": [],
+            "visual_flags": []
+          }
+        ],
+        "solution": [
+          {
+            "page_number": 5,
+            "bbox": [
+              0,
+              203.476,
+              612.0,
+              341.932
+            ],
+            "source_asset": "assets/q0004/solution-00-source.png",
+            "source_asset_sha256": "21fe567cc19585bfa5ef665a11f7487d217d4eb60216969b1ac0ef20fc1c867d",
+            "markdown": "Tập xác định: $D = R. Ta$    có $f '(x) = 6x^{2} - 18x - 24; f '(x) = 0 x = -1$               hoặc $x = 4$  .\nBảng biến thiên:\nVậy hàm số đồng biến trên khoảng $(- \\infty ; -1)$   và $(4; +\\infty )$ , hàm số nghịch biến trên khoảng $(-1; 4)$\n\n![Hình nguồn](assets/q0004/solution-00-figure-00.png)",
+            "choices": [],
+            "blocks": [
+              {
+                "kind": "TRANSCRIBED_TEXT_DRAFT",
+                "bbox": [
+                  0,
+                  203.476,
+                  612.0,
+                  341.932
+                ],
+                "markdown": "Tập xác định: $D = R. Ta$    có $f '(x) = 6x^{2} - 18x - 24; f '(x) = 0 x = -1$               hoặc $x = 4$  .\nBảng biến thiên:\nVậy hàm số đồng biến trên khoảng $(- \\infty ; -1)$   và $(4; +\\infty )$ , hàm số nghịch biến trên khoảng $(-1; 4)$"
+              },
+              {
+                "kind": "FIGURE",
+                "bbox": [
+                  109.5,
+                  232.929,
+                  506.25,
+                  326.679
+                ],
+                "markdown": "![Hình nguồn](assets/q0004/solution-00-figure-00.png)"
+              }
+            ],
+            "coverage": {
+              "method": "FONT_STYLE_AND_SYMBOL_HEURISTIC_NOT_FORMULA_RECALL",
+              "suspect_glyphs": 35,
+              "covered_suspect_glyphs": 35,
+              "uncovered_suspect_glyph_keys": [],
+              "unmapped_source_rows": 0,
+              "source_glyphs": 142,
+              "complete_formula_recall_established": false
+            },
+            "source_errors": [],
+            "visual_flags": [
+              "EMBEDDED_IMAGE_REQUIRES_SOURCE_IMAGE"
+            ]
+          }
+        ]
+      },
+      "content": "Ví dụ 8. Tìm khoảng đơn điệu của hàm số $f(x)=2x^3-9x^2-24x+1$. Trình bày các bước giải.",
+      "reference_solution": "Tập xác định: $D=\\mathbb{R}$.\n$f'(x)=6x^2-18x-24=6(x+1)(x-4)$.\n$f'(x)=0\\Leftrightarrow x=-1$ hoặc $x=4$.\nĐạo hàm dương trên $(-\\infty;-1)$ và $(4;+\\infty)$, âm trên $(-1;4)$.\nVậy hàm số đồng biến trên $(-\\infty;-1)$ và $(4;+\\infty)$; nghịch biến trên $(-1;4)$."
+    },
+    {
+      "id": "c0000000-0000-0000-0000-000000000102",
+      "title": "Tiệm cận ngang của hàm phân thức",
+      "source_question_id": "a287830565130826:q3:n560",
+      "source_pdf_sha256": "a287830565130826c0f48c8c43ffa3dcef4b6c57477e8621650800506fe72e56",
+      "source_fragments": {
+        "question": [
+          {
+            "page_number": 109,
+            "bbox": [
+              0,
+              493.384,
+              612.0,
+              534.944
+            ],
+            "source_asset": "assets/q0016/question-00-source.png",
+            "source_asset_sha256": "113820e75c4a9b5c31f2b88076c69073c3a2fba503bbb1a0ea7a8725356757da",
+            "markdown": "$\\frac{-2x+1}{x+1}$\nVí dụ 3. Tìm tiệm cận ngang của đồ thị hàm số sau: $y=$",
+            "choices": [],
+            "blocks": [
+              {
+                "kind": "TRANSCRIBED_TEXT_DRAFT",
+                "bbox": [
+                  0,
+                  493.384,
+                  612.0,
+                  534.944
+                ],
+                "markdown": "$\\frac{-2x+1}{x+1}$\nVí dụ 3. Tìm tiệm cận ngang của đồ thị hàm số sau: $y=$"
+              }
+            ],
+            "coverage": {
+              "method": "FONT_STYLE_AND_SYMBOL_HEURISTIC_NOT_FORMULA_RECALL",
+              "suspect_glyphs": 4,
+              "covered_suspect_glyphs": 4,
+              "uncovered_suspect_glyph_keys": [],
+              "unmapped_source_rows": 0,
+              "source_glyphs": 48,
+              "complete_formula_recall_established": false
+            },
+            "source_errors": [],
+            "visual_flags": []
+          }
+        ],
+        "solution": [
+          {
+            "page_number": 109,
+            "bbox": [
+              0,
+              546.616,
+              612.0,
+              645.292
+            ],
+            "source_asset": "assets/q0016/solution-00-source.png",
+            "source_asset_sha256": "efb6329670718024793dbb14d39448b3b50ab0877da082b71b030a1fc9db761e",
+            "markdown": "TXĐ: ![Công thức cần đọc từ ảnh](assets/q0016/solution-00-formula-000.png)\nTa có: ![Công thức cần đọc từ ảnh](assets/q0016/solution-00-formula-002.png)\n![Công thức cần đọc từ ảnh](assets/q0016/solution-00-formula-001.png)\nVậy đường thẳng $y = -2$   là TCN của đồ thị hàm số đã cho.",
+            "choices": [],
+            "blocks": [
+              {
+                "kind": "TRANSCRIBED_TEXT_DRAFT",
+                "bbox": [
+                  0,
+                  546.616,
+                  612.0,
+                  645.292
+                ],
+                "markdown": "TXĐ: ![Công thức cần đọc từ ảnh](assets/q0016/solution-00-formula-000.png)\nTa có: ![Công thức cần đọc từ ảnh](assets/q0016/solution-00-formula-002.png)\n![Công thức cần đọc từ ảnh](assets/q0016/solution-00-formula-001.png)\nVậy đường thẳng $y = -2$   là TCN của đồ thị hàm số đã cho."
+              }
+            ],
+            "coverage": {
+              "method": "FONT_STYLE_AND_SYMBOL_HEURISTIC_NOT_FORMULA_RECALL",
+              "suspect_glyphs": 50,
+              "covered_suspect_glyphs": 50,
+              "uncovered_suspect_glyph_keys": [],
+              "unmapped_source_rows": 0,
+              "source_glyphs": 129,
+              "complete_formula_recall_established": false
+            },
+            "source_errors": [],
+            "visual_flags": [
+              "UNMAPPED_SOURCE_GLYPHS_IMAGE_RETAINED",
+              "FORMULA_CANDIDATES_HELD_FOR_SOURCE_REVIEW"
+            ]
+          }
+        ]
+      },
+      "content": "Ví dụ 3. Tìm tiệm cận ngang của đồ thị hàm số $y=\\frac{-2x+1}{x+1}$. Trình bày bằng giới hạn.",
+      "reference_solution": "Tập xác định: $D=\\mathbb{R}\\setminus\\{-1\\}$.\n$\\frac{-2x+1}{x+1}=\\frac{-2+1/x}{1+1/x}$ khi $x\\ne0,-1$.\n$\\lim_{x\\to+\\infty}\\frac{-2x+1}{x+1}=-2$ và $\\lim_{x\\to-\\infty}\\frac{-2x+1}{x+1}=-2$.\nVậy đường thẳng $y=-2$ là tiệm cận ngang của đồ thị."
+    },
+    {
+      "id": "c0000000-0000-0000-0000-000000000103",
+      "title": "Số lượng vi khuẩn lớn nhất",
+      "source_question_id": "a287830565130826:q51:n400",
+      "source_pdf_sha256": "a287830565130826c0f48c8c43ffa3dcef4b6c57477e8621650800506fe72e56",
+      "source_fragments": {
+        "question": [
+          {
+            "page_number": 86,
+            "bbox": [
+              0,
+              23.212,
+              612.0,
+              156.164
+            ],
+            "source_asset": "assets/q0014/question-00-source.png",
+            "source_asset_sha256": "27e367ed98d374caf517546d70570b01977502c20c8015b0318b8091e719ab90",
+            "markdown": "Bài 51. Trong một thí nghiệm y học, người ta cấy 1000 vi khuẩn vào môi trường dinh dưỡng. Bằng thực\nnghiệm, người ta xác định được số lượng vi khuẩn thay đổi theo thời gian bởi công thức:\n$N(t)=1000+\\frac{100t}{100+t^{2}}(con),trong$   đó $t$ là thời gian tính bằng giây (Nguồn: $R$. Larson and $B$. Edwards,\nCalculus $10e$, Cengage $2014)$. Tính số lượng vi khuẩn lớn nhất kể từ khi thực hiện cấy vi khuẩn vào môi\ntrường dinh dưỡng.",
+            "choices": [],
+            "blocks": [
+              {
+                "kind": "TRANSCRIBED_TEXT_DRAFT",
+                "bbox": [
+                  0,
+                  23.212,
+                  612.0,
+                  156.164
+                ],
+                "markdown": "Bài 51. Trong một thí nghiệm y học, người ta cấy 1000 vi khuẩn vào môi trường dinh dưỡng. Bằng thực\nnghiệm, người ta xác định được số lượng vi khuẩn thay đổi theo thời gian bởi công thức:\n$N(t)=1000+\\frac{100t}{100+t^{2}}(con),trong$   đó $t$ là thời gian tính bằng giây (Nguồn: $R$. Larson and $B$. Edwards,\nCalculus $10e$, Cengage $2014)$. Tính số lượng vi khuẩn lớn nhất kể từ khi thực hiện cấy vi khuẩn vào môi\ntrường dinh dưỡng."
+              }
+            ],
+            "coverage": {
+              "method": "FONT_STYLE_AND_SYMBOL_HEURISTIC_NOT_FORMULA_RECALL",
+              "suspect_glyphs": 78,
+              "covered_suspect_glyphs": 25,
+              "uncovered_suspect_glyph_keys": [
+                "p0086-font-l0003:24",
+                "p0086-font-l0003:26",
+                "p0086-font-l0003:27",
+                "p0086-font-l0003:29",
+                "p0086-font-l0003:30",
+                "p0086-font-l0003:31",
+                "p0086-font-l0003:32",
+                "p0086-font-l0003:33",
+                "p0086-font-l0003:34",
+                "p0086-font-l0003:36",
+                "p0086-font-l0003:37",
+                "p0086-font-l0003:38",
+                "p0086-font-l0003:40",
+                "p0086-font-l0003:41",
+                "p0086-font-l0003:42",
+                "p0086-font-l0003:43",
+                "p0086-font-l0003:45",
+                "p0086-font-l0003:46",
+                "p0086-font-l0003:47",
+                "p0086-font-l0003:48",
+                "p0086-font-l0003:49",
+                "p0086-font-l0003:51",
+                "p0086-font-l0003:55",
+                "p0086-font-l0003:56",
+                "p0086-font-l0003:57",
+                "p0086-font-l0003:58",
+                "p0086-font-l0003:59",
+                "p0086-font-l0003:60",
+                "p0086-font-l0003:61",
+                "p0086-font-l0003:62",
+                "p0086-font-l0003:63",
+                "p0086-font-l0003:66",
+                "p0086-font-l0003:67",
+                "p0086-font-l0003:68",
+                "p0086-font-l0003:69",
+                "p0086-font-l0003:70",
+                "p0086-font-l0003:71",
+                "p0086-font-l0003:72",
+                "p0086-font-l0005:0",
+                "p0086-font-l0005:1",
+                "p0086-font-l0005:12",
+                "p0086-font-l0005:13",
+                "p0086-font-l0005:14",
+                "p0086-font-l0005:15",
+                "p0086-font-l0005:16",
+                "p0086-font-l0005:17",
+                "p0086-font-l0005:18",
+                "p0086-font-l0005:2",
+                "p0086-font-l0005:3",
+                "p0086-font-l0005:4",
+                "p0086-font-l0005:5",
+                "p0086-font-l0005:6",
+                "p0086-font-l0005:7"
+              ],
+              "unmapped_source_rows": 0,
+              "source_glyphs": 330,
+              "complete_formula_recall_established": false
+            },
+            "source_errors": [],
+            "visual_flags": [
+              "UNCOVERED_SUSPECT_MATH_GLYPHS"
+            ]
+          }
+        ],
+        "solution": [
+          {
+            "page_number": 86,
+            "bbox": [
+              0,
+              167.836,
+              612.0,
+              407.332
+            ],
+            "source_asset": "assets/q0014/solution-00-source.png",
+            "source_asset_sha256": "6f3c39f165da4c44e236a42de1b161f456ab9ee66353150074fcecbb5d208ca5",
+            "markdown": "Xét hàm số $N(t)=1000+\\frac{100t}{100+t^{2}}(t>0)$  .\n( )\n$\\frac{100.\\left(100+t^{2}\\right)}{\\left(100+t^{2}\\right)^{2}}$\nTa có: ![Công thức cần đọc từ ảnh](assets/q0014/solution-00-formula-001.png)\nKhi đó, với $t > 0$  , ![Công thức cần đọc từ ảnh](assets/q0014/solution-00-formula-003.png)         .\nBảng biến thiên của hàm số $N(t)$ như sau:\nCăn cứ bảng biến thiên, ta thấy: Trên khoảng $(0 ; +\\infty  )$   , hàm số $N(t)$ đạt giá trị lớn nhất bằng 1 005 tại $t = 10$  .\nVậy số lượng vi khuẩn lớn nhất kể từ khi thực hiện cấy vi khuẩn vào môi trường dinh dưỡng là 1 005 con.\n\n![Hình nguồn](assets/q0014/solution-00-figure-00.png)",
+            "choices": [],
+            "blocks": [
+              {
+                "kind": "TRANSCRIBED_TEXT_DRAFT",
+                "bbox": [
+                  0,
+                  167.836,
+                  612.0,
+                  407.332
+                ],
+                "markdown": "Xét hàm số $N(t)=1000+\\frac{100t}{100+t^{2}}(t>0)$  .\n( )\n$\\frac{100.\\left(100+t^{2}\\right)}{\\left(100+t^{2}\\right)^{2}}$\nTa có: ![Công thức cần đọc từ ảnh](assets/q0014/solution-00-formula-001.png)\nKhi đó, với $t > 0$  , ![Công thức cần đọc từ ảnh](assets/q0014/solution-00-formula-003.png)         .\nBảng biến thiên của hàm số $N(t)$ như sau:\nCăn cứ bảng biến thiên, ta thấy: Trên khoảng $(0 ; +\\infty  )$   , hàm số $N(t)$ đạt giá trị lớn nhất bằng 1 005 tại $t = 10$  .\nVậy số lượng vi khuẩn lớn nhất kể từ khi thực hiện cấy vi khuẩn vào môi trường dinh dưỡng là 1 005 con."
+              },
+              {
+                "kind": "FIGURE",
+                "bbox": [
+                  175.975,
+                  277.0,
+                  439.225,
+                  378.25
+                ],
+                "markdown": "![Hình nguồn](assets/q0014/solution-00-figure-00.png)"
+              }
+            ],
+            "coverage": {
+              "method": "FONT_STYLE_AND_SYMBOL_HEURISTIC_NOT_FORMULA_RECALL",
+              "suspect_glyphs": 70,
+              "covered_suspect_glyphs": 68,
+              "uncovered_suspect_glyph_keys": [
+                "p0086-font-l0011:2",
+                "p0086-font-l0011:3"
+              ],
+              "unmapped_source_rows": 0,
+              "source_glyphs": 327,
+              "complete_formula_recall_established": false
+            },
+            "source_errors": [],
+            "visual_flags": [
+              "EMBEDDED_IMAGE_REQUIRES_SOURCE_IMAGE",
+              "FORMULA_CANDIDATES_HELD_FOR_SOURCE_REVIEW",
+              "UNCOVERED_SUSPECT_MATH_GLYPHS"
+            ]
+          }
+        ]
+      },
+      "content": "Bài 51. Trong một thí nghiệm y học, người ta cấy 1000 vi khuẩn vào môi trường dinh dưỡng. Số lượng vi khuẩn thay đổi theo thời gian bởi công thức $N(t)=1000+\\frac{100t}{100+t^2}$ (con), trong đó $t$ tính bằng giây. Tính số lượng vi khuẩn lớn nhất kể từ khi thực hiện cấy vi khuẩn. Trình bày các bước giải.",
+      "reference_solution": "Xét $t\\ge0$. Ta có $N'(t)=\\frac{100(100+t^2)-200t^2}{(100+t^2)^2}=\\frac{100(100-t^2)}{(100+t^2)^2}$.\nVới $t>0$, $N'(t)=0\\Leftrightarrow t=10$.\n$N'(t)>0$ trên $(0;10)$ và $N'(t)<0$ trên $(10;+\\infty)$.\n$N(0)=1000$, $\\lim_{t\\to+\\infty}N(t)=1000$, $N(10)=1005$.\nVậy số lượng vi khuẩn lớn nhất là 1005 con tại $t=10$ giây."
+    },
+    {
+      "id": "c0000000-0000-0000-0000-000000000104",
+      "title": "Hộp không nắp có thể tích lớn nhất",
+      "source_question_id": "a287830565130826:q9:n349",
+      "source_pdf_sha256": "a287830565130826c0f48c8c43ffa3dcef4b6c57477e8621650800506fe72e56",
+      "source_fragments": {
+        "question": [
+          {
+            "page_number": 71,
+            "bbox": [
+              0,
+              400.672,
+              612.0,
+              586.724
+            ],
+            "source_asset": "assets/q0011/question-00-source.png",
+            "source_asset_sha256": "9122d675b667b027e99efbaf0104af95a2c6f80292661a58e3f560fce4279a66",
+            "markdown": "Ví dụ 9. Từ một tấm bìa hình chữ nhật có chiều rộng 30 cm và chiều dài 80 cm (Hình $4a)$, người ta cắt ở bốn\ngóc bốn hình vuông có cạnh $x ($ cm) với $5 \\leq  x \\leq  10$     và gấp lại để tạo thành chiếc hộp có dạng hình hộp chữ\nnhật không nắp như Hình 4b. Tìm $x$ để thể tích chiếc hộp là lớn nhất (kết quả làm tròn đến hàng phần\ntrăm).\n$x x$\n$xx$\n30 cm\n$x x$\n$xx$\n80 cm\n$a) b)$",
+            "choices": [],
+            "blocks": [
+              {
+                "kind": "TRANSCRIBED_TEXT_DRAFT",
+                "bbox": [
+                  0,
+                  400.672,
+                  612.0,
+                  586.724
+                ],
+                "markdown": "Ví dụ 9. Từ một tấm bìa hình chữ nhật có chiều rộng 30 cm và chiều dài 80 cm (Hình $4a)$, người ta cắt ở bốn\ngóc bốn hình vuông có cạnh $x ($ cm) với $5 \\leq  x \\leq  10$     và gấp lại để tạo thành chiếc hộp có dạng hình hộp chữ\nnhật không nắp như Hình 4b. Tìm $x$ để thể tích chiếc hộp là lớn nhất (kết quả làm tròn đến hàng phần\ntrăm).\n$x x$\n$xx$\n30 cm\n$x x$\n$xx$\n80 cm\n$a) b)$"
+              }
+            ],
+            "coverage": {
+              "method": "FONT_STYLE_AND_SYMBOL_HEURISTIC_NOT_FORMULA_RECALL",
+              "suspect_glyphs": 21,
+              "covered_suspect_glyphs": 17,
+              "uncovered_suspect_glyph_keys": [
+                "p0071-font-l0013:57",
+                "p0071-font-l0014:25",
+                "p0071-font-l0015:52",
+                "p0071-font-l0016:4"
+              ],
+              "unmapped_source_rows": 0,
+              "source_glyphs": 260,
+              "complete_formula_recall_established": false
+            },
+            "source_errors": [],
+            "visual_flags": [
+              "EMBEDDED_IMAGE_REQUIRES_SOURCE_IMAGE",
+              "UNCOVERED_SUSPECT_MATH_GLYPHS"
+            ]
+          }
+        ],
+        "solution": [
+          {
+            "page_number": 71,
+            "bbox": [
+              0,
+              598.396,
+              612.0,
+              767.639
+            ],
+            "source_asset": "assets/q0011/solution-00-source.png",
+            "source_asset_sha256": "37dd85f770c68a595d16e7780d7e6d84f800a0e8461af3a1db760d2d9e4f6683",
+            "markdown": "Thể tích chiếc hộp là: $V(x) = x(30 - 2x)(80 - 2x) = 2 400x - 220x^{2} + 4x^{3}$              với $5 \\leq  x \\leq  10$    .\nTa có: $V '(x) = 12x^{2} - 440x + 2 400$        ;\n![Công thức cần đọc từ ảnh](assets/q0011/solution-00-formula-003.png)      hoặc ![Công thức cần đọc từ ảnh](assets/q0011/solution-00-formula-004.png)   loại vì không thuộc $[5; 10])$ ;\n⇔  ⎜ ⎟ =  $V(10) = 6 000$   .\nDo đó max\n$[5;10]$\nVậy để thể tích chiếc hộp là lớn nhất thì ![Công thức cần đọc từ ảnh](assets/q0011/solution-00-formula-007.png)  .",
+            "choices": [],
+            "blocks": [
+              {
+                "kind": "TRANSCRIBED_TEXT_DRAFT",
+                "bbox": [
+                  0,
+                  598.396,
+                  612.0,
+                  767.639
+                ],
+                "markdown": "Thể tích chiếc hộp là: $V(x) = x(30 - 2x)(80 - 2x) = 2 400x - 220x^{2} + 4x^{3}$              với $5 \\leq  x \\leq  10$    .\nTa có: $V '(x) = 12x^{2} - 440x + 2 400$        ;\n![Công thức cần đọc từ ảnh](assets/q0011/solution-00-formula-003.png)      hoặc ![Công thức cần đọc từ ảnh](assets/q0011/solution-00-formula-004.png)   loại vì không thuộc $[5; 10])$ ;\n⇔  ⎜ ⎟ =  $V(10) = 6 000$   .\nDo đó max\n$[5;10]$\nVậy để thể tích chiếc hộp là lớn nhất thì ![Công thức cần đọc từ ảnh](assets/q0011/solution-00-formula-007.png)  ."
+              }
+            ],
+            "coverage": {
+              "method": "FONT_STYLE_AND_SYMBOL_HEURISTIC_NOT_FORMULA_RECALL",
+              "suspect_glyphs": 75,
+              "covered_suspect_glyphs": 71,
+              "uncovered_suspect_glyph_keys": [
+                "p0071-font-l0029:12",
+                "p0071-font-l0029:13",
+                "p0071-font-l0029:14",
+                "p0071-font-l0029:7"
+              ],
+              "unmapped_source_rows": 0,
+              "source_glyphs": 248,
+              "complete_formula_recall_established": false
+            },
+            "source_errors": [],
+            "visual_flags": [
+              "EMBEDDED_IMAGE_REQUIRES_SOURCE_IMAGE",
+              "FORMULA_CANDIDATES_HELD_FOR_SOURCE_REVIEW",
+              "UNCOVERED_SUSPECT_MATH_GLYPHS"
+            ]
+          }
+        ]
+      },
+      "content": "Ví dụ 9. Từ một tấm bìa hình chữ nhật rộng 30 cm, dài 80 cm, cắt ở bốn góc bốn hình vuông cạnh $x$ cm, với $5\\le x\\le10$, rồi gấp lại thành hộp chữ nhật không nắp. Tìm $x$ để thể tích chiếc hộp lớn nhất; làm tròn đến hàng phần trăm. Trình bày các bước giải.",
+      "reference_solution": "Thể tích hộp là $V(x)=x(30-2x)(80-2x)=2400x-220x^2+4x^3$, $x\\in[5;10]$.\n$V'(x)=12x^2-440x+2400$.\n$V'(x)=0\\Leftrightarrow x=\\frac{20}{3}$ hoặc $x=30$; loại $30$ vì ngoài $[5;10]$.\n$V(5)=7000$, $V(20/3)=200000/27$, $V(10)=6000$.\nGiá trị lớn nhất là $200000/27$ cm³ tại $x=20/3$ cm. Theo yêu cầu làm tròn, $x\\approx6{,}67$ cm."
+    },
+    {
+      "id": "c0000000-0000-0000-0000-000000000105",
+      "title": "Tối ưu hàng rào khu đất",
+      "source_question_id": "a287830565130826:q41:n827",
+      "source_pdf_sha256": "a287830565130826c0f48c8c43ffa3dcef4b6c57477e8621650800506fe72e56",
+      "source_fragments": {
+        "question": [
+          {
+            "page_number": 172,
+            "bbox": [
+              0,
+              23.212,
+              612.0,
+              285.188
+            ],
+            "source_asset": "assets/q0041/question-00-source.png",
+            "source_asset_sha256": "c6baa95cbd1ec15d6fda4ab086abc7c3a303d7330ddecbfa205a38fc3bbb561b",
+            "markdown": "Bài 41. Anh Nam có một mảnh đất rộng và muốn dành ra một khu đất hình chữ nhật có diện tích $200 m^{2}$  để\ntrồng vài loại cây mới. Anh dự kiến rào quanh ba cạnh của khu đất hình chữ nhật này bằng lưới thép, cạnh\ncòn lại (chiều dài) sẽ tận dụng bức tường có sẵn (Hình vẽ). Do điều kiện địa lí, chiều rộng khu đất không\nvượt quá 15 m, hỏi chiều rộng của khu đất này bằng bao nhiêu để tổng chiều dài lưới thép cần dùng là ngắn\nnhất (nghĩa là chi phí rào lưới thép thấp nhất)?\n\n![Hình nguồn](assets/q0041/question-00-figure-00.png)",
+            "choices": [],
+            "blocks": [
+              {
+                "kind": "TRANSCRIBED_TEXT_DRAFT",
+                "bbox": [
+                  0,
+                  23.212,
+                  612.0,
+                  285.188
+                ],
+                "markdown": "Bài 41. Anh Nam có một mảnh đất rộng và muốn dành ra một khu đất hình chữ nhật có diện tích $200 m^{2}$  để\ntrồng vài loại cây mới. Anh dự kiến rào quanh ba cạnh của khu đất hình chữ nhật này bằng lưới thép, cạnh\ncòn lại (chiều dài) sẽ tận dụng bức tường có sẵn (Hình vẽ). Do điều kiện địa lí, chiều rộng khu đất không\nvượt quá 15 m, hỏi chiều rộng của khu đất này bằng bao nhiêu để tổng chiều dài lưới thép cần dùng là ngắn\nnhất (nghĩa là chi phí rào lưới thép thấp nhất)?"
+              },
+              {
+                "kind": "FIGURE",
+                "bbox": [
+                  139.175,
+                  101.844,
+                  477.276,
+                  272.694
+                ],
+                "markdown": "![Hình nguồn](assets/q0041/question-00-figure-00.png)"
+              }
+            ],
+            "coverage": {
+              "method": "FONT_STYLE_AND_SYMBOL_HEURISTIC_NOT_FORMULA_RECALL",
+              "suspect_glyphs": 11,
+              "covered_suspect_glyphs": 1,
+              "uncovered_suspect_glyph_keys": [
+                "p0172-font-l0002:15",
+                "p0172-font-l0002:38",
+                "p0172-font-l0002:39",
+                "p0172-font-l0002:41",
+                "p0172-font-l0002:42",
+                "p0172-font-l0002:43",
+                "p0172-font-l0002:45",
+                "p0172-font-l0002:6",
+                "p0172-font-l0004:37",
+                "p0172-font-l0004:4"
+              ],
+              "unmapped_source_rows": 0,
+              "source_glyphs": 363,
+              "complete_formula_recall_established": false
+            },
+            "source_errors": [],
+            "visual_flags": [
+              "EMBEDDED_IMAGE_REQUIRES_SOURCE_IMAGE",
+              "UNCOVERED_SUSPECT_MATH_GLYPHS"
+            ]
+          }
+        ],
+        "solution": [
+          {
+            "page_number": 172,
+            "bbox": [
+              0,
+              296.716,
+              612.0,
+              643.252
+            ],
+            "source_asset": "assets/q0041/solution-00-source.png",
+            "source_asset_sha256": "281e7fd6ebbb4703ad24d1c90efc4f9d1492696f1d5289d30f6acd1e000dff23",
+            "markdown": "Gọi $x (m)$  là chiều rộng của khu đất hình chữ nhật cần rào.\nTheo đề bài, ta có $0 < x \\leq  15$    .\nDiện tích khu đất này là $200 (m^{2})$  nên chiều dài của khu đất là $(m)$.\n$\\frac{200}{x}$\nTổng chiều dài lưới thép rào quanh khu đất là $L(x)=2x+\\frac{200}{x}(m)$    .\nXét hàm số: $L(x)=2x+\\frac{200}{x},x\\in(0;15]$\nTa có: ![Công thức cần đọc từ ảnh](assets/q0041/solution-00-formula-007.png)\nTa có: lim ![Công thức cần đọc từ ảnh](assets/q0041/solution-00-formula-008.png)\n$x→0^{+}$\n![Công thức cần đọc từ ảnh](assets/q0041/solution-00-formula-010.png)  ;\n$L(15)=$  .\nBảng biến thiên:\nDựa vào bảng biến thiên, chiều dài lưới thép ngắn nhất là 40 m khi chiều rộng khu đất này là $x = 10 (m)$    và\nchiều dài là $= 20 (m)$  .\n$\\frac{200}{10}$\n\n![Hình nguồn](assets/q0041/solution-00-figure-00.png)",
+            "choices": [],
+            "blocks": [
+              {
+                "kind": "TRANSCRIBED_TEXT_DRAFT",
+                "bbox": [
+                  0,
+                  296.716,
+                  612.0,
+                  643.252
+                ],
+                "markdown": "Gọi $x (m)$  là chiều rộng của khu đất hình chữ nhật cần rào.\nTheo đề bài, ta có $0 < x \\leq  15$    .\nDiện tích khu đất này là $200 (m^{2})$  nên chiều dài của khu đất là $(m)$.\n$\\frac{200}{x}$\nTổng chiều dài lưới thép rào quanh khu đất là $L(x)=2x+\\frac{200}{x}(m)$    .\nXét hàm số: $L(x)=2x+\\frac{200}{x},x\\in(0;15]$\nTa có: ![Công thức cần đọc từ ảnh](assets/q0041/solution-00-formula-007.png)\nTa có: lim ![Công thức cần đọc từ ảnh](assets/q0041/solution-00-formula-008.png)\n$x→0^{+}$\n![Công thức cần đọc từ ảnh](assets/q0041/solution-00-formula-010.png)  ;\n$L(15)=$  .\nBảng biến thiên:\nDựa vào bảng biến thiên, chiều dài lưới thép ngắn nhất là 40 m khi chiều rộng khu đất này là $x = 10 (m)$    và\nchiều dài là $= 20 (m)$  .\n$\\frac{200}{10}$"
+              },
+              {
+                "kind": "FIGURE",
+                "bbox": [
+                  327.025,
+                  459.656,
+                  563.275,
+                  549.656
+                ],
+                "markdown": "![Hình nguồn](assets/q0041/solution-00-figure-00.png)"
+              }
+            ],
+            "coverage": {
+              "method": "FONT_STYLE_AND_SYMBOL_HEURISTIC_NOT_FORMULA_RECALL",
+              "suspect_glyphs": 90,
+              "covered_suspect_glyphs": 90,
+              "uncovered_suspect_glyph_keys": [],
+              "unmapped_source_rows": 0,
+              "source_glyphs": 412,
+              "complete_formula_recall_established": false
+            },
+            "source_errors": [],
+            "visual_flags": [
+              "EMBEDDED_IMAGE_REQUIRES_SOURCE_IMAGE",
+              "FORMULA_CANDIDATES_HELD_FOR_SOURCE_REVIEW"
+            ]
+          }
+        ]
+      },
+      "content": "Bài 41. Anh Nam dành khu đất hình chữ nhật diện tích $200\\,\\mathrm{m}^2$ để trồng cây. Ba cạnh được rào bằng lưới thép; cạnh chiều dài còn lại tận dụng tường có sẵn. Chiều rộng không vượt quá 15 m. Tìm chiều rộng để tổng chiều dài lưới thép cần dùng nhỏ nhất. Trình bày các bước giải.",
+      "reference_solution": "Gọi $x$ (m) là chiều rộng, $0<x\\le15$. Chiều dài là $200/x$ (m).\nTổng chiều dài lưới thép: $L(x)=2x+200/x$.\n$L'(x)=2-200/x^2$. Trong miền xét, $L'(x)=0\\Leftrightarrow x=10$.\n$L'(x)<0$ trên $(0;10)$, $L'(x)>0$ trên $(10;15)$.\n$\\lim_{x\\to0^+}L(x)=+\\infty$, $L(10)=40$, $L(15)=130/3$.\nVậy chiều rộng tối ưu là 10 m, chiều dài 20 m; lưới thép ngắn nhất 40 m."
+    },
+    {
+      "id": "c0000000-0000-0000-0000-000000000106",
+      "title": "Chi phí xuất bản trung bình nhỏ nhất",
+      "source_question_id": "a287830565130826:q39:n825",
+      "source_pdf_sha256": "a287830565130826c0f48c8c43ffa3dcef4b6c57477e8621650800506fe72e56",
+      "source_fragments": {
+        "question": [
+          {
+            "page_number": 171,
+            "bbox": [
+              0,
+              23.212,
+              612.0,
+              188.288
+            ],
+            "source_asset": "assets/q0040/question-00-source.png",
+            "source_asset_sha256": "a6b8343b6e609fc2573454ed5239bc34f56b40f018217bffabf78a1646f7854d",
+            "markdown": "Bài 39. Giả sử chi phí cho xuất bản $x$ cuốn tạp chí (gồm: lương cán bộ, công nhân viên, giấy in,…) được\ncho bởi công thức:\n$C(x) = 0,0001x^{2} - 0,2x + 10 000$       ,\ntrong đó $C(x)$ được tính theo đơn vị là vạn đồng. Chi phí phát hành cho mỗi cuốn là 4 nghìn đồng.\n$a)$ Tính tổng chi phí $T(x) ($ xuất bản và phát hành) cho $x$ cuốn tạp chí.\n$\\frac{T(x)}{x}$\n$b)$ Tỉ số $M(x)=$  được gọi là chi phí trung bình cho một cuốn tạp chí khi xuất bản $x$ cuốn. Tính $M(x)$\ntheo $x$ và tìm số lượng tạp chí cần xuất bản sao cho chi phí trung bình là thấp nhất, biết rằng nhu cầu hiện\ntại xuất bản không quá 30 000 cuốn. Khi đó chi phí trung bình cho một cuốn tạp chí là bao nhiêu?",
+            "choices": [],
+            "blocks": [
+              {
+                "kind": "TRANSCRIBED_TEXT_DRAFT",
+                "bbox": [
+                  0,
+                  23.212,
+                  612.0,
+                  188.288
+                ],
+                "markdown": "Bài 39. Giả sử chi phí cho xuất bản $x$ cuốn tạp chí (gồm: lương cán bộ, công nhân viên, giấy in,…) được\ncho bởi công thức:\n$C(x) = 0,0001x^{2} - 0,2x + 10 000$       ,\ntrong đó $C(x)$ được tính theo đơn vị là vạn đồng. Chi phí phát hành cho mỗi cuốn là 4 nghìn đồng.\n$a)$ Tính tổng chi phí $T(x) ($ xuất bản và phát hành) cho $x$ cuốn tạp chí.\n$\\frac{T(x)}{x}$\n$b)$ Tỉ số $M(x)=$  được gọi là chi phí trung bình cho một cuốn tạp chí khi xuất bản $x$ cuốn. Tính $M(x)$\ntheo $x$ và tìm số lượng tạp chí cần xuất bản sao cho chi phí trung bình là thấp nhất, biết rằng nhu cầu hiện\ntại xuất bản không quá 30 000 cuốn. Khi đó chi phí trung bình cho một cuốn tạp chí là bao nhiêu?"
+              }
+            ],
+            "coverage": {
+              "method": "FONT_STYLE_AND_SYMBOL_HEURISTIC_NOT_FORMULA_RECALL",
+              "suspect_glyphs": 42,
+              "covered_suspect_glyphs": 39,
+              "uncovered_suspect_glyph_keys": [
+                "p0171-font-l0000:38",
+                "p0171-font-l0000:75",
+                "p0171-font-l0004:38"
+              ],
+              "unmapped_source_rows": 0,
+              "source_glyphs": 487,
+              "complete_formula_recall_established": false
+            },
+            "source_errors": [],
+            "visual_flags": [
+              "UNCOVERED_SUSPECT_MATH_GLYPHS"
+            ]
+          }
+        ],
+        "solution": [
+          {
+            "page_number": 171,
+            "bbox": [
+              0,
+              199.816,
+              612.0,
+              564.832
+            ],
+            "source_asset": "assets/q0040/solution-00-source.png",
+            "source_asset_sha256": "f0865ef2e7dc9af405fc34173118e992d07622b8110a9288f9dede18ebecfb4a",
+            "markdown": "$a)$ Chi phí phát hành cho mỗi cuốn là 4 nghìn đồng, tức là 0,4 vạn đồng. Suy ra chi phí phát hành cho $x$ cuốn\nlà $0,4x ($ vạn đồng).\nTheo đề bài, ta có tổng chi phí xuất bản và phát hành cho $x$ cuốn tạp chí là:\n$T(x) = C(x) + 0,4x = 0,0001x^{2} + 0,2x + 10 000$           , với $x > 0$  .\n$b)$ Ta có: $M(x)=\\frac{T(x)}{x}=0,0001x+0,2+$\n$\\frac{10000}{x}$\nXét hàm số $f(x)=0,0001x+0,2+$      với $0 < x \\leq  30 000$     .\n$\\frac{10000}{x}$\n![Công thức cần đọc từ ảnh](assets/q0040/solution-00-formula-012.png)             .\nlim $f (x) = +\\infty $\n$x→0^{+}$\nBảng biến thiên:\nDựa vào bảng biến thiên, ta thấy giá trị của $M(x)$ nhỏ nhất khi $x = 10 000$   .\nVậy số lượng tạp chí cần xuất bản sao cho chi phí trung bình thấp nhất là $x = 10 000 ($    cuốn).\nChi phí trung bình cho một cuốn tạp chí khi xuất bản 10 000 cuốn là: $M(10 000) = 2,2 ($    vạn đồng$) = 22 000$\n(đồng).\n\n![Hình nguồn](assets/q0040/solution-00-figure-00.png)",
+            "choices": [],
+            "blocks": [
+              {
+                "kind": "TRANSCRIBED_TEXT_DRAFT",
+                "bbox": [
+                  0,
+                  199.816,
+                  612.0,
+                  564.832
+                ],
+                "markdown": "$a)$ Chi phí phát hành cho mỗi cuốn là 4 nghìn đồng, tức là 0,4 vạn đồng. Suy ra chi phí phát hành cho $x$ cuốn\nlà $0,4x ($ vạn đồng).\nTheo đề bài, ta có tổng chi phí xuất bản và phát hành cho $x$ cuốn tạp chí là:\n$T(x) = C(x) + 0,4x = 0,0001x^{2} + 0,2x + 10 000$           , với $x > 0$  .\n$b)$ Ta có: $M(x)=\\frac{T(x)}{x}=0,0001x+0,2+$\n$\\frac{10000}{x}$\nXét hàm số $f(x)=0,0001x+0,2+$      với $0 < x \\leq  30 000$     .\n$\\frac{10000}{x}$\n![Công thức cần đọc từ ảnh](assets/q0040/solution-00-formula-012.png)             .\nlim $f (x) = +\\infty $\n$x→0^{+}$\nBảng biến thiên:\nDựa vào bảng biến thiên, ta thấy giá trị của $M(x)$ nhỏ nhất khi $x = 10 000$   .\nVậy số lượng tạp chí cần xuất bản sao cho chi phí trung bình thấp nhất là $x = 10 000 ($    cuốn).\nChi phí trung bình cho một cuốn tạp chí khi xuất bản 10 000 cuốn là: $M(10 000) = 2,2 ($    vạn đồng$) = 22 000$\n(đồng)."
+              },
+              {
+                "kind": "FIGURE",
+                "bbox": [
+                  162.0,
+                  413.666,
+                  454.5,
+                  483.416
+                ],
+                "markdown": "![Hình nguồn](assets/q0040/solution-00-figure-00.png)"
+              }
+            ],
+            "coverage": {
+              "method": "FONT_STYLE_AND_SYMBOL_HEURISTIC_NOT_FORMULA_RECALL",
+              "suspect_glyphs": 100,
+              "covered_suspect_glyphs": 96,
+              "uncovered_suspect_glyph_keys": [
+                "p0171-font-l0012:14",
+                "p0171-font-l0028:69",
+                "p0171-font-l0030:0",
+                "p0171-font-l0030:5"
+              ],
+              "unmapped_source_rows": 0,
+              "source_glyphs": 559,
+              "complete_formula_recall_established": false
+            },
+            "source_errors": [],
+            "visual_flags": [
+              "EMBEDDED_IMAGE_REQUIRES_SOURCE_IMAGE",
+              "FORMULA_CANDIDATES_HELD_FOR_SOURCE_REVIEW",
+              "UNCOVERED_SUSPECT_MATH_GLYPHS"
+            ]
+          }
+        ]
+      },
+      "content": "Bài 39. Chi phí xuất bản $x$ cuốn tạp chí là $C(x)=0{,}0001x^2-0{,}2x+10000$ (vạn đồng). Chi phí phát hành mỗi cuốn là 4 nghìn đồng.\na) Tính tổng chi phí $T(x)$ xuất bản và phát hành.\nb) Tính chi phí trung bình $M(x)=T(x)/x$. Tìm số lượng cần xuất bản để chi phí trung bình nhỏ nhất, biết không quá 30000 cuốn. Chi phí trung bình nhỏ nhất là bao nhiêu?",
+      "reference_solution": "a) Đổi 4 nghìn đồng thành $0{,}4$ vạn đồng. Khi đó $T(x)=C(x)+0{,}4x=0{,}0001x^2+0{,}2x+10000$.\nb) $M(x)=0{,}0001x+0{,}2+10000/x$, $0<x\\le30000$.\n$M'(x)=0{,}0001-10000/x^2$. Trong miền xét, $M'(x)=0\\Leftrightarrow x=10000$.\n$M'(x)<0$ khi $0<x<10000$; $M'(x)>0$ khi $10000<x\\le30000$.\nVậy cần xuất bản 10000 cuốn. $M(10000)=2{,}2$ vạn đồng, tức 22000 đồng/cuốn."
+    },
+    {
+      "id": "c0000000-0000-0000-0000-000000000107",
+      "title": "Nồng độ muối và tiệm cận ngang",
+      "source_question_id": "a287830565130826:q16:n589",
+      "source_pdf_sha256": "a287830565130826c0f48c8c43ffa3dcef4b6c57477e8621650800506fe72e56",
+      "source_fragments": {
+        "question": [
+          {
+            "page_number": 124,
+            "bbox": [
+              0,
+              347.992,
+              612.0,
+              505.724
+            ],
+            "source_asset": "assets/q0021/question-00-source.png",
+            "source_asset_sha256": "0a1cefa31d357c0fa2baa1c0be9de88a18fd796498c810181451666280437286",
+            "markdown": "Bài 16. Một bể chứa 5 000 lít nước tinh khiết. Người ta bơm vào bể đó nước muối có nồng độ 30 gam muối\ncho mỗi lít nước với tốc độ 25 lít/phút.\n$a)$ Chứng tỏ nồng độ muối trong bể sau t phút (tính bằng tỉ số của khối lượng muối trong bể và thể tích\nnước trong bể, đơn vị: gam/lít) là $f(t)=$   .\n$\\frac{30t}{200+t}$\n$b)$ Xem $y = f(t)$   là một hàm số xác định trên nửa khoảng $[0 ; + \\infty )$   , hãy tìm tiệm cận ngang của đồ thị hàm\nsố đó.\n$c)$ Nêu nhận xét về nồng độ muối trong bể sau thời gian t ngày càng lớn.",
+            "choices": [],
+            "blocks": [
+              {
+                "kind": "TRANSCRIBED_TEXT_DRAFT",
+                "bbox": [
+                  0,
+                  347.992,
+                  612.0,
+                  505.724
+                ],
+                "markdown": "Bài 16. Một bể chứa 5 000 lít nước tinh khiết. Người ta bơm vào bể đó nước muối có nồng độ 30 gam muối\ncho mỗi lít nước với tốc độ 25 lít/phút.\n$a)$ Chứng tỏ nồng độ muối trong bể sau t phút (tính bằng tỉ số của khối lượng muối trong bể và thể tích\nnước trong bể, đơn vị: gam/lít) là $f(t)=$   .\n$\\frac{30t}{200+t}$\n$b)$ Xem $y = f(t)$   là một hàm số xác định trên nửa khoảng $[0 ; + \\infty )$   , hãy tìm tiệm cận ngang của đồ thị hàm\nsố đó.\n$c)$ Nêu nhận xét về nồng độ muối trong bể sau thời gian t ngày càng lớn."
+              }
+            ],
+            "coverage": {
+              "method": "FONT_STYLE_AND_SYMBOL_HEURISTIC_NOT_FORMULA_RECALL",
+              "suspect_glyphs": 22,
+              "covered_suspect_glyphs": 18,
+              "uncovered_suspect_glyph_keys": [
+                "p0124-font-l0029:26",
+                "p0124-font-l0030:34",
+                "p0124-font-l0032:21",
+                "p0124-font-l0032:25"
+              ],
+              "unmapped_source_rows": 0,
+              "source_glyphs": 368,
+              "complete_formula_recall_established": false
+            },
+            "source_errors": [],
+            "visual_flags": [
+              "UNCOVERED_SUSPECT_MATH_GLYPHS"
+            ]
+          }
+        ],
+        "solution": [
+          {
+            "page_number": 124,
+            "bbox": [
+              0,
+              517.396,
+              612.0,
+              767.974
+            ],
+            "source_asset": "assets/q0021/solution-00-source.png",
+            "source_asset_sha256": "dc2f797ef5257ed8b9d35c60bf96bc14328d3e382f091cbcfe3d19869811fafb",
+            "markdown": "$a)$ Sau 1 phút, ta có: khối lượng muối trong bể là 25 . 30 . $t = 750t (gam)$   ; thể tích của lượng nước trong bể là\n$5 000 + 25t ($    lít). Vậy nồng độ muối sau 1 phút là\n$f(t)=\\frac{750t}{5000+25t}=\\frac{30t}{200+t}(gam/$    lít).\n$b)$ Ta có: lim ![Công thức cần đọc từ ảnh](assets/q0021/solution-00-formula-004.png)\n$t→+\\infty $\nVậy đường thẳng $y = 30$   là tiệm cận ngang của đồ thị hàm số $f(t)$.\n$c)$ Ta có đồ thị hàm số $y = f(t)$   nhận đường thẳng $y = 30$   làm tiệm cận ngang, tức là khi t càng lớn thì nồng\nđộ muối trong bể sẽ tiến gần đến mức $30 ($ gam/lít). Lúc đó, nồng độ muối trong bể sẽ gần như bằng nồng độ\nmuối trong nước muối được bơm vào bể.\n\n![Hình nguồn](assets/q0021/solution-00-figure-00.png)",
+            "choices": [],
+            "blocks": [
+              {
+                "kind": "TRANSCRIBED_TEXT_DRAFT",
+                "bbox": [
+                  0,
+                  517.396,
+                  612.0,
+                  767.974
+                ],
+                "markdown": "$a)$ Sau 1 phút, ta có: khối lượng muối trong bể là 25 . 30 . $t = 750t (gam)$   ; thể tích của lượng nước trong bể là\n$5 000 + 25t ($    lít). Vậy nồng độ muối sau 1 phút là\n$f(t)=\\frac{750t}{5000+25t}=\\frac{30t}{200+t}(gam/$    lít).\n$b)$ Ta có: lim ![Công thức cần đọc từ ảnh](assets/q0021/solution-00-formula-004.png)\n$t→+\\infty $\nVậy đường thẳng $y = 30$   là tiệm cận ngang của đồ thị hàm số $f(t)$.\n$c)$ Ta có đồ thị hàm số $y = f(t)$   nhận đường thẳng $y = 30$   làm tiệm cận ngang, tức là khi t càng lớn thì nồng\nđộ muối trong bể sẽ tiến gần đến mức $30 ($ gam/lít). Lúc đó, nồng độ muối trong bể sẽ gần như bằng nồng độ\nmuối trong nước muối được bơm vào bể."
+              },
+              {
+                "kind": "FIGURE",
+                "bbox": [
+                  393.65,
+                  554.408,
+                  568.1,
+                  663.158
+                ],
+                "markdown": "![Hình nguồn](assets/q0021/solution-00-figure-00.png)"
+              }
+            ],
+            "coverage": {
+              "method": "FONT_STYLE_AND_SYMBOL_HEURISTIC_NOT_FORMULA_RECALL",
+              "suspect_glyphs": 65,
+              "covered_suspect_glyphs": 61,
+              "uncovered_suspect_glyph_keys": [
+                "p0124-font-l0039:12",
+                "p0124-font-l0041:14",
+                "p0124-font-l0048:34",
+                "p0124-font-l0048:38"
+              ],
+              "unmapped_source_rows": 0,
+              "source_glyphs": 459,
+              "complete_formula_recall_established": false
+            },
+            "source_errors": [],
+            "visual_flags": [
+              "EMBEDDED_IMAGE_REQUIRES_SOURCE_IMAGE",
+              "FORMULA_CANDIDATES_HELD_FOR_SOURCE_REVIEW",
+              "UNCOVERED_SUSPECT_MATH_GLYPHS"
+            ]
+          }
+        ]
+      },
+      "content": "Bài 16. Một bể chứa 5000 lít nước tinh khiết. Bơm nước muối nồng độ 30 gam/lít vào bể với tốc độ 25 lít/phút.\na) Chứng tỏ nồng độ muối sau $t$ phút là $f(t)=\\frac{30t}{200+t}$ (gam/lít).\nb) Với $t\\in[0;+\\infty)$, tìm tiệm cận ngang của đồ thị $y=f(t)$.\nc) Nhận xét nồng độ muối khi thời gian ngày càng lớn.",
+      "reference_solution": "a) Sau $t$ phút, khối lượng muối là $25\\cdot30t=750t$ gam; thể tích nước là $5000+25t$ lít.\nNồng độ $f(t)=\\frac{750t}{5000+25t}=\\frac{30t}{200+t}$ gam/lít.\nb) $\\lim_{t\\to+\\infty}\\frac{30t}{200+t}=\\lim_{t\\to+\\infty}(30-\\frac{6000}{200+t})=30$.\nVậy $y=30$ là tiệm cận ngang.\nc) Khi $t$ càng lớn, nồng độ muối tiến gần 30 gam/lít, là nồng độ nước muối được bơm vào."
+    },
+    {
+      "id": "c0000000-0000-0000-0000-000000000108",
+      "title": "Khảo sát lợi nhuận nghề dệt",
+      "source_question_id": "a287830565130826:q9:n784",
+      "source_pdf_sha256": "a287830565130826c0f48c8c43ffa3dcef4b6c57477e8621650800506fe72e56",
+      "source_fragments": {
+        "question": [
+          {
+            "page_number": 153,
+            "bbox": [
+              0,
+              23.212,
+              612.0,
+              179.228
+            ],
+            "source_asset": "assets/q0027/question-00-source.png",
+            "source_asset_sha256": "feaea4953fee8bc2e12d3a1e036ba3f301d7d850bca3a316685e117388062c71",
+            "markdown": "Ví dụ 9. Một hộ làm nghề dệt vải lụa tơ tằm sản xuất mỗi ngày được $x$ mét vải lụa $(1 \\leq  x \\leq  18)$    . Tổng chi\nphí sản xuất $x$ mét vải lụa, tính bằng nghìn đồng, cho bởi hàm chi phí: $C (x) = x^{3} - 3x^{2} - 20x + 500$         .\nGiả sử hộ làm nghề dệt này bán hết sản phẩm mỗi ngày với giá 220 nghìn đồng/mét. Gọi $B (x)$  là số tiền\nbán được và $L (x)$  là lợi nhuận thu được khi bán $x$ mét vải lụa.\n$a)$ Hãy viết biểu thức tính $B (x)$  và $L (x)$  theo $x$.\n$b)$ Khảo sát và vẽ đồ thị của hàm số $L (x)$  trên $[1; 18]$ .\n$c)$ Hộ làm nghề dệt này cần sản xuất và bán ra mỗi ngày bao nhiêu mét vải lụa để thu được lợi nhuận tối\nđa? Tính lợi nhuận tối đa đó.",
+            "choices": [],
+            "blocks": [
+              {
+                "kind": "TRANSCRIBED_TEXT_DRAFT",
+                "bbox": [
+                  0,
+                  23.212,
+                  612.0,
+                  179.228
+                ],
+                "markdown": "Ví dụ 9. Một hộ làm nghề dệt vải lụa tơ tằm sản xuất mỗi ngày được $x$ mét vải lụa $(1 \\leq  x \\leq  18)$    . Tổng chi\nphí sản xuất $x$ mét vải lụa, tính bằng nghìn đồng, cho bởi hàm chi phí: $C (x) = x^{3} - 3x^{2} - 20x + 500$         .\nGiả sử hộ làm nghề dệt này bán hết sản phẩm mỗi ngày với giá 220 nghìn đồng/mét. Gọi $B (x)$  là số tiền\nbán được và $L (x)$  là lợi nhuận thu được khi bán $x$ mét vải lụa.\n$a)$ Hãy viết biểu thức tính $B (x)$  và $L (x)$  theo $x$.\n$b)$ Khảo sát và vẽ đồ thị của hàm số $L (x)$  trên $[1; 18]$ .\n$c)$ Hộ làm nghề dệt này cần sản xuất và bán ra mỗi ngày bao nhiêu mét vải lụa để thu được lợi nhuận tối\nđa? Tính lợi nhuận tối đa đó."
+              }
+            ],
+            "coverage": {
+              "method": "FONT_STYLE_AND_SYMBOL_HEURISTIC_NOT_FORMULA_RECALL",
+              "suspect_glyphs": 48,
+              "covered_suspect_glyphs": 47,
+              "uncovered_suspect_glyph_keys": [
+                "p0153-font-l0002:58"
+              ],
+              "unmapped_source_rows": 0,
+              "source_glyphs": 455,
+              "complete_formula_recall_established": false
+            },
+            "source_errors": [],
+            "visual_flags": [
+              "UNCOVERED_SUSPECT_MATH_GLYPHS"
+            ]
+          }
+        ],
+        "solution": [
+          {
+            "page_number": 153,
+            "bbox": [
+              0,
+              190.756,
+              612.0,
+              767.839
+            ],
+            "source_asset": "assets/q0027/solution-00-source.png",
+            "source_asset_sha256": "68d56c3cd10ea849608f9981749db61d0df289a5d5e1ad827b28c008f9d2e4cc",
+            "markdown": "$a)$ Khi bán $x$ mét vải lụa:\nSố tiền thu được là: $B (x) = 220x ($    nghìn đồng).\nLợi nhuận thu được là: $L (x) = B (x) - C (x) = -x^{3} + 3x^{2} + 240x - 500 ($                nghìn đồng).\n$b)$ Hàm số $L (x)$  xác định trên $[1; 18]$ .\n– Sự biến thiên:\n+ Chiều biến thiên:\nĐạo hàm $L '(x) = -3x^{2} + 6x + 240; L '(x) = 0 x = 10$               hoặc $x = -8 ($   loại).\nTrên khoảng $(1; 10), L '(x) > 0$      nên hàm số đồng biến trên khoảng này.\n⇔\nTrên khoảng $(10; 18), L '(x) < 0$      nên hàm số nghịch biến trên khoảng này.\n+ Cực trị: Hàm số $L(x)$ đạt cực đại tại $x = 10$   và $L = L(10) = 1 200$     .\nCĐ\n+ Bảng biến thiên:\n– Đồ thị:\nĐồ thị hàm số có điểm cực đại $(10; 1 200)$   và đi qua các điểm $(1; -258), (18; -1 040)$     như Hình 8.\n$y$\n1 400\n$(10;1200)$\n1 200\n1 000\n800\n600\n400\n200\n$-6-4-2O24681012141618x$\n$-200(1;-258)$\n$-400$\n$-600$\n$-800$\n$-1000(18;-1040)$\n$-1200$\n$c)$ Quan sát đồ thị hàm số, ta nhận thấy khi $x = 10$   thì hàm số đạt giá trị lớn nhất là 1 200.\nNhư vậy, hộ làm nghề dệt cần sản xuất và bán ra mỗi ngày 10 mét vải lụa để thu được lợi nhuận tối đa. Lợi\nnhuận tối đa này là 1 200 nghìn đồng.\n\n![Hình nguồn](assets/q0027/solution-00-figure-00.png)",
+            "choices": [],
+            "blocks": [
+              {
+                "kind": "TRANSCRIBED_TEXT_DRAFT",
+                "bbox": [
+                  0,
+                  190.756,
+                  612.0,
+                  767.839
+                ],
+                "markdown": "$a)$ Khi bán $x$ mét vải lụa:\nSố tiền thu được là: $B (x) = 220x ($    nghìn đồng).\nLợi nhuận thu được là: $L (x) = B (x) - C (x) = -x^{3} + 3x^{2} + 240x - 500 ($                nghìn đồng).\n$b)$ Hàm số $L (x)$  xác định trên $[1; 18]$ .\n– Sự biến thiên:\n+ Chiều biến thiên:\nĐạo hàm $L '(x) = -3x^{2} + 6x + 240; L '(x) = 0 x = 10$               hoặc $x = -8 ($   loại).\nTrên khoảng $(1; 10), L '(x) > 0$      nên hàm số đồng biến trên khoảng này.\n⇔\nTrên khoảng $(10; 18), L '(x) < 0$      nên hàm số nghịch biến trên khoảng này.\n+ Cực trị: Hàm số $L(x)$ đạt cực đại tại $x = 10$   và $L = L(10) = 1 200$     .\nCĐ\n+ Bảng biến thiên:\n– Đồ thị:\nĐồ thị hàm số có điểm cực đại $(10; 1 200)$   và đi qua các điểm $(1; -258), (18; -1 040)$     như Hình 8.\n$y$\n1 400\n$(10;1200)$\n1 200\n1 000\n800\n600\n400\n200\n$-6-4-2O24681012141618x$\n$-200(1;-258)$\n$-400$\n$-600$\n$-800$\n$-1000(18;-1040)$\n$-1200$\n$c)$ Quan sát đồ thị hàm số, ta nhận thấy khi $x = 10$   thì hàm số đạt giá trị lớn nhất là 1 200.\nNhư vậy, hộ làm nghề dệt cần sản xuất và bán ra mỗi ngày 10 mét vải lụa để thu được lợi nhuận tối đa. Lợi\nnhuận tối đa này là 1 200 nghìn đồng."
+              },
+              {
+                "kind": "FIGURE",
+                "bbox": [
+                  186.25,
+                  420.448,
+                  429.593,
+                  506.998
+                ],
+                "markdown": "![Hình nguồn](assets/q0027/solution-00-figure-00.png)"
+              }
+            ],
+            "coverage": {
+              "method": "FONT_STYLE_AND_SYMBOL_HEURISTIC_NOT_FORMULA_RECALL",
+              "suspect_glyphs": 130,
+              "covered_suspect_glyphs": 120,
+              "uncovered_suspect_glyph_keys": [
+                "p0153-font-l0010:35",
+                "p0153-font-l0011:59",
+                "p0153-font-l0013:0",
+                "p0153-font-l0014:0",
+                "p0153-font-l0015:48",
+                "p0153-font-l0017:0",
+                "p0153-font-l0019:0",
+                "p0153-font-l0020:0",
+                "p0153-font-l0021:0",
+                "p0153-font-l0022:0"
+              ],
+              "unmapped_source_rows": 0,
+              "source_glyphs": 759,
+              "complete_formula_recall_established": false
+            },
+            "source_errors": [],
+            "visual_flags": [
+              "TABLE_OR_SIGN_CHART_REQUIRES_SOURCE_IMAGE",
+              "EMBEDDED_IMAGE_REQUIRES_SOURCE_IMAGE",
+              "UNCOVERED_SUSPECT_MATH_GLYPHS"
+            ]
+          }
+        ]
+      },
+      "content": "Ví dụ 9. Một hộ dệt sản xuất mỗi ngày $x$ mét vải lụa, $1\\le x\\le18$. Chi phí $C(x)=x^3-3x^2-20x+500$ (nghìn đồng), giá bán 220 nghìn đồng/mét. Gọi $B(x)$ là doanh thu, $L(x)$ là lợi nhuận.\na) Viết $B(x)$ và $L(x)$.\nb) Khảo sát và vẽ đồ thị $L(x)$ trên $[1;18]$.\nc) Sản xuất và bán bao nhiêu mét mỗi ngày để lợi nhuận lớn nhất? Tính lợi nhuận đó.",
+      "reference_solution": "a) $B(x)=220x$; $L(x)=B(x)-C(x)=-x^3+3x^2+240x-500$ (nghìn đồng).\nb) Xét $x\\in[1;18]$. $L'(x)=-3x^2+6x+240=-3(x-10)(x+8)$.\n$L'(x)=0$ tại $x=10$ trong đoạn xét; nghiệm $-8$ bị loại.\nHàm tăng trên $(1;10)$, giảm trên $(10;18)$. $L(1)=-258$, $L(10)=1200$, $L(18)=-1040$.\nBảng biến thiên: từ $-258$ tăng đến $1200$ rồi giảm đến $-1040$. Đồ thị đi qua $(1;-258)$, $(10;1200)$ và $(18;-1040)$, có cực đại tại $(10;1200)$.\nc) Sản xuất và bán 10 mét/ngày cho lợi nhuận lớn nhất 1200 nghìn đồng. Phần vẽ hình cần đối chiếu đồ thị trong nguồn; không suy ra đã vẽ đúng chỉ từ các giá trị số."
+    },
+    {
+      "id": "c0000000-0000-0000-0000-000000000109",
+      "title": "Mô hình tăng trưởng nấm men",
+      "source_question_id": "a287830565130826:q24:n810",
+      "source_pdf_sha256": "a287830565130826c0f48c8c43ffa3dcef4b6c57477e8621650800506fe72e56",
+      "source_fragments": {
+        "question": [
+          {
+            "page_number": 164,
+            "bbox": [
+              0,
+              363.112,
+              612.0,
+              455.984
+            ],
+            "source_asset": "assets/q0033/question-00-source.png",
+            "source_asset_sha256": "4e82de535cfb51abda72276e634f8bbf22b1bdaf0639615a26501a177e2c13a6",
+            "markdown": "Bài 24. Giả sử số lượng của một quần thể nấm men tại môi trường nuôi cấy trong phòng thí nghiệm được\nmô hình hoá bằng hàm số ![Công thức cần đọc từ ảnh](assets/q0033/question-00-formula-000.png)    đó thời gian t được tính bằng giờ. Tại thời điểm ban đầu\n$t= 0$ , quần thể có 20 tế bào và tăng với tốc độ 12 tế bào/giờ. Tìm các giá trị của a và b. Theo mô hình này,\nđiều gì xảy ra với quần thể nấm men về lâu dài?",
+            "choices": [],
+            "blocks": [
+              {
+                "kind": "TRANSCRIBED_TEXT_DRAFT",
+                "bbox": [
+                  0,
+                  363.112,
+                  612.0,
+                  455.984
+                ],
+                "markdown": "Bài 24. Giả sử số lượng của một quần thể nấm men tại môi trường nuôi cấy trong phòng thí nghiệm được\nmô hình hoá bằng hàm số ![Công thức cần đọc từ ảnh](assets/q0033/question-00-formula-000.png)    đó thời gian t được tính bằng giờ. Tại thời điểm ban đầu\n$t= 0$ , quần thể có 20 tế bào và tăng với tốc độ 12 tế bào/giờ. Tìm các giá trị của a và b. Theo mô hình này,\nđiều gì xảy ra với quần thể nấm men về lâu dài?"
+              }
+            ],
+            "coverage": {
+              "method": "FONT_STYLE_AND_SYMBOL_HEURISTIC_NOT_FORMULA_RECALL",
+              "suspect_glyphs": 16,
+              "covered_suspect_glyphs": 15,
+              "uncovered_suspect_glyph_keys": [
+                "p0164-font-l0021:41"
+              ],
+              "unmapped_source_rows": 0,
+              "source_glyphs": 278,
+              "complete_formula_recall_established": false
+            },
+            "source_errors": [],
+            "visual_flags": [
+              "FORMULA_CANDIDATES_HELD_FOR_SOURCE_REVIEW",
+              "UNCOVERED_SUSPECT_MATH_GLYPHS"
+            ]
+          }
+        ],
+        "solution": [
+          {
+            "page_number": 164,
+            "bbox": [
+              0,
+              467.656,
+              612.0,
+              767.416
+            ],
+            "source_asset": "assets/q0033/solution-00-source.png",
+            "source_asset_sha256": "655cec555bb8c660389dc29cee78b67ffa0268a5c75ba7e438c04f401263e8c6",
+            "markdown": "Ta có: $P^{\\prime}(t)=\\frac{0,75ae^{-0.75t}}{\\left(b+e^{-0.75t}\\right)^{2}},t\\geq0$\n$= 20$\n⎪\nTheo đề bài, ta có: $P(0) = 20$   và ![Công thức cần đọc từ ảnh](assets/q0033/solution-00-formula-004.png)  . Do đó, ta có hệ phương trình: ⎨\n![Công thức cần đọc từ ảnh](assets/q0033/solution-00-formula-001.png)\n![Công thức cần đọc từ ảnh](assets/q0033/solution-00-formula-005.png)\n⎩\nGiải hệ phương trình này, ta được $a = 25$   và $b=$\n$\\frac{1}{4}$\nKhi đó, ![Công thức cần đọc từ ảnh](assets/q0033/solution-00-formula-009.png)      , tức là số lượng quần thể nấm men luôn tăng.\nTuy nhiên, do lim ![Công thức cần đọc từ ảnh](assets/q0033/solution-00-formula-010.png)    nên số lượng quần thể nấm men tăng nhưng không vượt quá\n$t→+\\infty $\n100 tế bào.",
+            "choices": [],
+            "blocks": [
+              {
+                "kind": "TRANSCRIBED_TEXT_DRAFT",
+                "bbox": [
+                  0,
+                  467.656,
+                  612.0,
+                  767.416
+                ],
+                "markdown": "Ta có: $P^{\\prime}(t)=\\frac{0,75ae^{-0.75t}}{\\left(b+e^{-0.75t}\\right)^{2}},t\\geq0$\n$= 20$\n⎪\nTheo đề bài, ta có: $P(0) = 20$   và ![Công thức cần đọc từ ảnh](assets/q0033/solution-00-formula-004.png)  . Do đó, ta có hệ phương trình: ⎨\n![Công thức cần đọc từ ảnh](assets/q0033/solution-00-formula-001.png)\n![Công thức cần đọc từ ảnh](assets/q0033/solution-00-formula-005.png)\n⎩\nGiải hệ phương trình này, ta được $a = 25$   và $b=$\n$\\frac{1}{4}$\nKhi đó, ![Công thức cần đọc từ ảnh](assets/q0033/solution-00-formula-009.png)      , tức là số lượng quần thể nấm men luôn tăng.\nTuy nhiên, do lim ![Công thức cần đọc từ ảnh](assets/q0033/solution-00-formula-010.png)    nên số lượng quần thể nấm men tăng nhưng không vượt quá\n$t→+\\infty $\n100 tế bào."
+              }
+            ],
+            "coverage": {
+              "method": "FONT_STYLE_AND_SYMBOL_HEURISTIC_NOT_FORMULA_RECALL",
+              "suspect_glyphs": 103,
+              "covered_suspect_glyphs": 100,
+              "uncovered_suspect_glyph_keys": [
+                "p0164-font-l0029:0",
+                "p0164-font-l0031:56",
+                "p0164-font-l0035:0"
+              ],
+              "unmapped_source_rows": 0,
+              "source_glyphs": 342,
+              "complete_formula_recall_established": false
+            },
+            "source_errors": [],
+            "visual_flags": [
+              "FORMULA_CANDIDATES_HELD_FOR_SOURCE_REVIEW",
+              "UNCOVERED_SUSPECT_MATH_GLYPHS"
+            ]
+          }
+        ]
+      },
+      "content": "Bài 24. Quần thể nấm men được mô hình hóa bởi $P(t)=\\frac{a}{b+e^{-0{,}75t}}$, $t\\ge0$ tính bằng giờ. Ban đầu có 20 tế bào và tốc độ tăng 12 tế bào/giờ. Tìm $a,b$. Theo mô hình, điều gì xảy ra về lâu dài? Trình bày các bước giải.",
+      "reference_solution": "$P'(t)=\\frac{0{,}75ae^{-0{,}75t}}{(b+e^{-0{,}75t})^2}$.\n$P(0)=20$ và $P'(0)=12$ nên $a/(b+1)=20$ và $0{,}75a/(b+1)^2=12$.\nGiải được $a=25$, $b=1/4$.\nKhi đó $P'(t)=\\frac{18{,}75e^{-0{,}75t}}{(1/4+e^{-0{,}75t})^2}>0$ với $t\\ge0$.\n$\\lim_{t\\to+\\infty}P(t)=25/(1/4)=100$. Quần thể tăng và tiến gần 100 tế bào, không vượt quá 100 theo mô hình."
+    },
+    {
+      "id": "c0000000-0000-0000-0000-000000000110",
+      "title": "Vận tốc và độ cao của vật",
+      "source_question_id": "a287830565130826:q23:n809",
+      "source_pdf_sha256": "a287830565130826c0f48c8c43ffa3dcef4b6c57477e8621650800506fe72e56",
+      "source_fragments": {
+        "question": [
+          {
+            "page_number": 164,
+            "bbox": [
+              0,
+              23.212,
+              612.0,
+              184.124
+            ],
+            "source_asset": "assets/q0032/question-00-source.png",
+            "source_asset_sha256": "97e7c9ae00f53d0fbb7693ebe8c90c53a209d2e061c4f3fdd53a763cdafb912c",
+            "markdown": "Bài 23. Khi bỏ qua sức cản của không khí, độ cao (mét) của một vật được phóng thẳng đứng lên trên từ\nđiểm cách mặt đất 2 m với vận tốc ban đầu $24,5 m/s$  là $h(t) = 2+24,5t - 4,9t^{2} (theo$      Vật lí đại cương, NXB\nGiáo dục Việt Nam, $2016)$.\n$a)$ Tìm vận tốc của vật sau 2 giây.\n$b)$ Khi nào vật đạt độ cao lớn nhất và độ cao lớn nhất đó là bao nhiêu?\n$c)$ Khi nào thì vật chạm đất và vận tốc của vật lúc chạm đất là bao nhiêu?",
+            "choices": [],
+            "blocks": [
+              {
+                "kind": "TRANSCRIBED_TEXT_DRAFT",
+                "bbox": [
+                  0,
+                  23.212,
+                  612.0,
+                  184.124
+                ],
+                "markdown": "Bài 23. Khi bỏ qua sức cản của không khí, độ cao (mét) của một vật được phóng thẳng đứng lên trên từ\nđiểm cách mặt đất 2 m với vận tốc ban đầu $24,5 m/s$  là $h(t) = 2+24,5t - 4,9t^{2} (theo$      Vật lí đại cương, NXB\nGiáo dục Việt Nam, $2016)$.\n$a)$ Tìm vận tốc của vật sau 2 giây.\n$b)$ Khi nào vật đạt độ cao lớn nhất và độ cao lớn nhất đó là bao nhiêu?\n$c)$ Khi nào thì vật chạm đất và vận tốc của vật lúc chạm đất là bao nhiêu?"
+              }
+            ],
+            "coverage": {
+              "method": "FONT_STYLE_AND_SYMBOL_HEURISTIC_NOT_FORMULA_RECALL",
+              "suspect_glyphs": 39,
+              "covered_suspect_glyphs": 16,
+              "uncovered_suspect_glyph_keys": [
+                "p0164-font-l0000:37",
+                "p0164-font-l0000:41",
+                "p0164-font-l0001:63",
+                "p0164-font-l0001:65",
+                "p0164-font-l0001:66",
+                "p0164-font-l0001:70",
+                "p0164-font-l0001:71",
+                "p0164-font-l0001:74",
+                "p0164-font-l0001:75",
+                "p0164-font-l0001:77",
+                "p0164-font-l0001:78",
+                "p0164-font-l0001:79",
+                "p0164-font-l0002:0",
+                "p0164-font-l0002:1",
+                "p0164-font-l0002:10",
+                "p0164-font-l0002:11",
+                "p0164-font-l0002:12",
+                "p0164-font-l0002:13",
+                "p0164-font-l0002:3",
+                "p0164-font-l0002:4",
+                "p0164-font-l0002:6",
+                "p0164-font-l0002:7",
+                "p0164-font-l0002:8"
+              ],
+              "unmapped_source_rows": 0,
+              "source_glyphs": 314,
+              "complete_formula_recall_established": false
+            },
+            "source_errors": [],
+            "visual_flags": [
+              "UNCOVERED_SUSPECT_MATH_GLYPHS"
+            ]
+          }
+        ],
+        "solution": [
+          {
+            "page_number": 164,
+            "bbox": [
+              0,
+              195.796,
+              612.0,
+              363.112
+            ],
+            "source_asset": "assets/q0032/solution-00-source.png",
+            "source_asset_sha256": "32bd3b5e207859b15e6ce124cda571330fe8ef0e47bd8456eb4ab3f8f3c4b3a3",
+            "markdown": "$a)$ Theo ý nghĩa cơ học của đạo hàm, vận tốc của vật là ![Công thức cần đọc từ ảnh](assets/q0032/solution-00-formula-001.png)     .\nDo đó, vận tốc của vật sau 2 giây là $v(2) =24,5-9,8.2=4,9 (m/s)$  .\n$b)$ Vì $h(t)$ là hàm số bậc hai có hệ số $a = -4,9 < 0$     nên $h(t)$ đạt giá trị lớn nhất tại $t=-\\frac{b}{2a}=\\frac{24,5}{2.4,9}=2,5$\n(giây). Khi đó, độ cao lớn nhất của vật là $h(2,5) = 32,625 (m)$   .\n$c)$ Vật chạm đất khi độ cao bằng 0, tức là $h=2+24,5t - 4,9t^{2} =0, hay t ≈ 5,08 ($        giây).\nVận tốc của vật lúc chạm đất là $v(5,08)=24,5 - 9,8.5,08 = -25,284 (m/s)$     .\nVận tốc âm chứng tỏ chiều chuyển động của vật là ngược chiều dương (hướng lên trên) của trục đã chọn\n(khi lập phương trình chuyển động của vật).",
+            "choices": [],
+            "blocks": [
+              {
+                "kind": "TRANSCRIBED_TEXT_DRAFT",
+                "bbox": [
+                  0,
+                  195.796,
+                  612.0,
+                  363.112
+                ],
+                "markdown": "$a)$ Theo ý nghĩa cơ học của đạo hàm, vận tốc của vật là ![Công thức cần đọc từ ảnh](assets/q0032/solution-00-formula-001.png)     .\nDo đó, vận tốc của vật sau 2 giây là $v(2) =24,5-9,8.2=4,9 (m/s)$  .\n$b)$ Vì $h(t)$ là hàm số bậc hai có hệ số $a = -4,9 < 0$     nên $h(t)$ đạt giá trị lớn nhất tại $t=-\\frac{b}{2a}=\\frac{24,5}{2.4,9}=2,5$\n(giây). Khi đó, độ cao lớn nhất của vật là $h(2,5) = 32,625 (m)$   .\n$c)$ Vật chạm đất khi độ cao bằng 0, tức là $h=2+24,5t - 4,9t^{2} =0, hay t ≈ 5,08 ($        giây).\nVận tốc của vật lúc chạm đất là $v(5,08)=24,5 - 9,8.5,08 = -25,284 (m/s)$     .\nVận tốc âm chứng tỏ chiều chuyển động của vật là ngược chiều dương (hướng lên trên) của trục đã chọn\n(khi lập phương trình chuyển động của vật)."
+              }
+            ],
+            "coverage": {
+              "method": "FONT_STYLE_AND_SYMBOL_HEURISTIC_NOT_FORMULA_RECALL",
+              "suspect_glyphs": 61,
+              "covered_suspect_glyphs": 54,
+              "uncovered_suspect_glyph_keys": [
+                "p0164-font-l0012:0",
+                "p0164-font-l0012:5",
+                "p0164-font-l0013:63",
+                "p0164-font-l0015:53",
+                "p0164-font-l0015:66",
+                "p0164-font-l0016:0",
+                "p0164-font-l0016:34"
+              ],
+              "unmapped_source_rows": 0,
+              "source_glyphs": 487,
+              "complete_formula_recall_established": false
+            },
+            "source_errors": [],
+            "visual_flags": [
+              "FORMULA_CANDIDATES_HELD_FOR_SOURCE_REVIEW",
+              "UNCOVERED_SUSPECT_MATH_GLYPHS"
+            ]
+          }
+        ]
+      },
+      "content": "Bài 23. Bỏ qua sức cản không khí, độ cao của một vật phóng thẳng đứng là $h(t)=2+24{,}5t-4{,}9t^2$ (mét), thời gian $t$ tính bằng giây.\na) Tìm vận tốc sau 2 giây.\nb) Khi nào vật đạt độ cao lớn nhất? Tính độ cao đó.\nc) Khi nào vật chạm đất? Tính vận tốc lúc chạm đất. Trình bày các bước giải.",
+      "reference_solution": "a) $v(t)=h'(t)=24{,}5-9{,}8t$; $v(2)=4{,}9$ m/s.\nb) $h'(t)=0\\Leftrightarrow t=2{,}5$ giây. Vì hệ số bậc hai âm nên đây là thời điểm đạt độ cao lớn nhất: $h(2{,}5)=32{,}625$ m.\nc) Vật chạm đất khi $2+24{,}5t-4{,}9t^2=0$. Chọn nghiệm dương $t=\\frac{24{,}5+\\sqrt{639{,}45}}{9{,}8}\\approx5{,}08$ giây.\nVận tốc chính xác tại nghiệm này là $-\\sqrt{639{,}45}$ m/s. Nguồn dùng thời gian đã làm tròn $5{,}08$ để tính $v(5{,}08)=-25{,}284$ m/s; cần chấp nhận sai số làm tròn phù hợp, không coi hai cách tính là mâu thuẫn. Vận tốc âm biểu thị chuyển động hướng xuống."
+    }
+  ]
+}

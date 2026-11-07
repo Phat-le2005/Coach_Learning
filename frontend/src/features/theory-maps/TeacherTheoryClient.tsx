@@ -165,6 +165,43 @@ export function TeacherTheoryClient({
     }
   }
 
+  async function handlePublish() {
+    if (!map || busy || nodes.length === 0) return;
+
+    let targetNodes = nodes;
+    if (!allReviewed) {
+      const confirmReview = window.confirm(
+        `Tài liệu này có ${nodes.length - reviewedCount}/${nodes.length} nhánh chưa duyệt học thuật.\n\nBạn có muốn tự động xác nhận duyệt tất cả ${nodes.length} nhánh và phát hành ngay cho học sinh không?`
+      );
+      if (!confirmReview) return;
+      targetNodes = nodes.map((n) => ({ ...n, reviewed: true }));
+      setNodes(targetNodes);
+    }
+
+    const parentIds = new Set(targetNodes.map((n) => n.parent_id).filter(Boolean));
+    targetNodes = targetNodes.map((n) => {
+      if (
+        n.kind !== "ROOT" &&
+        !parentIds.has(n.id) &&
+        !n.body.trim() &&
+        !(n.latex || "").trim() &&
+        (!n.learning_steps || n.learning_steps.length === 0)
+      ) {
+        return {
+          ...n,
+          body: `Xem nội dung kiến thức chi tiết tại trang ${n.source_page} của tài liệu PDF gốc.`,
+        };
+      }
+      return n;
+    });
+
+    await run(async () => {
+      let currentMap = map;
+      currentMap = await theoryApi.save(currentMap, targetNodes);
+      return await theoryApi.publish(currentMap);
+    }, "🚀 Đã duyệt học thuật và phát hành Sơ đồ tư duy thành công cho học sinh trong lớp!");
+  }
+
   async function handleDeleteDocument(target: TheorySummary | TheoryMap) {
     const isCurrent = map?.id === target.id;
     if (
@@ -527,9 +564,9 @@ export function TeacherTheoryClient({
                       <button
                         className={styles.buttonPublish}
                         type="button"
-                        disabled={busy || dirty || nodes.length === 0 || !allReviewed}
-                        onClick={() => void run(() => theoryApi.publish(map), "🚀 Đã phát hành Sơ đồ tư duy cho học sinh trong lớp!")}
-                        title={!allReviewed ? `Cần duyệt tất cả các nhánh học thuật trước khi phát hành (${reviewedCount}/${nodes.length} đã duyệt)` : "Phát hành tài liệu cho học sinh"}
+                        disabled={busy || nodes.length === 0}
+                        onClick={() => void handlePublish()}
+                        title={!allReviewed ? `Cần duyệt tất cả các nhánh học thuật trước khi phát hành (${reviewedCount}/${nodes.length} đã duyệt) - Bấm để duyệt & phát hành` : "Phát hành tài liệu cho học sinh"}
                       >
                         🚀 Phát hành cho học sinh
                       </button>

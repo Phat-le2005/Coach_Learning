@@ -8,7 +8,7 @@ import torch
 from .data import audit, resolve_metadata
 from .metrics import evaluate, CONTRACT
 from .model import load_model, UPSTREAM
-from .tracking import write_json, log_predictions, bundle
+from .tracking import write_json, log_predictions, bundle, prepare_wandb
 
 
 def final_test(output,upstream=UPSTREAM,device='cuda:0'):
@@ -50,6 +50,7 @@ def sync_test(output):
             from kaggle_secrets import UserSecretsClient
             os.environ['WANDB_API_KEY']=UserSecretsClient().get_secret('WANDB_API_KEY')
         except Exception: raise RuntimeError('Enable Kaggle Secret WANDB_API_KEY to sync the saved test result.') from None
+    prepare_wandb(output)
     import wandb
     info=json.loads((output/'run.json').read_text())
     if info['mode']!=cfg['wandb']['mode']: raise ValueError('WANDB_MODE_CHANGED')

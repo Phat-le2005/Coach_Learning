@@ -1,9 +1,11 @@
 """Require an ungraded submitted Assignment item before step-score publication."""
 
+from datetime import datetime, timezone
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.assignments.models import (
+    AssignmentDeliveryMode,
     AssignmentStudentQuestion,
     StudentAssignment,
     StudentAssignmentMaterialItem,
@@ -22,31 +24,54 @@ def require_pending_assignment_item(session: Session, attempt: SolutionAttempt) 
         or assigned.id != attempt.student_assignment_id
         or assigned.assignment_id != attempt.assignment_id
         or assigned.student_id != attempt.student_id
-        or assigned.status != StudentAssignmentStatus.SUBMITTED
     ):
+        raise ApplicationError(
+            409, "GRADING_ASSIGNMENT_NOT_SUBMITTED",
+            "The assigned work was not found.",
+        )
+
+    if assigned.status == StudentAssignmentStatus.GRADED:
         raise ApplicationError(
             409, "GRADING_ASSIGNMENT_NOT_SUBMITTED",
             "The assigned work must be submitted before step grading.",
         )
 
+    assignment = assigned.assignment
+    is_practice = (
+        assignment is not None
+        and getattr(assignment, "delivery_mode", None) == AssignmentDeliveryMode.PRACTICE
+    )
+    if not is_practice and assigned.status != StudentAssignmentStatus.SUBMITTED:
+        raise ApplicationError(
+            409, "GRADING_ASSIGNMENT_NOT_SUBMITTED",
+            "The assigned work must be submitted before step grading.",
+        )
+
+    if is_practice and assigned.status == StudentAssignmentStatus.NOT_STARTED:
+        assigned.status = StudentAssignmentStatus.IN_PROGRESS
+
+    now = datetime.now(timezone.utc)
+
     if attempt.source_kind == "CANONICAL":
         item = session.get(AssignmentStudentQuestion, attempt.assignment_student_question_id)
+        if item is not None and item.answered_at is None:
+            item.answered_at = now
         valid = (
             item is not None
             and item.student_assignment_id == assigned.id
             and item.question_id == attempt.question_id
-            and item.answered_at is not None
             and item.score is None
             and item.is_correct is None
         )
         source_kind = LearningEvidenceSourceKind.ASSIGNMENT_CANONICAL_QUESTION
     elif attempt.source_kind == "TEACHER_MATERIAL":
         item = session.get(StudentAssignmentMaterialItem, attempt.student_assignment_material_item_id)
+        if item is not None and item.answered_at is None:
+            item.answered_at = now
         valid = (
             item is not None
             and item.student_assignment_id == assigned.id
             and item.assignment_material_item_id == attempt.assignment_material_item_id
-            and item.answered_at is not None
             and item.score is None
             and item.is_correct is None
             and item.evaluation_status in {

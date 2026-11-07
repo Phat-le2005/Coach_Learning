@@ -845,8 +845,14 @@ class ClassAnalyticsService:
 
         asgn_completed = asgn_submitted + asgn_graded
         asgn_comp_rate = round(asgn_completed / asgn_assigned * 100.0, 1) if asgn_assigned > 0 else 0.0
-        asgn_scores = [sa.score for sa in student_assignments if sa.score is not None]
+        asgn_scores = [
+            (sa.score / 10.0 if sa.score > 1.0 else sa.score)
+            for sa in student_assignments
+            if sa.score is not None
+        ]
         asgn_avg_score = round(sum(asgn_scores) / len(asgn_scores), 2) if asgn_scores else None
+        if asgn_avg_score is not None:
+            asgn_avg_score = max(0.0, min(1.0, asgn_avg_score))
 
         assignment_completion = AssignmentCompletionRead(
             assignment_count=len(published_assignments),
@@ -2375,8 +2381,14 @@ class ClassAnalyticsService:
                 st_overdue += 1
         st_completed = st_submitted + st_graded
         st_comp_rate = round(st_completed / st_total_assigned * 100.0, 1) if st_total_assigned > 0 else 0.0
-        st_scores = [sa.score for sa, _ in st_asgn_rows if sa.score is not None]
+        st_scores = [
+            (sa.score / 10.0 if sa.score > 1.0 else sa.score)
+            for sa, _ in st_asgn_rows
+            if sa.score is not None
+        ]
         st_avg_score = round(sum(st_scores) / len(st_scores), 2) if st_scores else None
+        if st_avg_score is not None:
+            st_avg_score = max(0.0, min(1.0, st_avg_score))
         assignment_summary = StudentAssignmentSummaryRead(
             total_assigned=st_total_assigned,
             not_started_count=st_not_started,
@@ -2476,7 +2488,8 @@ class ClassAnalyticsService:
                 overdue_c += 1
 
             if sa.score is not None:
-                scores.append(sa.score)
+                norm_score = sa.score / 10.0 if sa.score > 1.0 else sa.score
+                scores.append(norm_score)
 
             student_rows.append(
                 AssignmentStudentRowRead(
@@ -2496,6 +2509,8 @@ class ClassAnalyticsService:
             else 0.0
         )
         avg_score = round(sum(scores) / len(scores), 2) if scores else None
+        if avg_score is not None:
+            avg_score = max(0.0, min(1.0, avg_score))
 
         # Target performance from LearningEvidenceEvent
         evidence_events = list(

@@ -46,9 +46,8 @@ test("resolves CONTINUE_REPAIR with adaptive repair session and phase", () => {
   assert.equal(resolved.targetCode, "MATH12-PT-01");
   assert.equal(resolved.repairCycleIndex, 2);
   assert.equal(resolved.phase, "PRACTICE");
-  assert.equal(resolved.hasAvailableRoute, false);
-  assert.equal(resolved.route, undefined);
-  assert.match(resolved.title, /vá mắt xích/iu);
+  assert.equal(resolved.hasAvailableRoute, true);
+    assert.match(resolved.title, /vá mắt xích/iu);
 });
 
 test("resolves CONTINUE_VERIFICATION with verification target", () => {
@@ -66,7 +65,7 @@ test("resolves CONTINUE_VERIFICATION with verification target", () => {
   assert.equal(resolved.resourceId, "verif-uuid-2");
   assert.equal(resolved.resourceType, "root_cause_verification");
   assert.equal(resolved.targetName, "Ngộ nhận dấu đạo hàm");
-  assert.equal(resolved.hasAvailableRoute, false);
+  assert.equal(resolved.hasAvailableRoute, true);
   assert.match(resolved.title, /xác minh/iu);
 });
 
@@ -82,7 +81,8 @@ test("resolves CONTINUE_ASSIGNMENT with assignment id", () => {
   assert.equal(resolved.type, "CONTINUE_ASSIGNMENT");
   assert.equal(resolved.resourceId, "assign-uuid-3");
   assert.equal(resolved.resourceType, "classroom_assignment");
-  assert.equal(resolved.hasAvailableRoute, false);
+  assert.equal(resolved.hasAvailableRoute, true);
+  assert.equal(resolved.route, "/student/assignments/assign-uuid-3");
   assert.match(resolved.title, /bài tập/iu);
 });
 
@@ -98,7 +98,8 @@ test("resolves COMPLETE_OVERDUE_ASSIGNMENT with urgency", () => {
   assert.equal(resolved.type, "COMPLETE_OVERDUE_ASSIGNMENT");
   assert.equal(resolved.resourceId, "assign-uuid-4");
   assert.equal(resolved.resourceType, "classroom_assignment");
-  assert.equal(resolved.hasAvailableRoute, false);
+  assert.equal(resolved.hasAvailableRoute, true);
+  assert.equal(resolved.route, "/student/assignments/assign-uuid-4");
   assert.match(resolved.title, /quá hạn/iu);
 });
 
@@ -114,7 +115,7 @@ test("resolves CONTINUE_PRACTICE with practice session", () => {
   assert.equal(resolved.type, "CONTINUE_PRACTICE");
   assert.equal(resolved.resourceId, "practice-uuid-5");
   assert.equal(resolved.resourceType, "practice_session");
-  assert.equal(resolved.hasAvailableRoute, false);
+  assert.equal(resolved.hasAvailableRoute, true);
   assert.match(resolved.title, /luyện tập/iu);
 });
 
@@ -132,7 +133,7 @@ test("resolves REVIEW_DUE with target and spaced repetition context", () => {
   assert.equal(resolved.type, "REVIEW_DUE");
   assert.equal(resolved.resourceId, "pt-uuid-6");
   assert.equal(resolved.targetName, "Cực trị hàm trùng phương");
-  assert.equal(resolved.hasAvailableRoute, false);
+  assert.equal(resolved.hasAvailableRoute, true);
   assert.match(resolved.title, /ôn tập/iu);
 });
 
@@ -148,7 +149,7 @@ test("resolves TODAY_TASK with study task id", () => {
   assert.equal(resolved.type, "TODAY_TASK");
   assert.equal(resolved.resourceId, "task-uuid-7");
   assert.equal(resolved.resourceType, "study_task");
-  assert.equal(resolved.hasAvailableRoute, false);
+  assert.equal(resolved.hasAvailableRoute, true);
   assert.match(resolved.title, /kế hoạch hôm nay/iu);
 });
 
@@ -168,7 +169,7 @@ test("resolves LEARNING_PRIORITY with algorithmic recommendation", () => {
   assert.equal(resolved.resourceId, "pt-uuid-8");
   assert.equal(resolved.targetName, "Tương giao đồ thị hàm số bậc ba");
   assert.equal(resolved.reasonCode, "WEAK_PROBLEM_TYPE");
-  assert.equal(resolved.hasAvailableRoute, false);
+  assert.equal(resolved.hasAvailableRoute, true);
   assert.match(resolved.title, /ưu tiên/iu);
 });
 
@@ -177,6 +178,6 @@ test("resolves IDLE safely with resting state", () => {
 
   assert.equal(resolved.type, "IDLE");
   assert.equal(resolved.resourceId, undefined);
-  assert.equal(resolved.hasAvailableRoute, false);
+  assert.equal(resolved.hasAvailableRoute, true);
   assert.match(resolved.title, /sẵn sàng/iu);
 });

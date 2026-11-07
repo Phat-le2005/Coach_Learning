@@ -19,6 +19,60 @@ T = TypeVar("T", bound=BaseModel)
 _MODEL_ID = re.compile(r"^[a-zA-Z0-9._-]+$")
 _ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models"
 
+import copy
+import logging
+
+logger = logging.getLogger(__name__)
+
+def _sanitize_schema_for_gemini(raw_schema: dict) -> dict:
+    """Sanitize OpenAPI/Pydantic schema for Gemini REST API requirements."""
+    defs = raw_schema.get("$defs", {}) or raw_schema.get("definitions", {})
+
+    def resolve(node):
+        if not isinstance(node, dict):
+            return node
+        if "$ref" in node:
+            ref = node["$ref"].split("/")[-1]
+            return resolve(copy.deepcopy(defs.get(ref, {})))
+        res = {}
+        for k, v in node.items():
+            if k in (
+                "$defs", "definitions", "title", "description", "default",
+                "additionalProperties", "minLength", "maxLength", "pattern",
+                "minItems", "maxItems", "minimum", "maximum",
+            ):
+                continue
+            if k == "anyOf":
+                non_null = [item for item in v if isinstance(item, dict) and item.get("type") != "null"]
+                has_null = len(non_null) < len(v)
+                if len(non_null) == 1:
+                    child = resolve(non_null[0])
+                    res.update(child)
+                    if has_null:
+                        res["nullable"] = True
+                    continue
+            if isinstance(v, dict):
+                res[k] = resolve(v)
+            elif isinstance(v, list):
+                res[k] = [resolve(i) for i in v]
+            else:
+                res[k] = v
+        return res
+
+    cleaned = resolve(copy.deepcopy(raw_schema))
+    try:
+        step_items = cleaned["properties"]["steps"]["items"]
+        props = step_items["properties"]
+        if "verdict" in props and "enum" not in props["verdict"]:
+            props["verdict"]["enum"] = ["VALID", "INVALID", "NEEDS_REVIEW"]
+        req = step_items.setdefault("required", [])
+        if "score" in props and "score" not in req:
+            req.append("score")
+    except Exception:
+        pass
+    return cleaned
+
+
 
 class GeminiProvider(AIProvider):
     """Use generateContent with JSON mode and strict local schema validation."""
@@ -31,7 +85,7 @@ class GeminiProvider(AIProvider):
 
     async def _request(
         self, messages: list[AIMessage], model: str, *, temperature: float,
-        timeout: float, json_mode: bool = False,
+        timeout: float, json_mode: bool = False, response_schema: dict | None = None,
     ) -> str:
         if not _MODEL_ID.fullmatch(model):
             raise AIConfigurationError("Invalid Gemini model identifier.")
@@ -50,17 +104,40 @@ class GeminiProvider(AIProvider):
             body["systemInstruction"] = {"parts": [{"text": system_text}]}
         if json_mode:
             body["generationConfig"] = {"temperature": temperature, "responseMimeType": "application/json"}
-        try:
-            async with httpx.AsyncClient(timeout=timeout, transport=self._transport) as client:
-                response = await client.post(
-                    f"{_ENDPOINT}/{model}:generateContent",
-                    headers={"x-goog-api-key": self._api_key, "Content-Type": "application/json"},
-                    json=body,
+        if response_schema is not None:
+            body["generationConfig"]["responseJsonSchema"] = _sanitize_schema_for_gemini(response_schema)
+        
+        models_to_try = [model]
+        if model != "gemini-3.1-flash-lite":
+            models_to_try.append("gemini-3.1-flash-lite")
+
+        response = None
+        for current_model in models_to_try:
+            try:
+                async with httpx.AsyncClient(timeout=timeout, transport=self._transport) as client:
+                    response = await client.post(
+                        f"{_ENDPOINT}/{current_model}:generateContent",
+                        headers={"x-goog-api-key": self._api_key, "Content-Type": "application/json"},
+                        json=body,
+                    )
+            except httpx.TimeoutException as exc:
+                if current_model == models_to_try[-1]:
+                    raise AITimeoutError("Gemini request timed out.") from exc
+                continue
+            except httpx.RequestError as exc:
+                if current_model == models_to_try[-1]:
+                    raise AIServiceUnavailableError("Gemini could not be reached.") from exc
+                continue
+
+            if response.status_code == 200:
+                break
+            if response.status_code in (503, 404, 400) and current_model != models_to_try[-1]:
+                logger.warning(
+                    "Gemini request for model %s returned %d (%s); falling back to %s",
+                    current_model, response.status_code, response.text[:120], models_to_try[-1]
                 )
-        except httpx.TimeoutException as exc:
-            raise AITimeoutError("Gemini request timed out.") from exc
-        except httpx.RequestError as exc:
-            raise AIServiceUnavailableError("Gemini could not be reached.") from exc
+                continue
+
         if response.status_code == 429:
             raise AIRateLimitError("Gemini quota is exhausted; try again later.")
         if response.status_code == 404:
@@ -72,7 +149,7 @@ class GeminiProvider(AIProvider):
         try:
             payload = response.json()
             parts = payload["candidates"][0]["content"]["parts"]
-            result = "".join(part["text"] for part in parts if "text" in part).strip()
+            result = "".join(part["text"] for part in parts if "text" in part and not part.get("thought")).strip()
         except (ValueError, KeyError, IndexError, TypeError) as exc:
             raise AIOutputValidationError("Gemini response contains no usable answer.") from exc
         if not result:
@@ -90,9 +167,8 @@ class GeminiProvider(AIProvider):
         self, messages: list[AIMessage], schema: type[T], model: str, *,
         temperature: float = 0.2, timeout: float = 30.0,
     ) -> T:
-        schema_text = json.dumps(schema.model_json_schema(), separators=(",", ":"))
-        guided = [*messages, AIMessage(role="user", content=f"Return one JSON object matching this schema: {schema_text}")]
-        raw = await self._request(guided, model, temperature=temperature, timeout=timeout, json_mode=True)
+        raw = await self._request(messages, model, temperature=temperature, timeout=timeout,
+                                  json_mode=True, response_schema=schema.model_json_schema())
         try:
             return schema.model_validate_json(raw)
         except ValueError as exc:
