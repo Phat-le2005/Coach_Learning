@@ -409,8 +409,7 @@ def run_submission(api,folder,cfg,no_wait=False):
         value=str(getattr(status,'status',status)).lower()
         if value!=previous:print('Kaggle status:',cfg['version'],value,flush=True);previous=value
         if 'complete' in value:
-            retry_read(lambda:api.kernels_output(ref,path=str(folder/'outputs'),force=True,quiet=True,file_pattern=RESULT_PATTERN),'Kaggle output download')
-            archive,index=verify_download(folder/'outputs')
+            archive,index=download_result(api,ref,folder/'outputs')
             print('Verified downloaded ZIP:',archive,flush=True)
             print('Result:',json.dumps(index),flush=True)
             return archive,index
@@ -428,6 +427,20 @@ def retry_read(operation,label,attempts=6):
             if (status is not None and 400<=status<500 and status!=429) or attempt==attempts-1:raise
             print(label+': connection interrupted; retrying the same read operation.',flush=True)
             time.sleep(10)
+
+
+def download_result(api,ref,outputs):
+    """Stop paging after the self-contained verified ZIP; skip thousands of SDK cache files."""
+    try:return verify_download(outputs)
+    except (RuntimeError,zipfile.BadZipFile,OSError,KeyError,ValueError):pass
+    token=''
+    while True:
+        _,token=retry_read(lambda:api.kernels_output(ref,path=str(outputs),force=True,quiet=True,
+            file_pattern=RESULT_PATTERN,page_size=100,page_token=token),'Kaggle output download')
+        try:return verify_download(outputs)
+        except RuntimeError as exc:
+            if str(exc)!='EXPECTED_ONE_RESULT_ZIP':raise
+        if not token:raise RuntimeError('RESULT_ARCHIVE_NOT_FOUND_IN_CLOUD_OUTPUTS')
 
 
 def runnable_trials(pending,active,limit):
@@ -473,9 +486,7 @@ def run_parallel_suite(api,folder,cfg,prepared,wandb_key=None):
             for child,trial in ready[:]:
                 ref=json.loads((child/'submission.json').read_text())['ref']
                 outputs=child/'outputs'
-                if not list(outputs.glob('CoachLearning_CoMER_*_Kaggle_DDP2_Results.zip')):
-                    retry_read(lambda:api.kernels_output(ref,path=str(outputs),force=True,quiet=True,file_pattern=RESULT_PATTERN),'Kaggle output download')
-                archive,index=verify_download(outputs)
+                archive,index=download_result(api,ref,outputs)
                 if index.get('wandb_mode')=='offline':
                     if not wandb_key:wandb_key=getpass.getpass('W&B API key for measured results (hidden; reused for this suite only): ').strip()
                     os.environ['WANDB_API_KEY']=wandb_key

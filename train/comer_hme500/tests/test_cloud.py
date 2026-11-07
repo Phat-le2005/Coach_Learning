@@ -9,7 +9,7 @@ import unittest
 from unittest.mock import patch
 from types import SimpleNamespace
 import zipfile
-from hme_comer.cloud import ROOT,RESULT_PATTERN,prepare,read_config,verify_download,submit,extract_verified,expand_trials,package_suite,follow_logs,runnable_trials,submit_record,retry_read
+from hme_comer.cloud import ROOT,RESULT_PATTERN,prepare,read_config,verify_download,submit,extract_verified,expand_trials,package_suite,follow_logs,runnable_trials,submit_record,retry_read,download_result
 
 
 class CloudConfig(unittest.TestCase):
@@ -169,6 +169,18 @@ class CloudConfig(unittest.TestCase):
         call=Mock(side_effect=failure)
         with self.assertRaises(RuntimeError):retry_read(call,'status')
         self.assertEqual(call.call_count,1)
+    def test_download_stops_after_verified_archive_without_paging_all_sdk_caches(self):
+        calls=[]
+        def output(ref,**kwargs):
+            calls.append(kwargs);self.test_download_checksums_and_ddp_result_are_verified()
+            return [],'more-pages-with-only-sdk-cache-files'
+        api=SimpleNamespace(kernels_output=output)
+        archive,index=download_result(api,'user/kernel/5',self.root)
+        self.assertEqual(index['world_size'],2);self.assertTrue(archive.is_file())
+        self.assertEqual(len(calls),1);self.assertEqual(calls[0]['page_token'],'')
+        self.assertEqual(calls[0]['page_size'],100)
+        download_result(api,'user/kernel/5',self.root)
+        self.assertEqual(len(calls),1)
 
 
 if __name__=='__main__':unittest.main()
