@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef, useCallback, useMemo } from "react"
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Sparkles } from "lucide-react";
+import { Sparkles, Smartphone } from "lucide-react";
 import { ApiResponseError, ApiNetworkError } from "@/lib/api/client";
 import { createBrowserMathApiClient } from "@/lib/api/browser-math";
 import type { ClassroomNavData } from "@/lib/classroom-assignments/launch";
@@ -1368,9 +1368,16 @@ export function MathWorkspace({
       <header className={styles.topHeader}>
         <div className={styles.headerLeft}>
           <h1 className={styles.headerTitle}>Không gian giải bài Toán</h1>
-          {!isReadOnlyAttempt ? <button type="button" className={styles.buttonSecondary} disabled={liveStarting || canvasDrawing || !draftRecoveryReady} onClick={() => void startLive()}>
-            {liveStarting ? "Đang kết nối…" : "Kết nối thiết bị viết"}
-          </button> : null}
+          <button
+            type="button"
+            className={styles.buttonSecondary}
+            disabled={liveStarting || canvasDrawing || !draftRecoveryReady}
+            onClick={() => void startLive()}
+            title="Quét mã QR để kết nối điện thoại hoặc iPad làm bảng viết"
+          >
+            <Smartphone size={15} style={{ marginRight: 6 }} />
+            {liveStarting ? "Đang kết nối…" : liveEnabled ? "Thiết bị viết (Đang kết nối)" : "Kết nối thiết bị viết"}
+          </button>
           <button type="button" className={styles.buttonSecondary} disabled={canvasDrawing} onClick={toggleWritingMode}>
             {writingMode ? "Về MathWorkspace" : "Chế độ viết cảm ứng"}
           </button>
