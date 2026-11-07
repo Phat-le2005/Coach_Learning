@@ -5,6 +5,7 @@ import { ApiContractError } from "../api/validation";
 import { ApiNetworkError, ApiResponseError } from "../api/client";
 import { AUTH_COOKIES } from "./constants";
 import { constantTimeEqual, isTrustedFrontendMutation } from "./security";
+import { lanEnabled, runtimeFrontendOrigins } from "../network/lan";
 
 export function errorResponse(status: number, code: string, message: string, details?: unknown): NextResponse {
   return NextResponse.json({ error: { code, message, ...(details === undefined ? {} : { details }) } }, { status, headers: { "Cache-Control": "no-store" } });
@@ -23,7 +24,10 @@ export function verifyMutationRequest(request: NextRequest): NextResponse | null
   const origin = request.headers.get("origin");
   const site = request.headers.get("sec-fetch-site");
   const publicOrigin = process.env.NEXT_PUBLIC_APP_URL?.trim();
-  if (!isTrustedFrontendMutation(origin, request.nextUrl.origin, site, publicOrigin, process.env.NODE_ENV === "development")) {
+  const trusted = lanEnabled()
+    ? runtimeFrontendOrigins().some(allowed => isTrustedFrontendMutation(origin, allowed, site))
+    : isTrustedFrontendMutation(origin, request.nextUrl.origin, site, publicOrigin, process.env.NODE_ENV === "development");
+  if (!trusted) {
     return errorResponse(403, "CSRF_ORIGIN_REJECTED", "Nguồn yêu cầu không hợp lệ.");
   }
   const cookieToken = request.cookies.get(AUTH_COOKIES.csrf)?.value;

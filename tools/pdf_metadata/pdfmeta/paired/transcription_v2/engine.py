@@ -91,7 +91,13 @@ def candidate(f,page,asset,reader,secondary,syntax):
 
 
 def source_crop(raw,bbox,output,asset,dpi):
-    raw.crop(tuple(bbox)).to_image(resolution=dpi).save(output/asset)
+    # PDFium and pdfplumber round page dimensions differently. Allow only
+    # sub-millipoint drift; genuinely out-of-page source regions still fail.
+    left,top,right,bottom=raw.bbox
+    clipped=(max(left,bbox[0]),max(top,bbox[1]),min(right,bbox[2]),min(bottom,bbox[3]))
+    if any(abs(a-b)>.001 for a,b in zip(bbox,clipped)):
+        raise ValueError('SOURCE_CROP_OUTSIDE_PAGE')
+    raw.crop(clipped).to_image(resolution=dpi).save(output/asset)
     return file_hash(output/asset)
 
 

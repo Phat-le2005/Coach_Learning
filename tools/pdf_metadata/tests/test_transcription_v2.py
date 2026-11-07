@@ -17,6 +17,19 @@ def g(text,x,y=10,size=10,key=None):
     return {'text':text,'bbox':[x,y,x+5,y+size],'size':size,'font':'Times-Italic','key':key or text+str(x)+str(y)}
 
 
+def test_source_crop_tolerates_pdfium_page_rounding_but_rejects_invalid_regions(tmp_path):
+    import pdfplumber
+    from test_one_pdf_workflow import small_pdf
+    from pdfmeta.paired.transcription_v2.engine import source_crop
+    pdf=tmp_path/'source.pdf';small_pdf(pdf,['Example 1. Source text.'])
+    with pdfplumber.open(pdf) as doc:
+        page=doc.pages[0]
+        digest=source_crop(page,[0,100,page.width+.0004,200],tmp_path,'source.png',72)
+        assert digest==file_hash(tmp_path/'source.png')
+        with pytest.raises(ValueError,match='SOURCE_CROP_OUTSIDE_PAGE'):
+            source_crop(page,[0,100,page.width+1,200],tmp_path,'invalid.png',72)
+
+
 def test_superscript_and_subscript_are_distinct_source_nodes():
     text,ev=render([g('x',0),g('i',6,18,6),g('2',7,5,6)],[])
     assert text=='x_{i}^{2}'

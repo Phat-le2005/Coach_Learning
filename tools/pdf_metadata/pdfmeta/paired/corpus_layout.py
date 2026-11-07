@@ -1,13 +1,39 @@
 """Explicit virtual columns; all exported boxes are restored to original PDF coordinates."""
 from copy import deepcopy
+import re
+import unicodedata
 
 from ..assemble import QUESTION
+
+
+def source_book_labels(page):
+    """Keep a source-book entry's outer number and its printed inner label.
+
+    Only activate after an outer caption with document hash/page provenance;
+    ordinary adjacent questions must continue to create separate entries.
+    """
+    result=deepcopy(page);blocks=result['blocks'];active=False
+    def plain(text):
+        return ''.join(c for c in unicodedata.normalize('NFD',text.casefold())
+                       if not unicodedata.combining(c))
+    for i,block in enumerate(blocks):
+        text=block['text_raw']
+        outer=bool(re.fullmatch(r'cau\s+\d+[.:]?',plain(text).strip()))
+        provenance=outer and any(
+            re.search(r'\btl\s+[0-9a-f]{8,64}\b.*\btrang\b',plain(b['text_raw']))
+            and abs(b['bbox'][1]-block['bbox'][1])<25 for b in blocks[i+1:i+4])
+        if provenance:
+            active=True
+        elif active and QUESTION.match(text):
+            block['source_book_inner_label']=True
+    return result
 
 
 def split_columns(pages):
     result=[];mapping={};uncertain=[]
     for page in pages:
-        width=page['width'];starts=[b for b in page['blocks'] if not b.get('is_margin') and QUESTION.match(b['text_raw'])]
+        width=page['width'];starts=[b for b in page['blocks'] if not b.get('is_margin')
+            and not b.get('source_book_inner_label') and QUESTION.match(b['text_raw'])]
         left=[b for b in starts if b['bbox'][0]<width*.35]
         right=[b for b in starts if b['bbox'][0]>width*.48]
         two=bool(left and right)

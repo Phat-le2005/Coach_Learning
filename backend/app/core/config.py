@@ -2,7 +2,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any, Literal
 
-from pydantic import AnyHttpUrl, Field, SecretStr, field_validator, model_validator
+from pydantic import AliasChoices, AnyHttpUrl, Field, SecretStr, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy import URL
 
@@ -42,6 +42,8 @@ class Settings(BaseSettings):
     frontend_url: AnyHttpUrl = AnyHttpUrl("http://localhost:3000")
     # Explicit additional frontend origins for LAN clients; no wildcard.
     live_ink_origins: str = ""
+    lan_mode: bool = Field(default=False, validation_alias=AliasChoices("COACH_LAN_MODE", "lan_mode"))
+    lan_frontend_port: int = Field(default=3000, ge=1, le=65535, validation_alias=AliasChoices("COACH_LAN_FRONTEND_PORT", "lan_frontend_port"))
 
     jwt_secret_key: SecretStr = SecretStr("")
     jwt_issuer: str = Field(default="edums", min_length=1)
@@ -110,6 +112,8 @@ class Settings(BaseSettings):
     @model_validator(mode="after")
     def validate_production_config(self) -> "Settings":
         if self.app_env == "production":
+            if self.lan_mode:
+                raise ValueError("COACH_LAN_MODE is for local development only")
             jwt_secret = self.jwt_secret_key.get_secret_value()
             if not jwt_secret or len(jwt_secret.encode("utf-8")) < 32:
                 raise ValueError("JWT_SECRET_KEY must contain at least 32 bytes in production")

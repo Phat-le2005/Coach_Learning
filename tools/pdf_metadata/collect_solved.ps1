@@ -8,11 +8,12 @@ param(
     [string]$PdfPython
 )
 $ErrorActionPreference='Stop'
+. (Join-Path $PSScriptRoot 'paths.ps1')
 $solvedRepo=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..\..')).Path
-if (-not $Storage) { $Storage=Join-Path $solvedRepo '.tmp' }
-foreach ($target in @($Storage,$Work,$Output)) {
-    if ([IO.Path]::GetFullPath($target) -notmatch '^[Ee]:\\') { throw 'Keep collection storage and output on drive E.' }
-}
+if (-not $Storage) { $Storage=$PdfStorageRoot }
+$Storage=[IO.Path]::GetFullPath($Storage)
+$Work=[IO.Path]::GetFullPath($Work)
+$Output=[IO.Path]::GetFullPath($Output)
 $runtime=Join-Path $Storage 'pdf-pipeline-runtime'
 $solvedPython=Join-Path $runtime '.venv\Scripts\python.exe'
 if (-not (Test-Path -LiteralPath $solvedPython)) { throw 'Initialize the project PDF environment first.' }

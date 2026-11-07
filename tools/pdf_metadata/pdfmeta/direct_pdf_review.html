@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Đối chiếu OCR · Coach Learning</title>
+<link rel="stylesheet" href="vendor/katex.min.css"><script defer src="vendor/katex.min.js"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;font:16px/1.7 "Segoe UI",sans-serif;color:#183d36;background:#f3f7f4}header{padding:24px 5%;background:white;border-bottom:1px solid #dbe7df}h1{font-size:26px;margin:4px 0}h2{font-size:20px;margin-top:26px}p{margin:5px 0}.muted{color:#637b73;font-size:14px}.layout{display:grid;grid-template-columns:240px minmax(0,1fr);gap:24px;max-width:1450px;margin:24px auto;padding:0 24px}aside{align-self:start;position:sticky;top:16px;background:white;padding:18px;border:1px solid #dbe7df;border-radius:10px}select,button{font:inherit;width:100%;padding:9px;margin:5px 0;border:1px solid #c6dacf;border-radius:6px;background:white;color:inherit}#items{max-height:65vh;overflow:auto}#items button{text-align:left;cursor:pointer}#items button[aria-current=true]{background:#dcefe4;border-color:#2b8066}main{background:white;padding:26px 32px;border:1px solid #dbe7df;border-radius:10px;min-width:0}.rich{white-space:pre-wrap;overflow-wrap:anywhere}.visual-link{display:block;margin:18px 0}.visual-link img{display:block;max-width:100%;max-height:720px;object-fit:contain;border:1px solid #e0e9e3;background:white}.math{white-space:normal}.katex-display{overflow-x:auto;overflow-y:hidden}.warning{color:#8e411e;background:#fff4e6;padding:10px;border-radius:6px}.broken-image{color:#a32222}.brand{font-size:12px;letter-spacing:1px;color:#167655}a{color:#167655}.empty{color:#637b73;padding:12px 0}@media(max-width:750px){.layout{grid-template-columns:1fr;padding:0 12px;gap:12px}aside{position:static}#items{max-height:150px}main{padding:18px}header{padding:16px}h1{font-size:22px}}
+</style>
+</head>
+<body>
+<header><div class="brand">COACH LEARNING · OCR LOCAL</div><h1>Văn bản và hình ảnh từ PDF</h1><p id="source"></p><p id="stats" class="muted"></p><p id="notice"></p><p class="muted">Nội dung OCR là bản nháp. Bấm hình để mở ảnh đầy đủ.</p></header>
+<div class="layout"><aside><label for="mode">Xem theo</label><select id="mode"><option value="questions">Câu hỏi</option><option value="pages">Trang PDF</option></select><div id="items"></div><p id="unassigned" class="muted"></p></aside><main id="content"></main></div>
+<script id="ocr-data" type="application/json">__OCR_REVIEW_DATA__</script>
+<script>
+'use strict';
+const data=JSON.parse(document.getElementById('ocr-data').textContent);
+const $=id=>document.getElementById(id);
+const el=(tag,text)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;return n;};
+function safeAsset(path){
+ if(typeof path!=='string'||!/^(?:assets|visual_assets)\/[a-zA-Z0-9_/-]+\.png$/.test(path)||path.split('/').includes('..'))return null;
+ const base=new URL('./',location.href),url=new URL(path,base);
+ return url.protocol===base.protocol&&url.host===base.host&&url.pathname.startsWith(base.pathname)?url.href:null;
+}
+function mathStrictness(code){
+ // OCR preserves Vietnamese inside \text{}. KaTeX can display Unicode using
+ // browser font fallback even when its own symbol metrics are unavailable.
+ return code==='unknownSymbol'?'ignore':'error';
+}
+function rich(markdown){
+ const box=el('div');box.className='rich';
+ const text=markdown||'',pattern=/!\[([^\]]*)\]\(([^)]+)\)|\$\$([\s\S]+?)\$\$|\$([^$\n]+)\$/g;let last=0;
+ for(const m of text.matchAll(pattern)){
+  box.append(document.createTextNode(text.slice(last,m.index)));
+  if(m[2]){
+   const url=safeAsset(m[2]);
+   if(url){const a=el('a'),img=el('img');a.href=url;a.target='_blank';a.rel='noopener';a.className='visual-link';img.src=url;img.alt=m[1]||'Ảnh nguồn';img.loading='lazy';img.onerror=()=>{const note=el('span','Không tải được ảnh: '+m[2]);note.className='broken-image';a.replaceWith(note);};a.append(img);box.append(a);}
+   else box.append(document.createTextNode('[Đường dẫn ảnh không hợp lệ]'));
+  }else{
+   const math=el('span');math.className='math';
+   try{if(!window.katex)throw Error('KaTeX chưa có');katex.render(m[3]||m[4],math,{displayMode:m[3]!==undefined,throwOnError:true,trust:false,strict:mathStrictness,maxExpand:100,maxSize:20});}
+   catch(error){math.textContent=m[0];math.title='Công thức cần đối chiếu nguồn';}
+   box.append(math);
+  }
+  last=m.index+m[0].length;
+ }
+ box.append(document.createTextNode(text.slice(last)));return box;
+}
+let selected=0;
+function render(){
+ const mode=$('mode').value,rows=data[mode],list=$('items');list.replaceChildren();
+ rows.forEach((row,i)=>{const button=el('button',(mode==='questions'?'Câu ':'Trang ')+row.number);button.setAttribute('aria-current',String(selected===i));button.onclick=()=>{selected=i;render();};list.append(button);});
+ const main=$('content');main.replaceChildren();const row=rows[selected];
+ if(!row){main.append(el('p','Chưa có câu được ghép. Chuyển sang Trang PDF để xem nội dung đã giữ.'));return;}
+ main.append(el('h2',(mode==='questions'?'Câu ':'Trang ')+row.number));
+ if(mode==='pages'){main.append(rich(row.markdown));return;}
+ for(const [role,label] of [['question','Đề bài'],['solution','Lời giải'],['answer','Đáp án ghi riêng']]){if(row[role])main.append(el('h2',label),rich(row[role]));}
+ if(row.source_assets?.length){const details=el('details');details.append(el('summary','Đối chiếu các vùng chữ gốc'));for(const [i,asset]of row.source_assets.entries()){const url=safeAsset(asset.path);if(url){const line=el('p'),link=el('a','Trang '+asset.page+' · Vùng '+(i+1));link.href=url;link.target='_blank';link.rel='noopener';line.append(link);details.append(line);}}main.append(details);}
+}
+document.addEventListener('DOMContentLoaded',()=>{
+ $('source').textContent=data.source.name;
+ $('stats').textContent=data.pages.length+'/'+(data.source.page_count||data.pages.length)+' trang · '+data.questions.length+' câu · '+data.visual_assets.length+' ảnh được giữ';
+ $('unassigned').textContent=data.unassigned_fragments+' phần chưa ghép câu; xem trong chế độ Trang PDF.';
+ if(data.failed_regions||data.review_regions){$('notice').textContent='Còn '+data.failed_regions+' vùng lỗi và '+data.review_regions+' vùng cần đối chiếu. Xem summary.json / failures.json.';$('notice').className='warning';}
+ if(!data.questions.length)$('mode').value='pages';
+ $('mode').onchange=()=>{selected=0;render();};render();
+});
+</script>
+</body></html>

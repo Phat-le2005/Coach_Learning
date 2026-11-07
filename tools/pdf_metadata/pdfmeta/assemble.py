@@ -54,6 +54,8 @@ def assemble(pages: list[dict], source_hash: str) -> tuple[list[dict], list[dict
         blocks = [block for block in page["blocks"] if not block.get("is_margin")]
         starts = []
         for index, block in enumerate(blocks):
+            if block.get('source_book_inner_label'):
+                continue
             match = QUESTION.match(block["text_raw"])
             if not match:
                 continue

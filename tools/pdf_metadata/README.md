@@ -1,11 +1,102 @@
 # PDF metadata pilot
 
+## Read text directly from an image-based PDF
+
+Use `ocr_pdf_direct.ps1` to transcribe the supplied PDF with the installed local
+Qwen vision model. This entry point takes no reference JSON and does not look up
+other source PDFs. It renders the supplied PDF's images, reads their pixels, and
+keeps native captions from that same PDF when present.
+
+```powershell
+.\tools\pdf_metadata\ocr_pdf_direct.ps1 `
+  -Pdf '.local\source_pdfs\math12\Toan12_200_cau_de_va_loi_giai.pdf' `
+  -Storage 'C:\CoachLearningPdf' `
+  -Output 'C:\CoachLearningPdf\ocr-direct-200-full' -Open
+```
+
+All pages are processed by default. For a short test, add `-Pages '3'` and choose
+a different output such as `C:\CoachLearningPdf\ocr-direct-200-test`. Repeating
+the same command resumes completed crops. PDF bytes, DPI and model identity bind
+an output directory; use a new directory when those change. Changing only CPU
+threads keeps valid checkpoints. Page selection can be extended, while changing
+the prompt or token budget invalidates the affected crop requests.
+The wrapper starts the local model server if needed and stops only the server
+it starts. CPU inference can take a long time for a complete book.
+
+Outputs are `document.ocr.md`, `pages.ocr.pretty.json`, and the original v2's
+compact question/solution/answer shape in `content.draft.pretty.json` and
+`content.draft.jsonl`. The v2 compact export function and table Markdown renderer
+are shared with this entry point. Printed question and solution labels drive
+pairing; unlabelled material remains in `content.unassigned.pretty.json`.
+Boundaries are heuristic, coordinates belong to crops in the input PDF, and
+source IDs/hashes refer to that PDF, not the PDFs used in an author's export.
+No reference JSON, expected answer or other source PDF is read.
+
+Visible raster rules separate grids into rows/cells before prose transcription.
+Unknown/borderless layouts use bounded image bands. Truncated, invalid or
+repeated model output is rejected and split again, up to `-MaxSplitDepth 2` and
+`-MaxCallsPerRegion 24` (defaults). Successful sub-crops are checkpointed under
+`crops/`; raw responses and errors are retained under `attempts/`. Source images
+remain under `assets/`. A failed region does not stop subsequent regions/pages.
+`failures.json` lists unresolved regions, and the CLI exits 2 after exporting
+partial results. It reports `OCR_DRAFT_COMPLETE` only with no failed or uncertain
+regions; uncertainty reports `OCR_DRAFT_REVIEW_REQUIRED`. Run the same command
+to retry failed leaves and reuse successful crops. These statuses concern OCR
+completion, not academic accuracy. No grading or academic approval runs here.
+
+The exact former direct-OCR implementation's successful checkpoints can be
+upgraded in the same output directory when PDF, raster settings and model
+configuration verify. The old run identity is backed up and old `pages/`
+checkpoints remain intact. Failed responses are never imported as text. An
+unverifiable legacy identity requires a new output directory; no blanket trust
+or force-reuse option exists. Model-generated image tags are removed.
+
+The earlier one-page model smoke read page 2 of `Toan12-001.pdf`; page 3 later
+exposed a looping Qwen table response. The fix is covered by model-free regression
+tests (splitting, call budgets, continuation, resume, migration, public export).
+Static analysis of the saved failing crop detects a 3-row/2-column visible grid.
+No full-book inference or new accuracy measurement was run for this fix.
+
 For one PDF to routed metadata, use `build_dataset.ps1 -Pdf <file.pdf> -Profile native -Open`.
 It exports source-backed questions, explicit final-answer candidates, image references,
 and held records. See [the usable PDF pipeline](../../docs/pdf-usable-pipeline.md).
 Final-answer matching is supported; full-solution and step grading remain unassessed.
 
-Isolated from the running FastAPI/Next.js app. The source PDF is read-only. Packages, weights, caches, temp files and output are stored on E for the Windows pilot. Native/Paddle and Qwen stages run locally; explicit Gemini actions send selected source images and metadata to Google. No stage writes the production database.
+Isolated from the running FastAPI/Next.js app. The source PDF is read-only. On Windows, packages, weights, caches, temp files and output default to `C:\CoachLearningPdf`, independently of the repository drive. Set `PDFMETA_STORAGE_ROOT` before starting a command to choose another storage root; wrappers share `paths.ps1`, and Python defaults share `pdfmeta/paths.py`. Explicit `-Storage` / `-Runtime` parameters remain supported. Native/Paddle and Qwen stages run locally; explicit Gemini actions send selected source images and metadata to Google. No stage writes the production database.
+
+For the image-based five-page book sample on this machine:
+
+```powershell
+.\tools\pdf_metadata\build_dataset.ps1 `
+  -Pdf '.local\source_pdfs\math12\Toan12-001.pdf' `
+  -Storage 'C:\CoachLearningPdf' -Profile ocr -Workers 1 -MemoryLimitMB 4096 -Open
+```
+
+`native` cannot read exercises embedded as images. The metadata `ocr` profile can still retain image references when text recovery fails. For direct visual transcription, use `ocr_pdf_direct.ps1` above. Existing older output is preserved; code changes generate a new result version.
+
+For an exported source-image book with `Câu ... | TL <hash> | Trang nguồn ...`
+captions, use `replay_source_book.ps1` when the original PDFs are available:
+
+```powershell
+.\tools\pdf_metadata\replay_source_book.ps1 `
+  -Pdf '.local\source_pdfs\math12\Toan12-001.pdf' `
+  -Sources '.local\source_pdfs\math12' -Storage 'C:\CoachLearningPdf' `
+  -Profile ocr -Workers 1 -MemoryLimitMB 4096 -Open
+```
+
+This reads the originals selected by the book's hash/page/label references. It
+does not OCR the exported book images or copy expected text/Markdown.
+`source-replay.json` records the mapping, and `transcription/content.draft.pretty.json`
+contains text/LaTeX plus image references for remaining ambiguous regions. Missing
+or ambiguous sources stop the replay. This is a new selection, not the author's
+frozen benchmark selection.
+
+For `Toan12_200_cau_de_va_loi_giai.pdf`, the book uses `ID` / `Mã bộ gốc`
+captions. Add `-ReferenceJson '<author content.draft.pretty.json>'` to select the
+matching IDs and original page rectangles. Only source identities, chapter labels
+and coordinates are used; expected text/Markdown is excluded from the input.
+Use `-PlanOnly` to check the complete source selection before inference, and use
+an explicit `-Output` directory to resume the same run.
 
 The separate [layout-first transcription v2 trial](../../docs/pdf-transcription-v2.md)
 keeps native table cells out of formula detection, preserves source-backed image
@@ -27,7 +118,7 @@ Latest source audit: 40 manually source-transcribed formula regions across two P
 For native-text PDFs with printed question/solution labels, `convert_pairs.ps1` creates one portable HTML containing source images plus searchable lossy text. It then reads metadata directly from that file; it does not OCR the converted file again. The main JSONL includes only occurrences with both question and solution regions. Unpaired occurrences remain separate; repeated printed question numbers are never used alone to join unrelated chapters.
 
 ```powershell
-.\tools\pdf_metadata\convert_pairs.ps1 'E:\materials\with-solutions.pdf' -Open
+.\tools\pdf_metadata\convert_pairs.ps1 '.\.local\source_pdfs\with-solutions.pdf' -Open
 ```
 
 Each job's `paired.json` points to `questions-and-solutions.html`, `questions.metadata.json`, `questions.metadata.jsonl` and a review queue under `paired/versions/<hash>`. The HTML opens offline with embedded PNGs, while the metadata export has crop paths/hashes and PDF page/bbox provenance. Metadata JSON preserves unpaired records in `unpaired_questions`; JSONL sends them to `questions.unpaired.jsonl`. A moved HTML can recreate its metadata and PNG assets with `python -m pdfmeta.paired metadata --html <file> --output <folder>`.
@@ -49,7 +140,7 @@ The dashboard's **Xem điểm chấm thử** opens source images, rubric weights
 Drag a PDF onto `tools/pdf_metadata/process_pdf.cmd`, or run:
 
 ```powershell
-.\tools\pdf_metadata\process_pdf.ps1 'E:\materials\your-document.pdf'
+.\tools\pdf_metadata\process_pdf.ps1 '.\.local\source_pdfs\your-document.pdf'
 ```
 
 The local progress dashboard starts with each run (normally `http://127.0.0.1:8789/`). Drag/drop or `-Open` opens it immediately: live stages, page/question counts, checkpoint usage, pipeline RAM/CPU, and links to the final viewer/JSONL. Trial Qwen scope is shown separately from the whole document. See `docs/pdf-progress-dashboard-2026-11-02.md`; use `-NoProgress` for console only. The monitor is read-only and does not load inference models.
@@ -85,7 +176,7 @@ After native/OCR extraction, use `layout-refine` to recover bounded formulas fro
 
 # Broader pilot trial; keep prior artifacts separate.
 .\tools\pdf_metadata\run.ps1 -Action layout-refine -Questions '151,154,161,153,159,163' -Limit 6 `
-  -TrialOutput 'E:\HocTap\Hackathon-SGU2026\Coach_Learning\.tmp\pdf-metadata-pilot-v1\layout-trial-v2'
+  -TrialOutput 'C:\CoachLearningPdf\pdf-metadata-pilot-v1\layout-trial-v2'
 ```
 
 The sample numbers above belong to the pilot. Another PDF requires its own extracted pilot and explicit `-Pdf`, `-Output`, and question selection. Results include `review.html`, `layout-report.json`, `tables.jsonl`, `review-queue.json` and `questions.math-audit.jsonl`. Existing raw pages, OCR, editorial state and prior benchmark artifacts remain unchanged. See `docs/pdf-metadata-fractions-variation-2026-11-02.md` for the latest measured coverage and limitations; `docs/pdf-metadata-native-layout-2026-11-02.md` describes the earlier single-baseline trial.
@@ -117,7 +208,7 @@ The Windows wrapper now defaults to `-Provider local`. The Python entry points r
 
 Pilot output is `.tmp/pdf-metadata-pilot-v1/local-review/`, viewable at `http://localhost:8787/local-review/review.html` through the existing authoring server. Default local corpus output is `.tmp/toan12-local-corpus/`. Existing Gemini artifacts remain in their old directories.
 
-The initial local model is `ggml-org/Qwen3-VL-2B-Instruct-GGUF` Q8_0, revision `ea6a11058182570be6436b9a2e4ee7f7b49f908d`, with its Q8 vision projector, running the official Windows CPU llama.cpp build `b12032`. About 2.3 GB of downloads are pinned and verified by `local_setup.py`. Runtime, model, projector and local logs live in `.tmp/pdf-pipeline-runtime`; no system-wide Ollama/model install is used. The model is loaded only by `local-start`, not by the web app.
+The initial local model is `ggml-org/Qwen3-VL-2B-Instruct-GGUF` Q8_0, revision `ea6a11058182570be6436b9a2e4ee7f7b49f908d`, with its Q8 vision projector, running the official Windows CPU llama.cpp build `b12032`. About 2.3 GB of downloads are pinned and verified by `local_setup.py`. Runtime, model, projector and local logs live in `C:/CoachLearningPdf/pdf-pipeline-runtime`; no system-wide Ollama/model install is used. The model is loaded only by `local-start`, not by the web app.
 
 The loopback endpoint accepts only `127.0.0.1`, `localhost` or `::1`, blocks redirects/proxies, and uses a separate local server token file under the ignored runtime directory. Source data does not leave the machine during inference. Downloads from GitHub/Hugging Face happen only during setup. Model fingerprint participates in cache identity. Local token counts measure computation, not a cloud bill; runtime and electricity still have costs.
 
@@ -125,7 +216,7 @@ This small CPU model is a resource-bounded trial, not a claim of Gemini-equivale
 
 ## Run on Windows
 
-From the repository root, use the project-local environment. `-Install` installs the lightweight dependencies; `-InstallOcr` also installs CPU PaddleOCR dependencies. The environment lives at `.tmp/pdf-pipeline-runtime/.venv`.
+From the repository root, use the project-local environment. `-Install` installs the lightweight dependencies; `-InstallOcr` also installs CPU PaddleOCR dependencies. The environment lives at `C:/CoachLearningPdf/pdf-pipeline-runtime/.venv`.
 
 ```powershell
 # Native extraction, source crops and a local review HTML.
@@ -159,9 +250,9 @@ The optional full-page VLM experiment is significantly slower on this laptop. It
 For another digital, single-column PDF, change source and output explicitly. Run `native`, then `hybrid`, then `enrich` with the same source/output paths. The `check` action is specific to the pilot fixture and must not be applied to another source.
 
 ```powershell
-.\tools\pdf_metadata\run.ps1 -Action native -Pdf 'E:\materials\another.pdf' -Output 'E:\pdf-pilots\another'
-.\tools\pdf_metadata\run.ps1 -Action hybrid -Pages all -Output 'E:\pdf-pilots\another'
-.\tools\pdf_metadata\run.ps1 -Action enrich -Output 'E:\pdf-pilots\another'
+.\tools\pdf_metadata\run.ps1 -Action native -Pdf '.\.local\source_pdfs\another.pdf' -Output 'C:\CoachLearningPdf\pdf-pilots\another'
+.\tools\pdf_metadata\run.ps1 -Action hybrid -Pages all -Output 'C:\CoachLearningPdf\pdf-pilots\another'
+.\tools\pdf_metadata\run.ps1 -Action enrich -Output 'C:\CoachLearningPdf\pdf-pilots\another'
 ```
 
 ## Output contract
@@ -275,13 +366,13 @@ The local extraction stages above remain offline. Only the explicit `gemini-revi
 .\tools\pdf_metadata\run.ps1 -Action gemini-review -Questions '151,152,153,154,158,213,260' -Limit 7 -MaxCalls 10 -MaxTotalTokens 150000
 
 # 3. Inventory/plan the entire ZIP for the explicit Gemini route, without inference.
-.\tools\pdf_metadata\run.ps1 -Action corpus-plan -Provider gemini -InputPath 'E:\HocTap\Hackathon-SGU2026\Coach_Learning\data\Toan12.zip'
+.\tools\pdf_metadata\run.ps1 -Action corpus-plan -Provider gemini -InputPath '.\data\Toan12.zip'
 
 # 4. Process the next bounded set of windows. Repeat to resume.
 .\tools\pdf_metadata\run.ps1 -Action corpus-run -Provider gemini -Limit 10 -MaxCalls 12 -MaxTotalTokens 200000
 
 # Or plan + run a bounded set in one command for another PDF/ZIP/directory.
-.\tools\pdf_metadata\run.ps1 -Action pipeline -Provider gemini -InputPath 'E:\materials\new-pdfs' -Output 'E:\pdf-output\new-corpus' -Limit 3 -MaxCalls 5
+.\tools\pdf_metadata\run.ps1 -Action pipeline -Provider gemini -InputPath '.\.local\source_pdfs\new-pdfs' -Output 'C:\CoachLearningPdf\pdf-output\new-corpus' -Limit 3 -MaxCalls 5
 
 # Read-only corpus viewer, localhost:8788/review.html.
 .\tools\pdf_metadata\run.ps1 -Action corpus-review -Provider gemini
@@ -324,11 +415,11 @@ is separate.
 ```powershell
 # A new collection. Keep source, model cache and output storage on E.
 .\tools\pdf_metadata\collect_solved.ps1 `
-  -InputPath 'E:\HocTap\Hackathon-SGU2026\Coach_Learning\data\Toan12.zip' `
-  -Archive 'E:\HocTap\Hackathon-SGU2026\Coach_Learning\data\Toan12.zip' `
-  -Work 'E:\CoachLearningPdf\solved-toan12' `
-  -Output 'E:\CoachLearningPdf\solved-toan12\export' `
-  -Storage 'E:\HocTap\Hackathon-SGU2026\Coach_Learning\.tmp' `
+  -InputPath '.\data\Toan12.zip' `
+  -Archive '.\data\Toan12.zip' `
+  -Work 'C:\CoachLearningPdf\solved-toan12' `
+  -Output 'C:\CoachLearningPdf\solved-toan12\export' `
+  -Storage 'C:\CoachLearningPdf' `
   -PdfPython 'C:\Users\ADMIN\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe'
 ```
 
@@ -383,9 +474,9 @@ have their own tabs. It supports chapter/document filters, a download for one
 question, and a two-space-indented JSON array for the full collection.
 
 ```powershell
-$env:PYTHONPATH = 'E:\HocTap\Hackathon-SGU2026\Coach_Learning\tools\pdf_metadata'
-& '.\.tmp\pdf-pipeline-runtime\.venv\Scripts\python.exe' -B -m pdfmeta.paired.metadata_readable `
-  --input 'E:\HocTap\Hackathon-SGU2026\Coach_Learning\.tmp\pdf-jobs\4ebd40c425c242baa4faf416\corpus\cau-hoi-co-loi-giai.metadata.jsonl'
+$env:PYTHONPATH = '.\tools\pdf_metadata'
+& 'C:\CoachLearningPdf\pdf-pipeline-runtime\.venv\Scripts\python.exe' -B -m pdfmeta.paired.metadata_readable `
+  --input 'C:\CoachLearningPdf\pdf-jobs\4ebd40c425c242baa4faf416\corpus\cau-hoi-co-loi-giai.metadata.jsonl'
 ```
 
 This writes `cau-hoi-co-loi-giai.metadata.pretty.json`, `metadata.html`, a compact
@@ -412,15 +503,15 @@ weights under the E-drive runtime; the stage refuses missing weights rather than
 starting a download. CPU inference uses three threads and BelowNormal priority.
 
 ```powershell
-$env:PYTHONPATH = 'E:\HocTap\Hackathon-SGU2026\Coach_Learning\tools\pdf_metadata'
+$env:PYTHONPATH = '.\tools\pdf_metadata'
 $env:PYTHONUTF8 = '1'
-& 'E:\HocTap\Hackathon-SGU2026\Coach_Learning\.tmp\pdf-pipeline-runtime\.venv\Scripts\python.exe' -B -m pdfmeta.paired.math_recovery `
-  --input 'E:\HocTap\Hackathon-SGU2026\Coach_Learning\.tmp\pdf-jobs\4ebd40c425c242baa4faf416\corpus\cau-hoi-co-loi-giai.metadata.jsonl' `
-  --plan 'E:\HocTap\Hackathon-SGU2026\Coach_Learning\.tmp\toan12-local-corpus\plan.json' `
-  --output 'E:\HocTap\Hackathon-SGU2026\Coach_Learning\.tmp\pdf-jobs\4ebd40c425c242baa4faf416\latex-recovery-20261103' `
-  --runtime 'E:\HocTap\Hackathon-SGU2026\Coach_Learning\.tmp\pdf-pipeline-runtime' `
+& 'C:\CoachLearningPdf\pdf-pipeline-runtime\.venv\Scripts\python.exe' -B -m pdfmeta.paired.math_recovery `
+  --input 'C:\CoachLearningPdf\pdf-jobs\4ebd40c425c242baa4faf416\corpus\cau-hoi-co-loi-giai.metadata.jsonl' `
+  --plan 'C:\CoachLearningPdf\toan12-local-corpus\plan.json' `
+  --output 'C:\CoachLearningPdf\pdf-jobs\4ebd40c425c242baa4faf416\latex-recovery-20261103' `
+  --runtime 'C:\CoachLearningPdf\pdf-pipeline-runtime' `
   --numbers 1461 `
-  --katex 'E:\HocTap\Hackathon-SGU2026\Coach_Learning\frontend\node_modules\katex\dist'
+  --katex '.\frontend\node_modules\katex\dist'
 ```
 
 Outputs: `formula-candidates.json`, true-font `font-pages/`, source crops, an OCR
@@ -446,10 +537,10 @@ contributing source. This is a balanced diagnostic sample, not a corpus-weighted
 accuracy estimate or a manually transcribed gold dataset.
 
 ```powershell
-& 'E:\HocTap\Hackathon-SGU2026\Coach_Learning\tools\pdf_metadata\transcribe_corpus.ps1' `
-  -Metadata 'E:\HocTap\Hackathon-SGU2026\Coach_Learning\.tmp\pdf-jobs\4ebd40c425c242baa4faf416\corpus\cau-hoi-co-loi-giai.metadata.jsonl' `
-  -Plan 'E:\HocTap\Hackathon-SGU2026\Coach_Learning\.tmp\toan12-local-corpus\plan.json' `
-  -Output 'E:\HocTap\Hackathon-SGU2026\Coach_Learning\.tmp\pdf-jobs\4ebd40c425c242baa4faf416\transcription-100-20261103' `
+& '.\tools\pdf_metadata\transcribe_corpus.ps1' `
+  -Metadata 'C:\CoachLearningPdf\pdf-jobs\4ebd40c425c242baa4faf416\corpus\cau-hoi-co-loi-giai.metadata.jsonl' `
+  -Plan 'C:\CoachLearningPdf\toan12-local-corpus\plan.json' `
+  -Output 'C:\CoachLearningPdf\pdf-jobs\4ebd40c425c242baa4faf416\transcription-100-20261103' `
   -Count 100 -Workers 2 -Open
 ```
 

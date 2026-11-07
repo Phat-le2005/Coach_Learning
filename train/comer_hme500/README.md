@@ -64,6 +64,16 @@ Không dùng test để chỉnh LR/epoch. `RUN_FINAL_TEST=0` giữ test chưa đ
 
 ## Các lệnh .sh trên Kaggle
 
+Khi validation chững lại, xem lỗi của checkpoint đã chọn trước khi đổi công thức train:
+
+```bash
+bash scripts/run_kaggle.sh review /kaggle/working/comer_experiments/<ten-run>
+```
+
+Lệnh tự lấy best epoch từ summary.json và chỉ đọc `validation-NNN.json`. Tạo `validation-review-eNNN.html` (ảnh JPG gốc + nhãn + dự đoán), CSV cho các mẫu chưa đúng, JSON tổng hợp theo nhóm và ZIP chứa cả ba file kèm checksum. Ảnh được nhúng nguyên byte trong HTML để tải về xem offline; có cột review_category/review_note trong CSV để ghi nhận xét thủ công. Không chạy model, không suy luận test, không gọi W&B/tạo run, không sửa nhãn hoặc checkpoint. Nếu file review đã có, giữ nguyên ghi chú; chỉ dùng `--overwrite` khi muốn thay báo cáo cũ. Dùng `--data /path/to/metadata.json` nếu dataset đã chuyển vị trí, hoặc `--epoch 15` để xem một epoch cụ thể.
+
+Đánh giá nguyên nhân bằng ảnh validation và nhãn gốc; phân biệt lỗi ký hiệu, cách viết LaTeX, chất lượng crop và nhãn cần kiểm tra. Đây là tài liệu rà soát, không phải công cụ tự chứng minh tương đương toán học. Chọn thí nghiệm tiếp theo bằng validation; giữ tập test cho lần báo cáo sau khi chốt.
+
 Sau khi chạy các cell clone repo và ghi config trong notebook, có thể chạy bằng cell quen thuộc:
 
 ```python

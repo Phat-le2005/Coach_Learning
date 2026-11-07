@@ -135,6 +135,11 @@ class BashWorkflow(unittest.TestCase):
         self.env['RUN_FINAL_TEST']='0'
         p=self.run_script('all',self.config);self.assertEqual(p.returncode,0,p.stderr)
         self.assertNotIn('--finish',self.calls.read_text())
+    def test_review_dispatch_does_not_run_setup_or_training(self):
+        p=self.run_script('review',self.output)
+        self.assertEqual(p.returncode,0,p.stderr)
+        calls=self.calls.read_text().splitlines();self.assertEqual(len(calls),1)
+        self.assertIn('hme_comer.review',calls[0]);self.assertIn(str(self.output),calls[0])
 
 
 if __name__=='__main__':unittest.main()

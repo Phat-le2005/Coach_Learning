@@ -14,6 +14,9 @@ export function DeviceConnection(props: {attemptId: string; page: number; pairin
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [network, setNetwork] = useState<{enabled: boolean; origin: string | null; origins: string[]; generation: string} | null>(null);
+  const [networkChanged, setNetworkChanged] = useState(false);
+  const recoveredNetwork = useRef("");
   const dialog = useRef<HTMLDialogElement>(null);
   const starting = useRef(false);
   const pairingRef = useRef(pairing); pairingRef.current = pairing;
@@ -41,6 +44,24 @@ export function DeviceConnection(props: {attemptId: string; page: number; pairin
     return () => node?.close();
   }, []);
   useEffect(() => {
+    const controller = new AbortController();
+    const refresh = async () => {
+      try {
+        const response = await fetch("/api/lan", {cache: "no-store", signal: controller.signal});
+        if (response.ok) setNetwork(await response.json());
+      } catch { /* Existing connection/error UI handles unavailable service. */ }
+    };
+    void refresh(); const timer = setInterval(() => void refresh(), 5000);
+    return () => {controller.abort(); clearInterval(timer);};
+  }, []);
+  useEffect(() => {
+    if (!network?.enabled || !network.origin || !pairing?.origin || network.origins.includes(pairing.origin)
+        || busy || recoveredNetwork.current === network.generation) return;
+    recoveredNetwork.current = network.generation;
+    setNetworkChanged(true);
+    void create();
+  }, [network, pairing?.origin, busy, create]);
+  useEffect(() => {
     if (!props.pairing && !starting.current) {starting.current = true; void create();}
   }, [props.pairing, create]);
   useEffect(() => {
@@ -54,7 +75,8 @@ export function DeviceConnection(props: {attemptId: string; page: number; pairin
     return () => {active = false; clearInterval(timer);};
   }, [pairing?.id, pairing?.status, endpoint, save]);
   let link = "";
-  try {const target = new URL("/write", pairing?.origin || appOrigin); if (["http:", "https:"].includes(target.protocol) && pairing?.code) {target.hash = `code=${pairing.code}`; link = target.toString();}} catch { /* Browser origin loads after mount. */ }
+  const reachable = !network?.enabled || Boolean(pairing?.origin && network.origins.includes(pairing.origin));
+  try {const target = new URL("/write", pairing?.origin || appOrigin); if (reachable && ["http:", "https:"].includes(target.protocol) && pairing?.code) {target.hash = `code=${pairing.code}`; link = target.toString();}} catch { /* Browser origin loads after mount. */ }
   useEffect(() => {
     let active = true; setQr("");
     if (link) void QRCode.toDataURL(link, {width: 256, margin: 1, color: {dark: "#193d34", light: "#ffffff"}}).then(value => {if (active) setQr(value);});
@@ -74,6 +96,8 @@ export function DeviceConnection(props: {attemptId: string; page: number; pairin
       <p className={styles.eyebrow}>THÊM THIẾT BỊ VIẾT</p>
       <h2 id="device-connection-title">Viết thoải mái hơn<br/>trên điện thoại, iPad</h2>
       <p className={styles.description}>Viết trên màn hình cảm ứng. Nét bút xuất hiện ngay trong bài làm trên máy tính.</p>
+      {networkChanged ? <p role="status" className={styles.expiryNote}>Mạng đã thay đổi. Quét mã mới để kết nối lại.</p> : null}
+      {network?.enabled && !network.origin ? <p role="alert" className={styles.error}>Chưa tìm thấy mạng nội bộ. Kết nối Wi-Fi hoặc cáp mạng rồi thử lại.</p> : null}
       {pairing?.status === "ACTIVE" ? <div className={styles.successCard}>
         <span className={styles.successIcon}><Check size={30}/></span><h3>Đã kết nối {pairing.device_name}</h3>
         <p>Bạn có thể bắt đầu viết. Mọi nét bút được lưu trong bài này.</p>
@@ -89,7 +113,9 @@ export function DeviceConnection(props: {attemptId: string; page: number; pairin
         <ol className={styles.instructions}><li><span>1</span>Mở camera điện thoại và quét mã.</li><li><span>2</span>Nhấn “Cho phép viết” trên máy tính.</li><li><span>3</span>Bắt đầu viết — không cần đăng nhập lại.</li></ol>
         <p className={styles.expiryNote}>Mã dùng một lần, có hiệu lực trong 2 phút.</p>
         <details className={styles.help}><summary>Không quét được mã?</summary>
-          <p>Hai thiết bị cần truy cập được cùng địa chỉ Coach Learning. Bạn cũng có thể gửi link này sang thiết bị viết.</p>
+          <p>Kết nối điện thoại và máy tính vào cùng mạng Wi-Fi. Nếu vừa đổi mạng, hãy quét mã mới. Mạng khách có thể chặn các thiết bị kết nối với nhau.</p>
+          {network?.enabled && network.origin ? <p>Địa chỉ hiện tại: {network.origin}</p> : null}
+          {network && !network.enabled && /localhost|127\.0\.0\.1/.test(appOrigin) ? <p>Chưa bật chia sẻ mạng nội bộ. Khởi động dự án với tùy chọn -Lan để điện thoại truy cập được.</p> : null}
           <button type="button" className={styles.secondaryButton} disabled={!link} onClick={async () => {
             try {if (navigator.clipboard) await navigator.clipboard.writeText(link); else {const field = document.createElement("textarea"); field.value = link; document.body.appendChild(field); field.select(); document.execCommand("copy"); field.remove();} setCopied(true);} catch {setError("Chưa sao chép được đường dẫn.");}
           }}><Copy size={15}/>{copied ? "Đã sao chép" : "Sao chép link kết nối"}</button>

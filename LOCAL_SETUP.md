@@ -55,6 +55,31 @@ Sau khi cập nhật một checkout đã có, chạy lại `npm ci` và cài l�
 
 ## Live Sync / điện thoại
 
+Chế độ LAN tự động (hai terminal PowerShell ở repo root; không sửa IP trong `.env`):
+
+```powershell
+# Terminal 1: dùng database/.env hiện tại, không seed/reset.
+./tools/start-backend.ps1 -Lan -Port 8000 -FrontendPort 3000
+# Terminal 2:
+./tools/start-local.ps1 -Lan -Port 3000 -ApiUrl http://127.0.0.1:8000
+```
+
+Laptop mở `http://localhost:3000`, đăng nhập và chọn **Kết nối thiết bị viết**.
+QR dùng IP LAN đang hoạt động; điện thoại cùng mạng quét rồi laptop cho phép.
+Khi đổi Wi-Fi/IP, launcher tự phát hiện mỗi5 giây và refresh frontend để Next cập nhật
+địa chỉ development hợp lệ; backend giữ nguyên. Mở lại hộp kết nối nếu trang được
+reload và quét mã mới. Không cần sửa `NEXT_PUBLIC_APP_URL`, `MATH_INK_WS_ORIGIN`
+hoặc `LIVE_INK_ORIGINS` trong chế độ này. Cả hai launcher phải bật `-Lan`,
+`-FrontendPort` backend phải khớp `-Port` frontend. Có thể thêm `-Lab` ở frontend.
+
+Chế độ tự động hiện dành cho local development IPv4 private (10/172.16–31/192.168),
+không bật trong production. Windows dùng bảng interface OS để tránh DNS cache cũ.
+Không tự thay firewall hay mở public tunnel. Router/hotspot cần cho phép hai thiết bị
+truy cập nhau; cùng tên Wi-Fi không đảm bảo nếu mạng bật client isolation.
+Mã/phiên cũ ràng buộc origin nên phải quét lại khi IP đổi. Nét đã được server ACK
+vẫn giữ nguyên; bản nháp chưa ACK trên origin cũ không tự chuyển sang origin mới.
+Giữ trang cũ và dữ liệu trình duyệt nếu còn nét chờ đồng bộ; không xóa storage.
+
 [Hướng dẫn chi tiết](docs/mathcanvas-live-device-sync.md). Laptop và điện thoại phải
 truy cập cùng một origin qua IP LAN hoặc domain HTTPS; localhost trên điện thoại
 không trỏ về laptop. Backend allowlist đúng origin, frontend bind `0.0.0.0`, đặt

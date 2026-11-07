@@ -185,7 +185,10 @@ def hub(scope) -> LiveHub:
 
 
 def origins(scope):
+    from app.math_ink.lan import lan_origins
     settings = scope.app.state.settings
+    if settings.lan_mode:
+        return lan_origins(settings)
     return {settings.frontend_origin, *(s.strip().rstrip("/") for s in settings.live_ink_origins.split(",") if s.strip())}
 
 

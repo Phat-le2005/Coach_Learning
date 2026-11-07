@@ -26,22 +26,22 @@ param(
     [switch]$InstallOcr
 )
 $ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot 'paths.ps1')
 if ($Action -like 'gemini-*') { $Provider = 'gemini' }
 if ($Action -like 'local-*') { $Provider = 'local' }
 $repoRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..\..')).Path
 if (-not $Pdf) { $Pdf = Join-Path $repoRoot 'data\tu-luan-va-trac-nghiem-ung-dung-dao-ham-de-khao-sat-va-ve-do-thi-ham-so-toan-12-knttvcs9.pdf' }
 if (-not $Output) {
-    $Output = if ($Action -in @('corpus-plan', 'corpus-run', 'corpus-review', 'pipeline')) { Join-Path $repoRoot ".tmp\toan12-$Provider-corpus" } else { Join-Path $repoRoot '.tmp\pdf-metadata-pilot-v1' }
+    $Output = if ($Action -in @('corpus-plan', 'corpus-run', 'corpus-review', 'pipeline')) { Join-Path $PdfStorageRoot "toan12-$Provider-corpus" } else { Join-Path $PdfStorageRoot 'pdf-metadata-pilot-v1' }
 }
 if ($Action -in @('corpus-plan', 'pipeline') -and -not $InputPath) { $InputPath = Join-Path $repoRoot 'data\Toan12.zip' }
 if ($InputPath) { $InputPath = [IO.Path]::GetFullPath($InputPath) }
 if ($Limit -lt 1 -or $MaxCalls -lt 1 -or $MaxTotalTokens -lt 1000) { throw 'Use positive explicit job/call/token limits.' }
-if (-not $Runtime) { $Runtime = Join-Path $repoRoot '.tmp\pdf-pipeline-runtime' }
+if (-not $Runtime) { $Runtime = $PdfRuntimeRoot }
 $Runtime = [IO.Path]::GetFullPath($Runtime)
+$env:PDFMETA_RUNTIME_ROOT = $Runtime
 $Pdf = [IO.Path]::GetFullPath($Pdf)
 $Output = [IO.Path]::GetFullPath($Output)
-if ($Runtime -notmatch '^[Ee]:\\') { throw 'This Windows pilot requires Runtime on drive E, as requested.' }
-if ($Output -notmatch '^[Ee]:\\') { throw 'Keep pilot outputs on drive E.' }
 foreach ($folder in @($Runtime, (Join-Path $Runtime 'temp'), (Join-Path $Runtime 'pip-cache'))) {
     New-Item -ItemType Directory -Force -Path $folder | Out-Null
 }
@@ -83,7 +83,6 @@ try {
         'pilot-trial' {
             if (-not $TrialOutput) { $TrialOutput = Join-Path $Output 'metadata-trial-v1' }
             $TrialOutput = [IO.Path]::GetFullPath($TrialOutput)
-            if ($TrialOutput -notmatch '^[Ee]:\\') { throw 'Keep trial outputs on drive E.' }
             $trialArgs = @('--pilot', $Output, '--pdf', $Pdf, '--output', $TrialOutput, '--limit', $Limit)
             if ($Questions) { $trialArgs += @('--questions', $Questions) }
             # Short metadata contract; cap the general wrapper's 8192-token default.
@@ -95,7 +94,6 @@ try {
             if (-not $Questions) { throw 'Select table questions explicitly with -Questions.' }
             if (-not $TrialOutput) { $TrialOutput = Join-Path $Output 'layout-trial-v1' }
             $TrialOutput = [IO.Path]::GetFullPath($TrialOutput)
-            if ($TrialOutput -notmatch '^[Ee]:\\') { throw 'Keep layout outputs on drive E.' }
             & $pythonPath -B -u -m pdfmeta.layout_refinement --pilot $Output --pdf $Pdf --output $TrialOutput --runtime $Runtime --questions $Questions --limit $Limit
         }
         'gemini-preflight' { & $pythonPath -m pdfmeta.gemini_review --pilot $Output --preflight @geminiArgs }

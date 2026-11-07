@@ -37,6 +37,9 @@ jobs:
       - name: Run frontend unit tests
         run: npm run test
 
+      - name: LAN discovery, origin policy and ink preservation
+        run: npm run test:lan
+
       - name: OCR Lab contracts (no private fixtures or model downloads)
         run: npm run test:ocr-lab
 
