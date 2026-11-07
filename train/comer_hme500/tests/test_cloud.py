@@ -1,9 +1,11 @@
 import ast
+import hashlib
 import json
 from pathlib import Path
 import tempfile
 import unittest
-from hme_comer.cloud import ROOT,prepare,read_config
+import zipfile
+from hme_comer.cloud import ROOT,prepare,read_config,verify_download
 
 
 class CloudConfig(unittest.TestCase):
@@ -32,6 +34,16 @@ class CloudConfig(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'DDP2'):read_config(self.path)
         self.cfg['training']['devices']=2;self.cfg['training']['checkpoint_upload']='every_epoch';self.write()
         with self.assertRaisesRegex(ValueError,'COMPACT'):read_config(self.path)
+    def test_download_checksums_and_ddp_result_are_verified(self):
+        path=self.root/'CoachLearning_CoMER_v5_Kaggle_DDP2_Results.zip'
+        raw=json.dumps({'status':'completed','world_size':2}).encode()
+        with zipfile.ZipFile(path,'w') as archive:
+            archive.writestr('result-index.json',raw)
+            archive.writestr('checksums.json',json.dumps({'result-index.json':hashlib.sha256(raw).hexdigest()}))
+        result,index=verify_download(self.root)
+        self.assertEqual(result,path);self.assertEqual(index['world_size'],2)
+    def test_download_refuses_missing_archive(self):
+        with self.assertRaisesRegex(RuntimeError,'ONE_RESULT_ZIP'):verify_download(self.root)
 
 
 if __name__=='__main__':unittest.main()

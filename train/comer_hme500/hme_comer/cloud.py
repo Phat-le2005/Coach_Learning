@@ -9,6 +9,7 @@ import os
 from pathlib import Path
 import re
 import time
+import zipfile
 
 ROOT=Path(__file__).resolve().parents[1]
 
@@ -133,6 +134,19 @@ def prepare(path,destination=None):
     return folder,cfg
 
 
+def verify_download(folder):
+    archives=list(Path(folder).rglob('CoachLearning_CoMER_v5_Kaggle_DDP2_Results.zip'))
+    if len(archives)!=1:raise RuntimeError('EXPECTED_ONE_RESULT_ZIP')
+    with zipfile.ZipFile(archives[0]) as archive:
+        if archive.testzip() is not None:raise RuntimeError('DOWNLOADED_ZIP_CORRUPT')
+        checks=json.loads(archive.read('checksums.json'))
+        for name,digest in checks.items():
+            if hashlib.sha256(archive.read(name)).hexdigest()!=digest:raise RuntimeError('DOWNLOADED_CHECKSUM_MISMATCH')
+        index=json.loads(archive.read('result-index.json'))
+        if index['status']!='completed' or index['world_size']!=2:raise RuntimeError('DDP2_RESULT_NOT_VERIFIED')
+    return archives[0],index
+
+
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--config',required=True,type=Path)
     p.add_argument('--prepare-only',action='store_true');p.add_argument('--no-wait',action='store_true')
@@ -145,17 +159,22 @@ def main():
         from kaggle.api.kaggle_api_extended import KaggleApi
         api=KaggleApi();api.authenticate()
         result=api.kernels_push(str(folder),timeout='10800',acc='NvidiaTeslaT4')
+        if getattr(result,'error',''):raise RuntimeError('KAGGLE_SUBMISSION_REJECTED')
         url=getattr(result,'url',None) or 'https://www.kaggle.com/code/'+cfg['kernel_ref']
+        ref=cfg['kernel_ref']+'/'+str(result.version_number)
+        (folder/'submission.json').write_text(json.dumps({'url':url,'version':result.version_number,'ref':ref},indent=2)+'\n',encoding='utf-8')
         print('Submitted:',url,flush=True)
         if a.no_wait:return
         while True:
-            status=api.kernels_status(cfg['kernel_ref'])
+            status=api.kernels_status(ref)
             value=str(getattr(status,'status',status)).lower()
             print('Kaggle status:',value,flush=True)
             if 'complete' in value:
-                api.kernels_output(cfg['kernel_ref'],path=str(folder/'outputs'),force=True,quiet=True,
+                api.kernels_output(ref,path=str(folder/'outputs'),force=True,quiet=True,
                     file_pattern=r'.*(CoachLearning_CoMER_v5_Kaggle_DDP2_Results\.zip|result-index\.json)$')
-                print('Downloaded results:',folder/'outputs',flush=True);return
+                archive,index=verify_download(folder/'outputs')
+                print('Verified downloaded ZIP:',archive,flush=True)
+                print('Result:',json.dumps(index),flush=True);return
             if any(word in value for word in ('error','fail','cancel')):raise RuntimeError('KAGGLE_RUN_FAILED; inspect notebook output')
             time.sleep(30)
     finally:os.environ.pop('KAGGLE_API_TOKEN',None)

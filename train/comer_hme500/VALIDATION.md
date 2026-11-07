@@ -95,3 +95,9 @@ Log Kaggle người dùng cung cấp cho trial `r003` xác nhận train với `2
 Runner local dùng input ẩn hoặc WANDB_API_KEY trong môi trường; không đưa key vào argv/config/source. Đã kiểm tra không có token marker trong text artifacts local. Thử nghiệm và model/evaluation outputs lưu tại `.tmp/`, không commit lên Git. QA chỉ chứng minh chức năng chạy GPU/upload, không được dùng làm điểm chất lượng của bộ 500 ảnh. Kết quả nhận dạng đầy đủ phải đọc từ summary/comparison và ZIP của từng trial, không suy ra từ bản QA nhỏ.
 
 Đã kiểm tra phục hồi phần upload sau khi train hoàn tất trên đường truyền chậm: giữ nguyên checkpoint/history local, đánh giá initial/best trên GPU, resume cùng W&B ID và đồng bộ bản model FP32 gọn cùng minh chứng. Đã đối chiếu đủ các mốc validation cloud với CSV local và xác nhận run ở trạng thái finished. v4 hiện dùng `checkpoint_upload=final_inference` để tránh gửi checkpoint trung gian liên tục; full best.pt/last.pt vẫn được giữ local để resume. Source thực tế của trial được xác minh riêng bằng checksum và commit, không sửa ngược runtime capture.
+
+## Nộp job Kaggle bằng một config · 2026-11-07
+
+Đã chạy **53/53 unit tests** sau khi bổ sung `hme_comer.cloud` và `kaggle.v5.json`. Các kiểm tra mới xác nhận notebook sinh ra không chứa key, đọc W&B secret lúc runtime, yêu cầu đúng hai GPU, giữ notebook private, chặn policy upload checkpoint theo epoch, và kiểm checksum/world_size của ZIP tải về.
+
+Đã xác thực Kaggle bằng API token mới qua input ẩn và sao lưu notebook gốc trước khi cập nhật. API đã nhận phiên bản mới của notebook riêng tư với accelerator `NvidiaTeslaT4`; trạng thái nhận job/queued không được xem là bằng chứng CUDA/DDP đã chạy. Kết quả runtime phải được xác nhận từ log thực thi và ZIP của phiên tương ứng. Trial local một GPU trước đó được dừng theo yêu cầu chuyển sang Kaggle, giữ nguyên last/best; job DDP2 bắt đầu mới vì world size và batch mỗi GPU thay đổi.
