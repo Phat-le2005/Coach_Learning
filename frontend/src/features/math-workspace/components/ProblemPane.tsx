@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { BookOpen, PanelLeftClose, PanelLeft, Trash2, Sparkles } from "lucide-react";
+import { BookOpen, PanelLeftClose, PanelLeft, Trash2, Sparkles, PenLine } from "lucide-react";
 import type { ProblemRead, SolutionAttemptRead } from "../types";
 import type { AIReviewRead, AIReviewAvailabilityRead, SolutionStepRead, VariationTablePayload } from "@/lib/api/contracts";
 import { parseVariationTablePayload } from "@/lib/api/contracts";
@@ -23,6 +23,7 @@ interface ProblemPaneProps {
   onDeleteStep: (stepId: string) => Promise<void>;
   onEditVariationTable: (stepId: string, payload: VariationTablePayload) => void;
   onSubmitSolution: () => Promise<void>;
+  onReopenAttempt?: () => Promise<void>;
   onAIReview: () => Promise<void>;
   onOpenReviewWorkspace?: () => void;
   aiReview: AIReviewRead | null;
@@ -48,6 +49,7 @@ export function ProblemPane({
   onDeleteStep,
   onEditVariationTable,
   onSubmitSolution,
+  onReopenAttempt,
   onAIReview,
   onOpenReviewWorkspace,
   aiReview,
@@ -322,9 +324,22 @@ export function ProblemPane({
                   {isReviewing ? "Đang kiểm tra bài..." : "Kiểm tra bài làm"}
                 </button>
                 {aiReviewAvailability?.available === false ? (
-                  <small className={styles.footerNotice}>{aiReviewAvailability.reason_code === "GRADING_ASSIGNMENT_NOT_SUBMITTED"
-                    ? "Hãy nộp toàn bộ bài giáo viên giao trước khi kiểm tra lời giải."
-                    : "Đề bài chưa đủ điều kiện kiểm tra"}</small>
+                  <>
+                    <small className={styles.footerNotice}>{aiReviewAvailability.reason_code === "GRADING_ASSIGNMENT_NOT_SUBMITTED"
+                      ? "Hãy nộp toàn bộ bài giáo viên giao trước khi kiểm tra lời giải."
+                      : "Đề bài chưa đủ điều kiện kiểm tra"}</small>
+                    {onReopenAttempt && (
+                      <button
+                        type="button"
+                        className={styles.buttonSecondary}
+                        onClick={() => void onReopenAttempt()}
+                        title="Mở khóa bài làm để tiếp tục vẽ hoặc sửa các bước giải"
+                        style={{ marginTop: "0.5rem", width: "100%", justifyContent: "center" }}
+                      >
+                        <PenLine size={15} /> Tiếp tục sửa bài này
+                      </button>
+                    )}
+                  </>
                 ) : (
                   <small className={styles.footerHint}>{aiReviewAvailability?.reason_code === "PROVISIONAL_WITHOUT_ANSWER"
                     ? "Chưa có đáp án: chỉ nhận góp ý sơ bộ, không cho điểm"

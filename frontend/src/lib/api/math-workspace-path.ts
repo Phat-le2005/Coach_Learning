@@ -13,7 +13,7 @@ export function mathWorkspaceProxyPath(parts: readonly string[], method: string)
     (method === "POST" && tail === "ink/pairings") ||
     (method === "GET" && parts.length === 4 && parts[1] === "ink" && parts[2] === "pairings" && UUID.test(parts[3])) ||
     (method === "POST" && parts.length === 5 && parts[1] === "ink" && parts[2] === "pairings" && UUID.test(parts[3]) && ["approve", "revoke"].includes(parts[4])) ||
-    (method === "POST" && ["ocr/recognize", "steps", "submit"].includes(tail)) ||
+    (method === "POST" && ["ocr/recognize", "steps", "submit", "reopen"].includes(tail)) ||
     (method === "PATCH" && parts.length === 3 && parts[1] === "steps" && UUID.test(parts[2] ?? "")) ||
     (method === "POST" && parts.length === 4 && parts[1] === "steps"
       && UUID.test(parts[2] ?? "") && parts[3] === "delete");

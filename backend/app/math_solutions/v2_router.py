@@ -250,6 +250,20 @@ def submit_attempt(
     )
 
 
+@router.post(
+    "/attempts/{attempt_id}/reopen",
+    response_model=SolutionAttemptRead,
+)
+def reopen_attempt(
+    attempt_id: UUID,
+    current_user: StudentUser,
+    session: Database,
+) -> dict[str, object]:
+    return MathSolutionService(session).reopen(
+        current_user.id, attempt_id
+    )
+
+
 @router.get(
     "/practice-sessions/{session_id}/next-problem",
     response_model=ProblemRead,

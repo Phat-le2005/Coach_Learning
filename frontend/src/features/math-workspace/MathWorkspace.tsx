@@ -831,6 +831,18 @@ export function MathWorkspace({
     }
   }, [isReviewing, apiClient, accessToken, attemptId]);
 
+
+  const handleReopenAttempt = useCallback(async () => {
+    if (!attempt || attempt.status !== "SUBMITTED") return;
+    try {
+      const reopened = await apiClient.reopenMathAttempt(accessToken, attemptId);
+      setAttempt(reopened);
+      setGradingError(null);
+    } catch (err: unknown) {
+      setGradingError(err instanceof Error ? err.message : "Chưa thể mở lại bài làm.");
+    }
+  }, [attempt, attemptId, accessToken, apiClient]);
+
   const handleAIReview = useCallback(async () => {
     if (!attempt) return;
     await executeAIReview(attempt);
@@ -1375,7 +1387,7 @@ export function MathWorkspace({
             onClick={() => void startLive()}
             title="Quét mã QR để kết nối điện thoại hoặc iPad làm bảng viết"
           >
-            <Smartphone size={15} style={{ marginRight: 6 }} />
+            <Smartphone size={15} />
             {liveStarting ? "Đang kết nối…" : liveEnabled ? "Thiết bị viết (Đang kết nối)" : "Kết nối thiết bị viết"}
           </button>
           <button type="button" className={styles.buttonSecondary} disabled={canvasDrawing} onClick={toggleWritingMode}>
@@ -1548,6 +1560,7 @@ export function MathWorkspace({
           onDeleteStep={handleDeleteStep}
           onEditVariationTable={(stepId, initial) => setVariationTableEditor({ stepId, initial })}
           onSubmitSolution={handleSubmitSolution}
+          onReopenAttempt={handleReopenAttempt}
           onAIReview={handleAIReview}
           onOpenReviewWorkspace={handleOpenReviewWorkspace}
           aiReview={aiReview}
