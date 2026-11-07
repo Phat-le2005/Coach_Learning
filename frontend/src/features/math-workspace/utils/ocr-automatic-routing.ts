@@ -3,6 +3,7 @@ import { routeLabel, sourceKey, validateLabSource, type LabSource, type Percepti
 import type { HtrEvidence } from "./vietnamese-htr";
 import { constructScopeCandidates } from "./ocr-v2-scope-candidates";
 import { renderTransform } from "./ocr-v2-experimental";
+import { sha256Hex } from "./ocr-digest";
 
 export interface AutomaticRoute {
   scopeId: string; sourceStrokeIds: string[]; originalKind: ScopeProposal["kind"];
@@ -64,7 +65,7 @@ export async function recognizeAutomaticText(source: LabSource, scope: ScopeProp
   if(process.env.NODE_ENV==="production")throw Error("AUTOMATIC_HTR_LAB_ONLY");
   const route=planAutomaticRouting(source,[scope],perception)[0];
   if(route?.action!=="VIETOCR")throw Error("AUTOMATIC_HTR_ROUTE_NOT_ELIGIBLE");
-  const hash=async(bytes:Uint8Array)=>Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256",bytes as BufferSource)),b=>b.toString(16).padStart(2,"0")).join("");
+  const hash=sha256Hex;
   const key=await hash(new TextEncoder().encode(sourceKey(source))),imageHash=await hash(Uint8Array.from(atob(png.split(',')[1]),c=>c.charCodeAt(0)));
   const response=await fetch('/api/ocr-v2-lab/htr/scope',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({source,scope,perception,png}),
     signal:signal?AbortSignal.any([signal,AbortSignal.timeout(120000)]):AbortSignal.timeout(120000)});

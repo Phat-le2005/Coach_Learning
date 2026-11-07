@@ -1,5 +1,6 @@
 import type { InkStroke } from "@/lib/api/contracts";
 import { validateLabSource, type LabSource } from "./ocr-v2-experimental";
+import { sha256Hex } from "./ocr-digest";
 
 export type Kind = "MATH" | "TEXT" | "UNKNOWN" | "STRUCTURE";
 export type LabelOrigin = "DATASET_METADATA" | "GENERATOR" | "HUMAN" | "MACHINE_PROPOSAL" | "UNVERIFIED_CORRECTION" | "SOFTWARE_TEST";
@@ -14,7 +15,7 @@ export interface EvaluationPage {
 export interface RawVectorSource { id: string; dataset: string; checksum: string; sourcePath: string; license: string; url?: string; label?: string; labelField?: string; originalSplit: string; inkCreationMethod: string; writerId?: string; annotations?: Record<string, string>; traces: { id: string; points: { x: number; y: number; t?: number }[] }[] }
 export async function hashValue(value: unknown): Promise<string> {
   const bytes = new TextEncoder().encode(typeof value === "string" ? value : JSON.stringify(value));
-  return Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", bytes)), b => b.toString(16).padStart(2, "0")).join("");
+  return sha256Hex(bytes);
 }
 export const inkHash = (s: LabSource) => hashValue([s.pageIndex, s.sourceRevision, s.strokes]);
 const numberHash = (value: string) => { let h = 2166136261; for (const c of value) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return h >>> 0; };

@@ -2,6 +2,7 @@ import type { InkStroke } from "@/lib/api/contracts";
 import type { Stroke, PreprocessResult } from "ink-on/core";
 import { toModelStrokes } from "./handwritten-ocr";
 import { renderOcrLatexHtml } from "./ocr-math-preview";
+import { sha256Hex } from "./ocr-digest";
 
 export const DIAGNOSTIC_CONFIG = {
   model: "CoMER/v0_1/INT8", beamWidth: 3, executionProvider: "wasm", mode: "expression",
@@ -16,8 +17,7 @@ export const PREPROCESS_VARIANTS = [
 export type PreprocessVariant = typeof PREPROCESS_VARIANTS[number]["id"];
 export async function sha256(bytes: ArrayBuffer | Uint8Array): Promise<string> {
   const input = bytes instanceof Uint8Array ? Uint8Array.from(bytes) : new Uint8Array(bytes);
-  const digest = await crypto.subtle.digest("SHA-256", input);
-  return Array.from(new Uint8Array(digest), (b) => b.toString(16).padStart(2, "0")).join("");
+  return sha256Hex(input);
 }
 type Beam = { ids: number[]; logProb: number };
 type EngineResult = { latex: string; tokenIds: number[]; encoderMs: number; decoderMs: number; totalMs: number };

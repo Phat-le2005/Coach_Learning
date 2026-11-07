@@ -8,6 +8,7 @@ import type { DrawingTool, InkStroke } from "../types";
 import { hashValue, nativePage } from "../utils/ocr-evaluation-data";
 import { storeEvaluationTransfer } from "../utils/ocr-evaluation-storage";
 import { VietnameseHtrProbePanel } from "./VietnameseHtrProbePanel";
+import { generateUuid } from "../utils/ink-math";
 
 /** Actual shared MathCanvas component, local page state; deliberately no persistence client. */
 export function OcrV2LocalCanvas() {
@@ -37,7 +38,7 @@ export function OcrV2LocalCanvas() {
       try { const id = `native-${(await hashValue(current.strokes)).slice(0, 16)}`, p = await nativePage(current.strokes, id, `MathCanvas trang ${page + 1}`, { origin: "LIVE_LAB_TRANSFER; no OCR labels imported" }, current.revision, page);
         p.split = split; p.source.datasetSplit = split; p.provenance.writerId = writer || "NOT_AVAILABLE";
         if (sourceKind === "SYNTHETIC_INK") p.sourceKind = "BROWSER_REPLAY";
-        const transfer = crypto.randomUUID(); await storeEvaluationTransfer(transfer, p); tab.location.href = `/ocr-v2-lab/evaluation?transfer=${transfer}`;
+        const transfer = generateUuid(); await storeEvaluationTransfer(transfer, p); tab.location.href = `/ocr-v2-lab/evaluation?transfer=${transfer}`;
       } catch (e) { tab.close(); setError(String(e)); }
     })(); }}>Gán nhãn / đánh giá trang đang viết</button></p>
     <p>Viết trực tiếp bằng MathCanvas thật. Trang này chỉ giữ nét trong bộ nhớ trình duyệt, không lưu database. Xuất trước khi đóng tab.</p>

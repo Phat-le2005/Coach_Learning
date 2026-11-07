@@ -1,19 +1,15 @@
 import { validateSolutionTranscriptionIR } from "./structured-transcription-ir";
 import type { CoreReview } from "./ocr-v2-core";
-import { sha256 } from "js-sha256";
+import { sha256Hex } from "./ocr-digest";
 import { generateUuid } from "./ink-math";
 const DB = "edums-ocr-transcription-v1";
 async function open(): Promise<IDBDatabase> { return new Promise((resolve, reject) => {
   const r = indexedDB.open(DB, 1); r.onupgradeneeded = () => r.result.createObjectStore("reviews"); r.onsuccess = () => resolve(r.result); r.onerror = () => reject(r.error);
 }); }
 export async function transcriptionKey(attemptId: string, identity: string) {
-  const bytes = new TextEncoder().encode(identity);
   // HTTP LAN origins lack SubtleCrypto. Keep the exact SHA-256 identity so
   // reopening a review preserves corrections in either browser environment.
-  const subtle = globalThis.crypto?.subtle;
-  const hash = subtle
-    ? [...new Uint8Array(await subtle.digest("SHA-256", bytes))].map(b => b.toString(16).padStart(2, "0")).join("")
-    : sha256(bytes);
+  const hash = await sha256Hex(identity);
   return `${attemptId}:${hash}`;
 }
 export async function loadTranscription(key: string): Promise<CoreReview | undefined> {

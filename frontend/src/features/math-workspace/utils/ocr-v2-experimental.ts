@@ -1,3 +1,4 @@
+import { generateUuid } from "./ink-math";
 import type { InkStroke } from "@/lib/api/contracts";
 import { segmentPageInk, type InkBounds, type PageOcrRegion } from "./page-ocr";
 import { selectLassoStrokes } from "./lasso";
@@ -212,7 +213,7 @@ export function lassoIds(source: LabSource, polygon: { x: number; y: number; pre
 export function groupIrUnits(ir: SolutionTranscriptionIR, ids: string[], relation: "SYSTEM" | "ALTERNATIVES" | "FRACTION" | "INDEPENDENT" | "UNKNOWN"): SolutionTranscriptionIR {
   const roots = getRootContentUnits(ir.contentUnits), selected = roots.filter(u => ids.includes(u.id));
   if (selected.length < 2 || selected.length !== new Set(ids).size) throw new Error("SELECT_TWO_OR_MORE_ROOT_UNITS");
-  const strokeIds = [...new Set(selected.flatMap(u => u.sourceStrokeIds))], id = `container-${crypto.randomUUID()}`;
+  const strokeIds = [...new Set(selected.flatMap(u => u.sourceStrokeIds))], id = `container-${generateUuid()}`;
   const container = { ...selected[0], id, role: "CONTAINER" as const, kind: "STRUCTURE" as const, structureKind: relation,
     childIds: selected.map(u => u.id), sourceStrokeIds: strokeIds, sourceRegionIds: [...new Set(selected.flatMap(u => u.sourceRegionIds))], bounds: computeBounds(ir.sourceSnapshot.strokes.filter(s => strokeIds.includes(s.id))), rawRecognition: null, approvedContent: null, recognitionStatus: "NOT_APPLICABLE" as const, reviewStatus: "NEEDS_REVIEW" as const, isManuallyCorrected: false, reasons: ["Human selected presentation relation, not a GradingStep"] };
   const units = [...ir.contentUnits.map(u => ids.includes(u.id) ? { ...u, readingOrder: ids.indexOf(u.id) } : { ...u }), container];

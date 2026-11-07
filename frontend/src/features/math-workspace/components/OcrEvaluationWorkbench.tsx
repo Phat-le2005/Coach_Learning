@@ -1,4 +1,5 @@
 "use client";
+import { generateUuid } from "../utils/ink-math";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { annotationCoverage, assertNoSplitLeakage, convertVectorSource, generatePages, hashValue, importInkML, inkHash, LAYOUT_FAMILIES, nativePage, setUnitMembership, trustedUnits, validateAnnotation, validateEvaluationPage,
   type Annotation, type EvaluationPage, type GenerateConfig, type GtUnit, type Kind, type RawVectorSource } from "../utils/ocr-evaluation-data";
@@ -74,7 +75,7 @@ export function OcrEvaluationWorkbench() {
         next[next.indexOf(existing)] = { ...existing, provenance: { ...existing.provenance, ...p.provenance } }; return;
       }
       // An imported GT version must not silently disappear or overwrite local confirmed edits.
-      if (existing) p = { ...p, id: `${p.id}-import-${crypto.randomUUID().slice(0, 8)}`, title: `${p.title} [import version]` };
+      if (existing) p = { ...p, id: `${p.id}-import-${generateUuid().slice(0, 8)}`, title: `${p.title} [import version]` };
       else if (next.some(o => o.id === p.id)) p = { ...p, id: `${p.id}-${p.sourceChecksum.slice(0, 8)}` };
       incoming[i] = p; next.push(p);
     });
@@ -117,7 +118,7 @@ export function OcrEvaluationWorkbench() {
   }
   function newUnit() {
     if (!page || !picked.length) return;
-    const next = invalidate(page.annotation), id = `gt-${crypto.randomUUID()}`;
+    const next = invalidate(page.annotation), id = `gt-${generateUuid()}`;
     next.units.push({ id, kind, strokeIds: [...picked], transcript: null, readingOrder: Math.max(-1, ...next.units.map(u => u.readingOrder)) + 1, childIds: [], confirmed: false });
     const fixed = setUnitMembership({ ...page, annotation: next }, id, picked); update(fixed); setUnitId(id); setPicked([]);
   }
@@ -139,7 +140,7 @@ export function OcrEvaluationWorkbench() {
     if (!page || childIds.length < 2) throw Error("Chọn ít nhất hai đơn vị con");
     const next = invalidate(page.annotation), children = next.units.filter(u => childIds.includes(u.id));
     if (children.length !== childIds.length || next.units.some(u => u.childIds.some(id => childIds.includes(id)))) throw Error("Chỉ chọn các root units để tạo cấu trúc");
-    const id = `structure-${crypto.randomUUID()}`;
+    const id = `structure-${generateUuid()}`;
     next.units.push({ id, kind: "STRUCTURE", relation, childIds: [...childIds], strokeIds: [...new Set([...children.flatMap(u => u.strokeIds), ...picked])], transcript: null, readingOrder: Math.min(...children.map(u => u.readingOrder)), confirmed: false });
     update(next); setUnitId(id); setPicked([]); setChildIds([]);
   }
@@ -147,7 +148,7 @@ export function OcrEvaluationWorkbench() {
     if (!page || childIds.length < 2) throw Error("Chọn ít nhất hai atomic root units");
     const selected = page.annotation.units.filter(u => childIds.includes(u.id)).sort((a, b) => a.readingOrder - b.readingOrder);
     if (selected.some(u => u.kind === "STRUCTURE") || page.annotation.units.some(u => u.childIds.some(id => childIds.includes(id)))) throw Error("Gộp các atomic root units; sửa quan hệ parent trước nếu cần");
-    const next = invalidate(page.annotation), id = `merged-${crypto.randomUUID()}`;
+    const next = invalidate(page.annotation), id = `merged-${generateUuid()}`;
     next.units = next.units.filter(u => !childIds.includes(u.id)); next.units.push({ id, kind: selected.every(u => u.kind === selected[0].kind) ? selected[0].kind : "UNKNOWN", strokeIds: [...new Set(selected.flatMap(u => u.strokeIds))], transcript: selected.map(u => u.transcript ?? "").join("\n"), childIds: [], readingOrder: selected[0].readingOrder, confirmed: false });
     update(next); setUnitId(id); setChildIds([]);
   }

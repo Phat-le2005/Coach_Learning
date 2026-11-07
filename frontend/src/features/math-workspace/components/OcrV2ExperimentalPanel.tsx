@@ -1,4 +1,6 @@
 "use client";
+import { sha256Hex } from "../utils/ocr-digest";
+import { generateUuid } from "../utils/ink-math";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { InkStroke } from "@/lib/api/contracts";
 import { diagnoseMathScope } from "../utils/ocr-model-diagnostics";
@@ -28,7 +30,7 @@ const download = (name: string, data: unknown, mime = "application/json") => {
   const blob = new Blob([typeof data === "string" ? data : JSON.stringify(data, null, 2)], { type: mime });
   const url = URL.createObjectURL(blob), a = document.createElement("a"); a.href = url; a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
 };
-async function digest(data: string) { return Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(data))), b => b.toString(16).padStart(2, "0")).join(""); }
+async function digest(data: string) { return sha256Hex(data); }
 
 /** Isolated experiment: no API client for ink, steps, batches or grading is imported. */
 export function OcrV2ExperimentalPanel({ source, onClose }: { source: LabSource; onClose?: () => void }) {
@@ -240,7 +242,7 @@ export function OcrV2ExperimentalPanel({ source, onClose }: { source: LabSource;
     if (!ir || busy || stale || !ids.length) return;
     try {
       const ordered = snapshot.strokes.filter(s => s.tool === "PEN" && ids.includes(s.id)).map(s => s.id);
-      const id = `manual-${crypto.randomUUID()}`, next = reassignScope(scopes, ordered, id, manualKind);
+      const id = `manual-${generateUuid()}`, next = reassignScope(scopes, ordered, id, manualKind);
       setArchives(previous => [...previous, { reason: "MANUAL_SCOPE_CHANGE; prior corrections retained", ir, scopes, source: snapshot }]);
       const nextIr = buildScopeIR(snapshot, next, ir); irRef.current = nextIr; setIr(nextIr); setScopes(next); setSelected(`unit-${id}`); setPicked([]); setMulti([]);
       setProgress("Phạm vi đã đổi; bản review trước giữ trong Lịch sử. Hãy đọc lại scope mới.");
@@ -410,7 +412,7 @@ export function OcrV2ExperimentalPanel({ source, onClose }: { source: LabSource;
     <details><summary>Gán nhãn độc lập cho dữ liệu mới (DEV / HOLDOUT)</summary>
       <p>Chọn nét trước khi xem OCR, tự nhập nhãn từ nét gốc. Không sao chép prediction thành GT. Dùng 15–30 mẫu mới và giữ HOLDOUT độc lập.</p>
       <label>Nhãn độc lập <input aria-label="Nhãn độc lập V2" value={annotationText} onChange={e => setAnnotationText(e.target.value)} /></label>
-      <button disabled={!picked.length || !annotationText.trim() || records.length > 0 || snapshotProbes.length > 0} onClick={() => { setAnnotations(a => [...a, { id: crypto.randomUUID(), strokeIds: [...picked], kind: manualKind, transcript: annotationText }]); setAnnotationText(""); }}>Thêm nhóm nhãn độc lập</button>
+      <button disabled={!picked.length || !annotationText.trim() || records.length > 0 || snapshotProbes.length > 0} onClick={() => { setAnnotations(a => [...a, { id: generateUuid(), strokeIds: [...picked], kind: manualKind, transcript: annotationText }]); setAnnotationText(""); }}>Thêm nhóm nhãn độc lập</button>
       <label><input type="checkbox" disabled={records.length > 0 || snapshotProbes.length > 0} checked={humanVerified} onChange={e => setHumanVerified(e.target.checked)} />Tôi đã đối chiếu nhãn độc lập với OCR</label>
       <pre>{JSON.stringify(annotations, null, 2)}</pre>
       <button disabled={!consent || busy || stale} onClick={() => void exportLabels()}>Xuất capture + nhãn tương thích 05.4</button>
