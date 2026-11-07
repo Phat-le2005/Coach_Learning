@@ -5,7 +5,7 @@ test.use({ trace: "off", video: "off", screenshot: "only-on-failure" });
 const manifest = process.env.WORKSPACE_QA_SESSION_FILE;
 test.skip(!manifest, "Requires a separate, empty attempt in the isolated live-ink QA database");
 
-test("touch mode keeps workspace tools; paired ink reaches real OCR and review on HTTP LAN", async ({ browser }) => {
+test("touch tools and paired ink reach real OCR and review on the configured origin", async ({ browser }) => {
   test.setTimeout(180000);
   const data = JSON.parse(fs.readFileSync(manifest!, "utf8"));
   const base = process.env.E2E_BASE_URL!;
@@ -78,7 +78,8 @@ test("touch mode keeps workspace tools; paired ink reaches real OCR and review o
     await expect(a.locator("[data-live-status]")).toHaveAttribute("data-live-status", "connected");
     expect((await read()).strokes.map((s: { id: string }) => s.id).sort()).toEqual(ids);
     const context = await a.evaluate(() => ({ secure: window.isSecureContext, subtle: !!crypto.subtle, randomUUID: typeof crypto.randomUUID === "function" }));
-    expect(context).toEqual({ secure: false, subtle: false, randomUUID: false });
+    const secureOrigin = new URL(base).protocol === "https:" || ["127.0.0.1", "localhost"].includes(new URL(base).hostname);
+    expect(context).toEqual({ secure: secureOrigin, subtle: secureOrigin, randomUUID: secureOrigin });
     await a.getByRole("button", { name: "Trích xuất trang", exact: true }).click();
     const review = a.getByTestId("ocr-v2-main-review");
     await expect(review).toHaveAttribute("aria-busy", "false", { timeout: 90000 });
