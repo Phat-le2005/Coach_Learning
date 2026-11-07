@@ -9,11 +9,13 @@ def md(s): cells.append(dict(cell_type='markdown',metadata={},source=textwrap.de
 def code(s): cells.append(dict(cell_type='code',metadata={},source=textwrap.dedent(s).strip().splitlines(True),execution_count=None,outputs=[]))
 
 md('''
-    # Coach Learning · CoMER HME500 · GitHub → Bash → W&B
+    # Coach Learning · CoMER HME500 · 2 GPUs · versioned before/after experiments
     **Luồng chạy:** Kaggle Secrets → clone/pull Coach_Learning → `.sh` cài môi trường,
     tải checkpoint, audit 500 JPG thật, baseline, train/validation, final test và ZIP minh chứng.
 
-    Bật GPU + Internet. Add Input `lhngphc/data-finetune-comer`.
+    Bật GPU **T4 x2** + Internet. Add Input `lhngphc/data-finetune-comer`.
+    `v2` = fine-tune DDP hai GPU; `v3` = DDP hai GPU + so sánh trước/sau trên cùng 50 test.
+    Mỗi lần tạo thí nghiệm mới tự có số lần chạy + UTC và thư mục riêng; resume giữ tên cũ.
     Add-ons → Secrets: bật `WANDB_API_KEY`; bật `GH_TOKEN` nếu cần xác thực GitHub.
     Repo này công khai nên cũng clone được khi không có `GH_TOKEN`.
     Key W&B được truyền qua `os.environ` để tiến trình Bash/Python kế thừa.
@@ -34,14 +36,12 @@ code('''
     WANDB_ENTITY = None  # username/team W&B, hoặc để mặc định theo API key
     WANDB_PROJECT = "coachlearning-handwritten-math"
     WANDB_MODE = "online"  # "offline" lưu log, chưa upload
-    SEED, EPOCHS, BATCH_SIZE, ACCUMULATE = 42, 20, 4, 4
+    EXPERIMENT_VERSION = "v3"  # "v2" fine-tune; "v3" fine-tune + before/after
+    EXPERIMENT_ROOT = "/kaggle/working/comer_experiments"
+    SEED, EPOCHS = 42, 20
     RESUME_CHECKPOINT = None  # /kaggle/input/<checkpoints>/last.pt, giữ best.pt cạnh nó
     RUN_FINAL_TEST = True  # False nếu đang dò cấu hình
 
-    EXPERIMENT = f"comer-hme500-adamw-bs{BATCH_SIZE*ACCUMULATE}-seed{SEED}"
-    STAMP = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    OUTPUT = Path("/kaggle/working") / f"{EXPERIMENT}-{STAMP}"
-    CONFIG_PATH = Path("/kaggle/working/comer_hme500_config.json")
 ''')
 md('''
     ## Đọc Secrets, giữ nguyên môi trường kernel
@@ -90,15 +90,24 @@ md('''
     Input tự tìm `CoachLearning_500_HME100K/metadata.json`, yêu cầu 400/50/50 và JPEG đọc được.
     Output vào Working; ảnh gốc giữ nguyên. Chọn best bằng validation, test chỉ đánh giá sau khi chốt.
     LR mặc định encoder 1e-5 / decoder 1e-4; freeze encoder 2 epoch; AdamW; early stopping 6 epoch.
-    Nếu OOM: tạo run mới với batch 2, accumulate 8.
+    DDP: batch 4 mỗi GPU × 2 GPU × accumulate 2 = global batch 16.
+    v3 lưu initial.pt trước optimizer, chọn best bằng validation, so sánh hai model sau khi chốt.
+    Nếu OOM: tạo config mới với batch 2, accumulate 4 để giữ global batch 16.
 ''')
 code('''
-    config = json.loads((LAB / "config.example.json").read_text())
-    config.update(data=DATA_ROOT, output=str(OUTPUT), seed=SEED, epochs=EPOCHS,
-                  batch_size=BATCH_SIZE, accumulate=ACCUMULATE)
-    config["wandb"].update(entity=WANDB_ENTITY, project=WANDB_PROJECT, mode=WANDB_MODE,
-        name=f"{EXPERIMENT}-{STAMP}", group=f"comer-crohme-to-hme500-seed{SEED}")
-    CONFIG_PATH.write_text(json.dumps(config, ensure_ascii=False, indent=2), encoding="utf-8")
+    if str(LAB) not in sys.path: sys.path.insert(0, str(LAB))
+    from hme_comer.experiments import create
+    if RESUME_CHECKPOINT:
+        config = json.loads((Path(RESUME_CHECKPOINT).parent / "config.json").read_text())
+        config.update(data=DATA_ROOT, epochs=EPOCHS,
+                      output=str(Path(EXPERIMENT_ROOT) / config["wandb"]["name"]))
+        CONFIG_PATH = Path(EXPERIMENT_ROOT) / (config["wandb"]["name"] + ".resume.config.json")
+        CONFIG_PATH.parent.mkdir(parents=True, exist_ok=True)
+        CONFIG_PATH.write_text(json.dumps(config, ensure_ascii=False, indent=2), encoding="utf-8")
+    else:
+        CONFIG_PATH, config = create(EXPERIMENT_VERSION, root=EXPERIMENT_ROOT, data=DATA_ROOT,
+            seed=SEED, epochs=EPOCHS, wandb_mode=WANDB_MODE, entity=WANDB_ENTITY, project=WANDB_PROJECT)
+    OUTPUT = Path(config["output"])
     os.environ["PYTHON_BIN"] = sys.executable
     os.environ["RUN_FINAL_TEST"] = "1" if RUN_FINAL_TEST else "0"
     os.environ["COMER_LAB_DIR"] = str(LAB)
@@ -106,6 +115,8 @@ code('''
     print("Config:", CONFIG_PATH)
     print("Output:", OUTPUT)
     print("W&B project:", WANDB_PROJECT)
+    print("Run name:", config["wandb"]["name"])
+    print("Version:", config["experiment_version"], "GPUs:", config["devices"])
 ''')
 md('''
     ## Chạy qua file .sh
@@ -117,6 +128,7 @@ md('''
     → baseline validation → fine-tune → final test khi RUN_FINAL_TEST=1 → ZIP.
     Secret W&B trong os.environ được Bash và Python kế thừa tự động.
     Nếu muốn tách bước: `setup`, `train CONFIG`, `test OUTPUT`.
+    Lần chạy mới tự đặt tên, từ cell Bash: `!bash scripts/run_kaggle.sh new v3`.
 ''')
 code('''
     command = ["bash", str(LAB / "scripts/run_kaggle.sh"), "all", str(CONFIG_PATH)]
@@ -141,6 +153,12 @@ code('''
     zip_path = OUTPUT / "experiment_evidence.zip"
     print("ZIP:", zip_path)
     display(FileLink(str(zip_path)))
+    if (OUTPUT / "comparison.png").exists():
+        display(DisplayImage(filename=str(OUTPUT / "comparison.png")))
+        display(pd.read_csv(OUTPUT / "comparison-summary.csv"))
+        display(pd.read_csv(OUTPUT / "comparison.csv"))
+        if (OUTPUT / "comparison-wandb.json").exists():
+            print("Before/after W&B runs:", (OUTPUT / "comparison-wandb.json").read_text())
 ''')
 for i,c in enumerate(cells): c['id']=f'hme500-comer-shell-{i:02}'
 nb=dict(cells=cells,metadata={'kernelspec':{'display_name':'Python 3','language':'python','name':'python3'},

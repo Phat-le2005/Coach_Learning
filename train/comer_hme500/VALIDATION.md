@@ -8,7 +8,7 @@
 | Hỗ trợ metadata cũ | Bản 6 trường cũng qua audit 500 ảnh và fit vocabulary |
 | Checkpoint gốc | Git blob checkpoint `455481570a5fd0136657dd3fa20027f3a829b47f`; SHA256 `c3433f2eb70fafa829c424c922c2305f70ee50eee305674d0e9141e5db992808` |
 | Vocabulary | 113 → 117; thêm `\cot`, `\cup`, `\ln`, `\vert` chỉ từ train |
-| Unit tests | 24/24 pass: 10 kiểm tra data/train, 12 kiểm tra Git/notebook/Bash, 2 kiểm tra W&B/Protobuf runtime |
+| Unit tests | 34/34 pass: data/train, Git/notebook/Bash, runtime, phiên bản/tên tự động, sampler DDP, chuẩn hóa gradient và ghép cặp so sánh |
 | Train PyTorch với JPG thật | 4 ảnh train + 2 ảnh validation, 2 epoch CPU; forward/backward/optimizer pass; freeze epoch 1, unfreeze epoch 2; 4 optimizer steps |
 | Resume | Chạy epoch 1 rồi resume đến epoch 2; cả **673 tensor model bằng hệt** chạy liền 2 epoch cùng seed/config |
 | Reload fine-tuned checkpoint | Safe tensor unpickler + strict state_dict load pass, vocab 117 |
@@ -60,3 +60,20 @@ Các test Git/auth dùng runner giả và token fixture, không gửi credential
 Đã tái tạo đúng ImportError `Imports` bằng W&B 0.22.3 khi Protobuf 7 đã được import. Đã kiểm tra cặp **W&B 0.26.0 + Protobuf 7.35.1** trong Python 3.13 với **grpcio-tools 1.85.1**: symbol `Imports` import được, constraint khớp, `pip check` báo không có requirement lỗi. Đây là môi trường QA riêng; không sửa môi trường QA 0.22.3 cũ.
 
 Đã chạy lại `.sh train --qa` với ảnh JPG thật, CPU, một epoch: W&B SDK 0.26.0 tạo metrics, bảng ảnh, artifact checkpoint và ZIP offline thành công. Notebook bỏ pip/import W&B trong kernel, và setup có preflight trong tiến trình mới trước unit tests/checkpoint/train. GPU Kaggle và upload W&B online vẫn chưa được kiểm chứng ở đây.
+
+## v2/v3: hai GPU, snapshot trước fine-tune và tên tự động
+
+Đã chạy test cho launcher `torch.distributed.run --nproc_per_node=2`, sampler chia đủ 400 ảnh không overlap, chuẩn hóa gradient theo tổng token khi hai rank có số token khác nhau, freeze/unfreeze giữ nguyên tập parameter, RNG roundtrip, tên r001/r002 và đặt tên đồng thời, ghép cặp ID/nhãn và dấu delta trước/sau. Cả 34 unit tests pass trên Windows Python 3.13, torch 2.9.0+cpu.
+
+Đã chạy lại train **một tiến trình CPU** qua wrapper mới trên 4 JPEG train + 2 validation, 2 epoch freeze/unfreeze. Lưu initial.pt, best.pt, last.pt và checksum. Đã đánh giá initial và best trên cùng 2 validation bằng `compare --qa`, tạo CSV/JSON/PNG và hai run W&B offline cùng group. Upload retry `--sync-only` thành công sau lỗi kết nối dịch vụ local; kết quả suy luận đã lưu được giữ nguyên, không chạy lại. Không dùng các metric QA nhỏ này làm kết quả nhận dạng của 500 ảnh.
+
+**Chưa xác nhận chạy CUDA/NCCL trên hai GPU thật hoặc W&B online.** Máy Windows không có hai GPU để kiểm tra. Thử hai rank Gloo CPU bị chặn bởi bản PyTorch Windows (`unsupported gloo device`); môi trường Linux/WSL local gặp lỗi hệ thống trước khi chạy integration. Vì vậy không báo “DDP integration pass” hay “DDP resume parity pass”. Script `tests/qa_distributed.py` được cung cấp để kiểm tra hai rank, dữ liệu rời nhau, một training W&B run và resume tensor equality trên Linux phù hợp; script này chưa hoàn tất ở môi trường local.
+
+Mẫu kiểm tra Linux CPU, dùng ảnh thật và cache CoMER đã xác minh, chưa chạm test:
+
+```bash
+python tests/qa_distributed.py --data /path/CoachLearning_500_HME100K \
+  --upstream /path/verified/upstream --root /tmp/comer-ddp-qa-new
+```
+
+Trên Kaggle, chọn **T4 x2**, chạy một trial mới bằng `bash scripts/run_kaggle.sh new v3`. Kiểm `runtime.json` (`world_size=2`, hai tên GPU), `rank-samples-NNN.json` và GPU system metrics trong W&B để xác nhận phiên thật. Hai run so sánh `-before`/`-after` chỉ đánh giá sau khi best được chọn bằng validation.
