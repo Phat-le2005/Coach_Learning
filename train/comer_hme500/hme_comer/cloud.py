@@ -225,6 +225,9 @@ def replay_offline(archive,index):
         def read(name):return json.loads((output/name).read_text(encoding='utf-8'))
         original=read('config.json');info=read('run.json');summary=read('summary.json')
         cfg={**original,'wandb':{**original['wandb'],'mode':'online'}}
+        provenance={'original_logging_mode':'offline','history_replayed_from_saved_cloud_records':True,
+            'measurement_runtime':read('runtime.json'),'measurement_dataset_audit':read('dataset-audit.json'),
+            'system_metrics_capture_disabled_during_replay':True}
         rows=[{**row,'_image':output/'preview-images'/(row['id']+'.jpg')}
             for row in read('dataset-manifest.json') if row['split'] in ('validation','test')]
         if len(rows)!=100 or any(not row['_image'].is_file() for row in rows):raise RuntimeError('GALLERY_IMAGES_MISSING')
@@ -234,8 +237,8 @@ def replay_offline(archive,index):
         run=wandb.init(project=info['project'],entity=info['entity'],name=info['name'],group=info['group'],
             id=info['id'],resume='allow',mode='online',dir=str(output),job_type='fine-tune',
             tags=['CoMER','HME100K','kaggle-ddp2','measured-offline-synced-later'],
-            config={**cfg,'original_logging_mode':'offline','history_replayed_from_saved_cloud_records':True},
-            settings=wandb.Settings(disable_code=True,disable_git=True,console='off'))
+            config={**cfg,**provenance},
+            settings=wandb.Settings(disable_code=True,disable_git=True,console='off',x_disable_stats=True))
         run.define_metric('epoch');run.define_metric('train/optimizer_step')
         run.define_metric('train/*',step_metric='train/optimizer_step')
         for prefix in ('val','epoch_train','lr','runtime'):run.define_metric(prefix+'/*',step_metric='epoch')
@@ -274,9 +277,9 @@ def replay_offline(archive,index):
             run_id=hashlib.sha256((info['id']+stage).encode()).hexdigest()[:16]
             evaluation=wandb.init(project=info['project'],entity=info['entity'],name=info['name']+'-'+stage,
                 group=info['group'],id=run_id,resume='allow',mode='online',dir=str(output),job_type='prepost-evaluation',
-                config={**cfg,'evaluation_stage':stage,'checkpoint_sha256':part['checkpoint_sha256'],
-                    'original_logging_mode':'offline','parent_run_id':info['id']},
-                settings=wandb.Settings(disable_code=True,disable_git=True,console='off'))
+                config={**cfg,**provenance,'evaluation_stage':stage,'checkpoint_sha256':part['checkpoint_sha256'],
+                    'parent_run_id':info['id']},
+                settings=wandb.Settings(disable_code=True,disable_git=True,console='off',x_disable_stats=True))
             try:
                 log_predictions(evaluation,cfg,part['metrics'],part['predictions'],part['groups'],rows,part['epoch'],split='test')
                 evaluation.log({'evaluation/'+key:value for key,value in part['metrics'].items()})
