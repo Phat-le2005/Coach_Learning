@@ -50,6 +50,20 @@ bash scripts/run_kaggle.sh test /kaggle/working/<thu-muc-run>
 
 Resume dùng `train CONFIG --resume /path/last.pt`. `test OUTPUT --sync-only` gửi lại test record đã lưu nếu upload lỗi. `.sh` dừng ngay khi một bước lỗi, không chuyển sang train/test sau lỗi cài đặt. Có thể đặt `PYTHON_BIN` để chọn Python; notebook tự đặt bằng `sys.executable`. Repo có edit local sẽ được giữ nguyên và yêu cầu chọn `REPO_PATH` mới; repo sạch dùng `pull --ff-only`. Không thiết lập Git user/email toàn máy vì clone/train không cần chúng.
 
+## Sửa lỗi W&B / Protobuf trên Kaggle
+
+Lỗi `cannot import name 'Imports' from wandb.proto.wandb_telemetry_pb2` xuất hiện khi W&B cũ gặp Protobuf 7, kể cả trường hợp pip đã hạ phiên bản trên đĩa nhưng kernel còn giữ module 7 trong bộ nhớ. [W&B đã bổ sung hỗ trợ Protobuf 7](https://github.com/wandb/wandb/pull/11552).
+
+Kit hiện pin **wandb==0.26.0 + protobuf==7.35.1**, phù hợp yêu cầu Protobuf của `grpcio-tools==1.85.1`. Setup chạy `hme_comer.check_runtime` trong tiến trình mới, kiểm tra đúng symbol bị lỗi và constraints W&B/grpcio-tools trước khi tải checkpoint. Notebook chỉ đọc Secrets; W&B được import trong tiến trình train, không cần import vào kernel notebook.
+
+Nếu đang dùng cell bootstrap cũ, thay dòng cài W&B bằng:
+
+```python
+%pip install --upgrade --no-cache-dir "wandb==0.26.0" "protobuf==7.35.1"
+```
+
+Sau khi cài, **restart kernel/session** để bỏ module Protobuf đã cache, rồi chạy lại các cell Secrets → clone/pull → config → `.sh`. Thay hoặc xóa dòng cài `wandb==0.22.3` cũ để nó không bị cài lại. Bỏ `import wandb` trong bootstrap vì phần train sẽ tự import. Khi repo đã clone, cập nhật bằng `git pull --ff-only origin main` trước lệnh `.sh`.
+
 ## Những gì được ghi lại
 
 - W&B config: tham số, số lượng từng split/nhóm, fingerprint dataset, ký hiệu mới, chế độ QA và hợp đồng metric. Artifact runtime có phiên bản Python/package, GPU/CUDA, commit source/checkpoint và SHA256 mã chạy.

@@ -26,6 +26,7 @@ HELP
 
 setup() {
   "$PYTHON_BIN" -m pip install -q -r "$LAB_DIR/requirements.txt"
+  "$PYTHON_BIN" -m hme_comer.check_runtime
   "$PYTHON_BIN" -m unittest discover -s "$LAB_DIR/tests" -v
   "$PYTHON_BIN" -m hme_comer.fetch_upstream
 }

@@ -79,6 +79,12 @@ class Notebook(unittest.TestCase):
         self.assertIn('scripts/run_kaggle.sh',joined)
         self.assertNotIn('sgu-2026-facial-expression-recognition',joined)
         self.assertNotIn('EMBEDDED_SOURCE_B64',joined)
+        for text in sources:
+            for node in ast.walk(ast.parse(text)):
+                if isinstance(node,ast.Import):
+                    self.assertNotIn('wandb',[n.name for n in node.names])
+                if isinstance(node,ast.ImportFrom): self.assertNotEqual(node.module,'wandb')
+        self.assertNotIn('wandb==0.22.3',joined)
 
 
 class BashWorkflow(unittest.TestCase):
@@ -110,8 +116,8 @@ class BashWorkflow(unittest.TestCase):
     def test_all_order_and_final_output_path(self):
         p=self.run_script('all',self.config);self.assertEqual(p.returncode,0,p.stderr)
         calls=self.calls.read_text().splitlines()
-        self.assertEqual(len(calls),5)
-        for c,keyword in zip(calls,('pip','unittest','fetch_upstream','hme_comer.train','hme_comer.final_test')):
+        self.assertEqual(len(calls),6)
+        for c,keyword in zip(calls,('pip','check_runtime','unittest','fetch_upstream','hme_comer.train','hme_comer.final_test')):
             self.assertIn(keyword,c)
         self.assertIn(str(self.output),calls[-1])
     def test_setup_failure_prevents_training(self):

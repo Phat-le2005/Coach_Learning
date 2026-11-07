@@ -44,14 +44,14 @@ code('''
     CONFIG_PATH = Path("/kaggle/working/comer_hme500_config.json")
 ''')
 md('''
-    ## Cài W&B và đọc Secrets
+    ## Đọc Secrets, giữ nguyên môi trường kernel
     `GH_TOKEN` chỉ truyền vào tiến trình Git; URL origin giữ nguyên dạng công khai.
     `WANDB_API_KEY` truyền qua môi trường cho `.sh`, không ghi vào config hay notebook output.
+    W&B/Protobuf được cài và kiểm tra trong tiến trình Bash/Python riêng ở bước setup.
+    Cell này không import W&B vào kernel, tránh giữ cache Protobuf cũ sau khi pip đổi phiên bản.
 ''')
 code('''
-    subprocess.run([sys.executable, "-m", "pip", "install", "-q", "wandb==0.22.3"], check=True)
     from kaggle_secrets import UserSecretsClient
-    import wandb
 
     user_secrets = UserSecretsClient()
     try:

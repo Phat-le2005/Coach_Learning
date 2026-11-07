@@ -8,7 +8,7 @@
 | Hỗ trợ metadata cũ | Bản 6 trường cũng qua audit 500 ảnh và fit vocabulary |
 | Checkpoint gốc | Git blob checkpoint `455481570a5fd0136657dd3fa20027f3a829b47f`; SHA256 `c3433f2eb70fafa829c424c922c2305f70ee50eee305674d0e9141e5db992808` |
 | Vocabulary | 113 → 117; thêm `\cot`, `\cup`, `\ln`, `\vert` chỉ từ train |
-| Unit tests | 22/22 pass: 10 kiểm tra data/train và 12 kiểm tra Git credential, notebook và Bash workflow |
+| Unit tests | 24/24 pass: 10 kiểm tra data/train, 12 kiểm tra Git/notebook/Bash, 2 kiểm tra W&B/Protobuf runtime |
 | Train PyTorch với JPG thật | 4 ảnh train + 2 ảnh validation, 2 epoch CPU; forward/backward/optimizer pass; freeze epoch 1, unfreeze epoch 2; 4 optimizer steps |
 | Resume | Chạy epoch 1 rồi resume đến epoch 2; cả **673 tensor model bằng hệt** chạy liền 2 epoch cùng seed/config |
 | Reload fine-tuned checkpoint | Safe tensor unpickler + strict state_dict load pass, vocab 117 |
@@ -54,3 +54,9 @@ Bản cập nhật thay cơ chế source nhúng bằng clone/pull GitHub và `sc
 Đã chạy thêm **Bash runner thật** với 4 JPEG train + 2 JPEG validation, một epoch CPU, W&B offline: baseline, optimizer step, checkpoint, CSV/PNG/ZIP được tạo thành công. Không thay đổi ảnh input và không suy luận 50 test. Đây là QA điều phối `.sh`, không là kết quả thí nghiệm đầy đủ.
 
 Các test Git/auth dùng runner giả và token fixture, không gửi credentials ra mạng. Kiểm tra Bash dùng Python fixture cho phần điều phối; kiểm tra train nhỏ với JPG thật vẫn được tách và đánh dấu QA, không là kết quả fine-tune đầy đủ.
+
+## Sửa tương thích W&B / Protobuf 7
+
+Đã tái tạo đúng ImportError `Imports` bằng W&B 0.22.3 khi Protobuf 7 đã được import. Đã kiểm tra cặp **W&B 0.26.0 + Protobuf 7.35.1** trong Python 3.13 với **grpcio-tools 1.85.1**: symbol `Imports` import được, constraint khớp, `pip check` báo không có requirement lỗi. Đây là môi trường QA riêng; không sửa môi trường QA 0.22.3 cũ.
+
+Đã chạy lại `.sh train --qa` với ảnh JPG thật, CPU, một epoch: W&B SDK 0.26.0 tạo metrics, bảng ảnh, artifact checkpoint và ZIP offline thành công. Notebook bỏ pip/import W&B trong kernel, và setup có preflight trong tiến trình mới trước unit tests/checkpoint/train. GPU Kaggle và upload W&B online vẫn chưa được kiểm chứng ở đây.
