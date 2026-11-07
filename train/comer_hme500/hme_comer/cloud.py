@@ -1,6 +1,8 @@
 """Submit a two-GPU Kaggle experiment from one JSON config; no credential files."""
 import argparse
 import ast
+from collections import defaultdict
+import csv
 from datetime import datetime,timezone
 import getpass
 import hashlib
@@ -12,6 +14,7 @@ import time
 import zipfile
 
 ROOT=Path(__file__).resolve().parents[1]
+RESULT_PATTERN=r'.*(CoachLearning_CoMER_v5_Kaggle_DDP2_Results\.zip|result-index\.json)$'
 
 REMOTE=r'''
 import hashlib,json,os,subprocess,sys,zipfile
@@ -24,8 +27,10 @@ from kaggle_secrets import UserSecretsClient
 try:
     secret=UserSecretsClient().get_secret(TASK['wandb']['secret_label'])
     if not secret:raise ValueError('empty')
+    wandb_mode='online'
 except Exception:
-    raise RuntimeError('WANDB_SECRET_UNAVAILABLE: enable this notebook access to WANDB_API_KEY in Kaggle Secrets.') from None
+    secret='';wandb_mode='offline'
+    print('Kaggle Secret unavailable: recording full W&B evidence offline for authenticated local sync after download.',flush=True)
 import torch
 if torch.cuda.device_count()!=2:raise RuntimeError('EXACTLY_TWO_CUDA_GPUS_REQUIRED; request NvidiaTeslaT4.')
 print('Allocated GPUs:',[torch.cuda.get_device_name(i) for i in range(2)],flush=True)
@@ -48,16 +53,19 @@ lr=format(cfg['decoder_lr'],'.0e').replace('e-0','e-').replace('e+0','e+')
 effective=cfg['batch_size']*cfg['devices']*cfg['accumulate']
 name=f"comer-hme500-{TASK['version']}-otsu-ddp2-lrdec{lr}-s{cfg['seed']}-eb{effective}-{stamp}"
 cfg['output']=str(WORK/'comer_experiments'/name)
-cfg['wandb'].update(mode='online',entity=TASK['wandb']['entity'],project=TASK['wandb']['project'],name=name,group=name)
+cfg['wandb'].update(mode=wandb_mode,entity=TASK['wandb']['entity'],project=TASK['wandb']['project'],name=name,group=name)
 path=WORK/'comer.config.json';path.write_text(json.dumps(cfg,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
 env=os.environ.copy()
-env.update(WANDB_API_KEY=secret,RUN_FINAL_TEST='1',PYTHONUNBUFFERED='1',CUBLAS_WORKSPACE_CONFIG=':4096:8')
+env.update(RUN_FINAL_TEST='1',PYTHONUNBUFFERED='1',CUBLAS_WORKSPACE_CONFIG=':4096:8',WANDB_MODE=wandb_mode)
+if secret:env['WANDB_API_KEY']=secret
+else:env.pop('WANDB_API_KEY',None)
 log=WORK/'comer-run.log'
 def command(args):
     with log.open('a',encoding='utf-8') as stream:
         process=subprocess.Popen(args,cwd=lab,env=env,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True,encoding='utf-8',errors='replace')
         for line in process.stdout:
-            safe=line.replace(secret,'[REDACTED]');print(safe,end='',flush=True);stream.write(safe);stream.flush()
+            safe=line.replace(secret,'[REDACTED]') if secret else line
+            print(safe,end='',flush=True);stream.write(safe);stream.flush()
         if process.wait():raise RuntimeError('EXPERIMENT_STAGE_FAILED; inspect the saved stage log.')
 command(['bash','scripts/run_kaggle.sh','all',str(path)])
 out=Path(cfg['output'])
@@ -69,6 +77,7 @@ if summary['world_size']!=2 or summary['qa_only'] or not summary['test_evaluated
 index=dict(status='completed',kernel=TASK['kernel_ref'],output=str(out),
     source_revision=TASK['source_revision'],world_size=2,
     best=summary['selected_best'],last_epoch=summary['last_epoch'],wandb_url=summary['wandb_url'],
+    wandb_mode=wandb_mode,wandb_run_id=json.loads((out/'run.json').read_text())['id'],
     before=comparison['before'],after=comparison['after'],
     note='Fresh DDP2 trial. Per-GPU batch 4 differs from the interrupted local batch-1 trial; this is not an exact continuation.')
 (WORK/'result-index.json').write_text(json.dumps(index,indent=2)+'\n')
@@ -79,10 +88,23 @@ checks={}
 with zipfile.ZipFile(archive,'w',zipfile.ZIP_DEFLATED) as z:
     for p in files:
         raw=p.read_bytes()
-        if secret.encode() in raw:raise RuntimeError('CREDENTIAL_IN_OUTPUT; refusing to package')
+        if secret and secret.encode() in raw:raise RuntimeError('CREDENTIAL_IN_OUTPUT; refusing to package')
         z.writestr(p.name,raw);checks[p.name]=hashlib.sha256(raw).hexdigest()
     for p in sorted((lab/'hme_comer').glob('*.py')):
         raw=p.read_bytes();entry='source/hme_comer/'+p.name
+        z.writestr(entry,raw);checks[entry]=hashlib.sha256(raw).hexdigest()
+    for rel in ('requirements.txt','config.example.json','hme_comer/upstream.lock.json'):
+        raw=(lab/rel).read_bytes();entry='source/'+rel
+        z.writestr(entry,raw);checks[entry]=hashlib.sha256(raw).hexdigest()
+    # Self-contained original JPEGs for post-run W&B galleries without cloud credentials.
+    sys.path.insert(0,str(lab))
+    from hme_comer.data import audit,resolve_metadata
+    all_rows,after_audit=audit(resolve_metadata(cfg['data']))
+    if after_audit['fingerprint']!=summary['dataset_fingerprint']:raise RuntimeError('INPUT_DATA_CHANGED')
+    for row in all_rows:
+        if row['split'] not in ('validation','test'):continue
+        raw=row['_image'].read_bytes();entry='preview-images/'+row['id']+'.jpg'
+        if hashlib.sha256(raw).hexdigest()!=row['image_sha256']:raise RuntimeError('PREVIEW_IMAGE_CHANGED')
         z.writestr(entry,raw);checks[entry]=hashlib.sha256(raw).hexdigest()
     z.writestr('checksums.json',json.dumps(checks,indent=2))
 with zipfile.ZipFile(archive) as z:
@@ -170,10 +192,130 @@ def submit(api,folder):
         return client.kernels.kernels_api_client.save_kernel(request)
 
 
+def extract_verified(archive,destination):
+    destination=Path(destination).resolve();destination.mkdir(parents=True,exist_ok=True)
+    with zipfile.ZipFile(archive) as source:
+        checks=json.loads(source.read('checksums.json'))
+        for name,digest in checks.items():
+            path=(destination/name).resolve()
+            if Path(name).is_absolute() or not path.is_relative_to(destination):raise ValueError('ZIP_PATH_ESCAPE')
+            raw=source.read(name)
+            if hashlib.sha256(raw).hexdigest()!=digest:raise ValueError('ZIP_PAYLOAD_CHANGED')
+            path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes(raw)
+    return destination
+
+
+def replay_offline(archive,index):
+    """Upload measured cloud records after training; never rerun model inference."""
+    if index.get('wandb_mode')!='offline':return index
+    output=extract_verified(archive,Path(archive).parent/'wandb-replay')
+    marker=output/'local-cloud-sync.json'
+    if marker.exists():
+        previous=json.loads(marker.read_text())
+        if previous.get('status')=='PASS':return previous
+    if not os.environ.get('WANDB_API_KEY'):
+        os.environ['WANDB_API_KEY']=getpass.getpass('W&B API key for syncing measured Kaggle results (hidden): ').strip()
+    try:
+        import wandb
+        try:from .tracking import log_predictions,prepare_wandb
+        except ImportError:
+            import sys
+            sys.path.insert(0,str(ROOT));from hme_comer.tracking import log_predictions,prepare_wandb
+        api=wandb.Api(timeout=30);api.viewer
+        def read(name):return json.loads((output/name).read_text(encoding='utf-8'))
+        original=read('config.json');info=read('run.json');summary=read('summary.json')
+        cfg={**original,'wandb':{**original['wandb'],'mode':'online'}}
+        rows=[{**row,'_image':output/'preview-images'/(row['id']+'.jpg')}
+            for row in read('dataset-manifest.json') if row['split'] in ('validation','test')]
+        if len(rows)!=100 or any(not row['_image'].is_file() for row in rows):raise RuntimeError('GALLERY_IMAGES_MISSING')
+        for row in rows:
+            if hashlib.sha256(row['_image'].read_bytes()).hexdigest()!=row['image_sha256']:raise RuntimeError('GALLERY_IMAGE_CHANGED')
+        prepare_wandb(output)
+        run=wandb.init(project=info['project'],entity=info['entity'],name=info['name'],group=info['group'],
+            id=info['id'],resume='allow',mode='online',dir=str(output),job_type='fine-tune',
+            tags=['CoMER','HME100K','kaggle-ddp2','measured-offline-synced-later'],
+            config={**cfg,'original_logging_mode':'offline','history_replayed_from_saved_cloud_records':True},
+            settings=wandb.Settings(disable_code=True,disable_git=True,console='off'))
+        run.define_metric('epoch');run.define_metric('train/optimizer_step')
+        run.define_metric('train/*',step_metric='train/optimizer_step')
+        for prefix in ('val','epoch_train','lr','runtime'):run.define_metric(prefix+'/*',step_metric='epoch')
+        run.define_metric('val/exp_rate',summary='max');run.define_metric('val/cer',summary='min')
+        steps=defaultdict(list)
+        for line in (output/'metrics.jsonl').read_text().splitlines():
+            item=json.loads(line);steps[item['epoch']].append(item)
+        with (output/'history.csv').open(encoding='utf-8',newline='') as stream:history=list(csv.DictReader(stream))
+        try:
+            for epoch_row in history:
+                epoch=int(epoch_row['epoch'])
+                for item in steps[epoch]:run.log({k:v for k,v in item.items() if k!='epoch'})
+                part=read('baseline-validation.json' if epoch==0 else f'validation-{epoch:03}.json')
+                log_predictions(run,cfg,part['metrics'],part['predictions'],part['groups'],rows,epoch)
+                values={'epoch':epoch,'runtime/world_size':2,'runtime/epoch_seconds':float(epoch_row['seconds']),
+                    'lr/encoder':float(epoch_row['encoder_lr']),'lr/decoder':float(epoch_row['decoder_lr'])}
+                if epoch_row['train_loss']:values['epoch_train/loss']=float(epoch_row['train_loss'])
+                run.log(values)
+            run.log({'epoch':summary['last_epoch'],'evidence/curves':wandb.Image(str(output/'curves.png'))})
+            run.summary.update({'best/epoch':summary['selected_best']['epoch'],
+                'best/val_exp_rate':summary['selected_best']['exp_rate'],'best/val_loss':summary['selected_best']['loss'],
+                'epochs_completed':summary['last_epoch'],'qa_only':False,'logging/replayed_offline_cloud_records':True})
+            for key,value in read('baseline.json').items():run.summary['baseline/val_'+key]=value
+            artifact=wandb.Artifact('hme500-final-cloud-'+info['id'],type='experiment-evidence',
+                metadata={'measured_on':'Kaggle T4 x2','logging_mode':'offline replay; no training or inference repeated'})
+            for path in sorted(output.iterdir()):
+                if path.is_file() and (path.suffix in ('.json','.jsonl','.csv','.png','.md','.html') or path.name=='best-inference.pt'):
+                    artifact.add_file(str(path),name=path.name)
+            for path in sorted((output/'source').rglob('*')):
+                if path.is_file():artifact.add_file(str(path),name=path.relative_to(output).as_posix())
+            run.log_artifact(artifact,aliases=['completed','best'])
+        finally:run.finish()
+        links={'train':{'id':info['id'],'url':run.url}}
+        for stage in ('before','after'):
+            part=read('comparison-'+stage+'.json')
+            run_id=hashlib.sha256((info['id']+stage).encode()).hexdigest()[:16]
+            evaluation=wandb.init(project=info['project'],entity=info['entity'],name=info['name']+'-'+stage,
+                group=info['group'],id=run_id,resume='allow',mode='online',dir=str(output),job_type='prepost-evaluation',
+                config={**cfg,'evaluation_stage':stage,'checkpoint_sha256':part['checkpoint_sha256'],
+                    'original_logging_mode':'offline','parent_run_id':info['id']},
+                settings=wandb.Settings(disable_code=True,disable_git=True,console='off'))
+            try:
+                log_predictions(evaluation,cfg,part['metrics'],part['predictions'],part['groups'],rows,part['epoch'],split='test')
+                evaluation.log({'evaluation/'+key:value for key,value in part['metrics'].items()})
+                evaluation.summary.update({'evaluation/'+key:value for key,value in part['metrics'].items()})
+                if stage=='after':
+                    comparison=read('comparison.json')
+                    evaluation.log({'comparison/chart':wandb.Image(str(output/'comparison.png')),
+                        **{'comparison/delta_'+key:value for key,value in comparison['delta_after_minus_before'].items()}})
+                    pairs=wandb.Table(columns=['id','original_jpeg','latex','before','after','before_exact','after_exact'])
+                    images={row['id']:row['_image'] for row in rows}
+                    for pair in comparison['pairs']:
+                        pairs.add_data(pair['id'],wandb.Image(str(images[pair['id']])),pair['latex'],pair['before'],pair['after'],pair['before_exact'],pair['after_exact'])
+                    evaluation.log({'comparison/paired_predictions':pairs})
+            finally:evaluation.finish()
+            links[stage]={'id':run_id,'url':evaluation.url}
+        remote=api.run(info['entity']+'/'+info['project']+'/'+info['id'])
+        records={int(row['epoch']):row for row in remote.scan_history(keys=['epoch','val/exp_rate','val/loss'])}
+        for expected in history:
+            actual=records[int(expected['epoch'])]
+            if abs(actual['val/exp_rate']-float(expected['val_exp_rate']))>1e-7 or abs(actual['val/loss']-float(expected['val_loss']))>1e-6:
+                raise RuntimeError('REPLAY_HISTORY_MISMATCH')
+        report={'status':'PASS','links':links,'cloud_validation_history_matches_saved_csv':True,
+            'retrained':False,'inference_repeated':False,'original_images_preserved':True,
+            'note':'Metrics and galleries were measured on Kaggle and uploaded locally after completion.'}
+        marker.write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
+        return report
+    finally:os.environ.pop('WANDB_API_KEY',None)
+
+
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--config',required=True,type=Path)
     p.add_argument('--prepare-only',action='store_true');p.add_argument('--no-wait',action='store_true')
-    a=p.parse_args();folder,cfg=prepare(a.config)
+    p.add_argument('--sync-only',type=Path,help='Upload measured offline results from a previously downloaded ZIP')
+    a=p.parse_args()
+    if a.sync_only:
+        read_config(a.config)
+        archive,index=verify_download(a.sync_only.parent)
+        print(json.dumps(replay_offline(archive,index),indent=2),flush=True);return
+    folder,cfg=prepare(a.config)
     print('Generated submission:',folder,flush=True)
     if a.prepare_only:return
     if not os.environ.get('KAGGLE_API_TOKEN'):
@@ -194,10 +336,12 @@ def main():
             print('Kaggle status:',value,flush=True)
             if 'complete' in value:
                 api.kernels_output(ref,path=str(folder/'outputs'),force=True,quiet=True,
-                    file_pattern=r'.*(CoachLearning_CoMER_v5_Kaggle_DDP2_Results\.zip|result-index\.json)$')
+                    file_pattern=RESULT_PATTERN)
                 archive,index=verify_download(folder/'outputs')
                 print('Verified downloaded ZIP:',archive,flush=True)
-                print('Result:',json.dumps(index),flush=True);return
+                print('Result:',json.dumps(index),flush=True)
+                if index.get('wandb_mode')=='offline':print('W&B synchronization:',json.dumps(replay_offline(archive,index)),flush=True)
+                return
             if any(word in value for word in ('error','fail','cancel')):raise RuntimeError('KAGGLE_RUN_FAILED; inspect notebook output')
             time.sleep(30)
     finally:os.environ.pop('KAGGLE_API_TOKEN',None)

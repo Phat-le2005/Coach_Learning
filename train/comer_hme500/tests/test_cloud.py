@@ -1,13 +1,15 @@
 import ast
 import hashlib
 import json
+import io
+import re
 from pathlib import Path
 import tempfile
 import unittest
 from unittest.mock import patch
 from types import SimpleNamespace
 import zipfile
-from hme_comer.cloud import ROOT,prepare,read_config,verify_download,submit
+from hme_comer.cloud import ROOT,RESULT_PATTERN,prepare,read_config,verify_download,submit,extract_verified
 
 
 class CloudConfig(unittest.TestCase):
@@ -31,6 +33,27 @@ class CloudConfig(unittest.TestCase):
     def test_credentials_cannot_enter_config(self):
         self.cfg['wandb']['api_key']='unit-test-not-a-real-key';self.write()
         with self.assertRaisesRegex(ValueError,'MUST_NOT_CONTAIN_A_KEY'):read_config(self.path)
+    def test_unavailable_secret_records_offline_without_blocking_training(self):
+        self.write();folder,_=prepare(self.path,self.root/'submission')
+        code=json.loads((folder/'run.ipynb').read_text())['cells'][1]['source'][0]
+        class Unavailable:
+            def get_secret(self,label):raise RuntimeError('permission denied')
+        state={}
+        with patch.dict('sys.modules',{'kaggle_secrets':SimpleNamespace(UserSecretsClient=Unavailable)}),patch('sys.stdout',io.StringIO()):
+            exec(code.split('import torch')[0],state)
+        self.assertEqual(state['wandb_mode'],'offline');self.assertEqual(state['secret'],'')
+    def test_result_filter_matches_only_expected_outputs(self):
+        for name in ('CoachLearning_CoMER_v5_Kaggle_DDP2_Results.zip','result-index.json'):
+            self.assertIsNotNone(re.fullmatch(RESULT_PATTERN,'/kaggle/working/'+name))
+        self.assertIsNone(re.fullmatch(RESULT_PATTERN,'unrelated-checkpoint.pt'))
+    def test_replay_extraction_rejects_escape_and_altered_payloads(self):
+        archive=self.root/'payload.zip';raw=b'measured result'
+        for name,digest,error in (('../escape.json',hashlib.sha256(raw).hexdigest(),'PATH_ESCAPE'),
+                                  ('metrics.json','0'*64,'PAYLOAD_CHANGED')):
+            with zipfile.ZipFile(archive,'w') as z:
+                z.writestr(name,raw);z.writestr('checksums.json',json.dumps({name:digest}))
+            with self.assertRaisesRegex(ValueError,error):extract_verified(archive,self.root/'extracted')
+        self.assertFalse((self.root/'escape.json').exists())
     def test_wrong_gpu_count_or_large_upload_policy_is_rejected(self):
         self.cfg['training']['devices']=1;self.write()
         with self.assertRaisesRegex(ValueError,'DDP2'):read_config(self.path)

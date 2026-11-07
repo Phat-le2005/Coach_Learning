@@ -10,9 +10,11 @@ Chỉ chỉnh `kaggle.v5.json`, rồi chạy từ thư mục `train/comer_hme500
 & ../../.tmp/comer-kaggle-control/.venv/Scripts/python.exe -m hme_comer.cloud --config kaggle.v5.json
 ```
 
-Môi trường điều khiển chỉ cần `pip install kaggle six`; không cần PyTorch local. Khi thiếu `KAGGLE_API_TOKEN`, lệnh hỏi token bằng input ẩn, không lưu key. `WANDB_API_KEY` được đọc từ Kaggle Secrets của notebook lúc chạy; config chỉ chứa tên secret. Config mặc định cập nhật notebook riêng tư `lhngphc/comer-finetune` đã cấp quyền secret; thay `kernel_ref`, title, dataset và entity khi dùng tài khoản khác. Notebook mới cần được cấp quyền truy cập secret trong Kaggle.
+Môi trường điều khiển cần `pip install kaggle six wandb==0.26.0 Pillow matplotlib`; không cần PyTorch local. Khi thiếu `KAGGLE_API_TOKEN`, lệnh hỏi token bằng input ẩn, không lưu key. `WANDB_API_KEY` được đọc từ Kaggle Secrets của notebook lúc chạy; config chỉ chứa tên secret. Config mặc định cập nhật notebook riêng tư `lhngphc/comer-finetune`; thay `kernel_ref`, title, dataset và entity khi dùng tài khoản khác. Bật quyền secret trong Kaggle để log online.
 
 Runner tự sinh notebook/metadata vào `.tmp/`, yêu cầu `NvidiaTeslaT4` (T4 ×2), pin source theo commit, cài môi trường, kiểm tra, train, so sánh initial/best, xuất báo cáo validation và tạo ZIP có checksum. Không cần tự tạo/chỉnh nhiều file. Mặc định chờ job và tải ZIP về; `--no-wait` chỉ nộp job, `--prepare-only` chỉ tạo bản gửi để kiểm tra. Không tự chuyển sang CPU khi thiếu GPU.
+
+Nếu phiên API vẫn không đọc được Kaggle Secret, job tiếp tục với W&B offline. Sau khi tải ZIP, runner hỏi W&B key bằng input ẩn và gửi các số đo đã lưu, curve, ảnh JPG validation/test và model best gọn lên cùng project. Việc đồng bộ không train hoặc suy luận lại; run ghi rõ log được upload sau khi đo trên Kaggle. ZIP giữ nguyên dữ liệu đo và checksum. Nếu bị ngắt khi đồng bộ, chạy lại với `--sync-only <đường-dẫn-ZIP>`; không nộp một job train mới.
 
 v5 Kaggle dùng 4 ảnh mỗi GPU × 2 GPU × accumulation 2 = batch hiệu dụng 16; decoder LR 5e-5, Otsu, tối đa 30 epoch và early stopping 6. Đây là trial DDP2 mới; batch mỗi GPU khác bản local batch 1, không phải resume chính xác từ checkpoint một GPU. Mỗi lần chạy có tên/group W&B mới trong cùng project. Chỉ upload model best gọn ở cuối, giữ full initial/best/last cùng history trong `CoachLearning_CoMER_v5_Kaggle_DDP2_Results.zip`.
 
