@@ -17,6 +17,7 @@ from app.math_solutions.models import SolutionAttempt
 from app.questions.models import Question, QuestionStatus, QuestionType
 from app.questions.reference_solution import SOLUTION_PRIMARY_SOURCE_TYPE, has_grading_reference, preferred_solution, reference_text
 from app.teacher_materials.models import MaterialEvaluationMode
+from app.math_solutions.grading_profile import OCR_SOURCE
 
 
 @dataclass(frozen=True, slots=True)
@@ -94,7 +95,7 @@ def resolve_answer_reference(
     if not isinstance(content, str) or not content.strip():
         raise ApplicationError(409, "GRADING_SOURCE_UNAVAILABLE", "The problem text is unavailable.")
     # The handoff follows rubric/teacher grading rather than legacy AI mastery.
-    allow_legacy_ai_backdrop = attempt.source_kind != "CANONICAL" or question.source_type != SOLUTION_PRIMARY_SOURCE_TYPE
+    allow_legacy_ai_backdrop = attempt.source_kind != "CANONICAL" or question.source_type not in {SOLUTION_PRIMARY_SOURCE_TYPE, OCR_SOURCE}
     explanation = reference_text(explanation)
     answer = reference_text(answer) or ""
     if require_answer and not has_grading_reference(answer, explanation):

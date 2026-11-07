@@ -1,7 +1,7 @@
 from datetime import datetime
 from uuid import UUID
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from app.mastery.state import DerivedMasteryState
 
@@ -21,6 +21,8 @@ class ProblemTypeMasteryRead(MasteryMetricRead):
     topic_id: UUID
     code: str
     name: str
+    concept_ids: list[UUID] = Field(default_factory=list)
+    available_question_count: int = Field(default=0, ge=0)
 
 
 class ConceptMasteryRead(MasteryMetricRead):

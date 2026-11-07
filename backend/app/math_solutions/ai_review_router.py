@@ -54,11 +54,17 @@ class AIReviewRead(BaseModel):
 
     @model_validator(mode="after")
     def enforce_grade_boundary(self) -> "AIReviewRead":
-        trusted = self.review_source in {"DETERMINISTIC", "TEACHER"}
+        trusted = self.review_source in {"DETERMINISTIC", "TEACHER"} or (
+            self.review_source == "ANSWER_GROUNDED_AI" and self.is_final)
         if self.is_final != trusted or (self.final_score is not None) != trusted:
-            raise ValueError("Only persisted deterministic or teacher decisions may be final.")
+            raise ValueError("A final review requires a persisted grading decision.")
         if not trusted and any(step.score is not None for step in self.step_grades):
             raise ValueError("Provisional AI feedback cannot award step scores.")
+        if self.is_final and self.review_source == "ANSWER_GROUNDED_AI" and (
+            self.needs_teacher_review or not self.step_grades or any(
+                step.score is None or step.verdict == "NEEDS_REVIEW" or step.confidence < .8
+                for step in self.step_grades)):
+            raise ValueError("A final Gemini grade requires complete verified step assessments.")
         if self.review_source == "UNANSWERED_AI" and (
             not self.needs_teacher_review or any(
                 step.verdict != "NEEDS_REVIEW" or step.score is not None for step in self.step_grades
@@ -134,7 +140,13 @@ def _save_cache_to_disk(cache: dict[tuple[UUID, str], AIReviewRead]) -> None:
 
 
 _REVIEW_CACHE: dict[tuple[UUID, str], AIReviewRead] = _load_cache_from_disk()
-_POLICY_VERSION = "hybrid-solution-first-v2"
+_POLICY_VERSION = "hybrid-curated-rubric-v3"
+
+
+def _review_key(attempt, reference):
+    # Reopened/resubmitted work must not reuse feedback for older revisions.
+    revision = getattr(attempt, "attempt_revision_number", 0)
+    return (attempt.id, f"{_POLICY_VERSION}:{reference.content_sha256}:{revision}")
 
 
 def _final_review(session: Session, attempt_id: UUID, decision: EvaluationDecision) -> AIReviewRead:
@@ -148,12 +160,14 @@ def _final_review(session: Session, attempt_id: UUID, decision: EvaluationDecisi
         .order_by(SolutionStep.step_index, StepRevision.step_revision_number.desc())
     ).all()
     grades: dict[int, StepSuggestionRead] = {}
+    gemini = False
     for index, evaluation in rows:
         if index in grades:
             continue
         verdict = evaluation.math_validity
         if verdict not in {"VALID", "INVALID"}:
             continue
+        gemini = gemini or getattr(evaluation, "evaluator_type", "") == "GEMINI_REFERENCE"
         grades[index] = StepSuggestionRead(
             step_index=index, verdict=verdict, score=evaluation.score,
             confidence=evaluation.confidence,
@@ -162,7 +176,8 @@ def _final_review(session: Session, attempt_id: UUID, decision: EvaluationDecisi
     return AIReviewRead(
         attempt_id=attempt_id, step_grades=list(grades.values()),
         needs_teacher_review=False, is_final=True,
-        review_source="DETERMINISTIC" if decision.decision_source == "AUTOMATED_CONSENSUS" else "TEACHER",
+        review_source=("TEACHER" if decision.decision_source != "AUTOMATED_CONSENSUS" else
+                       "ANSWER_GROUNDED_AI" if gemini else "DETERMINISTIC"),
         final_score=decision.final_score,
     )
 
@@ -192,7 +207,7 @@ def get_ai_review_availability(
                             "GRADING_ASSIGNMENT_ITEM_ALREADY_SCORED"}:
                 return AIReviewAvailabilityRead(available=False, reason_code=exc.code)
             raise
-    cached = _REVIEW_CACHE.get((attempt_id, f"{_POLICY_VERSION}:{ref.content_sha256}"))
+    cached = _REVIEW_CACHE.get(_review_key(attempt, ref))
     return AIReviewAvailabilityRead(
         available=True,
         reason_code=None if ref.has_reviewed_reference else "PROVISIONAL_WITHOUT_ANSWER",
@@ -221,8 +236,8 @@ async def review_submitted_steps(
         return _final_review(session, attempt_id, decision)
     ref = resolve_answer_reference(session, attempt, require_answer=False)
 
-    # Only an approved, pinned rubric and a reviewed answer can produce a final
-    # grade. Unsupported/uncertain mathematics falls through to provisional AI.
+    # Try deterministic grading first; unsupported mathematics goes to Gemini.
+    # Reviewed PA2 criteria may produce a persisted grade after validation.
     if ref.has_reviewed_reference and attempt.rubric_id is not None:
         try:
             decision = MathEvaluatorService(session).evaluate_attempt(attempt_id)
@@ -230,13 +245,12 @@ async def review_submitted_steps(
             if exc.code not in {
                 "GRADING_RUBRIC_UNAVAILABLE", "GRADING_RUBRIC_UNSUPPORTED",
                 "GRADING_TARGET_UNSUPPORTED", "GRADING_REVIEW_REQUIRED",
-                "GRADING_SOURCE_MISMATCH",
             }:
                 raise
         else:
             return _final_review(session, attempt_id, decision)
 
-    cache_key = (attempt_id, f"{_POLICY_VERSION}:{ref.content_sha256}")
+    cache_key = _review_key(attempt, ref)
 
     # 1. Immediate cache hit: 0 latency, 0 Gemini call
     if cache_key in _REVIEW_CACHE:
@@ -263,6 +277,11 @@ async def review_submitted_steps(
                     if ref.has_reviewed_reference else
                     UnansweredAIService(session, gateway).review_attempt(attempt_id)
                 )
+                if ref.has_reviewed_reference:
+                    from app.math_solutions.curated_ai_grading import finalize_curated_ai_review
+                    decision = finalize_curated_ai_review(session, attempt_id, review)
+                    if decision is not None:
+                        return _final_review(session, attempt_id, decision)
                 # Preserve legacy backdrop eligibility: solution-only references
                 # do not start writing mastery merely because they are readable.
                 if ref.correct_answer and ref.allow_legacy_ai_backdrop:

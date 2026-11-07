@@ -14,6 +14,8 @@ from app.core.exceptions import ApplicationError
 from app.math_solutions.models import SolutionAttempt, SolutionRubric
 from app.questions.models import Question, QuestionStatus, QuestionType
 from app.teacher_materials.models import MaterialEvaluationMode
+from app.math_solutions.grading_profile import CRITERION_CONCEPTS, verify_reference, profile_data
+from app.math_solutions.numeric_reference import NUMERIC_PROFILE, NUMERIC_KINDS, NumericReferenceValidator
 
 
 @dataclass(frozen=True, slots=True)
@@ -23,7 +25,7 @@ class GradingContext:
 
 
 _AUTO_STEP_TYPES = frozenset({
-    "ASSUMPTION", "DERIVATIVE_CALCULATION", "ROOT_FINDING", "SIGN_TABLE", "CONCLUSION",
+    "ASSUMPTION", "DERIVATIVE_CALCULATION", "ROOT_FINDING", "SIGN_TABLE", "VARIATION_TABLE", "CONCLUSION",
 })
 
 
@@ -46,6 +48,7 @@ def resolve_grading_context(session: Session, attempt: SolutionAttempt) -> Gradi
                 or rubric.assignment_material_item_id is not None):
             raise ApplicationError(409, "GRADING_SOURCE_MISMATCH", "The rubric does not match an approved open-response question.")
         content = question.content
+        verify_reference(rubric, question)
     elif attempt.source_kind == "TEACHER_MATERIAL":
         snapshot = (session.get(AssignmentMaterialItem, attempt.assignment_material_item_id)
                     if attempt.assignment_material_item_id else None)
@@ -73,6 +76,13 @@ def resolve_grading_context(session: Session, attempt: SolutionAttempt) -> Gradi
 
 def _validate_rubric(rubric: SolutionRubric) -> None:
     """The current matcher handles one normalized criterion per supported step kind."""
+    profile = profile_data(rubric)
+    numeric = profile and profile.get("grading_profile") == NUMERIC_PROFILE
+    if numeric:
+        try:
+            NumericReferenceValidator(profile)
+        except (ValueError, KeyError, TypeError) as error:
+            raise ApplicationError(409, "GRADING_RUBRIC_UNSUPPORTED", "Invalid reviewed numeric rubric.") from error
     criteria = rubric.criteria
     if isinstance(criteria, dict):
         criteria = criteria.get("criteria")
@@ -89,11 +99,17 @@ def _validate_rubric(rubric: SolutionRubric) -> None:
         kind = criterion.get("step_type")
         weight = criterion.get("weight")
         if (not isinstance(identifier, str) or not identifier.strip() or identifier in ids
-                or kind not in _AUTO_STEP_TYPES or kind in kinds
+                or kind not in (NUMERIC_KINDS if numeric else _AUTO_STEP_TYPES) or kind in kinds
                 or type(weight) not in (int, float) or not math.isfinite(weight) or weight <= 0):
             raise ApplicationError(409, "GRADING_RUBRIC_UNSUPPORTED", "Rubric criteria must have unique supported steps and positive weights.")
         ids.add(identifier)
         kinds.add(kind)
         total_weight += weight
+        if profile and not numeric:
+            codes = criterion.get("concept_codes")
+            if codes != CRITERION_CONCEPTS.get(kind):
+                raise ApplicationError(409, "GRADING_RUBRIC_UNSUPPORTED", "Each curated criterion needs explicit concept attribution.")
+    if profile and not numeric and kinds != set(CRITERION_CONCEPTS):
+        raise ApplicationError(409, "GRADING_RUBRIC_UNSUPPORTED", "The cubic profile requires all five reviewed criteria.")
     if not math.isclose(total_weight, 1.0, rel_tol=0, abs_tol=1e-6):
         raise ApplicationError(409, "GRADING_RUBRIC_UNSUPPORTED", "Rubric weights must total 1.0.")

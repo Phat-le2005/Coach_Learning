@@ -14,6 +14,7 @@ from app.questions.models import Question
 from app.review.models import ReviewSchedule
 from app.review.service import ReviewScheduleService
 from app.students.models import StudentProfile
+from app.learning_evidence.skill_outcomes import concept_outcome
 
 
 @dataclass(frozen=True, slots=True)
@@ -40,6 +41,7 @@ class GenericMasteryEvidence:
     occurred_at: datetime
     concepts: tuple[WeightedConceptEvidence, ...]
     problem_types: tuple[WeightedProblemTypeEvidence, ...]
+    metadata: dict | None = None
 
 
 class DeterministicMasteryEvidencePublisher:
@@ -54,8 +56,13 @@ class DeterministicMasteryEvidencePublisher:
         question = QuestionEvidence(difficulty=evidence.difficulty)
         reviews = ReviewScheduleService(session)
         for mapping in evidence.concepts:
+            outcome = concept_outcome(evidence.metadata, mapping.concept_id, score=evidence.score, is_correct=evidence.is_correct)
+            if outcome is None:
+                continue
+            concept_attempt = AttemptEvidence(is_correct=outcome.is_correct, score=outcome.score,
+                                             hint_count=evidence.hint_count, response_time_seconds=evidence.response_time_seconds)
             row = session.scalar(select(StudentConceptMastery).where(StudentConceptMastery.student_id == evidence.student_id, StudentConceptMastery.concept_id == mapping.concept_id).with_for_update())
-            state = self.strategy.calculate_from_attempt(self._state(row), question, MappingEvidence(weight=mapping.weight), attempt)
+            state = self.strategy.calculate_from_attempt(self._state(row), question, MappingEvidence(weight=mapping.weight), concept_attempt)
             if row is None:
                 row = StudentConceptMastery(student_id=evidence.student_id, concept_id=mapping.concept_id, mastery_score=state.mastery_score, confidence=state.confidence, attempt_count=state.attempt_count, correct_count=state.correct_count, last_practiced_at=evidence.occurred_at, last_updated_at=datetime.now(timezone.utc)); session.add(row)
             else:
@@ -64,7 +71,7 @@ class DeterministicMasteryEvidencePublisher:
                 reviews.ensure_concept_schedule(evidence.student_id, mapping.concept_id, as_of=evidence.occurred_at)
             schedule = session.scalar(select(ReviewSchedule).where(ReviewSchedule.student_id == evidence.student_id, ReviewSchedule.concept_id == mapping.concept_id))
             if schedule is not None and _is_due(schedule.next_review_at, evidence.occurred_at):
-                reviews.record_performance(evidence.student_id, target_concept_id=mapping.concept_id, score=evidence.score, is_correct=evidence.is_correct, as_of=evidence.occurred_at)
+                reviews.record_performance(evidence.student_id, target_concept_id=mapping.concept_id, score=outcome.score, is_correct=outcome.is_correct, as_of=evidence.occurred_at)
         for mapping in evidence.problem_types:
             row = session.scalar(select(StudentProblemTypeMastery).where(StudentProblemTypeMastery.student_id == evidence.student_id, StudentProblemTypeMastery.problem_type_id == mapping.problem_type_id).with_for_update())
             state = self.strategy.calculate_from_attempt(self._state(row), question, MappingEvidence(weight=mapping.weight), attempt)
@@ -240,6 +247,9 @@ class DeterministicMasteryEvidencePublisher:
                 state = MasteryState()
                 last_practiced: datetime | None = None
                 for ev in effective_events:
+                    outcome = concept_outcome(ev.event_metadata, cid, score=ev.score, is_correct=ev.is_correct)
+                    if outcome is None:
+                        continue
                     c_link = session.scalar(
                         select(LearningEvidenceConcept).where(
                             LearningEvidenceConcept.event_id == ev.id,
@@ -248,8 +258,8 @@ class DeterministicMasteryEvidencePublisher:
                     )
                     weight = c_link.weight if c_link and c_link.weight is not None else 1.0
                     attempt_ev = AttemptEvidence(
-                        is_correct=ev.is_correct,
-                        score=ev.score,
+                        is_correct=outcome.is_correct,
+                        score=outcome.score,
                         hint_count=ev.hint_count or 0,
                         response_time_seconds=ev.response_time_seconds,
                     )

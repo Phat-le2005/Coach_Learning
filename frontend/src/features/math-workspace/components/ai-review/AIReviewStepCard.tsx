@@ -300,7 +300,7 @@ export function AIReviewStepCard({
                     ? "Góp ý sơ bộ, chưa xác định đúng sai"
                     : reviewSource === "TEACHER"
                       ? "Nhận xét của giáo viên"
-                      : "Nhận xét tạm thời từ AI"}</span>
+                      : showScore ? "Kết quả Gemini theo rubric" : "Nhận xét tạm thời từ AI"}</span>
                 <p className={styles.feedbackText}>{grade.feedback}</p>
               </div>
 

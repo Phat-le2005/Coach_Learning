@@ -61,32 +61,21 @@ export default async function StudentPracticeLaunchPage(props: {
     const client = createBackendApiClient();
 
     // 1. Try targeted practice session scoped to the selected 3D node (problem_type_id / concept_id)
-    let session = await client.createPracticeSession(accessToken, subject.id, {
+    const session = await client.createPracticeSession(accessToken, subject.id, {
       problemTypeIds: problemTypeId ? [problemTypeId] : [],
       conceptIds: conceptId ? [conceptId] : [],
       sessionType: "PRACTICE",
     });
 
-    let problem;
-    try {
-      problem = await client.getMathPracticeNextProblem(accessToken, session.id);
-    } catch (innerErr) {
-      // Graceful fallback: if this specific node only has question groups or no standalone item yet,
-      // fall back to subject-level approved canonical problem so the student is never blocked.
-      if (problemTypeId || conceptId) {
-        session = await client.createPracticeSession(accessToken, subject.id);
-        problem = await client.getMathPracticeNextProblem(accessToken, session.id);
-      } else {
-        throw innerErr;
-      }
-    }
+    // Keep the selected knowledge node instead of silently launching an unrelated topic.
+    const problem = await client.getMathPracticeNextProblem(accessToken, session.id);
 
     const attempt = await client.createMathAttempt(accessToken, session.id, problem.id);
     targetAttemptId = attempt.id;
   } catch (error) {
     if (error instanceof ApiResponseError) {
       if (error.status === 401) return <SessionRecovery />;
-      if (error.code === "NO_QUESTIONS_AVAILABLE" || error.code === "NO_AVAILABLE_QUESTION") {
+      if (["NO_QUESTIONS_AVAILABLE", "NO_AVAILABLE_QUESTION", "NO_AVAILABLE_PRACTICE_ITEM", "NO_PRESENTABLE_QUESTIONS"].includes(error.code)) {
         errorTitle = "Chưa có câu hỏi tự luận cho dạng bài này";
         errorDescription =
           "Ngân hàng câu hỏi của dạng bài này đang được cập nhật thêm đề tự luận mới.";

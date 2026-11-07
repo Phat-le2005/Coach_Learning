@@ -46,7 +46,7 @@ class LearningEvidencePublisher:
         session.add_all([LearningEvidenceConcept(event_id=row.id, concept_id=x.concept_id, weight=x.weight) for x in payload.concepts])
         session.add_all([LearningEvidenceProblemType(event_id=row.id, problem_type_id=x.problem_type_id, weight=x.weight, is_primary=x.is_primary) for x in payload.problem_types])
         if payload.is_correct is not None and payload.score is not None and payload.difficulty is not None:
-            self.mastery.publish(GenericMasteryEvidence(student_id=payload.student_id, is_correct=payload.is_correct, score=payload.score, difficulty=payload.difficulty, response_time_seconds=payload.response_time_seconds, hint_count=payload.hint_count, occurred_at=payload.occurred_at, concepts=payload.concepts, problem_types=payload.problem_types), session)
+            self.mastery.publish(GenericMasteryEvidence(student_id=payload.student_id, is_correct=payload.is_correct, score=payload.score, difficulty=payload.difficulty, response_time_seconds=payload.response_time_seconds, hint_count=payload.hint_count, occurred_at=payload.occurred_at, concepts=payload.concepts, problem_types=payload.problem_types, metadata=payload.metadata), session)
         session.flush()
         self._diagnose_if_needed(row, session)
         return row
