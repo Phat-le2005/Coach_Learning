@@ -198,7 +198,7 @@ export function AssignmentWorkspaceClient({
         {/* Workspace Top Bar */}
         <div className={styles.workspaceTopBar}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.85rem" }}>
-            <Link href="/student/assignments" className={styles.btnActionSecondary}>
+            <Link href="/student/attempts?tab=classroom" className={styles.btnActionSecondary}>
               <ArrowLeft size={16} /> Quay lại
             </Link>
             <div>
@@ -230,10 +230,32 @@ export function AssignmentWorkspaceClient({
             <div style={{ fontSize: "0.875rem", color: "#64748B" }}>
               Tiến độ: <b>{answeredCount}/{assignment.questions.length}</b> câu
             </div>
+            <button
+              type="button"
+              className={styles.btnAction}
+              onClick={async () => {
+                try {
+                  const res = await fetch(`/api/student/assignments/${assignment.id}/launch`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ index: activeIdx }),
+                  });
+                  if (res.ok) {
+                    const data = await res.json();
+                    if (data.attemptId) {
+                      router.push(`/student/attempts/${data.attemptId}`);
+                    }
+                  }
+                } catch {}
+              }}
+              style={{ background: "#059669", color: "#ffffff", display: "inline-flex", alignItems: "center", gap: "6px" }}
+            >
+              <Sparkles size={16} /> Làm bài trên Canvas
+            </button>
             {isExam && !isFinalized && (
               <button
                 type="button"
-                className={styles.btnAction}
+                className={styles.btnActionSecondary}
                 onClick={() => setShowSubmitModal(true)}
               >
                 <Send size={15} /> Nộp bài kiểm tra
@@ -342,10 +364,19 @@ export function AssignmentWorkspaceClient({
 
             {/* Step-by-step Solution Editor */}
             <div className={styles.stepSolutionSection}>
-              <h3 className={styles.sectionSubtitle}>
-                <Sparkles size={16} color="#059669" />
-                {isExam ? "Lời giải / Bài làm của bạn:" : "Bước giải chi tiết (Hệ thống AI sẽ phân tích từng dòng toán học):"}
-              </h3>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem", flexWrap: "wrap", gap: "8px" }}>
+                <h3 className={styles.sectionSubtitle} style={{ margin: 0 }}>
+                  <Sparkles size={16} color="#059669" />
+                  {isExam ? "Lời giải / Bài làm của bạn:" : "Bước giải chi tiết (Hệ thống AI sẽ phân tích từng dòng toán học):"}
+                </h3>
+                <Link
+                  href="/student/attempts?tab=practice"
+                  target="_blank"
+                  style={{ fontSize: "0.8125rem", color: "#059669", textDecoration: "none", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: "4px" }}
+                >
+                  📝 Mở Giấy số / Bút vẽ ↗
+                </Link>
+              </div>
               <textarea
                 className={styles.stepLatexTextarea}
                 rows={4}

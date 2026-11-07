@@ -37,11 +37,11 @@ const AVAILABLE_ROUTES: Partial<
   CONTINUE_ASSIGNMENT: (action) =>
     action.assignment_id
       ? `/student/assignments/${encodeURIComponent(action.assignment_id)}`
-      : "/student/assignments",
+      : "/student/attempts?tab=classroom",
   COMPLETE_OVERDUE_ASSIGNMENT: (action) =>
     action.assignment_id
       ? `/student/assignments/${encodeURIComponent(action.assignment_id)}`
-      : "/student/assignments",
+      : "/student/attempts?tab=classroom",
   CONTINUE_PRACTICE: (action) =>
     action.problem_type_id
       ? `/student/practice?problem_type_id=${encodeURIComponent(action.problem_type_id)}`

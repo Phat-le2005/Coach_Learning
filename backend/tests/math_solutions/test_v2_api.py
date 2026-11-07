@@ -1211,3 +1211,29 @@ def test_student_can_create_and_correct_a_structured_variation_table(
     assert db_session.scalar(select(func.count()).select_from(StepRevision).where(
         StepRevision.step_id == UUID(step["id"]))) == 2
     assert db_session.scalar(select(func.count()).select_from(StepEvaluation)) == 0
+
+def test_hidden_attempts_leave_history_without_deleting_work(
+    db_client: TestClient,
+    db_session: Session,
+    v2_domain: V2Domain,
+    auth_headers,
+) -> None:
+    headers = auth_headers(v2_domain.student)
+    path = "/api/v2/math-solutions/attempts"
+    hidden = db_client.post(path, json=create_payload(v2_domain, key="hide-test-attempt"), headers=headers)
+    visible = db_client.post(path, json=create_payload(v2_domain, key="keep-test-attempt"), headers=headers)
+    assert hidden.status_code == 201, hidden.text
+    assert visible.status_code == 201, visible.text
+
+    row = db_session.get(SolutionAttempt, UUID(hidden.json()["id"]))
+    assert row is not None
+    row.hidden_at = datetime.now(timezone.utc)
+    db_session.commit()
+
+    listing = db_client.get(path, headers=headers)
+    assert listing.status_code == 200, listing.text
+    assert listing.json()["total"] == 1
+    assert [item["id"] for item in listing.json()["items"]] == [visible.json()["id"]]
+    detail = db_client.get(f'{path}/{hidden.json()["id"]}', headers=headers)
+    assert detail.status_code == 200
+    assert detail.json()["id"] == hidden.json()["id"]

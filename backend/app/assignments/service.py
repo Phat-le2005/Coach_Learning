@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 import logging
 from uuid import UUID
 
-from sqlalchemy import func, select
+from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session, selectinload
 
 from app.assignments.models import (
@@ -711,7 +711,10 @@ class AssignmentService:
                 .selectinload(AssignmentMaterialItem.options),
             )
             .where(
-                StudentAssignment.assignment_id == assignment_id,
+                or_(
+                    StudentAssignment.assignment_id == assignment_id,
+                    StudentAssignment.id == assignment_id,
+                ),
                 StudentAssignment.student_id == student.id,
             )
         )
@@ -866,7 +869,10 @@ class AssignmentService:
                 selectinload(StudentAssignment.student_material_items).selectinload(StudentAssignmentMaterialItem.assignment_material_item).selectinload(AssignmentMaterialItem.learning_outcome_mappings),
             )
             .where(
-                StudentAssignment.assignment_id == assignment_id,
+                or_(
+                    StudentAssignment.assignment_id == assignment_id,
+                    StudentAssignment.id == assignment_id,
+                ),
                 StudentAssignment.student_id == student.id,
             )
             .with_for_update()

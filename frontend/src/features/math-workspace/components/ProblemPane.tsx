@@ -106,7 +106,13 @@ export function ProblemPane({
       <div className={styles.problemHeader}>
         <div className={styles.problemHeaderLeft}>
           <BookOpen className={styles.problemIcon} size={18} />
-          <h2 className={styles.problemTitle}>Đề bài</h2>
+          <h2 className={styles.problemTitle}>
+            {problem?.context_type === "CLASSROOM_ASSIGNMENT" &&
+            problem.order_index !== undefined &&
+            problem.order_index !== null
+              ? `Câu ${problem.order_index + 1}`
+              : "Đề bài"}
+          </h2>
           {problem?.question_type && (
             <span className={styles.questionTypeBadge}>
               {formatQuestionType(problem.question_type)}

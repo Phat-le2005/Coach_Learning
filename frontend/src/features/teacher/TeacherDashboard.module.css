@@ -2099,6 +2099,38 @@
   animation: modalEnter 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.modalContentWide > .modalHeader {
+  padding: 1.25rem 1.75rem 1rem;
+  margin-bottom: 0;
+  flex-shrink: 0;
+  border-bottom: 1px solid rgba(29, 75, 61, 0.1);
+}
+
+.modalContentWide .modalFooter {
+  padding: 1rem 1.75rem;
+  margin-top: 0;
+  border-top: 1px solid rgba(29, 75, 61, 0.1);
+  background: #ffffff;
+  flex-shrink: 0;
+}
+
+.modalFormWrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.modalFormWrapper .modalBodyScrollable {
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+  padding: 1.25rem 1.75rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
 .modalContentFullScreen {
   background: #fbfaf4;
   border-radius: 20px;

@@ -230,6 +230,7 @@ async def review_submitted_steps(
             if exc.code not in {
                 "GRADING_RUBRIC_UNAVAILABLE", "GRADING_RUBRIC_UNSUPPORTED",
                 "GRADING_TARGET_UNSUPPORTED", "GRADING_REVIEW_REQUIRED",
+                "GRADING_SOURCE_MISMATCH",
             }:
                 raise
         else:

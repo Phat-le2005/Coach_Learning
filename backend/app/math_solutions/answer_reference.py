@@ -78,7 +78,7 @@ def resolve_answer_reference(
             snapshot is None or snapshot.snapshotted_at is None
             or snapshot.assignment_id != attempt.assignment_id
             or snapshot.question_type != QuestionType.OPEN_RESPONSE
-            or snapshot.evaluation_mode != MaterialEvaluationMode.OPEN_RESPONSE
+            or snapshot.evaluation_mode not in (MaterialEvaluationMode.OPEN_RESPONSE, MaterialEvaluationMode.TEACHER_REVIEW)
             or student_item is None
             or student_item.student_assignment_id != attempt.student_assignment_id
             or student_item.assignment_material_item_id != snapshot.id
