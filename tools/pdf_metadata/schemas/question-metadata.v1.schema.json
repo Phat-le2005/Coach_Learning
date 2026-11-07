@@ -1,0 +1,1098 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:coach-learning:pdf-question-metadata:1.0.0",
+  "title": "Frozen PDF question metadata v1.0.0",
+  "description": "Public final metadata. All defined keys are required. Unknown source-specific fields are retained only in extensions. choices, tables and source_errors are opaque source payloads.",
+  "type": "array",
+  "items": {
+    "$ref": "#/$defs/question"
+  },
+  "$defs": {
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "basis",
+        "field",
+        "page_number",
+        "bbox",
+        "block_ids",
+        "text",
+        "normalized_match",
+        "source_reference",
+        "extensions"
+      ],
+      "properties": {
+        "basis": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "field": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "page_number": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "bbox": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 4,
+              "maxItems": 4
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "block_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "text": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "normalized_match": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_reference": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "extensions": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "label": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "name",
+        "canonical_code",
+        "parent_code",
+        "source_number",
+        "source_label",
+        "origin",
+        "basis",
+        "evidence",
+        "extensions"
+      ],
+      "properties": {
+        "code": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "canonical_code": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "parent_code": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_number": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "origin": {
+          "enum": [
+            "source",
+            "inferred",
+            "unknown"
+          ]
+        },
+        "basis": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence"
+          }
+        },
+        "extensions": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "lesson_code",
+        "exercise_type_code",
+        "lesson",
+        "exercise_type",
+        "rule",
+        "evidence",
+        "extensions"
+      ],
+      "properties": {
+        "lesson_code": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "exercise_type_code": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "lesson": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/label"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "exercise_type": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/label"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "rule": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence"
+          }
+        },
+        "extensions": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "documentLabels": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "chapter",
+        "lesson",
+        "exercise_type",
+        "extensions"
+      ],
+      "properties": {
+        "chapter": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/label"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lesson": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/label"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "exercise_type": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/label"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "extensions": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "method": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "pipeline_version",
+        "record_kind",
+        "chapter",
+        "lesson",
+        "exercise_type",
+        "label_path",
+        "status",
+        "classification_method",
+        "review_required",
+        "source_header_evidence",
+        "document_labels",
+        "candidates",
+        "inference_candidates",
+        "exercise_type_candidates",
+        "flags",
+        "extensions"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "question-method/v1.0.0"
+        },
+        "pipeline_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "record_kind": {
+          "enum": [
+            "EXERCISE",
+            "SOURCE_HEADING_NOT_EXERCISE",
+            "UNKNOWN"
+          ]
+        },
+        "chapter": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/label"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lesson": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/label"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "exercise_type": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/label"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "label_path": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "status": {
+          "type": "string"
+        },
+        "classification_method": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "review_required": {
+          "type": "boolean"
+        },
+        "source_header_evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence"
+          }
+        },
+        "document_labels": {
+          "$ref": "#/$defs/documentLabels"
+        },
+        "candidates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/candidate"
+          }
+        },
+        "inference_candidates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/candidate"
+          }
+        },
+        "exercise_type_candidates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/label"
+          }
+        },
+        "flags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "extensions": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "heading": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "label",
+        "number",
+        "title",
+        "page_number",
+        "bbox",
+        "block_ids",
+        "method",
+        "source_verified",
+        "extensions"
+      ],
+      "properties": {
+        "kind": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "number": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "title": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "page_number": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "bbox": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 4,
+              "maxItems": 4
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "block_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "method": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_verified": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "extensions": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "topicContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "chapter",
+        "lesson",
+        "topic",
+        "exercise_type",
+        "section",
+        "extensions"
+      ],
+      "properties": {
+        "chapter": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/heading"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lesson": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/heading"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "topic": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/heading"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "exercise_type": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/heading"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "section": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/heading"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "extensions": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "catalog_label",
+        "sha256",
+        "page_count",
+        "coordinate_unit",
+        "coordinate_origin",
+        "coordinate_reference",
+        "extensions"
+      ],
+      "properties": {
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "catalog_label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "sha256": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "page_count": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "coordinate_unit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "coordinate_origin": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "coordinate_reference": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "extensions": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "span": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "page_number",
+        "bbox",
+        "block_ids",
+        "column",
+        "layout_method",
+        "extensions"
+      ],
+      "properties": {
+        "page_number": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "bbox": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 4,
+              "maxItems": 4
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "block_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "column": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "layout_method": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "extensions": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "method",
+        "complete_formula_recall_established",
+        "extensions"
+      ],
+      "properties": {
+        "method": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "complete_formula_recall_established": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "extensions": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "block": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "bbox",
+        "markdown",
+        "asset_id",
+        "extensions"
+      ],
+      "properties": {
+        "kind": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "bbox": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 4,
+              "maxItems": 4
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "markdown": {
+          "type": "string"
+        },
+        "asset_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "extensions": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "fragment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "page_number",
+        "bbox",
+        "source_asset",
+        "source_asset_sha256",
+        "markdown",
+        "choices",
+        "blocks",
+        "coverage",
+        "source_errors",
+        "visual_flags",
+        "status",
+        "quality_audit",
+        "extensions"
+      ],
+      "properties": {
+        "page_number": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "bbox": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 4,
+              "maxItems": 4
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "source_asset": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_asset_sha256": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "markdown": {
+          "type": "string"
+        },
+        "choices": {
+          "type": "array",
+          "items": {}
+        },
+        "blocks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/block"
+          }
+        },
+        "coverage": {
+          "$ref": "#/$defs/coverage"
+        },
+        "source_errors": {
+          "type": "array",
+          "items": {}
+        },
+        "visual_flags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "status": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "quality_audit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "extensions": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "part": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "markdown",
+        "choices",
+        "source_spans",
+        "raw_text_lossy",
+        "fragments",
+        "extensions"
+      ],
+      "properties": {
+        "markdown": {
+          "type": "string"
+        },
+        "choices": {
+          "type": "array",
+          "items": {}
+        },
+        "source_spans": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/span"
+          }
+        },
+        "raw_text_lossy": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "fragments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/fragment"
+          }
+        },
+        "extensions": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "visual": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "path",
+        "page_number",
+        "bbox",
+        "sha256",
+        "source_sha256",
+        "status",
+        "review_required",
+        "coordinate_reference",
+        "detector",
+        "score",
+        "role",
+        "question_id",
+        "extensions"
+      ],
+      "properties": {
+        "id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "kind": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "path": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "page_number": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "bbox": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 4,
+              "maxItems": 4
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sha256": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_sha256": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "review_required": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "coordinate_reference": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "detector": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "score": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "role": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "question_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "extensions": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "question": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "collection_number",
+        "question_id",
+        "chapter_title",
+        "source_number",
+        "source",
+        "question",
+        "solution",
+        "answer",
+        "tables",
+        "visual_assets",
+        "academic_review",
+        "grading_support",
+        "publishable",
+        "topic_context",
+        "method",
+        "extensions"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "pdf-question-metadata/v1.0.0"
+        },
+        "collection_number": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "question_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "chapter_title": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_number": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "source": {
+          "$ref": "#/$defs/source"
+        },
+        "question": {
+          "$ref": "#/$defs/part"
+        },
+        "solution": {
+          "$ref": "#/$defs/part"
+        },
+        "answer": {
+          "$ref": "#/$defs/part"
+        },
+        "tables": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "visual_assets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/visual"
+          }
+        },
+        "academic_review": {
+          "type": "string"
+        },
+        "grading_support": {
+          "type": "string"
+        },
+        "publishable": {
+          "type": "boolean"
+        },
+        "topic_context": {
+          "$ref": "#/$defs/topicContext"
+        },
+        "method": {
+          "$ref": "#/$defs/method"
+        },
+        "extensions": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    }
+  }
+}
