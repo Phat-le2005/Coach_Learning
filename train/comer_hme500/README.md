@@ -5,13 +5,34 @@ Kit chạy trực tiếp trên bộ **500 ảnh JPG viết tay thật** và `met
 ## Chạy trên Kaggle
 
 1. Upload notebook `CoachLearning_CoMER_HME500_Kaggle.ipynb` vào Kaggle. Mặc định clone `https://github.com/Phat-le2005/Coach_Learning.git`, nhánh `main`, vào `/kaggle/working/Coach_Learning`.
-2. Bật GPU và Internet. Add Input dataset `lhngphc/data-finetune-comer` đã có thư mục `CoachLearning_500_HME100K/`.
+2. Bật GPU **T4 x2** và Internet cho v2/v3. Add Input dataset `lhngphc/data-finetune-comer` đã có thư mục `CoachLearning_500_HME100K/`.
 3. Add-ons → Secrets: bật checkbox cho **`WANDB_API_KEY`**, và **`GH_TOKEN`** nếu cần xác thực GitHub. Repo công khai vẫn clone được khi thiếu `GH_TOKEN`. W&B key được đặt trong `os.environ` để Bash/Python kế thừa. Git token chỉ đi vào môi trường tiến trình Git qua askpass tạm; không nằm trong URL origin hoặc Git config.
 4. Giữ `DATA_ROOT=/kaggle/input/datasets/lhngphc/data-finetune-comer`. Script tự tìm `metadata.json` trong thư mục lồng, hỗ trợ cả `/kaggle/input/<slug>/...`. Nếu gắn hai bản dataset, chỉ rõ metadata muốn dùng.
-5. `WANDB_ENTITY=None` dùng tài khoản sở hữu key; đổi thành username/team nếu cần. Project mặc định **`coachlearning-handwritten-math`**. Run có tên như `comer-hme500-adamw-bs16-seed42-20261106T...Z`, group `comer-crohme-to-hme500-seed42`.
-6. Run All. Chỉ dùng một GPU. Khi hết phiên, **Save Version với outputs** và tải `experiment_evidence.zip`.
+5. `WANDB_ENTITY=None` dùng tài khoản sở hữu key; đổi thành username/team nếu cần. Project mặc định **`coachlearning-handwritten-math`**. Chọn `EXPERIMENT_VERSION="v3"` để so sánh trước/sau, hoặc `v2` để chỉ fine-tune hai GPU.
+6. Run All. Mỗi GPU chạy một tiến trình DDP, chỉ rank 0 ghi log/checkpoint. Khi hết phiên, **Save Version với outputs** và tải `experiment_evidence.zip`.
 
-`/kaggle/input` chỉ đọc; không thể lưu thêm log/checkpoint ở đường dẫn input. Mọi kết quả được lưu dưới `/kaggle/working/comer-hme500-adamw-bs16-seed42-<UTC>/`. Muốn giữ checkpoint làm input cho phiên sau, lưu outputs thành Kaggle Dataset mới.
+`/kaggle/input` chỉ đọc; kết quả mới ở `/kaggle/working/comer_experiments/<tên-run>/`. Muốn giữ checkpoint làm input cho phiên sau, lưu outputs thành Kaggle Dataset mới.
+
+## Phiên bản hai GPU và tên tự động
+
+| Lựa chọn | GPU | Mục đích |
+|---|---|---|
+| v1 | 1 | Giữ luồng fine-tune một GPU để tái kiểm tra |
+| v2 | 2 | Fine-tune DDP, chọn best bằng validation, đánh giá best trên test |
+| v3 | 2 | Fine-tune DDP + so sánh đúng snapshot trước fine-tune với best trên cùng test |
+
+Sau khi clone repo và truyền WANDB_API_KEY qua môi trường, mỗi lần chạy mới dùng:
+
+```python
+%cd /kaggle/working/Coach_Learning/train/comer_hme500
+!bash scripts/run_kaggle.sh new v3
+```
+
+Đổi `v3` thành `v2` cho bản chỉ fine-tune. Các lệnh này **tự tạo config mới, tên mới và thư mục mới**, rồi setup/train/evaluate. Không cần tự sửa tên run. Có thể thêm `--epochs 30 --seed 123`, `--entity <team>` hoặc `--data /path/metadata.json`.
+
+Ví dụ tên: `comer-hme500-v3-prepost-ddp2-r002-s42-eb16-<UTC>`. Số r001/r002 tự tăng trong cùng EXPERIMENT_ROOT; UTC có microsecond bảo đảm phân biệt cả khi phiên Kaggle mới không giữ registry. Muốn tiếp tục số thứ tự qua phiên mới, giữ/lưu lại thư mục registry trong outputs. Mỗi trial là một W&B group; v3 có run train và hai run `-before` / `-after` cùng group, dùng cùng tên metric để so sánh trong W&B.
+
+Resume giữ nguyên W&B ID/tên/group và không tạo trial mới khi dùng cell resume trong notebook. Không resume checkpoint một GPU thành hai GPU: tạo run v2/v3 mới để giữ điều kiện thí nghiệm rõ ràng.
 
 ## Thí nghiệm mặc định
 
@@ -21,7 +42,7 @@ CoMER Fusion pretrained chính thức, source/checkpoint pin ở `ee15cdbe02467f
 |---|---|
 | Dữ liệu | 400 train / 50 validation / 50 test, giữ split có sẵn |
 | Optimizer | AdamW, decoder LR 1e-4, encoder LR 1e-5, weight decay 0.01 |
-| Batch | 4 × accumulation 4 = 16, một GPU |
+| Batch | v2/v3: 4 mỗi GPU × 2 GPU × accumulation 2 = 16 toàn cục; v1: 4 × 4 = 16 |
 | Epoch | Tối đa 20; freeze encoder 2 epoch đầu |
 | Scheduler | ReduceLROnPlateau theo val loss, factor 0.5, patience 2 |
 | Chọn checkpoint | Val exact match lớn nhất, hòa thì val loss nhỏ nhất |
@@ -29,7 +50,17 @@ CoMER Fusion pretrained chính thức, source/checkpoint pin ở `ee15cdbe02467f
 | Nhận dạng đánh giá | Greedy L2R, tối đa 128 token; EOS bắt buộc cho exact match |
 | Seed | 42; lưu RNG, thứ tự dữ liệu theo epoch, cảnh báo khi phép toán GPU không deterministic |
 
-Đây là điểm khởi đầu, chưa phải hyperparameter tối ưu. Nếu OOM: batch 2, accumulation 8 cho **run mới**. Sau khi chỉnh helper/bootstrap hoặc cell cấu hình, chạy `python build_notebook.py` để cập nhật notebook. Mã train được lấy trực tiếp từ GitHub; commit thực tế được ghi vào runtime minh chứng.
+Đây là điểm khởi đầu, chưa phải hyperparameter tối ưu. Nếu OOM ở hai GPU: batch 2 mỗi GPU, accumulation 4 cho **run mới**. Sau khi chỉnh helper/bootstrap hoặc cell cấu hình, chạy `python build_notebook.py`. Mã train được lấy trực tiếp từ GitHub; commit được ghi vào runtime minh chứng.
+
+DDP dùng DistributedSampler chia 400 train thành hai phần rời nhau mỗi epoch; không nhân đôi dữ liệu. Loss chuẩn hóa theo tổng token thật trên cả hai rank sau gradient accumulation. Encoder freeze bằng no_grad trong forward, giữ tập parameter DDP cố định. Rank 0 đánh giá validation bằng model gốc, broadcast metric cho scheduler/early stopping; chỉ rank 0 ghi W&B và checkpoint. Checkpoint giữ RNG riêng từng rank. `rank-samples-NNN.json` chứng minh ảnh đã giao cho từng rank. CUDA/NCCL hai GPU cần được xác nhận trên Kaggle thực tế; bộ QA Linux CPU chỉ kiểm cơ chế distributed.
+
+## So sánh trước và sau fine-tune
+
+Mỗi run mới lưu **initial.pt trước optimizer step đầu tiên**, cùng SHA256 được gắn vào best.pt. Baseline là checkpoint CoMER chính thức cộng phần mở rộng từ vựng từ train giống hệt model bắt đầu fine-tune; các token mới có trọng số khởi tạo, chưa được học. Đây là baseline có cùng từ vựng, không khẳng định đó là checkpoint CROHME 113 token nguyên trạng.
+
+v3 so sánh initial.pt và best.pt sau khi chốt epoch bằng validation. Cả hai dùng cùng 50 test, ảnh nguyên gốc, preprocessing, 117 token khi dataset tương ứng, greedy decoder và giới hạn decode. Hai worker đánh giá có thể chạy đồng thời trên GPU 0 và GPU 1. Xuất `comparison-before.json`, `comparison-after.json`, `comparison.json`, `comparison.csv`, `comparison-summary.csv`, `comparison.png`, cùng bảng ảnh–GT–dự đoán trước/sau và hai run W&B. Delta là **sau trừ trước**: exact match tăng là tốt, CER/token error giảm là tốt; không mặc định kết luận fine-tune tốt hơn.
+
+Không dùng test để chỉnh LR/epoch. `RUN_FINAL_TEST=0` giữ test chưa đánh giá; khi chốt, chạy `bash scripts/run_kaggle.sh compare OUTPUT_DIR` cho v3. Nếu upload lỗi, `compare OUTPUT_DIR --sync-only` gửi lại kết quả đã lưu. Checkpoint cũ thiếu initial.pt không được dựng baseline giả. QA dùng `compare --qa` chỉ đánh giá 2 validation và đánh dấu rõ, không dùng 50 test.
 
 ## Các lệnh .sh trên Kaggle
 
@@ -37,14 +68,14 @@ Sau khi chạy các cell clone repo và ghi config trong notebook, có thể ch�
 
 ```python
 %cd /kaggle/working/Coach_Learning/train/comer_hme500
-!bash scripts/run_kaggle.sh all /kaggle/working/comer_hme500_config.json
+!bash scripts/run_kaggle.sh all "$COMER_CONFIG_PATH"
 ```
 
 Notebook cũng gọi chính Bash runner này bằng `subprocess.run`, giữ nguyên môi trường Secrets. `all` cài requirements, chạy unit tests, tải checkpoint, train và final test. Set `os.environ["RUN_FINAL_TEST"] = "0"` để chỉ train/validation khi đang dò cấu hình. Dùng từng bước khi cần:
 
 ```bash
 bash scripts/run_kaggle.sh setup
-bash scripts/run_kaggle.sh train /kaggle/working/comer_hme500_config.json
+bash scripts/run_kaggle.sh train /path/to/generated-config.json
 bash scripts/run_kaggle.sh test /kaggle/working/<thu-muc-run>
 ```
 
