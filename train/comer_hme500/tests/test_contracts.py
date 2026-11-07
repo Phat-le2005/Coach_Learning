@@ -7,9 +7,9 @@ import unittest
 import zipfile
 from PIL import Image
 import torch
-from hme_comer.data import tokens, safe_path, resolve_metadata, fit_vocabulary, input_array
-from hme_comer.metrics import collate, edit_distance
-from hme_comer.tracking import bundle, write_json
+from hme_comer.data import tokens, safe_path, resolve_metadata, fit_vocabulary, input_array, configure_preprocess, PREPROCESS, OTSU_PREPROCESS
+from hme_comer.metrics import InkDataset, collate, edit_distance
+from hme_comer.tracking import bundle, write_json, log_model, log_final_model
 from hme_comer.train import read_config, DEFAULTS, signature
 
 
@@ -49,16 +49,85 @@ class Contracts(unittest.TestCase):
             checks=json.loads(z.read(prefix+'checksums.json'))
             self.assertNotIn('checksums.json',checks)
             for n,h in checks.items(): self.assertEqual(hashlib.sha256(z.read(prefix+n)).hexdigest(),h)
+    def test_otsu_removes_paper_background_without_rewriting_jpeg(self):
+        import numpy as np
+        pixels=np.tile(np.linspace(190,225,180,dtype=np.uint8),(45,1))
+        pixels[12:32,25:155]=25
+        path=self.root/'paper.jpg';Image.fromarray(pixels).save(path,quality=95)
+        before=path.read_bytes();row={'_image':path}
+        legacy=input_array(row)
+        configure_preprocess([row],{'preprocess':OTSU_PREPROCESS})
+        clean=input_array(row)
+        self.assertEqual(clean.shape,legacy.shape)
+        self.assertEqual(set(np.unique(clean)),{0.,1.})
+        self.assertTrue(np.all(clean[:8]==0));self.assertGreater(float(legacy[:8].mean()),.05)
+        self.assertEqual(path.read_bytes(),before)
+    def test_preprocess_contract_applies_to_every_split_and_rejects_unknown_method(self):
+        rows=[{'split':s} for s in ('train','validation','test')];report={}
+        configure_preprocess(rows,{'preprocess':OTSU_PREPROCESS},report)
+        self.assertEqual({r['_preprocess'] for r in rows},{OTSU_PREPROCESS})
+        self.assertEqual(report['preprocess'],OTSU_PREPROCESS)
+        configure_preprocess(rows,{})
+        self.assertEqual({r['_preprocess'] for r in rows},{PREPROCESS})
+        with self.assertRaisesRegex(ValueError,'INVALID_PREPROCESS'):configure_preprocess(rows,{'preprocess':'other'})
     def test_secrets_cannot_enter_config(self):
         p=self.root/'config.json';write_json(p,{'wandb':{'api_key':'unit-test-not-a-key'}})
         with self.assertRaisesRegex(ValueError,'UNKNOWN_WANDB'):read_config(p)
+    def test_compact_model_export_preserves_fp32_weights_and_local_resume_checkpoint(self):
+        full=dict(state_dict={'weight':torch.tensor([[1.,2.]])},hyper_parameters={'fixture':True},
+            vocabulary={'x':0},epoch=5,dataset_fingerprint='fixture',qa_only=True,
+            optimizer={'large':'fixture-only'},torch_rng=torch.get_rng_state())
+        path=self.root/'best.pt';torch.save(full,path);before=path.read_bytes()
+        cfg={'checkpoint_upload':'final_inference','preprocess':OTSU_PREPROCESS,'wandb':{'mode':'disabled'}}
+        exported=log_final_model(None,self.root,cfg)
+        value=torch.load(exported,map_location='cpu',weights_only=True)
+        self.assertTrue(torch.equal(value['state_dict']['weight'],full['state_dict']['weight']))
+        self.assertEqual(value['state_dict']['weight'].dtype,torch.float32)
+        self.assertNotIn('optimizer',value);self.assertNotIn('torch_rng',value)
+        self.assertEqual(path.read_bytes(),before)
+        self.assertEqual(value['source_full_checkpoint_sha256'],hashlib.sha256(before).hexdigest())
+    def test_compact_policy_does_not_upload_per_epoch_checkpoints(self):
+        cfg={'checkpoint_upload':'final_inference','wandb':{'mode':'online','log_checkpoints':True}}
+        log_model(None,self.root,cfg,[],{})
+        self.assertFalse(list(self.root.iterdir()))
     def test_resume_signature_allows_only_epoch_extension(self):
         a=dict(DEFAULTS);b={**a,'epochs':100,'decoder_lr':2e-4}
         self.assertNotEqual(signature(a),signature(b))
         b['decoder_lr']=a['decoder_lr'];self.assertEqual(signature(a),signature(b))
+        b['preprocess']=OTSU_PREPROCESS;self.assertNotEqual(signature(a),signature(b))
     def test_edit_distance(self):
         self.assertEqual(edit_distance('abc','adc'),1)
         self.assertEqual(edit_distance([1,2,3],[1,3]),1)
+    def test_scale_augmentation_is_train_only_read_only_and_preserves_tokens(self):
+        path=self.root/'unit.jpg';Image.new('RGB',(180,45),'white').save(path)
+        raw=path.read_bytes();row={'id':'unit','split':'train','_image':path,'_tokens':[3,4]}
+        baseline,_=InkDataset([row])[0]
+        identity,labels=InkDataset([row],1.,1.,42,1)[0]
+        self.assertTrue(torch.equal(identity,baseline));self.assertEqual(labels,[3,4])
+        scaled,labels=InkDataset([row],.9,.9,42,1)[0]
+        self.assertEqual(scaled.shape,(1,40,162));self.assertEqual(labels,[3,4])
+        self.assertEqual(path.read_bytes(),raw)
+        with self.assertRaisesRegex(ValueError,'TRAIN_ONLY'):InkDataset([{**row,'split':'validation'}],.9,1.1)
+        with self.assertRaisesRegex(ValueError,'TRAIN_ONLY'):InkDataset([{**row,'split':'test'}],.9,1.1)
+        heldout,_=InkDataset([{**row,'split':'test'}])[0]
+        self.assertTrue(torch.equal(heldout,baseline))
+    def test_scale_rng_is_reproducible_changes_by_epoch_and_does_not_touch_model_rng(self):
+        import random
+        path=self.root/'unit.jpg';Image.new('RGB',(180,45),'white').save(path)
+        row={'id':'unit','split':'train','_image':path,'_tokens':[3]}
+        python_rng=random.getstate();torch_rng=torch.get_rng_state().clone()
+        one,_=InkDataset([row],.9,1.1,42,1)[0]
+        repeated,_=InkDataset([row],.9,1.1,42,1)[0]
+        self.assertTrue(torch.equal(one,repeated))
+        self.assertGreater(len({tuple(InkDataset([row],.9,1.1,42,e)[0][0].shape) for e in range(10)}),1)
+        self.assertEqual(random.getstate(),python_rng);self.assertTrue(torch.equal(torch.get_rng_state(),torch_rng))
+    def test_scale_config_is_validated_and_part_of_resume_signature(self):
+        path=self.root/'config.json'
+        for lo,hi in ((1.1,.9),(.4,1.),(1.,1.6),(float('nan'),1.),(True,1.)):
+            write_json(path,{'train_scale_min':lo,'train_scale_max':hi}) if lo==lo else path.write_text('{"train_scale_min":NaN}')
+            with self.assertRaisesRegex(ValueError,'TRAIN_SCALE'):read_config(path)
+        identity=dict(DEFAULTS);augmented={**identity,'train_scale_min':.9,'train_scale_max':1.1}
+        self.assertNotEqual(signature(identity),signature(augmented))
 
 
 if __name__=='__main__': unittest.main()

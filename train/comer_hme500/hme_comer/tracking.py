@@ -126,12 +126,37 @@ def plot_curves(output):
 
 
 def log_model(run, output, cfg, aliases, metadata):
+    if cfg.get('checkpoint_upload','every_epoch')=='final_inference':return
     if cfg['wandb']['mode']=='disabled' or not cfg['wandb']['log_checkpoints']: return
     import wandb
     artifact=wandb.Artifact('comer-hme500-'+run.id,type='model',metadata=metadata)
     for n in ('best.pt','last.pt','initial.pt','config.json','vocabulary.json','dataset-audit.json','runtime.json'):
         if (output/n).exists(): artifact.add_file(str(output/n),name=n)
     run.log_artifact(artifact,aliases=aliases)
+
+
+def log_final_model(run, output, cfg):
+    """Export identical best FP32 tensors once; retain resume checkpoints locally."""
+    if cfg.get('checkpoint_upload','every_epoch')!='final_inference':return
+    import torch
+    full=torch.load(output/'best.pt',map_location='cpu',weights_only=True)
+    exported={k:full[k] for k in ('state_dict','hyper_parameters','vocabulary','epoch','dataset_fingerprint','qa_only')}
+    exported.update(format='coach-hme500-inference-v1',preprocess=cfg['preprocess'],
+        source_full_checkpoint_sha256=hashlib.sha256((output/'best.pt').read_bytes()).hexdigest(),
+        note='Identical FP32 tensors; optimizer/RNG omitted; full best.pt/last.pt retained locally.')
+    path=output/'best-inference.pt';torch.save(exported,path)
+    write_json(output/'inference-export.json',dict(
+        source_full_checkpoint_sha256=exported['source_full_checkpoint_sha256'],
+        inference_sha256=hashlib.sha256(path.read_bytes()).hexdigest(),epoch=full['epoch'],
+        inference_bytes=path.stat().st_size,same_model_tensors=True))
+    if cfg['wandb']['mode']=='disabled' or not cfg['wandb']['log_checkpoints']:return path
+    import wandb
+    artifact=wandb.Artifact('comer-hme500-inference-'+run.id,type='model',
+        metadata={'epoch':full['epoch'],'qa_only':full['qa_only'],'source_full_checkpoint_sha256':exported['source_full_checkpoint_sha256']})
+    for name in ('best-inference.pt','inference-export.json','config.json','vocabulary.json','runtime.json'):
+        artifact.add_file(str(output/name),name=name)
+    run.log_artifact(artifact,aliases=['best','final'])
+    return path
 
 
 def bundle(output):

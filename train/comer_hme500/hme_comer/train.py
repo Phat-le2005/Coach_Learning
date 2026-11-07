@@ -18,10 +18,10 @@ import numpy as np
 import torch
 from torch.utils.data import DataLoader
 from torch.utils.data.distributed import DistributedSampler
-from .data import audit, fit_vocabulary, resolve_metadata, PREPROCESS
+from .data import audit, fit_vocabulary, resolve_metadata, PREPROCESS, PREPROCESSORS, configure_preprocess
 from .metrics import InkDataset, collate, teacher_loss, evaluate, CONTRACT
 from .model import UPSTREAM, load_model, expand_vocabulary
-from .tracking import write_json, init_run, log_predictions, append_history, log_model, bundle
+from .tracking import write_json, init_run, log_predictions, append_history, log_model, log_final_model, bundle
 from .distributed import Context, TrainingModel, restore_rng
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -38,7 +38,10 @@ def read_config(path):
         if type(cfg[k]) is not int or cfg[k]<1: raise ValueError('INVALID_'+k)
     if type(cfg['freeze_encoder_epochs']) is not int or cfg['freeze_encoder_epochs']<0: raise ValueError('INVALID_FREEZE_EPOCHS')
     if type(cfg['seed']) is not int or not 0<=cfg['seed']<2**32: raise ValueError('INVALID_SEED')
-    for k in ('decoder_lr','encoder_lr','clip_grad_norm','weight_decay'):
+    if any(type(cfg[k]) not in (int,float) or not math.isfinite(cfg[k]) for k in ('train_scale_min','train_scale_max')):
+        raise ValueError('INVALID_TRAIN_SCALE')
+    if not 0.5<=cfg['train_scale_min']<=cfg['train_scale_max']<=1.5:raise ValueError('INVALID_TRAIN_SCALE')
+    for k in ('decoder_lr','encoder_lr','clip_grad_norm','weight_decay','amp_init_scale'):
         if type(cfg[k]) not in (int,float) or not math.isfinite(cfg[k]) or cfg[k]<0 or (k!='weight_decay' and cfg[k]==0):
             raise ValueError('INVALID_'+k)
     for k in ('data','output','device'):
@@ -48,6 +51,8 @@ def read_config(path):
     if type(cfg['compare_before_after']) is not bool:raise ValueError('INVALID_COMPARE_FLAG')
     if not isinstance(cfg['experiment_version'],str) or not cfg['experiment_version']:raise ValueError('INVALID_VERSION')
     if cfg['wandb']['mode'] not in ('online','offline','disabled'): raise ValueError('INVALID_WANDB_MODE')
+    if cfg['preprocess'] not in PREPROCESSORS: raise ValueError('INVALID_PREPROCESS')
+    if cfg['checkpoint_upload'] not in ('every_epoch','final_inference'): raise ValueError('INVALID_CHECKPOINT_UPLOAD')
     for k in ('log_images','log_checkpoints'):
         if type(cfg['wandb'][k]) is not bool: raise ValueError('INVALID_WANDB_'+k)
     if cfg['max_decode_tokens']>256: raise ValueError('DECODE_LIMIT_TOO_LARGE')
@@ -65,7 +70,7 @@ def seed_all(seed):
 
 def signature(cfg):
     return {k:cfg[k] for k in DEFAULTS if k not in ('data','output','wandb','epochs','media_samples',
-                                                   'experiment_version','compare_before_after')}
+                                                   'experiment_version','compare_before_after','checkpoint_upload')}
 
 
 def save_checkpoint(path,model,hparams,vocab,optimizer,scheduler,scaler,epoch,step,best,stale,cfg,digest,run_id,qa,
@@ -82,14 +87,14 @@ def save_checkpoint(path,model,hparams,vocab,optimizer,scheduler,scaler,epoch,st
     tmp=path.with_suffix('.tmp');torch.save(value,tmp);tmp.replace(path)
 
 
-def runtime_info(upstream,device,model):
+def runtime_info(upstream,device,model,preprocess=PREPROCESS):
     env={}
     for p in ('torch','torchvision','einops','pytorch-lightning','torchmetrics','numpy','Pillow','wandb','matplotlib'):
         try: env[p]=importlib.metadata.version(p)
         except importlib.metadata.PackageNotFoundError: env[p]='not-installed'
     env.update(python=sys.version,device=str(device),cuda=torch.version.cuda,
         gpu=torch.cuda.get_device_name(device) if device.type=='cuda' else None,
-        parameters=sum(p.numel() for p in model.parameters()),preprocess=PREPROCESS,
+        parameters=sum(p.numel() for p in model.parameters()),preprocess=preprocess,
         world_size=int(os.environ.get('WORLD_SIZE','1')),
         gpu_names=[torch.cuda.get_device_name(i) for i in range(torch.cuda.device_count())])
     lock=json.loads((ROOT/'hme_comer/upstream.lock.json').read_text())
@@ -116,6 +121,7 @@ def _train(cfg,resume,qa,ctx):
     device=ctx.device
     if device.type=='cuda' and not torch.cuda.is_available(): raise RuntimeError('Enable a Kaggle GPU, or set device=cpu for local QA.')
     metadata=resolve_metadata(cfg['data']);rows,report=audit(metadata)
+    configure_preprocess(rows,cfg,report)
     upstream=Path(cfg.get('upstream',UPSTREAM))
     model,base,hparams=load_model(upstream=upstream)
     vocabulary,added=fit_vocabulary(rows,base.word2idx)
@@ -129,6 +135,8 @@ def _train(cfg,resume,qa,ctx):
     report.update(world_size=ctx.world,distributed_backend=ctx.backend if ctx.world>1 else None,
                   effective_batch_size=cfg['batch_size']*cfg['accumulate']*ctx.world)
     report['executed_splits']={'train':len(trains),'validation':len(vals),'test':0}
+    report['training_augmentation']={'kind':'scale','range':[cfg['train_scale_min'],cfg['train_scale_max']],
+        'enabled':(cfg['train_scale_min'],cfg['train_scale_max'])!=(1.,1.),'split':'train only','original_jpegs_unchanged':True}
     if cfg['max_decode_tokens']<=max(len(r['_tokens']) for r in trains+vals) and not qa:
         raise ValueError('DECODE_LIMIT_SHORTER_THAN_LABELS')
     out=Path(cfg['output']).resolve()
@@ -141,7 +149,7 @@ def _train(cfg,resume,qa,ctx):
     optimizer=torch.optim.AdamW([{'params':model.encoder.parameters(),'lr':cfg['encoder_lr']},
         {'params':model.decoder.parameters(),'lr':cfg['decoder_lr']}],weight_decay=cfg['weight_decay'])
     scheduler=torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer,mode='min',factor=.5,patience=cfg['lr_patience'])
-    scaler=torch.amp.GradScaler('cuda',enabled=cfg['amp'] and device.type=='cuda')
+    scaler=torch.amp.GradScaler('cuda',init_scale=cfg['amp_init_scale'],enabled=cfg['amp'] and device.type=='cuda')
     start=step=stale=0;best={'exp_rate':-1.,'loss':None,'epoch':0};run_id=None;initial_sha=None;saved_rng=None
     if resume:
         resume=Path(resume)
@@ -149,7 +157,8 @@ def _train(cfg,resume,qa,ctx):
         if state.get('format')!='coach-hme500-v1' or state['qa_only']!=qa: raise ValueError('INVALID_RESUME_CHECKPOINT')
         if state['dataset_fingerprint']!=report['fingerprint']: raise ValueError('RESUME_DATASET_CHANGED')
         if state.get('world_size',1)!=ctx.world:raise ValueError('RESUME_WORLD_SIZE_CHANGED: create a new version instead')
-        old_signature={'devices':1,**state['training_signature']}
+        old_signature={'devices':1,'preprocess':PREPROCESS,'amp_init_scale':65536,
+            'train_scale_min':1.,'train_scale_max':1.,**state['training_signature']}
         if old_signature!=signature(cfg) or state['vocabulary']!=vocabulary: raise ValueError('RESUME_CONFIG_CHANGED')
         if ctx.lead and out.exists() and any(out.iterdir()):
             previous=json.loads((out/'run.json').read_text())
@@ -181,6 +190,7 @@ def _train(cfg,resume,qa,ctx):
     if not resume and ctx.lead:
         torch.save(dict(format='coach-hme500-initial-v1',state_dict=model.state_dict(),hyper_parameters=hparams,
             vocabulary=vocabulary,dataset_fingerprint=report['fingerprint'],qa_only=qa,seed=cfg['seed'],
+            preprocess=cfg['preprocess'],
             baseline_kind='official checkpoint plus identical train-only vocabulary initialization; no optimizer steps'),out/'initial.pt')
         initial_sha=hashlib.sha256((out/'initial.pt').read_bytes()).hexdigest()
     initial_sha=ctx.broadcast(initial_sha)
@@ -189,7 +199,8 @@ def _train(cfg,resume,qa,ctx):
         write_json(out/'config.json',cfg);write_json(out/'dataset-audit.json',report)
         write_json(out/'dataset-manifest.json',[{k:r[k] for k in r if not k.startswith('_')} for r in rows])
         write_json(out/'vocabulary.json',{'word2idx':vocabulary,'added_train_tokens':added})
-        write_json(out/'metric-contract.json',CONTRACT);write_json(out/'runtime.json',runtime_info(upstream,device,model))
+        write_json(out/'metric-contract.json',{**CONTRACT,'preprocess':cfg['preprocess']})
+        write_json(out/'runtime.json',runtime_info(upstream,device,model,cfg['preprocess']))
         run=init_run(cfg,out,report,run_id,qa)
         run_id=run.id
         write_json(out/'run.json',{'id':run.id,'name':cfg['wandb']['name'],'project':cfg['wandb']['project'],'group':cfg['wandb']['group'],
@@ -222,7 +233,7 @@ def _train(cfg,resume,qa,ctx):
             if sampler:sampler.set_epoch(epoch)
             assignments=ctx.gather([trains[i]['id'] for i in sampler] if sampler else [r['id'] for r in trains])
             if ctx.lead:write_json(out/f'rank-samples-{epoch:03}.json',dict(epoch=epoch,rank_samples=assignments))
-            loader=DataLoader(InkDataset(trains),batch_size=cfg['batch_size'],shuffle=sampler is None,sampler=sampler,
+            loader=DataLoader(InkDataset(trains,cfg['train_scale_min'],cfg['train_scale_max'],cfg['seed'],epoch),batch_size=cfg['batch_size'],shuffle=sampler is None,sampler=sampler,
                 collate_fn=collate,num_workers=0,generator=generator)
             optimizer.zero_grad(set_to_none=True)
             denom=total_tokens=0;group_loss=total_loss=0.
@@ -290,6 +301,7 @@ def _train(cfg,resume,qa,ctx):
         run.summary.update({'best/epoch':best['epoch'],'best/val_exp_rate':best['exp_rate'],
             'best/val_loss':best['loss'],'epochs_completed':epoch,'qa_only':qa})
         if baseline: run.summary['best/exp_rate_delta_from_baseline']=best['exp_rate']-baseline['exp_rate']
+        log_final_model(run,out,cfg)
         (out/'evidence.md').write_text('# CoMER HME500 experiment\n\n'+
             ('Local real-JPEG QA only; not a full training accuracy result.\n\n' if qa else '')+
             f"Dataset SHA256 fingerprint: {report['fingerprint']}\n\n"+

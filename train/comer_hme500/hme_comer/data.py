@@ -14,6 +14,16 @@ DEFAULT_DATA = '/kaggle/input/datasets/lhngphc/data-finetune-comer'
 TOKEN = re.compile(r'\\[A-Za-z]+|\\.|[^\s]')
 EXPECTED = {'train': 400, 'validation': 50, 'test': 50}
 PREPROCESS = 'jpeg-gray-invert-aspect128x1024-min32-pad32-v1'
+OTSU_PREPROCESS = PREPROCESS + '-otsu-v2'
+PREPROCESSORS = (PREPROCESS, OTSU_PREPROCESS)
+
+
+def configure_preprocess(rows, cfg, report=None):
+    method = cfg.get('preprocess', PREPROCESS)
+    if method not in PREPROCESSORS: raise ValueError('INVALID_PREPROCESS')
+    for row in rows: row['_preprocess'] = method
+    if report is not None: report['preprocess'] = method
+    return method
 
 
 def tokens(text):
@@ -127,7 +137,15 @@ def input_array(row):
         scale = min(128 / h, 1024 / w, max(1., 32 / h))
         size = (max(1, round(w * scale)), max(1, round(h * scale)))
         if size != image.size: image = image.resize(size, Image.Resampling.BILINEAR)
-        return np.asarray(image, dtype=np.float32) / 255.
+        array = np.asarray(image, dtype=np.float32) / 255.
+        method = row.get('_preprocess', PREPROCESS)
+        if method == OTSU_PREPROCESS:
+            import cv2
+            _, binary = cv2.threshold(np.rint(array * 255).astype(np.uint8), 0, 255,
+                                      cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+            return binary.astype(np.float32) / 255.
+        if method != PREPROCESS: raise ValueError('INVALID_PREPROCESS')
+        return array
 
 
 def main():

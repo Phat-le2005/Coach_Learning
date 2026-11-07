@@ -85,3 +85,45 @@ Trên Kaggle, chọn **T4 x2**, chạy một trial mới bằng `bash scripts/ru
 Đã thực thi xuất HTML/CSV/JSON/ZIP trên kết quả QA cũ có 2 JPEG validation thật. HTML nhúng nguyên byte ảnh; ZIP có checksum cho cả ba báo cáo. Đây chỉ là kiểm tra chức năng xuất báo cáo, chưa phải phân tích 25 lỗi validation của run Kaggle vì các file dự đoán đó còn trên tài khoản người dùng.
 
 Log Kaggle người dùng cung cấp cho trial `r003` xác nhận train với `2 workers`, W&B online đã sync, dừng sớm tại epoch 21 dù cấu hình tối đa 30. Checkpoint được chọn vẫn ở epoch 15: validation exact match 25/50 (50%), loss 0.2693368130, CER 0.0924317618. Log trial này không có final test; không gán kết quả test của trial trước sang trial mới. Log chưa chứng minh DDP resume parity hoặc kiểm định độc lập trên dữ liệu ngoài HME500.
+
+## v4 local CUDA và W&B online · 2026-11-07
+
+Đã kiểm tra trên **RTX 3050 Ti Laptop 4 GB**, PyTorch 2.9.0+cu126, torchvision 0.24.0+cu126, Python 3.13.3, W&B 0.26.0. CUDA thực thi phép toán tensor và forward/backward thật. Cả **48/48 unit tests pass**, gồm Otsu loại nền giấy trong tensor, giữ nguyên byte JPEG, áp dụng cùng phương pháp cho mọi split, ràng buộc preprocessing trong resume/evaluation, export nguyên FP32 weights và bỏ upload checkpoint theo epoch khi dùng chính sách compact.
+
+Đã chạy online QA với 4 JPEG train/2 validation, 2 epoch freeze/unfreeze: 8 lần thử cập nhật, **7 optimizer steps thành công**, tạo curves, bảng ảnh, checkpoint và upload W&B thành công vào project hiện có. Bản QA đầu chỉ có 2 lần thử cập nhật và cả hai bị AMP overflow; runner chặn full training. v4 dùng AMP initial scale 1024 và QA accumulation 1 để xác minh cập nhật trước khi full run dùng accumulation 16. v1/v2/v3 giữ initial scale mặc định 65536.
+
+Runner local dùng input ẩn hoặc WANDB_API_KEY trong môi trường; không đưa key vào argv/config/source. Đã kiểm tra không có token marker trong text artifacts local. Thử nghiệm và model/evaluation outputs lưu tại `.tmp/`, không commit lên Git. QA chỉ chứng minh chức năng chạy GPU/upload, không được dùng làm điểm chất lượng của bộ 500 ảnh. Kết quả nhận dạng đầy đủ phải đọc từ summary/comparison và ZIP của từng trial, không suy ra từ bản QA nhỏ.
+
+Đã kiểm tra phục hồi phần upload sau khi train hoàn tất trên đường truyền chậm: giữ nguyên checkpoint/history local, đánh giá initial/best trên GPU, resume cùng W&B ID và đồng bộ bản model FP32 gọn cùng minh chứng. Đã đối chiếu đủ các mốc validation cloud với CSV local và xác nhận run ở trạng thái finished. v4 hiện dùng `checkpoint_upload=final_inference` để tránh gửi checkpoint trung gian liên tục; full best.pt/last.pt vẫn được giữ local để resume. Source thực tế của trial được xác minh riêng bằng checksum và commit, không sửa ngược runtime capture.
+
+## Nộp job Kaggle bằng một config · 2026-11-07
+
+Đã chạy **54/54 unit tests** sau khi bổ sung `hme_comer.cloud` và `kaggle.v5.json`. Các kiểm tra mới xác nhận notebook sinh ra không chứa key, đọc W&B secret lúc runtime, yêu cầu đúng hai GPU, giữ notebook private, chặn policy upload checkpoint theo epoch, kiểm checksum/world_size của ZIP tải về và gửi tường minh `SAVE_AND_RUN_ALL` với notebook đã chuẩn hóa.
+
+Đã xác thực Kaggle bằng API token mới qua input ẩn và sao lưu notebook gốc trước khi cập nhật. API đã nhận phiên bản mới của notebook riêng tư với accelerator `NvidiaTeslaT4`; trạng thái nhận job/queued không được xem là bằng chứng CUDA/DDP đã chạy. Kết quả runtime phải được xác nhận từ log thực thi và ZIP của phiên tương ứng. Trial local một GPU trước đó được dừng theo yêu cầu chuyển sang Kaggle, giữ nguyên last/best; job DDP2 bắt đầu mới vì world size và batch mỗi GPU thay đổi.
+
+Quyền đọc Secrets của notebook phải được bật riêng trên Kaggle; API token nộp job không tự cấp quyền này. Lượt nộp đầu bị chặn tại kiểm tra secret, trước khi huấn luyện; không dùng trạng thái queued để suy ra nguyên nhân thiếu GPU. Source/controller không chứa giá trị token.
+
+Sau khi hai phiên API không đọc được Secret, runner bổ sung fallback W&B offline và đồng bộ sau khi tải ZIP. **57/57 unit tests** pass, gồm Secret lỗi không chặn job, bộ lọc download và kiểm checksum/path của payload đồng bộ. Một smoke check dùng dữ liệu đo V4 thật, 100 JPG gốc validation/test và W&B API giả lập đã đi hết luồng ba run, khớp 12 hàng epoch 0–11; kiểm tra này không upload, không train/inference và chưa chứng minh job Kaggle hoàn thành. Các log được đồng bộ sau sẽ ghi rõ nguồn đo Kaggle và thời điểm upload khác thời điểm train. Không đưa full optimizer checkpoint lên W&B.
+
+## Suite 50 epoch và augmentation V6 · 2026-11-07
+
+Kiểm tra mới bao gồm scale chỉ được dùng với train, JPG/nhãn không đổi, đường identity giống tensor cũ, RNG model không bị augmentation làm thay đổi, tái lập theo id/epoch, chặn resume đổi augmentation, mở rộng một config thành ba trial và checksum của ZIP chung. Một QA trên GPU local dùng 4 ảnh train thật và 2 validation thật đã hoàn thành hai epoch forward/backward với scale 0.9–1.1, W&B disabled và không dùng test. Đây là QA chức năng, không phải metric chất lượng. QA báo cảnh báo CuBLAS về deterministic do môi trường local thiếu `CUBLAS_WORKSPACE_CONFIG`; remote runner đã đặt `:4096:8` trước khi gọi tiến trình train. Runtime hai GPU và đủ 50 epoch của từng trial phải được xác nhận riêng từ kết quả tải về.
+
+Bộ điều phối hai phiên đạt 66/66 unit tests: mỗi notebook chỉ có một version active; nhận lại submission ID có sẵn mà không nộp lại; V6 dùng notebook riêng và giữ nguyên điều kiện đo. V4 đang chạy được tiếp tục quan sát qua ID cũ khi chuyển controller; trạng thái queued của V6 chỉ chứng minh đã nhận job, cần log GPU/epoch để xác nhận chạy song song thực tế.
+
+### Kết quả runtime đã kiểm tra
+
+Cả ba trial đã hoàn tất **50 epoch trên Tesla T4 ×2 / NCCL DDP**. V5 và V6 đã chạy song song trên hai notebook riêng. Kiểm tra độc lập xác nhận cùng tensor khởi tạo, cùng fingerprint 500 JPG, split 400/50/50, đủ 200 ảnh/rank và không trùng giữa hai rank ở mọi epoch; 100 JPG validation/test trong từng ZIP giống byte nguồn. Trọng số compact giống best.pt. Encoder giữ nguyên ở epoch 1–2, sau đó cả encoder và decoder được cập nhật; đối chiếu tensor trước/sau V4 cũng xác nhận thay đổi ở cả hai khối.
+
+| Trial | Epoch được chọn | Validation EM | Test EM | Test CER |
+| --- | ---: | ---: | ---: | ---: |
+| V4 LR decoder 1e-4 | 23 | 50% | 56% (28/50) | 0.0949464 |
+| V5 LR decoder 5e-5 | 25 | 50% | 62% (31/50) | 0.0796325 |
+| V6 scale 0.9–1.1 | 50 | 48% | 60% (30/50) | 0.0727412 |
+
+Baseline test của cả ba là 38% (19/50). Mỗi checkpoint được chọn bằng validation EM, hòa thì validation loss; test chỉ là đánh giá cuối của checkpoint đã chọn. V5 khớp cả lịch sử 30 epoch đầu và toàn bộ tensor best với trial 30 epoch trước; kéo dài thêm 20 epoch chưa cải thiện lựa chọn validation. V6 có CER thấp hơn nhưng không tăng exact match trong lượt này; chênh lệch V5/V6 chỉ là một ảnh test, không kết luận ưu thế có ý nghĩa thống kê.
+
+API Kaggle không đọc được Secret nên số đo, ảnh minh chứng và compact best được upload sau khi cloud hoàn tất, không train/inference lại. Đã xác minh **9 run W&B finished**, mỗi run train có 51 mốc validation và 1250 bản ghi optimizer; có 1248 cập nhật thành công, 2 AMP skips. Mỗi artifact cuối chỉ có một file model compact, không chứa full optimizer checkpoint. Link train: [V4](https://wandb.ai/phucga15062005/coachlearning-handwritten-math/runs/suxk4nv3), [V5](https://wandb.ai/phucga15062005/coachlearning-handwritten-math/runs/nyisyksp), [V6](https://wandb.ai/phucga15062005/coachlearning-handwritten-math/runs/cicin3af).
+
+Kiểm tra cuối source đạt **68/68 unit tests**; kiểm download dừng sau ZIP hợp lệ, retry thao tác đọc khi mất mạng và nhận lại ID cloud mà không nộp lại job. ZIP giao cuối chứa ba ZIP cloud nguyên byte, curve/CSV, link W&B và báo cáo đối chiếu độc lập, tổng 579,456,898 byte; toàn bộ payload đã kiểm CRC và SHA256. Models, ảnh và kết quả chi tiết chỉ ở `.tmp/`, không đưa lên Git.
