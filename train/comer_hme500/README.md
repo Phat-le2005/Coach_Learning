@@ -2,6 +2,20 @@
 
 Kit chạy trực tiếp trên bộ **500 ảnh JPG viết tay thật** và `metadata.json` đã có. Luồng chạy: **Kaggle Secrets → clone/pull GitHub → Bash `.sh` → CoMER + W&B**. Giữ nguyên byte ảnh gốc; chuyển grayscale/invert/resize chỉ trong bộ nhớ để đưa vào model. Không tạo ảnh AI, không sinh dataset bổ sung.
 
+## Kaggle T4 ×2: chạy bằng một config
+
+Chỉ chỉnh `kaggle.v5.json`, rồi chạy từ thư mục `train/comer_hme500`:
+
+```powershell
+& ../../.tmp/comer-kaggle-control/.venv/Scripts/python.exe -m hme_comer.cloud --config kaggle.v5.json
+```
+
+Môi trường điều khiển chỉ cần `pip install kaggle six`; không cần PyTorch local. Khi thiếu `KAGGLE_API_TOKEN`, lệnh hỏi token bằng input ẩn, không lưu key. `WANDB_API_KEY` được đọc từ Kaggle Secrets của notebook lúc chạy; config chỉ chứa tên secret. Config mặc định cập nhật notebook riêng tư `lhngphc/comer-finetune` đã cấp quyền secret; thay `kernel_ref`, title, dataset và entity khi dùng tài khoản khác. Notebook mới cần được cấp quyền truy cập secret trong Kaggle.
+
+Runner tự sinh notebook/metadata vào `.tmp/`, yêu cầu `NvidiaTeslaT4` (T4 ×2), pin source theo commit, cài môi trường, kiểm tra, train, so sánh initial/best, xuất báo cáo validation và tạo ZIP có checksum. Không cần tự tạo/chỉnh nhiều file. Mặc định chờ job và tải ZIP về; `--no-wait` chỉ nộp job, `--prepare-only` chỉ tạo bản gửi để kiểm tra. Không tự chuyển sang CPU khi thiếu GPU.
+
+v5 Kaggle dùng 4 ảnh mỗi GPU × 2 GPU × accumulation 2 = batch hiệu dụng 16; decoder LR 5e-5, Otsu, tối đa 30 epoch và early stopping 6. Đây là trial DDP2 mới; batch mỗi GPU khác bản local batch 1, không phải resume chính xác từ checkpoint một GPU. Mỗi lần chạy có tên/group W&B mới trong cùng project. Chỉ upload model best gọn ở cuối, giữ full initial/best/last cùng history trong `CoachLearning_CoMER_v5_Kaggle_DDP2_Results.zip`.
+
 ## v4: chạy local một GPU, tách nền Otsu và so sánh trước/sau
 
 v4 dành cho GPU local VRAM 4 GB: batch 1 × accumulation 16 = batch hiệu dụng 16; AMP với loss scale ban đầu 1024; tối đa 30 epoch; freeze encoder 2 epoch đầu; early stopping 6. Giữ optimizer, seed, metric và split 400/50/50. Otsu áp dụng sau grayscale/invert/resize trong tensor cho **train, validation, baseline và final test**, không ghi lại JPG. v1/v2/v3 giữ cách tiền xử lý cũ và AMP scale mặc định 65536.
