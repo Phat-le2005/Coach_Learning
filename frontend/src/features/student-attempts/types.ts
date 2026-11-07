@@ -63,6 +63,20 @@ export interface StudentAttemptsSubjectOption {
   name: string;
 }
 
+export interface StudentAssignmentItem {
+  id: string;
+  assignment_id: string;
+  title: string;
+  description?: string | null;
+  assignment_type: string;
+  delivery_mode: "PRACTICE" | "EXAM";
+  status: "NOT_STARTED" | "IN_PROGRESS" | "SUBMITTED" | "GRADED";
+  question_count: number;
+  due_at?: string | null;
+  score?: number | null;
+  questions?: any[];
+}
+
 export interface StudentAttemptsViewModel {
   student: {
     displayName: string;
@@ -76,4 +90,6 @@ export interface StudentAttemptsViewModel {
   totalActiveCount: number;
   libraryItems: AttemptCardViewModel[];
   pagination: AttemptsPaginationViewModel;
+  classroomAssignments?: StudentAssignmentItem[];
+  initialTab?: "classroom" | "practice" | "history";
 }

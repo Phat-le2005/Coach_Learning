@@ -11,15 +11,12 @@ import { fadeUp, springSoft, staggerContainer } from "@/lib/motion";
 
 import type { ResolvedStudentAction } from "./action-resolver";
 import { ActionDetailModal } from "./components/ActionDetailModal";
-import { CoachCard } from "./components/CoachCard";
 import { FocusHero } from "./components/FocusHero";
 import { GardenHorizonEnding } from "./components/GardenHorizonEnding";
 import { KnowledgeCanopy } from "./components/KnowledgeCanopy";
-import { KnowledgeGarden } from "./components/KnowledgeGarden";
 import { LearningPulse } from "./components/LearningPulse";
 import { GardenSkeleton, MetricSkeleton } from "./components/LoadingSkeletons";
 import { PriorityPath } from "./components/PriorityPath";
-import { PracticePathway } from "./components/PracticePathway";
 import { StudentBottomNav } from "./components/StudentBottomNav";
 import { StudentTopNav } from "./components/StudentTopNav";
 import { CanopyMarginFallingLeaves } from "./components/nature/BirdsAndLeaves";
@@ -75,6 +72,8 @@ export function StudentHome({ data }: StudentHomeProps) {
     setSelectedPriority(null);
   };
 
+  const pendingAssignmentsCount = data.assignments.activeCount ?? data.assignments.pendingCount;
+
   return (
     <MotionProvider>
       <GardenMotionProvider>
@@ -86,40 +85,30 @@ export function StudentHome({ data }: StudentHomeProps) {
             currentRoute="/student"
             subjectId={data.subject.id}
             showAmbientToggle
+            pendingAssignmentsCount={pendingAssignmentsCount}
           />
 
           <main className={styles.main}>
-            {/* SECTION 1 — HERO: Welcome to the Garden */}
+            {/* TIER 1 — FOCUS HERO: Welcome to the Garden & #1 Priority Action */}
             <FocusHero data={data} onOpenActionDetail={handleOpenActionDetail} />
 
-            {/* SECTION 2 — PRIORITY PATH: Targeted Error Remediation & Practice */}
-            <PriorityPath priorities={data.priorities} onSelectPriority={handleSelectPriority} />
+            {/* TIER 2 — LEARNING PULSE: Key Metrics & Today's Study Plan */}
+            <LearningPulse data={data} />
 
             <SectionNatureBridge variant="canopy-to-terrace" />
 
-            {/* SECTION 3 — PRACTICE ENTRY: Digital Paper Math Workspace */}
-            <PracticePathway data={data} />
-
-            <SectionNatureBridge variant="terrace-to-forest" />
-
-            {/* SECTION 4 — LEARNING PULSE: Garden of Progress */}
-            <LearningPulse data={data} />
-
-            <SectionNatureBridge variant="forest-to-trail" />
-
-            {/* SECTION 5 — KNOWLEDGE GARDEN: Forest of Knowledge */}
-            <KnowledgeGarden regions={data.knowledgeRegions} subjectId={data.subject.id} />
-
-            <SectionNatureBridge variant="trail-to-sanctuary" />
-
-            {/* SECTION 6 — AI COACH: The Wisdom Corner */}
-            <CoachCard />
+            {/* TIER 3 — PRIORITY PATH: Targeted Error Remediation & Focused Tasks */}
+            <PriorityPath priorities={data.priorities} onSelectPriority={handleSelectPriority} />
           </main>
 
           {/* SECTION 7 — PAGE ENDING: Meadow Horizon */}
           <GardenHorizonEnding />
 
-          <StudentBottomNav currentRoute="/student" subjectId={data.subject.id} />
+          <StudentBottomNav
+            currentRoute="/student"
+            subjectId={data.subject.id}
+            pendingAssignmentsCount={pendingAssignmentsCount}
+          />
 
           <ActionDetailModal
             isOpen={isModalOpen}

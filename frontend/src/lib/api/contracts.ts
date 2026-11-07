@@ -510,6 +510,10 @@ export interface ProblemRead {
   is_read_only: boolean;
   source_kind?: string;
   context_type?: string;
+  student_assignment_id?: string | null;
+  assignment_id?: string | null;
+  student_assignment_material_item_id?: string | null;
+  assignment_student_question_id?: string | null;
 }
 
 export const STEP_KINDS = [
@@ -625,6 +629,11 @@ export interface SolutionAttemptRead {
   created_at: string;
   updated_at?: string;
   context_type?: string;
+  student_assignment_id?: string | null;
+  assignment_id?: string | null;
+  student_assignment_material_item_id?: string | null;
+  assignment_student_question_id?: string | null;
+  mode?: string;
   submitted_at?: string;
   steps?: SolutionStepRead[];
 }
@@ -818,6 +827,10 @@ export function parseProblemRead(value: unknown, path = "problem"): ProblemRead 
     is_read_only: typeof source.is_read_only === "boolean" ? source.is_read_only : false,
     source_kind: typeof source.source_kind === "string" ? source.source_kind : undefined,
     context_type: typeof source.context_type === "string" ? source.context_type : undefined,
+    student_assignment_id: typeof source.student_assignment_id === "string" ? source.student_assignment_id : null,
+    assignment_id: typeof source.assignment_id === "string" ? source.assignment_id : null,
+    student_assignment_material_item_id: typeof source.student_assignment_material_item_id === "string" ? source.student_assignment_material_item_id : null,
+    assignment_student_question_id: typeof source.assignment_student_question_id === "string" ? source.assignment_student_question_id : null,
   };
 }
 
@@ -834,6 +847,12 @@ export function parseSolutionAttemptRead(value: unknown, path = "attempt"): Solu
     current_revision: rev,
     created_at: typeof source.created_at === "string" ? source.created_at : (typeof source.started_at === "string" ? source.started_at : ""),
     updated_at: typeof source.updated_at === "string" ? source.updated_at : undefined,
+    context_type: typeof source.context_type === "string" ? source.context_type : undefined,
+    student_assignment_id: typeof source.student_assignment_id === "string" ? source.student_assignment_id : null,
+    assignment_id: typeof source.assignment_id === "string" ? source.assignment_id : null,
+    student_assignment_material_item_id: typeof source.student_assignment_material_item_id === "string" ? source.student_assignment_material_item_id : null,
+    assignment_student_question_id: typeof source.assignment_student_question_id === "string" ? source.assignment_student_question_id : null,
+    mode: typeof source.mode === "string" ? source.mode : undefined,
     steps: source.steps === undefined ? undefined : array(source.steps, `${path}.steps`, (value, stepPath) => {
       const step = record(value, stepPath);
       const kind = string(step.step_type, `${stepPath}.step_type`);

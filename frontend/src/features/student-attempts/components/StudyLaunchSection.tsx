@@ -19,12 +19,16 @@ export interface StudyLaunchSectionProps {
   subjects: StudentAttemptsSubjectOption[];
   subjectsLoaded: boolean;
   defaultSubjectId?: string;
+  classroomPendingCount?: number;
+  onSelectClassroomTab?: () => void;
 }
 
 export function StudyLaunchSection({
   subjects,
   subjectsLoaded,
   defaultSubjectId,
+  classroomPendingCount,
+  onSelectClassroomTab,
 }: StudyLaunchSectionProps) {
   const { shouldAnimate } = useGardenMotion();
   const { ref, isInView } = useGardenSectionInView<HTMLElement>("160px 0px");
@@ -41,61 +45,30 @@ export function StudyLaunchSection({
       whileInView="visible"
       viewport={{ once: true, amount: 0.2 }}
     >
-      <div style={{
-        marginBottom: 16,
-        padding: "16px 20px",
-        background: "linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%)",
-        border: "1px solid #6ee7b7",
-        borderRadius: 14,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        gap: 16,
-        flexWrap: "wrap",
-        boxShadow: "0 2px 8px rgba(5, 150, 105, 0.08)",
-      }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-          <div style={{
-            width: 40,
-            height: 40,
-            borderRadius: 10,
-            background: "#d1fae5",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "#059669",
-            flexShrink: 0,
-          }}>
-            <BookOpen size={22} />
-          </div>
-          <div>
-            <div style={{ fontWeight: 700, color: "#065f46", fontSize: "0.95rem" }}>
-              Bài tập của lớp (Do giáo viên giao)
+      {classroomPendingCount !== undefined && classroomPendingCount > 0 && onSelectClassroomTab && (
+        <div className={styles.classroomBanner}>
+          <div className={styles.classroomBannerInfo}>
+            <div className={styles.classroomBannerIconWrap}>
+              <BookOpen size={22} />
             </div>
-            <div style={{ color: "#047857", fontSize: "0.85rem", marginTop: 2 }}>
-              Bạn có bài tập luyện tập 10 câu và bài kiểm tra đang mở từ giáo viên bộ môn.
+            <div>
+              <div className={styles.classroomBannerTitle}>
+                Bài tập của lớp (Do giáo viên giao)
+              </div>
+              <div className={styles.classroomBannerSubtitle}>
+                Bạn có {classroomPendingCount} bài tập/kiểm tra đang mở từ giáo viên bộ môn.
+              </div>
             </div>
           </div>
+          <button
+            type="button"
+            className={styles.classroomBannerBtn}
+            onClick={onSelectClassroomTab}
+          >
+            Xem & Làm bài tập lớp giao →
+          </button>
         </div>
-        <Link
-          href="/student/assignments"
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
-            background: "#059669",
-            color: "#ffffff",
-            padding: "9px 18px",
-            borderRadius: 10,
-            fontWeight: 600,
-            fontSize: "0.875rem",
-            textDecoration: "none",
-            boxShadow: "0 2px 6px rgba(5, 150, 105, 0.2)",
-          }}
-        >
-          Xem & Làm bài tập lớp giao →
-        </Link>
-      </div>
+      )}
 
       <div className={styles.launchCard}>
         <div className={styles.launchMain}>

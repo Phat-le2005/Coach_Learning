@@ -4,11 +4,12 @@ import { redirect, notFound } from "next/navigation";
 import { requirePageRole } from "@/lib/auth/page-session";
 import { readAccessToken } from "@/lib/auth/server";
 import { getBackendBaseUrl } from "@/lib/api/client";
+import { launchClassroomCanvasAttempt } from "@/lib/classroom-assignments/launch";
 import { AssignmentWorkspaceClient } from "./AssignmentWorkspaceClient";
 
 export const metadata: Metadata = {
   title: "Không gian làm bài tập · EduMS",
-  description: "Không gian giải toán từng bước và làm bài kiểm tra lớp của học sinh.",
+  description: "Không gian giải toán từng bước trên giấy số và làm bài kiểm tra lớp của học sinh.",
 };
 
 interface Props {
@@ -17,13 +18,20 @@ interface Props {
 
 export default async function StudentAssignmentWorkspacePage(props: Props) {
   const { assignmentId } = await props.params;
-  const session = await requirePageRole("STUDENT", `/student/assignments/${assignmentId}`);
+  await requirePageRole("STUDENT", `/student/assignments/${assignmentId}`);
   const accessToken = await readAccessToken();
 
   if (!accessToken) {
     redirect("/login");
   }
 
+  // Attempt to launch directly onto the interactive Canvas workspace
+  const canvasLaunch = await launchClassroomCanvasAttempt(accessToken, assignmentId);
+  if (canvasLaunch?.attemptId) {
+    redirect(`/student/attempts/${canvasLaunch.attemptId}`);
+  }
+
+  // Fallback if canvas launch not possible
   let assignment: any = null;
   try {
     const backendUrl = getBackendBaseUrl();

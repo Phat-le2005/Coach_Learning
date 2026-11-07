@@ -278,6 +278,8 @@ export interface ToStudentAttemptsViewModelInput {
   attemptsPage: MathAttemptsPageRead;
   inProgressPage?: MathAttemptsPageRead | null;
   draftPage?: MathAttemptsPageRead | null;
+  classroomAssignments?: import("./types.js").StudentAssignmentItem[];
+  initialTab?: "classroom" | "practice" | "history";
 }
 
 export function toStudentAttemptsViewModel(
@@ -308,5 +310,7 @@ export function toStudentAttemptsViewModel(
     totalActiveCount,
     libraryItems: input.attemptsPage.items.map(toAttemptCardViewModel),
     pagination: buildPaginationViewModel(input.attemptsPage),
+    classroomAssignments: input.classroomAssignments,
+    initialTab: input.initialTab,
   };
 }

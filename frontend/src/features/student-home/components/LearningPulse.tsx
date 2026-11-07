@@ -332,12 +332,12 @@ export function LearningPulse({ data }: LearningPulseProps) {
           <article
             className={`${styles.pulseGardenCard} ${styles.pulseCardAssignment}`}
             style={{ cursor: "pointer" }}
-            onClick={() => router.push("/student/assignments")}
+            onClick={() => router.push("/student/attempts?tab=classroom")}
             role="button"
             tabIndex={0}
             onKeyDown={(e) => {
               if (e.key === "Enter" || e.key === " ") {
-                router.push("/student/assignments");
+                router.push("/student/attempts?tab=classroom");
               }
             }}
           >

@@ -2,9 +2,12 @@
 
 import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import dynamic from "next/dynamic";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Sparkles } from "lucide-react";
 import { ApiResponseError, ApiNetworkError } from "@/lib/api/client";
 import { createBrowserMathApiClient } from "@/lib/api/browser-math";
+import type { ClassroomNavData } from "@/lib/classroom-assignments/launch";
 import type {
   DrawingTool,
   InkDocumentRead,
@@ -62,6 +65,7 @@ interface MathWorkspaceProps {
   initialPageIndex?: number;
   initialLiveRequested?: boolean;
   initialWritingMode?: boolean;
+  classroomNav?: ClassroomNavData | null;
 }
 
 export function MathWorkspace({
@@ -70,7 +74,10 @@ export function MathWorkspace({
   initialAttempt = null,
   initialDocument = null,
   initialPage = null,
-  initialPageIndex = 0, initialLiveRequested = false, initialWritingMode = false,
+  initialPageIndex = 0,
+  initialLiveRequested = false,
+  initialWritingMode = false,
+  classroomNav = null,
 }: MathWorkspaceProps) {
   // The BFF reads the HttpOnly cookie. No bearer token is passed to this client component.
   const accessToken = "";
@@ -91,6 +98,44 @@ export function MathWorkspace({
   const [zoomLevel, setZoomLevel] = useState(1.0);
   const [graphOpen, setGraphOpen] = useState(false);
   const [graphSelection, setGraphSelection] = useState<{ page: number; strokes: InkStroke[]; formula?: string }>({ page: 0, strokes: [] });
+
+  const router = useRouter();
+  const [switchingQuestion, setSwitchingQuestion] = useState(false);
+
+  const handleSwitchQuestion = useCallback(
+    async (targetIndex: number) => {
+      if (!classroomNav || targetIndex === classroomNav.currentIndex || switchingQuestion) return;
+      const targetQ = classroomNav.questions[targetIndex];
+      if (targetQ?.attemptId) {
+        router.push(`/student/attempts/${targetQ.attemptId}`);
+        return;
+      }
+
+      setSwitchingQuestion(true);
+      try {
+        const res = await fetch(
+          `/api/student/assignments/${classroomNav.studentAssignmentId}/launch`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ index: targetIndex }),
+          }
+        );
+        if (res.ok) {
+          const data = await res.json();
+          if (data.attemptId) {
+            router.push(`/student/attempts/${data.attemptId}`);
+            return;
+          }
+        }
+      } catch {
+        // Fallback
+      } finally {
+        setSwitchingQuestion(false);
+      }
+    },
+    [classroomNav, switchingQuestion, router]
+  );
 
   // Document & Multi-page
   const [documentRevision, setDocumentRevision] = useState(
@@ -1252,6 +1297,73 @@ export function MathWorkspace({
 
   return (
     <div className={`${styles.workspaceContainer} ${writingMode ? styles.mobileWriting : ""}`}>
+      {/* Classroom Assignment Top Bar */}
+      {classroomNav && (
+        <div className={styles.classroomBar} role="navigation" aria-label="Điều hướng bài tập lớp">
+          <div className={styles.classroomLeft}>
+            <Link href="/student/attempts?tab=classroom" className={styles.classroomBackLink}>
+              ← Bài tập lớp
+            </Link>
+            <span
+              className={`${styles.classroomModeBadge} ${
+                classroomNav.deliveryMode === "EXAM"
+                  ? styles.classroomModeBadgeExam
+                  : styles.classroomModeBadgePractice
+              }`}
+            >
+              {classroomNav.deliveryMode === "EXAM" ? "Kiểm tra" : "Luyện tập"}
+            </span>
+            <span className={styles.classroomTitle} title={classroomNav.title}>
+              {classroomNav.title}
+            </span>
+          </div>
+
+          <div className={styles.classroomCenter}>
+            {classroomNav.questions.map((q) => {
+              const isCurrent = q.isCurrent;
+              const isCompleted = q.status === "SUBMITTED" || q.status === "EVALUATED";
+              let pillClass = styles.qNavPill;
+              if (isCurrent) pillClass += ` ${styles.qNavPillActive}`;
+              else if (isCompleted) pillClass += ` ${styles.qNavPillCompleted}`;
+
+              return (
+                <button
+                  key={q.index}
+                  type="button"
+                  className={pillClass}
+                  onClick={() => void handleSwitchQuestion(q.index)}
+                  disabled={switchingQuestion}
+                  title={`Chuyển sang Câu ${q.index + 1}`}
+                >
+                  {q.index + 1}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className={styles.classroomRight}>
+            <button
+              type="button"
+              className={styles.navStepBtn}
+              disabled={classroomNav.currentIndex === 0 || switchingQuestion}
+              onClick={() => void handleSwitchQuestion(classroomNav.currentIndex - 1)}
+            >
+              ← Câu trước
+            </button>
+            <button
+              type="button"
+              className={styles.navStepBtnPrimary}
+              disabled={
+                classroomNav.currentIndex >= classroomNav.totalQuestions - 1 || switchingQuestion
+              }
+              onClick={() => void handleSwitchQuestion(classroomNav.currentIndex + 1)}
+            >
+              {switchingQuestion ? "Đang chuyển..." : "Câu tiếp theo →"}
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Top Header Bar */}
       <header className={styles.topHeader}>
         <div className={styles.headerLeft}>

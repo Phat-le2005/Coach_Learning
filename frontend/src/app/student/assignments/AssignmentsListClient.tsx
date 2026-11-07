@@ -11,6 +11,7 @@ import {
   FileText,
   GraduationCap,
   Layers,
+  PenTool,
   Sparkles,
 } from "lucide-react";
 
@@ -33,11 +34,13 @@ export interface StudentAssignmentItem {
 export interface AssignmentsListClientProps {
   initialAssignments: StudentAssignmentItem[];
   studentName?: string;
+  embedded?: boolean;
 }
 
 export function AssignmentsListClient({
   initialAssignments,
   studentName = "Học sinh",
+  embedded = false,
 }: AssignmentsListClientProps) {
   const [activeFilter, setActiveFilter] = useState<string>("ALL");
 
@@ -70,10 +73,9 @@ export function AssignmentsListClient({
     return val % 1 === 0 ? val.toFixed(0) : val.toFixed(1);
   };
 
-  return (
-    <div className={styles.canvas}>
-      <main className={styles.mainContainer}>
-        {/* Header Banner */}
+  const content = (
+    <>
+      {!embedded && (
         <div className={styles.headerBanner}>
           <div>
             <h1 className={styles.headerTitle}>
@@ -88,131 +90,138 @@ export function AssignmentsListClient({
             🌱 Về Khu vườn học tập
           </Link>
         </div>
+      )}
 
-        {/* Filter Tabs */}
-        <div className={styles.filterTabs}>
-          <button
-            type="button"
-            className={`${styles.filterTabBtn} ${activeFilter === "ALL" ? styles.filterTabBtnActive : ""}`}
-            onClick={() => setActiveFilter("ALL")}
-          >
-            Tất cả ({initialAssignments.length})
-          </button>
-          <button
-            type="button"
-            className={`${styles.filterTabBtn} ${activeFilter === "PENDING" ? styles.filterTabBtnActive : ""}`}
-            onClick={() => setActiveFilter("PENDING")}
-          >
-            Cần làm ngay ({initialAssignments.filter((a) => a.status === "NOT_STARTED" || a.status === "IN_PROGRESS").length})
-          </button>
-          <button
-            type="button"
-            className={`${styles.filterTabBtn} ${activeFilter === "SUBMITTED" ? styles.filterTabBtnActive : ""}`}
-            onClick={() => setActiveFilter("SUBMITTED")}
-          >
-            Chờ duyệt ({initialAssignments.filter((a) => a.status === "SUBMITTED").length})
-          </button>
-          <button
-            type="button"
-            className={`${styles.filterTabBtn} ${activeFilter === "GRADED" ? styles.filterTabBtnActive : ""}`}
-            onClick={() => setActiveFilter("GRADED")}
-          >
-            Đã có điểm ({initialAssignments.filter((a) => a.status === "GRADED").length})
-          </button>
+      {/* Filter Tabs */}
+      <div className={styles.filterTabs}>
+        <button
+          type="button"
+          className={`${styles.filterTabBtn} ${activeFilter === "ALL" ? styles.filterTabBtnActive : ""}`}
+          onClick={() => setActiveFilter("ALL")}
+        >
+          Tất cả ({initialAssignments.length})
+        </button>
+        <button
+          type="button"
+          className={`${styles.filterTabBtn} ${activeFilter === "PENDING" ? styles.filterTabBtnActive : ""}`}
+          onClick={() => setActiveFilter("PENDING")}
+        >
+          Cần làm ngay ({initialAssignments.filter((a) => a.status === "NOT_STARTED" || a.status === "IN_PROGRESS").length})
+        </button>
+        <button
+          type="button"
+          className={`${styles.filterTabBtn} ${activeFilter === "SUBMITTED" ? styles.filterTabBtnActive : ""}`}
+          onClick={() => setActiveFilter("SUBMITTED")}
+        >
+          Chờ duyệt ({initialAssignments.filter((a) => a.status === "SUBMITTED").length})
+        </button>
+        <button
+          type="button"
+          className={`${styles.filterTabBtn} ${activeFilter === "GRADED" ? styles.filterTabBtnActive : ""}`}
+          onClick={() => setActiveFilter("GRADED")}
+        >
+          Đã có điểm ({initialAssignments.filter((a) => a.status === "GRADED").length})
+        </button>
+      </div>
+
+      {/* Assignments Cards Grid */}
+      {filtered.length === 0 ? (
+        <div className={styles.emptyState}>
+          <div className={styles.emptyIcon}>📚</div>
+          <h3>Không có bài tập nào trong mục này</h3>
+          <p>Tuyệt vời! Bạn đã hoàn thành các nhiệm vụ được giao hoặc chưa có bài tập mới.</p>
         </div>
+      ) : (
+        <div className={styles.cardsGrid}>
+          {filtered.map((item) => {
+            const formattedScore = formatScore(item.score);
+            const isExam = item.delivery_mode === "EXAM";
+            const isDone = item.status === "GRADED" || item.status === "SUBMITTED";
 
-        {/* Assignments Cards Grid */}
-        {filtered.length === 0 ? (
-          <div className={styles.emptyState}>
-            <div className={styles.emptyIcon}>📚</div>
-            <h3>Không có bài tập nào trong mục này</h3>
-            <p>Tuyệt vời! Bạn đã hoàn thành các nhiệm vụ được giao hoặc chưa có bài tập mới.</p>
-            <Link href="/student" className={styles.btnAction} style={{ marginTop: "1rem" }}>
-              Tiếp tục luyện tập cá nhân
-            </Link>
-          </div>
-        ) : (
-          <div className={styles.cardsGrid}>
-            {filtered.map((item) => {
-              const formattedScore = formatScore(item.score);
-              const isExam = item.delivery_mode === "EXAM";
-              const isDone = item.status === "GRADED" || item.status === "SUBMITTED";
+            return (
+              <div key={item.id} className={styles.assignmentCard}>
+                <div className={styles.cardTopRow}>
+                  {isExam ? (
+                    <span className={styles.modeBadgeExam}>
+                      <FileCheck size={14} />
+                      Kiểm tra tập trung
+                    </span>
+                  ) : (
+                    <span className={styles.modeBadgePractice}>
+                      <Sparkles size={14} />
+                      Luyện tập từng câu
+                    </span>
+                  )}
+                  {getStatusBadge(item.status)}
+                </div>
 
-              return (
-                <div key={item.id} className={styles.assignmentCard}>
-                  <div className={styles.cardTopRow}>
-                    {isExam ? (
-                      <span className={styles.modeBadgeExam}>
-                        <FileCheck size={14} />
-                        Kiểm tra tập trung
-                      </span>
-                    ) : (
-                      <span className={styles.modeBadgePractice}>
-                        <Sparkles size={14} />
-                        Luyện tập từng câu
-                      </span>
-                    )}
-                    {getStatusBadge(item.status)}
+                <h3 className={styles.cardTitle}>{item.title}</h3>
+                {item.description && (
+                  <p className={styles.cardDescription}>{item.description}</p>
+                )}
+
+                <div className={styles.cardMetaRow}>
+                  <div className={styles.metaItem}>
+                    <Layers size={14} />
+                    <span>{item.question_count} câu hỏi</span>
                   </div>
+                  {item.due_at && (
+                    <div className={styles.metaItem}>
+                      <Calendar size={14} />
+                      <span>Hạn: {new Date(item.due_at).toLocaleDateString("vi-VN")}</span>
+                    </div>
+                  )}
+                </div>
 
-                  <h3 className={styles.cardTitle}>{item.title}</h3>
-                  {item.description && (
-                    <p className={styles.cardDescription}>{item.description}</p>
+                <div className={styles.cardFooter}>
+                  {formattedScore !== null ? (
+                    <div className={styles.scoreBadgeBig}>
+                      {formattedScore}
+                      <span className={styles.scoreScale}>/10đ</span>
+                    </div>
+                  ) : (
+                    <div style={{ fontSize: "0.8125rem", color: "#94A3B8" }}>
+                      {item.status === "SUBMITTED" ? "Chờ giáo viên duyệt" : "Chưa chấm điểm"}
+                    </div>
                   )}
 
-                  <div className={styles.cardMetaRow}>
-                    <div className={styles.metaItem}>
-                      <Layers size={14} />
-                      <span>{item.question_count} câu hỏi</span>
-                    </div>
-                    {item.due_at && (
-                      <div className={styles.metaItem}>
-                        <Calendar size={14} />
-                        <span>Hạn: {new Date(item.due_at).toLocaleDateString("vi-VN")}</span>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className={styles.cardFooter}>
-                    {formattedScore !== null ? (
-                      <div className={styles.scoreBadgeBig}>
-                        {formattedScore}
-                        <span className={styles.scoreScale}>/10đ</span>
-                      </div>
+                  <Link
+                    href={`/student/assignments/${item.assignment_id || item.id}`}
+                    className={isDone ? styles.btnActionSecondary : styles.btnAction}
+                  >
+                    {item.status === "GRADED" ? (
+                      <>
+                        <CheckCircle2 size={15} />
+                        Xem kết quả trên Canvas
+                      </>
+                    ) : item.status === "SUBMITTED" ? (
+                      <>
+                        <FileText size={15} />
+                        Xem bài nộp trên Canvas
+                      </>
                     ) : (
-                      <div style={{ fontSize: "0.8125rem", color: "#94A3B8" }}>
-                        {item.status === "SUBMITTED" ? "Chờ giáo viên duyệt" : "Chưa chấm điểm"}
-                      </div>
+                      <>
+                        <PenTool size={15} />
+                        Làm bài trên Canvas
+                      </>
                     )}
-
-                    <Link
-                      href={`/student/assignments/${item.id}`}
-                      className={isDone ? styles.btnActionSecondary : styles.btnAction}
-                    >
-                      {item.status === "GRADED" ? (
-                        <>
-                          <CheckCircle2 size={15} />
-                          Xem kết quả
-                        </>
-                      ) : item.status === "SUBMITTED" ? (
-                        <>
-                          <FileText size={15} />
-                          Xem bài nộp
-                        </>
-                      ) : (
-                        <>
-                          <BookOpen size={15} />
-                          Vào làm bài
-                        </>
-                      )}
-                    </Link>
-                  </div>
+                  </Link>
                 </div>
-              );
-            })}
-          </div>
-        )}
-      </main>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </>
+  );
+
+  if (embedded) {
+    return <div style={{ width: "100%" }}>{content}</div>;
+  }
+
+  return (
+    <div className={styles.canvas}>
+      <main className={styles.mainContainer}>{content}</main>
     </div>
   );
 }

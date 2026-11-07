@@ -5,6 +5,10 @@ import { SessionRecovery } from "@/components/auth/SessionRecovery";
 import { GradientButton } from "@/components/ui/GradientButton";
 import { MathWorkspace } from "@/features/math-workspace/MathWorkspace";
 import { createBackendApiClient, ApiResponseError } from "@/lib/api/client";
+import {
+  getClassroomAssignmentNav,
+  type ClassroomNavData,
+} from "@/lib/classroom-assignments/launch";
 import type {
   InkDocumentRead,
   InkPageRead,
@@ -115,6 +119,18 @@ export default async function StudentAttemptPage(props: AttemptPageProps) {
     );
   }
 
+  let classroomNav: ClassroomNavData | null = null;
+  if (
+    initialProblem?.context_type === "CLASSROOM_ASSIGNMENT" &&
+    initialProblem.student_assignment_id
+  ) {
+    classroomNav = await getClassroomAssignmentNav(
+      accessToken,
+      initialProblem.student_assignment_id,
+      attemptId
+    );
+  }
+
   return (
     <>
       <SessionHeartbeat preserveUnsavedWork />
@@ -127,6 +143,7 @@ export default async function StudentAttemptPage(props: AttemptPageProps) {
         initialPageIndex={initialPageIndex}
         initialLiveRequested={search.live === "1"}
         initialWritingMode={search.writing === "1"}
+        classroomNav={classroomNav}
       />
     </>
   );

@@ -150,13 +150,14 @@ export function AssignMaterialModal({
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className={styles.modalForm}>
-          {errorMessage && (
-            <div className={styles.formAlert} role="alert">
-              <AlertCircle size={16} />
-              <span>{errorMessage}</span>
-            </div>
-          )}
+        <form onSubmit={handleSubmit} className={styles.modalFormWrapper}>
+          <div className={styles.modalBodyScrollable}>
+            {errorMessage && (
+              <div className={styles.formAlert} role="alert">
+                <AlertCircle size={16} />
+                <span>{errorMessage}</span>
+              </div>
+            )}
 
           {/* Title */}
           <div className={styles.formGroup}>
@@ -286,6 +287,7 @@ export function AssignMaterialModal({
               <div className={styles.itemsChecklistWrap}>
                 {items.map((item, idx) => {
                   const isChecked = selectedIds.has(item.id);
+                  const cleanSnippet = item.content.replace(/^câu\s*\d+\s*[:.]\s*/i, "").trim();
                   return (
                     <label
                       key={item.id}
@@ -300,7 +302,7 @@ export function AssignMaterialModal({
                       />
                       <div className={styles.itemCheckInfo}>
                         <span className={styles.itemNumberBadge}>Câu {idx + 1}</span>
-                        <p className={styles.itemSnippet}>{item.content.slice(0, 120)}...</p>
+                        <p className={styles.itemSnippet}>{cleanSnippet.slice(0, 140)}...</p>
                       </div>
                     </label>
                   );
@@ -308,8 +310,9 @@ export function AssignMaterialModal({
               </div>
             )}
           </div>
+          </div>
 
-          {/* Modal Footer */}
+          {/* Modal Footer - Fixed Sticky at bottom */}
           <div className={styles.modalFooter}>
             <button
               type="button"
@@ -329,7 +332,7 @@ export function AssignMaterialModal({
               ) : (
                 <>
                   <Send size={15} />
-                  Phát hành bài giao ngay ({selectedIds.size} câu)
+                  Xác nhận giao bài ({selectedIds.size} câu)
                 </>
               )}
             </button>
