@@ -1,11 +1,15 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { UploadCloud, Search, FileText, Calendar, Filter, Sparkles, AlertCircle, Eye, Send } from "lucide-react";
-import type { TeacherAssignment, TeacherClassroom, TeacherMaterial, TeacherSubject } from "../api";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { UploadCloud, Search, FileText, Calendar, Filter, Sparkles, AlertCircle, Eye, Send, Trash2 } from "lucide-react";
+import { teacherApi, type TeacherAssignment, type TeacherClassroom, type TeacherMaterial, type TeacherSubject } from "../api";
 import { MaterialPreviewModal } from "./MaterialPreviewModal";
 import { AssignMaterialModal } from "./AssignMaterialModal";
 import styles from "../TeacherDashboard.module.css";
+import { teacherPdfApi, type TeacherPdfImport } from "../pdf-api";
+import { ExercisePdfReview, PDF_IMPORT_STATUS } from "./ExercisePdfReview";
+import reviewStyles from "./ExercisePdfReview.module.css";
+import { DeleteMaterialDialog } from "./DeleteMaterialDialog";
 
 export interface MaterialsTabProps {
   selectedClass?: TeacherClassroom;
@@ -14,6 +18,10 @@ export interface MaterialsTabProps {
   isLoading: boolean;
   onOpenUpload: () => void;
   onAssignmentCreated?: (assignment: TeacherAssignment) => void;
+  pdfImportId?: string;
+  onOpenPdfImport?: (id: string) => void;
+  onMaterialSubmitted?: (material: TeacherMaterial) => void;
+  onMaterialDeleted?: (materialId: string) => void;
 }
 
 export function MaterialsTab({
@@ -23,11 +31,59 @@ export function MaterialsTab({
   isLoading,
   onOpenUpload,
   onAssignmentCreated,
+  pdfImportId,
+  onOpenPdfImport,
+  onMaterialSubmitted,
+  onMaterialDeleted,
 }: MaterialsTabProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSubjectFilter, setSelectedSubjectFilter] = useState("");
   const [selectedPreviewMaterial, setSelectedPreviewMaterial] = useState<TeacherMaterial | null>(null);
   const [selectedAssignMaterial, setSelectedAssignMaterial] = useState<TeacherMaterial | null>(null);
+  const [imports, setImports] = useState<TeacherPdfImport[]>([]);
+  const [importError, setImportError] = useState("");
+  const [deleteTarget, setDeleteTarget] = useState<TeacherMaterial | null>(null);
+  const [deleteBusy, setDeleteBusy] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
+  const [deleteNotice, setDeleteNotice] = useState("");
+  const uploadButton = useRef<HTMLButtonElement>(null);
+  const deleteTrigger = useRef<HTMLButtonElement | null>(null);
+
+  async function deleteMaterial() {
+    if (!deleteTarget || deleteBusy) return;
+    setDeleteBusy(true); setDeleteError("");
+    try {
+      await teacherApi.deleteMaterial(deleteTarget.id);
+      onMaterialDeleted?.(deleteTarget.id);
+      if (selectedPreviewMaterial?.id === deleteTarget.id) setSelectedPreviewMaterial(null);
+      if (selectedAssignMaterial?.id === deleteTarget.id) setSelectedAssignMaterial(null);
+      setDeleteNotice(`Đã xóa ${deleteTarget.title} khỏi kho học liệu.`);
+      setDeleteTarget(null);
+      requestAnimationFrame(() => uploadButton.current?.focus());
+    } catch (error) {
+      setDeleteError(error instanceof Error ? error.message : "Không thể xóa tài liệu. Vui lòng thử lại.");
+    } finally { setDeleteBusy(false); }
+  }
+
+  useEffect(() => {
+    if (!selectedClass || pdfImportId) return;
+    let active = true;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    setImports([]); setImportError("");
+    const classId = selectedClass.id;
+    async function load() {
+      try {
+        const drafts = await teacherPdfApi.list(classId);
+        if (!active) return;
+        setImports(drafts.filter((d) => d.status !== "SUBMITTED")); setImportError("");
+        if (drafts.some((d) => ["QUEUED", "PROCESSING"].includes(d.status))) timer = setTimeout(load, 5000);
+      } catch (err) {
+        if (active) setImportError(err instanceof Error ? err.message : "Không tải được bản nháp OCR.");
+      }
+    }
+    void load();
+    return () => { active = false; if (timer) clearTimeout(timer); };
+  }, [selectedClass?.id, pdfImportId]);
 
   const formatSize = (bytes: number) => {
     if (bytes < 1024) return `${bytes} B`;
@@ -52,6 +108,10 @@ export function MaterialsTab({
       return matchQuery && matchSubject;
     });
   }, [materials, searchQuery, selectedSubjectFilter]);
+
+  if (pdfImportId) {
+    return <ExercisePdfReview key={pdfImportId} jobId={pdfImportId} onClose={() => onOpenPdfImport?.("")} onSubmitted={(material) => onMaterialSubmitted?.(material)} onOpenRevision={(id) => onOpenPdfImport?.(id)} />;
+  }
 
   if (!selectedClass) {
     return (
@@ -80,11 +140,12 @@ export function MaterialsTab({
               <span className={styles.studentTotalPill}>{materials.length} tệp</span>
             </div>
             <p className={styles.sectionSubheading}>
-              Tài liệu PDF/TXT được lưu trữ an toàn trên máy chủ EduMS, dùng làm ngữ cảnh bài tập và đề kiểm tra
+              Tải PDF hoặc ảnh, duyệt câu hỏi sau OCR và lưu thành tài liệu bài tập để giao cho lớp.
             </p>
           </div>
 
           <button
+            ref={uploadButton}
             type="button"
             className={styles.btnPrimary}
             onClick={onOpenUpload}
@@ -93,6 +154,16 @@ export function MaterialsTab({
             Tải lên tài liệu mới
           </button>
         </div>
+
+        {importError && <p className={styles.formAlert} role="alert">{importError}</p>}
+        {deleteNotice && <p className={styles.formSuccess} role="status">{deleteNotice}</p>}
+        {imports.length > 0 && <div className={reviewStyles.drafts}>
+          <h4>Bản nháp OCR đang xử lý / chờ duyệt ({imports.length})</h4>
+          {imports.map((draft) => <div key={draft.id} className={reviewStyles.draftRow}>
+            <div><strong>{draft.title}</strong><p>{PDF_IMPORT_STATUS[draft.status]} · {draft.original_file_name}{draft.status === "PROCESSING" ? ` · ${draft.progress.processed_pages ?? 0}/${draft.progress.selected_pages ?? "…"} trang` : ""}</p></div>
+            <button className={styles.btnSecondarySmall} onClick={() => onOpenPdfImport?.(draft.id)}><Eye size={14} aria-hidden="true" /> {draft.status === "NEEDS_REVIEW" ? "Duyệt câu hỏi" : "Xem tiến độ"}</button>
+          </div>)}
+        </div>}
 
         {/* Toolbar & Filters */}
         <div className={styles.materialsToolbar}>
@@ -168,6 +239,7 @@ export function MaterialsTab({
           <div className={styles.materialGridModern}>
             {filteredMaterials.map((item) => {
               const isPdf = item.original_file_name.endsWith(".pdf") || item.mime_type.includes("pdf");
+              const isReviewed = item.mime_type === "application/json";
               const subject = subjects.find((s) => s.id === item.subject_id);
 
               return (
@@ -175,11 +247,15 @@ export function MaterialsTab({
                   <div className={styles.materialCardHeader}>
                     <span className={isPdf ? styles.badgeFormatPdf : styles.badgeFormatTxt}>
                       <FileText size={13} aria-hidden="true" />
-                      {isPdf ? "PDF" : "TXT"}
+                      {isReviewed ? "Bài tập đã duyệt" : isPdf ? "PDF" : "TXT"}
                     </span>
-                    <span className={styles.materialStatusPill}>
-                      {item.status === "APPROVED" ? "Đã duyệt" : item.status}
+                    <div className={styles.materialStatusActions}><span className={styles.materialStatusPill}>
+                      {({ READY: "Đã duyệt", NEEDS_REVIEW: "Cần duyệt", PARSED: "Đã tách câu", UPLOADED: "Đã tải lên", MAPPING_PENDING: "Chờ phân loại", FAILED: "Xử lý lỗi" } as Record<string, string>)[item.status] ?? item.status}
                     </span>
+                    <button type="button" className={styles.deleteMaterialButton} aria-label={`Xóa tài liệu ${item.title}`}
+                      onClick={(event) => { deleteTrigger.current = event.currentTarget; setDeleteTarget(item); setDeleteError(""); setDeleteNotice(""); }}>
+                      <Trash2 size={15} aria-hidden="true" /> Xóa
+                    </button></div>
                   </div>
 
                   <h4 className={styles.materialCardTitle} title={item.title}>
@@ -211,6 +287,8 @@ export function MaterialsTab({
                   </div>
 
                   <div className={styles.materialCardActions}>
+                    {isReviewed && <a className={styles.btnSecondarySmall} href={`/api/teacher/materials/${item.id}/document`}>Tải bản đã duyệt</a>}
+                    {item.pdf_import_id && <button className={styles.btnSecondarySmall} onClick={() => onOpenPdfImport?.(item.pdf_import_id!)}>Xem nguồn / Chỉnh sửa</button>}
                     <button
                       type="button"
                       className={styles.btnSecondarySmall}
@@ -234,6 +312,8 @@ export function MaterialsTab({
       </div>
 
       {/* Modals */}
+      {deleteTarget && <DeleteMaterialDialog material={deleteTarget} busy={deleteBusy} error={deleteError} onConfirm={deleteMaterial}
+        onCancel={() => { setDeleteTarget(null); requestAnimationFrame(() => deleteTrigger.current?.focus()); }} />}
       <MaterialPreviewModal
         isOpen={Boolean(selectedPreviewMaterial)}
         onClose={() => setSelectedPreviewMaterial(null)}

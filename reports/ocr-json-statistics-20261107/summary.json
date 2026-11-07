@@ -1,0 +1,1666 @@
+{
+  "snapshot_date": "2026-11-07",
+  "counting_unit": "One EXERCISE JSON record; subquestions are not split.",
+  "grouping": "Exact primary label codes within each chapter and lesson; no relabeling.",
+  "candidate_counting": "Deduplicated per record and type code; non-additive across types.",
+  "sources": [
+    {
+      "job": "ocr-direct-full - Copy",
+      "path": "C:\\CoachLearningPdf\\ocr-direct-full - Copy\\content.method.pretty.json",
+      "sha256": "076a0f5ddbb164fe288ea799fd6b338487df73d80fccc27f056a0b654bda2240",
+      "draft_sha256": "65f964d4610c8c79c8b616ba28fb8d037cfd07fbfbbcefd9fb9352f8d7b4a431",
+      "records": 2290,
+      "questions": 2290,
+      "excluded_headings": [],
+      "draft_question_ids_match": true,
+      "question_page_min": 2,
+      "question_page_max": 1789,
+      "declared_source_page_counts": [
+        2947
+      ]
+    },
+    {
+      "job": "ocr-direct-grouped_statistics",
+      "path": "C:\\CoachLearningPdf\\ocr-direct-grouped_statistics\\content.method.pretty.json",
+      "sha256": "c93fd7da6df3a1d3421d285eea181043b00dc9a7396413d39f40fb7e7f5e554c",
+      "draft_sha256": "eaf140e4b22af58a24ff2370da0043ca2a4b80720370e2f7822a7045655567e3",
+      "records": 86,
+      "questions": 84,
+      "excluded_headings": [
+        {
+          "question_id": "7bc107b976fd659d67ebb97c:p0001:r001:q0001",
+          "collection_number": 1,
+          "record_kind": "SOURCE_HEADING_NOT_EXERCISE",
+          "lesson": {
+            "code": "DOC_LESSON_4881c5103f8de1af",
+            "name": "KHOẢNG BIẾN THIÊN VÀ KHOẢNG TỨ PHÂN VỊ",
+            "canonical_code": "GROUPED_RANGE_IQR_TOPIC",
+            "parent_code": "DOC_CHAPTER_3e4d3b56de5b336c",
+            "source_number": "1",
+            "source_label": "BÀI 1 KHOẢNG BIẾN THIÊN VÀ KHOẢNG TỨ PHÂN VỊ",
+            "origin": "source",
+            "basis": "PRINTED_DOCUMENT_HEADING",
+            "evidence": [
+              {
+                "basis": "VISIBLE_NATIVE_PDF_HEADING",
+                "field": null,
+                "page_number": 1,
+                "bbox": [
+                  172.044,
+                  112.608,
+                  452.052,
+                  146.652
+                ],
+                "block_ids": [
+                  "p0001-l0003",
+                  "p0001-l0004"
+                ],
+                "text": "BÀI 1 KHOẢNG BIẾN THIÊN VÀ KHOẢNG TỨ PHÂN VỊ",
+                "normalized_match": null,
+                "source_reference": null,
+                "extensions": {}
+              }
+            ],
+            "extensions": {}
+          }
+        },
+        {
+          "question_id": "7bc107b976fd659d67ebb97c:p0015:r001:q0011",
+          "collection_number": 11,
+          "record_kind": "SOURCE_HEADING_NOT_EXERCISE",
+          "lesson": {
+            "code": "DOC_LESSON_f6f614689088ae60",
+            "name": "PHƯƠNG SAI VÀ ĐỘ LỆCH CHUẨN",
+            "canonical_code": "GROUPED_VARIANCE_SD_TOPIC",
+            "parent_code": "DOC_CHAPTER_3e4d3b56de5b336c",
+            "source_number": "2",
+            "source_label": "BÀI 2 PHƯƠNG SAI VÀ ĐỘ LỆCH CHUẨN",
+            "origin": "source",
+            "basis": "PRINTED_DOCUMENT_HEADING",
+            "evidence": [
+              {
+                "basis": "VISIBLE_NATIVE_PDF_HEADING",
+                "field": null,
+                "page_number": 15,
+                "bbox": [
+                  211.5,
+                  40.704,
+                  412.728,
+                  74.532
+                ],
+                "block_ids": [
+                  "p0015-l0001",
+                  "p0015-l0002"
+                ],
+                "text": "BÀI 2 PHƯƠNG SAI VÀ ĐỘ LỆCH CHUẨN",
+                "normalized_match": null,
+                "source_reference": null,
+                "extensions": {}
+              }
+            ],
+            "extensions": {}
+          }
+        }
+      ],
+      "draft_question_ids_match": true,
+      "question_page_min": 2,
+      "question_page_max": 93,
+      "declared_source_page_counts": [
+        95
+      ]
+    },
+    {
+      "job": "ocr-direct-probability",
+      "path": "C:\\CoachLearningPdf\\ocr-direct-probability\\content.method.pretty.json",
+      "sha256": "329038b2e6277744cb5be3782b3687f49233102043a8ef90d600a0a590abde52",
+      "draft_sha256": "f9603221e3e0ff685c91f1412682d2e0b1a797586131f8d3d2daad5c03f5b7f5",
+      "records": 121,
+      "questions": 121,
+      "excluded_headings": [],
+      "draft_question_ids_match": true,
+      "question_page_min": 3,
+      "question_page_max": 73,
+      "declared_source_page_counts": [
+        73
+      ]
+    }
+  ],
+  "chapters": [
+    {
+      "label": {
+        "code": "DERIVATIVE_APPLICATIONS",
+        "name": "Ứng dụng đạo hàm để khảo sát và vẽ đồ thị của hàm số",
+        "canonical_code": null,
+        "parent_code": null,
+        "source_number": null,
+        "source_label": null,
+        "origin": "source",
+        "basis": "SOURCE_HEADER",
+        "evidence": [],
+        "extensions": {}
+      },
+      "questions": 1484,
+      "primary_type": 823,
+      "candidate_type_only": 142,
+      "no_type_evidence": 519,
+      "lessons": [
+        {
+          "label": {
+            "code": "MONOTONICITY_TOPIC",
+            "name": "Tính đơn điệu của hàm số",
+            "canonical_code": null,
+            "parent_code": null,
+            "source_number": null,
+            "source_label": null,
+            "origin": "inferred",
+            "basis": null,
+            "evidence": [],
+            "extensions": {}
+          },
+          "questions": 95,
+          "primary_type": 95,
+          "candidate_type_only": 0,
+          "no_type_evidence": 0,
+          "types": [
+            {
+              "label": {
+                "code": "MONOTONICITY_FROM_GRAPH",
+                "name": "Nhận biết tính đơn điệu từ đồ thị",
+                "canonical_code": null,
+                "parent_code": null,
+                "source_number": null,
+                "source_label": null,
+                "origin": "inferred",
+                "basis": null,
+                "evidence": [],
+                "extensions": {}
+              },
+              "questions": 5
+            },
+            {
+              "label": {
+                "code": "MONOTONICITY_FROM_EXPRESSION",
+                "name": "Xét tính đơn điệu bằng đạo hàm",
+                "canonical_code": null,
+                "parent_code": null,
+                "source_number": null,
+                "source_label": null,
+                "origin": "inferred",
+                "basis": null,
+                "evidence": [],
+                "extensions": {}
+              },
+              "questions": 25
+            },
+            {
+              "label": {
+                "code": "PARAMETER_MONOTONICITY",
+                "name": "Tìm tham số theo điều kiện đơn điệu",
+                "canonical_code": null,
+                "parent_code": null,
+                "source_number": null,
+                "source_label": null,
+                "origin": "inferred",
+                "basis": null,
+                "evidence": [],
+                "extensions": {}
+              },
+              "questions": 49
+            },
+            {
+              "label": {
+                "code": "MONOTONICITY_FROM_VARIATION_TABLE",
+                "name": "Nhận biết tính đơn điệu từ bảng biến thiên",
+                "canonical_code": null,
+                "parent_code": null,
+                "source_number": null,
+                "source_label": null,
+                "origin": "inferred",
+                "basis": null,
+                "evidence": [],
+                "extensions": {}
+              },
+              "questions": 6
+            },
+            {
+              "label": {
+                "code": "MONOTONICITY_FROM_DERIVATIVE_SIGN",
+                "name": "Nhận biết tính đơn điệu từ dấu đạo hàm",
+                "canonical_code": null,
+                "parent_code": null,
+                "source_number": null,
+                "source_label": null,
+                "origin": "inferred",
+                "basis": null,
+                "evidence": [],
+                "extensions": {}
+              },
+              "questions": 10
+            }
+          ]
+        },
+        {
+          "label": {
+            "code": "EXTREMA_TOPIC",
+            "name": "Cực trị của hàm số",
+            "canonical_code": null,
+            "parent_code": null,
+            "source_number": null,
+            "source_label": null,
+            "origin": "inferred",
+            "basis": null,
+            "evidence": [],
+            "extensions": {}
+          },
+          "questions": 174,
+          "primary_type": 159,
+          "candidate_type_only": 0,
+          "no_type_evidence": 15,
+          "types": [
+            {
+              "label": {
+                "code": "EXTREMA_FROM_GRAPH",
+                "name": "Nhận biết cực trị từ đồ thị",
+                "canonical_code": null,
+                "parent_code": null,
+                "source_number": null,
+                "source_label": null,
+                "origin": "inferred",
+                "basis": null,
+                "evidence": [],
+                "extensions": {}
+              },
+              "questions": 60
+            },
+            {
+              "label": {
+                "code": "FIND_FUNCTION_EXTREMA",
+                "name": "Tìm cực trị bằng đạo hàm",
+                "canonical_code": null,
+                "parent_code": null,
+                "source_number": null,
+                "source_label": null,
+                "origin": "inferred",
+                "basis": null,
+                "evidence": [],
+                "extensions": {}
+              },
+              "questions": 28
+            },
+            {
+              "label": null,
+              "questions": 15
+            },
+            {
+              "label": {
+                "code": "PARAMETER_EXTREMA_COUNT",
+                "name": "Tìm tham số theo số lượng cực trị",
+                "canonical_code": null,
+                "parent_code": null,
+                "source_number": null,
+                "source_label": null,
+                "origin": "inferred",
+                "basis": null,
+                "evidence": [],
+                "extensions": {}
+              },
+              "questions": 46
+            },
+            {
+              "label": {
+                "code": "EXTREMA_FROM_VARIATION_TABLE",
+                "name": "Nhận biết cực trị từ bảng biến thiên",
+                "canonical_code": null,
+                "parent_code": null,
+                "source_number": null,
+                "source_label": null,
+                "origin": "inferred",
+                "basis": null,
+                "evidence": [],
+                "extensions": {}
+              },
+              "questions": 9
+            },
+            {
+              "label": {
+                "code": "EXTREMA_FROM_DERIVATIVE_SIGN",
+                "name": "Nhận biết cực trị từ dấu đạo hàm",
+                "canonical_code": null,
+                "parent_code": null,
+                "source_number": null,
+                "source_label": null,
+                "origin": "inferred",
+                "basis": null,
+                "evidence": [],
+                "extensions": {}
+              },
+              "questions": 16
+            }
+          ]
+        },
+        {
+          "label": null,
+          "questions": 368,
+          "primary_type": 0,
+          "candidate_type_only": 142,
+          "no_type_evidence": 226,
+          "types": [
+            {
+              "label": null,
+              "questions": 368
+            }
+          ]
+        },
+        {
+          "label": {
+            "code": "GLOBAL_EXTREMA_TOPIC",
+            "name": "Giá trị lớn nhất và giá trị nhỏ nhất",
+            "canonical_code": null,
+            "parent_code": null,
+            "source_number": null,
+            "source_label": null,
+            "origin": "inferred",
+            "basis": null,
+            "evidence": [],
+            "extensions": {}
+          },
+          "questions": 175,
+          "primary_type": 175,
+          "candidate_type_only": 0,
+          "no_type_evidence": 0,
+          "types": [
+            {
+              "label": {
+                "code": "GLOBAL_EXTREMA_SIMPLE_DOMAIN",
+                "name": "Tìm GTLN/GTNN trên miền đơn giản",
+                "canonical_code": null,
+                "parent_code": null,
+                "source_number": null,
+                "source_label": null,
+                "origin": "inferred",
+                "basis": null,
+                "evidence": [],
+                "extensions": {}
+              },
+              "questions": 57
+            },
+            {
+              "label": {
+                "code": "GLOBAL_EXTREMA_DERIVATIVE_INTERVAL",
+                "name": "Tìm GTLN/GTNN trên đoạn bằng đạo hàm",
+                "canonical_code": null,
+                "parent_code": null,
+                "source_number": null,
+                "source_label": null,
+                "origin": "inferred",
+                "basis": null,
+                "evidence": [],
+                "extensions": {}
+              },
+              "questions": 64
+            },
+            {
+              "label": {
+                "code": "GLOBAL_EXTREMA_RECOGNITION",
+                "name": "Nhận biết giá trị lớn nhất/nhỏ nhất",
+                "canonical_code": null,
+                "parent_code": null,
+                "source_number": null,
+                "source_label": null,
+                "origin": "inferred",
+                "basis": null,
+                "evidence": [],
+                "extensions": {}
+              },
+              "questions": 54
+            }
+          ]
+        },
+        {
+          "label": {
+            "code": "DERIVATIVE_APPLICATION_TOPIC",
+            "name": "Ứng dụng đạo hàm trong bài toán thực tiễn",
+            "canonical_code": null,
+            "parent_code": null,
+            "source_number": null,
+            "source_label": null,
+            "origin": "inferred",
+            "basis": null,
+            "evidence": [],
+            "extensions": {}
+          },
+          "questions": 121,
+          "primary_type": 121,
+          "candidate_type_only": 0,
+          "no_type_evidence": 0,
+          "types": [
+            {
+              "label": {
+                "code": "REAL_WORLD_DERIVATIVE_OPTIMIZATION",
+                "name": "Tối ưu hóa bài toán thực tiễn bằng đạo hàm",
+                "canonical_code": null,
+                "parent_code": null,
+                "source_number": null,
+                "source_label": null,
+                "origin": "inferred",
+                "basis": null,
+                "evidence": [],
+                "extensions": {}
+              },
+              "questions": 121
+            }
+          ]
+        },
+        {
+          "label": {
+            "code": "FUNCTION_ANALYSIS_TOPIC",
+            "name": "Tiệm cận, khảo sát và vẽ đồ thị hàm số",
+            "canonical_code": null,
+            "parent_code": null,
+            "source_number": null,
+            "source_label": null,
+            "origin": "inferred",
+            "basis": null,
+            "evidence": [],
+            "extensions": {}
+          },
+          "questions": 551,
+          "primary_type": 273,
+          "candidate_type_only": 0,
+          "no_type_evidence": 278,
+          "types": [
+            {
+              "label": {
+                "code": "ASYMPTOTE_FROM_GRAPH",
+                "name": "Nhận biết tiệm cận từ đồ thị",
+                "canonical_code": null,
+                "parent_code": null,
+                "source_number": null,
+                "source_label": null,
+                "origin": "inferred",
+                "basis": null,
+                "evidence": [],
+                "extensions": {}
+              },
+              "questions": 198
+            },
+            {
+              "label": null,
+              "questions": 278
+            },
+            {
+              "label": {
+                "code": "GRAPH_SYMMETRY_IDENTIFICATION",
+                "name": "Nhận biết tính đối xứng của đồ thị",
+                "canonical_code": null,
+                "parent_code": null,
+                "source_number": null,
+                "source_label": null,
+                "origin": "inferred",
+                "basis": null,
+                "evidence": [],
+                "extensions": {}
+              },
+              "questions": 19
+            },
+            {
+              "label": {
+                "code": "OBLIQUE_ASYMPTOTE_RATIONAL",
+                "name": "Xác định tiệm cận xiên",
+                "canonical_code": null,
+                "parent_code": null,
+                "source_number": null,
+                "source_label": null,
+                "origin": "inferred",
+                "basis": null,
+                "evidence": [],
+                "extensions": {}
+              },
+              "questions": 1
+            },
+            {
+              "label": {
+                "code": "GRAPH_IDENTIFICATION_FROM_FEATURES",
+                "name": "Nhận dạng đồ thị từ đặc trưng",
+                "canonical_code": null,
+                "parent_code": null,
+                "source_number": null,
+                "source_label": null,
+                "origin": "inferred",
+                "basis": null,
+                "evidence": [],
+                "extensions": {}
+              },
+              "questions": 55
+            }
+          ]
+        }
+      ],
+      "source_job": "ocr-direct-full - Copy"
+    },
+    {
+      "label": {
+        "code": "INTEGRALS",
+        "name": "Nguyên hàm. Tích phân",
+        "canonical_code": null,
+        "parent_code": null,
+        "source_number": null,
+        "source_label": null,
+        "origin": "source",
+        "basis": "SOURCE_HEADER",
+        "evidence": [],
+        "extensions": {}
+      },
+      "questions": 806,
+      "primary_type": 606,
+      "candidate_type_only": 0,
+      "no_type_evidence": 200,
+      "lessons": [
+        {
+          "label": {
+            "code": "ANTIDERIVATIVE_TOPIC",
+            "name": "Nguyên hàm",
+            "canonical_code": null,
+            "parent_code": null,
+            "source_number": null,
+            "source_label": null,
+            "origin": "inferred",
+            "basis": null,
+            "evidence": [],
+            "extensions": {}
+          },
+          "questions": 373,
+          "primary_type": 373,
+          "candidate_type_only": 0,
+          "no_type_evidence": 0,
+          "types": [
+            {
+              "label": {
+                "code": "CALCULATE_ANTIDERIVATIVE",
+                "name": "Tính nguyên hàm",
+                "canonical_code": null,
+                "parent_code": null,
+                "source_number": null,
+                "source_label": null,
+                "origin": "inferred",
+                "basis": null,
+                "evidence": [],
+                "extensions": {}
+              },
+              "questions": 174
+            },
+            {
+              "label": {
+                "code": "ANTIDERIVATIVE_WITH_CONDITION",
+                "name": "Nguyên hàm có điều kiện",
+                "canonical_code": null,
+                "parent_code": null,
+                "source_number": null,
+                "source_label": null,
+                "origin": "inferred",
+                "basis": null,
+                "evidence": [],
+                "extensions": {}
+              },
+              "questions": 199
+            }
+          ]
+        },
+        {
+          "label": null,
+          "questions": 194,
+          "primary_type": 0,
+          "candidate_type_only": 0,
+          "no_type_evidence": 194,
+          "types": [
+            {
+              "label": null,
+              "questions": 194
+            }
+          ]
+        },
+        {
+          "label": {
+            "code": "DEFINITE_INTEGRAL_TOPIC",
+            "name": "Tích phân và tính chất",
+            "canonical_code": null,
+            "parent_code": null,
+            "source_number": null,
+            "source_label": null,
+            "origin": "inferred",
+            "basis": null,
+            "evidence": [],
+            "extensions": {}
+          },
+          "questions": 70,
+          "primary_type": 70,
+          "candidate_type_only": 0,
+          "no_type_evidence": 0,
+          "types": [
+            {
+              "label": {
+                "code": "CALCULATE_DEFINITE_INTEGRAL",
+                "name": "Tính trực tiếp tích phân xác định",
+                "canonical_code": null,
+                "parent_code": null,
+                "source_number": null,
+                "source_label": null,
+                "origin": "inferred",
+                "basis": null,
+                "evidence": [],
+                "extensions": {}
+              },
+              "questions": 70
+            }
+          ]
+        },
+        {
+          "label": {
+            "code": "INTEGRAL_GEOMETRIC_APPLICATION_TOPIC",
+            "name": "Ứng dụng tích phân tính diện tích và thể tích",
+            "canonical_code": null,
+            "parent_code": null,
+            "source_number": null,
+            "source_label": null,
+            "origin": "inferred",
+            "basis": null,
+            "evidence": [],
+            "extensions": {}
+          },
+          "questions": 55,
+          "primary_type": 49,
+          "candidate_type_only": 0,
+          "no_type_evidence": 6,
+          "types": [
+            {
+              "label": {
+                "code": "AREA_BY_INTEGRAL",
+                "name": "Diện tích bằng tích phân",
+                "canonical_code": null,
+                "parent_code": null,
+                "source_number": null,
+                "source_label": null,
+                "origin": "inferred",
+                "basis": null,
+                "evidence": [],
+                "extensions": {}
+              },
+              "questions": 34
+            },
+            {
+              "label": {
+                "code": "VOLUME_BY_INTEGRAL",
+                "name": "Thể tích khối tròn xoay",
+                "canonical_code": null,
+                "parent_code": null,
+                "source_number": null,
+                "source_label": null,
+                "origin": "inferred",
+                "basis": null,
+                "evidence": [],
+                "extensions": {}
+              },
+              "questions": 11
+            },
+            {
+              "label": {
+                "code": "VOLUME_BY_CROSS_SECTION",
+                "name": "Thể tích theo thiết diện",
+                "canonical_code": null,
+                "parent_code": null,
+                "source_number": null,
+                "source_label": null,
+                "origin": "inferred",
+                "basis": null,
+                "evidence": [],
+                "extensions": {}
+              },
+              "questions": 4
+            },
+            {
+              "label": null,
+              "questions": 6
+            }
+          ]
+        },
+        {
+          "label": {
+            "code": "INTEGRAL_PRACTICAL_APPLICATION_TOPIC",
+            "name": "Ứng dụng nguyên hàm và tích phân trong thực tiễn",
+            "canonical_code": null,
+            "parent_code": null,
+            "source_number": null,
+            "source_label": null,
+            "origin": "inferred",
+            "basis": null,
+            "evidence": [],
+            "extensions": {}
+          },
+          "questions": 114,
+          "primary_type": 114,
+          "candidate_type_only": 0,
+          "no_type_evidence": 0,
+          "types": [
+            {
+              "label": {
+                "code": "PRACTICAL_ACCUMULATION",
+                "name": "Ứng dụng nguyên hàm/tích phân vào đại lượng tích lũy",
+                "canonical_code": null,
+                "parent_code": null,
+                "source_number": null,
+                "source_label": null,
+                "origin": "inferred",
+                "basis": null,
+                "evidence": [],
+                "extensions": {}
+              },
+              "questions": 114
+            }
+          ]
+        }
+      ],
+      "source_job": "ocr-direct-full - Copy"
+    },
+    {
+      "label": {
+        "code": "DOC_CHAPTER_3e4d3b56de5b336c",
+        "name": "CÁC SỐ ĐẶC TRƯNG ĐO MỨC ĐỘ PHÂN TÁN CHO MẪU SỐ LIỆU GHÉP NHÓM",
+        "canonical_code": "GROUPED_DATA_DISPERSION",
+        "parent_code": null,
+        "source_number": "3",
+        "source_label": "CHƯƠNG 3 CÁC SỐ ĐẶC TRƯNG ĐO MỨC ĐỘ PHÂN TÁN CHO MẪU SỐ LIỆU GHÉP NHÓM",
+        "origin": "source",
+        "basis": "PRINTED_DOCUMENT_HEADING",
+        "evidence": [
+          {
+            "basis": "VISIBLE_NATIVE_PDF_HEADING",
+            "field": null,
+            "page_number": 1,
+            "bbox": [
+              86.04,
+              41.604,
+              538.392,
+              74.532
+            ],
+            "block_ids": [
+              "p0001-l0001",
+              "p0001-l0002"
+            ],
+            "text": "CHƯƠNG 3 CÁC SỐ ĐẶC TRƯNG ĐO MỨC ĐỘ PHÂN TÁN CHO MẪU SỐ LIỆU GHÉP NHÓM",
+            "normalized_match": null,
+            "source_reference": null,
+            "extensions": {}
+          }
+        ],
+        "extensions": {}
+      },
+      "questions": 84,
+      "primary_type": 32,
+      "candidate_type_only": 51,
+      "no_type_evidence": 1,
+      "lessons": [
+        {
+          "label": {
+            "code": "DOC_LESSON_4881c5103f8de1af",
+            "name": "KHOẢNG BIẾN THIÊN VÀ KHOẢNG TỨ PHÂN VỊ",
+            "canonical_code": "GROUPED_RANGE_IQR_TOPIC",
+            "parent_code": "DOC_CHAPTER_3e4d3b56de5b336c",
+            "source_number": "1",
+            "source_label": "BÀI 1 KHOẢNG BIẾN THIÊN VÀ KHOẢNG TỨ PHÂN VỊ",
+            "origin": "source",
+            "basis": "PRINTED_DOCUMENT_HEADING",
+            "evidence": [
+              {
+                "basis": "VISIBLE_NATIVE_PDF_HEADING",
+                "field": null,
+                "page_number": 1,
+                "bbox": [
+                  172.044,
+                  112.608,
+                  452.052,
+                  146.652
+                ],
+                "block_ids": [
+                  "p0001-l0003",
+                  "p0001-l0004"
+                ],
+                "text": "BÀI 1 KHOẢNG BIẾN THIÊN VÀ KHOẢNG TỨ PHÂN VỊ",
+                "normalized_match": null,
+                "source_reference": null,
+                "extensions": {}
+              }
+            ],
+            "extensions": {}
+          },
+          "questions": 9,
+          "primary_type": 2,
+          "candidate_type_only": 6,
+          "no_type_evidence": 1,
+          "types": [
+            {
+              "label": {
+                "code": "CALCULATE_GROUPED_RANGE",
+                "name": "Tính khoảng biến thiên của mẫu ghép nhóm",
+                "canonical_code": null,
+                "parent_code": null,
+                "source_number": null,
+                "source_label": null,
+                "origin": "inferred",
+                "basis": null,
+                "evidence": [],
+                "extensions": {}
+              },
+              "questions": 1
+            },
+            {
+              "label": null,
+              "questions": 7
+            },
+            {
+              "label": {
+                "code": "CALCULATE_GROUPED_IQR",
+                "name": "Tính khoảng tứ phân vị của mẫu ghép nhóm",
+                "canonical_code": null,
+                "parent_code": null,
+                "source_number": null,
+                "source_label": null,
+                "origin": "inferred",
+                "basis": null,
+                "evidence": [],
+                "extensions": {}
+              },
+              "questions": 1
+            }
+          ]
+        },
+        {
+          "label": {
+            "code": "DOC_LESSON_f6f614689088ae60",
+            "name": "PHƯƠNG SAI VÀ ĐỘ LỆCH CHUẨN",
+            "canonical_code": "GROUPED_VARIANCE_SD_TOPIC",
+            "parent_code": "DOC_CHAPTER_3e4d3b56de5b336c",
+            "source_number": "2",
+            "source_label": "BÀI 2 PHƯƠNG SAI VÀ ĐỘ LỆCH CHUẨN",
+            "origin": "source",
+            "basis": "PRINTED_DOCUMENT_HEADING",
+            "evidence": [
+              {
+                "basis": "VISIBLE_NATIVE_PDF_HEADING",
+                "field": null,
+                "page_number": 15,
+                "bbox": [
+                  211.5,
+                  40.704,
+                  412.728,
+                  74.532
+                ],
+                "block_ids": [
+                  "p0015-l0001",
+                  "p0015-l0002"
+                ],
+                "text": "BÀI 2 PHƯƠNG SAI VÀ ĐỘ LỆCH CHUẨN",
+                "normalized_match": null,
+                "source_reference": null,
+                "extensions": {}
+              }
+            ],
+            "extensions": {}
+          },
+          "questions": 6,
+          "primary_type": 1,
+          "candidate_type_only": 5,
+          "no_type_evidence": 0,
+          "types": [
+            {
+              "label": null,
+              "questions": 5
+            },
+            {
+              "label": {
+                "code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+                "name": "Tính độ lệch chuẩn của mẫu ghép nhóm",
+                "canonical_code": null,
+                "parent_code": null,
+                "source_number": null,
+                "source_label": null,
+                "origin": "inferred",
+                "basis": null,
+                "evidence": [],
+                "extensions": {}
+              },
+              "questions": 1
+            }
+          ]
+        },
+        {
+          "label": {
+            "code": "GROUPED_RANGE_IQR_TOPIC",
+            "name": "Khoảng biến thiên và khoảng tứ phân vị",
+            "canonical_code": null,
+            "parent_code": null,
+            "source_number": null,
+            "source_label": null,
+            "origin": "inferred",
+            "basis": null,
+            "evidence": [],
+            "extensions": {}
+          },
+          "questions": 2,
+          "primary_type": 2,
+          "candidate_type_only": 0,
+          "no_type_evidence": 0,
+          "types": [
+            {
+              "label": {
+                "code": "CALCULATE_GROUPED_RANGE",
+                "name": "Tính khoảng biến thiên của mẫu ghép nhóm",
+                "canonical_code": null,
+                "parent_code": null,
+                "source_number": null,
+                "source_label": null,
+                "origin": "inferred",
+                "basis": null,
+                "evidence": [],
+                "extensions": {}
+              },
+              "questions": 1
+            },
+            {
+              "label": {
+                "code": "CALCULATE_GROUPED_IQR",
+                "name": "Tính khoảng tứ phân vị của mẫu ghép nhóm",
+                "canonical_code": null,
+                "parent_code": null,
+                "source_number": null,
+                "source_label": null,
+                "origin": "inferred",
+                "basis": null,
+                "evidence": [],
+                "extensions": {}
+              },
+              "questions": 1
+            }
+          ]
+        },
+        {
+          "label": {
+            "code": "GROUPED_DISPERSION_APPLICATION_TOPIC",
+            "name": "Vận dụng độ phân tán trong thực tiễn",
+            "canonical_code": null,
+            "parent_code": null,
+            "source_number": null,
+            "source_label": null,
+            "origin": "inferred",
+            "basis": null,
+            "evidence": [],
+            "extensions": {}
+          },
+          "questions": 2,
+          "primary_type": 2,
+          "candidate_type_only": 0,
+          "no_type_evidence": 0,
+          "types": [
+            {
+              "label": {
+                "code": "MULTI_MEASURE_GROUPED_DISPERSION_ANALYSIS",
+                "name": "Phân tích kết hợp nhiều số đo phân tán",
+                "canonical_code": null,
+                "parent_code": null,
+                "source_number": null,
+                "source_label": null,
+                "origin": "inferred",
+                "basis": null,
+                "evidence": [],
+                "extensions": {}
+              },
+              "questions": 2
+            }
+          ]
+        },
+        {
+          "label": {
+            "code": "GROUPED_VARIANCE_SD_TOPIC",
+            "name": "Phương sai và độ lệch chuẩn",
+            "canonical_code": null,
+            "parent_code": null,
+            "source_number": null,
+            "source_label": null,
+            "origin": "inferred",
+            "basis": null,
+            "evidence": [],
+            "extensions": {}
+          },
+          "questions": 1,
+          "primary_type": 1,
+          "candidate_type_only": 0,
+          "no_type_evidence": 0,
+          "types": [
+            {
+              "label": {
+                "code": "CALCULATE_GROUPED_STANDARD_DEVIATION",
+                "name": "Tính độ lệch chuẩn của mẫu ghép nhóm",
+                "canonical_code": null,
+                "parent_code": null,
+                "source_number": null,
+                "source_label": null,
+                "origin": "inferred",
+                "basis": null,
+                "evidence": [],
+                "extensions": {}
+              },
+              "questions": 1
+            }
+          ]
+        },
+        {
+          "label": {
+            "code": "GROUPED_DISPERSION_COMPARISON_TOPIC",
+            "name": "So sánh và diễn giải mức độ phân tán",
+            "canonical_code": null,
+            "parent_code": null,
+            "source_number": null,
+            "source_label": null,
+            "origin": "inferred",
+            "basis": null,
+            "evidence": [],
+            "extensions": {}
+          },
+          "questions": 1,
+          "primary_type": 1,
+          "candidate_type_only": 0,
+          "no_type_evidence": 0,
+          "types": [
+            {
+              "label": {
+                "code": "COMPARE_GROUPED_VARIANCE_SD",
+                "name": "So sánh mẫu bằng phương sai hoặc độ lệch chuẩn",
+                "canonical_code": null,
+                "parent_code": null,
+                "source_number": null,
+                "source_label": null,
+                "origin": "inferred",
+                "basis": null,
+                "evidence": [],
+                "extensions": {}
+              },
+              "questions": 1
+            }
+          ]
+        },
+        {
+          "label": {
+            "code": "DOC_LESSON_9f58e3577ec682ac",
+            "name": "KHOẢNG BIẾN THIÊN VÀ KHOẢNG TỨ PHÂN VỊ CỦA MẪU SỐ LIỆU GHÉP NHÓM PHƯƠNG SAI VÀ ĐỘ LỆCH CHUẨN CỦA MẪU SỐ LIỆU GHÉP NHÓM",
+            "canonical_code": null,
+            "parent_code": "DOC_CHAPTER_3e4d3b56de5b336c",
+            "source_number": "1,2",
+            "source_label": "BÀI 1,2 KHOẢNG BIẾN THIÊN VÀ KHOẢNG TỨ PHÂN VỊ CỦA MẪU SỐ LIỆU GHÉP NHÓM PHƯƠNG SAI VÀ ĐỘ LỆCH CHUẨN CỦA MẪU SỐ LIỆU GHÉP NHÓM",
+            "origin": "source",
+            "basis": "PRINTED_DOCUMENT_HEADING",
+            "evidence": [
+              {
+                "basis": "VISIBLE_NATIVE_PDF_HEADING",
+                "field": null,
+                "page_number": 30,
+                "bbox": [
+                  76.584,
+                  75.598,
+                  547.478,
+                  130.066
+                ],
+                "block_ids": [
+                  "p0030-l0002",
+                  "p0030-l0003",
+                  "p0030-l0004"
+                ],
+                "text": "BÀI 1,2 KHOẢNG BIẾN THIÊN VÀ KHOẢNG TỨ PHÂN VỊ CỦA MẪU SỐ LIỆU GHÉP NHÓM PHƯƠNG SAI VÀ ĐỘ LỆCH CHUẨN CỦA MẪU SỐ LIỆU GHÉP NHÓM",
+                "normalized_match": null,
+                "source_reference": null,
+                "extensions": {}
+              }
+            ],
+            "extensions": {}
+          },
+          "questions": 63,
+          "primary_type": 23,
+          "candidate_type_only": 40,
+          "no_type_evidence": 0,
+          "types": [
+            {
+              "label": {
+                "code": "DOC_EXERCISE_TYPE_b62df27616783adf",
+                "name": "TÌM KHOẢNG BIẾN THIÊN CHO MẪU SỐ LIỆU GHÉP NHÓM",
+                "canonical_code": null,
+                "parent_code": "DOC_LESSON_9f58e3577ec682ac",
+                "source_number": "1",
+                "source_label": "DẠNG 1 TÌM KHOẢNG BIẾN THIÊN CHO MẪU SỐ LIỆU GHÉP NHÓM",
+                "origin": "source",
+                "basis": "PRINTED_DOCUMENT_HEADING",
+                "evidence": [
+                  {
+                    "basis": "VISIBLE_NATIVE_PDF_HEADING",
+                    "field": null,
+                    "page_number": 31,
+                    "bbox": [
+                      109.872,
+                      35.5,
+                      456.883,
+                      66.927
+                    ],
+                    "block_ids": [
+                      "p0031-l0000",
+                      "p0031-l0001"
+                    ],
+                    "text": "DẠNG 1 TÌM KHOẢNG BIẾN THIÊN CHO MẪU SỐ LIỆU GHÉP NHÓM",
+                    "normalized_match": null,
+                    "source_reference": null,
+                    "extensions": {}
+                  }
+                ],
+                "extensions": {}
+              },
+              "questions": 7
+            },
+            {
+              "label": {
+                "code": "DOC_EXERCISE_TYPE_1840e44363bd3162",
+                "name": "TÌM TỨ PHÂN VỊ CHO MẪU SỐ LIỆU GHÉP NHÓM",
+                "canonical_code": null,
+                "parent_code": "DOC_LESSON_9f58e3577ec682ac",
+                "source_number": "2",
+                "source_label": "DẠNG 2 TÌM TỨ PHÂN VỊ CHO MẪU SỐ LIỆU GHÉP NHÓM",
+                "origin": "source",
+                "basis": "PRINTED_DOCUMENT_HEADING",
+                "evidence": [
+                  {
+                    "basis": "VISIBLE_NATIVE_PDF_HEADING",
+                    "field": null,
+                    "page_number": 36,
+                    "bbox": [
+                      138.672,
+                      2.305,
+                      428.145,
+                      33.733
+                    ],
+                    "block_ids": [
+                      "p0036-l0000",
+                      "p0036-l0001"
+                    ],
+                    "text": "DẠNG 2 TÌM TỨ PHÂN VỊ CHO MẪU SỐ LIỆU GHÉP NHÓM",
+                    "normalized_match": null,
+                    "source_reference": null,
+                    "extensions": {}
+                  }
+                ],
+                "extensions": {}
+              },
+              "questions": 8
+            },
+            {
+              "label": {
+                "code": "DOC_EXERCISE_TYPE_d2728923745070f3",
+                "name": "TÍNH PHƯƠNG SAI, ĐỘ LỆCH CHUẨN CỦA MẪU SỐ LIỆU GHÉP NHÓM",
+                "canonical_code": null,
+                "parent_code": "DOC_LESSON_9f58e3577ec682ac",
+                "source_number": "3",
+                "source_label": "DẠNG 3 TÍNH PHƯƠNG SAI, ĐỘ LỆCH CHUẨN CỦA MẪU SỐ LIỆU GHÉP NHÓM",
+                "origin": "source",
+                "basis": "PRINTED_DOCUMENT_HEADING",
+                "evidence": [
+                  {
+                    "basis": "VISIBLE_NATIVE_PDF_HEADING",
+                    "field": null,
+                    "page_number": 50,
+                    "bbox": [
+                      107.952,
+                      18.242,
+                      516.483,
+                      49.67
+                    ],
+                    "block_ids": [
+                      "p0050-l0001",
+                      "p0050-l0002"
+                    ],
+                    "text": "DẠNG 3 TÍNH PHƯƠNG SAI, ĐỘ LỆCH CHUẨN CỦA MẪU SỐ LIỆU GHÉP NHÓM",
+                    "normalized_match": null,
+                    "source_reference": null,
+                    "extensions": {}
+                  }
+                ],
+                "extensions": {}
+              },
+              "questions": 8
+            },
+            {
+              "label": null,
+              "questions": 40
+            }
+          ]
+        }
+      ],
+      "source_job": "ocr-direct-grouped_statistics"
+    },
+    {
+      "label": {
+        "code": "DOC_CHAPTER_03edd35eafa7b230",
+        "name": "XÁC SUẤT CÓ ĐIỀU KIỆN",
+        "canonical_code": "PROBABILITY_CHAPTER",
+        "parent_code": null,
+        "source_number": "VI",
+        "source_label": "CHƯƠNG VI XÁC SUẤT CÓ ĐIỀU KIỆN",
+        "origin": "source",
+        "basis": "PRINTED_DOCUMENT_HEADING",
+        "evidence": [
+          {
+            "basis": "VISIBLE_NATIVE_PDF_HEADING",
+            "field": null,
+            "page_number": 1,
+            "bbox": [
+              53.018,
+              54.547,
+              542.306,
+              154.099
+            ],
+            "block_ids": [
+              "p0001-l0002",
+              "p0001-l0003"
+            ],
+            "text": "CHƯƠNG VI XÁC SUẤT CÓ ĐIỀU KIỆN",
+            "normalized_match": null,
+            "source_reference": null,
+            "extensions": {}
+          }
+        ],
+        "extensions": {}
+      },
+      "questions": 121,
+      "primary_type": 76,
+      "candidate_type_only": 18,
+      "no_type_evidence": 27,
+      "lessons": [
+        {
+          "label": {
+            "code": "DOC_LESSON_249a20e5a118a79b",
+            "name": "XÁC SUẤT CÓ ĐIỀU KIỆN",
+            "canonical_code": "CONDITIONAL_PROBABILITY_TOPIC",
+            "parent_code": "DOC_CHAPTER_03edd35eafa7b230",
+            "source_number": null,
+            "source_label": "BÀI: XÁC SUẤT CÓ ĐIỀU KIỆN",
+            "origin": "source",
+            "basis": "PRINTED_DOCUMENT_HEADING",
+            "evidence": [
+              {
+                "basis": "VISIBLE_NATIVE_PDF_HEADING",
+                "field": null,
+                "page_number": 1,
+                "bbox": [
+                  209.352,
+                  179.712,
+                  385.848,
+                  193.092
+                ],
+                "block_ids": [
+                  "p0001-l0001"
+                ],
+                "text": "BÀI: XÁC SUẤT CÓ ĐIỀU KIỆN",
+                "normalized_match": null,
+                "source_reference": null,
+                "extensions": {}
+              }
+            ],
+            "extensions": {}
+          },
+          "questions": 71,
+          "primary_type": 51,
+          "candidate_type_only": 0,
+          "no_type_evidence": 20,
+          "types": [
+            {
+              "label": {
+                "code": "DOC_EXERCISE_TYPE_c5386433e386ca0a",
+                "name": "TÍNH XÁC SUẤT CÓ ĐIỀU KIỆN SỬ DỤNG CÔNG THỨC.",
+                "canonical_code": null,
+                "parent_code": "DOC_LESSON_249a20e5a118a79b",
+                "source_number": "1",
+                "source_label": "DẠNG 1. TÍNH XÁC SUẤT CÓ ĐIỀU KIỆN SỬ DỤNG CÔNG THỨC.",
+                "origin": "source",
+                "basis": "PRINTED_DOCUMENT_HEADING",
+                "evidence": [
+                  {
+                    "basis": "VISIBLE_NATIVE_PDF_HEADING",
+                    "field": null,
+                    "page_number": 2,
+                    "bbox": [
+                      42.636,
+                      1.742,
+                      412.704,
+                      15.122
+                    ],
+                    "block_ids": [
+                      "p0002-l0000"
+                    ],
+                    "text": "DẠNG 1. TÍNH XÁC SUẤT CÓ ĐIỀU KIỆN SỬ DỤNG CÔNG THỨC.",
+                    "normalized_match": null,
+                    "source_reference": null,
+                    "extensions": {}
+                  }
+                ],
+                "extensions": {}
+              },
+              "questions": 27
+            },
+            {
+              "label": {
+                "code": "DOC_EXERCISE_TYPE_ff8a08aa2ef8e644",
+                "name": "TÍNH XÁC SUẤT CÓ ĐIỀU KIỆN SỬ DỤNG SƠ ĐỒ HÌNH CÂY.",
+                "canonical_code": null,
+                "parent_code": "DOC_LESSON_249a20e5a118a79b",
+                "source_number": "2",
+                "source_label": "DẠNG 2. TÍNH XÁC SUẤT CÓ ĐIỀU KIỆN SỬ DỤNG SƠ ĐỒ HÌNH CÂY.",
+                "origin": "source",
+                "basis": "PRINTED_DOCUMENT_HEADING",
+                "evidence": [
+                  {
+                    "basis": "VISIBLE_NATIVE_PDF_HEADING",
+                    "field": null,
+                    "page_number": 16,
+                    "bbox": [
+                      42.636,
+                      272.412,
+                      439.104,
+                      284.181
+                    ],
+                    "block_ids": [
+                      "p0016-l0021"
+                    ],
+                    "text": "DẠNG 2. TÍNH XÁC SUẤT CÓ ĐIỀU KIỆN SỬ DỤNG SƠ ĐỒ HÌNH CÂY.",
+                    "normalized_match": null,
+                    "source_reference": null,
+                    "extensions": {}
+                  }
+                ],
+                "extensions": {}
+              },
+              "questions": 6
+            },
+            {
+              "label": {
+                "code": "CONDITIONAL_PROBABILITY_DIRECT",
+                "name": "Tính trực tiếp xác suất có điều kiện",
+                "canonical_code": null,
+                "parent_code": null,
+                "source_number": null,
+                "source_label": null,
+                "origin": "inferred",
+                "basis": null,
+                "evidence": [],
+                "extensions": {}
+              },
+              "questions": 18
+            },
+            {
+              "label": null,
+              "questions": 20
+            }
+          ]
+        },
+        {
+          "label": {
+            "code": "DOC_LESSON_fc3ba5c0eace61d1",
+            "name": "CÔNG THỨC XÁC SUẤT TOÀN PHẦN – CÔNG THỨC BAYES",
+            "canonical_code": null,
+            "parent_code": "DOC_CHAPTER_03edd35eafa7b230",
+            "source_number": null,
+            "source_label": "BÀI: CÔNG THỨC XÁC SUẤT TOÀN PHẦN – CÔNG THỨC BAYES",
+            "origin": "source",
+            "basis": "PRINTED_DOCUMENT_HEADING",
+            "evidence": [
+              {
+                "basis": "VISIBLE_NATIVE_PDF_HEADING",
+                "field": null,
+                "page_number": 39,
+                "bbox": [
+                  112.272,
+                  179.712,
+                  482.652,
+                  190.74
+                ],
+                "block_ids": [
+                  "p0039-l0001"
+                ],
+                "text": "BÀI: CÔNG THỨC XÁC SUẤT TOÀN PHẦN – CÔNG THỨC BAYES",
+                "normalized_match": null,
+                "source_reference": null,
+                "extensions": {}
+              }
+            ],
+            "extensions": {}
+          },
+          "questions": 50,
+          "primary_type": 25,
+          "candidate_type_only": 18,
+          "no_type_evidence": 7,
+          "types": [
+            {
+              "label": {
+                "code": "DOC_EXERCISE_TYPE_1895d4992e8f7a7e",
+                "name": "MÔ TẢ CÔNG THỨC XÁC SUẤT TOÀN PHẦN THÔNG QUA BẢNG DỮ LIỆU THỐNG KÊ 2X2 VÀ SƠ ĐỒ HÌNH CÂY.",
+                "canonical_code": null,
+                "parent_code": "DOC_LESSON_fc3ba5c0eace61d1",
+                "source_number": "1",
+                "source_label": "DẠNG 1. MÔ TẢ CÔNG THỨC XÁC SUẤT TOÀN PHẦN THÔNG QUA BẢNG DỮ LIỆU THỐNG KÊ 2X2 VÀ SƠ ĐỒ HÌNH CÂY.",
+                "origin": "source",
+                "basis": "PRINTED_DOCUMENT_HEADING",
+                "evidence": [
+                  {
+                    "basis": "VISIBLE_NATIVE_PDF_HEADING",
+                    "field": null,
+                    "page_number": 40,
+                    "bbox": [
+                      42.636,
+                      43.152,
+                      517.8,
+                      70.08
+                    ],
+                    "block_ids": [
+                      "p0040-l0003",
+                      "p0040-l0004",
+                      "p0040-l0005",
+                      "p0040-l0006",
+                      "p0040-l0007",
+                      "p0040-l0008",
+                      "p0040-l0009",
+                      "p0040-l0010",
+                      "p0040-l0011",
+                      "p0040-l0012",
+                      "p0040-l0013",
+                      "p0040-l0014",
+                      "p0040-l0015",
+                      "p0040-l0016",
+                      "p0040-l0017",
+                      "p0040-l0018"
+                    ],
+                    "text": "DẠNG 1. MÔ TẢ CÔNG THỨC XÁC SUẤT TOÀN PHẦN THÔNG QUA BẢNG DỮ LIỆU THỐNG KÊ 2X2 VÀ SƠ ĐỒ HÌNH CÂY.",
+                    "normalized_match": null,
+                    "source_reference": null,
+                    "extensions": {}
+                  }
+                ],
+                "extensions": {}
+              },
+              "questions": 2
+            },
+            {
+              "label": {
+                "code": "DOC_EXERCISE_TYPE_a057e7ca13d2e23c",
+                "name": "MÔ TẢ CÔNG THỨC BAYES THÔNG QUA BẢNG DỮ LIỆU THỐNG KÊ 2X2 VÀ SƠ ĐỒ HÌNH CÂY.",
+                "canonical_code": null,
+                "parent_code": "DOC_LESSON_fc3ba5c0eace61d1",
+                "source_number": "2",
+                "source_label": "DẠNG 2: MÔ TẢ CÔNG THỨC BAYES THÔNG QUA BẢNG DỮ LIỆU THỐNG KÊ 2X2 VÀ SƠ ĐỒ HÌNH CÂY.",
+                "origin": "source",
+                "basis": "PRINTED_DOCUMENT_HEADING",
+                "evidence": [
+                  {
+                    "basis": "VISIBLE_NATIVE_PDF_HEADING",
+                    "field": null,
+                    "page_number": 42,
+                    "bbox": [
+                      42.636,
+                      257.892,
+                      535.092,
+                      284.76
+                    ],
+                    "block_ids": [
+                      "p0042-l0006",
+                      "p0042-l0007"
+                    ],
+                    "text": "DẠNG 2: MÔ TẢ CÔNG THỨC BAYES THÔNG QUA BẢNG DỮ LIỆU THỐNG KÊ 2X2 VÀ SƠ ĐỒ HÌNH CÂY.",
+                    "normalized_match": null,
+                    "source_reference": null,
+                    "extensions": {}
+                  }
+                ],
+                "extensions": {}
+              },
+              "questions": 2
+            },
+            {
+              "label": {
+                "code": "DOC_EXERCISE_TYPE_f5cd4cbbfe86d681",
+                "name": "CÔNG THỨC XÁC SUẤT TOÀN PHẦN VÀ CÔNG THỨC BAYES.",
+                "canonical_code": null,
+                "parent_code": "DOC_LESSON_fc3ba5c0eace61d1",
+                "source_number": "3",
+                "source_label": "DẠNG 3. CÔNG THỨC XÁC SUẤT TOÀN PHẦN VÀ CÔNG THỨC BAYES.",
+                "origin": "source",
+                "basis": "PRINTED_DOCUMENT_HEADING",
+                "evidence": [
+                  {
+                    "basis": "VISIBLE_NATIVE_PDF_HEADING",
+                    "field": null,
+                    "page_number": 45,
+                    "bbox": [
+                      42.636,
+                      386.172,
+                      449.364,
+                      399.552
+                    ],
+                    "block_ids": [
+                      "p0045-l0014"
+                    ],
+                    "text": "DẠNG 3. CÔNG THỨC XÁC SUẤT TOÀN PHẦN VÀ CÔNG THỨC BAYES.",
+                    "normalized_match": null,
+                    "source_reference": null,
+                    "extensions": {}
+                  }
+                ],
+                "extensions": {}
+              },
+              "questions": 7
+            },
+            {
+              "label": {
+                "code": "DOC_EXERCISE_TYPE_f775b45b5b22dde8",
+                "name": "CÁC BÀI TOÁN THỰC TẾ LIÊN QUAN ĐẾN CÔNG THỨC XÁC SUẤT TOÀN PHẦN.",
+                "canonical_code": null,
+                "parent_code": "DOC_LESSON_fc3ba5c0eace61d1",
+                "source_number": "4",
+                "source_label": "DẠNG 4. CÁC BÀI TOÁN THỰC TẾ LIÊN QUAN ĐẾN CÔNG THỨC XÁC SUẤT TOÀN PHẦN.",
+                "origin": "source",
+                "basis": "PRINTED_DOCUMENT_HEADING",
+                "evidence": [
+                  {
+                    "basis": "VISIBLE_NATIVE_PDF_HEADING",
+                    "field": null,
+                    "page_number": 50,
+                    "bbox": [
+                      42.636,
+                      43.152,
+                      516.348,
+                      70.068
+                    ],
+                    "block_ids": [
+                      "p0050-l0003",
+                      "p0050-l0004",
+                      "p0050-l0005",
+                      "p0050-l0006",
+                      "p0050-l0007",
+                      "p0050-l0008",
+                      "p0050-l0009",
+                      "p0050-l0010",
+                      "p0050-l0011",
+                      "p0050-l0012",
+                      "p0050-l0013"
+                    ],
+                    "text": "DẠNG 4. CÁC BÀI TOÁN THỰC TẾ LIÊN QUAN ĐẾN CÔNG THỨC XÁC SUẤT TOÀN PHẦN.",
+                    "normalized_match": null,
+                    "source_reference": null,
+                    "extensions": {}
+                  }
+                ],
+                "extensions": {}
+              },
+              "questions": 4
+            },
+            {
+              "label": {
+                "code": "DOC_EXERCISE_TYPE_92c96fea1ad5ebde",
+                "name": "CÁC BÀI TOÁN THỰC TẾ LIÊN QUAN ĐẾN CÔNG THỨC BAYES.",
+                "canonical_code": null,
+                "parent_code": "DOC_LESSON_fc3ba5c0eace61d1",
+                "source_number": "5",
+                "source_label": "DẠNG 5. CÁC BÀI TOÁN THỰC TẾ LIÊN QUAN ĐẾN CÔNG THỨC BAYES.",
+                "origin": "source",
+                "basis": "PRINTED_DOCUMENT_HEADING",
+                "evidence": [
+                  {
+                    "basis": "VISIBLE_NATIVE_PDF_HEADING",
+                    "field": null,
+                    "page_number": 53,
+                    "bbox": [
+                      42.636,
+                      43.152,
+                      460.404,
+                      56.532
+                    ],
+                    "block_ids": [
+                      "p0053-l0003",
+                      "p0053-l0004",
+                      "p0053-l0005",
+                      "p0053-l0006",
+                      "p0053-l0007",
+                      "p0053-l0008",
+                      "p0053-l0009",
+                      "p0053-l0010"
+                    ],
+                    "text": "DẠNG 5. CÁC BÀI TOÁN THỰC TẾ LIÊN QUAN ĐẾN CÔNG THỨC BAYES.",
+                    "normalized_match": null,
+                    "source_reference": null,
+                    "extensions": {}
+                  }
+                ],
+                "extensions": {}
+              },
+              "questions": 10
+            },
+            {
+              "label": null,
+              "questions": 25
+            }
+          ]
+        }
+      ],
+      "source_job": "ocr-direct-probability"
+    }
+  ],
+  "totals": {
+    "records": 2497,
+    "excluded_headings": 2,
+    "questions": 2495,
+    "primary_type": 1537,
+    "candidate_type_only": 211,
+    "no_type_evidence": 747,
+    "missing_primary_lesson": 562
+  }
+}

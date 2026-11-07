@@ -15,11 +15,18 @@ from ..native import mark_margins
 from ..storage import file_hash,read_json,write_json
 
 
-VERSION='pdfium-source-lines/v2'
+VERSION='pdfium-source-lines/v3'
 
 
 def extract_page(page, index, digest, dpi):
     width,height=page.get_size();tp=page.get_textpage();blocks=[];gs=[];text=[]
+    vx0,vy0,vx1,vy1=page.get_bbox()
+    rotation=page.get_rotation()
+    def visible(x,y):
+        if rotation==90:return y-vy0,x-vx0
+        if rotation==180:return vx1-x,y-vy0
+        if rotation==270:return vy1-y,vx1-x
+        return x-vx0,vy1-y
     def flush():
         nonlocal gs,text
         value=''.join(text).strip()
@@ -36,13 +43,17 @@ def extract_page(page, index, digest, dpi):
             if code in {10,13}:flush();continue
             if not code or code<32:continue
             replaced=0xD800<=code<=0xDFFF or code>0x10FFFF
-            char='\ufffd' if replaced else chr(code);text.append(char)
-            if char.isspace():continue
+            char='\ufffd' if replaced else chr(code)
+            if char.isspace():
+                if text:text.append(char)
+                continue
             try:left,bottom,right,top=tp.get_charbox(i)
             except pdfium.PdfiumError:continue
-            x0,x1=max(0,min(left,right)),min(width,max(left,right))
-            y0,y1=max(0,height-max(top,bottom)),min(height,height-min(top,bottom))
+            points=[visible(x,y) for x in (left,right) for y in (bottom,top)]
+            x0,x1=max(0,min(x for x,y in points)),min(width,max(x for x,y in points))
+            y0,y1=max(0,min(y for x,y in points)),min(height,max(y for x,y in points))
             if x1<=x0 or y1<=y0:continue
+            text.append(char)
             gs.append({'text':char,'bbox':[round(x0,3),round(y0,3),round(x1,3),round(y1,3)],
                 'font':'PDFium-font-unmapped','size':round(float(raw.FPDFText_GetFontSize(tp.raw,i)),3),'color':None})
             if replaced:gs[-1]['unicode_replaced']=True;gs[-1]['source_unicode_code']=hex(code)
@@ -53,7 +64,9 @@ def extract_page(page, index, digest, dpi):
     images=[]
     for obj in page.get_objects(filter=[raw.FPDF_PAGEOBJ_IMAGE]):
         left,bottom,right,top=obj.get_bounds()
-        box=[max(0,left),max(0,height-top),min(width,right),min(height,height-bottom)]
+        points=[visible(x,y) for x in (left,right) for y in (bottom,top)]
+        box=[max(0,min(x for x,y in points)),max(0,min(y for x,y in points)),
+             min(width,max(x for x,y in points)),min(height,max(y for x,y in points))]
         if box[2]>box[0] and box[3]>box[1]:images.append({'bbox':box})
     return {'schema_version':'page-document/v1','source_sha256':digest,'parser_id':VERSION,'parser_version':VERSION,
         'library_version':importlib.metadata.version('pypdfium2'),'page_number':index,'width':width,'height':height,

@@ -24,6 +24,7 @@ import { TeacherTheoryClient } from "@/features/theory-maps/TeacherTheoryClient"
 import { ClassroomExperience } from "./components/ClassroomExperience";
 import type { ViewMode } from "./components/Classroom3DPanel";
 import styles from "./TeacherDashboard.module.css";
+import { teacherPdfApi } from "./pdf-api";
 
 export type TabKey = "classes" | "materials" | "theory" | "submissions" | "analytics";
 
@@ -118,6 +119,22 @@ export function TeacherDashboardClient({
   const [uploadBusy, setUploadBusy] = useState(false);
   const [uploadError, setUploadError] = useState("");
   const [uploadSuccess, setUploadSuccess] = useState("");
+  const [pdfImportId, setPdfImportId] = useState("");
+
+  useEffect(() => {
+    const syncImport = () => setPdfImportId(new URLSearchParams(window.location.search).get("pdfImport") ?? "");
+    syncImport();
+    window.addEventListener("popstate", syncImport);
+    return () => window.removeEventListener("popstate", syncImport);
+  }, []);
+
+  function openPdfImport(id: string) {
+    setPdfImportId(id);
+    const url = new URL(window.location.href);
+    if (id) { url.searchParams.set("pdfImport", id); url.searchParams.set("tab", "materials"); url.searchParams.set("classroom_id", classId); }
+    else url.searchParams.delete("pdfImport");
+    window.history.replaceState({}, "", url.toString());
+  }
 
   // 1. Initial Load: Classes & Subjects
   useEffect(() => {
@@ -130,9 +147,10 @@ export function TeacherDashboardClient({
         if (!active) return;
         setClasses(nextClasses);
         setSubjects(nextSubjects);
-        setClassId((current) =>
-          nextClasses.some((item) => item.id === current) ? current : (nextClasses[0]?.id ?? ""),
-        );
+        setClassId((current) => {
+          const desired = current || new URLSearchParams(window.location.search).get("classroom_id");
+          return nextClasses.some((item) => item.id === desired) ? desired! : (nextClasses[0]?.id ?? "");
+        });
       })
       .catch((error) => {
         if (active) setInitialError(getErrorMessage(error));
@@ -274,6 +292,13 @@ export function TeacherDashboardClient({
     setUploadError("");
     setUploadSuccess("");
     try {
+      if (file.type === "application/pdf" || file.type.startsWith("image/") || /\.(pdf|png|jpe?g)$/i.test(file.name)) {
+        const draft = await teacherPdfApi.upload(classId, subjectId, title, file);
+        setIsUploadOpen(false);
+        handleSelectTab("materials");
+        openPdfImport(draft.id);
+        return;
+      }
       const created = await teacherApi.uploadMaterial(classId, subjectId, title, file);
       setMaterials((current) => [created, ...current]);
       setUploadSuccess(`Đã tải lên thành công: ${created.title}`);
@@ -283,6 +308,7 @@ export function TeacherDashboardClient({
       }, 1200);
     } catch (error) {
       setUploadError(getErrorMessage(error));
+      throw error;
     } finally {
       setUploadBusy(false);
     }
@@ -300,7 +326,8 @@ export function TeacherDashboardClient({
     handleSelectTab("submissions");
   }
 
-  const embedStationIn3D = viewMode3D === "3d" && worldViewMode !== "compact";
+  const isPdfReview = tab === "materials" && Boolean(pdfImportId);
+  const embedStationIn3D = !isPdfReview && viewMode3D === "3d" && worldViewMode !== "compact";
 
   const activeStationWorkspace =
     tab === "materials" ? (
@@ -310,6 +337,13 @@ export function TeacherDashboardClient({
         subjects={subjects}
         isLoading={classLoading}
         onOpenUpload={() => setIsUploadOpen(true)}
+        pdfImportId={pdfImportId}
+        onOpenPdfImport={openPdfImport}
+        onMaterialSubmitted={(created) => {
+          setMaterials((current) => [created, ...current.filter((m) => m.id !== created.id)]);
+          openPdfImport("");
+        }}
+        onMaterialDeleted={(id) => setMaterials((current) => current.filter((material) => material.id !== id))}
         onAssignmentCreated={(newAssignment) => {
           setAssignments((current) => [newAssignment, ...current]);
           setAssignmentId(newAssignment.id);
@@ -388,7 +422,7 @@ export function TeacherDashboardClient({
         )}
 
         {/* 2. Persistent 3D Cozy Campus Simulation World (Kept alive across all tab switches) */}
-        <div className={styles.persistentWorldWrap} data-view-mode={worldViewMode}>
+        {!isPdfReview && <div className={styles.persistentWorldWrap} data-view-mode={worldViewMode}>
           <ClassroomExperience
             students={students}
             selectedClass={selectedClass}
@@ -407,7 +441,7 @@ export function TeacherDashboardClient({
             onToggleViewMode={setWorldViewMode}
             stationWorkspace={embedStationIn3D ? activeStationWorkspace : null}
           />
-        </div>
+        </div>}
 
         {/* 3. Navigation Tabs (shown when in 2D list or compact mode) */}
         {!embedStationIn3D && (

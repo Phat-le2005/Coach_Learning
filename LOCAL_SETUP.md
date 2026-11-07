@@ -88,6 +88,103 @@ Không dùng `0.0.0.0` trong QR, không nhúng bearer token vào QR. QR hiện d
 trên laptop và cookie HttpOnly chỉ có quyền viết; điện thoại không phải đăng nhập
 tài khoản học sinh. Stroke operation ACK mới được coi là đã lưu. Relay hiện single-worker.
 
+## PDF bài tập trong kho học liệu giáo viên
+
+Tại `/teacher?tab=materials`, cùng nút tải tài liệu nhận **PDF, ảnh PNG/JPG/JPEG**
+để tạo bản nháp OCR; TXT vẫn đi theo luồng văn bản hiện có. Máy chủ gọi trực tiếp
+`tools/pdf_metadata/ocr_pdf_direct.ps1` (layout + OCR + kiểm tra chất lượng hiện có),
+chạy nền và giữ checkpoint. Giáo viên mở bản nháp, đối chiếu PDF/ảnh vùng nguồn,
+sửa nội dung/đáp án/lời giải, tích duyệt từng câu và chọn **Lưu … câu vào kho**.
+Các câu chưa duyệt được giữ trong bản nháp, không trở thành câu hỏi trong kho.
+TXT vẫn dùng luồng tải tài liệu văn bản hiện có.
+
+Ảnh gốc được giữ để đối chiếu, kiểm tra định dạng thực và hướng EXIF; ảnh được
+bọc thành PDF một trang với pixel nén không mất dữ liệu rồi đi qua cùng pipeline.
+Giới hạn upload 25 MB, ảnh tối đa 25 triệu pixel; PNG có nền trong suốt được đọc
+trên nền trắng. Ảnh chưa có nhãn Câu/Bài được đưa thành một ứng viên cần giáo viên
+kiểm tra ranh giới và tách đáp án/lời giải bằng phần chỉnh sửa. Không tự sinh đáp án.
+
+Mỗi thẻ tài liệu có nút **Xóa** và hộp xác nhận tên tài liệu. Xóa gỡ tài liệu khỏi
+kho, chặn tải/xem/sửa và giao mới. Bài đã giao, bài làm, bản snapshot và ảnh nguồn
+mà bản chỉnh sửa khác đang sử dụng được giữ nguyên. Cơ chế này dùng trạng thái
+`ARCHIVED`, không xóa vật lý các hàng/tệp vẫn cần cho lịch sử bài tập. API DELETE
+kiểm tra quyền giáo viên trong lớp và gọi lại nhiều lần vẫn trả 204.
+
+Mỗi câu có nút **Chỉnh sửa câu hỏi** để sửa đề bài, đáp án và lời giải, kèm bản
+xem trước công thức. Gõ chữ trực tiếp; bấm vào công thức đang có hoặc chọn
+**Chèn công thức** để mở trình soạn trực quan. Bảng có tìm kiếm tiếng Việt,
+các nhóm phân số/căn/lũy thừa, đạo hàm/tích phân, hàm/lượng giác, quan hệ/tập hợp,
+hình học/xác suất, chữ Hy Lạp và chữ/số. Chọn mẫu, điền các ô trống bằng bàn phím
+hoặc các nút số/chữ rồi chèn; LaTeX được tạo tự động. Phần mã chỉ nằm trong mục
+tùy chọn cho người muốn dùng. MathLive được ghim phiên bản trong `package.json`,
+font được đóng gói cùng frontend; trình soạn không cần CDN hoặc dịch vụ AI.
+Kiểm thử danh mục ký hiệu và bảo toàn nội dung: `cd frontend; npm.cmd run test:teacher-math`.
+Nội dung đã sửa phải được tích duyệt lại. Chọn một trong bốn
+mức **Nhận biết / Thông hiểu / Vận dụng / Vận dụng cao** cho mỗi câu được giữ lại;
+bản nháp có thể để **Chưa phân loại**, nhưng khi lưu vào kho phải chọn đủ mức.
+Mức giáo viên chọn được lưu cùng bản nháp, tệp đã duyệt và metadata câu hỏi;
+được quy đổi sang thang difficulty hiện có lần lượt 0.25 / 0.5 / 0.75 / 1.0.
+Không tự gán độ khó khi OCR không cung cấp mức hợp lệ.
+
+Tài liệu đã lưu có đường **Xem nguồn / Chỉnh sửa** → **Chỉnh sửa & phân loại
+câu hỏi**. Hệ thống tạo bản nháp chỉnh sửa từ nội dung đã duyệt, dùng lại OCR và
+ảnh nguồn; khi lưu sẽ tạo tài liệu mới, giữ nguyên tài liệu cũ và bài đã giao.
+Mở lại cùng một tài liệu sẽ tiếp tục bản nháp chỉnh sửa đang có.
+
+Runtime PDF được thiết lập riêng theo [hướng dẫn công cụ](tools/pdf_metadata/README.md).
+Ứng dụng không tải model hoặc cài dependency khi người dùng tải PDF. Cấu hình trong
+`backend/.env`, rồi khởi động lại backend:
+
+```ini
+# Dùng đường dẫn runtime thực tế đã thiết lập trên máy của bạn.
+TEACHER_PDF_RUNTIME_DIR=C:/CoachLearningPdf/pdf-pipeline-runtime
+TEACHER_PDF_DEVICE=CPU
+TEACHER_PDF_PORT=8790
+```
+
+Mặc định runtime là `.tmp/pdf-pipeline-runtime` tại root repo; thư mục bản nháp,
+PDF nguồn, checkpoint và log là `.tmp/teacher-pdf-imports`. Có thể đổi bằng
+`TEACHER_PDF_IMPORT_DIR` với đường dẫn tuyệt đối. Đây là luồng Windows/PowerShell
+và runtime local hiện có của công cụ; thiếu runtime trả lỗi cấu hình rõ ràng.
+Chọn `GPU` khi runtime CUDA đã được thiết lập, không tự cài CUDA từ luồng upload.
+
+Khi Qwen đã chạy, công cụ tái sử dụng đúng PID, cổng và profile đã ghi nhận.
+Nếu quyền của worker web không cho đọc đường dẫn tiến trình qua CIM, công cụ
+đối chiếu trạng thái runtime và xác thực model qua khóa API local trước khi dùng
+lại. Không nhận một tiến trình chỉ vì cổng đang mở, và không dừng model được nối
+qua cơ chế này. Lỗi kết nối/profile được hiển thị riêng trong bản nháp OCR.
+
+Bản đã duyệt được lưu thành **một tệp `.reviewed.json`**, gồm các câu đã chọn,
+nội dung giáo viên sửa, đáp án/lời giải, thông tin nguồn và ảnh minh họa nhúng;
+đồng thời lưu các câu này vào `teacher_material_items` để xem và giao cho lớp.
+Nút **Tải bản đã duyệt** tải tệp này. PDF gốc được giữ riêng để đối chiếu,
+không phải bản đã lọc. Trạng thái đã duyệt do giáo viên xác nhận, không đồng nghĩa
+OCR tự đánh giá tính đúng sai hoặc tự bật chấm đáp án khách quan.
+
+Bản nháp thuộc giáo viên tải lên và lớp được phân quyền. Lưu nháp giữ cả quyết định
+và phần sửa để mở lại sau. Tác vụ OCR dùng khóa file để tuần tự hóa model; sau khi
+backend khởi động lại, bấm **Tiếp tục xử lý** hoặc **Thử lại OCR** để dùng checkpoint.
+Khi triển khai, giữ thư mục bản nháp và kho tệp trên ổ đĩa bền vững dùng chung cho
+các worker; phiên bản này không có hàng đợi tác vụ phân tán. Không xóa thư mục bản
+nháp nếu tài liệu đã duyệt còn tham chiếu ảnh nguồn.
+
+Kiểm tra độc lập, không dùng database học sinh:
+
+```powershell
+cd backend
+.venv/Scripts/python.exe -m pytest tests/teacher_materials -q
+cd ../frontend
+npm.cmd run typecheck
+npm.cmd run test:compile
+node --test .test-build-run/tests/teacher-api.test.js .test-build-run/tests/theory-api.test.js
+npx.cmd playwright test --config playwright.pdf-review.config.ts
+```
+
+Kiểm thử trình duyệt dùng Next server riêng trên port 3106, phiên giáo viên test
+tạm thời và phản hồi API cố định; kiểm thử backend dùng SQLite riêng. Không dùng
+mô hình giả để xử lý upload thật. Chưa đo lại độ chính xác OCR toàn bộ sách bằng
+luồng tích hợp này.
+
 ## OCR Research Lab trong cùng ứng dụng
 
 ```powershell
