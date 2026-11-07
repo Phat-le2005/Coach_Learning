@@ -18,10 +18,14 @@ def publish_preview(output, pages, content, assets, source, unassigned):
     data = {'source': source, 'questions': [{
                 'number': c['collection_number'], 'id': c['question_id'],
                 **{role: c[role]['markdown'] for role in ['question', 'solution', 'answer']},
+                'source_assets': [{'role': role, 'page': f['page_number'], 'path': f['source_asset']}
+                                  for role in ['question', 'solution', 'answer'] for f in c[role]['fragments']
+                                  if any(b['kind'] == 'TEXT' for b in f['blocks'])],
                 'visual_assets': c.get('visual_assets', [])} for c in content],
             'pages': [{'number': p['page_number'], 'markdown': p['native_text_from_this_pdf'] + '\n\n' + p['markdown']}
                       for p in pages], 'visual_assets': assets, 'unassigned_fragments': len(unassigned),
-            'failed_regions': sum(r.get('status') == 'INCOMPLETE' for p in pages for r in p['regions'])}
+            'failed_regions': sum(r.get('status') == 'INCOMPLETE' for p in pages for r in p['regions']),
+            'review_regions': sum(r.get('status') == 'REVIEW_REQUIRED' for p in pages for r in p['regions'])}
     payload = json.dumps(data, ensure_ascii=False).replace('&', '\\u0026').replace('<', '\\u003c').replace('>', '\\u003e')
     payload = payload.replace('\u2028', '\\u2028').replace('\u2029', '\\u2029')
     template = Path(__file__).with_name('direct_pdf_review.html').read_text(encoding='utf-8')

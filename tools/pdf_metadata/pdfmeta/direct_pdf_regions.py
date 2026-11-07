@@ -35,7 +35,7 @@ def reading_order(nodes):
                 gaps.append((start - end, (start + end) / 2))
             end = max(end, stop)
         if gaps:
-            cut = max(gaps)[1]
+            cut = max(gaps)[1] if axis == 0 else min(gaps, key=lambda g: g[1])[1]
             first = [n for n in nodes if n['bbox'][axis + 2] <= cut]
             second = [n for n in nodes if n['bbox'][axis] >= cut]
             if first and second and len(first) + len(second) == len(nodes):
@@ -98,12 +98,13 @@ def visual_regions(image, detections, dpi):
             # Titles above a figure are often printed question labels. Keep those
             # as text; only compact captions underneath are owned by the visual.
             if (title[1] >= b[3] - padding and gap < 12 * dpi / 72
-                    and title[3] - title[1] < .3 * (b[3] - b[1])
+                    and title[3] - title[1] < max(.3 * (b[3] - b[1]), 16 * dpi / 72)
                     and title[2] - title[0] < .9 * (b[2] - b[0])
                     and horizontal_overlap > .5 * min(b[2] - b[0], title[2] - title[0])):
                 b = [min(b[0], title[0]), min(b[1], title[1]), max(b[2], title[2]), max(b[3], title[3])]
-        candidate['bbox'] = [max(0, int(b[0]) - padding), max(0, int(b[1]) - padding),
-                             min(width, int(np.ceil(b[2])) + padding), min(height, int(np.ceil(b[3])) + padding)]
+        margin = 2 if candidate['detector'].startswith('RASTER_INK_GRID') else padding
+        candidate['bbox'] = [max(0, int(b[0]) - margin), max(0, int(b[1]) - margin),
+                             min(width, int(np.ceil(b[2])) + margin), min(height, int(np.ceil(b[3])) + margin)]
     # Slightly touching padding is owned by one visual region; mark real overlap.
     for i, candidate in enumerate(merged):
         for other in merged[i + 1:]:
@@ -144,6 +145,40 @@ def plan_visual_regions(image, detections, dpi):
                     if start - end > .025 * (right - left):
                         cuts.append((start - end, (start + end) / 2))
                     end = max(end, stop)
+            if cuts:
+                def flows_vertically(boxes):
+                    # One short item beside a larger block is an inline choice,
+                    # not evidence of a document column. Two separate lines or
+                    # a genuine multiline paragraph can establish column flow.
+                    if any(b[3] - b[1] >= 24 * dpi / 72 for b in boxes):
+                        return True
+                    return any(min(a[3], b[3]) <= max(a[1], b[1])
+                               for i, a in enumerate(boxes) for b in boxes[i + 1:])
+
+                column_cuts = [c for c in cuts
+                               if flows_vertically([b for b in hints if b[2] <= c[1]])
+                               and flows_vertically([b for b in hints if b[0] >= c[1]])]
+                if not column_cuts:
+                    # Read a row of short side-by-side items before the material
+                    # underneath. Split only at an observed blank horizontal gap,
+                    # so a right-hand item cannot follow the solution below it.
+                    cut = max(cuts)[1]
+                    sides = [[b for b in hints if b[2] <= cut],
+                             [b for b in hints if b[0] >= cut]]
+                    isolated = [b for side in sides if side and not flows_vertically(side) for b in side]
+                    if isolated:
+                        row_bottom = max(b[3] for b in isolated)
+                        following = [b[1] for b in hints if b[1] > row_bottom]
+                        if following:
+                            boundary = round((row_bottom + min(following)) / 2)
+                            stripe = np.asarray(image.crop((left, boundary - 1, right, boundary + 2)).convert('L'))
+                            if top < boundary < bottom and not (stripe < 175).any():
+                                add_text((left, top, right, boundary), False)
+                                add_text((left, boundary, right, bottom), True)
+                                return
+                    cuts = []
+                else:
+                    cuts = column_cuts
             if cuts:
                 cut = round(max(cuts)[1])
                 spanning = sorted((max(top, int(b[1])), min(bottom, int(np.ceil(b[3])))) for b in hints if b[0] < cut < b[2])

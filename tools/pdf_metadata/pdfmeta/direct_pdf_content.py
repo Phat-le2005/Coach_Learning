@@ -6,7 +6,7 @@ not falsely precise glyphs. Unlabelled material remains available separately.
 import re
 
 from .section_markers import hint
-from .storage import write_json, write_jsonl
+from .storage import read_json, write_json, write_jsonl
 from .paired.transcription_v2.exports import atomic_text, compact_content
 from .direct_pdf_preview import publish_preview
 
@@ -45,11 +45,18 @@ def empty_part():
 def export_content(output, pages, source):
     records, unassigned = [], []
     assets = {}
+    if (output / 'layout.json').exists():
+        layout = read_json(output / 'layout.json')
+        if layout.get('input_sha256') == source['sha256']:
+            assets = {n['visual_asset']['id']: dict(n['visual_asset']) for r in layout['regions']
+                      for n in r['nodes'] if n.get('visual_asset')}
     current, role = None, None
+    previous_page = None
     for page in pages:
+        if previous_page is not None and page['page_number'] != previous_page + 1:
+            current, role = None, None
+        previous_page = page['page_number']
         for region in page['regions']:
-            if region.get('image_mode'):
-                current, role = None, None
             for block in region.get('blocks', []):
                 if block.get('visual_asset'):
                     assets[block['asset_id']] = dict(block['visual_asset'])
@@ -71,24 +78,28 @@ def export_content(output, pages, source):
                         role = 'question'
                     elif label:
                         role = label
-                    # A full page can continue across regions, but a new embedded
-                    # exercise image must contain its own question/continuation label.
+                    # Unlabelled text and visuals continue the active part across
+                    # consecutive pages and embedded image boundaries. Only a
+                    # printed label changes the question/role; a page gap resets it.
                     if current is None or role is None:
                         unassigned.append({'page_number': page['page_number'], 'block': block, 'markdown': text})
                         continue
                     part = current['parts'][role]
                     span = {'page_number': page['page_number'], 'bbox': block['bbox'], 'block_ids': [],
-                            'column': None, 'layout_method': 'DIRECT_VISUAL_OCR_CROP'}
+                            'column': None, 'layout_method': 'PRESERVED_VISUAL_SOURCE' if block['kind'] == 'VISUAL' else 'DIRECT_VISUAL_OCR_CROP'}
                     fragment = {'page_number': page['page_number'], 'bbox': block['bbox'],
                                 'source_asset': block['source_image'], 'source_asset_sha256': block['source_image_sha256'],
                                 'markdown': text, 'choices': [],
                                 'blocks': [{'kind': block['kind'], 'bbox': block['bbox'], 'markdown': text,
                                             **({'asset_id': block['asset_id']} if block.get('asset_id') else {})}],
-                                'coverage': {'method': 'RASTER_CROP_OCR_NOT_GLYPH_COVERAGE',
+                                'coverage': {'method': 'SOURCE_IMAGE_PRESERVATION' if block['kind'] == 'VISUAL' else 'RASTER_CROP_OCR_NOT_GLYPH_COVERAGE',
                                              'complete_formula_recall_established': False},
                                 'source_errors': block.get('errors', []),
-                                'visual_flags': ['OCR_NOT_SOURCE_VERIFIED', 'ROLE_BOUNDARY_HEURISTIC'],
-                                'status': block['status']}
+                                'visual_flags': [('SOURCE_VISUAL_PRESERVED' if block['kind'] == 'VISUAL' else 'OCR_NOT_SOURCE_VERIFIED'),
+                                                 'ROLE_BOUNDARY_HEURISTIC', *block.get('flags', []),
+                                                 *(['VISUAL_BOUNDARY_REVIEW_REQUIRED'] if block['kind'] == 'VISUAL' and block.get('uncertain') else [])],
+                                'status': block['status'],
+                                **({'quality_audit': block['quality_audit']} if block.get('quality_audit') else {})}
                     part['source_spans'].append(span)
                     part['fragments'].append(fragment)
                     if block.get('visual_asset'):

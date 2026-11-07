@@ -22,6 +22,11 @@ function safeAsset(path){
  const base=new URL('./',location.href),url=new URL(path,base);
  return url.protocol===base.protocol&&url.host===base.host&&url.pathname.startsWith(base.pathname)?url.href:null;
 }
+function mathStrictness(code){
+ // OCR preserves Vietnamese inside \text{}. KaTeX can display Unicode using
+ // browser font fallback even when its own symbol metrics are unavailable.
+ return code==='unknownSymbol'?'ignore':'error';
+}
 function rich(markdown){
  const box=el('div');box.className='rich';
  const text=markdown||'',pattern=/!\[([^\]]*)\]\(([^)]+)\)|\$\$([\s\S]+?)\$\$|\$([^$\n]+)\$/g;let last=0;
@@ -33,7 +38,7 @@ function rich(markdown){
    else box.append(document.createTextNode('[Đường dẫn ảnh không hợp lệ]'));
   }else{
    const math=el('span');math.className='math';
-   try{if(!window.katex)throw Error('KaTeX chưa có');katex.render(m[3]||m[4],math,{displayMode:m[3]!==undefined,throwOnError:true,trust:false,strict:'error',maxExpand:100,maxSize:20});}
+   try{if(!window.katex)throw Error('KaTeX chưa có');katex.render(m[3]||m[4],math,{displayMode:m[3]!==undefined,throwOnError:true,trust:false,strict:mathStrictness,maxExpand:100,maxSize:20});}
    catch(error){math.textContent=m[0];math.title='Công thức cần đối chiếu nguồn';}
    box.append(math);
   }
@@ -50,12 +55,13 @@ function render(){
  main.append(el('h2',(mode==='questions'?'Câu ':'Trang ')+row.number));
  if(mode==='pages'){main.append(rich(row.markdown));return;}
  for(const [role,label] of [['question','Đề bài'],['solution','Lời giải'],['answer','Đáp án ghi riêng']]){if(row[role])main.append(el('h2',label),rich(row[role]));}
+ if(row.source_assets?.length){const details=el('details');details.append(el('summary','Đối chiếu các vùng chữ gốc'));for(const [i,asset]of row.source_assets.entries()){const url=safeAsset(asset.path);if(url){const line=el('p'),link=el('a','Trang '+asset.page+' · Vùng '+(i+1));link.href=url;link.target='_blank';link.rel='noopener';line.append(link);details.append(line);}}main.append(details);}
 }
 document.addEventListener('DOMContentLoaded',()=>{
  $('source').textContent=data.source.name;
- $('stats').textContent=data.pages.length+' trang · '+data.questions.length+' câu · '+data.visual_assets.length+' ảnh được giữ';
+ $('stats').textContent=data.pages.length+'/'+(data.source.page_count||data.pages.length)+' trang · '+data.questions.length+' câu · '+data.visual_assets.length+' ảnh được giữ';
  $('unassigned').textContent=data.unassigned_fragments+' phần chưa ghép câu; xem trong chế độ Trang PDF.';
- if(data.failed_regions){$('notice').textContent='Còn '+data.failed_regions+' vùng chưa xử lý xong. Xem failures.json.';$('notice').className='warning';}
+ if(data.failed_regions||data.review_regions){$('notice').textContent='Còn '+data.failed_regions+' vùng lỗi và '+data.review_regions+' vùng cần đối chiếu. Xem summary.json / failures.json.';$('notice').className='warning';}
  if(!data.questions.length)$('mode').value='pages';
  $('mode').onchange=()=>{selected=0;render();};render();
 });
