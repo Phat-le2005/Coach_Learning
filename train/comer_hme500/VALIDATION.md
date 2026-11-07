@@ -1,6 +1,6 @@
 # Kết quả kiểm tra kit · cập nhật 2026-11-07
 
-Đã thực thi trên Windows/Python 3.13.3, torch 2.9.0+cpu, torchvision 0.24.0+cpu, W&B SDK 0.22.3. **Chưa chạy full 400 train trên GPU Kaggle, chưa tạo run W&B online.** Secret chỉ có trong tài khoản Kaggle của người dùng; kit không chứa key.
+Các kiểm tra local ban đầu dùng Windows/Python 3.13.3, torch 2.9.0+cpu, torchvision 0.24.0+cpu, W&B SDK 0.22.3. Kit không chứa key. Những giới hạn GPU/cloud bên dưới mô tả QA local tại thời điểm đó; mục cuối ghi nhận log Kaggle do người dùng cung cấp sau này, tách khỏi kiểm tra được thực thi tại máy local.
 
 | Kiểm tra thực tế | Kết quả |
 |---|---|
@@ -77,3 +77,11 @@ python tests/qa_distributed.py --data /path/CoachLearning_500_HME100K \
 ```
 
 Trên Kaggle, chọn **T4 x2**, chạy một trial mới bằng `bash scripts/run_kaggle.sh new v3`. Kiểm `runtime.json` (`world_size=2`, hai tên GPU), `rank-samples-NNN.json` và GPU system metrics trong W&B để xác nhận phiên thật. Hai run so sánh `-before`/`-after` chỉ đánh giá sau khi best được chọn bằng validation.
+
+## Rà soát lỗi validation và log Kaggle · 2026-11-07
+
+Đã chạy **43/43 unit tests** trên môi trường local W&B 0.26.0/Protobuf 7.35.1, gồm bảo vệ validation khỏi mẫu test, kiểm checksum ảnh/metadata, giữ ghi chú CSV, escape HTML, kiểm ZIP và điều phối Bash không gọi train/setup. `hme_comer.review` chỉ dùng standard library; import trong tiến trình mới không nạp torch hoặc W&B.
+
+Đã thực thi xuất HTML/CSV/JSON/ZIP trên kết quả QA cũ có 2 JPEG validation thật. HTML nhúng nguyên byte ảnh; ZIP có checksum cho cả ba báo cáo. Đây chỉ là kiểm tra chức năng xuất báo cáo, chưa phải phân tích 25 lỗi validation của run Kaggle vì các file dự đoán đó còn trên tài khoản người dùng.
+
+Log Kaggle người dùng cung cấp cho trial `r003` xác nhận train với `2 workers`, W&B online đã sync, dừng sớm tại epoch 21 dù cấu hình tối đa 30. Checkpoint được chọn vẫn ở epoch 15: validation exact match 25/50 (50%), loss 0.2693368130, CER 0.0924317618. Log trial này không có final test; không gán kết quả test của trial trước sang trial mới. Log chưa chứng minh DDP resume parity hoặc kiểm định độc lập trên dữ liệu ngoài HME500.

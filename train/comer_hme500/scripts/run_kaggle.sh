@@ -16,12 +16,14 @@ Usage:
   bash scripts/run_kaggle.sh all CONFIG.json [--resume /path/last.pt]
   bash scripts/run_kaggle.sh new v2|v3 [--data /path/dataset] [--epochs 20]
   bash scripts/run_kaggle.sh compare OUTPUT_DIR [--sync-only]
+  bash scripts/run_kaggle.sh review OUTPUT_DIR [--data DATASET_DIR] [--epoch 15]
 
 setup: install dependencies, unit tests, download/verify official CoMER checkpoint.
 train: baseline + fine-tune + validation + W&B + evidence ZIP (no test).
 test: evaluate selected best.pt; --sync-only uploads an existing test record.
 all: setup + train + final test. Set RUN_FINAL_TEST=0 to keep test held out.
 new v2: new auto-named 2-GPU fine-tune. new v3: 2-GPU + matched before/after evaluation.
+review: offline HTML/CSV review of validation errors; no training, test inference or W&B run.
 Credentials: WANDB_API_KEY inherited from Kaggle's Python os.environ.
 PYTHON_BIN can select an existing Python interpreter; CUDA torch is not replaced.
 HELP
@@ -63,6 +65,11 @@ case "$ACTION" in
     if (( $# < 1 )); then usage >&2; exit 2; fi
     OUTPUT_DIR="$1"; shift
     "$PYTHON_BIN" -m hme_comer.compare --output "$OUTPUT_DIR" "$@"
+    ;;
+  review)
+    if (( $# < 1 )); then usage >&2; exit 2; fi
+    OUTPUT_DIR="$1"; shift
+    "$PYTHON_BIN" -m hme_comer.review --output "$OUTPUT_DIR" "$@"
     ;;
   all)
     if (( $# < 1 )); then usage >&2; exit 2; fi
