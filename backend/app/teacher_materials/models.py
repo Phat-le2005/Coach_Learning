@@ -71,6 +71,16 @@ class TeacherMaterial(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
     items: Mapped[list["TeacherMaterialItem"]] = relationship(back_populates="material", cascade="all, delete-orphan", passive_deletes=True, order_by="TeacherMaterialItem.order_index")
 
+    @property
+    def pdf_import_id(self) -> UUID | None:
+        parts = self.storage_key.split("/")
+        if self.mime_type == "application/json" and len(parts) == 3 and parts[-1] == "reviewed.json":
+            try:
+                return UUID(parts[1])
+            except ValueError:
+                pass
+        return None
+
 
 class TeacherMaterialItem(Base):
     __tablename__ = "teacher_material_items"
