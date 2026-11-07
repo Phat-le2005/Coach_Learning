@@ -1,0 +1,9 @@
+# Keep Kaggle's preinstalled CUDA torch/torchvision pair. Never install CPU torch here.
+einops==0.8.1
+pytorch-lightning==2.5.5
+torchmetrics==1.8.2
+wandb==0.22.3
+matplotlib==3.10.7
+numpy>=1.26,<3
+Pillow>=10,<12
+opencv-python-headless>=4.8,<5
