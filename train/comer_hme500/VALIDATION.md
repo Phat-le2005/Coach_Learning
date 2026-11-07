@@ -85,3 +85,11 @@ Trên Kaggle, chọn **T4 x2**, chạy một trial mới bằng `bash scripts/ru
 Đã thực thi xuất HTML/CSV/JSON/ZIP trên kết quả QA cũ có 2 JPEG validation thật. HTML nhúng nguyên byte ảnh; ZIP có checksum cho cả ba báo cáo. Đây chỉ là kiểm tra chức năng xuất báo cáo, chưa phải phân tích 25 lỗi validation của run Kaggle vì các file dự đoán đó còn trên tài khoản người dùng.
 
 Log Kaggle người dùng cung cấp cho trial `r003` xác nhận train với `2 workers`, W&B online đã sync, dừng sớm tại epoch 21 dù cấu hình tối đa 30. Checkpoint được chọn vẫn ở epoch 15: validation exact match 25/50 (50%), loss 0.2693368130, CER 0.0924317618. Log trial này không có final test; không gán kết quả test của trial trước sang trial mới. Log chưa chứng minh DDP resume parity hoặc kiểm định độc lập trên dữ liệu ngoài HME500.
+
+## v4 local CUDA và W&B online · 2026-11-07
+
+Đã kiểm tra trên **RTX 3050 Ti Laptop 4 GB**, PyTorch 2.9.0+cu126, torchvision 0.24.0+cu126, Python 3.13.3, W&B 0.26.0. CUDA thực thi phép toán tensor và forward/backward thật. Cả **46/46 unit tests pass**, gồm Otsu loại nền giấy trong tensor, giữ nguyên byte JPEG, áp dụng cùng phương pháp cho mọi split và ràng buộc preprocessing trong resume/evaluation.
+
+Đã chạy online QA với 4 JPEG train/2 validation, 2 epoch freeze/unfreeze: 8 lần thử cập nhật, **7 optimizer steps thành công**, tạo curves, bảng ảnh, checkpoint và upload W&B thành công vào project hiện có. Bản QA đầu chỉ có 2 lần thử cập nhật và cả hai bị AMP overflow; runner chặn full training. v4 dùng AMP initial scale 1024 và QA accumulation 1 để xác minh cập nhật trước khi full run dùng accumulation 16. v1/v2/v3 giữ initial scale mặc định 65536.
+
+Runner local dùng input ẩn hoặc WANDB_API_KEY trong môi trường; không đưa key vào argv/config/source. Đã kiểm tra không có token marker trong text artifacts local. Thử nghiệm và model/evaluation outputs lưu tại `.tmp/`, không commit lên Git. QA chỉ chứng minh chức năng chạy GPU/upload, không được dùng làm điểm chất lượng của bộ 500 ảnh. Kết quả nhận dạng đầy đủ phải đọc từ summary/comparison và ZIP của từng trial, không suy ra từ bản QA nhỏ.
