@@ -187,11 +187,27 @@
 }
 
 .stage {
-  height: clamp(600px, 52vw, 780px);
+  height: clamp(500px, 64vh, 720px);
   position: relative;
   isolation: isolate;
   overflow: hidden;
   width: 100%;
+  transition: height 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+}
+
+.stage[data-view-mode="full"] {
+  height: clamp(580px, 74vh, 860px);
+}
+
+.stage[data-view-mode="normal"] {
+  height: clamp(500px, 64vh, 720px);
+}
+
+.stage[data-view-mode="compact"] {
+  height: 0px;
+  min-height: 0;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .stage canvas {
@@ -612,4 +628,964 @@
   .fill {
     transition: none;
   }
+}
+
+/* ==========================================================================
+   Cozy Campus 3D Simulation RPG HUD & Station Controls
+   ========================================================================== */
+
+.compactBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.65rem 1.25rem;
+  background: linear-gradient(135deg, rgba(255, 253, 246, 0.95) 0%, rgba(244, 248, 242, 0.95) 100%);
+  border: 1px solid rgba(40, 105, 85, 0.16);
+  border-radius: 18px;
+  box-shadow: 0 4px 16px rgba(16, 46, 38, 0.05);
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.compactInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.compactInfo > svg {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+
+.compactStation {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.compactStationTag {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--verdant-700, #286955);
+}
+
+.compactStation strong {
+  font-size: 0.92rem;
+  color: var(--verdant-950, #102e26);
+}
+
+.compactExpandBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: var(--surface-elevated, #ffffff);
+  border: 1px solid rgba(40, 105, 85, 0.2);
+  border-radius: 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--verdant-800, #1b5343);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.compactExpandBtn:hover {
+  background: var(--mint-100, #e6f4ec);
+  border-color: var(--verdant-600, #235c4a);
+  transform: translateY(-1px);
+}
+
+/* Station Quick Bar */
+.stationQuickBar {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(40, 105, 85, 0.14);
+  border-radius: 14px;
+  padding: 4px;
+  backdrop-filter: blur(8px);
+}
+
+.stationPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border-radius: 10px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-secondary, #52675d);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+
+.stationPill:hover {
+  background: rgba(40, 105, 85, 0.08);
+  color: var(--verdant-950, #102e26);
+}
+
+.stationPillActive {
+  background: linear-gradient(135deg, #173f34 0%, #286955 100%) !important;
+  color: #ffffff !important;
+  border-color: rgba(23, 63, 52, 0.3) !important;
+  box-shadow: 0 2px 8px rgba(23, 63, 52, 0.22);
+}
+
+.stationPillText {
+  display: inline;
+}
+
+.stationPillDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #a3e635;
+  box-shadow: 0 0 6px #a3e635;
+}
+
+/* View Mode Segmented Controls */
+.viewModeGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  background: var(--surface-muted, #f0f4ef);
+  border: 1px solid rgba(40, 105, 85, 0.12);
+  border-radius: 10px;
+  padding: 2px;
+}
+
+.viewModeBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
+  font-size: 0.74rem;
+  font-weight: 650;
+  color: var(--text-secondary, #52675d);
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.viewModeBtn:hover {
+  color: var(--verdant-900, #173f34);
+}
+
+.viewModeBtnActive {
+  background: var(--surface-elevated, #ffffff);
+  color: var(--verdant-800, #1b5343);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  font-weight: 750;
+}
+
+/* Floating Station HUD Badge inside 3D canvas */
+.floatingStationBadge {
+  position: absolute;
+  top: 14px;
+  left: 16px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(40, 105, 85, 0.2);
+  border-radius: 14px;
+  box-shadow: 0 4px 18px rgba(16, 46, 38, 0.08);
+  backdrop-filter: blur(12px);
+  pointer-events: none;
+  animation: fadeInStationBadge 0.35s ease;
+}
+
+@keyframes fadeInStationBadge {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.badgeIcon {
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.badgeText {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.badgeSub {
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--verdant-700, #286955);
+}
+
+.badgeTitle {
+  font-size: 0.82rem;
+  font-weight: 750;
+  color: var(--verdant-950, #102e26);
+}
+
+
+.floatingStationBadge {
+  z-index: 6;
+  pointer-events: auto;
+}
+
+.reopenBookBtn {
+  margin-left: 6px;
+  padding: 4px 10px;
+  border-radius: 9px;
+  border: 1px solid rgba(23, 63, 52, 0.25);
+  background: linear-gradient(135deg, #173f34 0%, #286955 100%);
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.reopenBookBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(23, 63, 52, 0.25);
+}
+
+.backToAisleMiniBtn {
+  padding: 4px 9px;
+  border-radius: 9px;
+  border: 1px solid rgba(40, 105, 85, 0.2);
+  background: rgba(244, 248, 242, 0.9);
+  color: var(--verdant-800, #1b5343);
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.18s ease;
+}
+
+.backToAisleMiniBtn:hover {
+  background: #e6f4ec;
+}
+
+/* Visually hide floating seat labels on the 3D scene so characters & desks stay 100% clean (use Right Roster List or Hover instead!) */
+.stage[data-scene-state="ready"] .seatLabel {
+  opacity: 0;
+}
+
+.stage[data-scene-state="ready"] .seatLabel:focus-visible {
+  opacity: 1;
+}
+
+.seatLabels[data-station]:not([data-station="classes"]) {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s ease;
+}
+
+/* Collapsible Right-Side Student Roster Drawer */
+.rosterDrawerWrap {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  z-index: 7;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  pointer-events: auto;
+}
+
+.rosterToggleBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: rgba(255, 253, 248, 0.94);
+  border: 1.5px solid rgba(40, 105, 85, 0.24);
+  color: var(--verdant-950, #102e26);
+  font-size: 0.78rem;
+  font-weight: 800;
+  box-shadow: 0 6px 20px rgba(16, 46, 38, 0.14);
+  backdrop-filter: blur(12px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.rosterToggleBtn:hover {
+  background: #ffffff;
+  border-color: var(--verdant-700, #286955);
+  transform: translateY(-1px);
+}
+
+.rosterDrawerBody {
+  width: 260px;
+  max-height: 360px;
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 253, 248, 0.95);
+  border: 1.5px solid rgba(40, 105, 85, 0.24);
+  border-radius: 18px;
+  box-shadow: 0 14px 36px rgba(16, 46, 38, 0.2);
+  backdrop-filter: blur(14px);
+  overflow: hidden;
+  animation: fadeInStationBadge 0.22s ease;
+}
+
+.rosterDrawerHeader {
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(40, 105, 85, 0.12);
+  background: rgba(23, 63, 52, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rosterDrawerHeader strong {
+  font-size: 0.8rem;
+  color: var(--verdant-950, #102e26);
+}
+
+.rosterDrawerHeader small {
+  font-size: 0.68rem;
+  color: var(--text-secondary, #52675d);
+}
+
+.rosterDrawerList {
+  overflow-y: auto;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rosterStudentItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 10px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--verdant-950, #102e26);
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+
+.rosterStudentItem:hover {
+  background: rgba(40, 105, 85, 0.08);
+}
+
+.rosterStudentItemActive {
+  background: linear-gradient(135deg, #173f34 0%, #286955 100%);
+  color: #ffffff;
+}
+
+.rosterSeatBadge {
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: rgba(40, 105, 85, 0.12);
+  font-size: 0.66rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.rosterStudentItemActive .rosterSeatBadge {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+
+.rosterStudentName {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rosterStatusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #286955;
+  flex-shrink: 0;
+}
+
+.rosterStatusDot[data-activity="help"] {
+  background: #ef4444;
+  box-shadow: 0 0 6px #ef4444;
+}
+
+.rosterStatusDot[data-activity="completed"] {
+  background: #10b981;
+}
+
+.rosterStatusDot[data-activity="offline"] {
+  background: #9ca3af;
+}
+
+/* Talking-Tom-Style 3D Hover Tooltip Bubble */
+.hoverTooltip3D {
+  position: absolute;
+  transform: translate(-50%, -115%);
+  z-index: 8;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 14px;
+  border-radius: 14px;
+  background: rgba(16, 46, 38, 0.94);
+  border: 1.5px solid rgba(163, 230, 53, 0.55);
+  color: #ffffff;
+  box-shadow: 0 10px 28px rgba(10, 28, 22, 0.32);
+  backdrop-filter: blur(10px);
+  pointer-events: none;
+  white-space: nowrap;
+  animation: popHoverTooltip 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes popHoverTooltip {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -102%) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -115%) scale(1);
+  }
+}
+
+.hoverTooltipBadge {
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #a3e635;
+  text-transform: uppercase;
+}
+
+.hoverTooltipTitle {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.hoverTooltipSub {
+  font-size: 0.7rem;
+  color: rgba(230, 244, 236, 0.85);
+}
+
+/* Talking Tom Bottom Room Switcher Dock */
+.talkingTomDock {
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  transform: translateX(-50%);
+  z-index: 7;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(255, 253, 248, 0.92);
+  border: 1.5px solid rgba(40, 105, 85, 0.24);
+  box-shadow: 0 12px 34px rgba(16, 46, 38, 0.22);
+  backdrop-filter: blur(14px);
+  pointer-events: auto;
+}
+
+.tomRoomBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 6px 12px;
+  border-radius: 18px;
+  border: 1.5px solid transparent;
+  background: transparent;
+  color: var(--verdant-950, #102e26);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tomRoomBtn:hover {
+  transform: translateY(-4px) scale(1.05);
+  background: rgba(40, 105, 85, 0.08);
+}
+
+.tomRoomBtnActive {
+  background: linear-gradient(135deg, #173f34 0%, #286955 100%);
+  color: #ffffff;
+  border-color: #a3e635;
+  box-shadow: 0 6px 18px rgba(23, 63, 52, 0.3);
+  transform: translateY(-3px);
+}
+
+.tomRoomIconWrap {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.tomRoomLabel {
+  font-size: 0.68rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+/* Choreography Walking / Flipping Book Banner */
+.choreographyBanner {
+  position: absolute;
+  left: 50%;
+  bottom: 84px;
+  transform: translateX(-50%);
+  z-index: 8;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-radius: 16px;
+  background: rgba(16, 46, 38, 0.92);
+  border: 1px solid rgba(163, 230, 53, 0.38);
+  color: #f8faf7;
+  box-shadow: 0 12px 32px rgba(10, 28, 22, 0.32);
+  backdrop-filter: blur(12px);
+  animation: fadeInChoreography 0.22s ease;
+}
+
+@keyframes fadeInChoreography {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 8px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.choreographyIconWrap {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+}
+
+.choreographyMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.choreographyMeta strong {
+  font-size: 0.82rem;
+  font-weight: 750;
+  color: #ffffff;
+}
+
+.choreographyMeta span {
+  font-size: 0.72rem;
+  color: rgba(230, 244, 236, 0.82);
+}
+
+.choreographySkipBtn {
+  margin-left: 6px;
+  padding: 6px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(163, 230, 53, 0.45);
+  background: rgba(163, 230, 53, 0.16);
+  color: #d9f99d;
+  font-size: 0.74rem;
+  font-weight: 750;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.18s ease, transform 0.18s ease;
+}
+
+.choreographySkipBtn:hover {
+  background: rgba(163, 230, 53, 0.28);
+  transform: translateY(-1px);
+}
+
+/* Floating Glass Popover Card over the 3D Room (Leaves the 3D room visible around the edges!) */
+.stationOverlayBackdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 9;
+  background: rgba(10, 28, 22, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 58px 24px 86px;
+}
+
+.stationBookOverlay {
+  width: min(94%, 1040px);
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, rgba(255, 253, 248, 0.94) 0%, rgba(246, 250, 245, 0.95) 100%);
+  border: 1.5px solid rgba(40, 105, 85, 0.28);
+  border-radius: 22px;
+  box-shadow:
+    0 24px 60px rgba(10, 28, 22, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(16px);
+  overflow: hidden;
+  transform-origin: center bottom;
+  animation: unfoldStationBook 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes unfoldStationBook {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.stationBookHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 20px;
+  background: linear-gradient(90deg, rgba(23, 63, 52, 0.08) 0%, rgba(40, 105, 85, 0.02) 100%);
+  border-bottom: 1px solid rgba(40, 105, 85, 0.14);
+  flex-wrap: wrap;
+}
+
+.stationBookTitleGroup {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.stationBookBadgeIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+  background: linear-gradient(135deg, #173f34 0%, #286955 100%);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  box-shadow: 0 3px 10px rgba(23, 63, 52, 0.18);
+}
+
+.stationBookEyebrow {
+  display: block;
+  font-size: 0.64rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--verdant-700, #286955);
+}
+
+.stationBookTitle {
+  margin: 0;
+  font-size: 0.98rem;
+  font-weight: 800;
+  color: var(--verdant-950, #102e26);
+}
+
+.stationBookActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.stationPeek3DBtn {
+  padding: 6px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(40, 105, 85, 0.22);
+  background: #ffffff;
+  color: var(--verdant-800, #1b5343);
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.stationPeek3DBtn:hover {
+  background: #f0f7f3;
+  border-color: var(--verdant-700, #286955);
+}
+
+.stationCloseBookBtn {
+  padding: 6px 13px;
+  border-radius: 10px;
+  border: 1px solid rgba(23, 63, 52, 0.28);
+  background: linear-gradient(135deg, #173f34 0%, #286955 100%);
+  color: #ffffff;
+  font-size: 0.76rem;
+  font-weight: 750;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(23, 63, 52, 0.18);
+  transition: all 0.18s ease;
+}
+
+.stationCloseBookBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 14px rgba(23, 63, 52, 0.26);
+}
+
+.stationBookBody {
+  flex: 1;
+  overflow-y: auto;
+  padding: 18px 22px;
+}
+
+
+/* ==========================================================================
+   Full-Viewport 3D Below Header & 70% Screen Popover Card Overrides
+   ========================================================================== */
+.fullBleed3DSection {
+  width: 100vw;
+  height: calc(100vh - 76px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.fullBleed3DSection > section {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+}
+
+.fullBleed3DSection .room {
+  width: 100%;
+  height: 100%;
+  flex: 1;
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.fullBleed3DSection .stage,
+.fullBleed3DSection .stage[data-view-mode="full"],
+.fullBleed3DSection .stage[data-view-mode="normal"] {
+  width: 100%;
+  height: calc(100vh - 76px);
+  min-height: 480px;
+}
+
+.topRightHudRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.hudMiniBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 13px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(40, 105, 85, 0.25);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  color: #173f34;
+  font-size: 0.77rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(16, 46, 38, 0.12);
+  transition: all 0.2s ease;
+}
+
+.hudMiniBtn:hover {
+  background: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(16, 46, 38, 0.18);
+}
+
+.hudMiniBtnActive {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border-color: #d97706;
+  color: #92400e;
+}
+
+.rosterSearchWrap {
+  padding: 8px 10px 4px;
+}
+
+.rosterSearchInput {
+  width: 100%;
+  padding: 7px 11px;
+  border-radius: 10px;
+  border: 1px solid rgba(40, 105, 85, 0.22);
+  background: #f8fbf9;
+  font-size: 0.78rem;
+  color: #173f34;
+  outline: none;
+}
+
+.rosterSearchInput:focus {
+  border-color: #286955;
+  background: #ffffff;
+}
+
+/* 70% Screen Hover / Popover Card */
+.stationOverlayBackdrop {
+  padding: 28px 24px;
+  background: rgba(10, 28, 22, 0.24);
+}
+
+.stationBookOverlay {
+  width: min(82vw, 1380px);
+  height: 75vh;
+  max-height: 82vh;
+}
+
+.studentPopoverGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.9fr);
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .studentPopoverGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.studentPopoverLeft,
+.studentPopoverRight {
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(40, 105, 85, 0.14);
+  border-radius: 18px;
+  padding: 20px;
+}
+
+
+/* ==========================================================================
+   Exact Flex Full-Viewport Height & Wide Overview Popover Alignment
+   ========================================================================== */
+.fullBleed3DSection {
+  width: 100%;
+  height: 100%;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.fullBleed3DSection > section {
+  width: 100%;
+  height: 100%;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+}
+
+.fullBleed3DSection .room {
+  width: 100%;
+  height: 100%;
+  flex: 1;
+  min-height: 0;
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.fullBleed3DSection .room > div {
+  width: 100%;
+  height: 100%;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.fullBleed3DSection .room > div > div {
+  width: 100%;
+  height: 100%;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.fullBleed3DSection .stage,
+.fullBleed3DSection .stage[data-view-mode="full"],
+.fullBleed3DSection .stage[data-view-mode="normal"] {
+  width: 100%;
+  height: 100%;
+  flex: 1;
+  min-height: 0;
+}
+
+.floatingStationBadge[data-hidden="true"],
+.rosterDrawerWrap[data-hidden="true"] {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-8px);
+}
+
+/* Wide, Comprehensive Popover Card Centered in Remaining Viewport */
+.stationOverlayBackdrop {
+  padding: 12px 22px;
+  background: rgba(10, 28, 22, 0.28);
+  align-items: center;
+  justify-content: center;
+}
+
+.stationBookOverlay {
+  width: min(95vw, 1720px);
+  height: calc(100% - 8px);
+  max-height: calc(100% - 8px);
+  border-radius: 20px;
+}
+
+.stationBookHeader {
+  padding: 10px 20px;
+  flex-shrink: 0;
+}
+
+.stationBookBody {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 14px 20px;
 }

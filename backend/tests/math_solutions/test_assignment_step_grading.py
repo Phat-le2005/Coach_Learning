@@ -418,3 +418,156 @@ def test_assignment_step_score_and_teacher_fallback_share_one_result(db_session:
     )
     assert teacher_evidence.event_metadata["graded_by"] == str(teacher.id)
     assert teacher_evidence.event_metadata["feedback"] == "Check the derivative rule."
+
+def test_exam_submits_ten_canvas_questions_once(db_session: Session):
+    from app.assignments.models import AssignmentDeliveryMode
+    from app.math_solutions.models import SolutionStep
+
+    users = UserService(db_session)
+    teacher = users.create_user(UserCreate(
+        email="exam-canvas-teacher@example.com",
+        password="Exam-Canvas-Test-Password-2026!",
+        full_name="Exam Teacher", role=Role.TEACHER,
+    ))
+    student = users.create_user(UserCreate(
+        email="exam-canvas-student@example.com",
+        password="Exam-Canvas-Test-Password-2026!",
+        full_name="Exam Student", role=Role.STUDENT,
+    ))
+    teacher_profile = db_session.scalar(select(TeacherProfile).where(TeacherProfile.user_id == teacher.id))
+    student_profile = db_session.scalar(select(StudentProfile).where(StudentProfile.user_id == student.id))
+    subject = Subject(code="MATH-EXAM-CANVAS", name="Exam canvas math", grade_level=12)
+    room = Classroom(name="Exam canvas class", academic_year="2026-2027", grade_level=12, created_by=teacher.id)
+    db_session.add_all([subject, room])
+    db_session.flush()
+    db_session.add_all([
+        TeacherClassroom(teacher_id=teacher_profile.id, classroom_id=room.id, role="OWNER"),
+        StudentEnrollment(student_id=student_profile.id, classroom_id=room.id, status=EnrollmentStatus.ACTIVE),
+    ])
+    now = datetime.now(timezone.utc)
+    assignment = Assignment(
+        classroom_id=room.id, subject_id=subject.id, title="Ten-question exam",
+        assignment_type=AssignmentType.SAME_SET, delivery_mode=AssignmentDeliveryMode.EXAM,
+        status=AssignmentStatus.PUBLISHED, question_count=10,
+        start_at=now - timedelta(hours=1), due_at=now + timedelta(days=1), created_by=teacher.id,
+    )
+    material = TeacherMaterial(
+        classroom_id=room.id, subject_id=subject.id, uploaded_by=teacher.id,
+        title="Exam worksheet", original_file_name="exam.pdf", mime_type="application/pdf",
+        storage_key=f"test/{uuid4()}.pdf", sha256="b" * 64, file_size_bytes=100,
+        page_count=1, status=TeacherMaterialStatus.READY,
+    )
+    db_session.add_all([assignment, material])
+    db_session.flush()
+    assigned = StudentAssignment(
+        assignment_id=assignment.id, student_id=student_profile.id,
+        status=StudentAssignmentStatus.IN_PROGRESS,
+    )
+    db_session.add(assigned)
+    db_session.flush()
+    attempt_ids = []
+    for index in range(10):
+        source = TeacherMaterialItem(
+            teacher_material_id=material.id, order_index=index, page_start=1, page_end=1,
+            content=f"Find derivative {index}", content_hash=f"{index + 1:064x}",
+            question_type=QuestionType.OPEN_RESPONSE,
+            extraction_status=MaterialItemExtractionStatus.READY,
+            evaluation_mode=MaterialEvaluationMode.TEACHER_REVIEW, raw_metadata={},
+        )
+        db_session.add(source)
+        db_session.flush()
+        snapshot = AssignmentMaterialItem(
+            assignment_id=assignment.id, teacher_material_item_id=source.id,
+            teacher_material_id=material.id, source_content_hash=source.content_hash,
+            content=source.content, order_index=index, snapshotted_at=now,
+            question_type=QuestionType.OPEN_RESPONSE,
+            evaluation_mode=MaterialEvaluationMode.TEACHER_REVIEW,
+        )
+        db_session.add(snapshot)
+        db_session.flush()
+        item = StudentAssignmentMaterialItem(
+            student_assignment_id=assigned.id, teacher_material_item_id=source.id,
+            assignment_material_item_id=snapshot.id, order_index=index,
+            evaluation_status=EvaluationStatus.NEEDS_TEACHER_REVIEW,
+        )
+        db_session.add(item)
+        db_session.flush()
+        attempt = SolutionAttempt(
+            student_id=student_profile.id, source_kind="TEACHER_MATERIAL",
+            context_type="CLASSROOM_ASSIGNMENT", assignment_id=assignment.id,
+            student_assignment_id=assigned.id, assignment_material_item_id=snapshot.id,
+            student_assignment_material_item_id=item.id, mode="INDEPENDENT_SOLUTION",
+            status="IN_PROGRESS", attempt_revision_number=2,
+        )
+        db_session.add(attempt)
+        db_session.flush()
+        attempt_ids.append(attempt.id)
+        if index < 9:
+            db_session.add(SolutionStep(
+                attempt_id=attempt.id, step_index=1, step_type="EXPLANATION",
+                status="ACTIVE", is_deleted=False, explanation_text=f"Work for question {index + 1}",
+            ))
+    db_session.commit()
+
+    # Draft steps do not count. Each question must be explicitly confirmed first.
+    for attempt_id in attempt_ids[:9]:
+        MathSolutionService(db_session).submit(
+            student.id, attempt_id, expected_attempt_revision=2,
+            client_action_id=uuid4(),
+        )
+
+    with pytest.raises(ApplicationError) as incomplete:
+        AssignmentService(db_session).submit_assignment(
+            student.id, assigned.id, AssignmentSubmissionRequest(answers=[]),
+        )
+    assert incomplete.value.code == "EXAM_INCOMPLETE"
+    assert "10" in incomplete.value.message
+    db_session.expire_all()
+    assert db_session.get(StudentAssignment, assigned.id).status == StudentAssignmentStatus.IN_PROGRESS
+    assert db_session.get(SolutionAttempt, attempt_ids[0]).status == "SUBMITTED"
+    assert db_session.get(SolutionAttempt, attempt_ids[9]).status == "IN_PROGRESS"
+
+    reopened = MathSolutionService(db_session).reopen(student.id, attempt_ids[0])
+    assert reopened["status"] == "IN_PROGRESS"
+    with pytest.raises(ApplicationError) as reopened_incomplete:
+        AssignmentService(db_session).submit_assignment(
+            student.id, assigned.id, AssignmentSubmissionRequest(answers=[]),
+        )
+    assert reopened_incomplete.value.code == "EXAM_INCOMPLETE"
+    assert "1" in reopened_incomplete.value.message
+    MathSolutionService(db_session).submit(
+        student.id, attempt_ids[0], expected_attempt_revision=3,
+        client_action_id=uuid4(),
+    )
+
+    db_session.add(SolutionStep(
+        attempt_id=attempt_ids[9], step_index=1, step_type="EXPLANATION",
+        status="ACTIVE", is_deleted=False, explanation_text="Work for question 10",
+    ))
+    db_session.commit()
+    with pytest.raises(ApplicationError) as still_unconfirmed:
+        AssignmentService(db_session).submit_assignment(
+            student.id, assigned.id, AssignmentSubmissionRequest(answers=[]),
+        )
+    assert still_unconfirmed.value.code == "EXAM_INCOMPLETE"
+
+    MathSolutionService(db_session).submit(
+        student.id, attempt_ids[9], expected_attempt_revision=2,
+        client_action_id=uuid4(),
+    )
+    result = AssignmentService(db_session).submit_assignment(
+        student.id, assigned.id, AssignmentSubmissionRequest(answers=[]),
+    )
+    assert result.status == StudentAssignmentStatus.SUBMITTED
+    assert result.total_questions == 10
+    assert result.score is None
+    assert all(row.score is None for row in result.results)
+    db_session.expire_all()
+    assert all(db_session.get(SolutionAttempt, attempt_id).status == "SUBMITTED" for attempt_id in attempt_ids)
+    assert db_session.get(SolutionAttempt, attempt_ids[0]).attempt_revision_number == 4
+    assert all(db_session.get(SolutionAttempt, attempt_id).attempt_revision_number == 3 for attempt_id in attempt_ids[1:])
+    with pytest.raises(ApplicationError) as repeated:
+        AssignmentService(db_session).submit_assignment(
+            student.id, assigned.id, AssignmentSubmissionRequest(answers=[]),
+        )
+    assert repeated.value.code == "ASSIGNMENT_ALREADY_SUBMITTED"

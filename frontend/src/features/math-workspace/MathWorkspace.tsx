@@ -24,6 +24,7 @@ import { mathInkStorage } from "./storage/indexeddb";
 import { ensureLatestInkSaved } from "./utils/ocr-sync";
 import { getOcrPenStrokes } from "./utils/ocr-ink";
 import { canSafelyRebaseInkDraft, restoreDirtyPageDrafts } from "./utils/draft-recovery";
+import { getExamMissingQuestions } from "./utils/exam-submission";
 import { WorkspaceToolbar } from "./components/WorkspaceToolbar";
 import { PaperUploadPanel } from "./components/PaperUploadPanel";
 import { PageNavigator } from "./components/PageNavigator";
@@ -99,6 +100,14 @@ export function MathWorkspace({
   const [graphOpen, setGraphOpen] = useState(false);
   const [graphSelection, setGraphSelection] = useState<{ page: number; strokes: InkStroke[]; formula?: string }>({ page: 0, strokes: [] });
 
+  const isClassroomExam = classroomNav?.deliveryMode === "EXAM";
+  const [examSubmitted, setExamSubmitted] = useState(
+    classroomNav?.assignmentStatus === "SUBMITTED" || classroomNav?.assignmentStatus === "GRADED"
+  );
+  const [examSubmitOpen, setExamSubmitOpen] = useState(false);
+  const [isSubmittingExam, setIsSubmittingExam] = useState(false);
+  const [examSubmitError, setExamSubmitError] = useState<string | null>(null);
+
   const router = useRouter();
   const [switchingQuestion, setSwitchingQuestion] = useState(false);
 
@@ -135,8 +144,10 @@ export function MathWorkspace({
       }
     },
     [classroomNav, switchingQuestion, router]
-  );
-
+  );
+
+
+
   const nextProblemLabel = useMemo(() => {
     if (classroomNav) {
       if (classroomNav.currentIndex < classroomNav.totalQuestions - 1) {
@@ -654,8 +665,10 @@ export function MathWorkspace({
 
   const stopLive = async () => {
     if (canvasDrawing) { setSyncErrorMessage("Nhả bút trước khi ngắt kết nối."); return; }
-    if (liveEnabledRef.current && live.pendingCount > 0) {
-      if (!await live.flush()) { setSyncErrorMessage("Chưa nhận xác nhận lưu. Giữ kết nối hoặc xuất bản nháp trước khi rời trang."); return; }
+    if (liveEnabledRef.current && live.pendingCount > 0) {
+
+      if (!await live.flush()) { setSyncErrorMessage("Chưa nhận xác nhận lưu. Giữ kết nối hoặc xuất bản nháp trước khi rời trang."); return; }
+
     }
     if (devicePairing && !["REVOKED", "EXPIRED"].includes(devicePairing.status)) {
       try {
@@ -1308,6 +1321,146 @@ export function MathWorkspace({
     }
   }, [apiClient, accessToken, attemptId, currentPageIndex]);
 
+  const handlePrepareSubmission = useCallback(() => {
+    if (paperMode) return;
+    void handleTriggerOCR();
+  }, [paperMode, handleTriggerOCR]);
+
+  const handleSubmitExam = useCallback(async () => {
+    if (!classroomNav || !isClassroomExam || examSubmitted || isSubmittingExam) return;
+    setExamSubmitError(null);
+    setIsSubmittingExam(true);
+    try {
+      if (pendingBatch || batchJournalLoadError || batchResuming || pageOcrReview || pendingDeleteRef.current) {
+        throw new Error("Hãy hoàn tất xác nhận và đồng bộ các bước giải trước khi nộp bài kiểm tra.");
+      }
+      if (authExpired || syncStatus === "offline" || syncStatus === "conflict") {
+        throw new Error("Bài làm chưa đồng bộ hoặc phiên đăng nhập đã hết hạn. Hãy lưu lại trước khi nộp.");
+      }
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+        saveTimeoutRef.current = null;
+      }
+      await saveQueueRef.current;
+      if (liveEnabledRef.current && !await liveRef.current.flush()) {
+        throw new Error("Nét viết từ thiết bị chưa lưu xong. Hãy đồng bộ rồi nộp lại.");
+      }
+      for (const [index, page] of pagesMap) {
+        if (liveEnabledRef.current && index === currentPageIndex) continue;
+        if (page.isDirty && !await flushSavePage(index, page.strokes)) {
+          throw new Error("Chưa lưu xong trang viết hiện tại. Hãy thử lại.");
+        }
+      }
+      if ((await mathInkStorage.listDirtyPages(attemptId)).length) {
+        throw new Error("Vẫn còn trang viết chưa đồng bộ. Hãy lưu lại trước khi nộp.");
+      }
+
+      // 1. Auto-submit active attempt if it has steps and is in DRAFT / IN_PROGRESS
+      if (attempt && ["DRAFT", "IN_PROGRESS"].includes(attempt.status) && (attempt.steps?.length ?? 0) > 0) {
+        await apiClient.submitMathAttempt(accessToken, attemptId, { expected_attempt_revision: revisionRef.current, client_action_id: generateUuid() });
+        setAttempt((prev) => prev ? { ...prev, status: "SUBMITTED" } : prev);
+      }
+
+      // 2. Prepare submission answers: for questions that do NOT have submitted steps, provide placeholder
+      // Questions with submitted step attempts MUST NOT have text answers submitted to avoid ASSIGNMENT_ANSWER_SOURCE_CONFLICT.
+      const answers: Array<{
+        question_id?: string | null;
+        teacher_material_item_id?: string | null;
+        student_answer: string;
+      }> = [];
+
+      for (const q of classroomNav.questions) {
+        const isCurrent = q.attemptId === attemptId;
+        const hasSubmittedSteps = isCurrent
+          ? ((attempt?.steps?.length ?? 0) > 0)
+          : (q.stepCount > 0 || q.status === "SUBMITTED" || q.status === "EVALUATED");
+
+        if (!hasSubmittedSteps) {
+          if (q.sourceKind === "CANONICAL" || q.questionId) {
+            answers.push({
+              question_id: q.questionId || q.problemId,
+              student_answer: "(Chưa làm)",
+            });
+          } else {
+            answers.push({
+              teacher_material_item_id: q.teacherMaterialItemId || q.problemId,
+              student_answer: "(Chưa làm)",
+            });
+          }
+        }
+      }
+
+      const res = await fetch(`/api/student/assignments/${classroomNav.studentAssignmentId}/submit`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ answers }),
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => null);
+        if (body?.error?.code === "ASSIGNMENT_ALREADY_SUBMITTED") {
+          const check = await fetch(`/api/student/assignments/${classroomNav.studentAssignmentId}`, { cache: "no-store" });
+          const current = check.ok ? await check.json().catch(() => null) : null;
+          if (current?.status === "SUBMITTED" || current?.status === "GRADED") {
+            setExamSubmitted(true);
+            setAttempt((row) => row ? { ...row, status: "SUBMITTED" } : row);
+            setExamSubmitOpen(false);
+            router.refresh();
+            return;
+          }
+        }
+        throw new Error(body?.error?.message ?? "Không thể nộp bài kiểm tra. Hãy thử lại.");
+      }
+      setExamSubmitted(true);
+      setAttempt((current) => current ? { ...current, status: "SUBMITTED" } : current);
+      setExamSubmitOpen(false);
+      router.refresh();
+    } catch (error) {
+      setExamSubmitError(error instanceof Error ? error.message : "Không thể nộp bài kiểm tra.");
+    } finally {
+      setIsSubmittingExam(false);
+    }
+  }, [classroomNav, isClassroomExam, examSubmitted, isSubmittingExam, pendingBatch,
+    batchJournalLoadError, batchResuming, pageOcrReview, authExpired, syncStatus,
+    attemptId, attempt, accessToken, apiClient, pagesMap, currentPageIndex, flushSavePage, router]);
+
+  const handleExamSwitchQuestion = useCallback(async (targetIndex: number) => {
+    if (!isClassroomExam) {
+      await handleSwitchQuestion(targetIndex);
+      return;
+    }
+    setExamSubmitError(null);
+    try {
+      if (pendingBatch || batchJournalLoadError || batchResuming || pageOcrReview || pendingDeleteRef.current) {
+        throw new Error("Hãy xác nhận và lưu xong bước giải hiện tại trước khi chuyển câu.");
+      }
+      if (authExpired || syncStatus === "offline" || syncStatus === "conflict") {
+        throw new Error("Nét viết chưa đồng bộ. Hãy lưu lại trước khi chuyển câu.");
+      }
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+        saveTimeoutRef.current = null;
+      }
+      await saveQueueRef.current;
+      if (liveEnabledRef.current && !await liveRef.current.flush()) {
+        throw new Error("Thiết bị viết chưa đồng bộ xong. Hãy thử lại.");
+      }
+      for (const [index, page] of pagesMap) {
+        if (liveEnabledRef.current && index === currentPageIndex) continue;
+        if (page.isDirty && !await flushSavePage(index, page.strokes)) {
+          throw new Error("Chưa lưu được trang viết. Hãy thử lại.");
+        }
+      }
+      if ((await mathInkStorage.listDirtyPages(attemptId)).length) {
+        throw new Error("Còn trang viết chưa đồng bộ. Hãy lưu lại trước khi chuyển câu.");
+      }
+      await handleSwitchQuestion(targetIndex);
+    } catch (error) {
+      setExamSubmitError(error instanceof Error ? error.message : "Không thể chuyển câu.");
+    }
+  }, [isClassroomExam, handleSwitchQuestion, pendingBatch, batchJournalLoadError,
+    batchResuming, pageOcrReview, authExpired, syncStatus, pagesMap,
+    currentPageIndex, flushSavePage, attemptId]);
+
   // 7. Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -1345,8 +1498,21 @@ export function MathWorkspace({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleUndo, handleRedo, handleSelectPage, currentPageIndex, pageCount]);
 
-  const isReadOnlyAttempt = Boolean(problem?.is_read_only ||
-    attempt && ["SUBMITTED", "EVALUATED", "ABANDONED"].includes(attempt.status));
+  const isReadOnlyAttempt = Boolean(
+    examSubmitted ||
+    problem?.is_read_only ||
+    (attempt && ["SUBMITTED", "EVALUATED", "ABANDONED"].includes(attempt.status))
+  );
+
+  const currentHasSteps = Boolean(attempt?.steps && attempt.steps.length > 0);
+  const examMissingQuestions = useMemo(() => {
+    return getExamMissingQuestions(
+      classroomNav?.questions ?? [],
+      attemptId,
+      attempt?.status,
+      currentHasSteps
+    );
+  }, [classroomNav?.questions, attemptId, attempt?.status, currentHasSteps]);
   const toggleWritingMode = () => {
     if (canvasDrawing) return;
     if (writingMode) {
@@ -1385,7 +1551,9 @@ export function MathWorkspace({
           <div className={styles.classroomCenter}>
             {classroomNav.questions.map((q) => {
               const isCurrent = q.isCurrent;
-              const isCompleted = q.status === "SUBMITTED" || q.status === "EVALUATED";
+              const isCompleted =
+                (q.attemptId === attemptId && (attempt?.status === "SUBMITTED" || attempt?.status === "EVALUATED" || (attempt?.steps?.length ?? 0) > 0)) ||
+                (q.status === "SUBMITTED" || q.status === "EVALUATED" || (q.stepCount ?? 0) > 0);
               let pillClass = styles.qNavPill;
               if (isCurrent) pillClass += ` ${styles.qNavPillActive}`;
               else if (isCompleted) pillClass += ` ${styles.qNavPillCompleted}`;
@@ -1395,7 +1563,7 @@ export function MathWorkspace({
                   key={q.index}
                   type="button"
                   className={pillClass}
-                  onClick={() => void handleSwitchQuestion(q.index)}
+                  onClick={() => void handleExamSwitchQuestion(q.index)}
                   disabled={switchingQuestion}
                   title={`Chuyển sang Câu ${q.index + 1}`}
                 >
@@ -1410,23 +1578,45 @@ export function MathWorkspace({
               type="button"
               className={styles.navStepBtn}
               disabled={classroomNav.currentIndex === 0 || switchingQuestion}
-              onClick={() => void handleSwitchQuestion(classroomNav.currentIndex - 1)}
+              onClick={() => void handleExamSwitchQuestion(classroomNav.currentIndex - 1)}
             >
               ← Câu trước
             </button>
             <button
               type="button"
-              className={styles.navStepBtnPrimary}
+              className={styles.navStepBtn}
               disabled={
                 classroomNav.currentIndex >= classroomNav.totalQuestions - 1 || switchingQuestion
               }
-              onClick={() => void handleSwitchQuestion(classroomNav.currentIndex + 1)}
+              onClick={() => void handleExamSwitchQuestion(classroomNav.currentIndex + 1)}
             >
               {switchingQuestion ? "Đang chuyển..." : "Câu tiếp theo →"}
             </button>
+            {isClassroomExam && !examSubmitted ? (
+              <button
+                type="button"
+                className={styles.navStepBtnPrimary}
+                onClick={() => { setExamSubmitError(null); setExamSubmitOpen(true); }}
+              >
+                Nộp bài kiểm tra
+              </button>
+            ) : isClassroomExam ? (
+              <span className={styles.examSubmittedLabel}>Đã nộp toàn bài</span>
+            ) : null}
           </div>
         </div>
       )}
+
+      {isClassroomExam && examSubmitted ? (
+        <div className={styles.examStatusBanner} role="status">
+          {classroomNav?.assignmentStatus === "GRADED" && classroomNav.assignmentScore !== null
+            ? `Bài kiểm tra đã được chấm: ${classroomNav.assignmentScore}/10 điểm.`
+            : "Đã nộp toàn bộ bài kiểm tra. Câu có thể kiểm chứng được chấm theo đáp án; câu còn lại chờ giáo viên duyệt."}
+        </div>
+      ) : null}
+      {isClassroomExam && examSubmitError && !examSubmitOpen ? (
+        <div className={styles.ocrErrorBanner} role="alert">{examSubmitError}</div>
+      ) : null}
 
       {/* Top Header Bar */}
       <header className={styles.topHeader}>
@@ -1457,7 +1647,19 @@ export function MathWorkspace({
             onResolveConflict={handleResolveConflict}
             onExportDraft={handleExportDraft}
           />
-          {!writingMode && attempt && (!problem?.is_read_only || ["SUBMITTED", "EVALUATED"].includes(attempt.status)) ? (
+          {isClassroomExam && !examSubmitted && attempt?.status === "SUBMITTED" ? (
+            <button type="button" className={styles.buttonSecondary} onClick={() => void handleReopenAttempt()}>
+              Sửa câu này
+            </button>
+          ) : null}
+          {isClassroomExam && !examSubmitted && attempt && ["DRAFT", "IN_PROGRESS"].includes(attempt.status) ? (
+            <button type="button" className={styles.headerGradeButton}
+              onClick={() => attempt.steps?.length ? void handleSubmitSolution(false) : handlePrepareSubmission()}
+              disabled={isSubmitting || batchResuming || Boolean(pendingBatch || batchJournalLoadError)}>
+              {isSubmitting ? "Đang xác nhận..." : attempt.steps?.length ? "Xác nhận câu" : "Chuẩn bị bước giải"}
+            </button>
+          ) : null}
+          {!isClassroomExam && !writingMode && attempt && (!problem?.is_read_only || ["SUBMITTED", "EVALUATED"].includes(attempt.status)) ? (
             <button
               type="button"
               className={styles.headerGradeButton}
@@ -1625,6 +1827,8 @@ export function MathWorkspace({
           onDeleteStep={handleDeleteStep}
           onEditVariationTable={(stepId, initial) => setVariationTableEditor({ stepId, initial })}
           onSubmitSolution={handleSubmitSolution}
+          onConfirmExamQuestion={() => handleSubmitSolution(false)}
+          onPrepareSubmission={handlePrepareSubmission}
           onReopenAttempt={handleReopenAttempt}
           onAIReview={handleAIReview}
           onOpenReviewWorkspace={handleOpenReviewWorkspace}
@@ -1634,6 +1838,7 @@ export function MathWorkspace({
           isSubmitting={isSubmitting}
           isReviewing={isReviewing}
           submissionBlocked={Boolean(pendingBatch || batchJournalLoadError || batchResuming)}
+          examMode={isClassroomExam}
         /> : null}
 
         {/* Right Column: A4 Writing Canvas (65% or expanded) */}
@@ -1739,7 +1944,65 @@ export function MathWorkspace({
         />
       ) : null}
 
-      {isReviewWorkspaceOpen ? (
+      {examSubmitOpen && classroomNav ? (
+        <div className={styles.modalOverlay} role="presentation">
+          <div className={styles.examSubmitDialog} role="dialog" aria-modal="true" aria-labelledby="exam-submit-title">
+            <h2 id="exam-submit-title">Nộp toàn bộ bài kiểm tra?</h2>
+            <div className={styles.examSubmitStats}>
+              <span>
+                Đã hoàn thành <strong>{classroomNav.totalQuestions - examMissingQuestions.length}/{classroomNav.totalQuestions}</strong> câu
+              </span>
+            </div>
+            {examMissingQuestions.length > 0 ? (
+              <div className={styles.examWarningBox} role="alert">
+                <p className={styles.examWarningTitle}>
+                  ⚠️ Còn {examMissingQuestions.length} câu chưa làm (Câu {examMissingQuestions.map((q) => q.index + 1).join(", ")}).
+                </p>
+                <p className={styles.examWarningSub}>
+                  Các câu để trống sẽ được tính 0 điểm. Em có chắc chắn muốn nộp bài ngay bây giờ không?
+                </p>
+              </div>
+            ) : (
+              <p className={styles.examAllDoneNotice}>
+                ✓ Em đã hoàn thành tất cả {classroomNav.totalQuestions} câu. Sau khi nộp, bài thi sẽ được chuyển sang giáo viên để chấm điểm.
+              </p>
+            )}
+            {examSubmitError ? <p className={styles.examIncomplete} role="alert">{examSubmitError}</p> : null}
+            <div className={styles.examDialogActions}>
+              {examMissingQuestions.length > 0 ? (
+                <button
+                  type="button"
+                  className={styles.navStepBtn}
+                  onClick={() => {
+                    setExamSubmitOpen(false);
+                    void handleExamSwitchQuestion(examMissingQuestions[0]!.index);
+                  }}
+                >
+                  Đi tới câu {examMissingQuestions[0]!.index + 1}
+                </button>
+              ) : null}
+              <button
+                type="button"
+                className={styles.navStepBtn}
+                disabled={isSubmittingExam}
+                onClick={() => setExamSubmitOpen(false)}
+              >
+                Tiếp tục làm bài
+              </button>
+              <button
+                type="button"
+                className={styles.navStepBtnPrimary}
+                disabled={isSubmittingExam}
+                onClick={() => void handleSubmitExam()}
+              >
+                {isSubmittingExam ? "Đang nộp toàn bài..." : "Xác nhận nộp bài"}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {isReviewWorkspaceOpen && !isClassroomExam ? (
         <AIReviewWorkspace
           attemptId={attemptId}
           accessToken={accessToken}
@@ -1752,11 +2015,16 @@ export function MathWorkspace({
           pages={pagesRecord}
           currentPageIndex={currentPageIndex}
           instantOpen={instantReviewOpen}
-          onRetryReview={() => void handleAIReview()}
-          onClose={() => setIsReviewWorkspaceOpen(false)}
-          onNextProblem={handleNextProblem}
-          nextProblemLabel={nextProblemLabel}
-          isNextLoading={switchingQuestion || advancingPractice}
+          onRetryReview={() => void handleAIReview()}
+
+          onClose={() => setIsReviewWorkspaceOpen(false)}
+
+          onNextProblem={handleNextProblem}
+
+          nextProblemLabel={nextProblemLabel}
+
+          isNextLoading={switchingQuestion || advancingPractice}
+
         />
       ) : null}
     </div>

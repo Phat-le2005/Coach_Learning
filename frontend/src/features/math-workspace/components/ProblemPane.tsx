@@ -23,6 +23,8 @@ interface ProblemPaneProps {
   onDeleteStep: (stepId: string) => Promise<void>;
   onEditVariationTable: (stepId: string, payload: VariationTablePayload) => void;
   onSubmitSolution: () => Promise<void>;
+  onConfirmExamQuestion?: () => Promise<void>;
+  onPrepareSubmission: () => void;
   onReopenAttempt?: () => Promise<void>;
   onAIReview: () => Promise<void>;
   onOpenReviewWorkspace?: () => void;
@@ -32,6 +34,7 @@ interface ProblemPaneProps {
   isSubmitting: boolean;
   isReviewing: boolean;
   submissionBlocked: boolean;
+  examMode?: boolean;
 }
 
 function variationPayload(step: SolutionStepRead): VariationTablePayload | null {
@@ -49,6 +52,8 @@ export function ProblemPane({
   onDeleteStep,
   onEditVariationTable,
   onSubmitSolution,
+  onConfirmExamQuestion,
+  onPrepareSubmission,
   onReopenAttempt,
   onAIReview,
   onOpenReviewWorkspace,
@@ -58,6 +63,7 @@ export function ProblemPane({
   isSubmitting,
   isReviewing,
   submissionBlocked,
+  examMode = false,
 }: ProblemPaneProps) {
   const [confirmStepId, setConfirmStepId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -253,7 +259,7 @@ export function ProblemPane({
             )}
 
             {/* AI Review Launch Card */}
-            {aiReview ? (
+            {aiReview && !examMode ? (
               <section className={styles.aiReviewPanel} aria-label="Nhận xét từng bước giải">
                 <h3>{aiReview.is_final ? "Đã có điểm chính thức" : "Đã có nhận xét từng bước"}</h3>
                 <p className={styles.aiReviewNotice}>
@@ -287,8 +293,42 @@ export function ProblemPane({
         )}
       </div>
 
+      {/* Each exam question is confirmed separately; the whole paper is submitted once. */}
+      {examMode && problem && attempt && !needsSourceReview ? (
+        <div className={styles.problemPaneFooter}>
+          <div className={styles.footerSubmitAction}>
+            {attempt.status === "SUBMITTED" ? (
+              <>
+                <small className={styles.footerHint}>Câu này đã xác nhận. Muốn chỉnh lại, bấm “Sửa câu này” ở thanh trên.</small>
+              </>
+            ) : ["DRAFT", "IN_PROGRESS"].includes(attempt.status) && !problem.is_read_only ? (
+              <>
+                <small className={styles.footerHint}>
+                  {attempt.steps?.length
+                    ? `Đã lưu ${attempt.steps.length} bước giải. Bước này sẽ tự động nộp khi bấm “Nộp bài kiểm tra” hoặc em có thể xác nhận sớm.`
+                    : "Trích xuất hoặc nhập bước giải cho câu này."}
+                </small>
+                {attempt.steps?.length ? (
+                  <button type="button" className={styles.primaryGradeButton}
+                    disabled={isSubmitting || submissionBlocked}
+                    onClick={() => void onConfirmExamQuestion?.()}>
+                    {isSubmitting ? "Đang xác nhận..." : "Xác nhận câu này"}
+                  </button>
+                ) : (
+                  <button type="button" className={styles.primaryGradeButton}
+                    disabled={isSubmitting || submissionBlocked}
+                    onClick={onPrepareSubmission}>
+                    Trích xuất hoặc nhập bước giải
+                  </button>
+                )}
+              </>
+            ) : null}
+            {gradingError ? <p role="alert" className={styles.aiReviewError}>{gradingError}</p> : null}
+          </div>
+        </div>
+      ) : null}
       {/* Sticky Bottom Footer: Always Visible Submit & Grade Bar */}
-      {problem && attempt && !needsSourceReview &&
+      {problem && attempt && !examMode && !needsSourceReview &&
         (!problem.is_read_only || attempt.status === "SUBMITTED" || attempt.status === "EVALUATED") ? (
         <div className={styles.problemPaneFooter}>
           {attempt.status === "SUBMITTED" || attempt.status === "EVALUATED" ? (
@@ -352,15 +392,15 @@ export function ProblemPane({
               <button
                 type="button"
                 className={styles.primaryGradeButton}
-                onClick={() => void onSubmitSolution()}
-                disabled={isSubmitting || isReviewing || submissionBlocked || !submission.canSubmit}
-                title={submissionBlocked ? "Hãy hoàn tất phục hồi lưu OCR trước khi nộp bài" : !attempt.steps?.length ? "Hãy xác nhận ít nhất một bước giải để nộp bài" : "Nộp bài và kiểm tra các bước đã xác nhận"}
+                onClick={() => attempt.steps?.length ? void onSubmitSolution() : onPrepareSubmission()}
+                disabled={isSubmitting || isReviewing || submissionBlocked || !submission.showSubmitButton}
+                title={submissionBlocked ? "Hãy hoàn tất phục hồi lưu OCR trước khi nộp bài" : !attempt.steps?.length ? "Trích xuất hoặc nhập bước giải để xác nhận trước khi nộp" : "Nộp bài và kiểm tra các bước đã xác nhận"}
               >
                 <Sparkles size={16} />
-                {isSubmitting ? "Đang nộp bài..." : isReviewing ? "Đang kiểm tra bài..." : "Nộp bài & kiểm tra"}
+                {isSubmitting ? "Đang nộp bài..." : isReviewing ? "Đang kiểm tra bài..." : !attempt.steps?.length ? "Chuẩn bị bước để nộp" : "Nộp bài & kiểm tra"}
               </button>
               {!attempt.steps?.length ? (
-                <small className={styles.footerHint}>Xác nhận ít nhất 1 bước giải để nộp bài</small>
+                <small className={styles.footerHint}>Bấm để trích xuất nét viết hoặc xác nhận bước từ bài chụp.</small>
               ) : (
                 <small className={styles.footerHint}>Đã có {attempt.steps.length} bước giải • Điểm chính thức chỉ có khi đủ đáp án và rubric</small>
               )}

@@ -11,6 +11,7 @@ from app.assignments.models import (
     AssignmentConcept,
     AssignmentLearningObjective,
     AssignmentMaterialItem,
+    AssignmentDeliveryMode,
     AssignmentProblemType,
     AssignmentQuestion,
     AssignmentStatus,
@@ -888,6 +889,12 @@ class AssignmentService:
 
         from app.math_solutions.models import SolutionAttempt
 
+        canonical_answers = {ans.question_id: ans for ans in submission.answers if ans.question_id is not None}
+        material_answers = {ans.teacher_material_item_id: ans for ans in submission.answers if ans.teacher_material_item_id is not None}
+        now = datetime.now(timezone.utc)
+        if sa.assignment.delivery_mode == AssignmentDeliveryMode.EXAM:
+            self._validated_exam_solutions(sa, canonical_answers, material_answers)
+
         submitted_solutions = list(self.session.scalars(
             select(SolutionAttempt).where(
                 SolutionAttempt.student_assignment_id == sa.id,
@@ -904,20 +911,17 @@ class AssignmentService:
             for attempt in submitted_solutions
             if attempt.source_kind == "TEACHER_MATERIAL"
         }
-        canonical_answers = {ans.question_id: ans for ans in submission.answers if ans.question_id is not None}
-        material_answers = {ans.teacher_material_item_id: ans for ans in submission.answers if ans.teacher_material_item_id is not None}
-
         results: list[QuestionResultItem] = []
         correct_count = 0
         total_questions = len(sa.student_questions) + len(sa.student_material_items)
-        now = datetime.now(timezone.utc)
 
         for sq in sa.student_questions:
             question = sq.question
             submitted = canonical_answers.get(question.id)
             answer = submitted.student_answer if submitted else ""
             if (
-                question.question_type == QuestionType.OPEN_RESPONSE
+                (question.question_type == QuestionType.OPEN_RESPONSE
+                 or sa.assignment.delivery_mode == AssignmentDeliveryMode.EXAM)
                 and sq.id in submitted_question_items
             ):
                 # A second text answer would make the graded submission ambiguous.
@@ -998,7 +1002,14 @@ class AssignmentService:
                     409, "ASSIGNMENT_ANSWER_SOURCE_CONFLICT",
                     "Submit either the confirmed step solution or a text answer.",
                 )
-            if snapshot.evaluation_mode.value == "OBJECTIVE_AUTO" and snapshot.question_type is not None:
+            if sa.assignment.delivery_mode == AssignmentDeliveryMode.EXAM and sm.id in submitted_material_items:
+                status = (
+                    EvaluationStatus.NEEDS_TEACHER_REVIEW
+                    if snapshot.evaluation_mode.value == "TEACHER_REVIEW"
+                    else EvaluationStatus.NEEDS_EVALUATION
+                )
+                evaluation = AnswerEvaluation(None, None, status)
+            elif snapshot.evaluation_mode.value == "OBJECTIVE_AUTO" and snapshot.question_type is not None:
                 evaluation = self.evaluator.evaluate_values(
                     snapshot.question_type,
                     snapshot.correct_answer,
@@ -1038,9 +1049,10 @@ class AssignmentService:
             if evaluation.score is not None and evaluation.is_correct is not None:
                 self._publish_material_evidence(sa, sm, now, "AUTO")
 
-        sa.status = StudentAssignmentStatus.SUBMITTED
-        sa.submitted_at = now
         try:
+            sa.status = StudentAssignmentStatus.SUBMITTED
+            sa.submitted_at = now
+            self.session.flush()
             self._grade_submitted_solutions(sa, results)
             overall_score = recalculate_student_assignment_score(sa, finalize=False)
             self.session.commit()
@@ -1066,6 +1078,57 @@ class AssignmentService:
             submitted_at=now,
             results=results,
         )
+
+    def _validated_exam_solutions(
+        self,
+        assigned: StudentAssignment,
+        canonical_answers: dict,
+        material_answers: dict,
+    ) -> None:
+        """Require an explicit confirmed attempt or text answer for every exam item."""
+        from app.math_solutions.models import SolutionAttempt, SolutionStep
+
+        attempts = list(self.session.scalars(
+            select(SolutionAttempt).where(
+                SolutionAttempt.student_assignment_id == assigned.id,
+                SolutionAttempt.student_id == assigned.student_id,
+                SolutionAttempt.hidden_at.is_(None),
+            ).with_for_update()
+        ).all())
+        active_ids = set(self.session.scalars(
+            select(SolutionStep.attempt_id).where(
+                SolutionStep.attempt_id.in_([attempt.id for attempt in attempts]),
+                SolutionStep.is_deleted.is_(False),
+            ).distinct()
+        ).all()) if attempts else set()
+        by_item: dict[UUID, list[SolutionAttempt]] = {}
+        for attempt in attempts:
+            if attempt.id not in active_ids or attempt.status != "SUBMITTED":
+                continue
+            item_id = attempt.assignment_student_question_id or attempt.student_assignment_material_item_id
+            if item_id is not None:
+                by_item.setdefault(item_id, []).append(attempt)
+
+        items = [*assigned.student_questions, *assigned.student_material_items]
+        if len(items) != assigned.assignment.question_count:
+            raise ApplicationError(409, "EXAM_QUESTION_SET_INCOMPLETE", "The exam question set is incomplete.")
+        missing: list[int] = []
+        for item in items:
+            rows = by_item.get(item.id, [])
+            if len(rows) > 1:
+                raise ApplicationError(409, "EXAM_DUPLICATE_SOLUTIONS", "More than one solution exists for an exam question.")
+            canonical = isinstance(item, AssignmentStudentQuestion)
+            source_id = item.question_id if canonical else item.teacher_material_item_id
+            answer = (canonical_answers if canonical else material_answers).get(source_id)
+            text_answer = answer.student_answer.strip() if answer else ""
+            if rows and text_answer:
+                raise ApplicationError(409, "ASSIGNMENT_ANSWER_SOURCE_CONFLICT", "Submit either confirmed steps or a text answer.")
+            if not rows and not text_answer:
+                missing.append(item.order_index + 1)
+        if missing:
+            numbers = ", ".join(str(index) for index in sorted(missing))
+            raise ApplicationError(422, "EXAM_INCOMPLETE", f"Confirm an answer for every question before submitting. Missing: {numbers}.")
+
 
     def _grade_submitted_solutions(
         self,
