@@ -233,3 +233,30 @@ def test_quote_with_normalized_whitespace_and_delimiters_is_accepted(monkeypatch
     session.revisions[1] = SimpleNamespace(content_latex="increasing on (0, 2)", explanation_text=None)
     review = asyncio.run(AnswerGroundedAIService(session, gateway).review_attempt(attempt.id))
     assert review.step_grades[1].verdict == "VALID"
+
+
+
+def test_solution_only_is_sent_as_primary_reference_in_one_model_call(monkeypatch):
+    attempt, session, gateway = fixture_case(monkeypatch)
+    solution = "The power rule gives y'=3x^2; the function is increasing on (0,2)."
+    reference = AnswerReference("CANONICAL", uuid4(), "Find the derivative and intervals for y=x^3", "", solution, "c" * 64)
+    monkeypatch.setattr("app.math_solutions.answer_grounded_ai.resolve_answer_reference", lambda *_args: reference)
+    review = asyncio.run(AnswerGroundedAIService(session, gateway).review_attempt(attempt.id))
+    import json
+    payload = json.loads(gateway.messages[1].content)
+    assert payload["correct_answer"] is None
+    assert payload["reference_solution"] == solution
+    assert payload["reference_basis"] == "REFERENCE_SOLUTION"
+    assert gateway.calls == 1
+    assert len(review.step_grades) == 2
+    assert attempt.status == "SUBMITTED"
+
+
+def test_unanswered_feedback_rejects_source_with_solution_only(monkeypatch):
+    attempt, session, gateway = fixture_case(monkeypatch)
+    reference = AnswerReference("CANONICAL", uuid4(), "Find derivative", "", "Power rule gives y'=3x^2", "c" * 64)
+    monkeypatch.setattr("app.math_solutions.answer_grounded_ai.resolve_answer_reference", lambda *_args, **_kwargs: reference)
+    with pytest.raises(ApplicationError) as error:
+        asyncio.run(UnansweredAIService(session, gateway).review_attempt(attempt.id))
+    assert error.value.code == "GRADING_ANSWER_AVAILABLE"
+    assert gateway.calls == 0

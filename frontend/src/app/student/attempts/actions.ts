@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 
+import { resolveStepReviewExample, stepReviewSeedCommand } from "@/features/math-workspace/utils/step-review-examples";
 import { getWorkspaceSubjects } from "@/features/math-workspace/entry-service";
 import { ApiResponseError, createBackendApiClient } from "@/lib/api/client";
 import { requirePageRole } from "@/lib/auth/page-session";
@@ -52,12 +53,15 @@ export async function startWorkspaceAction(
   redirect(`/student/attempts/${attemptId}`);
 }
 
-/** Open the existing SAMPLE_TEST question only in a local development environment. */
+/** Open an allowlisted source-backed exercise in local development only. */
 export async function startStepReviewDemoAction(
   _previous: StartWorkspaceState,
-  _formData: FormData,
+  formData: FormData,
 ): Promise<StartWorkspaceState> {
   if (process.env.NODE_ENV === "production") return { error: "Bài thử chỉ có trong môi trường development." };
+  const example = resolveStepReviewExample(formData.get("question_id"));
+  if (!example) return { error: "Vui lòng chọn một bài thử trong danh sách." };
+  const seedCommand = stepReviewSeedCommand(example.id);
   await requirePageRole("STUDENT", "/student/attempts");
   const accessToken = await readAccessToken();
   if (!accessToken) return { error: "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại." };
@@ -69,14 +73,17 @@ export async function startStepReviewDemoAction(
     const client = createBackendApiClient();
     const session = await client.createPracticeSession(accessToken, math.id);
     const attempt = await client.createMathAttempt(
-      accessToken, session.id, "c0000000-0000-0000-0000-000000000001",
+      accessToken, session.id, example.id,
     );
     attemptId = attempt.id;
     const review = await client.getMathAIReviewAvailability(accessToken, attempt.id);
     if (!review.available || review.reason_code === "PROVISIONAL_WITHOUT_ANSWER") {
-      return { error: "Bài mẫu chưa có đáp án tham chiếu. Chạy python -m app.seed_step_review_demo trong backend rồi thử lại." };
+      return { error: `Bài thử chưa có lời giải tham chiếu. Chạy ${seedCommand} trong backend rồi thử lại.` };
     }
-  } catch {
+  } catch (error) {
+    if (error instanceof ApiResponseError && error.code === "QUESTION_NOT_APPROVED") {
+      return { error: `Bài thử chưa được cài. Chạy ${seedCommand} trong backend rồi thử lại.` };
+    }
     return { error: "Không mở được bài thử chấm từng bước. Kiểm tra backend và bài mẫu development." };
   }
   redirect(`/student/attempts/${attemptId}`);

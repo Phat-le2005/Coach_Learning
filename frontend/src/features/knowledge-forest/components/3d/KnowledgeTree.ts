@@ -31,8 +31,8 @@ function createRadialGlowTexture(size = 64): THREE.CanvasTexture {
     size / 2
   );
   gradient.addColorStop(0, "rgba(255, 255, 255, 1.0)");
-  gradient.addColorStop(0.2, "rgba(103, 232, 249, 0.85)");
-  gradient.addColorStop(0.5, "rgba(168, 85, 247, 0.45)");
+  gradient.addColorStop(0.2, "rgba(139, 229, 194, 0.85)");
+  gradient.addColorStop(0.5, "rgba(35, 166, 122, 0.45)");
   gradient.addColorStop(1, "rgba(0, 0, 0, 0)");
 
   ctx.fillStyle = gradient;
@@ -56,16 +56,16 @@ export function createKnowledgeTree(
   disposables.push(glowTexture);
 
   // =========================================================================
-  // 1. CENTRAL SINGULARITY NUCLEUS (Lõi Kỳ Dị Phát Quang & Lồng Lượng Tử)
+  // 1. CENTRAL SINGULARITY NUCLEUS (Lõi Sinh Thái Phát Quang & Vỏ Lượng Tử)
   // =========================================================================
   const coreGroup = new THREE.Group();
   coreGroup.position.set(corePos.x, corePos.y, corePos.z);
 
-  // Inner Ultra-Bright White/Cyan Star (Ngôi sao trung tâm)
+  // Inner Ultra-Bright White/Mint Star (Ngôi sao trung tâm)
   const innerCoreGeo = new THREE.SphereGeometry(2.5, 32, 32);
   const innerCoreMat = new THREE.MeshStandardMaterial({
     color: new THREE.Color("#ffffff"),
-    emissive: new THREE.Color("#00f0ff"),
+    emissive: new THREE.Color("#8be5c2"),
     emissiveIntensity: 2.5,
     roughness: 0.1,
     metalness: 0.9,
@@ -74,11 +74,11 @@ export function createKnowledgeTree(
   coreGroup.add(innerCoreMesh);
   disposables.push(innerCoreGeo, innerCoreMat);
 
-  // Mid Holographic Energy Shell (Vỏ năng lượng icosahedron)
+  // Mid Holographic Energy Shell (Vỏ năng lượng icosahedron ngọc lục bảo)
   const midCoreGeo = new THREE.IcosahedronGeometry(3.8, 2);
   const midCoreMat = new THREE.MeshStandardMaterial({
-    color: new THREE.Color("#38bdf8"),
-    emissive: new THREE.Color("#818cf8"),
+    color: new THREE.Color("#23a67a"),
+    emissive: new THREE.Color("#8be5c2"),
     emissiveIntensity: 1.6,
     wireframe: true,
     transparent: true,
@@ -88,11 +88,11 @@ export function createKnowledgeTree(
   coreGroup.add(midCoreMesh);
   disposables.push(midCoreGeo, midCoreMat);
 
-  // Outer Crystalline Cage (Lồng bát diện)
+  // Outer Crystalline Cage (Lồng bát diện xanh rừng đêm)
   const outerCoreGeo = new THREE.OctahedronGeometry(5.2, 1);
   const outerCoreMat = new THREE.MeshStandardMaterial({
-    color: new THREE.Color("#c084fc"),
-    emissive: new THREE.Color("#a855f7"),
+    color: new THREE.Color("#092d25"),
+    emissive: new THREE.Color("#23a67a"),
     emissiveIntensity: 1.1,
     wireframe: true,
     transparent: true,
@@ -105,7 +105,7 @@ export function createKnowledgeTree(
   // Quantum Gyroscopic Precession Rings
   const quantumRings = new THREE.Group();
   const ringMat1 = new THREE.MeshBasicMaterial({
-    color: new THREE.Color("#00f0ff"),
+    color: new THREE.Color("#23a67a"),
     transparent: true,
     opacity: 0.75,
     blending: THREE.AdditiveBlending,
@@ -115,7 +115,7 @@ export function createKnowledgeTree(
   disposables.push(qr1.geometry, ringMat1);
 
   const ringMat2 = new THREE.MeshBasicMaterial({
-    color: new THREE.Color("#ec4899"),
+    color: new THREE.Color("#e8bf6a"),
     transparent: true,
     opacity: 0.7,
     blending: THREE.AdditiveBlending,
@@ -126,7 +126,7 @@ export function createKnowledgeTree(
   disposables.push(qr2.geometry, ringMat2);
 
   const ringMat3 = new THREE.MeshBasicMaterial({
-    color: new THREE.Color("#fbbf24"),
+    color: new THREE.Color("#67bfd4"),
     transparent: true,
     opacity: 0.65,
     blending: THREE.AdditiveBlending,
@@ -141,7 +141,7 @@ export function createKnowledgeTree(
   // Expanding Gravitational Shockwave Rings (Sóng xung kích lan tỏa từ tâm)
   const shockwaveGeo = new THREE.RingGeometry(1.0, 1.4, 48);
   const shockwaveMat1 = new THREE.MeshBasicMaterial({
-    color: new THREE.Color("#00f0ff"),
+    color: new THREE.Color("#8be5c2"),
     side: THREE.DoubleSide,
     transparent: true,
     opacity: 0.8,
@@ -153,7 +153,7 @@ export function createKnowledgeTree(
   disposables.push(shockwaveGeo, shockwaveMat1);
 
   const shockwaveMat2 = new THREE.MeshBasicMaterial({
-    color: new THREE.Color("#a855f7"),
+    color: new THREE.Color("#e8bf6a"),
     side: THREE.DoubleSide,
     transparent: true,
     opacity: 0.8,
@@ -175,9 +175,9 @@ export function createKnowledgeTree(
   const particleOrbitData = new Float32Array(particleCount * 3); // [radius, baseAngle, speed]
 
   const colWhite = new THREE.Color("#ffffff");
-  const colCyan = new THREE.Color("#00f0ff");
-  const colViolet = new THREE.Color("#8b5cf6");
-  const colMagenta = new THREE.Color("#ec4899");
+  const colMint = new THREE.Color("#8be5c2");
+  const colEmerald = new THREE.Color("#23a67a");
+  const colAmber = new THREE.Color("#e8bf6a");
   const tempCol = new THREE.Color();
 
   const arms = 3;
@@ -205,11 +205,11 @@ export function createKnowledgeTree(
     particleOrbitData[i * 3 + 2] = speed;
 
     if (r < 9) {
-      tempCol.copy(colWhite).lerp(colCyan, r / 9);
+      tempCol.copy(colWhite).lerp(colMint, r / 9);
     } else if (r < 26) {
-      tempCol.copy(colCyan).lerp(colViolet, (r - 9) / 17);
+      tempCol.copy(colMint).lerp(colEmerald, (r - 9) / 17);
     } else {
-      tempCol.copy(colViolet).lerp(colMagenta, (r - 26) / 18);
+      tempCol.copy(colEmerald).lerp(colAmber, (r - 26) / 18);
     }
 
     particleColors[i * 3] = tempCol.r;
@@ -240,7 +240,7 @@ export function createKnowledgeTree(
   // =========================================================================
   const ringGeo = new THREE.TorusGeometry(orbitalRadius, 0.32, 12, 128);
   const ringMat = new THREE.MeshBasicMaterial({
-    color: new THREE.Color("#00f0ff"),
+    color: new THREE.Color("#23a67a"),
     transparent: true,
     opacity: 0.75,
     blending: THREE.AdditiveBlending,
@@ -253,7 +253,7 @@ export function createKnowledgeTree(
   // Outer Volumetric Aura Ring
   const ringAuraGeo = new THREE.RingGeometry(orbitalRadius - 1.8, orbitalRadius + 1.8, 96);
   const ringAuraMat = new THREE.MeshBasicMaterial({
-    color: new THREE.Color("#818cf8"),
+    color: new THREE.Color("#8be5c2"),
     side: THREE.DoubleSide,
     transparent: true,
     opacity: 0.3,
@@ -267,7 +267,7 @@ export function createKnowledgeTree(
   // Secondary Concentric Harmonic Ring
   const innerHarmonicGeo = new THREE.TorusGeometry(orbitalRadius * 0.62, 0.15, 8, 96);
   const innerHarmonicMat = new THREE.MeshBasicMaterial({
-    color: new THREE.Color("#a855f7"),
+    color: new THREE.Color("#e8bf6a"),
     transparent: true,
     opacity: 0.45,
     blending: THREE.AdditiveBlending,
@@ -293,7 +293,7 @@ export function createKnowledgeTree(
 
   const cometHaloGeo = new THREE.SphereGeometry(2.8, 16, 16);
   const cometHaloMat = new THREE.MeshBasicMaterial({
-    color: new THREE.Color("#00f0ff"),
+    color: new THREE.Color("#8be5c2"),
     transparent: true,
     opacity: 0.7,
     blending: THREE.AdditiveBlending,
@@ -302,7 +302,7 @@ export function createKnowledgeTree(
   cometGroup.add(cometHalo);
   disposables.push(cometHaloGeo, cometHaloMat);
 
-  const cometLight = new THREE.PointLight(0x00f0ff, 5.0, 50);
+  const cometLight = new THREE.PointLight(0x8be5c2, 5.0, 50);
   cometGroup.add(cometLight);
 
   // Trailing Energy Spark Tail
@@ -313,7 +313,7 @@ export function createKnowledgeTree(
   const cometTailMat = new THREE.PointsMaterial({
     size: 2.8,
     map: glowTexture,
-    color: new THREE.Color("#38bdf8"),
+    color: new THREE.Color("#e8bf6a"),
     transparent: true,
     opacity: 0.85,
     blending: THREE.AdditiveBlending,
@@ -328,7 +328,7 @@ export function createKnowledgeTree(
   let currentCometAngle = 0;
 
   // =========================================================================
-  // 5. DEEP SPACE NEBULA & STARFIELD (Bầu Trời Sao Sâu)
+  // 5. DEEP SPACE NEBULA & STARFIELD (Bầu Trời Đom Đóm & Tinh Tú Sinh Thái)
   // =========================================================================
   const starCount = 2400;
   const starPositions = new Float32Array(starCount * 3);
@@ -343,12 +343,14 @@ export function createKnowledgeTree(
     starPositions[i * 3 + 2] = dist * Math.cos(phi);
 
     const tint = Math.random();
-    if (tint < 0.6) {
+    if (tint < 0.5) {
       tempCol.set("#ffffff");
-    } else if (tint < 0.8) {
-      tempCol.set("#67e8f9");
+    } else if (tint < 0.75) {
+      tempCol.set("#8be5c2");
+    } else if (tint < 0.9) {
+      tempCol.set("#e8bf6a");
     } else {
-      tempCol.set("#c084fc");
+      tempCol.set("#67bfd4");
     }
     starColors[i * 3] = tempCol.r;
     starColors[i * 3 + 1] = tempCol.g;

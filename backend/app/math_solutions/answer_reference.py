@@ -15,6 +15,7 @@ from app.assignments.models import Assignment, AssignmentMaterialItem, Assignmen
 from app.core.exceptions import ApplicationError
 from app.math_solutions.models import SolutionAttempt
 from app.questions.models import Question, QuestionStatus, QuestionType
+from app.questions.reference_solution import SOLUTION_PRIMARY_SOURCE_TYPE, has_grading_reference, preferred_solution, reference_text
 from app.teacher_materials.models import MaterialEvaluationMode
 
 
@@ -26,6 +27,15 @@ class AnswerReference:
     correct_answer: str
     explanation: str | None
     content_sha256: str
+    allow_legacy_ai_backdrop: bool = True
+
+    @property
+    def has_reviewed_reference(self) -> bool:
+        return has_grading_reference(self.correct_answer, self.explanation)
+
+    @property
+    def reference_solution(self) -> str | None:
+        return preferred_solution(self.explanation, self.correct_answer)
 
 
 def resolve_answer_reference(
@@ -37,8 +47,9 @@ def resolve_answer_reference(
 ) -> AnswerReference:
     """Bind a problem to an approved question or immutable assigned snapshot.
 
-    ``require_answer=False`` is only for provisional feedback. Callers that
-    produce a final grade must keep the default and require a reviewed answer.
+    The historical ``require_answer`` argument requires reference content:
+    an approved solution is sufficient without a separate final-answer key.
+    Setting it to False also permits unscored feedback without a reference.
     """
     if require_submitted and attempt.status != "SUBMITTED":
         raise ApplicationError(409, "SOLUTION_NOT_SUBMITTED", "Submit the solution before grading.")
@@ -82,14 +93,17 @@ def resolve_answer_reference(
 
     if not isinstance(content, str) or not content.strip():
         raise ApplicationError(409, "GRADING_SOURCE_UNAVAILABLE", "The problem text is unavailable.")
-    if require_answer and (not isinstance(answer, str) or not answer.strip()):
-        raise ApplicationError(409, "GRADING_ANSWER_REQUIRED", "A reviewed answer is required before AI step grading.")
-    explanation = explanation.strip() if isinstance(explanation, str) and explanation.strip() else None
+    # The handoff follows rubric/teacher grading rather than legacy AI mastery.
+    allow_legacy_ai_backdrop = attempt.source_kind != "CANONICAL" or question.source_type != SOLUTION_PRIMARY_SOURCE_TYPE
+    explanation = reference_text(explanation)
+    answer = reference_text(answer) or ""
+    if require_answer and not has_grading_reference(answer, explanation):
+        raise ApplicationError(409, "GRADING_ANSWER_REQUIRED", "A reviewed reference solution or answer is required before step review.")
     content = content.strip()
-    answer = answer.strip() if isinstance(answer, str) else ""
     fingerprint = sha256(json.dumps(
-        {"source_kind": attempt.source_kind, "source_id": str(source_id),
+        {"reference_policy": "solution-first-v1", "allow_legacy_ai_backdrop": allow_legacy_ai_backdrop,
+         "source_kind": attempt.source_kind, "source_id": str(source_id),
          "problem_content": content, "correct_answer": answer, "explanation": explanation},
         ensure_ascii=False, sort_keys=True, separators=(",", ":"),
     ).encode("utf-8")).hexdigest()
-    return AnswerReference(attempt.source_kind, source_id, content, answer, explanation, fingerprint)
+    return AnswerReference(attempt.source_kind, source_id, content, answer, explanation, fingerprint, allow_legacy_ai_backdrop)

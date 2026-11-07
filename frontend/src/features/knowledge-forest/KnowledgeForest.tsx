@@ -25,6 +25,12 @@ export function KnowledgeForest({ data, initialSelectedId }: KnowledgeForestProp
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<KnowledgeStatusFilter>("ALL");
 
+  const initialChapterId = useMemo(() => {
+    if (!initialSelectedId) return undefined;
+    const matched = data.chapters.find((candidate) => candidate.id === initialSelectedId);
+    return matched?.id;
+  }, [data.chapters, initialSelectedId]);
+
   const initialResolved = useMemo(() => {
     if (!initialSelectedId) return null;
     for (const chapter of data.chapters) {
@@ -103,6 +109,7 @@ export function KnowledgeForest({ data, initialSelectedId }: KnowledgeForestProp
           data={data}
           viewMode={viewMode}
           onViewModeChange={setViewMode}
+          initialChapterId={initialChapterId}
           selectedId={selectedItem?.kind === "problem_type" ? selectedItem.data.id : undefined}
           onSelectProblemType={handleSelectProblemType}
           onClearSelection={handleCloseDetail}
@@ -171,7 +178,11 @@ export function KnowledgeForest({ data, initialSelectedId }: KnowledgeForestProp
             onResetFilters={handleResetFilters}
           />
 
-          <KnowledgeDetailDrawer item={selectedItem} onClose={handleCloseDetail} />
+          <KnowledgeDetailDrawer
+            item={selectedItem}
+            subjectId={data.subject.id}
+            onClose={handleCloseDetail}
+          />
         </>
       )}
     </main>

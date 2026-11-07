@@ -60,7 +60,13 @@ export function AIReviewSummary({
           <CheckCircle2 size={18} color="#148056" />
           <span>Tổng kết đánh giá từng bước</span>
         </h3>
-        <span className={styles.referenceBadge}>{review.is_final ? "Điểm đã ghi nhận" : "Góp ý tham khảo"}</span>
+        <span className={styles.referenceBadge}>
+          {review.is_final
+            ? "Điểm đã ghi nhận"
+            : review.review_source === "ANSWER_GROUNDED_AI"
+            ? "Đã đối chiếu đáp án chuẩn"
+            : "Góp ý tham khảo"}
+        </span>
       </div>
 
       <div className={styles.summaryHeroRow}>
@@ -101,9 +107,13 @@ export function AIReviewSummary({
               ? `${review.review_source === "TEACHER" ? "Điểm giáo viên ghi nhận" : "Điểm theo rubric được duyệt"}: ${Math.round((review.final_score ?? 0) * 100)}%.`
               : review.review_source === "UNANSWERED_AI"
                 ? "Chưa có đáp án được duyệt. Các góp ý dưới đây không xác định đúng sai và không cho điểm."
+                : review.review_source === "ANSWER_GROUNDED_AI"
+                ? stats.invalidCount === 0 && stats.needsReviewCount === 0
+                  ? "Tất cả các bước giải đều chuẩn xác theo đáp án mẫu. Đã cập nhật độ vững Cây Tri Thức!"
+                  : `Đã đối chiếu với đáp án chuẩn: ghi nhận ${stats.validCount}/${stats.totalSteps} bước đúng và cập nhật Cây Tri Thức.`
                 : stats.invalidCount === 0 && stats.needsReviewCount === 0
-              ? "AI chưa đánh dấu bước nào cần xem lại. Đây vẫn là góp ý tạm thời."
-              : `AI gợi ý kiểm tra lại ${stats.issueStepIndices.length} bước trước khi có điểm chính thức.`}
+              ? "AI chưa đánh dấu bước nào cần xem lại."
+              : `AI gợi ý kiểm tra lại ${stats.issueStepIndices.length} bước.`}
           </strong>
           <p
             style={{
@@ -178,6 +188,108 @@ export function AIReviewSummary({
         : review.review_source === "UNANSWERED_AI"
           ? "AI chỉ gợi ý điều cần kiểm tra. Giáo viên cần bổ sung hoặc duyệt đáp án trước khi có điểm chính thức."
           : stats.disclaimer}</p>
+
+      {/* LOOP CLOSURE: Khép vòng học tập sang Cây Tri Thức & Lộ Trình */}
+      <div
+        style={{
+          margin: "14px 0",
+          padding: "14px 16px",
+          borderRadius: "14px",
+          background: hasIssues
+            ? "linear-gradient(135deg, rgba(234, 179, 8, 0.12), rgba(245, 158, 11, 0.06))"
+            : "linear-gradient(135deg, rgba(35, 166, 122, 0.15), rgba(16, 185, 129, 0.08))",
+          border: hasIssues
+            ? "1px solid rgba(245, 158, 11, 0.35)"
+            : "1px solid rgba(35, 166, 122, 0.35)",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <span style={{ fontSize: "0.86rem", fontWeight: 700, color: hasIssues ? "#b45309" : "#14533f" }}>
+            {hasIssues
+              ? "⚡ Cần củng cố thêm công thức trước khi sang câu mới?"
+              : "🌱 Đã hoàn thành chặng luyện tập có kiểm chứng AI!"}
+          </span>
+          <span
+            style={{
+              fontSize: "0.75rem",
+              fontWeight: 650,
+              padding: "2px 8px",
+              borderRadius: "999px",
+              background: hasIssues ? "rgba(245, 158, 11, 0.2)" : "rgba(35, 166, 122, 0.2)",
+              color: hasIssues ? "#b45309" : "#14533f",
+            }}
+          >
+            {hasIssues ? "Cần gỡ lỗi" : "Đã ghi nhận độ vững"}
+          </span>
+        </div>
+
+        <p style={{ margin: 0, fontSize: "0.78rem", color: "#374151", lineHeight: 1.45 }}>
+          {hasIssues
+            ? "Bạn có thể xem lại sơ đồ tư duy & khung cắt công thức PDF để hiểu rõ lý do biến đổi, hoặc bấm nút xem lại các bước sai bên dưới."
+            : "Kết quả bài làm đã được đồng bộ vào bảng đo lường năng lực của bạn. Hãy quay lại xem nhánh cây vừa sáng hoặc tiếp tục chặng hôm nay."}
+        </p>
+
+        <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginTop: "4px" }}>
+          <a
+            href="/student/knowledge"
+            style={{
+              padding: "7px 12px",
+              borderRadius: "8px",
+              background: "#23a67a",
+              color: "#ffffff",
+              fontSize: "0.8rem",
+              fontWeight: 650,
+              textDecoration: "none",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "5px",
+              boxShadow: "0 2px 6px rgba(35, 166, 122, 0.3)",
+            }}
+          >
+            ✦ Xem trên Cây Tri Thức 3D
+          </a>
+
+          <a
+            href="/student/theory"
+            style={{
+              padding: "7px 12px",
+              borderRadius: "8px",
+              background: "rgba(255, 255, 255, 0.85)",
+              border: "1px solid rgba(16, 46, 38, 0.15)",
+              color: "#14533f",
+              fontSize: "0.8rem",
+              fontWeight: 650,
+              textDecoration: "none",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "5px",
+            }}
+          >
+            📖 Mở Sơ đồ tư duy PDF
+          </a>
+
+          <a
+            href="/student"
+            style={{
+              padding: "7px 12px",
+              borderRadius: "8px",
+              background: "transparent",
+              color: "#4b5563",
+              fontSize: "0.8rem",
+              fontWeight: 600,
+              textDecoration: "none",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "5px",
+            }}
+          >
+            Về trang chủ →
+          </a>
+        </div>
+      </div>
 
       <div className={styles.summaryActions}>
         {hasIssues && (

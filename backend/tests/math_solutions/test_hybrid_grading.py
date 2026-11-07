@@ -187,3 +187,25 @@ def test_missing_gemini_configuration_only_blocks_the_ai_fallback(monkeypatch, s
         asyncio.run(router.review_submitted_steps(attempt.id, student, session, None, settings, limiter))
     assert error.value.code == "REAL_AI_PROVIDER_REQUIRED"
     assert calls["limit"] == 0
+
+
+
+def test_solution_only_ai_is_grounded_but_does_not_write_mastery(monkeypatch, scenario):
+    attempt, session, student, ref, calls, limiter, settings = scenario
+    attempt.rubric_id = None
+    solution_reference = AnswerReference(ref.source_kind, ref.source_id, ref.problem_content, "", "The derivative is 3x^2.", "c" * 64)
+    monkeypatch.setattr(router, "resolve_answer_reference", lambda *_args, **_kwargs: solution_reference)
+    class AI:
+        def __init__(self, _session, _gateway):
+            pass
+        async def review_attempt(self, attempt_id):
+            calls["model"] += 1
+            return _review(attempt_id, solution_reference.content_sha256)
+    monkeypatch.setattr(router, "AnswerGroundedAIService", AI)
+    monkeypatch.setattr(router, "UnansweredAIService", lambda *_args: pytest.fail("A solution exists; unanswered routing is incorrect"))
+    monkeypatch.setattr("app.math_solutions.mastery_backdrop.MasteryBackdropService", lambda *_args: pytest.fail("Solution-only AI must not create mastery evidence"))
+    result = asyncio.run(router.review_submitted_steps(attempt.id, student, session, SimpleNamespace(provider=object()), settings, limiter))
+    assert result.review_source == "ANSWER_GROUNDED_AI"
+    assert result.is_final is False and result.final_score is None
+    assert all(step.score is None for step in result.step_grades)
+    assert calls["model"] == calls["limit"] == 1

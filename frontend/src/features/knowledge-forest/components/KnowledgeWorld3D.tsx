@@ -30,6 +30,7 @@ export interface KnowledgeWorld3DProps {
   data: KnowledgeForestViewModel;
   viewMode: "3D" | "2D";
   onViewModeChange: (mode: "3D" | "2D") => void;
+  initialChapterId?: string;
   selectedId?: string;
   onSelectProblemType: (pt: KnowledgeProblemTypeNode) => void;
   onClearSelection: () => void;
@@ -44,6 +45,7 @@ export function KnowledgeWorld3D({
   data,
   viewMode,
   onViewModeChange,
+  initialChapterId,
   selectedId,
   onSelectProblemType,
   onClearSelection,
@@ -56,7 +58,9 @@ export function KnowledgeWorld3D({
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const [showPrerequisites, setShowPrerequisites] = useState(false);
-  const [activeChapterId, setActiveChapterId] = useState<string | undefined>(data.chapters[0]?.id);
+  const [activeChapterId, setActiveChapterId] = useState<string | undefined>(
+    initialChapterId || data.chapters[0]?.id
+  );
   const [showChapterExplorer, setShowChapterExplorer] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [scopeFilter, setScopeFilter] = useState<KnowledgeScopeFilter>("ALL");
@@ -175,7 +179,7 @@ export function KnowledgeWorld3D({
     // --- Scene & Fog ---
     const scene = new THREE.Scene();
     sceneRef.current = scene;
-    scene.fog = new THREE.FogExp2(0x040614, 0.002);
+    scene.fog = new THREE.FogExp2(0x041410, 0.002);
 
     // --- Camera ---
     const width = container.clientWidth;
@@ -220,18 +224,18 @@ export function KnowledgeWorld3D({
     cameraControllerRef.current = cameraController;
 
     // --- Atmospheric Lights ---
-    const ambientLight = new THREE.AmbientLight(0x0e1330, 1.6);
+    const ambientLight = new THREE.AmbientLight(0x0a2620, 1.8);
     scene.add(ambientLight);
 
-    const dirLight = new THREE.DirectionalLight(0x67e8f9, 1.8);
+    const dirLight = new THREE.DirectionalLight(0x8be5c2, 1.8);
     dirLight.position.set(40, 80, 50);
     scene.add(dirLight);
 
-    const rimLight = new THREE.DirectionalLight(0xd946ef, 1.2);
+    const rimLight = new THREE.DirectionalLight(0xe8bf6a, 1.0);
     rimLight.position.set(-50, 40, -50);
     scene.add(rimLight);
 
-    const coreLight = new THREE.PointLight(0x67e8f9, 4.0, 70);
+    const coreLight = new THREE.PointLight(0x8be5c2, 4.0, 70);
     coreLight.position.set(layout.corePosition.x, layout.corePosition.y, layout.corePosition.z);
     scene.add(coreLight);
 
@@ -496,6 +500,17 @@ export function KnowledgeWorld3D({
       }
     }
   }, [selectedId, layout.nodeMap, showPrerequisites]);
+
+  // Fly to initial chapter if specified via URL (?node=chapter_id)
+  useEffect(() => {
+    if (initialChapterId && !selectedId) {
+      const chLayout = layout.chapters.find((c) => c.data.id === initialChapterId);
+      if (chLayout && cameraControllerRef.current) {
+        cameraControllerRef.current.flyToChapter(chLayout.position);
+        setShowChapterExplorer(true);
+      }
+    }
+  }, [initialChapterId, selectedId, layout.chapters]);
 
   // Synchronize search, status filter, and teacher scope filter with node visibility
   useEffect(() => {

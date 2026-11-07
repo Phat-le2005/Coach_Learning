@@ -34,13 +34,18 @@ def canonical_case(answer="y' = 3x^2"):
     return FakeSession(question), attempt, question
 
 
-def test_approved_canonical_answer_is_stable_and_missing_answer_blocks_ai():
+def test_approved_reference_accepts_solution_only_and_blocks_when_both_missing():
     session, attempt, question = canonical_case()
     first = resolve_answer_reference(session, attempt)
     assert first.correct_answer == "y' = 3x^2"
     assert first.source_id == question.id
     assert first.content_sha256 == resolve_answer_reference(session, attempt).content_sha256
     question.correct_answer = None
+    solution_only = resolve_answer_reference(session, attempt)
+    assert solution_only.correct_answer == ""
+    assert solution_only.reference_solution == question.explanation
+    assert solution_only.has_reviewed_reference
+    question.explanation = None
     with pytest.raises(ApplicationError) as missing:
         resolve_answer_reference(session, attempt)
     assert missing.value.code == "GRADING_ANSWER_REQUIRED"
@@ -91,6 +96,10 @@ def test_teacher_reference_uses_assigned_snapshot_not_editable_source():
     assert reference.correct_answer == "y' = 3x^2"
     assert reference.source_id == snapshot.id
     snapshot.correct_answer = None
+    solution_only = resolve_answer_reference(session, attempt)
+    assert solution_only.reference_solution == snapshot.explanation
+    assert solution_only.has_reviewed_reference
+    snapshot.explanation = None
     with pytest.raises(ApplicationError) as missing:
         resolve_answer_reference(session, attempt)
     assert missing.value.code == "GRADING_ANSWER_REQUIRED"
@@ -99,3 +108,20 @@ def test_teacher_reference_uses_assigned_snapshot_not_editable_source():
     with pytest.raises(ApplicationError) as mismatched:
         resolve_answer_reference(session, attempt)
     assert mismatched.value.code == "GRADING_SOURCE_MISMATCH"
+
+
+@pytest.mark.parametrize("explanation", [None, " ", "![source solution](assets/solution.png)", '<img src="solution.png">'])
+def test_missing_or_image_only_solution_does_not_invent_text_reference(explanation):
+    session, attempt, question = canonical_case(answer=None)
+    question.explanation = explanation
+    with pytest.raises(ApplicationError) as error:
+        resolve_answer_reference(session, attempt)
+    assert error.value.code == "GRADING_ANSWER_REQUIRED"
+
+
+def test_solution_changes_invalidate_cached_reference_without_answer_key():
+    session, attempt, question = canonical_case(answer=None)
+    question.explanation = "Power rule gives y'=3x^2."
+    first = resolve_answer_reference(session, attempt)
+    question.explanation = "Power rule gives y'=3x^2; the derivative is zero at x=0."
+    assert resolve_answer_reference(session, attempt).content_sha256 != first.content_sha256

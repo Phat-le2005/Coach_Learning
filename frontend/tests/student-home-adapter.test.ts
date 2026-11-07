@@ -170,7 +170,7 @@ test("toStudentHomeViewModel maps real learning state accurately", () => {
   assert.equal(vm.resolvedAction.type, "CONTINUE_REPAIR");
   assert.equal(vm.resolvedAction.resourceId, "repair-session-1");
   assert.equal(vm.resolvedAction.targetName, "Đơn điệu hàm phân thức bậc nhất");
-  assert.equal(vm.resolvedAction.hasAvailableRoute, false);
+  assert.equal(vm.resolvedAction.hasAvailableRoute, true);
 
   // Mastery summary
   assert.equal(vm.mastery.score, 73);
@@ -199,6 +199,9 @@ test("toStudentHomeViewModel maps real learning state accurately", () => {
   assert.equal(vm.todayPlan.completedCount, 0);
   assert.equal(vm.todayPlan.totalEstimatedMinutes, 45);
   assert.equal(vm.todayPlan.notice, "Ưu tiên củng cố dạng bài yếu");
+  assert.equal(vm.todayPlan.tasks.length, 1);
+  assert.equal(vm.todayPlan.tasks[0].id, "task-1");
+  assert.equal(vm.todayPlan.tasks[0].isCompleted, false);
 
   // Priorities
   assert.equal(vm.priorities.length, 1);

@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, CheckCircle2, Compass, Sparkles } from "lucide-react";
+import { ArrowRight, BookOpen, CheckCircle2, Compass, Sparkles } from "lucide-react";
 import { motion, useScroll, useSpring } from "motion/react";
 import { useRef } from "react";
 
@@ -179,6 +179,17 @@ export function PriorityPath({ priorities, onSelectPriority }: PriorityPathProps
                         >
                           Luyện ngay (5p)
                           <ArrowRight size={13} aria-hidden="true" />
+                        </a>
+
+                        <a
+                          href={`/student/theory?topic=${encodeURIComponent(priority.targetName)}`}
+                          className={styles.journeySecondaryBtn}
+                          onClick={(e) => e.stopPropagation()}
+                          style={{ textDecoration: "none" }}
+                          title="Xem nhanh sơ đồ tư duy & công thức PDF"
+                        >
+                          <BookOpen size={13} aria-hidden="true" />
+                          Công thức
                         </a>
 
                         <button
