@@ -1,14 +1,15 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { UploadCloud, Search, FileText, Calendar, Filter, Sparkles, AlertCircle, Eye, Send } from "lucide-react";
-import type { TeacherAssignment, TeacherClassroom, TeacherMaterial, TeacherSubject } from "../api";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { UploadCloud, Search, FileText, Calendar, Filter, Sparkles, AlertCircle, Eye, Send, Trash2 } from "lucide-react";
+import { teacherApi, type TeacherAssignment, type TeacherClassroom, type TeacherMaterial, type TeacherSubject } from "../api";
 import { MaterialPreviewModal } from "./MaterialPreviewModal";
 import { AssignMaterialModal } from "./AssignMaterialModal";
 import styles from "../TeacherDashboard.module.css";
 import { teacherPdfApi, type TeacherPdfImport } from "../pdf-api";
 import { ExercisePdfReview, PDF_IMPORT_STATUS } from "./ExercisePdfReview";
 import reviewStyles from "./ExercisePdfReview.module.css";
+import { DeleteMaterialDialog } from "./DeleteMaterialDialog";
 
 export interface MaterialsTabProps {
   selectedClass?: TeacherClassroom;
@@ -20,6 +21,7 @@ export interface MaterialsTabProps {
   pdfImportId?: string;
   onOpenPdfImport?: (id: string) => void;
   onMaterialSubmitted?: (material: TeacherMaterial) => void;
+  onMaterialDeleted?: (materialId: string) => void;
 }
 
 export function MaterialsTab({
@@ -32,6 +34,7 @@ export function MaterialsTab({
   pdfImportId,
   onOpenPdfImport,
   onMaterialSubmitted,
+  onMaterialDeleted,
 }: MaterialsTabProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSubjectFilter, setSelectedSubjectFilter] = useState("");
@@ -39,6 +42,29 @@ export function MaterialsTab({
   const [selectedAssignMaterial, setSelectedAssignMaterial] = useState<TeacherMaterial | null>(null);
   const [imports, setImports] = useState<TeacherPdfImport[]>([]);
   const [importError, setImportError] = useState("");
+  const [deleteTarget, setDeleteTarget] = useState<TeacherMaterial | null>(null);
+  const [deleteBusy, setDeleteBusy] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
+  const [deleteNotice, setDeleteNotice] = useState("");
+  const uploadButton = useRef<HTMLButtonElement>(null);
+  const deleteTrigger = useRef<HTMLButtonElement | null>(null);
+
+  async function deleteMaterial() {
+    if (!deleteTarget || deleteBusy) return;
+    setDeleteBusy(true); setDeleteError("");
+    try {
+      await teacherApi.deleteMaterial(deleteTarget.id);
+      onMaterialDeleted?.(deleteTarget.id);
+      if (selectedPreviewMaterial?.id === deleteTarget.id) setSelectedPreviewMaterial(null);
+      if (selectedAssignMaterial?.id === deleteTarget.id) setSelectedAssignMaterial(null);
+      setDeleteNotice(`Đã xóa ${deleteTarget.title} khỏi kho học liệu.`);
+      setDeleteTarget(null);
+      requestAnimationFrame(() => uploadButton.current?.focus());
+    } catch (error) {
+      setDeleteError(error instanceof Error ? error.message : "Không thể xóa tài liệu. Vui lòng thử lại.");
+    } finally { setDeleteBusy(false); }
+  }
+
   useEffect(() => {
     if (!selectedClass || pdfImportId) return;
     let active = true;
@@ -119,6 +145,7 @@ export function MaterialsTab({
           </div>
 
           <button
+            ref={uploadButton}
             type="button"
             className={styles.btnPrimary}
             onClick={onOpenUpload}
@@ -129,6 +156,7 @@ export function MaterialsTab({
         </div>
 
         {importError && <p className={styles.formAlert} role="alert">{importError}</p>}
+        {deleteNotice && <p className={styles.formSuccess} role="status">{deleteNotice}</p>}
         {imports.length > 0 && <div className={reviewStyles.drafts}>
           <h4>Bản nháp OCR đang xử lý / chờ duyệt ({imports.length})</h4>
           {imports.map((draft) => <div key={draft.id} className={reviewStyles.draftRow}>
@@ -221,9 +249,13 @@ export function MaterialsTab({
                       <FileText size={13} aria-hidden="true" />
                       {isReviewed ? "Bài tập đã duyệt" : isPdf ? "PDF" : "TXT"}
                     </span>
-                    <span className={styles.materialStatusPill}>
+                    <div className={styles.materialStatusActions}><span className={styles.materialStatusPill}>
                       {({ READY: "Đã duyệt", NEEDS_REVIEW: "Cần duyệt", PARSED: "Đã tách câu", UPLOADED: "Đã tải lên", MAPPING_PENDING: "Chờ phân loại", FAILED: "Xử lý lỗi" } as Record<string, string>)[item.status] ?? item.status}
                     </span>
+                    <button type="button" className={styles.deleteMaterialButton} aria-label={`Xóa tài liệu ${item.title}`}
+                      onClick={(event) => { deleteTrigger.current = event.currentTarget; setDeleteTarget(item); setDeleteError(""); setDeleteNotice(""); }}>
+                      <Trash2 size={15} aria-hidden="true" /> Xóa
+                    </button></div>
                   </div>
 
                   <h4 className={styles.materialCardTitle} title={item.title}>
@@ -280,6 +312,8 @@ export function MaterialsTab({
       </div>
 
       {/* Modals */}
+      {deleteTarget && <DeleteMaterialDialog material={deleteTarget} busy={deleteBusy} error={deleteError} onConfirm={deleteMaterial}
+        onCancel={() => { setDeleteTarget(null); requestAnimationFrame(() => deleteTrigger.current?.focus()); }} />}
       <MaterialPreviewModal
         isOpen={Boolean(selectedPreviewMaterial)}
         onClose={() => setSelectedPreviewMaterial(null)}

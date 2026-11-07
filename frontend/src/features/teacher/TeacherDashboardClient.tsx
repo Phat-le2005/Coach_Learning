@@ -337,6 +337,7 @@ export function TeacherDashboardClient({
           setMaterials((current) => [created, ...current.filter((m) => m.id !== created.id)]);
           openPdfImport("");
         }}
+        onMaterialDeleted={(id) => setMaterials((current) => current.filter((material) => material.id !== id))}
         onAssignmentCreated={(newAssignment) => {
           setAssignments((current) => [newAssignment, ...current]);
           setAssignmentId(newAssignment.id);

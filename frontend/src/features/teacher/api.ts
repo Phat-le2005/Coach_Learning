@@ -208,6 +208,9 @@ export function parseStudentSubmission(value: unknown, path = "submission"): Tea
 }
 
 export const teacherApi = {
+  deleteMaterial: async (materialId: string) => request(`materials/${encodeURIComponent(materialId)}`, () => undefined, {
+    method: "DELETE", headers: { "X-CSRF-Token": await getCsrfToken() },
+  }),
   subjects: () => request("subjects", (v) => list(v, parseSubject)),
   classes: () => pages("classes", parseClassroom),
   students: (id: string) => pages(`classes/${encodeURIComponent(id)}/students`, parseStudent),

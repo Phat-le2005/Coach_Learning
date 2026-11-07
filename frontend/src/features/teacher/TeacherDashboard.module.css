@@ -2337,6 +2337,15 @@
 }
 
 /* Card actions */
+.materialStatusActions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.materialCardHeader { flex-wrap: wrap; gap: 8px; }
+.deleteMaterialButton { display: inline-flex; align-items: center; justify-content: center; gap: 5px; min-height: 44px; padding: 6px 8px; color: #a12727; border: 1px solid #ebcccc; border-radius: 8px; background: transparent; font: inherit; font-size: 12px; cursor: pointer; }
+.deleteMaterialButton:hover { background: #fff1f1; }
+.deleteMaterialButton:focus-visible, .btnDeleteMaterial:focus-visible { outline: 2px solid #a12727; outline-offset: 2px; }
+.deleteDialog { width: min(480px, calc(100vw - 32px)); max-height: calc(100dvh - 48px); padding: 0; border: 1px solid var(--border-soft, #dbe4de); border-radius: 16px; background: var(--surface-elevated, #fbfaf4); color: var(--text-primary, #173329); box-shadow: 0 20px 60px #17332933; }
+.deleteDialog::backdrop { background: #17332966; }
+.btnDeleteMaterial { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 10px 16px; border: 0; border-radius: 8px; color: white; background: #a12727; font: inherit; font-weight: 600; cursor: pointer; }
+.btnDeleteMaterial:disabled { opacity: .6; cursor: wait; }
 .materialCardActions {
   display: flex;
   align-items: center;

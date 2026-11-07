@@ -20,6 +20,9 @@ test("PDF import proxy restricts job, review, source and asset routes", () => {
   assert.equal(teacherBackendPath(["materials", "pdf-imports", id, "source"], "GET", ""), `${base}/source`);
   assert.equal(teacherBackendPath(["materials", "pdf-imports", id, "assets", "1"], "GET", ""), `${base}/assets/1`);
   assert.equal(teacherBackendPath(["materials", id, "document"], "GET", ""), `/teacher-materials/${id}/document`);
+  assert.equal(teacherBackendPath(["materials", id], "DELETE", ""), `/teacher-materials/${id}`);
+  assert.equal(teacherBackendPath(["materials", id], "DELETE", "?classroom_id=extra"), null);
+  assert.equal(teacherBackendPath(["materials", ".."], "DELETE", ""), null);
   assert.equal(teacherBackendPath(["materials", id, "assets", "3"], "GET", ""), `/teacher-materials/${id}/assets/3`);
   for (const [parts, method, query] of [
     [["materials", "pdf-imports", "..", "source"], "GET", ""],

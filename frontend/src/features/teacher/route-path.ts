@@ -31,6 +31,7 @@ export function teacherBackendPath(parts: string[], method: string, search: stri
     }
     if (parts.length === 1 && method === "GET" && search.startsWith("?classroom_id=") && UUID.test(search.slice(14))) return `/teacher-materials${search}`;
     if (parts.length === 2 && id === "upload" && method === "POST" && !search) return "/teacher-materials/upload";
+    if (parts.length === 2 && UUID.test(id ?? "") && method === "DELETE" && !search) return `/teacher-materials/${id}`;
     if (UUID.test(id ?? "") && parts.length === 3 && !search) {
       if (action === "items" && method === "GET") return `/teacher-materials/${id}/items`;
       if (action === "document" && method === "GET") return `/teacher-materials/${id}/document`;

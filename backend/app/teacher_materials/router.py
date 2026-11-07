@@ -97,6 +97,11 @@ def list_materials(classroom_id:UUID,user:Teacher,service:Annotated[TeacherMater
 def get_material(material_id:UUID,user:Teacher,service:Annotated[TeacherMaterialService,Depends(get_service)]): return service.get(user.id,material_id)
 
 
+@router.delete("/{material_id}", status_code=204)
+def delete_material(material_id: UUID, user: Teacher, service: Annotated[TeacherMaterialService, Depends(get_service)]):
+    service.archive(user.id, material_id)
+    return Response(status_code=204)
+
 @router.get("/{material_id}/items",response_model=list[TeacherMaterialItemRead])
 def get_items(material_id:UUID,user:Teacher,service:Annotated[TeacherMaterialService,Depends(get_service)]): return service.get(user.id,material_id).items
 
