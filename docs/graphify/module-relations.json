@@ -1,17 +1,17 @@
 {
   "stats": {
-    "nodes": 14904,
-    "edges": 66617,
-    "communities": 422,
-    "code_files_detected": 1516,
-    "files_with_nodes": 1495,
+    "nodes": 14943,
+    "edges": 66714,
+    "communities": 430,
+    "code_files_detected": 1524,
+    "files_with_nodes": 1503,
     "graphify_version": "0.9.102",
-    "head_commit": "f0e917d76273116de9ee3baa11bea1d7376faa62",
-    "generated_at": "2026-11-07T11:57:12+07:00",
-    "source_sha256": "975dea1bb3c504b6a63c4060cb7d36ec929e3ae5fb8a64e3c30cceef48b96178",
+    "head_commit": "44b29377b60d1443ff2c99123f4358171fe19d26",
+    "generated_at": "2026-11-07T13:59:36+07:00",
+    "source_sha256": "a1c344efe76e609c0b9543d15813c490c22e15439c872b8665c3780d2ffb4fb0",
     "confidence": {
-      "EXTRACTED": 56090,
-      "INFERRED": 10527
+      "EXTRACTED": 56196,
+      "INFERRED": 10518
     },
     "semantic_llm_tokens": 0
   },
@@ -32,28 +32,28 @@
     },
     {
       "name": "Backend",
-      "nodes": 5200,
-      "files_with_nodes": 542
+      "nodes": 5204,
+      "files_with_nodes": 543
     },
     {
       "name": "Frontend",
-      "nodes": 2210,
-      "files_with_nodes": 340
+      "nodes": 2224,
+      "files_with_nodes": 342
     },
     {
       "name": "Other",
-      "nodes": 1865,
+      "nodes": 1870,
       "files_with_nodes": 15
     },
     {
       "name": "Tests",
-      "nodes": 3488,
-      "files_with_nodes": 378
+      "nodes": 3493,
+      "files_with_nodes": 381
     },
     {
       "name": "Tools",
-      "nodes": 1767,
-      "files_with_nodes": 181
+      "nodes": 1778,
+      "files_with_nodes": 183
     }
   ],
   "layer_relations": [
@@ -85,17 +85,17 @@
     {
       "a": "Backend",
       "b": "Backend",
-      "edges": 19670
+      "edges": 19667
     },
     {
       "a": "Backend",
       "b": "Other",
-      "edges": 5825
+      "edges": 5831
     },
     {
       "a": "Backend",
       "b": "Tests",
-      "edges": 13189
+      "edges": 13195
     },
     {
       "a": "Backend",
@@ -105,17 +105,17 @@
     {
       "a": "Frontend",
       "b": "Frontend",
-      "edges": 7117
+      "edges": 7165
     },
     {
       "a": "Frontend",
       "b": "Other",
-      "edges": 154
+      "edges": 160
     },
     {
       "a": "Frontend",
       "b": "Tests",
-      "edges": 695
+      "edges": 706
     },
     {
       "a": "Other",
@@ -125,17 +125,17 @@
     {
       "a": "Other",
       "b": "Tests",
-      "edges": 4091
+      "edges": 4096
     },
     {
       "a": "Other",
       "b": "Tools",
-      "edges": 1215
+      "edges": 1218
     },
     {
       "a": "Tests",
       "b": "Tests",
-      "edges": 6210
+      "edges": 6212
     },
     {
       "a": "Tests",
@@ -145,7 +145,7 @@
     {
       "a": "Tools",
       "b": "Tools",
-      "edges": 3965
+      "edges": 3978
     }
   ],
   "module_relations": [
@@ -202,17 +202,17 @@
     {
       "a": "frontend/src/app",
       "b": "frontend/src/lib",
-      "edges": 388,
+      "edges": 405,
       "confidence": {
-        "EXTRACTED": 388
+        "EXTRACTED": 405
       }
     },
     {
       "a": "backend/tests/math_solutions",
       "b": "root",
-      "edges": 383,
+      "edges": 385,
       "confidence": {
-        "EXTRACTED": 383
+        "EXTRACTED": 385
       }
     },
     {
@@ -271,9 +271,9 @@
     {
       "a": "frontend/src/features/math-workspace",
       "b": "frontend/src/lib",
-      "edges": 264,
+      "edges": 263,
       "confidence": {
-        "EXTRACTED": 264
+        "EXTRACTED": 263
       }
     },
     {
@@ -310,21 +310,21 @@
       }
     },
     {
+      "a": "backend/app/questions",
+      "b": "backend/tests/math_solutions",
+      "edges": 203,
+      "confidence": {
+        "EXTRACTED": 128,
+        "INFERRED": 75
+      }
+    },
+    {
       "a": "backend/app/knowledge_gap",
       "b": "backend/tests/knowledge_gap",
       "edges": 202,
       "confidence": {
         "EXTRACTED": 91,
         "INFERRED": 111
-      }
-    },
-    {
-      "a": "backend/app/questions",
-      "b": "backend/tests/math_solutions",
-      "edges": 201,
-      "confidence": {
-        "EXTRACTED": 128,
-        "INFERRED": 73
       }
     },
     {
@@ -429,6 +429,23 @@
       }
     },
     {
+      "a": "frontend/src/lib",
+      "b": "frontend/tests",
+      "edges": 157,
+      "confidence": {
+        "EXTRACTED": 157
+      }
+    },
+    {
+      "a": "backend/app/math_ink",
+      "b": "backend/tests/math_solutions",
+      "edges": 155,
+      "confidence": {
+        "EXTRACTED": 136,
+        "INFERRED": 19
+      }
+    },
+    {
       "a": "backend/app/repair",
       "b": "backend/tests/repair",
       "edges": 155,
@@ -439,11 +456,10 @@
     },
     {
       "a": "backend/app/math_ink",
-      "b": "backend/tests/math_solutions",
-      "edges": 151,
+      "b": "root",
+      "edges": 149,
       "confidence": {
-        "EXTRACTED": 132,
-        "INFERRED": 19
+        "EXTRACTED": 149
       }
     },
     {
@@ -453,14 +469,6 @@
       "confidence": {
         "EXTRACTED": 81,
         "INFERRED": 67
-      }
-    },
-    {
-      "a": "frontend/src/lib",
-      "b": "frontend/tests",
-      "edges": 147,
-      "confidence": {
-        "EXTRACTED": 147
       }
     },
     {
@@ -479,14 +487,6 @@
       "confidence": {
         "EXTRACTED": 125,
         "INFERRED": 19
-      }
-    },
-    {
-      "a": "backend/app/math_ink",
-      "b": "root",
-      "edges": 143,
-      "confidence": {
-        "EXTRACTED": 143
       }
     },
     {
@@ -541,15 +541,15 @@
       }
     },
     {
-      "a": "backend/app/planning",
+      "a": "frontend/tests",
       "b": "root",
-      "edges": 131,
+      "edges": 133,
       "confidence": {
-        "EXTRACTED": 131
+        "EXTRACTED": 133
       }
     },
     {
-      "a": "frontend/tests",
+      "a": "backend/app/planning",
       "b": "root",
       "edges": 131,
       "confidence": {
@@ -1145,16 +1145,16 @@
       }
     },
     {
-      "a": "backend/app/teachers",
-      "b": "root",
-      "edges": 58,
+      "a": "frontend/package.json",
+      "b": "frontend/src/app",
+      "edges": 59,
       "confidence": {
-        "EXTRACTED": 58
+        "EXTRACTED": 59
       }
     },
     {
-      "a": "frontend/package.json",
-      "b": "frontend/src/app",
+      "a": "backend/app/teachers",
+      "b": "root",
       "edges": 58,
       "confidence": {
         "EXTRACTED": 58
@@ -2085,6 +2085,14 @@
       }
     },
     {
+      "a": "frontend/src/features/math-workspace",
+      "b": "root",
+      "edges": 34,
+      "confidence": {
+        "EXTRACTED": 34
+      }
+    },
+    {
       "a": "backend/app/ai",
       "b": "backend/app/practice",
       "edges": 33,
@@ -2179,15 +2187,6 @@
       "confidence": {
         "EXTRACTED": 20,
         "INFERRED": 12
-      }
-    },
-    {
-      "a": "backend/app/core",
-      "b": "backend/app/math_ink",
-      "edges": 32,
-      "confidence": {
-        "EXTRACTED": 23,
-        "INFERRED": 9
       }
     },
     {
@@ -2321,20 +2320,21 @@
       }
     },
     {
-      "a": "frontend/src/features/math-workspace",
-      "b": "root",
-      "edges": 31,
-      "confidence": {
-        "EXTRACTED": 31
-      }
-    },
-    {
       "a": "backend/app/ai",
       "b": "backend/app/tutor",
       "edges": 30,
       "confidence": {
         "EXTRACTED": 21,
         "INFERRED": 9
+      }
+    },
+    {
+      "a": "backend/app/core",
+      "b": "backend/app/math_ink",
+      "edges": 30,
+      "confidence": {
+        "EXTRACTED": 24,
+        "INFERRED": 6
       }
     },
     {
@@ -2427,6 +2427,14 @@
       }
     },
     {
+      "a": "frontend/e2e",
+      "b": "root",
+      "edges": 30,
+      "confidence": {
+        "EXTRACTED": 30
+      }
+    },
+    {
       "a": "backend/app/api",
       "b": "backend/app/core",
       "edges": 29,
@@ -2504,14 +2512,6 @@
       "confidence": {
         "EXTRACTED": 23,
         "INFERRED": 6
-      }
-    },
-    {
-      "a": "frontend/e2e",
-      "b": "root",
-      "edges": 29,
-      "confidence": {
-        "EXTRACTED": 29
       }
     },
     {
@@ -3348,15 +3348,6 @@
       }
     },
     {
-      "a": "backend/app/auth",
-      "b": "backend/app/math_ink",
-      "edges": 19,
-      "confidence": {
-        "EXTRACTED": 16,
-        "INFERRED": 3
-      }
-    },
-    {
       "a": "backend/app/classes",
       "b": "backend/app/knowledge_gap",
       "edges": 19,
@@ -3549,6 +3540,15 @@
       "edges": 19,
       "confidence": {
         "EXTRACTED": 19
+      }
+    },
+    {
+      "a": "backend/app/auth",
+      "b": "backend/app/math_ink",
+      "edges": 18,
+      "confidence": {
+        "EXTRACTED": 16,
+        "INFERRED": 2
       }
     },
     {
@@ -4442,6 +4442,14 @@
       }
     },
     {
+      "a": "frontend/e2e",
+      "b": "frontend/package.json",
+      "edges": 15,
+      "confidence": {
+        "EXTRACTED": 15
+      }
+    },
+    {
       "a": "backend/app/ai",
       "b": "backend/tests/classes",
       "edges": 14,
@@ -4606,15 +4614,6 @@
       }
     },
     {
-      "a": "backend/app/math_ink",
-      "b": "backend/app/users",
-      "edges": 14,
-      "confidence": {
-        "EXTRACTED": 9,
-        "INFERRED": 5
-      }
-    },
-    {
       "a": "backend/app/practice",
       "b": "backend/app/users",
       "edges": 14,
@@ -4696,14 +4695,6 @@
     {
       "a": "backend/tests/rag",
       "b": "root",
-      "edges": 14,
-      "confidence": {
-        "EXTRACTED": 14
-      }
-    },
-    {
-      "a": "frontend/e2e",
-      "b": "frontend/package.json",
       "edges": 14,
       "confidence": {
         "EXTRACTED": 14
@@ -5133,6 +5124,15 @@
       "edges": 12,
       "confidence": {
         "INFERRED": 12
+      }
+    },
+    {
+      "a": "backend/app/math_ink",
+      "b": "backend/app/users",
+      "edges": 12,
+      "confidence": {
+        "EXTRACTED": 9,
+        "INFERRED": 3
       }
     },
     {
@@ -11485,6 +11485,22 @@
       }
     },
     {
+      "a": "frontend/src/lib",
+      "b": "root",
+      "edges": 3,
+      "confidence": {
+        "EXTRACTED": 3
+      }
+    },
+    {
+      "a": "root",
+      "b": "tools/lan-dev.cjs",
+      "edges": 3,
+      "confidence": {
+        "EXTRACTED": 3
+      }
+    },
+    {
       "a": "tools/ocr-layout-service",
       "b": "tools/pdf_metadata",
       "edges": 3,
@@ -12037,6 +12053,14 @@
       }
     },
     {
+      "a": "frontend/next.config.mjs",
+      "b": "root",
+      "edges": 2,
+      "confidence": {
+        "EXTRACTED": 2
+      }
+    },
+    {
       "a": "frontend/package.json",
       "b": "frontend/tests",
       "edges": 2,
@@ -12058,14 +12082,6 @@
       "edges": 2,
       "confidence": {
         "INFERRED": 2
-      }
-    },
-    {
-      "a": "frontend/src/lib",
-      "b": "root",
-      "edges": 2,
-      "confidence": {
-        "EXTRACTED": 2
       }
     },
     {
