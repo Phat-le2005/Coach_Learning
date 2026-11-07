@@ -270,7 +270,9 @@ export function WorkspaceToolbar({
               onClick={onTriggerOCR}
               disabled={ocrBlocked || isRecognizingOCR || strokeCount === 0}
               title={
-                strokeCount === 0
+                ocrBlocked
+                  ? "Chờ đồng bộ nét viết hoặc hoàn tất bản chép đang mở"
+                  : strokeCount === 0
                   ? "Vẽ công thức lên trang để nhận diện"
                   : "Nhận diện bản chép OCR V2 để em kiểm tra"
               }

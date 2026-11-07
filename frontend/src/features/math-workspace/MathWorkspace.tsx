@@ -36,6 +36,10 @@ import { IndexedDbBatchJournal, BrowserBatchLock } from "./utils/batch-journal";
 import { createBatchApi } from "./utils/ocr-batch-adapter";
 import { withSafeBatchSubmission } from "./utils/solution-submit-guard";
 import styles from "./MathWorkspace.module.css";
+import { useLiveInk } from "./live/useLiveInk";
+import { DeviceConnection } from "./live/DeviceConnection";
+import type { LiveSnapshot } from "./live/protocol";
+import { deviceRequest, type DevicePairing } from "./live/device-client";
 
 const MathCanvasPanel = dynamic(() => import("@/features/math-canvas/MathCanvasPanel").then((module) => module.MathCanvasPanel), {
   ssr: false,
@@ -55,6 +59,9 @@ interface MathWorkspaceProps {
   initialAttempt?: SolutionAttemptRead | null;
   initialDocument?: InkDocumentRead | null;
   initialPage?: InkPageRead | null;
+  initialPageIndex?: number;
+  initialLiveRequested?: boolean;
+  initialWritingMode?: boolean;
 }
 
 export function MathWorkspace({
@@ -63,6 +70,7 @@ export function MathWorkspace({
   initialAttempt = null,
   initialDocument = null,
   initialPage = null,
+  initialPageIndex = 0, initialLiveRequested = false, initialWritingMode = false,
 }: MathWorkspaceProps) {
   // The BFF reads the HttpOnly cookie. No bearer token is passed to this client component.
   const accessToken = "";
@@ -71,7 +79,15 @@ export function MathWorkspace({
   const [attempt, setAttempt] = useState<SolutionAttemptRead | null>(initialAttempt);
 
   // Layout & View
-  const [isProblemPaneCollapsed, setIsProblemPaneCollapsed] = useState(false);
+  const [isProblemPaneCollapsed, setIsProblemPaneCollapsed] = useState(initialWritingMode);
+  const [writingMode, setWritingMode] = useState(initialWritingMode);
+  const [liveEnabled, setLiveEnabled] = useState(false);
+  const [pairingOpen, setPairingOpen] = useState(false);
+  const [liveStarting, setLiveStarting] = useState(false);
+  const [draftRecoveryReady, setDraftRecoveryReady] = useState(false);
+  const [canvasDrawing, setCanvasDrawing] = useState(false);
+  const [devicePairing, setDevicePairing] = useState<DevicePairing | null>(null);
+  const writingLayoutRef = useRef({collapsed: false, zoom: 1, paper: false});
   const [zoomLevel, setZoomLevel] = useState(1.0);
   const [graphOpen, setGraphOpen] = useState(false);
   const [graphSelection, setGraphSelection] = useState<{ page: number; strokes: InkStroke[]; formula?: string }>({ page: 0, strokes: [] });
@@ -80,7 +96,7 @@ export function MathWorkspace({
   const [documentRevision, setDocumentRevision] = useState(
     initialDocument?.document_revision ?? 0,
   );
-  const [currentPageIndex, setCurrentPageIndex] = useState(0);
+  const [currentPageIndex, setCurrentPageIndex] = useState(initialPageIndex);
   const [pageCount, setPageCount] = useState(
     Math.max(1, ...(initialDocument?.pages.map((page) => page.page_index + 1) ?? [])),
   );
@@ -89,7 +105,7 @@ export function MathWorkspace({
   const [pagesMap, setPagesMap] = useState<Map<number, PageMemory>>(() => {
     const map = new Map<number, PageMemory>();
     const initialStrokes = initialPage?.strokes ?? [];
-    map.set(0, {
+    map.set(initialPageIndex, {
       strokes: initialStrokes,
       past: [],
       future: [],
@@ -139,16 +155,46 @@ export function MathWorkspace({
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const revisionRef = useRef(initialDocument?.document_revision ?? 0);
   const latestStrokesRef = useRef<Map<number, InkStroke[]>>(
-    new Map([[0, initialPage?.strokes ?? []]]),
+    new Map([[initialPageIndex, initialPage?.strokes ?? []]]),
   );
   const saveQueueRef = useRef<Promise<void>>(Promise.resolve());
   const pendingDeleteRef = useRef<{ stepId: string; revision: number; actionId: string } | null>(null);
   const locallyEditedPagesRef = useRef(new Set<number>());
   const recoveredDraftRevisionsRef = useRef(new Map<number, number>());
   const transientPageIndexesRef = useRef(new Set<number>());
-  const unverifiedPageIndexesRef = useRef(new Set<number>(initialPage ? [] : [0]));
+  const unverifiedPageIndexesRef = useRef(new Set<number>(initialPage ? [] : [initialPageIndex]));
 
   const apiClient = useRef(createBrowserMathApiClient()).current;
+  const receiveLiveSnapshot = useCallback((snapshot: LiveSnapshot, pending: boolean) => {
+    revisionRef.current = Math.max(revisionRef.current, snapshot.document_revision);
+    setDocumentRevision(revisionRef.current);
+    latestStrokesRef.current.set(snapshot.page_index, snapshot.strokes);
+    unverifiedPageIndexesRef.current.delete(snapshot.page_index);
+    setPagesMap(current => {
+      const next = new Map(current);
+      // Live undo history is operation-based; never restore a remote page snapshot.
+      next.set(snapshot.page_index, { strokes: snapshot.strokes, past: [], future: [], isDirty: pending });
+      return next;
+    });
+    setPageCount(count => Math.max(count, snapshot.page_index + 1));
+  }, []);
+  const live = useLiveInk({ attemptId, pageIndex: currentPageIndex, enabled: liveEnabled, onSnapshot: receiveLiveSnapshot,
+    onPageAvailable: index => setPageCount(count => Math.max(count, index + 1)) });
+  const liveRef = useRef(live); liveRef.current = live;
+  const liveEnabledRef = useRef(liveEnabled); liveEnabledRef.current = liveEnabled;
+  useEffect(() => {
+    if (!liveEnabled) return;
+    const url = new URL(window.location.href);
+    url.searchParams.set("page", String(currentPageIndex));
+    url.searchParams.set("writing", writingMode ? "1" : "0");
+    window.history.replaceState(null, "", url);
+  }, [currentPageIndex, liveEnabled, writingMode]);
+  useEffect(() => {
+    if (!liveEnabled) return;
+    setSyncStatus(live.pendingCount ? "unsaved" : live.drafts.length ? "saving" : live.status === "connected" ? "saved"
+      : live.status === "offline" ? "offline" : live.status === "error" ? "error" : "saving");
+    setSyncErrorMessage(live.error || undefined);
+  }, [liveEnabled, live.pendingCount, live.status, live.error, live.drafts.length]);
 
   const pagesRecord = useMemo(() => {
     const rec: Record<number, InkStroke[]> = {};
@@ -216,17 +262,17 @@ export function MathWorkspace({
   useEffect(() => {
     if (initialPage || !attemptId) return;
     let active = true;
-    void apiClient.getMathInkPage(accessToken, attemptId, 0).then((page) => {
+    void apiClient.getMathInkPage(accessToken, attemptId, initialPageIndex).then((page) => {
       if (!active) return;
       revisionRef.current = Math.max(revisionRef.current, page.document_revision);
       setDocumentRevision((revision) => Math.max(revision, page.document_revision));
-      if (locallyEditedPagesRef.current.has(0) || recoveredDraftRevisionsRef.current.has(0)) return;
+      if (liveEnabledRef.current || locallyEditedPagesRef.current.has(initialPageIndex) || recoveredDraftRevisionsRef.current.has(initialPageIndex)) return;
       setPagesMap((current) => {
-        if (current.get(0)?.isDirty) return current;
+        if (current.get(initialPageIndex)?.isDirty) return current;
         const next = new Map(current);
-        next.set(0, { strokes: page.strokes, past: [], future: [], isDirty: false });
-        latestStrokesRef.current.set(0, page.strokes);
-        unverifiedPageIndexesRef.current.delete(0);
+        next.set(initialPageIndex, { strokes: page.strokes, past: [], future: [], isDirty: false });
+        latestStrokesRef.current.set(initialPageIndex, page.strokes);
+        unverifiedPageIndexesRef.current.delete(initialPageIndex);
         return next;
       });
     }).catch((err: unknown) => {
@@ -237,7 +283,7 @@ export function MathWorkspace({
       setSyncErrorMessage("Không thể tải nét viết từ máy chủ. Bấm Thử lại sau khi kết nối hoặc đăng nhập lại.");
     });
     return () => { active = false; };
-  }, [attemptId, accessToken, apiClient, initialPage]);
+  }, [attemptId, accessToken, apiClient, initialPage, initialPageIndex]);
 
   // Recover local ink that never reached the server (for example after an expired session).
   useEffect(() => {
@@ -259,7 +305,7 @@ export function MathWorkspace({
       setSyncErrorMessage("Đã khôi phục nét viết chưa đồng bộ. Bấm Thử lại để lưu lên máy chủ.");
     }).catch(() => {
       // Keep the server copy visible; IndexedDB may be disabled by browser policy.
-    });
+    }).finally(() => { if (active) setDraftRecoveryReady(true); });
     return () => { active = false; };
   }, [attemptId]);
 
@@ -368,6 +414,7 @@ export function MathWorkspace({
   // 2. Perform server save
   const flushSavePage = useCallback(
     (pageIdx: number, strokesToSave: InkStroke[]): Promise<boolean> => {
+      if (liveEnabledRef.current) return liveRef.current.flush();
       const operation = async (): Promise<boolean> => {
         if (latestStrokesRef.current.get(pageIdx) !== strokesToSave) return false;
         setSyncStatus("saving");
@@ -481,7 +528,56 @@ export function MathWorkspace({
     [attemptId, accessToken, apiClient],
   );
 
+  const startLive = useCallback(async (showPairing = true) => {
+    if (liveEnabledRef.current) { setPairingOpen(showPairing); return; }
+    if (!draftRecoveryReady || liveStarting || canvasDrawing) return;
+    setLiveStarting(true);
+    try {
+      if (saveTimeoutRef.current) { clearTimeout(saveTimeoutRef.current); saveTimeoutRef.current = null; }
+      // Barrier: no legacy PUT may still be in flight when live snapshots begin.
+      await saveQueueRef.current;
+      for (const [idx, page] of pagesMap) {
+        if (page.isDirty && !await flushSavePage(idx, page.strokes)) return;
+      }
+      if (unverifiedPageIndexesRef.current.has(currentPageIndex)) {
+        const page = await apiClient.getMathInkPage(accessToken, attemptId, currentPageIndex);
+        receiveLiveSnapshot(page, false);
+      }
+      setLiveEnabled(true); setPairingOpen(showPairing);
+      const url = new URL(window.location.href); url.searchParams.set("live", "1");
+      window.history.replaceState(null, "", url);
+    } catch (error) {
+      setSyncErrorMessage(error instanceof Error ? error.message : "Không bật được kết nối.");
+    } finally { setLiveStarting(false); }
+  }, [draftRecoveryReady, liveStarting, canvasDrawing, pagesMap, flushSavePage, currentPageIndex, apiClient, attemptId, receiveLiveSnapshot]);
+  const autoLiveStarted = useRef(false);
+  useEffect(() => {
+    if (!initialLiveRequested || !draftRecoveryReady || autoLiveStarted.current) return;
+    autoLiveStarted.current = true;
+    void startLive(false);
+  }, [initialLiveRequested, draftRecoveryReady, startLive]);
+
+  const stopLive = async () => {
+    if (canvasDrawing) { setSyncErrorMessage("Nhả bút trước khi ngắt kết nối."); return; }
+    if (!await live.flush()) { setSyncErrorMessage("Chưa nhận xác nhận lưu. Giữ kết nối hoặc xuất bản nháp trước khi rời trang."); return; }
+    if (devicePairing && !["REVOKED", "EXPIRED"].includes(devicePairing.status)) {
+      try {
+        await deviceRequest(`/api/v2/math-solutions/attempts/${attemptId}/ink/pairings/${devicePairing.id}/revoke`, {});
+        setDevicePairing({...devicePairing, status: "REVOKED", code: undefined});
+      } catch (failure) {
+        if (![404, 410].includes((failure as {status?: number}).status ?? 0)) {
+          setSyncErrorMessage("Chưa ngắt được thiết bị. Kiểm tra mạng rồi thử lại."); return;
+        }
+      }
+    }
+    setLiveEnabled(false); setPairingOpen(false);
+    const url = new URL(window.location.href); url.searchParams.delete("live");
+    window.history.replaceState(null, "", url);
+    setSyncStatus("saved"); setSyncErrorMessage(undefined);
+  };
+
   const handleRetrySync = useCallback(async () => {
+    if (liveEnabledRef.current) { await liveRef.current.retry(); return; }
     if (!unverifiedPageIndexesRef.current.has(currentPageIndex) || currentPageMemory.isDirty) {
       await flushSavePage(currentPageIndex, currentPageMemory.strokes);
       return;
@@ -531,7 +627,14 @@ export function MathWorkspace({
     setOcrError(null);
     setIsRecognizingOCR(true);
     try {
-      if (currentPageMemory.isDirty) {
+      if (liveEnabledRef.current) {
+        // Live Ink persists with operation ACKs; a legacy full-page PUT here
+        // could overwrite another device's committed strokes.
+        if (!await liveRef.current.flush()) {
+          setOcrError("Nét viết trực tiếp chưa được máy chủ xác nhận. Hãy đồng bộ rồi thử lại.");
+          return;
+        }
+      } else if (currentPageMemory.isDirty) {
         if (saveTimeoutRef.current) {
           clearTimeout(saveTimeoutRef.current);
           saveTimeoutRef.current = null;
@@ -547,7 +650,8 @@ export function MathWorkspace({
         }
       }
       await saveQueueRef.current;
-      if (latestStrokesRef.current.get(currentPageIndex) !== capturedStrokes) {
+      if (latestStrokesRef.current.get(currentPageIndex) !== capturedStrokes
+          && (!liveEnabledRef.current || JSON.stringify(latestStrokesRef.current.get(currentPageIndex)) !== JSON.stringify(capturedStrokes))) {
         setOcrError("Nét viết đã thay đổi khi đồng bộ. Hãy trích xuất lại trang mới nhất."); return;
       }
       setPageOcrReview({ pageIndex: currentPageIndex, pageStrokes: structuredClone(capturedStrokes), sourceRevision: Math.max(1, revisionRef.current) });
@@ -710,7 +814,13 @@ export function MathWorkspace({
       }
       if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
       await saveQueueRef.current;
+      if (liveEnabledRef.current && !await liveRef.current.flush()) {
+        throw new Error("Nét viết trực tiếp chưa được xác nhận lưu. Không thể nộp bài.");
+      }
       for (const [pageIndex, page] of pagesMap) {
+        // The active live page was already persisted via operations above.
+        // Never submit a stale full-page PUT over another device's ink.
+        if (liveEnabledRef.current && pageIndex === currentPageIndex) continue;
         if (page.isDirty && !await flushSavePage(pageIndex, page.strokes)) {
           throw new Error("Không thể lưu toàn bộ trang viết. Hãy thử lại trước khi nộp.");
         }
@@ -780,10 +890,15 @@ export function MathWorkspace({
     }
   }, [attempt, isSubmitting, pageOcrReview, syncStatus, authExpired, pagesMap,
     flushSavePage, attemptId, apiClient, accessToken, problem?.question_type, executeAIReview,
-    pendingBatch, batchJournalLoadError, batchResuming, checkPendingBatch]);
+    pendingBatch, batchJournalLoadError, batchResuming, checkPendingBatch, currentPageIndex]);
   // Keep stroke persistence separate from history updates. Undo/redo must not
   // append another history entry or erase the redo stack.
   const queueInkSave = useCallback((pageIndex: number, newStrokes: InkStroke[]) => {
+    if (liveEnabledRef.current) {
+      // Only the operation-based handler may edit ink during live mode.
+      // Never let legacy snapshot autosave overwrite concurrent remote strokes.
+      throw new Error("Legacy ink saving is disabled while Live Ink is active.");
+    }
     locallyEditedPagesRef.current.add(pageIndex);
     latestStrokesRef.current.set(pageIndex, newStrokes);
     setSyncStatus("unsaved");
@@ -812,7 +927,11 @@ export function MathWorkspace({
 
   // 3. Handle strokes update with Undo stack & autosave debounce
   const handleStrokesChange = useCallback(
-    (newStrokes: InkStroke[]) => {
+    (newStrokes: InkStroke[], observedStrokes?: InkStroke[]) => {
+      if (liveEnabledRef.current) {
+        liveRef.current.change(newStrokes, observedStrokes ?? currentPageMemory.strokes);
+        return;
+      }
       queueInkSave(currentPageIndex, newStrokes);
       setPagesMap((prev) => {
         const updated = new Map(prev);
@@ -835,11 +954,12 @@ export function MathWorkspace({
         return updated;
       });
     },
-    [currentPageIndex, queueInkSave],
+    [currentPageIndex, queueInkSave, currentPageMemory.strokes],
   );
 
   // 4. Undo / Redo
   const handleUndo = useCallback(() => {
+    if (liveEnabledRef.current) { liveRef.current.undo(); return; }
     if (currentPageMemory.past.length === 0) return;
 
     const newPast = [...currentPageMemory.past];
@@ -861,6 +981,7 @@ export function MathWorkspace({
   }, [currentPageMemory, currentPageIndex, queueInkSave]);
 
   const handleRedo = useCallback(() => {
+    if (liveEnabledRef.current) { liveRef.current.redo(); return; }
     if (currentPageMemory.future.length === 0) return;
 
     const newFuture = [...currentPageMemory.future];
@@ -884,20 +1005,22 @@ export function MathWorkspace({
   const handleClearPage = useCallback(() => {
     if (currentPageMemory.strokes.length === 0) return;
     if (window.confirm("Bạn có chắc chắn muốn xóa toàn bộ nét vẽ trên trang này không?")) {
-      handleStrokesChange([]);
+      handleStrokesChange([], currentPageMemory.strokes);
     }
   }, [currentPageMemory.strokes, handleStrokesChange]);
 
   // 5. Switching Pages
   const handleSelectPage = useCallback(
     async (targetIndex: number) => {
+      if (canvasDrawing || liveStarting) return;
       if (targetIndex === currentPageIndex || targetIndex < 0 || targetIndex >= pageCount) {
         return;
       }
+      if (liveEnabledRef.current && !await liveRef.current.flush()) return;
 
       // Do not navigate away from ink that the server has not accepted.
       const pageStrokesAtStart = latestStrokesRef.current.get(currentPageIndex);
-      if (currentPageMemory.isDirty) {
+      if (!liveEnabledRef.current && currentPageMemory.isDirty) {
         if (saveTimeoutRef.current) {
           clearTimeout(saveTimeoutRef.current);
           saveTimeoutRef.current = null;
@@ -956,6 +1079,7 @@ export function MathWorkspace({
     },
     [
       currentPageIndex,
+      canvasDrawing, liveStarting,
       pageCount,
       currentPageMemory,
       flushSavePage,
@@ -967,9 +1091,11 @@ export function MathWorkspace({
   );
 
   const handleAddPage = useCallback(async () => {
+    if (canvasDrawing || liveStarting) return;
+    if (liveEnabledRef.current && !await liveRef.current.flush()) return;
     if (pageCount >= MAX_PAGES) return;
     const pageStrokesAtStart = latestStrokesRef.current.get(currentPageIndex);
-    if (currentPageMemory.isDirty) {
+    if (!liveEnabledRef.current && currentPageMemory.isDirty) {
       if (saveTimeoutRef.current) {
         clearTimeout(saveTimeoutRef.current);
         saveTimeoutRef.current = null;
@@ -992,7 +1118,7 @@ export function MathWorkspace({
       return updated;
     });
     setCurrentPageIndex(newIndex);
-  }, [pageCount, currentPageIndex, currentPageMemory, flushSavePage]);
+  }, [pageCount, currentPageIndex, currentPageMemory, flushSavePage, canvasDrawing, liveStarting]);
 
   // The backend has no delete/reindex API. Only a new, empty trailing page can
   // be removed locally; renumbering persisted pages would corrupt server ink.
@@ -1034,6 +1160,7 @@ export function MathWorkspace({
 
   // 6. Conflict Resolution
   const handleResolveConflict = useCallback(async () => {
+    if (liveEnabledRef.current) { await liveRef.current.retry(); return; }
     const visibleDraft = latestStrokesRef.current.get(currentPageIndex);
     if (!window.confirm("Thao tác này BỎ bản nháp hiện tại và tải trang từ máy chủ. Hãy bấm Sao lưu bản nháp trước khi tiếp tục. Bạn có chắc chắn không?")) return;
     try {
@@ -1111,13 +1238,34 @@ export function MathWorkspace({
 
   const isReadOnlyAttempt = Boolean(problem?.is_read_only ||
     attempt && ["SUBMITTED", "EVALUATED", "ABANDONED"].includes(attempt.status));
+  const toggleWritingMode = () => {
+    if (canvasDrawing) return;
+    if (writingMode) {
+      setWritingMode(false);
+      setIsProblemPaneCollapsed(writingLayoutRef.current.collapsed);
+      setZoomLevel(writingLayoutRef.current.zoom); setPaperMode(writingLayoutRef.current.paper);
+    } else {
+      writingLayoutRef.current = {collapsed: isProblemPaneCollapsed, zoom: zoomLevel, paper: paperMode};
+      setWritingMode(true); setIsProblemPaneCollapsed(true); setZoomLevel(1); setPaperMode(false);
+    }
+  };
 
   return (
-    <div className={styles.workspaceContainer}>
+    <div className={`${styles.workspaceContainer} ${writingMode ? styles.mobileWriting : ""}`}>
       {/* Top Header Bar */}
       <header className={styles.topHeader}>
         <div className={styles.headerLeft}>
           <h1 className={styles.headerTitle}>Không gian giải bài Toán</h1>
+          {!isReadOnlyAttempt ? <button type="button" className={styles.buttonSecondary} disabled={liveStarting || canvasDrawing || !draftRecoveryReady} onClick={() => void startLive()}>
+            {liveStarting ? "Đang kết nối…" : "Kết nối thiết bị viết"}
+          </button> : null}
+          <button type="button" className={styles.buttonSecondary} disabled={canvasDrawing} onClick={toggleWritingMode}>
+            {writingMode ? "Về MathWorkspace" : "Chế độ viết cảm ứng"}
+          </button>
+          {liveEnabled ? <span className={styles.liveConnectionStatus} role="status" data-live-status={live.status} data-pending={live.pendingCount}>
+            <span/>{live.pendingCount ? "Đang lưu nét viết…" : live.drafts.length ? "Thiết bị khác đang viết…" : live.status === "connected" ? live.devices > 1 ? "Đã kết nối thiết bị viết" : "Sẵn sàng kết nối thiết bị" : live.status === "offline" ? "Mất mạng · Đang giữ nét viết" : "Đang kết nối lại…"}
+          </span> : null}
+          {liveEnabled && !writingMode ? <button type="button" className={styles.liveDisconnectButton} onClick={() => void stopLive()}>Dừng đồng bộ</button> : null}
           <SyncStatusBadge
             status={syncStatus}
             errorMessage={syncErrorMessage}
@@ -1126,7 +1274,7 @@ export function MathWorkspace({
             onResolveConflict={handleResolveConflict}
             onExportDraft={handleExportDraft}
           />
-          {attempt && (!problem?.is_read_only || ["SUBMITTED", "EVALUATED"].includes(attempt.status)) ? (
+          {!writingMode && attempt && (!problem?.is_read_only || ["SUBMITTED", "EVALUATED"].includes(attempt.status)) ? (
             <button
               type="button"
               className={styles.headerGradeButton}
@@ -1170,6 +1318,7 @@ export function MathWorkspace({
           isReadOnly={isReadOnlyAttempt}
         />
       </header>
+      {pairingOpen ? <DeviceConnection attemptId={attemptId} page={currentPageIndex} pairing={devicePairing} onPairingChange={setDevicePairing} onClose={() => setPairingOpen(false)} /> : null}
 
       {/* PR3-C: Unfinished Batch Recovery Banner & Corrupted Journal Fail-Closed Banner */}
       {pendingBatch ? (
@@ -1237,9 +1386,9 @@ export function MathWorkspace({
         onSelectHighlighterWidth={setHighlighterWidth}
         paperGrid={paperGrid}
         onSelectPaperGrid={setPaperGrid}
-        canUndo={!isReadOnlyAttempt && currentPageMemory.past.length > 0}
+        canUndo={!isReadOnlyAttempt && (liveEnabled ? live.canUndo : currentPageMemory.past.length > 0)}
         onUndo={handleUndo}
-        canRedo={!isReadOnlyAttempt && currentPageMemory.future.length > 0}
+        canRedo={!isReadOnlyAttempt && (liveEnabled ? live.canRedo : currentPageMemory.future.length > 0)}
         onRedo={handleRedo}
         onClearPage={handleClearPage}
         zoomLevel={zoomLevel}
@@ -1247,7 +1396,8 @@ export function MathWorkspace({
         onZoomOut={() => setZoomLevel((z) => Math.max(0.6, z - 0.1))}
         onResetZoom={() => setZoomLevel(1.0)}
         onTriggerOCR={paperMode || isReadOnlyAttempt ? undefined : handleTriggerOCR}
-        ocrBlocked={!batchJournalReady || Boolean(pendingBatch || batchJournalLoadError || batchResuming || pageOcrReview)}
+        ocrBlocked={!batchJournalReady || Boolean(pendingBatch || batchJournalLoadError || batchResuming || pageOcrReview)
+          || (liveEnabled && (!live.ready || live.pendingCount > 0 || live.drafts.length > 0))}
         onOpenVariationTable={attempt && ["DRAFT", "IN_PROGRESS"].includes(attempt.status) && !pageOcrReview && !isReadOnlyAttempt
           ? () => setVariationTableEditor({}) : undefined}
         onTogglePaper={() => setPaperMode((current) => !current)}
@@ -1270,7 +1420,7 @@ export function MathWorkspace({
       {/* Main 2-Column Split Workspace */}
       <main className={styles.mainLayout}>
         {/* Left Column: Problem (35%) */}
-        <ProblemPane
+        {!writingMode ? <ProblemPane
           problem={problem}
           attempt={attempt}
           isCollapsed={isProblemPaneCollapsed}
@@ -1287,7 +1437,7 @@ export function MathWorkspace({
           isSubmitting={isSubmitting}
           isReviewing={isReviewing}
           submissionBlocked={Boolean(pendingBatch || batchJournalLoadError || batchResuming)}
-        />
+        /> : null}
 
         {/* Right Column: A4 Writing Canvas (65% or expanded) */}
         <section
@@ -1319,7 +1469,11 @@ export function MathWorkspace({
               highlighterWidth={highlighterWidth}
               paperGrid={paperGrid}
               zoomLevel={zoomLevel}
-              isReadOnly={isReadOnlyAttempt}
+              isReadOnly={isReadOnlyAttempt || liveStarting || (liveEnabled && !live.initialized)}
+              remoteDrafts={liveEnabled ? live.drafts : []}
+              onLiveStroke={liveEnabled ? live.stream : undefined}
+              responsive={writingMode}
+              onDrawingStateChange={setCanvasDrawing}
               selectedStrokeIds={
                 graphSelection.page === currentPageIndex
                   ? graphSelection.strokes.map((stroke) => stroke.id)
@@ -1347,7 +1501,11 @@ export function MathWorkspace({
         ensureInkSaved={async () => {
           if (authExpired || syncStatus === "conflict" || syncStatus === "offline") throw new Error("Hãy đồng bộ nét viết trước khi lưu đồ thị.");
           await saveQueueRef.current;
-          if (currentPageMemory.isDirty) {
+          if (liveEnabledRef.current) {
+            if (!await liveRef.current.flush()) {
+              throw new Error("Nét viết trực tiếp chưa được xác nhận lưu. Hãy đồng bộ rồi thử lại.");
+            }
+          } else if (currentPageMemory.isDirty) {
             const saved = await flushSavePage(currentPageIndex, latestStrokesRef.current.get(currentPageIndex) ?? currentPageMemory.strokes);
             if (!saved) throw new Error("Nét viết chưa được lưu lên máy chủ. Hãy đồng bộ rồi thử lại.");
           }

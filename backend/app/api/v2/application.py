@@ -2,6 +2,7 @@ from fastapi import FastAPI, Request, Response
 
 from app.api.v2.router import api_v2_router
 from app.math_ink.body_limit import InkWriteBodyLimitMiddleware
+from app.math_ink.live import LiveHub
 from app.core.config import Settings
 from app.core.errors import (
     ErrorResponse,
@@ -27,6 +28,7 @@ def create_v2_app(settings: Settings) -> FastAPI:
         },
     )
     application.state.settings = settings
+    application.state.live_ink_hub = LiveHub()
     register_exception_handlers(application)
 
     @application.middleware("http")

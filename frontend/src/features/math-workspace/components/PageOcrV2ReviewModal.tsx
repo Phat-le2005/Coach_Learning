@@ -9,6 +9,7 @@ import { prepareCoreReview, recognizeCoreUnit, applyRecognition, declareStepBoun
 import { buildScopeIR, groupIrUnits, ungroupIrUnit, reassignScope, lassoIds, type OcrSource, type RouteKind } from "../utils/ocr-v2-geometry";
 import { approveContentUnit, editContentUnit, editContainerRelation, confirmTranscriptionReadingOrder, getOrderedReviewUnits, getRootContentUnits, setSiblingReadingOrder, type ContentUnitKind } from "../utils/structured-transcription-ir";
 import { loadTranscription, saveTranscription, transcriptionKey } from "../utils/ocr-transcription-storage";
+import { generateUuid } from "../utils/ink-math";
 import { IndexedDbBatchJournal } from "../utils/batch-journal";
 import { createOcrReviewDraft, editOcrReviewDraft, selectOcrDraftKind, approveOcrDraft } from "../utils/ocr-review-draft";
 import styles from "../MathWorkspace.module.css";
@@ -83,12 +84,12 @@ export function PageOcrV2ReviewModal(props: Props) {
   function move(direction:number) { if(!review||!unit)return;if(review.savedUnitIds.length){setError("Không đổi thứ tự sau khi đã lưu bước. Các bước hiện có được giữ nguyên.");return;}const parent=rows.find(r=>r.unit.id===unit.id)!.parentId;const ids=rows.filter(r=>r.parentId===parent).map(r=>r.unit.id),i=ids.indexOf(unit.id),j=i+direction;if(j<0||j>=ids.length)return;[ids[i],ids[j]]=[ids[j],ids[i]];change(r=>({...r,ir:setSiblingReadingOrder(r.ir,parent,ids)})); }
   function reassign(ids:string[]) { change(r=>{
     if(r.ir.contentUnits.some(u=>u.role==='CONTAINER')||r.savedUnitIds.length)throw Error("Không đổi phạm vi sau khi tạo cấu trúc/lưu bước. Bản chép cũ được giữ; đối chiếu hoặc mở snapshot mới.");
-    const scopes=reassignScope(r.scopes,ids,`manual-${crypto.randomUUID()}`,kind).filter(s=>s.strokeIds.length);
+    const scopes=reassignScope(r.scopes,ids,`manual-${generateUuid()}`,kind).filter(s=>s.strokeIds.length);
     return {...r,scopes,ir:{...buildScopeIR(props.source,scopes,r.ir),attemptId:props.attemptId}};
   });setChecks([]);setPicked([]); }
   async function retry() { if(!review||!unit||locked)return;setBusy(true);try{await recognize([unit.id],review,runId.current);}finally{setBusy(false);} }
   async function prepareStep() { if(!review||!unit||!stepKind||!boundaryChecked||locked)return;setBusy(true);
-    try { await props.beforeSave(); const boundary=declareStepBoundary(review,unit.id,stepKind,crypto.randomUUID());
+    try { await props.beforeSave(); const boundary=declareStepBoundary(review,unit.id,stepKind,generateUuid());
       const old=review.boundaries.find(b=>b.unitId===unit.id&&b.stepKind===stepKind&&b.contentLatex===boundary.contentLatex&&b.explanationText===boundary.explanationText);
       const plan=old??boundary;const next={...review,boundaries:[...review.boundaries.filter(b=>b.unitId!==unit.id),plan]};
       await saveQueue.current;await persist(next);setReview(next);

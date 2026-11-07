@@ -1,6 +1,6 @@
-"""Bound raw ink PUT bodies before FastAPI parses potentially huge JSON.
+"""Bound raw ink PUT/POST bodies before FastAPI parses potentially huge JSON.
 
-Pure ASGI buffering is intentionally restricted to the Ink page write route.
+Pure ASGI buffering is intentionally restricted to ink write/pairing routes.
 Only a bounded buffer (768 KiB) can be allocated, regardless of a missing or
 misleading Content-Length header.
 """
@@ -19,11 +19,11 @@ class InkWriteBodyLimitMiddleware:
         self.app = app
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
-        if scope["type"] != "http" or scope.get("method") != "PUT":
+        if scope["type"] != "http" or scope.get("method") not in ("PUT", "POST"):
             await self.app(scope, receive, send)
             return
         path = str(scope.get("path", ""))
-        if "/math-solutions/attempts/" not in path or "/ink/pages/" not in path:
+        if not (("/math-solutions/attempts/" in path and "/ink/" in path) or "/math-ink-device/" in path):
             await self.app(scope, receive, send)
             return
 
