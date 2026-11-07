@@ -1,5 +1,12 @@
 # PDF metadata pilot
 
+The teacher material library now calls the same direct-PDF OCR entry point for
+PDF uploads at `/teacher?tab=materials`. OCR runs in a separate local process;
+teachers review the draft and explicitly select questions before the application
+saves a material. Runtime configuration, draft recovery and the reviewed-file
+format are documented in [LOCAL_SETUP.md](../../LOCAL_SETUP.md#pdf-bài-tập-trong-kho-học-liệu-giáo-viên).
+The CLI itself still does not write the application database.
+
 ## Read text directly from an image-based PDF
 
 Use `ocr_pdf_direct.ps1` to transcribe the supplied PDF with the installed local
@@ -62,7 +69,7 @@ It exports source-backed questions, explicit final-answer candidates, image refe
 and held records. See [the usable PDF pipeline](../../docs/pdf-usable-pipeline.md).
 Final-answer matching is supported; full-solution and step grading remain unassessed.
 
-Isolated from the running FastAPI/Next.js app. The source PDF is read-only. On Windows, packages, weights, caches, temp files and output default to `C:\CoachLearningPdf`, independently of the repository drive. Set `PDFMETA_STORAGE_ROOT` before starting a command to choose another storage root; wrappers share `paths.ps1`, and Python defaults share `pdfmeta/paths.py`. Explicit `-Storage` / `-Runtime` parameters remain supported. Native/Paddle and Qwen stages run locally; explicit Gemini actions send selected source images and metadata to Google. No stage writes the production database.
+The CLI runs in its own Python process. The source PDF is read-only. On Windows, packages, weights, caches, temp files and output default to `C:\CoachLearningPdf`, independently of the repository drive. Set `PDFMETA_STORAGE_ROOT` before starting a command to choose another storage root; wrappers share `paths.ps1`, and Python defaults share `pdfmeta/paths.py`. Explicit `-Storage` / `-Runtime` parameters remain supported. Native/Paddle and Qwen stages run locally; explicit Gemini actions send selected source images and metadata to Google. No CLI stage writes the production database.
 
 For the image-based five-page book sample on this machine:
 
