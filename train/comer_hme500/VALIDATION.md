@@ -111,3 +111,19 @@ Sau khi hai phiên API không đọc được Secret, runner bổ sung fallback 
 Kiểm tra mới bao gồm scale chỉ được dùng với train, JPG/nhãn không đổi, đường identity giống tensor cũ, RNG model không bị augmentation làm thay đổi, tái lập theo id/epoch, chặn resume đổi augmentation, mở rộng một config thành ba trial và checksum của ZIP chung. Một QA trên GPU local dùng 4 ảnh train thật và 2 validation thật đã hoàn thành hai epoch forward/backward với scale 0.9–1.1, W&B disabled và không dùng test. Đây là QA chức năng, không phải metric chất lượng. QA báo cảnh báo CuBLAS về deterministic do môi trường local thiếu `CUBLAS_WORKSPACE_CONFIG`; remote runner đã đặt `:4096:8` trước khi gọi tiến trình train. Runtime hai GPU và đủ 50 epoch của từng trial phải được xác nhận riêng từ kết quả tải về.
 
 Bộ điều phối hai phiên đạt 66/66 unit tests: mỗi notebook chỉ có một version active; nhận lại submission ID có sẵn mà không nộp lại; V6 dùng notebook riêng và giữ nguyên điều kiện đo. V4 đang chạy được tiếp tục quan sát qua ID cũ khi chuyển controller; trạng thái queued của V6 chỉ chứng minh đã nhận job, cần log GPU/epoch để xác nhận chạy song song thực tế.
+
+### Kết quả runtime đã kiểm tra
+
+Cả ba trial đã hoàn tất **50 epoch trên Tesla T4 ×2 / NCCL DDP**. V5 và V6 đã chạy song song trên hai notebook riêng. Kiểm tra độc lập xác nhận cùng tensor khởi tạo, cùng fingerprint 500 JPG, split 400/50/50, đủ 200 ảnh/rank và không trùng giữa hai rank ở mọi epoch; 100 JPG validation/test trong từng ZIP giống byte nguồn. Trọng số compact giống best.pt. Encoder giữ nguyên ở epoch 1–2, sau đó cả encoder và decoder được cập nhật; đối chiếu tensor trước/sau V4 cũng xác nhận thay đổi ở cả hai khối.
+
+| Trial | Epoch được chọn | Validation EM | Test EM | Test CER |
+| --- | ---: | ---: | ---: | ---: |
+| V4 LR decoder 1e-4 | 23 | 50% | 56% (28/50) | 0.0949464 |
+| V5 LR decoder 5e-5 | 25 | 50% | 62% (31/50) | 0.0796325 |
+| V6 scale 0.9–1.1 | 50 | 48% | 60% (30/50) | 0.0727412 |
+
+Baseline test của cả ba là 38% (19/50). Mỗi checkpoint được chọn bằng validation EM, hòa thì validation loss; test chỉ là đánh giá cuối của checkpoint đã chọn. V5 khớp cả lịch sử 30 epoch đầu và toàn bộ tensor best với trial 30 epoch trước; kéo dài thêm 20 epoch chưa cải thiện lựa chọn validation. V6 có CER thấp hơn nhưng không tăng exact match trong lượt này; chênh lệch V5/V6 chỉ là một ảnh test, không kết luận ưu thế có ý nghĩa thống kê.
+
+API Kaggle không đọc được Secret nên số đo, ảnh minh chứng và compact best được upload sau khi cloud hoàn tất, không train/inference lại. Đã xác minh **9 run W&B finished**, mỗi run train có 51 mốc validation và 1250 bản ghi optimizer; có 1248 cập nhật thành công, 2 AMP skips. Mỗi artifact cuối chỉ có một file model compact, không chứa full optimizer checkpoint. Link train: [V4](https://wandb.ai/phucga15062005/coachlearning-handwritten-math/runs/suxk4nv3), [V5](https://wandb.ai/phucga15062005/coachlearning-handwritten-math/runs/nyisyksp), [V6](https://wandb.ai/phucga15062005/coachlearning-handwritten-math/runs/cicin3af).
+
+Kiểm tra cuối source đạt **68/68 unit tests**; kiểm download dừng sau ZIP hợp lệ, retry thao tác đọc khi mất mạng và nhận lại ID cloud mà không nộp lại job. ZIP giao cuối chứa ba ZIP cloud nguyên byte, curve/CSV, link W&B và báo cáo đối chiếu độc lập, tổng 579,456,898 byte; toàn bộ payload đã kiểm CRC và SHA256. Models, ảnh và kết quả chi tiết chỉ ở `.tmp/`, không đưa lên Git.
