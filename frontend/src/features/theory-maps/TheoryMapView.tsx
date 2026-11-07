@@ -177,7 +177,9 @@ export function TheoryMapView({
 
   // Floating detail modal / drawer state
 
-  const [floatingDetailNodeId, setFloatingDetailNodeId] = useState<string | null>(selectedNodeId ?? null);
+  const [floatingDetailNodeId, setFloatingDetailNodeId] = useState<string | null>(null);
+
+  const isInitialSyncRef = useRef(true);
 
   const [isFullscreen, setIsFullscreen] = useState(false);
 
@@ -268,6 +270,11 @@ export function TheoryMapView({
   // Sync external selectedNodeId
 
   useEffect(() => {
+
+    if (isInitialSyncRef.current) {
+      isInitialSyncRef.current = false;
+      return;
+    }
 
     if (selectedNodeId && nodes.some((n) => n.id === selectedNodeId)) {
 
