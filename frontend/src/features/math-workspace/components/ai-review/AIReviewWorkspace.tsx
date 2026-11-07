@@ -47,6 +47,9 @@ interface AIReviewWorkspaceProps {
   instantOpen?: boolean;
   onRetryReview: () => void;
   onClose: () => void;
+  onNextProblem?: () => void;
+  nextProblemLabel?: string;
+  isNextLoading?: boolean;
 }
 
 const SCAN_CEREMONY_DURATION_MS = 2350;
@@ -66,6 +69,9 @@ export function AIReviewWorkspace({
   instantOpen = false,
   onRetryReview,
   onClose,
+  onNextProblem,
+  nextProblemLabel,
+  isNextLoading = false,
 }: AIReviewWorkspaceProps) {
   const [mobileTab, setMobileTab] = useState<"timeline" | "paper">("timeline");
   // Always play Phase A scan ceremony for 2.35s when opening (unless instantOpen is requested)
@@ -307,6 +313,9 @@ export function AIReviewWorkspace({
         problem={problem}
         review={aiReview}
         onClose={onClose}
+        onNextProblem={onNextProblem}
+        nextProblemLabel={nextProblemLabel}
+        isNextLoading={isNextLoading}
       />
 
       <div className={styles.mobileSegmentedBar} role="tablist">
@@ -489,6 +498,9 @@ export function AIReviewWorkspace({
                       }
                       onReplay={handleFullReplay}
                       onClose={onClose}
+                      onNextProblem={onNextProblem}
+                      nextProblemLabel={nextProblemLabel}
+                      isNextLoading={isNextLoading}
                     />
                   )}
                 </>

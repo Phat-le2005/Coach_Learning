@@ -179,7 +179,9 @@ export function parseTokenPair(value: unknown, path = "response"): TokenPair {
 export function parseUserRead(value: unknown, path = "response"): UserRead {
   const source = record(value, path);
   return {
-    id: nonEmptyString(source.id, `${path}.id`), email: nonEmptyString(source.email, `${path}.email`),
+    id: nonEmptyString(source.id, `${path}.id`),
+
+    email: nonEmptyString(source.email, `${path}.email`),
     full_name: nonEmptyString(source.full_name, `${path}.full_name`), role: oneOf(source.role, `${path}.role`, ROLES),
     is_active: boolean(source.is_active, `${path}.is_active`), created_at: nonEmptyString(source.created_at, `${path}.created_at`),
     updated_at: nonEmptyString(source.updated_at, `${path}.updated_at`),
@@ -503,6 +505,7 @@ export interface ProblemOptionRead {
 
 export interface ProblemRead {
   id: string;
+  subject_id?: string | null;
   content: string;
   question_type: string;
   options: ProblemOptionRead[];
@@ -622,6 +625,7 @@ export interface SolutionStepRead {
 
 export interface SolutionAttemptRead {
   id: string;
+  practice_session_id?: string | null;
   student_id?: string;
   question_id: string | null;
   status: string;
@@ -820,6 +824,8 @@ export function parseProblemRead(value: unknown, path = "problem"): ProblemRead 
   const source = record(value, path);
   return {
     id: nonEmptyString(source.id, `${path}.id`),
+
+    subject_id: typeof source.subject_id === 'string' ? source.subject_id : null,
     content: string(source.content, `${path}.content`),
     question_type: string(source.question_type, `${path}.question_type`),
     options: array(source.options, `${path}.options`, parseProblemOptionRead),
@@ -843,6 +849,7 @@ export function parseSolutionAttemptRead(value: unknown, path = "attempt"): Solu
     id: nonEmptyString(source.id, `${path}.id`),
     student_id: typeof source.student_id === "string" ? source.student_id : undefined,
     question_id: typeof source.question_id === "string" ? source.question_id : null,
+    practice_session_id: typeof source.practice_session_id === 'string' ? source.practice_session_id : null,
     status: string(source.status, `${path}.status`),
     current_revision: rev,
     created_at: typeof source.created_at === "string" ? source.created_at : (typeof source.started_at === "string" ? source.started_at : ""),

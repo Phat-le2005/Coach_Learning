@@ -281,7 +281,7 @@ export function createApiClient({ baseUrl, fetcher = fetch }: ApiClientOptions) 
           source_kind: "CANONICAL",
           context_type: "SELF_PRACTICE",
           mode: "INDEPENDENT_SOLUTION",
-          create_idempotency_key: `student-workspace:${sessionId}`,
+          create_idempotency_key: `student-workspace:${sessionId}:${questionId}`,
           question_id: questionId,
           practice_session_id: sessionId,
         }),

@@ -135,7 +135,57 @@ export function MathWorkspace({
       }
     },
     [classroomNav, switchingQuestion, router]
-  );
+  );
+
+  const nextProblemLabel = useMemo(() => {
+    if (classroomNav) {
+      if (classroomNav.currentIndex < classroomNav.totalQuestions - 1) {
+        return `Làm câu tiếp theo (Câu ${classroomNav.currentIndex + 2}) →`;
+      }
+      return "Hoàn thành bài tập lớp →";
+    }
+    return "Luyện tập bài tiếp theo →";
+  }, [classroomNav]);
+
+  const [advancingPractice, setAdvancingPractice] = useState(false);
+
+  const handleNextProblem = useCallback(async () => {
+    if (switchingQuestion || advancingPractice) return;
+
+    if (classroomNav) {
+      if (classroomNav.currentIndex < classroomNav.totalQuestions - 1) {
+        void handleSwitchQuestion(classroomNav.currentIndex + 1);
+      } else {
+        router.push(`/student/assignments/${classroomNav.studentAssignmentId}`);
+      }
+      return;
+    }
+
+    // Practice mode
+    setAdvancingPractice(true);
+    try {
+      const res = await fetch("/api/student/practice/next", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          subjectId: problem?.subject_id,
+          practiceSessionId: attempt?.practice_session_id,
+        }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.attemptId) {
+          router.push(`/student/attempts/${data.attemptId}`);
+          return;
+        }
+      }
+      router.push("/student/practice");
+    } catch {
+      router.push("/student/practice");
+    } finally {
+      setAdvancingPractice(false);
+    }
+  }, [classroomNav, switchingQuestion, advancingPractice, handleSwitchQuestion, router, problem?.subject_id, attempt?.practice_session_id]);
 
   // Document & Multi-page
   const [documentRevision, setDocumentRevision] = useState(
@@ -604,7 +654,9 @@ export function MathWorkspace({
 
   const stopLive = async () => {
     if (canvasDrawing) { setSyncErrorMessage("Nhả bút trước khi ngắt kết nối."); return; }
-    if (!await live.flush()) { setSyncErrorMessage("Chưa nhận xác nhận lưu. Giữ kết nối hoặc xuất bản nháp trước khi rời trang."); return; }
+    if (liveEnabledRef.current && live.pendingCount > 0) {
+      if (!await live.flush()) { setSyncErrorMessage("Chưa nhận xác nhận lưu. Giữ kết nối hoặc xuất bản nháp trước khi rời trang."); return; }
+    }
     if (devicePairing && !["REVOKED", "EXPIRED"].includes(devicePairing.status)) {
       try {
         await deviceRequest(`/api/v2/math-solutions/attempts/${attemptId}/ink/pairings/${devicePairing.id}/revoke`, {});
@@ -1449,7 +1501,20 @@ export function MathWorkspace({
           isReadOnly={isReadOnlyAttempt}
         />
       </header>
-      {pairingOpen ? <DeviceConnection attemptId={attemptId} page={currentPageIndex} pairing={devicePairing} onPairingChange={setDevicePairing} onClose={() => setPairingOpen(false)} /> : null}
+      {pairingOpen ? (
+        <DeviceConnection
+          attemptId={attemptId}
+          page={currentPageIndex}
+          pairing={devicePairing}
+          onPairingChange={setDevicePairing}
+          onClose={() => {
+            setPairingOpen(false);
+            if (!devicePairing || devicePairing.status !== "ACTIVE") {
+              void stopLive();
+            }
+          }}
+        />
+      ) : null}
 
       {/* PR3-C: Unfinished Batch Recovery Banner & Corrupted Journal Fail-Closed Banner */}
       {pendingBatch ? (
@@ -1601,7 +1666,7 @@ export function MathWorkspace({
               highlighterWidth={highlighterWidth}
               paperGrid={paperGrid}
               zoomLevel={zoomLevel}
-              isReadOnly={isReadOnlyAttempt || liveStarting || (liveEnabled && !live.initialized)}
+              isReadOnly={isReadOnlyAttempt || liveStarting}
               remoteDrafts={liveEnabled ? live.drafts : []}
               onLiveStroke={liveEnabled ? live.stream : undefined}
               responsive={writingMode}
@@ -1687,8 +1752,11 @@ export function MathWorkspace({
           pages={pagesRecord}
           currentPageIndex={currentPageIndex}
           instantOpen={instantReviewOpen}
-          onRetryReview={() => void handleAIReview()}
-          onClose={() => setIsReviewWorkspaceOpen(false)}
+          onRetryReview={() => void handleAIReview()}
+          onClose={() => setIsReviewWorkspaceOpen(false)}
+          onNextProblem={handleNextProblem}
+          nextProblemLabel={nextProblemLabel}
+          isNextLoading={switchingQuestion || advancingPractice}
         />
       ) : null}
     </div>
