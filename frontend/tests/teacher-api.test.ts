@@ -3,8 +3,56 @@ import test from "node:test";
 import { teacherBackendPath } from "../src/features/teacher/route-path.js";
 import { TeacherApiError, parseAnalytics, parseClassroom, parseMaterial, teacherApi } from "../src/features/teacher/api.js";
 import { ApiContractError } from "../src/lib/api/validation.js";
+import { parsePdfImport } from "../src/features/teacher/pdf-api.js";
+import { MATERIAL_DIFFICULTY_LEVELS, parseMaterialDifficulty } from "../src/features/teacher/material-difficulty.js";
 
 const id = "00000000-0000-4000-8000-000000000001";
+
+test("PDF import proxy restricts job, review, source and asset routes", () => {
+  const base = `/teacher-materials/pdf-imports/${id}`;
+  assert.equal(teacherBackendPath(["materials", "pdf-imports"], "POST", ""), "/teacher-materials/pdf-imports");
+  assert.equal(teacherBackendPath(["materials", "pdf-imports"], "GET", `?classroom_id=${id}`), `/teacher-materials/pdf-imports?classroom_id=${id}`);
+  assert.equal(teacherBackendPath(["materials", "pdf-imports", id], "GET", ""), base);
+  assert.equal(teacherBackendPath(["materials", "pdf-imports", id, "submit"], "POST", ""), `${base}/submit`);
+  assert.equal(teacherBackendPath(["materials", "pdf-imports", id, "revise"], "POST", ""), `${base}/revise`);
+  assert.equal(teacherBackendPath(["materials", "pdf-imports", id, "revise"], "GET", ""), null);
+  assert.equal(teacherBackendPath(["materials", "pdf-imports", id, "review"], "PUT", ""), `${base}/review`);
+  assert.equal(teacherBackendPath(["materials", "pdf-imports", id, "source"], "GET", ""), `${base}/source`);
+  assert.equal(teacherBackendPath(["materials", "pdf-imports", id, "assets", "1"], "GET", ""), `${base}/assets/1`);
+  assert.equal(teacherBackendPath(["materials", id, "document"], "GET", ""), `/teacher-materials/${id}/document`);
+  assert.equal(teacherBackendPath(["materials", id, "assets", "3"], "GET", ""), `/teacher-materials/${id}/assets/3`);
+  for (const [parts, method, query] of [
+    [["materials", "pdf-imports", "..", "source"], "GET", ""],
+    [["materials", "pdf-imports", id, "assets", ".."], "GET", ""],
+    [["materials", "pdf-imports", id, "source"], "POST", ""],
+    [["materials", "pdf-imports", id, "submit"], "GET", ""],
+    [["materials", "pdf-imports", id, "review"], "GET", ""],
+    [["materials", "pdf-imports", id, "assets", "1"], "GET", "?path=secret"],
+  ] as const) assert.equal(teacherBackendPath([...parts], method, query), null);
+});
+
+test("PDF import contract preserves warnings and human decisions", () => {
+  const value = { id, classroom_id: id, subject_id: id, title: "PDF", original_file_name: "x.pdf", status: "NEEDS_REVIEW", created_at: "2026-11-08T00:00:00Z", error: null, material_id: null, progress: { selected_pages: 1 }, review: null,
+    questions: [{ question_id: "q1", number: 1, source_number: 4, content: "Câu 4", answer: "A", explanation: "", pages: [1], warnings: ["INCOMPLETE"], suggested: false, source_assets: [0], visual_assets: [] }] };
+  const parsed = parsePdfImport(value);
+  assert.equal(parsed.questions[0].suggested, false);
+  assert.deepEqual(parsed.questions[0].warnings, ["INCOMPLETE"]);
+  assert.equal(parsed.review, null);
+  assert.equal(parsed.source_kind, "PDF");
+  const image = parsePdfImport({ ...value, source_kind: "IMAGE", source_mime_type: "image/png", original_file_name: "question.png" });
+  assert.equal(image.source_kind, "IMAGE");
+  assert.equal(image.source_mime_type, "image/png");
+  assert.throws(() => parsePdfImport({ ...value, source_kind: "VIDEO" }), ApiContractError);
+  assert.equal(parsed.questions[0].difficulty_level, null);
+  for (const level of MATERIAL_DIFFICULTY_LEVELS) {
+    assert.equal(parseMaterialDifficulty(level, "difficulty"), level);
+    const review = { title: "Edited", decisions: [{ question_id: "q1", accepted: true, source_checked: true, content: "Đề mới", answer: "Đáp án mới", explanation: "Giải mới", difficulty_level: level }] };
+    assert.equal(parsePdfImport({ ...value, review }).review!.decisions[0].difficulty_level, level);
+  }
+  assert.throws(() => parseMaterialDifficulty("MADE_UP_LEVEL", "difficulty"), ApiContractError);
+  assert.throws(() => parsePdfImport({ ...value, questions: [{ ...value.questions[0], warnings: "not-an-array" }] }), ApiContractError);
+  assert.throws(() => parsePdfImport({ ...value, title: undefined }), ApiContractError);
+});
 
 test("teacher proxy only exposes explicit teacher paths", () => {
   assert.equal(teacherBackendPath(["classes"], "GET", "?offset=0&limit=200"), "/teacher/classes?offset=0&limit=200");

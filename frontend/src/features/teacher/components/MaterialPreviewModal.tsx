@@ -5,6 +5,7 @@ import { X, BookOpen, Send, CheckCircle2, AlertCircle, FileText, HelpCircle } fr
 import { MathRenderer } from "@/components/ui/MathRenderer";
 import { teacherApi, type TeacherMaterial, type TeacherMaterialItem } from "../api";
 import styles from "../TeacherDashboard.module.css";
+import { MATERIAL_DIFFICULTY_LABELS } from "../material-difficulty";
 
 export interface MaterialPreviewModalProps {
   isOpen: boolean;
@@ -117,7 +118,7 @@ export function MaterialPreviewModal({
                           {item.question_type === "MULTIPLE_CHOICE" ? "Trắc nghiệm" : "Tự luận"}
                         </span>
                       )}
-                      {item.difficulty !== null && (
+                      {item.difficulty_level ? <span className={styles.tagPillMuted}>{MATERIAL_DIFFICULTY_LABELS[item.difficulty_level]}</span> : item.difficulty !== null && (
                         <span className={styles.tagPillMuted}>
                           Độ khó: {Number((item.difficulty * 10).toFixed(1))}/10
                         </span>
@@ -127,6 +128,7 @@ export function MaterialPreviewModal({
 
                   <div className={styles.previewQuestionContent}>
                     <MathRenderer content={item.content} />
+                    {item.visual_assets?.map((index) => <img key={index} src={`/api/teacher/materials/${material.id}/assets/${index}`} alt={`Hình minh họa câu ${idx + 1}`} loading="lazy" style={{ maxWidth: "100%", height: "auto", display: "block", margin: "16px auto" }} />)}
                   </div>
 
                   {item.options && item.options.length > 0 && (
@@ -156,6 +158,8 @@ export function MaterialPreviewModal({
                       <MathRenderer content={item.correct_answer} inline={true} />
                     </div>
                   )}
+
+                  {item.explanation && <details><summary>Lời giải tham chiếu</summary><MathRenderer content={item.explanation} /></details>}
                 </div>
               ))}
             </div>

@@ -34,7 +34,7 @@ async function forward(request: NextRequest, context: Context): Promise<NextResp
       method: request.method,
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        Accept: path.includes("/notebook/blocks/") ? "image/png" : path.endsWith("/source") ? "application/pdf" : "application/json",
+        Accept: path.includes("/notebook/blocks/") || path.includes("/assets/") ? "image/*" : path.endsWith("/source") ? "application/pdf,image/png,image/jpeg" : "application/json",
         ...(body ? { "Content-Type": request.headers.get("content-type") ?? "application/json" } : {}),
       },
       body,
@@ -42,7 +42,11 @@ async function forward(request: NextRequest, context: Context): Promise<NextResp
     });
     return new NextResponse(upstream.body, {
       status: upstream.status,
-      headers: { "Content-Type": upstream.headers.get("content-type") ?? "application/json", "Cache-Control": "private, no-store" },
+      headers: {
+        "Content-Type": upstream.headers.get("content-type") ?? "application/json",
+        "Cache-Control": "private, no-store",
+        ...(upstream.headers.get("content-disposition") ? { "Content-Disposition": upstream.headers.get("content-disposition")! } : {}),
+      },
     });
   } catch {
     return errorResponse(503, "API_UNAVAILABLE", "Không thể kết nối dịch vụ giáo viên.");

@@ -31,22 +31,25 @@ export function UploadMaterialModal({
   const [file, setFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [localError, setLocalError] = useState("");
+  const resolvedSubjectId = eligibleSubjects.some((s) => s.id === subjectId) ? subjectId : eligibleSubjects[0]?.id ?? "";
 
   if (!isOpen) return null;
 
   function handleFileChange(selected: File | null) {
+    if (isBusy) return;
     setLocalError("");
     if (!selected) {
       setFile(null);
       return;
     }
     if (selected.size > 25 * 1024 * 1024) {
+      setFile(null);
       setLocalError("Tệp vượt quá dung lượng tối đa cho phép (25 MB).");
       return;
     }
-    const allowed = ["application/pdf", "text/plain"];
-    if (!allowed.includes(selected.type) && !selected.name.endsWith(".pdf") && !selected.name.endsWith(".txt")) {
-      setLocalError("Hệ thống hiện tại chỉ tiếp nhận định dạng tệp PDF hoặc TXT.");
+    if (!/\.(pdf|png|jpe?g|txt)$/i.test(selected.name)) {
+      setFile(null);
+      setLocalError("Hệ thống hỗ trợ PDF, ảnh PNG/JPG/JPEG và TXT.");
       return;
     }
     setFile(selected);
@@ -60,10 +63,14 @@ export function UploadMaterialModal({
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLocalError("");
-    if (!file || !title.trim() || !subjectId || isBusy) return;
-    await onSubmit(subjectId, title.trim(), file);
-    setTitle("");
-    setFile(null);
+    if (!file || !title.trim() || !resolvedSubjectId || isBusy) return;
+    try {
+      await onSubmit(resolvedSubjectId, title.trim(), file);
+      setTitle("");
+      setFile(null);
+    } catch (err) {
+      setLocalError(err instanceof Error ? err.message : "Không tải được tài liệu. Vui lòng thử lại.");
+    }
   }
 
   const effectiveError = localError || errorMessage;
@@ -78,7 +85,7 @@ export function UploadMaterialModal({
             </div>
             <div>
               <h2 id="upload-material-title" className={styles.modalTitle}>
-                Tải học liệu lên lớp học
+                Tải tài liệu bài tập
               </h2>
               <p className={styles.modalSubtitle}>
                 {selectedClass ? `Lớp tiếp nhận: ${selectedClass.name} · Khối ${selectedClass.grade_level}` : "Chọn tài liệu học tập hoặc đề thi"}
@@ -117,7 +124,8 @@ export function UploadMaterialModal({
             <select
               id="upload-material-subject"
               className={styles.formSelect}
-              value={subjectId}
+              value={resolvedSubjectId}
+              disabled={isBusy}
               onChange={(e) => setSubjectId(e.target.value)}
               required
             >
@@ -142,12 +150,13 @@ export function UploadMaterialModal({
               placeholder="VD: Chuyên đề Đạo hàm & Khảo sát hàm số, Đề ôn tập giữa kì..."
               required
               maxLength={255}
+              disabled={isBusy}
             />
           </div>
 
           <div className={styles.formGroup}>
             <label className={styles.formLabel}>
-              Tệp tài liệu (PDF hoặc TXT) <span className={styles.requiredMark}>*</span>
+              Tệp tài liệu (PDF, ảnh hoặc TXT) <span className={styles.requiredMark}>*</span>
             </label>
             <div
               className={`${styles.dropZone} ${isDragging ? styles.dropZoneActive : ""} ${file ? styles.dropZoneHasFile : ""}`}
@@ -168,7 +177,8 @@ export function UploadMaterialModal({
                 id="upload-file-hidden"
                 type="file"
                 className={styles.fileInputHidden}
-                accept=".pdf,.txt,application/pdf,text/plain"
+                accept=".pdf,.png,.jpg,.jpeg,.txt,application/pdf,image/png,image/jpeg,text/plain"
+                disabled={isBusy}
                 onChange={(e) => handleFileChange(e.target.files?.[0] ?? null)}
               />
               <label htmlFor="upload-file-hidden" className={styles.dropZoneLabel}>
@@ -190,12 +200,14 @@ export function UploadMaterialModal({
                     <p className={styles.dropZoneMainText}>
                       Kéo thả tệp vào đây hoặc <strong>nhấp để duyệt tệp</strong>
                     </p>
-                    <span className={styles.dropZoneSubText}>Hỗ trợ định dạng PDF, TXT dung lượng tối đa 25 MB</span>
+                    <span className={styles.dropZoneSubText}>PDF, ảnh PNG/JPG/JPEG hoặc TXT · Tối đa 25 MB</span>
                   </>
                 )}
               </label>
             </div>
           </div>
+
+          <p className={styles.modalSubtitle}>PDF và ảnh sẽ qua OCR bài tập, sau đó mở trang để thầy cô đối chiếu và chọn câu đạt yêu cầu. Có thể tải một ảnh câu hỏi để kiểm tra nhanh. Chỉ các câu được duyệt mới được lưu vào kho học liệu.</p>
 
           <div className={styles.modalFooter}>
             <button
@@ -209,14 +221,14 @@ export function UploadMaterialModal({
             <button
               type="submit"
               className={styles.btnPrimary}
-              disabled={isBusy || !file || !title.trim() || !subjectId}
+              disabled={isBusy || !file || !title.trim() || !resolvedSubjectId}
             >
               {isBusy ? (
                 <>Đang tải lên máy chủ...</>
               ) : (
                 <>
                   <UploadCloud size={16} />
-                  Tải lên ngay
+                  {file && /\.(png|jpe?g)$/i.test(file.name) ? "Tải ảnh & xử lý OCR" : file?.name.toLowerCase().endsWith(".pdf") ? "Tải PDF & xử lý OCR" : "Tải lên ngay"}
                 </>
               )}
             </button>
