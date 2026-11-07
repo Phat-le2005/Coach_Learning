@@ -81,7 +81,10 @@ export async function startStepReviewDemoAction(
       return { error: `Bài thử chưa có lời giải tham chiếu. Chạy ${seedCommand} trong backend rồi thử lại.` };
     }
   } catch (error) {
-    if (error instanceof ApiResponseError && error.code === "QUESTION_NOT_APPROVED") {
+    if (error instanceof ApiResponseError && error.status === 401) {
+      return { error: "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại." };
+    }
+    if (error instanceof ApiResponseError && ["QUESTION_NOT_APPROVED", "NO_QUESTIONS_AVAILABLE", "GRADING_ANSWER_REQUIRED", "GRADING_SOURCE_MISMATCH"].includes(error.code ?? "")) {
       return { error: `Bài thử chưa được cài. Chạy ${seedCommand} trong backend rồi thử lại.` };
     }
     return { error: "Không mở được bài thử chấm từng bước. Kiểm tra backend và bài mẫu development." };

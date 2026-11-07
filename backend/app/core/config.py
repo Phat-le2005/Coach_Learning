@@ -40,6 +40,8 @@ class Settings(BaseSettings):
     backend_host: str = "127.0.0.1"
     backend_port: int = Field(default=8000, ge=1, le=65535)
     frontend_url: AnyHttpUrl = AnyHttpUrl("http://localhost:3000")
+    # Explicit additional frontend origins for LAN clients; no wildcard.
+    live_ink_origins: str = ""
 
     jwt_secret_key: SecretStr = SecretStr("")
     jwt_issuer: str = Field(default="edums", min_length=1)

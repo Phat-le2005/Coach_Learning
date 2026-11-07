@@ -1,0 +1,8 @@
+paddlepaddle==3.2.2
+paddleocr==3.3.2
+fastapi==0.115.12
+uvicorn==0.34.3
+psutil==7.0.0
+Pillow==11.2.1
+numpy==1.26.4
+pandas==2.2.3

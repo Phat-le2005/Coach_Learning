@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { authCookiePolicy } from "../src/lib/auth/cookie-policy";
-import { constantTimeEqual, generateCsrfToken, isTrustedMutationOrigin } from "../src/lib/auth/security";
+import { constantTimeEqual, generateCsrfToken, isTrustedMutationOrigin, isTrustedFrontendMutation } from "../src/lib/auth/security";
 import { signSession, verifySession, type SessionPayload } from "../src/lib/auth/session-codec";
 
 const secret = "a-secure-test-secret-that-is-over-32-characters";
@@ -43,4 +43,17 @@ test("mutation origin rejects cross-site requests", () => {
   assert.equal(isTrustedMutationOrigin("https://app.example.com", "https://app.example.com", "same-origin"), true);
   assert.equal(isTrustedMutationOrigin("https://evil.example", "https://app.example.com", "cross-site"), false);
   assert.equal(isTrustedMutationOrigin(null, "https://app.example.com", null), false);
+});
+
+test("LAN mutations require explicit public origin and still reject cross-site or foreign origins", () => {
+  const lan = "http://192.168.1.20:3000", internal = "http://localhost:3000";
+  assert.equal(isTrustedFrontendMutation(lan, internal, "same-origin"), false);
+  assert.equal(isTrustedFrontendMutation(lan, internal, "same-origin", lan), true);
+  assert.equal(isTrustedFrontendMutation(lan, internal, "cross-site", lan), false);
+  assert.equal(isTrustedFrontendMutation("https://evil.invalid", internal, "same-origin", lan), false);
+  assert.equal(isTrustedFrontendMutation(null, internal, null, lan), false);
+  assert.equal(isTrustedFrontendMutation("http://localhost:3000", "http://0.0.0.0:3000", "same-origin", lan, true), true);
+  assert.equal(isTrustedFrontendMutation("http://localhost:3000", "http://0.0.0.0:3000", "same-origin", lan, false), false);
+  assert.equal(isTrustedFrontendMutation("http://localhost:4000", "http://0.0.0.0:3000", "same-origin", lan, true), false);
+  assert.equal(isTrustedFrontendMutation("https://evil.invalid", "http://0.0.0.0:3000", "same-origin", lan, true), false);
 });

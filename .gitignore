@@ -69,3 +69,9 @@ artifacts/
 .test-build*/
 *.onnx
 *.safetensors
+
+# Local worktrees/model caches are never distributable application source.
+.worktrees/
+*.gguf
+*.pdiparams
+*.pth

@@ -109,3 +109,6 @@ Capture71 hiện không lưu nguyên bản được qua API main: khoảng272KB 
 Sigma, tích phân, căn bậc ba, dấu ngoặc, ký hiệu tương đương và nhiều cấu trúc vẫn có thể sai scope/recognition. Geometry abstain nhiều vùng chưa có math evidence. Vietnamese HTR chưa có; KaTeX/graph-parser support khác transcription fidelity. Các thử nghiệm nhỏ không chứng minh chất lượng tổng quát hoặc production accuracy. Backend/Data CI đỏ có sẵn trên main; không được sửa trong OCR migration.
 
 Troubleshooting: không sync được → giữ ink draft và sửa lỗi sync trước OCR; model thiếu → nhập tay/retry, kiểm tra Network `/ocr/`; journal pending → dùng recovery hiện có; `REVIEW_CHANGED_IN_ANOTHER_TAB` → export bản đang xem rồi reload; revision đổi → trích xuất lại; quota IndexedDB → export backup. Không xóa `.tmp`/cache/database để chữa lỗi tùy tiện.
+
+
+Core scope reconciliation hi?n ???c d?ng chung cho MathWorkspace v? Lab, g?m c?c s?a fraction/fragment ?? ???c ki?m tra native. Lab adapters, model t?y ch?n v? annotation kh?ng t? thay ???ng ch?m b?i production. C?c gi?i h?n TEXT/MIXED v? h?p ??ng l?u b??c b?n tr?n v?n ?p d?ng.

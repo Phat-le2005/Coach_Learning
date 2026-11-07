@@ -1,0 +1,11 @@
+# Keep Kaggle's preinstalled CUDA torch/torchvision pair. Never install CPU torch here.
+einops==0.8.1
+pytorch-lightning==2.5.5
+torchmetrics==1.8.2
+# W&B 0.22.x has no protobuf-v7 telemetry bindings. grpcio-tools 1.85.1 needs >=7.35.1.
+wandb==0.26.0
+protobuf==7.35.1
+matplotlib==3.10.7
+numpy>=1.26,<3
+Pillow>=10,<12
+opencv-python-headless>=4.8,<5

@@ -1,0 +1,9 @@
+.cache/
+outputs/
+wandb/
+*.pt
+*.ckpt
+*.zip
+.env*
+__pycache__/
+*.pyc

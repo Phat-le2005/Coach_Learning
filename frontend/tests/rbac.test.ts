@@ -23,6 +23,8 @@ test("post-login redirect cannot cross role or leave the app", () => {
   assert.equal(postLoginPath("TEACHER", "https://evil.example"), "/teacher");
   assert.equal(postLoginPath("STUDENT", "/login"), "/student");
   assert.equal(postLoginPath("STUDENT", "/account"), "/account");
+  assert.equal(postLoginPath("STUDENT", "/ocr-v2-lab/evaluation"), "/ocr-v2-lab/evaluation");
+  assert.equal(postLoginPath("STUDENT", "/api/ocr-v2-lab"), "/student");
   assert.equal(postLoginPath("ADMIN", "/account?from=menu"), "/account?from=menu");
   assert.equal(isSharedAuthenticatedPath("/account/security"), false);
   assert.equal(safeReturnPath("//evil.example"), null);

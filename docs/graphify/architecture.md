@@ -1,10 +1,10 @@
 # Kiến trúc Coach Learning — Graphify
 
-Sinh lúc 2026-11-05T18:58:30+07:00; Graphify `0.9.102`; HEAD `5f7b134266ee60af2be18a3755664b4a9dda8dda`.
+Sinh lúc 2026-11-07T11:57:12+07:00; Graphify `0.9.102`; HEAD `f0e917d76273116de9ee3baa11bea1d7376faa62`.
 Snapshot gồm cả source chưa commit trong working tree. Không đại diện riêng cho HEAD hoặc production.
 
-Đã phát hiện **1,402 file code**, tạo **13,851 nodes / 63,513 quan hệ / 368 communities**.
-Có 1,383 file xuất hiện trên node. Fingerprint source: `c99d8515914dd6b375e27588c04d4b7b5a4038dbdd8540c353ef33e566dc38e6`.
+Đã phát hiện **1,516 file code**, tạo **14,904 nodes / 66,617 quan hệ / 422 communities**.
+Có 1,495 file xuất hiện trên node. Fingerprint source: `975dea1bb3c504b6a63c4060cb7d36ec929e3ae5fb8a64e3c30cceef48b96178`.
 Chỉ phân tích AST cục bộ; semantic LLM: **0 tokens**. Nhãn community lấy từ hub, không dùng model.
 
 ![Sơ đồ kiến trúc](architecture.svg)
@@ -54,11 +54,11 @@ flowchart LR
 | Lớp | Nodes | File có node |
 |---|---:|---:|
 | AI | 374 | 39 |
-| Backend | 5,148 | 540 |
-| Frontend | 1,901 | 299 |
-| Other | 1,747 | 3 |
-| Tests | 3,370 | 358 |
-| Tools | 1,311 | 144 |
+| Backend | 5,200 | 542 |
+| Frontend | 2,210 | 340 |
+| Other | 1,865 | 15 |
+| Tests | 3,488 | 378 |
+| Tools | 1,767 | 181 |
 
 AI trong bảng chỉ gồm `backend/app/ai`, `rag`, `tutor`; adapter AI/OCR trong domain khác vẫn thuộc Backend.
 Tests được tách riêng; node không có source xác định nằm trong Other. Đây là cách nhóm đường dẫn, không phải service triển khai độc lập.
@@ -72,16 +72,16 @@ Các cặp không có hướng; số lượng là link lưu trong graph, không 
 | AI | Other | 269 |
 | AI | Tests | 628 |
 | AI | Tools | 15 |
-| Backend | Other | 5,745 |
-| Backend | Tests | 13,037 |
-| Backend | Tools | 412 |
-| Frontend | Other | 135 |
-| Frontend | Tests | 570 |
-| Other | Tests | 3,970 |
-| Other | Tools | 951 |
-| Tests | Tools | 1,240 |
+| Backend | Other | 5,825 |
+| Backend | Tests | 13,189 |
+| Backend | Tools | 413 |
+| Frontend | Other | 154 |
+| Frontend | Tests | 695 |
+| Other | Tests | 4,091 |
+| Other | Tools | 1,215 |
+| Tests | Tools | 1,245 |
 
-Confidence: `EXTRACTED`: 53,109, `INFERRED`: 10,404.
+Confidence: `EXTRACTED`: 56,090, `INFERRED`: 10,527.
 
 ## Các cặp module liên kết nhiều nhất
 
@@ -92,21 +92,21 @@ Confidence: `EXTRACTED`: 53,109, `INFERRED`: 10,404.
 | `backend/app/questions` | `backend/tests/questions` | 864 |
 | `backend/tests/questions` | `root` | 855 |
 | `backend/app/curriculum` | `root` | 461 |
-| `backend/app/math_solutions` | `backend/tests/math_solutions` | 439 |
-| `backend/tests/math_solutions` | `root` | 347 |
-| `frontend/src/app` | `frontend/src/lib` | 346 |
+| `backend/app/math_solutions` | `backend/tests/math_solutions` | 449 |
+| `frontend/src/app` | `frontend/src/lib` | 388 |
+| `backend/tests/math_solutions` | `root` | 383 |
 | `backend/app/ai` | `backend/tests/ai` | 319 |
 | `backend/app/question_acquisition` | `backend/tests/question_acquisition` | 314 |
+| `frontend/src/features/math-workspace` | `frontend/tests` | 312 |
 | `backend/app/classes` | `backend/tests/classes` | 308 |
 | `backend/app/question_supply` | `backend/tests/question_supply` | 299 |
 | `backend/app/math_solutions` | `root` | 295 |
+| `frontend/src/features/math-workspace` | `frontend/src/lib` | 264 |
 | `backend/tests/curriculum` | `root` | 236 |
 | `backend/migrations` | `root` | 228 |
-| `frontend/src/features/math-workspace` | `frontend/src/lib` | 222 |
+| `root` | `tools/ocr-v2-lab` | 218 |
 | `backend/app/misconceptions` | `backend/tests/misconceptions` | 204 |
 | `backend/app/knowledge_gap` | `backend/tests/knowledge_gap` | 202 |
-| `frontend/src/features/math-workspace` | `frontend/tests` | 198 |
-| `backend/app/questions` | `backend/tests/math_solutions` | 194 |
 
 ## Phạm vi và giới hạn
 
