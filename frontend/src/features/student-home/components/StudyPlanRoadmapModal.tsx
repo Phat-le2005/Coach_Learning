@@ -94,6 +94,7 @@ export function StudyPlanRoadmapModal({
 
     const grouped: { [dateStr: string]: StudyTaskRead[] } = {};
     for (const task of plan.tasks) {
+      if (task.status === "SKIPPED") continue;
       const dateKey = task.planned_date;
       if (!grouped[dateKey]) {
         grouped[dateKey] = [];
@@ -310,9 +311,12 @@ export function StudyPlanRoadmapModal({
                     task.topic_name ||
                     "Bài tập rèn luyện năng lực";
 
+                  const effectiveSubjectId = task.subject_id || subjectId;
                   const practiceUrl = task.problem_type_id
-                    ? `/student/practice?problem_type_id=${task.problem_type_id}${subjectId ? `&subject_id=${subjectId}` : ""}`
-                    : `/student/practice${subjectId ? `?subject_id=${subjectId}` : ""}`;
+                    ? `/student/practice?problem_type_id=${task.problem_type_id}${effectiveSubjectId ? `&subject_id=${effectiveSubjectId}` : ""}`
+                    : task.concept_id
+                    ? `/student/practice?concept_id=${task.concept_id}${effectiveSubjectId ? `&subject_id=${effectiveSubjectId}` : ""}`
+                    : `/student/practice${effectiveSubjectId ? `?subject_id=${effectiveSubjectId}` : ""}`;
 
                   return (
                     <div
@@ -337,7 +341,7 @@ export function StudyPlanRoadmapModal({
                             <span className={styles.durationBadge}>
                               {task.estimated_duration_minutes} phút
                             </span>
-                            {task.priority === 1 && (
+                            {(task.priority >= 110 || task.priority === 1) && (
                               <span
                                 style={{
                                   fontSize: "0.68rem",
@@ -365,20 +369,36 @@ export function StudyPlanRoadmapModal({
                         </div>
                       </div>
 
-                      <div className={styles.taskActionWrap}>
+                      <div className={styles.taskActionWrap} style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
                         {isDone ? (
                           <span className={styles.completedBadge}>
                             <CheckCircle2 size={14} />
                             Đã xong
                           </span>
                         ) : (
-                          <Link
-                            href={practiceUrl}
-                            className={styles.practiceButton}
-                            onClick={onClose}
-                          >
-                            ✍️ Luyện ngay
-                          </Link>
+                          <>
+                            {(task.task_type === "LEARN" || task.task_type === "CONCEPT_ACQUISITION") && (
+                              <Link
+                                href="/student/theory"
+                                className={styles.practiceButton}
+                                style={{
+                                  background: "#eff6ff",
+                                  color: "#1d4ed8",
+                                  border: "1px solid #bfdbfe",
+                                }}
+                                onClick={onClose}
+                              >
+                                📖 Lý thuyết
+                              </Link>
+                            )}
+                            <Link
+                              href={practiceUrl}
+                              className={styles.practiceButton}
+                              onClick={onClose}
+                            >
+                              ✍️ Luyện ngay
+                            </Link>
+                          </>
                         )}
                       </div>
                     </div>

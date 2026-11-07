@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 
 import styles from "../assignments.module.css";
+import { getCsrfToken } from "@/lib/auth/browser";
 
 export interface QuestionItem {
   source_kind: "CANONICAL_QUESTION" | "TEACHER_MATERIAL_ITEM" | "CANONICAL" | "TEACHER_MATERIAL";
@@ -107,9 +108,13 @@ export function AssignmentWorkspaceClient({
       const itemId = isCanonical ? currentQ.question_id : (currentQ.student_material_item_id || currentQ.teacher_material_item_id);
       const snapshotId = isCanonical ? currentQ.question_id : (currentQ.assignment_material_item_id || currentQ.teacher_material_item_id);
 
+      const csrfToken = await getCsrfToken().catch(() => "");
       const res = await fetch(`/api/student/assignments/${assignment.id}/grade-step`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(csrfToken ? { "X-CSRF-Token": csrfToken } : {}),
+        },
         body: JSON.stringify({
           source_kind: isCanonical ? "CANONICAL" : "TEACHER_MATERIAL",
           student_assignment_id: assignment.id,
@@ -166,9 +171,13 @@ export function AssignmentWorkspaceClient({
         };
       });
 
+      const csrfToken = await getCsrfToken().catch(() => "");
       const res = await fetch(`/api/student/assignments/${assignment.id}/submit`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(csrfToken ? { "X-CSRF-Token": csrfToken } : {}),
+        },
         body: JSON.stringify({ answers: answersPayload }),
       });
 
@@ -235,9 +244,13 @@ export function AssignmentWorkspaceClient({
               className={styles.btnAction}
               onClick={async () => {
                 try {
+                  const csrfToken = await getCsrfToken().catch(() => "");
                   const res = await fetch(`/api/student/assignments/${assignment.id}/launch`, {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: {
+                      "Content-Type": "application/json",
+                      ...(csrfToken ? { "X-CSRF-Token": csrfToken } : {}),
+                    },
                     body: JSON.stringify({ index: activeIdx }),
                   });
                   if (res.ok) {

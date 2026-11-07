@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Sparkles, Smartphone } from "lucide-react";
 import { ApiResponseError, ApiNetworkError } from "@/lib/api/client";
+import { getCsrfToken } from "@/lib/auth/browser";
 import { createBrowserMathApiClient } from "@/lib/api/browser-math";
 import type { ClassroomNavData } from "@/lib/classroom-assignments/launch";
 import type {
@@ -122,11 +123,15 @@ export function MathWorkspace({
 
       setSwitchingQuestion(true);
       try {
+        const csrfToken = await getCsrfToken().catch(() => "");
         const res = await fetch(
           `/api/student/assignments/${classroomNav.studentAssignmentId}/launch`,
           {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              "Content-Type": "application/json",
+              ...(csrfToken ? { "X-CSRF-Token": csrfToken } : {}),
+            },
             body: JSON.stringify({ index: targetIndex }),
           }
         );
@@ -175,9 +180,13 @@ export function MathWorkspace({
     // Practice mode
     setAdvancingPractice(true);
     try {
+      const csrfToken = await getCsrfToken().catch(() => "");
       const res = await fetch("/api/student/practice/next", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(csrfToken ? { "X-CSRF-Token": csrfToken } : {}),
+        },
         body: JSON.stringify({
           subjectId: problem?.subject_id,
           practiceSessionId: attempt?.practice_session_id,
@@ -1377,23 +1386,30 @@ export function MathWorkspace({
           : (q.stepCount > 0 || q.status === "SUBMITTED" || q.status === "EVALUATED");
 
         if (!hasSubmittedSteps) {
+          const fallbackAnswer = (q.studentAnswer && q.studentAnswer.trim().length > 0)
+            ? q.studentAnswer.trim()
+            : "(Chưa làm)";
           if (q.sourceKind === "CANONICAL" || q.questionId) {
             answers.push({
               question_id: q.questionId || q.problemId,
-              student_answer: "(Chưa làm)",
+              student_answer: fallbackAnswer,
             });
           } else {
             answers.push({
               teacher_material_item_id: q.teacherMaterialItemId || q.problemId,
-              student_answer: "(Chưa làm)",
+              student_answer: fallbackAnswer,
             });
           }
         }
       }
 
+      const csrfToken = await getCsrfToken().catch(() => "");
       const res = await fetch(`/api/student/assignments/${classroomNav.studentAssignmentId}/submit`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(csrfToken ? { "X-CSRF-Token": csrfToken } : {}),
+        },
         body: JSON.stringify({ answers }),
       });
       if (!res.ok) {
@@ -1554,7 +1570,8 @@ export function MathWorkspace({
               const isCurrent = q.isCurrent;
               const isCompleted =
                 (q.attemptId === attemptId && (attempt?.status === "SUBMITTED" || attempt?.status === "EVALUATED" || (attempt?.steps?.length ?? 0) > 0)) ||
-                (q.status === "SUBMITTED" || q.status === "EVALUATED" || (q.stepCount ?? 0) > 0);
+                (q.status === "SUBMITTED" || q.status === "EVALUATED" || (q.stepCount ?? 0) > 0) ||
+                Boolean(q.hasAnswer || (q.studentAnswer && q.studentAnswer.trim().length > 0));
               let pillClass = styles.qNavPill;
               if (isCurrent) pillClass += ` ${styles.qNavPillActive}`;
               else if (isCompleted) pillClass += ` ${styles.qNavPillCompleted}`;
@@ -1839,7 +1856,7 @@ export function MathWorkspace({
           isSubmitting={isSubmitting}
           isReviewing={isReviewing}
           submissionBlocked={Boolean(pendingBatch || batchJournalLoadError || batchResuming)}
-          examMode={isClassroomExam}
+          examMode={isClassroomExam && !examSubmitted}
         /> : null}
 
         {/* Right Column: A4 Writing Canvas (65% or expanded) */}

@@ -192,7 +192,13 @@ export function TeacherDashboardClient({
           errors.push(`Tài liệu: ${getErrorMessage(results[1].reason)}`);
         }
         if (results[2].status === "fulfilled") {
-          setAssignments(results[2].value);
+          const loadedAssignments = results[2].value;
+          setAssignments(loadedAssignments);
+          if (loadedAssignments.length > 0) {
+            setAssignmentId((curr) =>
+              curr && loadedAssignments.some((a) => a.id === curr) ? curr : loadedAssignments[0].id
+            );
+          }
         } else {
           errors.push(`Bài giao: ${getErrorMessage(results[2].reason)}`);
         }

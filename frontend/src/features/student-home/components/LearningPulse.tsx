@@ -579,16 +579,33 @@ export function LearningPulse({ data }: LearningPulseProps) {
                       Đã hoàn thành
                     </span>
                   ) : (
-                    <a
-                      href={
-                        task.problemTypeId
-                          ? `/student/practice?problem_type_id=${task.problemTypeId}&subject_id=${data.subject.id}`
-                          : `/student/practice?subject_id=${data.subject.id}`
-                      }
-                      className={styles.todayTaskActionBtn}
-                    >
-                      ✍️ Luyện ngay
-                    </a>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+                      {(task.taskType === "LEARN" || task.taskType === "CONCEPT_ACQUISITION") && (
+                        <a
+                          href="/student/theory"
+                          className={styles.todayTaskActionBtn}
+                          style={{
+                            background: "rgba(59, 130, 246, 0.14)",
+                            color: "#93c5fd",
+                            borderColor: "rgba(59, 130, 246, 0.3)",
+                          }}
+                        >
+                          📖 Xem lý thuyết
+                        </a>
+                      )}
+                      <a
+                        href={
+                          task.problemTypeId
+                            ? `/student/practice?problem_type_id=${task.problemTypeId}&subject_id=${data.subject.id}`
+                            : task.conceptId
+                            ? `/student/practice?concept_id=${task.conceptId}&subject_id=${data.subject.id}`
+                            : `/student/practice?subject_id=${data.subject.id}`
+                        }
+                        className={styles.todayTaskActionBtn}
+                      >
+                        ✍️ Luyện ngay
+                      </a>
+                    </div>
                   )}
                 </div>
               </div>

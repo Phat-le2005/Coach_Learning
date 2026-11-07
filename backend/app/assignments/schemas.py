@@ -244,6 +244,7 @@ class StudentRosterStatusItem(BaseModel):
     started_at: datetime | None = None
     submitted_at: datetime | None = None
     score: float | None = None
+    provisional_score: float | None = None
 
 
 class TeacherAssignmentRosterRead(BaseModel):
@@ -307,6 +308,7 @@ class TeacherSubmissionItemRead(BaseModel):
     student_answer: str | None = None
     is_correct: bool | None = None
     score: float | None = None
+    provisional_score: float | None = None
     evaluation_status: str | None = None
     teacher_feedback: str | None = None
     graded_at: datetime | None = None
@@ -326,6 +328,7 @@ class TeacherStudentSubmissionDetail(BaseModel):
     student_name: str
     status: StudentAssignmentStatus
     score: float | None = None
+    provisional_score: float | None = None
     submitted_at: datetime | None = None
     items: list[TeacherSubmissionItemRead] = Field(default_factory=list)
 
