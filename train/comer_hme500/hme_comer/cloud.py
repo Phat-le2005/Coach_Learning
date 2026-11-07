@@ -130,7 +130,9 @@ def read_config(path):
 
 def validate_config(cfg):
     expected={'kernel_ref','title','is_private','source_revision','dataset_source','version','training','wandb'}
-    if set(cfg) not in (expected,expected|{'trials'}):raise ValueError('CLOUD_CONFIG_FIELDS_INVALID; credentials belong only in environment/Secrets')
+    if not expected<=set(cfg) or set(cfg)-expected-{'trials','parallel_sessions'}:raise ValueError('CLOUD_CONFIG_FIELDS_INVALID; credentials belong only in environment/Secrets')
+    if type(cfg.get('parallel_sessions',1)) is not int or cfg.get('parallel_sessions',1) not in (1,2):
+        raise ValueError('PARALLEL_SESSIONS_MUST_BE_1_OR_2')
     if not re.fullmatch(r'[a-zA-Z0-9_-]+',cfg['version']):raise ValueError('INVALID_VERSION_TAG')
     if not re.fullmatch(r'[a-zA-Z0-9_-]+/[a-zA-Z0-9_-]+',cfg['kernel_ref']):raise ValueError('INVALID_KERNEL_REF')
     if not re.fullmatch(r'[0-9a-f]{40}',cfg['source_revision']):raise ValueError('PIN_FULL_SOURCE_REVISION')
@@ -151,9 +153,10 @@ def validate_config(cfg):
         if not isinstance(trials,list) or not 1<=len(trials)<=6:raise ValueError('INVALID_TRIAL_LIST')
         versions=[]
         for trial in trials:
-            if set(trial)!={'version','training'}:raise ValueError('INVALID_TRIAL_FIELDS')
+            if not {'version','training'}<=set(trial) or set(trial)-{'version','training','kernel_ref','title'}:raise ValueError('INVALID_TRIAL_FIELDS')
             merged={k:v for k,v in cfg.items() if k!='trials'}
             merged.update(version=trial['version'],training={**cfg['training'],**trial['training']})
+            merged.update({k:trial[k] for k in ('kernel_ref','title') if k in trial})
             validate_config(merged);versions.append(trial['version'])
         if len(set(versions))!=len(versions):raise ValueError('DUPLICATE_TRIAL_VERSION')
     return cfg
@@ -335,7 +338,7 @@ def replay_offline(archive,index):
 def expand_trials(cfg):
     if 'trials' not in cfg:return [cfg]
     base={k:v for k,v in cfg.items() if k!='trials'}
-    return [validate_config({**base,'version':trial['version'],
+    return [validate_config({**base,**{k:trial[k] for k in ('kernel_ref','title') if k in trial},'version':trial['version'],
         'training':{**cfg['training'],**trial['training']}}) for trial in cfg['trials']]
 
 
@@ -380,13 +383,24 @@ def _follow_connection(api,ref,folder,seen):
     except Exception:raise
 
 
-def run_submission(api,folder,cfg,no_wait=False):
+def submit_record(api,folder,cfg):
+    if (folder/'submission.json').exists():
+        record=json.loads((folder/'submission.json').read_text())
+        if record['ref'].rsplit('/',1)[0]!=cfg['kernel_ref']:raise ValueError('EXISTING_SUBMISSION_KERNEL_CHANGED')
+        print('Following existing submission:',cfg['version'],record['ref'],flush=True)
+        return record
     result=submit(api,folder)
     if getattr(result,'error',''):raise RuntimeError('KAGGLE_SUBMISSION_REJECTED')
     url=getattr(result,'url',None) or 'https://www.kaggle.com/code/'+cfg['kernel_ref']
     ref=cfg['kernel_ref']+'/'+str(result.version_number)
-    (folder/'submission.json').write_text(json.dumps({'url':url,'version':result.version_number,'ref':ref},indent=2)+'\n',encoding='utf-8')
+    record={'url':url,'version':result.version_number,'ref':ref}
+    (folder/'submission.json').write_text(json.dumps(record,indent=2)+'\n',encoding='utf-8')
     print('Submitted:',cfg['version'],url,'version',result.version_number,flush=True)
+    return record
+
+
+def run_submission(api,folder,cfg,no_wait=False):
+    record=submit_record(api,folder,cfg);ref=record['ref']
     if no_wait:return
     threading.Thread(target=follow_logs,args=(api,ref,folder),daemon=True).start()
     previous=None
@@ -403,6 +417,66 @@ def run_submission(api,folder,cfg,no_wait=False):
         if any(word in value for word in ('error','fail','cancel')):
             raise RuntimeError('KAGGLE_RUN_FAILED; inspect live-log.jsonl and notebook output')
         time.sleep(30)
+
+
+def runnable_trials(pending,active,limit):
+    """A notebook slug gets one active version; distinct slugs fill free slots."""
+    busy={trial['kernel_ref'] for _,trial in active}
+    selected=[]
+    for pair in pending:
+        if len(active)+len(selected)>=limit:break
+        if pair[1]['kernel_ref'] in busy:continue
+        selected.append(pair);busy.add(pair[1]['kernel_ref'])
+    return selected
+
+
+def run_parallel_suite(api,folder,cfg,prepared,wandb_key=None):
+    """Adopt submitted jobs and keep at most two distinct notebooks active."""
+    progress=folder/'suite-progress.json'
+    done={r['version']:r for r in json.loads(progress.read_text())} if progress.exists() else {}
+    pending=[pair for pair in prepared if pair[1]['version'] not in done]
+    active=[];ready=[];last_status={}
+    def attach(pair):
+        child,trial=pair;record=submit_record(api,child,trial)
+        active.append(pair)
+        threading.Thread(target=follow_logs,args=(api,record['ref'],child),daemon=True).start()
+    # Existing submissions are adopted before considering any new submission.
+    for pair in pending[:]:
+        if (pair[0]/'submission.json').exists():attach(pair);pending.remove(pair)
+    if len(active)>cfg.get('parallel_sessions',1):raise ValueError('ACTIVE_SUBMISSIONS_EXCEED_REQUESTED_LIMIT')
+    try:
+        while pending or active or ready:
+            for pair in active[:]:
+                child,trial=pair;ref=json.loads((child/'submission.json').read_text())['ref']
+                status=api.kernels_status(ref)
+                value=str(getattr(status,'status',status)).lower()
+                if last_status.get(ref)!=value:print('Kaggle status:',trial['version'],value,flush=True);last_status[ref]=value
+                if 'complete' in value:active.remove(pair);ready.append(pair)
+                elif any(word in value for word in ('error','fail','cancel')):
+                    raise RuntimeError('KAGGLE_RUN_FAILED '+ref+'; other submitted jobs are preserved')
+            for pair in runnable_trials(pending,active,cfg.get('parallel_sessions',1)):
+                attach(pair);pending.remove(pair)
+            state={'active':[json.loads((child/'submission.json').read_text()) for child,_ in active],
+                'pending':[trial['version'] for _,trial in pending],'completed':list(done)}
+            (folder/'suite-remote-state.json').write_text(json.dumps(state,indent=2)+'\n')
+            for child,trial in ready[:]:
+                ref=json.loads((child/'submission.json').read_text())['ref']
+                outputs=child/'outputs'
+                if not list(outputs.glob('CoachLearning_CoMER_*_Kaggle_DDP2_Results.zip')):
+                    api.kernels_output(ref,path=str(outputs),force=True,quiet=True,file_pattern=RESULT_PATTERN)
+                archive,index=verify_download(outputs)
+                if index.get('wandb_mode')=='offline':
+                    if not wandb_key:wandb_key=getpass.getpass('W&B API key for measured results (hidden; reused for this suite only): ').strip()
+                    os.environ['WANDB_API_KEY']=wandb_key
+                synced=replay_offline(archive,index)
+                done[trial['version']]={'version':trial['version'],'archive':str(archive),'result':index,'wandb':synced}
+                progress.write_text(json.dumps(list(done.values()),indent=2)+'\n',encoding='utf-8')
+                ready.remove((child,trial));print('Trial verified and synced:',trial['version'],flush=True)
+            if active or pending:time.sleep(30)
+        ordered=[done[trial['version']] for _,trial in prepared]
+        print('VERIFIED SUITE ZIP:',package_suite(folder,cfg,ordered),flush=True)
+        return ordered
+    finally:os.environ.pop('WANDB_API_KEY',None);wandb_key=None
 
 
 def package_suite(folder,cfg,results):
@@ -455,6 +529,7 @@ def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--config',required=True,type=Path)
     p.add_argument('--prepare-only',action='store_true');p.add_argument('--no-wait',action='store_true')
     p.add_argument('--sync-only',type=Path,help='Upload measured offline results from a previously downloaded ZIP')
+    p.add_argument('--resume-submissions',type=Path,help='Follow saved submission IDs without restarting cloud training')
     a=p.parse_args()
     if a.sync_only:
         read_config(a.config)
@@ -462,7 +537,34 @@ def main():
         print(json.dumps(replay_offline(archive,index),indent=2),flush=True);return
     cfg=read_config(a.config);trials=expand_trials(cfg)
     if len(trials)>1 and a.no_wait:raise ValueError('SUITE_REQUIRES_WAIT; each trial uses the same two-GPU slot sequentially')
-    if len(trials)>1:
+    if a.resume_submissions:
+        folder=a.resume_submissions.resolve()
+        saved=json.loads((folder/'cloud-config.json').read_text())
+        old_trials={trial['version']:trial for trial in expand_trials(saved)}
+        prepared=[]
+        for trial in trials:
+            old=old_trials.get(trial['version'])
+            if old is None or any(trial[k]!=old[k] for k in ('training','source_revision','dataset_source')):
+                raise ValueError('RESUME_SUBMISSIONS_MEASUREMENT_CONFIG_CHANGED')
+            child=folder/trial['version']
+            if (child/'submission.json').exists():
+                record=json.loads((child/'submission.json').read_text())
+                if record['ref'].rsplit('/',1)[0]!=trial['kernel_ref']:raise ValueError('EXISTING_SUBMISSION_KERNEL_CHANGED')
+            else:
+                # Only two generated files exist here; preserve them in a backup subfolder.
+                child.mkdir(exist_ok=True)
+                backup=child/'before-parallel-migration';backup.mkdir(exist_ok=True)
+                for name in ('run.ipynb','kernel-metadata.json'):
+                    path=child/name
+                    if path.exists() and not (backup/name).exists():path.replace(backup/name)
+                stamp=datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
+                generated,_=prepare(trial,child/('regenerated-'+stamp))
+                for name in ('run.ipynb','kernel-metadata.json'):(generated/name).replace(child/name)
+            prepared.append((child,trial))
+        if not (folder/'cloud-config.initial.json').exists():
+            (folder/'cloud-config.initial.json').write_text(json.dumps(saved,indent=2)+'\n')
+        (folder/'cloud-config.json').write_text(json.dumps(cfg,indent=2)+'\n')
+    elif len(trials)>1:
         stamp=datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
         folder=ROOT.parents[1]/'.tmp/comer-kaggle-submit'/stamp
         folder.mkdir(parents=True,exist_ok=False)
@@ -478,6 +580,8 @@ def main():
     try:
         from kaggle.api.kaggle_api_extended import KaggleApi
         api=KaggleApi();api.authenticate()
+        if a.resume_submissions or cfg.get('parallel_sessions',1)>1:
+            run_parallel_suite(api,folder,cfg,prepared,wandb_key);return
         results=[]
         for child,trial in prepared:
             answer=run_submission(api,child,trial,a.no_wait)

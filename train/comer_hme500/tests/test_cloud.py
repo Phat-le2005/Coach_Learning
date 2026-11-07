@@ -9,7 +9,7 @@ import unittest
 from unittest.mock import patch
 from types import SimpleNamespace
 import zipfile
-from hme_comer.cloud import ROOT,RESULT_PATTERN,prepare,read_config,verify_download,submit,extract_verified,expand_trials,package_suite,follow_logs
+from hme_comer.cloud import ROOT,RESULT_PATTERN,prepare,read_config,verify_download,submit,extract_verified,expand_trials,package_suite,follow_logs,runnable_trials,submit_record
 
 
 class CloudConfig(unittest.TestCase):
@@ -137,6 +137,28 @@ class CloudConfig(unittest.TestCase):
         saved=(self.root/'live-log.jsonl').read_text()
         self.assertEqual(len(saved.splitlines()),3);self.assertNotIn('unit-test-private',saved)
         self.assertNotIn('unit-test-private',output.getvalue());self.assertEqual(output.getvalue().count('epoch 1'),1)
+    def test_two_session_scheduler_uses_distinct_notebooks_and_waits_for_busy_slug(self):
+        a=(self.root/'v4',{'kernel_ref':'user/main','version':'v4'})
+        b=(self.root/'v5',{'kernel_ref':'user/main','version':'v5'})
+        c=(self.root/'v6',{'kernel_ref':'user/scale','version':'v6'})
+        self.assertEqual(runnable_trials([a,b,c],[],2),[a,c])
+        self.assertEqual(runnable_trials([b,c],[a],2),[c])
+        self.assertEqual(runnable_trials([b],[c],2),[b])
+        self.assertEqual(runnable_trials([b],[a,c],2),[])
+    def test_existing_cloud_submission_is_adopted_without_resubmitting(self):
+        record={'ref':'user/kernel/5','version':5,'url':'https://example.test'}
+        (self.root/'submission.json').write_text(json.dumps(record))
+        with patch('hme_comer.cloud.submit') as submit_mock,patch('sys.stdout',io.StringIO()):
+            self.assertEqual(submit_record(None,self.root,{'kernel_ref':'user/kernel','version':'v4'}),record)
+            submit_mock.assert_not_called()
+            with self.assertRaisesRegex(ValueError,'KERNEL_CHANGED'):
+                submit_record(None,self.root,{'kernel_ref':'user/other','version':'v4'})
+    def test_trial_can_use_second_private_notebook_without_changing_measurement(self):
+        self.cfg.update(parallel_sessions=2,trials=[{'version':'v6','kernel_ref':'user/scale',
+            'title':'CoMER Scale E50','training':{}}]);self.write()
+        trial=expand_trials(read_config(self.path))[0]
+        self.assertEqual(trial['kernel_ref'],'user/scale');self.assertEqual(trial['title'],'CoMER Scale E50')
+        self.assertEqual(trial['training'],self.cfg['training']);self.assertTrue(trial['is_private'])
 
 
 if __name__=='__main__':unittest.main()

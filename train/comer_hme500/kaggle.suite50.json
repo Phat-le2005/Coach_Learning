@@ -46,7 +46,10 @@
         "decoder_lr": 5e-05,
         "train_scale_min": 0.9,
         "train_scale_max": 1.1
-      }
+      },
+      "kernel_ref": "lhngphc/comer-hme500-v6-scale-e50",
+      "title": "CoMER HME500 V6 Scale E50"
     }
-  ]
+  ],
+  "parallel_sessions": 2
 }
