@@ -6,11 +6,13 @@ import { isTrustedFrontendMutation } from "../src/lib/auth/security";
 
 test("LAN discovery excludes virtual/public/loopback addresses and preserves eligible interfaces", () => {
   const nic = (address: string, internal = false) => [{address, internal, family: "IPv4"}];
-  assert.deepEqual(lanAddresses({"vEthernet (WSL)": nic("172.29.16.1"), "Wi-Fi": nic("192.168.2.20"),
+  assert.deepEqual(lanAddresses({"vEthernet (WSL)": nic("172.29.16.1"), "br-f3169dba7944": nic("172.19.0.1"),
+    vethaf7becd: nic("172.18.0.2"), "Wi-Fi": nic("192.168.2.20"),
     Ethernet: nic("10.0.0.5"), lo: nic("127.0.0.1", true), Public: nic("8.8.8.8")}).sort(), ["10.0.0.5", "192.168.2.20"]);
   for (const address of ["172.15.1.1", "172.32.1.1", "192.168.1.999", "192.168.01.2", "169.254.1.1", "::1"]) assert.equal(isLanIPv4(address), false);
   assert.deepEqual(lanAddresses({"Wi-Fi": nic("192.168.4.5")}), ["192.168.4.5"]);
   assert.equal(lanAddresses({Ethernet: nic("10.0.0.5"), "Wi-Fi": nic("192.168.4.5")})[0], "192.168.4.5");
+  assert.equal(lanAddresses({enp3s0: nic("10.0.0.5"), wlo1: nic("192.168.4.5"), "br-1234": nic("172.19.0.1")})[0], "192.168.4.5");
 });
 
 test("LAN pairing ignores stale public URL, retains localhost, and rejects foreign WebSocket origins", () => {

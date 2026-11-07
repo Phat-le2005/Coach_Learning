@@ -35,6 +35,7 @@ export function MobileQrUploadModal({
   const [qrSvg, setQrSvg] = useState<string | null>(null);
   const [uploadPath, setUploadPath] = useState<string | null>(null);
   const [customHost, setCustomHost] = useState<string>("");
+  const [lanOrigin, setLanOrigin] = useState<string | null>(null);
   const [isLocalhost, setIsLocalhost] = useState(false);
   const [showLanConfig, setShowLanConfig] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -55,9 +56,9 @@ export function MobileQrUploadModal({
         const host = customHost.trim().replace(/^https?:\/\//i, "");
         return `${protocol}//${host}${path}`;
       }
-      return `${window.location.origin}${path}`;
+      return `${lanOrigin || window.location.origin}${path}`;
     },
-    [customHost],
+    [customHost, lanOrigin],
   );
 
   // 1. Fetch QR Upload Token
@@ -140,6 +141,19 @@ export function MobileQrUploadModal({
         setIsLocalhost(true);
       }
     }
+  }, []);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch("/api/lan", { cache: "no-store", signal: controller.signal })
+      .then((response) => response.ok ? response.json() : null)
+      .then((data: { enabled?: boolean; origin?: string | null } | null) => {
+        if (data?.enabled && data.origin) setLanOrigin(data.origin);
+      })
+      .catch(() => {
+        // Keep the browser origin as a fallback when LAN discovery is unavailable.
+      });
+    return () => controller.abort();
   }, []);
 
   // Update QR SVG when uploadPath or customHost changes

@@ -40,6 +40,12 @@
     "src/features/math-canvas/implicit.worker.ts",
     "src/features/math-canvas/scene.worker.ts",
     "src/features/math-canvas/lab.worker.ts",
+    "src/features/teacher/route-path.ts",
+    "src/features/teacher/api.ts",
+    "src/features/parent/route-path.ts",
+    "src/features/parent/api.ts",
+    "src/features/admin/route-path.ts",
+    "src/features/admin/api.ts",
     "e2e/qa-harness-safety.ts",
     "tests/**/*.ts"
   ],
