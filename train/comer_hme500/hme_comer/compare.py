@@ -9,7 +9,7 @@ import subprocess
 import sys
 import torch
 from PIL import Image
-from .data import audit,resolve_metadata
+from .data import audit,resolve_metadata,PREPROCESS,configure_preprocess
 from .metrics import evaluate,CONTRACT
 from .model import load_model,UPSTREAM
 from .tracking import write_json,bundle,log_predictions,prepare_wandb
@@ -21,6 +21,7 @@ def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 def inputs(output,qa):
     output=Path(output);cfg=json.loads((output/'config.json').read_text())
     rows,report=audit(resolve_metadata(cfg['data']))
+    method=configure_preprocess(rows,cfg,report)
     initial=torch.load(output/'initial.pt',map_location='cpu',weights_only=True)
     best=torch.load(output/'best.pt',map_location='cpu',weights_only=True)
     if initial.get('format')!='coach-hme500-initial-v1' or best.get('format')!='coach-hme500-v1':raise ValueError('COMPARISON_CHECKPOINT_FORMAT')
@@ -28,6 +29,8 @@ def inputs(output,qa):
     if any(s['dataset_fingerprint']!=report['fingerprint'] for s in (initial,best)):raise ValueError('COMPARISON_DATASET_CHANGED')
     if sha(output/'initial.pt')!=best.get('initial_checkpoint_sha256'):raise ValueError('COMPARISON_INITIAL_SNAPSHOT_MISMATCH')
     if initial['vocabulary']!=best['vocabulary']:raise ValueError('COMPARISON_VOCABULARY_CHANGED')
+    if initial.get('preprocess',PREPROCESS)!=method or best['training_signature'].get('preprocess',PREPROCESS)!=method:
+        raise ValueError('COMPARISON_PREPROCESS_CHANGED')
     selected=sorted([r for r in rows if r['split']==('validation' if qa else 'test')],key=lambda r:r['id'])
     if qa:selected=selected[:2]
     for r in selected:r['_tokens']=[initial['vocabulary'][t] for t in r['_words']]
@@ -40,6 +43,8 @@ def worker(output,stage,device,qa=False):
     path=output/f'comparison-{stage}.json'
     contract=dict(checkpoint_sha256=sha(checkpoint),dataset_fingerprint=report['fingerprint'],
                   ids=[r['id'] for r in rows],qa_only=qa,max_decode_tokens=cfg['max_decode_tokens'])
+    # Old v1/v2/v3 saved records omitted this key; their original method is fixed.
+    if cfg.get('preprocess',PREPROCESS)!=PREPROCESS:contract['preprocess']=cfg['preprocess']
     if path.exists():
         old=json.loads(path.read_text())
         if any(old.get(k)!=v for k,v in contract.items()):raise ValueError('SAVED_COMPARISON_PART_CHANGED')
@@ -108,7 +113,7 @@ def compare(output,device='cuda:0',qa=False):
         before=before['metrics'],after=after['metrics'],delta_after_minus_before=delta,
         checkpoint_sha256={'before':before['checkpoint_sha256'],'after':after['checkpoint_sha256']},
         transitions={k:sum(p['outcome']==k for p in pairs) for k in ('improved','regressed','both_correct','both_wrong')},
-        pairs=pairs,metric_contract=CONTRACT,
+        pairs=pairs,metric_contract={**CONTRACT,'preprocess':cfg.get('preprocess',PREPROCESS)},
         baseline='Exact initial snapshot before any optimizer step; same train-fitted vocabulary, including new initialized tokens.')
     write_json(output/'comparison.json',result)
     with (output/'comparison.csv').open('w',newline='',encoding='utf-8') as f:

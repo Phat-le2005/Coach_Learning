@@ -18,7 +18,7 @@ import numpy as np
 import torch
 from torch.utils.data import DataLoader
 from torch.utils.data.distributed import DistributedSampler
-from .data import audit, fit_vocabulary, resolve_metadata, PREPROCESS
+from .data import audit, fit_vocabulary, resolve_metadata, PREPROCESS, PREPROCESSORS, configure_preprocess
 from .metrics import InkDataset, collate, teacher_loss, evaluate, CONTRACT
 from .model import UPSTREAM, load_model, expand_vocabulary
 from .tracking import write_json, init_run, log_predictions, append_history, log_model, bundle
@@ -38,7 +38,7 @@ def read_config(path):
         if type(cfg[k]) is not int or cfg[k]<1: raise ValueError('INVALID_'+k)
     if type(cfg['freeze_encoder_epochs']) is not int or cfg['freeze_encoder_epochs']<0: raise ValueError('INVALID_FREEZE_EPOCHS')
     if type(cfg['seed']) is not int or not 0<=cfg['seed']<2**32: raise ValueError('INVALID_SEED')
-    for k in ('decoder_lr','encoder_lr','clip_grad_norm','weight_decay'):
+    for k in ('decoder_lr','encoder_lr','clip_grad_norm','weight_decay','amp_init_scale'):
         if type(cfg[k]) not in (int,float) or not math.isfinite(cfg[k]) or cfg[k]<0 or (k!='weight_decay' and cfg[k]==0):
             raise ValueError('INVALID_'+k)
     for k in ('data','output','device'):
@@ -48,6 +48,7 @@ def read_config(path):
     if type(cfg['compare_before_after']) is not bool:raise ValueError('INVALID_COMPARE_FLAG')
     if not isinstance(cfg['experiment_version'],str) or not cfg['experiment_version']:raise ValueError('INVALID_VERSION')
     if cfg['wandb']['mode'] not in ('online','offline','disabled'): raise ValueError('INVALID_WANDB_MODE')
+    if cfg['preprocess'] not in PREPROCESSORS: raise ValueError('INVALID_PREPROCESS')
     for k in ('log_images','log_checkpoints'):
         if type(cfg['wandb'][k]) is not bool: raise ValueError('INVALID_WANDB_'+k)
     if cfg['max_decode_tokens']>256: raise ValueError('DECODE_LIMIT_TOO_LARGE')
@@ -82,14 +83,14 @@ def save_checkpoint(path,model,hparams,vocab,optimizer,scheduler,scaler,epoch,st
     tmp=path.with_suffix('.tmp');torch.save(value,tmp);tmp.replace(path)
 
 
-def runtime_info(upstream,device,model):
+def runtime_info(upstream,device,model,preprocess=PREPROCESS):
     env={}
     for p in ('torch','torchvision','einops','pytorch-lightning','torchmetrics','numpy','Pillow','wandb','matplotlib'):
         try: env[p]=importlib.metadata.version(p)
         except importlib.metadata.PackageNotFoundError: env[p]='not-installed'
     env.update(python=sys.version,device=str(device),cuda=torch.version.cuda,
         gpu=torch.cuda.get_device_name(device) if device.type=='cuda' else None,
-        parameters=sum(p.numel() for p in model.parameters()),preprocess=PREPROCESS,
+        parameters=sum(p.numel() for p in model.parameters()),preprocess=preprocess,
         world_size=int(os.environ.get('WORLD_SIZE','1')),
         gpu_names=[torch.cuda.get_device_name(i) for i in range(torch.cuda.device_count())])
     lock=json.loads((ROOT/'hme_comer/upstream.lock.json').read_text())
@@ -116,6 +117,7 @@ def _train(cfg,resume,qa,ctx):
     device=ctx.device
     if device.type=='cuda' and not torch.cuda.is_available(): raise RuntimeError('Enable a Kaggle GPU, or set device=cpu for local QA.')
     metadata=resolve_metadata(cfg['data']);rows,report=audit(metadata)
+    configure_preprocess(rows,cfg,report)
     upstream=Path(cfg.get('upstream',UPSTREAM))
     model,base,hparams=load_model(upstream=upstream)
     vocabulary,added=fit_vocabulary(rows,base.word2idx)
@@ -141,7 +143,7 @@ def _train(cfg,resume,qa,ctx):
     optimizer=torch.optim.AdamW([{'params':model.encoder.parameters(),'lr':cfg['encoder_lr']},
         {'params':model.decoder.parameters(),'lr':cfg['decoder_lr']}],weight_decay=cfg['weight_decay'])
     scheduler=torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer,mode='min',factor=.5,patience=cfg['lr_patience'])
-    scaler=torch.amp.GradScaler('cuda',enabled=cfg['amp'] and device.type=='cuda')
+    scaler=torch.amp.GradScaler('cuda',init_scale=cfg['amp_init_scale'],enabled=cfg['amp'] and device.type=='cuda')
     start=step=stale=0;best={'exp_rate':-1.,'loss':None,'epoch':0};run_id=None;initial_sha=None;saved_rng=None
     if resume:
         resume=Path(resume)
@@ -149,7 +151,7 @@ def _train(cfg,resume,qa,ctx):
         if state.get('format')!='coach-hme500-v1' or state['qa_only']!=qa: raise ValueError('INVALID_RESUME_CHECKPOINT')
         if state['dataset_fingerprint']!=report['fingerprint']: raise ValueError('RESUME_DATASET_CHANGED')
         if state.get('world_size',1)!=ctx.world:raise ValueError('RESUME_WORLD_SIZE_CHANGED: create a new version instead')
-        old_signature={'devices':1,**state['training_signature']}
+        old_signature={'devices':1,'preprocess':PREPROCESS,'amp_init_scale':65536,**state['training_signature']}
         if old_signature!=signature(cfg) or state['vocabulary']!=vocabulary: raise ValueError('RESUME_CONFIG_CHANGED')
         if ctx.lead and out.exists() and any(out.iterdir()):
             previous=json.loads((out/'run.json').read_text())
@@ -181,6 +183,7 @@ def _train(cfg,resume,qa,ctx):
     if not resume and ctx.lead:
         torch.save(dict(format='coach-hme500-initial-v1',state_dict=model.state_dict(),hyper_parameters=hparams,
             vocabulary=vocabulary,dataset_fingerprint=report['fingerprint'],qa_only=qa,seed=cfg['seed'],
+            preprocess=cfg['preprocess'],
             baseline_kind='official checkpoint plus identical train-only vocabulary initialization; no optimizer steps'),out/'initial.pt')
         initial_sha=hashlib.sha256((out/'initial.pt').read_bytes()).hexdigest()
     initial_sha=ctx.broadcast(initial_sha)
@@ -189,7 +192,8 @@ def _train(cfg,resume,qa,ctx):
         write_json(out/'config.json',cfg);write_json(out/'dataset-audit.json',report)
         write_json(out/'dataset-manifest.json',[{k:r[k] for k in r if not k.startswith('_')} for r in rows])
         write_json(out/'vocabulary.json',{'word2idx':vocabulary,'added_train_tokens':added})
-        write_json(out/'metric-contract.json',CONTRACT);write_json(out/'runtime.json',runtime_info(upstream,device,model))
+        write_json(out/'metric-contract.json',{**CONTRACT,'preprocess':cfg['preprocess']})
+        write_json(out/'runtime.json',runtime_info(upstream,device,model,cfg['preprocess']))
         run=init_run(cfg,out,report,run_id,qa)
         run_id=run.id
         write_json(out/'run.json',{'id':run.id,'name':cfg['wandb']['name'],'project':cfg['wandb']['project'],'group':cfg['wandb']['group'],

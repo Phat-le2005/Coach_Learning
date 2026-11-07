@@ -35,6 +35,15 @@ class Versions(unittest.TestCase):
             _,a=create('v1',root=folder);_,b=create('v2',root=folder)
             self.assertEqual(a['devices'],1);self.assertEqual(a['accumulate'],4)
             self.assertEqual(b['devices'],2);self.assertFalse(b['compare_before_after'])
+    def test_v4_is_local_single_gpu_with_otsu_and_paired_comparison(self):
+        from hme_comer.data import OTSU_PREPROCESS
+        with tempfile.TemporaryDirectory() as folder:
+            path,cfg=create('v4',root=folder,wandb_mode='disabled')
+            self.assertEqual(cfg['devices'],1);self.assertEqual(cfg['batch_size'],1)
+            self.assertEqual(cfg['accumulate'],16);self.assertTrue(cfg['compare_before_after'])
+            self.assertEqual(cfg['preprocess'],OTSU_PREPROCESS)
+            self.assertIn('otsu-local-cuda1',cfg['wandb']['name'])
+            self.assertEqual(read_config(path)['preprocess'],OTSU_PREPROCESS)
 
 
 class DistributedContract(unittest.TestCase):

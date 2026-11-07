@@ -1,6 +1,27 @@
-# CoMER fine-tune · Coach Learning HME500 · Kaggle + W&B
+# CoMER fine-tune · Coach Learning HME500 · Local/Kaggle + W&B
 
 Kit chạy trực tiếp trên bộ **500 ảnh JPG viết tay thật** và `metadata.json` đã có. Luồng chạy: **Kaggle Secrets → clone/pull GitHub → Bash `.sh` → CoMER + W&B**. Giữ nguyên byte ảnh gốc; chuyển grayscale/invert/resize chỉ trong bộ nhớ để đưa vào model. Không tạo ảnh AI, không sinh dataset bổ sung.
+
+## v4: chạy local một GPU, tách nền Otsu và so sánh trước/sau
+
+v4 dành cho GPU local VRAM 4 GB: batch 1 × accumulation 16 = batch hiệu dụng 16; AMP với loss scale ban đầu 1024; tối đa 30 epoch; freeze encoder 2 epoch đầu; early stopping 6. Giữ optimizer, seed, metric và split 400/50/50. Otsu áp dụng sau grayscale/invert/resize trong tensor cho **train, validation, baseline và final test**, không ghi lại JPG. v1/v2/v3 giữ cách tiền xử lý cũ và AMP scale mặc định 65536.
+
+Từ `train/comer_hme500`, dùng Python CUDA trong venv của repo:
+
+```powershell
+& ../../.tmp/comer-baseline-gpu/.venv/Scripts/python.exe -m hme_comer.local `
+  --data "DUONG_DAN/CoachLearning_500_HME100K" `
+  --upstream "DUONG_DAN/cache-CoMER-da-xac-minh" `
+  --epochs 30 --entity TEN_TAI_KHOAN_WANDB
+```
+
+Môi trường này cần PyTorch/torchvision bản CUDA phù hợp driver, rồi cài `requirements.txt`. Cache CoMER có thể được tải và xác minh bằng `python -m hme_comer.fetch_upstream --destination <cache>`; không dùng model/cache khác ngầm định.
+
+Runner hỏi key bằng input ẩn khi thiếu `WANDB_API_KEY`; key chỉ ở môi trường tiến trình, không nằm trong argv/config/source. Không cần ghi key vào file hoặc gọi `wandb.login(key=...)`. Project cố định `coachlearning-handwritten-math`; mỗi lần chạy tên mới dạng `comer-hme500-v4-otsu-local-cuda1-prepost-r001-s42-eb16-<UTC>`.
+
+Luồng local: xác thực W&B → QA 4 train/2 validation, 2 epoch freeze/unfreeze, accumulation 1 để thử 8 lần cập nhật → train đầy đủ với accumulation 16 → chọn best bằng validation → đánh giá initial/best tuần tự trên cùng 50 test → xuất báo cáo lỗi validation. QA được gắn `qa-only` và không dùng làm điểm chất lượng. Thêm `--smoke-only` nếu chỉ cần kiểm GPU/upload. Lệnh dừng nếu QA lỗi hoặc không có optimizer step; không tự chuyển sang CPU.
+
+Mặc định lưu dưới `.tmp/comer-local-experiments/` của checkout: session JSON, log đã che key, config, checkpoint, curves, dự đoán, ZIP. W&B có run QA và group riêng cho run train/`-before`/`-after`; không tạo project mới cho từng phiên. Nếu bị ngắt sau khi đã có `last.pt`, resume cùng config bằng `python -m hme_comer.train --config <config> --resume <output>/last.pt`; giữ lại W&B ID và điều kiện thí nghiệm. Config/checkpoint có ràng buộc preprocessing để chặn đánh giá/resume nhầm cách xử lý nền.
 
 ## Chạy trên Kaggle
 
@@ -20,6 +41,7 @@ Kit chạy trực tiếp trên bộ **500 ảnh JPG viết tay thật** và `met
 | v1 | 1 | Giữ luồng fine-tune một GPU để tái kiểm tra |
 | v2 | 2 | Fine-tune DDP, chọn best bằng validation, đánh giá best trên test |
 | v3 | 2 | Fine-tune DDP + so sánh đúng snapshot trước fine-tune với best trên cùng test |
+| v4 | 1 local | Otsu cho mọi giai đoạn, batch 1/accumulation 16, so sánh initial/best |
 
 Sau khi clone repo và truyền WANDB_API_KEY qua môi trường, mỗi lần chạy mới dùng:
 

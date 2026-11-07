@@ -7,7 +7,7 @@ import unittest
 import zipfile
 from PIL import Image
 import torch
-from hme_comer.data import tokens, safe_path, resolve_metadata, fit_vocabulary, input_array
+from hme_comer.data import tokens, safe_path, resolve_metadata, fit_vocabulary, input_array, configure_preprocess, PREPROCESS, OTSU_PREPROCESS
 from hme_comer.metrics import collate, edit_distance
 from hme_comer.tracking import bundle, write_json
 from hme_comer.train import read_config, DEFAULTS, signature
@@ -49,6 +49,27 @@ class Contracts(unittest.TestCase):
             checks=json.loads(z.read(prefix+'checksums.json'))
             self.assertNotIn('checksums.json',checks)
             for n,h in checks.items(): self.assertEqual(hashlib.sha256(z.read(prefix+n)).hexdigest(),h)
+    def test_otsu_removes_paper_background_without_rewriting_jpeg(self):
+        import numpy as np
+        pixels=np.tile(np.linspace(190,225,180,dtype=np.uint8),(45,1))
+        pixels[12:32,25:155]=25
+        path=self.root/'paper.jpg';Image.fromarray(pixels).save(path,quality=95)
+        before=path.read_bytes();row={'_image':path}
+        legacy=input_array(row)
+        configure_preprocess([row],{'preprocess':OTSU_PREPROCESS})
+        clean=input_array(row)
+        self.assertEqual(clean.shape,legacy.shape)
+        self.assertEqual(set(np.unique(clean)),{0.,1.})
+        self.assertTrue(np.all(clean[:8]==0));self.assertGreater(float(legacy[:8].mean()),.05)
+        self.assertEqual(path.read_bytes(),before)
+    def test_preprocess_contract_applies_to_every_split_and_rejects_unknown_method(self):
+        rows=[{'split':s} for s in ('train','validation','test')];report={}
+        configure_preprocess(rows,{'preprocess':OTSU_PREPROCESS},report)
+        self.assertEqual({r['_preprocess'] for r in rows},{OTSU_PREPROCESS})
+        self.assertEqual(report['preprocess'],OTSU_PREPROCESS)
+        configure_preprocess(rows,{})
+        self.assertEqual({r['_preprocess'] for r in rows},{PREPROCESS})
+        with self.assertRaisesRegex(ValueError,'INVALID_PREPROCESS'):configure_preprocess(rows,{'preprocess':'other'})
     def test_secrets_cannot_enter_config(self):
         p=self.root/'config.json';write_json(p,{'wandb':{'api_key':'unit-test-not-a-key'}})
         with self.assertRaisesRegex(ValueError,'UNKNOWN_WANDB'):read_config(p)
@@ -56,6 +77,7 @@ class Contracts(unittest.TestCase):
         a=dict(DEFAULTS);b={**a,'epochs':100,'decoder_lr':2e-4}
         self.assertNotEqual(signature(a),signature(b))
         b['decoder_lr']=a['decoder_lr'];self.assertEqual(signature(a),signature(b))
+        b['preprocess']=OTSU_PREPROCESS;self.assertNotEqual(signature(a),signature(b))
     def test_edit_distance(self):
         self.assertEqual(edit_distance('abc','adc'),1)
         self.assertEqual(edit_distance([1,2,3],[1,3]),1)
