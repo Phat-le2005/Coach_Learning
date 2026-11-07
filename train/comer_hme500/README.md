@@ -2,7 +2,21 @@
 
 Kit chạy trực tiếp trên bộ **500 ảnh JPG viết tay thật** và `metadata.json` đã có. Luồng chạy: **Kaggle Secrets → clone/pull GitHub → Bash `.sh` → CoMER + W&B**. Giữ nguyên byte ảnh gốc; chuyển grayscale/invert/resize chỉ trong bộ nhớ để đưa vào model. Không tạo ảnh AI, không sinh dataset bổ sung.
 
-## Kaggle T4 ×2: chạy bằng một config
+## V4 + V5 + V6: mỗi bản 50 epoch trên Kaggle T4 ×2
+
+Chỉ chỉnh `kaggle.suite50.json`, rồi chạy từ thư mục `train/comer_hme500`:
+
+```powershell
+& ../../.tmp/comer-kaggle-control/.venv/Scripts/python.exe -m hme_comer.cloud --config kaggle.suite50.json
+```
+
+Một lệnh lần lượt chạy ba trial bằng cùng hai GPU: V4 decoder LR `1e-4`; V5 `5e-5`; V6 giữ V5 và thêm scale train `0.9–1.1`. Cả ba bắt đầu từ cùng pretrained checkpoint, seed 42, encoder LR `1e-5`, freeze 2 epoch, Otsu, batch 4/GPU × 2 GPU × accumulation 2 = 16. Split cố định 400/50/50. Đây là các trial DDP2 mới, không ghi đè hoặc tiếp tục run local cũ. `early_stopping_patience=50` bảo đảm đi đủ 50 epoch; model cuối dùng checkpoint do validation chọn, không mặc định epoch 50.
+
+Scale chỉ thay đổi tensor train sau resize cơ bản, trước khi padding; giới hạn kích thước 256×1024. RNG riêng theo seed/epoch/id không làm thay đổi RNG model/sampler. Không áp dụng augmentation cho baseline, validation hoặc test; JPG gốc và nhãn giữ nguyên. Mức 1.0/1.0 mặc định là đường xử lý cũ. Cấu hình augmentation nằm trong chữ ký checkpoint để chặn resume sai điều kiện.
+
+Runner tự đặt tên theo version, số epoch, scale, LR, seed, batch và UTC, giữ cùng W&B project. Log epoch được đọc qua SDK stream. Sau mỗi trial, runner kiểm ZIP và đồng bộ log đo trên Kaggle nếu cần fallback offline; chỉ hỏi key một lần cho cả suite. Cuối cùng xuất một ZIP chung chứa ba ZIP riêng, link W&B, CSV và biểu đồ so sánh. `--prepare-only` xem trước ba notebook; suite chạy tuần tự và không hỗ trợ `--no-wait`. Giữ cửa sổ runner mở đến khi hoàn tất.
+
+## Kaggle T4 ×2: chạy một trial bằng một config
 
 Chỉ chỉnh `kaggle.v5.json`, rồi chạy từ thư mục `train/comer_hme500`:
 
