@@ -38,6 +38,9 @@ def read_config(path):
         if type(cfg[k]) is not int or cfg[k]<1: raise ValueError('INVALID_'+k)
     if type(cfg['freeze_encoder_epochs']) is not int or cfg['freeze_encoder_epochs']<0: raise ValueError('INVALID_FREEZE_EPOCHS')
     if type(cfg['seed']) is not int or not 0<=cfg['seed']<2**32: raise ValueError('INVALID_SEED')
+    if any(type(cfg[k]) not in (int,float) or not math.isfinite(cfg[k]) for k in ('train_scale_min','train_scale_max')):
+        raise ValueError('INVALID_TRAIN_SCALE')
+    if not 0.5<=cfg['train_scale_min']<=cfg['train_scale_max']<=1.5:raise ValueError('INVALID_TRAIN_SCALE')
     for k in ('decoder_lr','encoder_lr','clip_grad_norm','weight_decay','amp_init_scale'):
         if type(cfg[k]) not in (int,float) or not math.isfinite(cfg[k]) or cfg[k]<0 or (k!='weight_decay' and cfg[k]==0):
             raise ValueError('INVALID_'+k)
@@ -132,6 +135,8 @@ def _train(cfg,resume,qa,ctx):
     report.update(world_size=ctx.world,distributed_backend=ctx.backend if ctx.world>1 else None,
                   effective_batch_size=cfg['batch_size']*cfg['accumulate']*ctx.world)
     report['executed_splits']={'train':len(trains),'validation':len(vals),'test':0}
+    report['training_augmentation']={'kind':'scale','range':[cfg['train_scale_min'],cfg['train_scale_max']],
+        'enabled':(cfg['train_scale_min'],cfg['train_scale_max'])!=(1.,1.),'split':'train only','original_jpegs_unchanged':True}
     if cfg['max_decode_tokens']<=max(len(r['_tokens']) for r in trains+vals) and not qa:
         raise ValueError('DECODE_LIMIT_SHORTER_THAN_LABELS')
     out=Path(cfg['output']).resolve()
@@ -152,7 +157,8 @@ def _train(cfg,resume,qa,ctx):
         if state.get('format')!='coach-hme500-v1' or state['qa_only']!=qa: raise ValueError('INVALID_RESUME_CHECKPOINT')
         if state['dataset_fingerprint']!=report['fingerprint']: raise ValueError('RESUME_DATASET_CHANGED')
         if state.get('world_size',1)!=ctx.world:raise ValueError('RESUME_WORLD_SIZE_CHANGED: create a new version instead')
-        old_signature={'devices':1,'preprocess':PREPROCESS,'amp_init_scale':65536,**state['training_signature']}
+        old_signature={'devices':1,'preprocess':PREPROCESS,'amp_init_scale':65536,
+            'train_scale_min':1.,'train_scale_max':1.,**state['training_signature']}
         if old_signature!=signature(cfg) or state['vocabulary']!=vocabulary: raise ValueError('RESUME_CONFIG_CHANGED')
         if ctx.lead and out.exists() and any(out.iterdir()):
             previous=json.loads((out/'run.json').read_text())
@@ -227,7 +233,7 @@ def _train(cfg,resume,qa,ctx):
             if sampler:sampler.set_epoch(epoch)
             assignments=ctx.gather([trains[i]['id'] for i in sampler] if sampler else [r['id'] for r in trains])
             if ctx.lead:write_json(out/f'rank-samples-{epoch:03}.json',dict(epoch=epoch,rank_samples=assignments))
-            loader=DataLoader(InkDataset(trains),batch_size=cfg['batch_size'],shuffle=sampler is None,sampler=sampler,
+            loader=DataLoader(InkDataset(trains,cfg['train_scale_min'],cfg['train_scale_max'],cfg['seed'],epoch),batch_size=cfg['batch_size'],shuffle=sampler is None,sampler=sampler,
                 collate_fn=collate,num_workers=0,generator=generator)
             optimizer.zero_grad(set_to_none=True)
             denom=total_tokens=0;group_loss=total_loss=0.

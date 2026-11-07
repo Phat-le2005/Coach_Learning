@@ -13,6 +13,8 @@
   "early_stopping_patience": 6,
   "max_decode_tokens": 128,
   "seed": 42,
+  "train_scale_min": 1.0,
+  "train_scale_max": 1.0,
   "preprocess": "jpeg-gray-invert-aspect128x1024-min32-pad32-v1",
   "amp": true,
   "amp_init_scale": 65536,

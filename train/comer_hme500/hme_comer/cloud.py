@@ -10,11 +10,12 @@ import json
 import os
 from pathlib import Path
 import re
+import threading
 import time
 import zipfile
 
 ROOT=Path(__file__).resolve().parents[1]
-RESULT_PATTERN=r'.*(CoachLearning_CoMER_v5_Kaggle_DDP2_Results\.zip|result-index\.json)$'
+RESULT_PATTERN=r'.*(CoachLearning_CoMER_[A-Za-z0-9_-]+_Kaggle_DDP2_Results\.zip|result-index\.json)$'
 
 REMOTE=r'''
 import hashlib,json,os,subprocess,sys,zipfile
@@ -51,7 +52,8 @@ cfg.update(data='/kaggle/input/datasets/'+TASK['dataset_source'],experiment_vers
 stamp=datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
 lr=format(cfg['decoder_lr'],'.0e').replace('e-0','e-').replace('e+0','e+')
 effective=cfg['batch_size']*cfg['devices']*cfg['accumulate']
-name=f"comer-hme500-{TASK['version']}-otsu-ddp2-lrdec{lr}-s{cfg['seed']}-eb{effective}-{stamp}"
+aug=f"scale{cfg.get('train_scale_min',1):g}to{cfg.get('train_scale_max',1):g}"
+name=f"comer-hme500-{TASK['version']}-otsu-ddp2-ep{cfg['epochs']}-{aug}-lrdec{lr}-s{cfg['seed']}-eb{effective}-{stamp}"
 cfg['output']=str(WORK/'comer_experiments'/name)
 cfg['wandb'].update(mode=wandb_mode,entity=TASK['wandb']['entity'],project=TASK['wandb']['project'],name=name,group=name)
 path=WORK/'comer.config.json';path.write_text(json.dumps(cfg,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
@@ -74,14 +76,18 @@ summary=json.loads((out/'summary.json').read_text())
 comparison=json.loads((out/'comparison.json').read_text())
 if summary['world_size']!=2 or summary['qa_only'] or not summary['test_evaluated']:
     raise RuntimeError('FULL_DDP_EXPERIMENT_NOT_VERIFIED')
+if cfg['early_stopping_patience']>=cfg['epochs'] and summary['last_epoch']!=cfg['epochs']:
+    raise RuntimeError('REQUESTED_FULL_EPOCH_COUNT_NOT_REACHED')
 index=dict(status='completed',kernel=TASK['kernel_ref'],output=str(out),
+    version=TASK['version'],epochs_requested=cfg['epochs'],
     source_revision=TASK['source_revision'],world_size=2,
     best=summary['selected_best'],last_epoch=summary['last_epoch'],wandb_url=summary['wandb_url'],
     wandb_mode=wandb_mode,wandb_run_id=json.loads((out/'run.json').read_text())['id'],
     before=comparison['before'],after=comparison['after'],
     note='Fresh DDP2 trial. Per-GPU batch 4 differs from the interrupted local batch-1 trial; this is not an exact continuation.')
 (WORK/'result-index.json').write_text(json.dumps(index,indent=2)+'\n')
-archive=WORK/'CoachLearning_CoMER_v5_Kaggle_DDP2_Results.zip'
+archive_tag='v5' if TASK['version']=='v5-kaggle-ddp2' else TASK['version']
+archive=WORK/f'CoachLearning_CoMER_{archive_tag}_Kaggle_DDP2_Results.zip'
 files=[p for p in out.iterdir() if p.is_file() and p.name!='checksums.json' and p.suffix in ('.json','.jsonl','.csv','.png','.md','.pt','.html')]
 files+=[log,WORK/'result-index.json',path]
 checks={}
@@ -119,8 +125,13 @@ print('VERIFIED RESULT ZIP:',archive,flush=True)
 
 def read_config(path):
     cfg=json.loads(Path(path).read_text(encoding='utf-8'))
+    return validate_config(cfg)
+
+
+def validate_config(cfg):
     expected={'kernel_ref','title','is_private','source_revision','dataset_source','version','training','wandb'}
-    if set(cfg)!=expected:raise ValueError('CLOUD_CONFIG_FIELDS_INVALID; credentials belong only in environment/Secrets')
+    if set(cfg) not in (expected,expected|{'trials'}):raise ValueError('CLOUD_CONFIG_FIELDS_INVALID; credentials belong only in environment/Secrets')
+    if not re.fullmatch(r'[a-zA-Z0-9_-]+',cfg['version']):raise ValueError('INVALID_VERSION_TAG')
     if not re.fullmatch(r'[a-zA-Z0-9_-]+/[a-zA-Z0-9_-]+',cfg['kernel_ref']):raise ValueError('INVALID_KERNEL_REF')
     if not re.fullmatch(r'[0-9a-f]{40}',cfg['source_revision']):raise ValueError('PIN_FULL_SOURCE_REVISION')
     if not re.fullmatch(r'[a-zA-Z0-9_-]+/[a-zA-Z0-9_-]+',cfg['dataset_source']):raise ValueError('INVALID_DATASET_REF')
@@ -135,11 +146,22 @@ def read_config(path):
     if train['batch_size']*train['accumulate']*train['devices']!=16:raise ValueError('EFFECTIVE_BATCH_MUST_BE_16')
     if train['checkpoint_upload']!='final_inference':raise ValueError('COMPACT_CHECKPOINT_UPLOAD_REQUIRED')
     if not train['compare_before_after']:raise ValueError('PAIRED_COMPARISON_REQUIRED')
+    if 'trials' in cfg:
+        trials=cfg['trials']
+        if not isinstance(trials,list) or not 1<=len(trials)<=6:raise ValueError('INVALID_TRIAL_LIST')
+        versions=[]
+        for trial in trials:
+            if set(trial)!={'version','training'}:raise ValueError('INVALID_TRIAL_FIELDS')
+            merged={k:v for k,v in cfg.items() if k!='trials'}
+            merged.update(version=trial['version'],training={**cfg['training'],**trial['training']})
+            validate_config(merged);versions.append(trial['version'])
+        if len(set(versions))!=len(versions):raise ValueError('DUPLICATE_TRIAL_VERSION')
     return cfg
 
 
 def prepare(path,destination=None):
-    cfg=read_config(path)
+    cfg=validate_config(path) if isinstance(path,dict) else read_config(path)
+    if 'trials' in cfg:raise ValueError('PREPARE_REQUIRES_ONE_EXPANDED_TRIAL')
     stamp=datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
     folder=Path(destination or ROOT.parents[1]/'.tmp/comer-kaggle-submit'/stamp).resolve()
     folder.mkdir(parents=True,exist_ok=False)
@@ -157,7 +179,8 @@ def prepare(path,destination=None):
 
 
 def verify_download(folder):
-    archives=list(Path(folder).rglob('CoachLearning_CoMER_v5_Kaggle_DDP2_Results.zip'))
+    path=Path(folder)
+    archives=[path] if path.is_file() else list(path.rglob('CoachLearning_CoMER_*_Kaggle_DDP2_Results.zip'))
     if len(archives)!=1:raise RuntimeError('EXPECTED_ONE_RESULT_ZIP')
     with zipfile.ZipFile(archives[0]) as archive:
         if archive.testzip() is not None:raise RuntimeError('DOWNLOADED_ZIP_CORRUPT')
@@ -309,6 +332,105 @@ def replay_offline(archive,index):
     finally:os.environ.pop('WANDB_API_KEY',None)
 
 
+def expand_trials(cfg):
+    if 'trials' not in cfg:return [cfg]
+    base={k:v for k,v in cfg.items() if k!='trials'}
+    return [validate_config({**base,'version':trial['version'],
+        'training':{**cfg['training'],**trial['training']}}) for trial in cfg['trials']]
+
+
+def follow_logs(api,ref,folder):
+    """Live SDK stream is separate from the persisted log available at completion."""
+    try:
+        with (folder/'live-log.jsonl').open('a',encoding='utf-8') as stream:
+            for event in api.kernels_logs_stream(ref):
+                raw=json.dumps(event,ensure_ascii=False)
+                for key in ('KAGGLE_API_TOKEN','WANDB_API_KEY'):
+                    if os.environ.get(key):raw=raw.replace(os.environ[key],'[REDACTED]')
+                raw=re.sub(r'wandb_v1_[A-Za-z0-9_-]+','[REDACTED]',raw)
+                stream.write(raw+'\n');stream.flush()
+                message=json.loads(raw).get('data','')
+                epoch=re.search(r'Epoch (\d+) \(2 workers\): train_loss=([\d.]+) (\{.*\})',message)
+                if epoch:
+                    metrics=json.loads(epoch[3])
+                    print(f'[{ref}] epoch {epoch[1]} | train loss {epoch[2]} | validation EM {metrics["exp_rate"]:.0%} | validation loss {metrics["loss"]:.5f}',flush=True)
+                elif re.search(r'Allocated GPUs|Secret unavailable|before evaluation:|after evaluation:|Traceback',message):
+                    print(message.strip(),flush=True)
+    except Exception:
+        print('Live log stream unavailable; status polling and saved outputs remain active.',flush=True)
+
+
+def run_submission(api,folder,cfg,no_wait=False):
+    result=submit(api,folder)
+    if getattr(result,'error',''):raise RuntimeError('KAGGLE_SUBMISSION_REJECTED')
+    url=getattr(result,'url',None) or 'https://www.kaggle.com/code/'+cfg['kernel_ref']
+    ref=cfg['kernel_ref']+'/'+str(result.version_number)
+    (folder/'submission.json').write_text(json.dumps({'url':url,'version':result.version_number,'ref':ref},indent=2)+'\n',encoding='utf-8')
+    print('Submitted:',cfg['version'],url,'version',result.version_number,flush=True)
+    if no_wait:return
+    threading.Thread(target=follow_logs,args=(api,ref,folder),daemon=True).start()
+    previous=None
+    while True:
+        status=api.kernels_status(ref)
+        value=str(getattr(status,'status',status)).lower()
+        if value!=previous:print('Kaggle status:',cfg['version'],value,flush=True);previous=value
+        if 'complete' in value:
+            api.kernels_output(ref,path=str(folder/'outputs'),force=True,quiet=True,file_pattern=RESULT_PATTERN)
+            archive,index=verify_download(folder/'outputs')
+            print('Verified downloaded ZIP:',archive,flush=True)
+            print('Result:',json.dumps(index),flush=True)
+            return archive,index
+        if any(word in value for word in ('error','fail','cancel')):
+            raise RuntimeError('KAGGLE_RUN_FAILED; inspect live-log.jsonl and notebook output')
+        time.sleep(30)
+
+
+def package_suite(folder,cfg,results):
+    """Portable measured results for all predeclared trials; select with validation."""
+    report={'status':'completed','source_revision':cfg['source_revision'],
+        'selection':'Max validation exact match, tie break by min validation loss; test never selects a checkpoint.',
+        'trials':results}
+    (folder/'suite-results.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
+    with (folder/'suite-metrics.csv').open('w',newline='',encoding='utf-8') as stream:
+        writer=csv.DictWriter(stream,fieldnames=['version','epochs','best_epoch','validation_exact_match','test_before_exact_match','test_after_exact_match','test_cer','test_token_error'])
+        writer.writeheader()
+        for result in results:
+            index=result['result']
+            writer.writerow(dict(version=result['version'],epochs=index['last_epoch'],best_epoch=index['best']['epoch'],
+                validation_exact_match=index['best']['exp_rate'],test_before_exact_match=index['before']['exp_rate'],
+                test_after_exact_match=index['after']['exp_rate'],test_cer=index['after']['cer'],test_token_error=index['after']['token_error_rate']))
+    import matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    fig,axes=plt.subplots(1,2,figsize=(11,4))
+    for ax,stage,label in ((axes[0],'best','Selected validation exact match'),(axes[1],'after','Final test exact match')):
+        scores=[100*r['result'][stage]['exp_rate'] for r in results]
+        ax.bar([r['version'] for r in results],scores,color=['#6b8198','#238f78','#d39d3a'][:len(results)])
+        for i,value in enumerate(scores):ax.text(i,value,f'{value:.0f}%',ha='center',va='bottom')
+        ax.set_ylim(0,100);ax.set_ylabel('%');ax.set_title(label);ax.grid(axis='y',alpha=.2)
+    fig.suptitle('CoMER HME500 | fixed 400/50/50 | 2 GPUs | 50 epochs each')
+    fig.tight_layout();fig.savefig(folder/'suite-comparison.png',dpi=160);plt.close(fig)
+    archive=folder/f"CoachLearning_CoMER_{cfg['version']}_Results.zip"
+    files=[folder/'suite-results.json',folder/'suite-metrics.csv',folder/'suite-comparison.png',folder/'cloud-config.json']
+    with zipfile.ZipFile(archive,'w',zipfile.ZIP_STORED) as target:
+        checks={}
+        for result in results:
+            source=Path(result['archive']);name=source.name
+            target.write(source,name);checks[name]=hashlib.sha256(source.read_bytes()).hexdigest()
+            marker=source.parent/'wandb-replay/local-cloud-sync.json'
+            if marker.exists():
+                name=result['version']+'/local-cloud-sync.json'
+                raw=marker.read_bytes();target.writestr(name,raw);checks[name]=hashlib.sha256(raw).hexdigest()
+        for source in files:
+            raw=source.read_bytes();target.writestr(source.name,raw);checks[source.name]=hashlib.sha256(raw).hexdigest()
+        target.writestr('checksums.json',json.dumps(checks,indent=2)+'\n')
+    with zipfile.ZipFile(archive) as target:
+        if target.testzip() is not None:raise RuntimeError('SUITE_ZIP_CORRUPT')
+        for name,digest in checks.items():
+            if hashlib.sha256(target.read(name)).hexdigest()!=digest:raise RuntimeError('SUITE_CHECKSUM_MISMATCH')
+    return archive
+
+
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--config',required=True,type=Path)
     p.add_argument('--prepare-only',action='store_true');p.add_argument('--no-wait',action='store_true')
@@ -316,38 +438,41 @@ def main():
     a=p.parse_args()
     if a.sync_only:
         read_config(a.config)
-        archive,index=verify_download(a.sync_only.parent)
+        archive,index=verify_download(a.sync_only)
         print(json.dumps(replay_offline(archive,index),indent=2),flush=True);return
-    folder,cfg=prepare(a.config)
+    cfg=read_config(a.config);trials=expand_trials(cfg)
+    if len(trials)>1 and a.no_wait:raise ValueError('SUITE_REQUIRES_WAIT; each trial uses the same two-GPU slot sequentially')
+    if len(trials)>1:
+        stamp=datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
+        folder=ROOT.parents[1]/'.tmp/comer-kaggle-submit'/stamp
+        folder.mkdir(parents=True,exist_ok=False)
+        (folder/'cloud-config.json').write_text(json.dumps(cfg,indent=2)+'\n',encoding='utf-8')
+        prepared=[(prepare(trial,folder/trial['version'])[0],trial) for trial in trials]
+    else:
+        child,trial=prepare(trials[0]);folder=child;prepared=[(child,trial)]
     print('Generated submission:',folder,flush=True)
     if a.prepare_only:return
     if not os.environ.get('KAGGLE_API_TOKEN'):
         os.environ['KAGGLE_API_TOKEN']=getpass.getpass('Kaggle API token (hidden; process memory only): ').strip()
+    wandb_key=os.environ.get('WANDB_API_KEY')
     try:
         from kaggle.api.kaggle_api_extended import KaggleApi
         api=KaggleApi();api.authenticate()
-        result=submit(api,folder)
-        if getattr(result,'error',''):raise RuntimeError('KAGGLE_SUBMISSION_REJECTED')
-        url=getattr(result,'url',None) or 'https://www.kaggle.com/code/'+cfg['kernel_ref']
-        ref=cfg['kernel_ref']+'/'+str(result.version_number)
-        (folder/'submission.json').write_text(json.dumps({'url':url,'version':result.version_number,'ref':ref},indent=2)+'\n',encoding='utf-8')
-        print('Submitted:',url,flush=True)
-        if a.no_wait:return
-        while True:
-            status=api.kernels_status(ref)
-            value=str(getattr(status,'status',status)).lower()
-            print('Kaggle status:',value,flush=True)
-            if 'complete' in value:
-                api.kernels_output(ref,path=str(folder/'outputs'),force=True,quiet=True,
-                    file_pattern=RESULT_PATTERN)
-                archive,index=verify_download(folder/'outputs')
-                print('Verified downloaded ZIP:',archive,flush=True)
-                print('Result:',json.dumps(index),flush=True)
-                if index.get('wandb_mode')=='offline':print('W&B synchronization:',json.dumps(replay_offline(archive,index)),flush=True)
-                return
-            if any(word in value for word in ('error','fail','cancel')):raise RuntimeError('KAGGLE_RUN_FAILED; inspect notebook output')
-            time.sleep(30)
-    finally:os.environ.pop('KAGGLE_API_TOKEN',None)
+        results=[]
+        for child,trial in prepared:
+            answer=run_submission(api,child,trial,a.no_wait)
+            if a.no_wait:return
+            archive,index=answer
+            if index.get('wandb_mode')=='offline':
+                if not wandb_key:wandb_key=getpass.getpass('W&B API key for measured results (hidden; reused for this suite only): ').strip()
+                os.environ['WANDB_API_KEY']=wandb_key
+            synced=replay_offline(archive,index)
+            results.append({'version':trial['version'],'archive':str(archive),'result':index,'wandb':synced})
+            (folder/'suite-progress.json').write_text(json.dumps(results,indent=2)+'\n',encoding='utf-8')
+            print('W&B synchronization:',json.dumps(synced),flush=True)
+        if len(results)>1:print('VERIFIED SUITE ZIP:',package_suite(folder,cfg,results),flush=True)
+    finally:
+        os.environ.pop('KAGGLE_API_TOKEN',None);os.environ.pop('WANDB_API_KEY',None);wandb_key=None
 
 
 if __name__=='__main__':main()

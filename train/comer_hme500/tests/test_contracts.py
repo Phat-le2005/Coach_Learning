@@ -8,7 +8,7 @@ import zipfile
 from PIL import Image
 import torch
 from hme_comer.data import tokens, safe_path, resolve_metadata, fit_vocabulary, input_array, configure_preprocess, PREPROCESS, OTSU_PREPROCESS
-from hme_comer.metrics import collate, edit_distance
+from hme_comer.metrics import InkDataset, collate, edit_distance
 from hme_comer.tracking import bundle, write_json, log_model, log_final_model
 from hme_comer.train import read_config, DEFAULTS, signature
 
@@ -98,6 +98,36 @@ class Contracts(unittest.TestCase):
     def test_edit_distance(self):
         self.assertEqual(edit_distance('abc','adc'),1)
         self.assertEqual(edit_distance([1,2,3],[1,3]),1)
+    def test_scale_augmentation_is_train_only_read_only_and_preserves_tokens(self):
+        path=self.root/'unit.jpg';Image.new('RGB',(180,45),'white').save(path)
+        raw=path.read_bytes();row={'id':'unit','split':'train','_image':path,'_tokens':[3,4]}
+        baseline,_=InkDataset([row])[0]
+        identity,labels=InkDataset([row],1.,1.,42,1)[0]
+        self.assertTrue(torch.equal(identity,baseline));self.assertEqual(labels,[3,4])
+        scaled,labels=InkDataset([row],.9,.9,42,1)[0]
+        self.assertEqual(scaled.shape,(1,40,162));self.assertEqual(labels,[3,4])
+        self.assertEqual(path.read_bytes(),raw)
+        with self.assertRaisesRegex(ValueError,'TRAIN_ONLY'):InkDataset([{**row,'split':'validation'}],.9,1.1)
+        with self.assertRaisesRegex(ValueError,'TRAIN_ONLY'):InkDataset([{**row,'split':'test'}],.9,1.1)
+        heldout,_=InkDataset([{**row,'split':'test'}])[0]
+        self.assertTrue(torch.equal(heldout,baseline))
+    def test_scale_rng_is_reproducible_changes_by_epoch_and_does_not_touch_model_rng(self):
+        import random
+        path=self.root/'unit.jpg';Image.new('RGB',(180,45),'white').save(path)
+        row={'id':'unit','split':'train','_image':path,'_tokens':[3]}
+        python_rng=random.getstate();torch_rng=torch.get_rng_state().clone()
+        one,_=InkDataset([row],.9,1.1,42,1)[0]
+        repeated,_=InkDataset([row],.9,1.1,42,1)[0]
+        self.assertTrue(torch.equal(one,repeated))
+        self.assertGreater(len({tuple(InkDataset([row],.9,1.1,42,e)[0][0].shape) for e in range(10)}),1)
+        self.assertEqual(random.getstate(),python_rng);self.assertTrue(torch.equal(torch.get_rng_state(),torch_rng))
+    def test_scale_config_is_validated_and_part_of_resume_signature(self):
+        path=self.root/'config.json'
+        for lo,hi in ((1.1,.9),(.4,1.),(1.,1.6),(float('nan'),1.),(True,1.)):
+            write_json(path,{'train_scale_min':lo,'train_scale_max':hi}) if lo==lo else path.write_text('{"train_scale_min":NaN}')
+            with self.assertRaisesRegex(ValueError,'TRAIN_SCALE'):read_config(path)
+        identity=dict(DEFAULTS);augmented={**identity,'train_scale_min':.9,'train_scale_max':1.1}
+        self.assertNotEqual(signature(identity),signature(augmented))
 
 
 if __name__=='__main__': unittest.main()

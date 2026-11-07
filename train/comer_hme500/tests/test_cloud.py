@@ -9,7 +9,7 @@ import unittest
 from unittest.mock import patch
 from types import SimpleNamespace
 import zipfile
-from hme_comer.cloud import ROOT,RESULT_PATTERN,prepare,read_config,verify_download,submit,extract_verified
+from hme_comer.cloud import ROOT,RESULT_PATTERN,prepare,read_config,verify_download,submit,extract_verified,expand_trials,package_suite
 
 
 class CloudConfig(unittest.TestCase):
@@ -88,6 +88,39 @@ class CloudConfig(unittest.TestCase):
         self.assertEqual(request.session_timeout_seconds,3600)
         self.assertTrue(request.is_private)
         self.assertIsInstance(json.loads(request.text)['cells'][1]['source'],str)
+    def test_suite_expansion_preserves_common_conditions_and_only_changes_declared_factors(self):
+        self.cfg['training'].update(epochs=50,early_stopping_patience=50,train_scale_min=1.,train_scale_max=1.)
+        self.cfg['trials']=[{'version':'v4-e50-ddp2','training':{'decoder_lr':1e-4}},
+            {'version':'v5-e50-ddp2','training':{'decoder_lr':5e-5}},
+            {'version':'v6-e50-scale-ddp2','training':{'decoder_lr':5e-5,'train_scale_min':.9,'train_scale_max':1.1}}]
+        self.write();trials=expand_trials(read_config(self.path))
+        self.assertEqual(len(trials),3)
+        for i,trial in enumerate(trials):
+            self.assertNotIn('trials',trial);self.assertEqual(trial['training']['devices'],2)
+            self.assertEqual(trial['training']['epochs'],50);self.assertEqual(trial['training']['early_stopping_patience'],50)
+            folder,_=prepare(trial,self.root/f'trial-{i}')
+            code=json.loads((folder/'run.ipynb').read_text())['cells'][1]['source'][0]
+            ast.parse(code);self.assertIn('REQUESTED_FULL_EPOCH_COUNT_NOT_REACHED',code)
+        self.assertEqual(trials[0]['training']['decoder_lr'],1e-4)
+        self.assertEqual(trials[1]['training']['train_scale_min'],1.)
+        self.assertEqual(trials[2]['training']['train_scale_min'],.9)
+        self.cfg['trials'][2]['version']=self.cfg['trials'][1]['version'];self.write()
+        with self.assertRaisesRegex(ValueError,'DUPLICATE_TRIAL'):read_config(self.path)
+    def test_suite_archive_keeps_trial_zips_and_checks_every_payload(self):
+        (self.root/'cloud-config.json').write_text('{}')
+        results=[]
+        for version in ('v4','v5','v6'):
+            archive=self.root/(version+'.zip')
+            with zipfile.ZipFile(archive,'w') as z:z.writestr('measured.json','{}')
+            results.append({'version':version,'archive':str(archive),'wandb':{},
+                'result':{'last_epoch':50,'best':{'epoch':25,'exp_rate':.5},'before':{'exp_rate':.38},
+                    'after':{'exp_rate':.62,'cer':.08,'token_error_rate':.07}}})
+        target=package_suite(self.root,{'version':'suite-unit','source_revision':'a'*40},results)
+        with zipfile.ZipFile(target) as z:
+            checks=json.loads(z.read('checksums.json'))
+            self.assertEqual(set(checks),set(z.namelist())-{'checksums.json'})
+            for name,digest in checks.items():self.assertEqual(hashlib.sha256(z.read(name)).hexdigest(),digest)
+            for result in results:self.assertEqual(z.read(Path(result['archive']).name),Path(result['archive']).read_bytes())
 
 
 if __name__=='__main__':unittest.main()
