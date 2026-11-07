@@ -405,11 +405,11 @@ def run_submission(api,folder,cfg,no_wait=False):
     threading.Thread(target=follow_logs,args=(api,ref,folder),daemon=True).start()
     previous=None
     while True:
-        status=api.kernels_status(ref)
+        status=retry_read(lambda:api.kernels_status(ref),'Kaggle status')
         value=str(getattr(status,'status',status)).lower()
         if value!=previous:print('Kaggle status:',cfg['version'],value,flush=True);previous=value
         if 'complete' in value:
-            api.kernels_output(ref,path=str(folder/'outputs'),force=True,quiet=True,file_pattern=RESULT_PATTERN)
+            retry_read(lambda:api.kernels_output(ref,path=str(folder/'outputs'),force=True,quiet=True,file_pattern=RESULT_PATTERN),'Kaggle output download')
             archive,index=verify_download(folder/'outputs')
             print('Verified downloaded ZIP:',archive,flush=True)
             print('Result:',json.dumps(index),flush=True)
@@ -417,6 +417,17 @@ def run_submission(api,folder,cfg,no_wait=False):
         if any(word in value for word in ('error','fail','cancel')):
             raise RuntimeError('KAGGLE_RUN_FAILED; inspect live-log.jsonl and notebook output')
         time.sleep(30)
+
+
+def retry_read(operation,label,attempts=6):
+    """Retry only read operations; never resubmit a training job after a timeout."""
+    for attempt in range(attempts):
+        try:return operation()
+        except Exception as exc:
+            status=getattr(getattr(exc,'response',None),'status_code',None)
+            if (status is not None and 400<=status<500 and status!=429) or attempt==attempts-1:raise
+            print(label+': connection interrupted; retrying the same read operation.',flush=True)
+            time.sleep(10)
 
 
 def runnable_trials(pending,active,limit):
@@ -448,7 +459,7 @@ def run_parallel_suite(api,folder,cfg,prepared,wandb_key=None):
         while pending or active or ready:
             for pair in active[:]:
                 child,trial=pair;ref=json.loads((child/'submission.json').read_text())['ref']
-                status=api.kernels_status(ref)
+                status=retry_read(lambda:api.kernels_status(ref),'Kaggle status')
                 value=str(getattr(status,'status',status)).lower()
                 if last_status.get(ref)!=value:print('Kaggle status:',trial['version'],value,flush=True);last_status[ref]=value
                 if 'complete' in value:active.remove(pair);ready.append(pair)
@@ -463,7 +474,7 @@ def run_parallel_suite(api,folder,cfg,prepared,wandb_key=None):
                 ref=json.loads((child/'submission.json').read_text())['ref']
                 outputs=child/'outputs'
                 if not list(outputs.glob('CoachLearning_CoMER_*_Kaggle_DDP2_Results.zip')):
-                    api.kernels_output(ref,path=str(outputs),force=True,quiet=True,file_pattern=RESULT_PATTERN)
+                    retry_read(lambda:api.kernels_output(ref,path=str(outputs),force=True,quiet=True,file_pattern=RESULT_PATTERN),'Kaggle output download')
                 archive,index=verify_download(outputs)
                 if index.get('wandb_mode')=='offline':
                     if not wandb_key:wandb_key=getpass.getpass('W&B API key for measured results (hidden; reused for this suite only): ').strip()

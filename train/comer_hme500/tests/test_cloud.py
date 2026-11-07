@@ -9,7 +9,7 @@ import unittest
 from unittest.mock import patch
 from types import SimpleNamespace
 import zipfile
-from hme_comer.cloud import ROOT,RESULT_PATTERN,prepare,read_config,verify_download,submit,extract_verified,expand_trials,package_suite,follow_logs,runnable_trials,submit_record
+from hme_comer.cloud import ROOT,RESULT_PATTERN,prepare,read_config,verify_download,submit,extract_verified,expand_trials,package_suite,follow_logs,runnable_trials,submit_record,retry_read
 
 
 class CloudConfig(unittest.TestCase):
@@ -159,6 +159,16 @@ class CloudConfig(unittest.TestCase):
         trial=expand_trials(read_config(self.path))[0]
         self.assertEqual(trial['kernel_ref'],'user/scale');self.assertEqual(trial['title'],'CoMER Scale E50')
         self.assertEqual(trial['training'],self.cfg['training']);self.assertTrue(trial['is_private'])
+    def test_read_retries_after_network_drop_and_never_calls_submit(self):
+        from unittest.mock import Mock
+        call=Mock(side_effect=[ConnectionError('transient'),{'status':'running'}])
+        with patch('hme_comer.cloud.time.sleep') as sleep,patch('hme_comer.cloud.submit') as submit_mock,patch('sys.stdout',io.StringIO()):
+            self.assertEqual(retry_read(call,'status'),{'status':'running'})
+            self.assertEqual(call.call_count,2);sleep.assert_called_once_with(10);submit_mock.assert_not_called()
+        failure=RuntimeError('permission denied');failure.response=SimpleNamespace(status_code=403)
+        call=Mock(side_effect=failure)
+        with self.assertRaises(RuntimeError):retry_read(call,'status')
+        self.assertEqual(call.call_count,1)
 
 
 if __name__=='__main__':unittest.main()
