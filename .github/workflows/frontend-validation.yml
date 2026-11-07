@@ -37,5 +37,12 @@ jobs:
       - name: Run frontend unit tests
         run: npm run test
 
+      - name: OCR Lab contracts (no private fixtures or model downloads)
+        run: npm run test:ocr-lab
+
+      - name: Local model setup portability (no inference)
+        working-directory: .
+        run: python3 -m unittest discover -s tools/ocr-v2-lab -p test_portable_setup.py
+
       - name: Production build
         run: npm run build

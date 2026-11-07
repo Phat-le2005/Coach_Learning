@@ -76,8 +76,24 @@ export async function startStepReviewDemoAction(
     if (!review.available || review.reason_code === "PROVISIONAL_WITHOUT_ANSWER") {
       return { error: "Bài mẫu chưa có đáp án tham chiếu. Chạy python -m app.seed_step_review_demo trong backend rồi thử lại." };
     }
-  } catch {
-    return { error: "Không mở được bài thử chấm từng bước. Kiểm tra backend và bài mẫu development." };
+  } catch (error) {
+    if (error instanceof ApiResponseError) {
+      if (error.status === 401) {
+        return { error: "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại." };
+      }
+      if (error.code === "QUESTION_NOT_APPROVED" || error.code === "NO_QUESTIONS_AVAILABLE") {
+        console.warn("[startStepReviewDemoAction] Demo question not approved or not seeded:", error.code);
+        return { error: "Bài mẫu development chưa được khởi tạo. Chạy 'python -m app.seed_step_review_demo' trong backend rồi thử lại." };
+      }
+      if (error.code === "GRADING_ANSWER_REQUIRED" || error.code === "GRADING_SOURCE_MISMATCH") {
+        console.warn("[startStepReviewDemoAction] Demo question missing reference answer:", error.code);
+        return { error: "Bài mẫu chưa có đáp án tham chiếu. Chạy 'python -m app.seed_step_review_demo' trong backend rồi thử lại." };
+      }
+      console.error("[startStepReviewDemoAction] Backend API error:", error.status, error.code);
+      return { error: "Chưa thể mở bài thử chấm từng bước. Vui lòng thử lại sau." };
+    }
+    console.error("[startStepReviewDemoAction] Unexpected failure:", error instanceof Error ? error.message : "unknown");
+    return { error: "Không thể kết nối dịch vụ làm bài. Vui lòng thử lại sau." };
   }
   redirect(`/student/attempts/${attemptId}`);
 }

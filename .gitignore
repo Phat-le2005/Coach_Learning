@@ -47,3 +47,9 @@ artifacts/
 /graphify-out/
 /.codex/config.toml
 /.codex/hooks.json.bak*
+
+# Local worktrees/model caches are never distributable application source.
+.worktrees/
+*.gguf
+*.pdiparams
+*.pth

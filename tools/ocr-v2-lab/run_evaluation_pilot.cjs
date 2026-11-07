@@ -1,0 +1,18 @@
+#!/usr/bin/env node
+// Reproducible scope-only pilot; explicitly does not claim OCR recognition accuracy.
+const fs=require('fs'),path=require('path'),crypto=require('crypto');const root=path.resolve(__dirname,'../..'),out=path.join(root,'.tmp/tri-ocr-v2-evaluation');
+const util=path.join(root,'frontend/.test-build-run/src/features/math-workspace/utils');
+const {convertVectorSource,generatePages,assertNoSplitLeakage}=require(path.join(util,'ocr-evaluation-data.js'));
+const {benchmarkPages,summarizeBenchmark}=require(path.join(util,'ocr-evaluation-benchmark.js'));
+const write=(n,v)=>fs.writeFileSync(path.join(out,n),JSON.stringify(v,null,2));
+(async()=>{const index=JSON.parse(fs.readFileSync(path.join(out,'source-index.json'))),pool=[],rejected=[];
+ for(const raw of index.records.filter(r=>r.inkCreationMethod==='human'&&['train','valid','test'].includes(r.originalSplit))){try{pool.push(await convertVectorSource(raw,true));}catch(e){rejected.push({id:raw.id,error:e.message});}}
+ const config={seed:20261104,count:100,split:'DEV',family:'CYCLE',expressions:3,gapPx:24,rotationDegrees:2,thickness:1};
+ const pages=await generatePages(pool,config),again=await generatePages(pool,config);if(JSON.stringify(pages)!==JSON.stringify(again))throw Error('Non-deterministic generation');
+ const holdout=await generatePages(pool,{...config,seed:20261105,count:16,split:'HOLDOUT'});assertNoSplitLeakage([...pool,...pages,...holdout]);
+ write('source-pages.json',pool);write('pilot-pages.json',pages);write('holdout-pages.json',holdout);write('ingestion.json',{archive:index.archive,rawCount:index.records.length,convertedWholeHumanExpressions:pool.length,internalSplitCounts:{DEV:pool.filter(p=>p.split==='DEV').length,HOLDOUT:pool.filter(p=>p.split==='HOLDOUT').length},excludedSymbols:index.counts.symbols,excludedSourceSynthetic:index.counts.synthetic,native:index.native.map(n=>({id:n.id,strokes:n.capture.strokes.length,checksum:n.checksum,status:'DRAFT_NO_INDEPENDENT_GT'})),rejected,writerDisjointness:'NOT_VERIFIABLE; no published writer IDs',splitPolicy:'group by source label hash; all transformed instances retain source lineage split; not official MathWriting benchmark split'});
+ const files=['ocr-evaluation-data.ts','ocr-evaluation-metrics.ts','ocr-evaluation-benchmark.ts','ocr-v2-scope-candidates.ts'],hashes=Object.fromEntries(files.map(f=>[f,crypto.createHash('sha256').update(fs.readFileSync(path.join(root,'frontend/src/features/math-workspace/utils',f))).digest('hex')]));
+ write('pilot-manifest.json',{createdAt:new Date().toISOString(),config,holdoutGeneratedNotEvaluated:16,hashes,node:process.version,sourceArchiveSha256:index.archive.sha256,inputKind:'SYNTHETIC_COMPOSED_REAL_INK',gt:'GENERATED_DETERMINISTIC membership; SOURCE_AUTHORITATIVE transcription inherited'});
+ const result=await benchmarkPages(pages,{profiles:['GEOMETRY','ORACLE'],maxCases:100,inferenceLimit:0,recognitionEnabled:false,codeSignature:crypto.createHash('sha256').update(JSON.stringify(hashes)).digest('hex')},{detect:async()=>{throw Error('No detector requested');},recognize:async()=>{throw Error('No recognition requested');},fingerprint:async()=>{throw Error('No recognition fingerprint requested');},cacheGet:async()=>undefined,cachePut:async()=>{},progress:()=>{},cancelled:()=>false});
+ write('pilot-results.json',result);write('pilot-summary.json',summarizeBenchmark(result.arms));console.log(JSON.stringify({status:'COMPLETED_SCOPE_ONLY_PILOT',sources:pool.length,pages:100,holdoutNotEvaluated:16,arms:result.arms.length,inferences:result.actualInferenceCalls,summary:summarizeBenchmark(result.arms)},null,2));
+})().catch(e=>{console.error(e.stack);process.exitCode=1;});

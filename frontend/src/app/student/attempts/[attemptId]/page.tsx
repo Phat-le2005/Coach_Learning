@@ -21,11 +21,14 @@ export const metadata: Metadata = {
 
 interface AttemptPageProps {
   params: Promise<{ attemptId: string }>;
+  searchParams: Promise<{ live?: string; writing?: string; page?: string }>;
 }
 
 export default async function StudentAttemptPage(props: AttemptPageProps) {
   const { attemptId } = await props.params;
-  const targetPath = `/student/attempts/${attemptId}`;
+  const search = await props.searchParams;
+  const initialPageIndex = /^\d{1,2}$/.test(search.page ?? "") ? Math.min(29, Number(search.page)) : 0;
+  const targetPath = `/student/attempts/${attemptId}${search.live === "1" ? `?live=1&writing=${search.writing === "1" ? "1" : "0"}&page=${initialPageIndex}` : ""}`;
   await requirePageRole("STUDENT", targetPath);
 
   if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(attemptId)) {
@@ -76,7 +79,7 @@ export default async function StudentAttemptPage(props: AttemptPageProps) {
       initialDocument = docRes.value;
       if (initialDocument.pages && initialDocument.pages.length > 0) {
         try {
-          initialPage = await apiClient.getMathInkPage(accessToken, attemptId, 0);
+          initialPage = await apiClient.getMathInkPage(accessToken, attemptId, initialPageIndex);
         } catch {
           // Page 0 not loaded, start fresh
         }
@@ -121,6 +124,9 @@ export default async function StudentAttemptPage(props: AttemptPageProps) {
         initialProblem={initialProblem}
         initialDocument={initialDocument}
         initialPage={initialPage}
+        initialPageIndex={initialPageIndex}
+        initialLiveRequested={search.live === "1"}
+        initialWritingMode={search.writing === "1"}
       />
     </>
   );

@@ -1,5 +1,13 @@
 # Coach Learning development tools
 
+Use this canonical checkout for normal development. Create a feature branch here;
+do not create additional Coach_Learning worktree folders unless the user requests it.
+The product, Live Sync and development-only OCR Lab share this repository. Keep the
+scope constructor shared; do not copy an independent fork of it into the Lab.
+Models, local service keys, private captures and evaluation results belong in ignored
+`.tmp/` storage. Setup and recovery: `LOCAL_SETUP.md`. Never publish private runtime
+data or treat a local model/cache as an undeclared dependency of a clean checkout.
+
 Graphify is a local development aid. Setup and usage: `docs/graphify/README.md`.
 It must not become an application dependency, production service or runtime import.
 
