@@ -27,7 +27,8 @@ export interface OcrSource {
 }
 export interface RenderTransform { width: number; height: number; padding: number; scale: number }
 export function sourceKey(source: OcrSource): string { return JSON.stringify([source.pageIndex, source.sourceRevision, source.strokes]); }
-export function validateOcrSource(source: OcrSource): InkStroke[] {
+export type ScopeSource = Pick<OcrSource, "pageIndex" | "sourceRevision" | "strokes">;
+export function validateOcrSource(source: ScopeSource): InkStroke[] {
   if (!Number.isInteger(source.pageIndex) || source.pageIndex < 0 || source.pageIndex >= 30 || !Number.isInteger(source.sourceRevision) || source.sourceRevision < 0) throw new Error("INVALID_PAGE_OR_REVISION");
   if (!Array.isArray(source.strokes) || source.strokes.length > 400) throw new Error("STROKE_LIMIT_400");
   const ids = new Set<string>(); let count = 0;
@@ -102,7 +103,7 @@ export function strokeCoverage(s: InkStroke, r: RawLayoutRegion, t: RenderTransf
   for (let i = 1; i < points.length; i++) { const length = Math.hypot(points[i].x - points[i - 1].x, points[i].y - points[i - 1].y); total += length; inside += length * segmentCoverage(points[i - 1], points[i], poly); }
   return total > 1e-8 ? inside / total : Number(inPolygon(points[0], poly));
 }
-export function mapLayoutToScopes(source: OcrSource, perception: PerceptionResult, t: RenderTransform): ScopeProposal[] {
+export function mapLayoutToScopes(source: ScopeSource, perception: PerceptionResult, t: RenderTransform): ScopeProposal[] {
   const pen = validateOcrSource(source);
   const regions = perception.regions.filter(r => r.box.length === 4 && r.box.every(Number.isFinite) && r.box[2] >= r.box[0] && r.box[3] >= r.box[1]);
   const scopes: ScopeProposal[] = regions.slice(0, 48).map((r, i) => {
@@ -126,7 +127,7 @@ export function mapLayoutToScopes(source: OcrSource, perception: PerceptionResul
   for (const stroke of orphans) scopes.push({ id: `orphan-${stroke.id}`, regionIds: [], rawLabel: "unmapped_ink", rawScore: null, kind: "UNKNOWN", strokeIds: [stroke.id], candidateStrokeIds: [], coverage: {}, flags: ["ORPHAN_SOURCE_INK", "MANUAL_SCOPE_REQUIRED"], method: "UNMAPPED_PEN" });
   return scopes;
 }
-export function scopeIntegrity(source: OcrSource, scopes: ScopeProposal[]) {
+export function scopeIntegrity(source: ScopeSource, scopes: ScopeProposal[]) {
   const pen = validateOcrSource(source), counts = new Map<string, number>();
   scopes.flatMap(s => s.strokeIds).forEach(id => counts.set(id, (counts.get(id) ?? 0) + 1));
   return { missing: pen.filter(s => !counts.has(s.id)).map(s => s.id), duplicateOwnership: [...counts].filter(([, n]) => n > 1).map(([id]) => id), unknown: [...counts.keys()].filter(id => !pen.some(s => s.id === id)), overlappingCandidates: scopes.filter(s => s.flags.some(f => f.startsWith("OVERLAPPING_CANDIDATES"))).map(s => s.id), orphans: scopes.filter(s => s.flags.includes("ORPHAN_SOURCE_INK")).flatMap(s => s.strokeIds) };

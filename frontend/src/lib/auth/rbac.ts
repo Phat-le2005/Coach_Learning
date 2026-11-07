@@ -32,7 +32,9 @@ export function safeReturnPath(value: string | null): string | null {
 }
 
 export function isSharedAuthenticatedPath(pathname: string): boolean {
-  return pathname.split(/[?#]/u, 1)[0] === "/account";
+  const route = pathname.split(/[?#]/u, 1)[0];
+  // Research pages still require the development flag and session in proxy/page.
+  return route === "/account" || route === "/ocr-v2-lab" || route.startsWith("/ocr-v2-lab/") || route === "/ocr-diagnostics";
 }
 
 export function postLoginPath(role: Role, requestedPath?: string | null): string {

@@ -1,0 +1,13 @@
+# Inference-only environment; install vietocr==0.3.13 separately with --no-deps.
+# Its published training extras/pins are intentionally not installed in this CPU lab.
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.5.1+cpu
+torchvision==0.20.1+cpu
+numpy==1.26.4
+Pillow==11.0.0
+PyYAML==6.0.2
+einops==0.8.1
+gdown==5.2.0
+fastapi==0.115.6
+uvicorn==0.34.0
+psutil==7.0.0

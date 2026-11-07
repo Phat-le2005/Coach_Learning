@@ -1,0 +1,13 @@
+.main { padding:24px; color:#173149; background:#f5f8fa; min-height:100vh; font:14px/1.5 system-ui,sans-serif; }
+.main h1 { font-size:26px; } .main h2 { font-size:20px; }
+.main section { margin:16px 0; padding:14px; background:white; border:1px solid #bdcbd5; border-radius:8px; }
+.main button,.main select,.main input,.main textarea { border:1px solid #8da8ba; border-radius:4px; padding:6px; margin:4px; color:#173149; background:white; }
+.main button { cursor:pointer; } .main button:disabled { opacity:.45; cursor:default; } .main button[aria-current=true] { background:#cce6ef; }
+.main label { display:inline-flex; align-items:center; gap:4px; flex-wrap:wrap; } .main textarea { width:100%; min-height:65px; }
+.controls { display:flex; align-items:center; flex-wrap:wrap; gap:6px; }
+.columns { display:grid; grid-template-columns:minmax(400px,1fr) minmax(440px,1fr); gap:20px; }
+.scroll { max-height:650px; overflow:auto; border:1px solid #b1bdc7; background:#eef3f5; }
+.main pre { max-height:320px; overflow:auto; white-space:pre-wrap; overflow-wrap:anywhere; padding:8px; background:#edf2f5; font-size:11px; }
+.table { overflow:auto; } .main table { border-collapse:collapse; width:100%; font-size:12px; } .main td,.main th { padding:7px; border:1px solid #c0ced6; text-align:left; overflow-wrap:anywhere; }
+.main details { margin:12px 0; } .main summary { cursor:pointer; } .main input[type=number] { width:95px; }
+@media(max-width:950px) { .columns { grid-template-columns:1fr; } }
