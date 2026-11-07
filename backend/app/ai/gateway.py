@@ -118,9 +118,12 @@ class AIGateway:
         operation_name: str,
         func: Any,
         timeout: float | None = None,
+        max_retries: int | None = None,
     ) -> Any:
         timeout_seconds = timeout or self.settings.ai_timeout_seconds
-        max_retries = self.settings.ai_max_retries
+        max_retries = self.settings.ai_max_retries if max_retries is None else max_retries
+        if not 0 <= max_retries <= 5:
+            raise ValueError("max_retries must be between 0 and 5")
         backoff_base_s = 0.1
 
         start_time = time.perf_counter()
@@ -302,6 +305,7 @@ class AIGateway:
         tier: AIRoutingTier | None = None,
         temperature: float = 0.2,
         timeout: float | None = None,
+        max_retries: int | None = None,
         prompt_name: str = "default",
         prompt_version: str = "v1",
         user_id: Any = None,
@@ -340,6 +344,7 @@ class AIGateway:
                 operation_name="generate_structured",
                 func=_call,
                 timeout=timeout,
+                max_retries=max_retries,
             )
 
             if usage_service is not None:

@@ -200,6 +200,41 @@ export function toStudentHomeViewModel(
         totalEstimatedMinutes: source.today_plan.total_estimated_minutes,
         availableMinutes: source.today_plan.available_daily_minutes,
         notice: source.today_plan.notice,
+        tasks: (source.today_plan.tasks || []).map((t) => {
+          const typePrefix =
+            t.task_type === "REPAIR" || t.task_type === "REMEDIAL_PRACTICE"
+              ? "Vá lỗ hổng"
+              : t.task_type === "REVIEW" || t.task_type === "SPACED_REVIEW"
+              ? "Ôn tập ngắt quãng"
+              : t.task_type === "LEARN" || t.task_type === "CONCEPT_ACQUISITION"
+              ? "Bài học trọng tâm"
+              : t.task_type === "MINI_TEST"
+              ? "Kiểm tra ngắn"
+              : t.task_type === "EXAM"
+              ? "Luyện đề thi"
+              : "Luyện dạng toán";
+
+          return {
+            id: t.id,
+            title: t.problem_type_name
+              ? `${typePrefix}: ${t.problem_type_name}`
+              : t.concept_name
+              ? `Củng cố khái niệm: ${t.concept_name}`
+              : t.topic_name
+              ? `Chủ đề: ${t.topic_name}`
+              : "Nhiệm vụ học tập",
+            taskType: t.task_type,
+            status: t.status,
+            isCompleted: t.status === "COMPLETED",
+            estimatedMinutes: t.estimated_duration_minutes,
+            problemTypeId: t.problem_type_id,
+            problemTypeName: t.problem_type_name,
+            conceptId: t.concept_id,
+            conceptName: t.concept_name,
+            topicName: t.topic_name,
+            reasonCode: t.reason_code,
+          };
+        }),
       }
     : null;
 

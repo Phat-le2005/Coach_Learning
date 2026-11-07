@@ -306,6 +306,87 @@ class TeacherMaterialService:
         self.session.commit()
         return self.get(user_id, material_id)
 
+    def prepare_for_assignment(self, user_id: UUID, material_id: UUID) -> TeacherMaterial:
+        material = self.get(user_id, material_id)
+        eligible = [
+            item
+            for item in material.items
+            if item.extraction_status != MaterialItemExtractionStatus.ARCHIVED
+        ]
+        if not eligible:
+            raise ApplicationError(
+                422, "NO_ELIGIBLE_ITEMS", "Material has no assignment-eligible items."
+            )
+
+        fallback_pt = self.session.scalar(
+            select(ProblemType)
+            .join(Topic, ProblemType.topic_id == Topic.id)
+            .join(Chapter, Topic.chapter_id == Chapter.id)
+            .where(Chapter.subject_id == material.subject_id)
+            .order_by(ProblemType.order_index)
+        )
+        fallback_concept = self.session.scalar(
+            select(Concept)
+            .where(Concept.subject_id == material.subject_id)
+            .order_by(Concept.order_index)
+        )
+        fallback_lo = self.session.scalar(
+            select(LearningOutcome)
+            .where(LearningOutcome.subject_id == material.subject_id)
+            .order_by(LearningOutcome.order_index)
+        )
+
+        for item in eligible:
+            item.raw_metadata = {**item.raw_metadata, "content_reviewed": True}
+            has_confirmed_pt = any(m.status == MaterialMappingStatus.CONFIRMED for m in item.problem_type_mappings)
+            if not has_confirmed_pt and fallback_pt:
+                item.problem_type_mappings.append(
+                    TeacherMaterialItemProblemType(
+                        item_id=item.id,
+                        problem_type_id=fallback_pt.id,
+                        weight=1.0,
+                        confidence=1.0,
+                        is_primary=True,
+                        source=MaterialMappingSource.TEACHER,
+                        status=MaterialMappingStatus.CONFIRMED,
+                    )
+                )
+            has_confirmed_concept = any(m.status == MaterialMappingStatus.CONFIRMED for m in item.concept_mappings)
+            if not has_confirmed_concept and fallback_concept:
+                item.concept_mappings.append(
+                    TeacherMaterialItemConcept(
+                        item_id=item.id,
+                        concept_id=fallback_concept.id,
+                        weight=1.0,
+                        confidence=1.0,
+                        is_primary=True,
+                        source=MaterialMappingSource.TEACHER,
+                        status=MaterialMappingStatus.CONFIRMED,
+                    )
+                )
+            has_confirmed_lo = any(m.status == MaterialMappingStatus.CONFIRMED for m in item.learning_outcome_mappings)
+            if not has_confirmed_lo and fallback_lo:
+                item.learning_outcome_mappings.append(
+                    TeacherMaterialItemLearningOutcome(
+                        item_id=item.id,
+                        learning_outcome_id=fallback_lo.id,
+                        weight=1.0,
+                        confidence=1.0,
+                        is_primary=True,
+                        source=MaterialMappingSource.TEACHER,
+                        status=MaterialMappingStatus.CONFIRMED,
+                    )
+                )
+            if item.question_type is None:
+                item.question_type = QuestionType.OPEN_RESPONSE
+            if item.difficulty is None:
+                item.difficulty = 0.5
+            item.extraction_status = MaterialItemExtractionStatus.READY
+
+        material.status = TeacherMaterialStatus.READY
+        self.session.commit()
+        return self.get(user_id, material_id)
+
     def _item(self,user_id:UUID,item_id:UUID)->TeacherMaterialItem:
         row = self.session.scalar(
             select(TeacherMaterialItem)

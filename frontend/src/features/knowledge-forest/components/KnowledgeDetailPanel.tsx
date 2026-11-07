@@ -505,6 +505,27 @@ export function KnowledgeDetailPanel({
               <code>{theory.formula}</code>
             </div>
           )}
+          <div style={{ marginTop: "10px" }}>
+            <Link
+              href={`/student/theory?topic=${encodeURIComponent(node.topicName || node.name)}`}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+                fontSize: "11.5px",
+                fontWeight: 600,
+                color: "#8be5c2",
+                textDecoration: "none",
+                background: "rgba(35, 166, 122, 0.12)",
+                border: "1px solid rgba(139, 229, 194, 0.25)",
+                padding: "6px 10px",
+                borderRadius: "8px",
+              }}
+            >
+              <BookOpen size={13} aria-hidden="true" />
+              <span>Xem Sơ đồ tư duy & Trích xuất PDF →</span>
+            </Link>
+          </div>
         </div>
 
         {/* 6. Prerequisites in 3D Graph */}

@@ -278,9 +278,19 @@ class MathSolutionEvidenceAdapter:
         try:
             with self.session.begin_nested():
                 from app.planning.study_service import StudyPlanService
-                StudyPlanService(self.session).recalculate_study_plan(attempt.student_id)
+                plan_svc = StudyPlanService(self.session)
+                pt_ids = [pt.problem_type_id for pt in problem_types]
+                c_ids = [c.concept_id for c in concepts]
+                plan_svc.complete_matching_tasks(
+                    attempt.student_id,
+                    problem_type_ids=pt_ids,
+                    concept_ids=c_ids,
+                    subject_id=subject_id,
+                    as_of=occurred_at.date(),
+                )
+                plan_svc.recalculate_study_plan(attempt.student_id, as_of=occurred_at.date())
         except Exception:
-            logger.debug('Study plan recalculation skipped after decision %s', decision.id, exc_info=True)
+            logger.debug('Study plan update skipped after decision %s', decision.id, exc_info=True)
 
         return evidence_event
 

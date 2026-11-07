@@ -47,5 +47,36 @@ artifacts/
 /graphify-out/
 /.codex/config.toml
 /.codex/hooks.json.bak*
+<<<<<<< HEAD
 commit-history.txt
 frontend/package-lock.json
+=======
+
+# Local academic handoff and generated review exports; acquire separately.
+# Keep the small, versioned backend/data/dev_only test pack in Git.
+/backend/data/Toan12_200_cau_20261104/
+/backend/data/content.draft.pretty.json
+/backend/data/questions/math/grade12/pdf_handoff_200_v0_1/
+/backend/data/materials/
+/reports/data_audits/
+/reports/derivative_step_review_10/
+/backend/app/seed_derivative_material_pack.py
+
+# Local recording helpers contain machine/account-specific configuration.
+/scripts/record_full_demo.mjs
+/scripts/convert_to_mp4.py
+/videos_recorded/
+*.webm
+*.mp4
+*.dump
+~$*
+.test-build*/
+*.onnx
+*.safetensors
+
+# Local worktrees/model caches are never distributable application source.
+.worktrees/
+*.gguf
+*.pdiparams
+*.pth
+>>>>>>> dd06028365cf701c3021e365fc5f9419fe1d6b20

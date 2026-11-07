@@ -8,10 +8,11 @@ param(
     [switch]$Open
 )
 $ErrorActionPreference='Stop'
+. (Join-Path $PSScriptRoot 'paths.ps1')
 $datasetRepo=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..\..')).Path
-if (-not $Storage) {$Storage=Join-Path $datasetRepo '.tmp'}
+if (-not $Storage) { $Storage = $PdfStorageRoot }
 $Storage=[IO.Path]::GetFullPath($Storage)
-if ($Storage -notmatch '^[Ee]:\\') {throw 'Keep runtime, metadata and source assets on E.'}
+
 $Pdf=(Resolve-Path -LiteralPath $Pdf.Trim().Trim('"')).Path
 $datasetRuntime=Join-Path $Storage 'pdf-pipeline-runtime'
 $datasetPython=Join-Path $datasetRuntime '.venv\Scripts\python.exe'

@@ -111,7 +111,6 @@ def execute(item,*,repo,storage,log,review_limit,visual_limit,skip_qwen,timeout)
 def run(inputs,*,repo,storage,review_limit=3,visual_limit=8,skip_qwen=False,max_pages=100,max_pdfs=0,
         timeout=3600,retry_failed=False,oversize_policy='run',executor=None):
     repo,storage=Path(repo).resolve(),Path(storage).resolve()
-    if os.name=='nt' and storage.drive.upper()!='E:':raise ValueError('KEEP_BATCH_STORAGE_ON_E')
     if min(review_limit,visual_limit,max_pages,max_pdfs)<0 or timeout<=0:raise ValueError('INVALID_QUEUE_BUDGET')
     if oversize_policy not in {'run','defer'}:raise ValueError('INVALID_OVERSIZE_POLICY')
     import pypdfium2 as pdfium

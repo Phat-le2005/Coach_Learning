@@ -5,10 +5,10 @@ param(
     [switch]$Open
 )
 $ErrorActionPreference='Stop'
+. (Join-Path $PSScriptRoot 'paths.ps1')
 $trialRepo=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..\..')).Path
-if (-not $Runtime) { $Runtime=if ($trialRepo -match '^[Ee]:\\') { Join-Path $trialRepo '.tmp\pdf-pipeline-runtime' } else { 'E:\CoachLearningPdf\pdf-pipeline-runtime' } }
+if (-not $Runtime) { $Runtime=$PdfRuntimeRoot }
 $Runtime=[IO.Path]::GetFullPath($Runtime)
-if ($Runtime -notmatch '^[Ee]:\\') { throw 'Keep the sandbox runtime on E.' }
 if (-not $Cohort) { $Cohort=Join-Path $PSScriptRoot 'tests\fixtures\calculus-cohort-12.v1.json' }
 $Job=(Resolve-Path -LiteralPath $Job).Path
 $Cohort=(Resolve-Path -LiteralPath $Cohort).Path

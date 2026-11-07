@@ -12,7 +12,7 @@ import os
 from .storage import configure_storage,file_hash,read_json,write_json,write_jsonl
 from .pdf_workflow import local_lock
 from .paired.fast_native import extract
-from .paired.corpus import document
+from .paired.corpus import document,code_identity as source_code_identity
 from .paired.transcript_batch import content_hash
 from .paired.selection_cli import all_records
 from .paired.transcription_v2.batch import parser as transcript_parser,run as transcribe,code_identity
@@ -34,7 +34,7 @@ def run(pdf,storage,repo,*,profile='native',workers=2,timeout=1800,memory_limit_
     identity=content_hash({'pdf':digest,'profile':profile,'code':code_identity(),
         'workflow':file_hash(Path(__file__)),'curation':file_hash(Path(__file__).with_name('curation.py')),
         'source_recheck':file_hash(Path(__file__).with_name('source_recheck.py')),
-        'source_parser':file_hash(Path(__file__).parent/'paired/corpus.py')})[:16]
+        'source_parser':source_code_identity()})[:16]
     job=storage/'pdf-jobs'/digest[:24];output=job/'usable-dataset'/identity
     output.mkdir(parents=True,exist_ok=True);started=time.perf_counter()
     with local_lock(output):

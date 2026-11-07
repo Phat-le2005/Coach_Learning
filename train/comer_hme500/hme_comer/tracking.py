@@ -17,6 +17,15 @@ def write_json(path, value):
     tmp.replace(path)
 
 
+def prepare_wandb(output):
+    """Keep offline media/artifact staging with downloadable experiment outputs."""
+    output=Path(output)
+    os.environ['WANDB_DISABLE_CODE']='true'
+    for env,folder in (('WANDB_DATA_DIR','wandb-data'),('WANDB_CACHE_DIR','wandb-cache')):
+        path=(output/folder).resolve();path.mkdir(parents=True,exist_ok=True)
+        os.environ[env]=str(path)
+
+
 def init_run(cfg, output, audit, resume_id=None, qa=False):
     wb = cfg['wandb']
     if wb['mode'] == 'online' and not os.environ.get('WANDB_API_KEY'):
@@ -27,13 +36,12 @@ def init_run(cfg, output, audit, resume_id=None, qa=False):
             raise RuntimeError('Enable notebook access to Kaggle Secret WANDB_API_KEY '
                                '(Add-ons > Secrets), or set WANDB_API_KEY in your local environment. '
                                'No key belongs in the notebook/config.') from None
-    os.environ['WANDB_DISABLE_CODE'] = 'true'
-    for env, folder in (('WANDB_DATA_DIR','wandb-data'),('WANDB_CACHE_DIR','wandb-cache')):
-        os.environ[env] = str((output/folder).resolve())
+    prepare_wandb(output)
     import wandb
     run = wandb.init(project=wb['project'], entity=wb['entity'], name=wb['name'], group=wb['group'],
         job_type='real-jpeg-qa' if qa else 'fine-tune', tags=['CoMER','HME100K','paper-handwriting',
-        'qa-not-quality-evidence' if qa else 'hme500-fixed-splits'], mode=wb['mode'], dir=str(output),
+        'qa-not-quality-evidence' if qa else 'hme500-fixed-splits',cfg.get('experiment_version','v1'),
+        f"workers-{cfg.get('devices',1)}"], mode=wb['mode'], dir=str(output),
         id=resume_id, resume='must' if resume_id and wb['mode']=='online' else None,
         config={**cfg, 'dataset':audit, 'qa_only':qa},
         settings=wandb.Settings(disable_code=True, disable_git=True, console='off'))
@@ -121,7 +129,7 @@ def log_model(run, output, cfg, aliases, metadata):
     if cfg['wandb']['mode']=='disabled' or not cfg['wandb']['log_checkpoints']: return
     import wandb
     artifact=wandb.Artifact('comer-hme500-'+run.id,type='model',metadata=metadata)
-    for n in ('best.pt','last.pt','config.json','vocabulary.json','dataset-audit.json','runtime.json'):
+    for n in ('best.pt','last.pt','initial.pt','config.json','vocabulary.json','dataset-audit.json','runtime.json'):
         if (output/n).exists(): artifact.add_file(str(output/n),name=n)
     run.log_artifact(artifact,aliases=aliases)
 

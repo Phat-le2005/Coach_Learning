@@ -45,6 +45,7 @@ from app.practice.models import (
     QuestionAttempt,
 )
 from app.practice.service import PracticeService
+from app.questions.reference_solution import has_grading_reference
 from app.questions.models import Question, QuestionStatus, QuestionType
 from app.questions.presentation_quality import question_has_broken_math_extraction
 from app.students.models import StudentProfile
@@ -301,12 +302,12 @@ class MathSolutionService:
             # Pin the latest already-approved rubric at attempt creation. Never
             # synthesize criteria or attach a rubric to an unanswered source.
             target = None
-            if q is not None and q.question_type == QuestionType.OPEN_RESPONSE and q.correct_answer:
+            if q is not None and q.question_type == QuestionType.OPEN_RESPONSE and has_grading_reference(q.correct_answer, q.explanation):
                 target = SolutionRubric.question_id == q.id
             elif (source_kind == "TEACHER_MATERIAL" and material_id is not None
                   and snapshot.question_type == QuestionType.OPEN_RESPONSE
                   and snapshot.evaluation_mode == MaterialEvaluationMode.OPEN_RESPONSE
-                  and snapshot.correct_answer):
+                  and has_grading_reference(snapshot.correct_answer, snapshot.explanation)):
                 target = SolutionRubric.assignment_material_item_id == material_id
             if target is not None:
                 approved = self.session.scalar(

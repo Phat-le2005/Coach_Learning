@@ -252,8 +252,10 @@
 .buttonAi:disabled { opacity: .55; cursor: not-allowed; }
 .buttonPublish { border: 0; border-radius: 11px; padding: 10px 16px; color: white; font: inherit; font-weight: 700; background: linear-gradient(135deg, #27885b, #1b6845); cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
 .buttonPublish:hover:not(:disabled) { background: linear-gradient(135deg, #2e9b68, #207a51); }
+.buttonPublish:disabled { opacity: .55; cursor: not-allowed; }
 .buttonUnpublish { border: 1px solid #e2ba9e; border-radius: 11px; padding: 9px 14px; color: #874127; font: inherit; font-weight: 700; background: #fff5ee; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
 .buttonUnpublish:hover:not(:disabled) { background: #ffece1; border-color: #d89f7c; }
+.buttonUnpublish:disabled { opacity: .55; cursor: not-allowed; }
 
 .buttonDanger {
   border: 1px solid #fecaca;

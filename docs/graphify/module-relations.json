@@ -1,17 +1,17 @@
 {
   "stats": {
-    "nodes": 13851,
-    "edges": 63513,
-    "communities": 368,
-    "code_files_detected": 1402,
-    "files_with_nodes": 1383,
+    "nodes": 14943,
+    "edges": 66714,
+    "communities": 430,
+    "code_files_detected": 1524,
+    "files_with_nodes": 1503,
     "graphify_version": "0.9.102",
-    "head_commit": "5f7b134266ee60af2be18a3755664b4a9dda8dda",
-    "generated_at": "2026-11-05T18:58:30+07:00",
-    "source_sha256": "c99d8515914dd6b375e27588c04d4b7b5a4038dbdd8540c353ef33e566dc38e6",
+    "head_commit": "44b29377b60d1443ff2c99123f4358171fe19d26",
+    "generated_at": "2026-11-07T13:59:36+07:00",
+    "source_sha256": "a1c344efe76e609c0b9543d15813c490c22e15439c872b8665c3780d2ffb4fb0",
     "confidence": {
-      "EXTRACTED": 53109,
-      "INFERRED": 10404
+      "EXTRACTED": 56196,
+      "INFERRED": 10518
     },
     "semantic_llm_tokens": 0
   },
@@ -32,28 +32,28 @@
     },
     {
       "name": "Backend",
-      "nodes": 5148,
-      "files_with_nodes": 540
+      "nodes": 5204,
+      "files_with_nodes": 543
     },
     {
       "name": "Frontend",
-      "nodes": 1901,
-      "files_with_nodes": 299
+      "nodes": 2224,
+      "files_with_nodes": 342
     },
     {
       "name": "Other",
-      "nodes": 1747,
-      "files_with_nodes": 3
+      "nodes": 1870,
+      "files_with_nodes": 15
     },
     {
       "name": "Tests",
-      "nodes": 3370,
-      "files_with_nodes": 358
+      "nodes": 3493,
+      "files_with_nodes": 381
     },
     {
       "name": "Tools",
-      "nodes": 1311,
-      "files_with_nodes": 144
+      "nodes": 1778,
+      "files_with_nodes": 183
     }
   ],
   "layer_relations": [
@@ -85,67 +85,67 @@
     {
       "a": "Backend",
       "b": "Backend",
-      "edges": 19443
+      "edges": 19667
     },
     {
       "a": "Backend",
       "b": "Other",
-      "edges": 5745
+      "edges": 5831
     },
     {
       "a": "Backend",
       "b": "Tests",
-      "edges": 13037
+      "edges": 13195
     },
     {
       "a": "Backend",
       "b": "Tools",
-      "edges": 412
+      "edges": 413
     },
     {
       "a": "Frontend",
       "b": "Frontend",
-      "edges": 5912
+      "edges": 7165
     },
     {
       "a": "Frontend",
       "b": "Other",
-      "edges": 135
+      "edges": 160
     },
     {
       "a": "Frontend",
       "b": "Tests",
-      "edges": 570
+      "edges": 706
     },
     {
       "a": "Other",
       "b": "Other",
-      "edges": 106
+      "edges": 344
     },
     {
       "a": "Other",
       "b": "Tests",
-      "edges": 3970
+      "edges": 4096
     },
     {
       "a": "Other",
       "b": "Tools",
-      "edges": 951
+      "edges": 1218
     },
     {
       "a": "Tests",
       "b": "Tests",
-      "edges": 6093
+      "edges": 6212
     },
     {
       "a": "Tests",
       "b": "Tools",
-      "edges": 1240
+      "edges": 1245
     },
     {
       "a": "Tools",
       "b": "Tools",
-      "edges": 3415
+      "edges": 3978
     }
   ],
   "module_relations": [
@@ -193,26 +193,26 @@
     {
       "a": "backend/app/math_solutions",
       "b": "backend/tests/math_solutions",
-      "edges": 439,
+      "edges": 449,
       "confidence": {
-        "EXTRACTED": 325,
-        "INFERRED": 114
-      }
-    },
-    {
-      "a": "backend/tests/math_solutions",
-      "b": "root",
-      "edges": 347,
-      "confidence": {
-        "EXTRACTED": 347
+        "EXTRACTED": 333,
+        "INFERRED": 116
       }
     },
     {
       "a": "frontend/src/app",
       "b": "frontend/src/lib",
-      "edges": 346,
+      "edges": 405,
       "confidence": {
-        "EXTRACTED": 346
+        "EXTRACTED": 405
+      }
+    },
+    {
+      "a": "backend/tests/math_solutions",
+      "b": "root",
+      "edges": 385,
+      "confidence": {
+        "EXTRACTED": 385
       }
     },
     {
@@ -231,6 +231,15 @@
       "confidence": {
         "EXTRACTED": 118,
         "INFERRED": 196
+      }
+    },
+    {
+      "a": "frontend/src/features/math-workspace",
+      "b": "frontend/tests",
+      "edges": 312,
+      "confidence": {
+        "EXTRACTED": 311,
+        "INFERRED": 1
       }
     },
     {
@@ -260,6 +269,14 @@
       }
     },
     {
+      "a": "frontend/src/features/math-workspace",
+      "b": "frontend/src/lib",
+      "edges": 263,
+      "confidence": {
+        "EXTRACTED": 263
+      }
+    },
+    {
       "a": "backend/tests/curriculum",
       "b": "root",
       "edges": 236,
@@ -276,11 +293,11 @@
       }
     },
     {
-      "a": "frontend/src/features/math-workspace",
-      "b": "frontend/src/lib",
-      "edges": 222,
+      "a": "root",
+      "b": "tools/ocr-v2-lab",
+      "edges": 218,
       "confidence": {
-        "EXTRACTED": 222
+        "EXTRACTED": 218
       }
     },
     {
@@ -293,29 +310,21 @@
       }
     },
     {
+      "a": "backend/app/questions",
+      "b": "backend/tests/math_solutions",
+      "edges": 203,
+      "confidence": {
+        "EXTRACTED": 128,
+        "INFERRED": 75
+      }
+    },
+    {
       "a": "backend/app/knowledge_gap",
       "b": "backend/tests/knowledge_gap",
       "edges": 202,
       "confidence": {
         "EXTRACTED": 91,
         "INFERRED": 111
-      }
-    },
-    {
-      "a": "frontend/src/features/math-workspace",
-      "b": "frontend/tests",
-      "edges": 198,
-      "confidence": {
-        "EXTRACTED": 198
-      }
-    },
-    {
-      "a": "backend/app/questions",
-      "b": "backend/tests/math_solutions",
-      "edges": 194,
-      "confidence": {
-        "EXTRACTED": 124,
-        "INFERRED": 70
       }
     },
     {
@@ -378,6 +387,15 @@
       }
     },
     {
+      "a": "backend/app/users",
+      "b": "backend/tests/math_solutions",
+      "edges": 172,
+      "confidence": {
+        "EXTRACTED": 116,
+        "INFERRED": 56
+      }
+    },
+    {
       "a": "backend/app/exams",
       "b": "backend/tests/exams",
       "edges": 170,
@@ -411,6 +429,23 @@
       }
     },
     {
+      "a": "frontend/src/lib",
+      "b": "frontend/tests",
+      "edges": 157,
+      "confidence": {
+        "EXTRACTED": 157
+      }
+    },
+    {
+      "a": "backend/app/math_ink",
+      "b": "backend/tests/math_solutions",
+      "edges": 155,
+      "confidence": {
+        "EXTRACTED": 136,
+        "INFERRED": 19
+      }
+    },
+    {
       "a": "backend/app/repair",
       "b": "backend/tests/repair",
       "edges": 155,
@@ -420,12 +455,20 @@
       }
     },
     {
-      "a": "backend/app/users",
-      "b": "backend/tests/math_solutions",
-      "edges": 150,
+      "a": "backend/app/math_ink",
+      "b": "root",
+      "edges": 149,
       "confidence": {
-        "EXTRACTED": 100,
-        "INFERRED": 50
+        "EXTRACTED": 149
+      }
+    },
+    {
+      "a": "backend/app/core",
+      "b": "backend/tests/math_solutions",
+      "edges": 148,
+      "confidence": {
+        "EXTRACTED": 81,
+        "INFERRED": 67
       }
     },
     {
@@ -456,14 +499,6 @@
       }
     },
     {
-      "a": "frontend/src/lib",
-      "b": "frontend/tests",
-      "edges": 141,
-      "confidence": {
-        "EXTRACTED": 141
-      }
-    },
-    {
       "a": "backend/app/knowledge_gap",
       "b": "root",
       "edges": 140,
@@ -488,15 +523,6 @@
       }
     },
     {
-      "a": "backend/app/core",
-      "b": "backend/tests/math_solutions",
-      "edges": 137,
-      "confidence": {
-        "EXTRACTED": 74,
-        "INFERRED": 63
-      }
-    },
-    {
       "a": "backend/app/concepts",
       "b": "backend/tests/academic",
       "edges": 134,
@@ -512,6 +538,14 @@
       "confidence": {
         "EXTRACTED": 34,
         "INFERRED": 99
+      }
+    },
+    {
+      "a": "frontend/tests",
+      "b": "root",
+      "edges": 133,
+      "confidence": {
+        "EXTRACTED": 133
       }
     },
     {
@@ -540,12 +574,11 @@
       }
     },
     {
-      "a": "backend/app/math_ink",
-      "b": "backend/tests/math_solutions",
-      "edges": 121,
+      "a": "root",
+      "b": "train/comer_hme500",
+      "edges": 117,
       "confidence": {
-        "EXTRACTED": 106,
-        "INFERRED": 15
+        "EXTRACTED": 117
       }
     },
     {
@@ -557,11 +590,12 @@
       }
     },
     {
-      "a": "frontend/tests",
-      "b": "root",
-      "edges": 112,
+      "a": "backend/app/practice",
+      "b": "backend/tests/math_solutions",
+      "edges": 110,
       "confidence": {
-        "EXTRACTED": 112
+        "EXTRACTED": 68,
+        "INFERRED": 42
       }
     },
     {
@@ -628,15 +662,6 @@
       "confidence": {
         "EXTRACTED": 93,
         "INFERRED": 11
-      }
-    },
-    {
-      "a": "backend/app/practice",
-      "b": "backend/tests/math_solutions",
-      "edges": 103,
-      "confidence": {
-        "EXTRACTED": 63,
-        "INFERRED": 40
       }
     },
     {
@@ -1026,14 +1051,6 @@
       }
     },
     {
-      "a": "backend/app/math_ink",
-      "b": "root",
-      "edges": 64,
-      "confidence": {
-        "EXTRACTED": 64
-      }
-    },
-    {
       "a": "backend/app/questions",
       "b": "backend/tests/repair",
       "edges": 64,
@@ -1086,6 +1103,14 @@
       }
     },
     {
+      "a": "frontend/package.json",
+      "b": "frontend/src/features/math-workspace",
+      "edges": 62,
+      "confidence": {
+        "EXTRACTED": 62
+      }
+    },
+    {
       "a": "backend/app/curriculum",
       "b": "backend/tests/planning",
       "edges": 60,
@@ -1114,6 +1139,14 @@
     {
       "a": "backend/scripts",
       "b": "root",
+      "edges": 59,
+      "confidence": {
+        "EXTRACTED": 59
+      }
+    },
+    {
+      "a": "frontend/package.json",
+      "b": "frontend/src/app",
       "edges": 59,
       "confidence": {
         "EXTRACTED": 59
@@ -1250,6 +1283,15 @@
       }
     },
     {
+      "a": "backend/app/subjects",
+      "b": "backend/tests/math_solutions",
+      "edges": 53,
+      "confidence": {
+        "EXTRACTED": 45,
+        "INFERRED": 8
+      }
+    },
+    {
       "a": "backend/tests/recommendations",
       "b": "root",
       "edges": 53,
@@ -1258,11 +1300,29 @@
       }
     },
     {
+      "a": "backend/app/auth",
+      "b": "backend/tests/math_solutions",
+      "edges": 52,
+      "confidence": {
+        "EXTRACTED": 46,
+        "INFERRED": 6
+      }
+    },
+    {
       "a": "backend/app/evaluate",
       "b": "root",
       "edges": 52,
       "confidence": {
         "EXTRACTED": 52
+      }
+    },
+    {
+      "a": "backend/app/students",
+      "b": "backend/tests/math_solutions",
+      "edges": 52,
+      "confidence": {
+        "EXTRACTED": 33,
+        "INFERRED": 19
       }
     },
     {
@@ -1329,15 +1389,6 @@
       }
     },
     {
-      "a": "backend/app/subjects",
-      "b": "backend/tests/math_solutions",
-      "edges": 50,
-      "confidence": {
-        "EXTRACTED": 42,
-        "INFERRED": 8
-      }
-    },
-    {
       "a": "backend/app/core",
       "b": "backend/app/questions",
       "edges": 49,
@@ -1356,15 +1407,6 @@
       }
     },
     {
-      "a": "backend/app/students",
-      "b": "backend/tests/math_solutions",
-      "edges": 49,
-      "confidence": {
-        "EXTRACTED": 31,
-        "INFERRED": 18
-      }
-    },
-    {
       "a": "backend/app/diagnostics",
       "b": "backend/tests/diagnostics",
       "edges": 48,
@@ -1380,14 +1422,6 @@
       "confidence": {
         "EXTRACTED": 25,
         "INFERRED": 23
-      }
-    },
-    {
-      "a": "frontend/package.json",
-      "b": "frontend/src/app",
-      "edges": 48,
-      "confidence": {
-        "EXTRACTED": 48
       }
     },
     {
@@ -1480,6 +1514,14 @@
       }
     },
     {
+      "a": "root",
+      "b": "tools/ocr-fixtures",
+      "edges": 46,
+      "confidence": {
+        "EXTRACTED": 46
+      }
+    },
+    {
       "a": "backend/app/core",
       "b": "root",
       "edges": 45,
@@ -1558,11 +1600,11 @@
       }
     },
     {
-      "a": "frontend/package.json",
-      "b": "frontend/src/features/math-workspace",
+      "a": "backend/tests/math_solutions",
+      "b": "tools/pdf_metadata",
       "edges": 44,
       "confidence": {
-        "EXTRACTED": 44
+        "INFERRED": 44
       }
     },
     {
@@ -1579,14 +1621,6 @@
       "edges": 43,
       "confidence": {
         "EXTRACTED": 43
-      }
-    },
-    {
-      "a": "backend/tests/math_solutions",
-      "b": "tools/pdf_metadata",
-      "edges": 42,
-      "confidence": {
-        "INFERRED": 42
       }
     },
     {
@@ -1894,6 +1928,14 @@
       }
     },
     {
+      "a": "frontend/src/app",
+      "b": "frontend/src/features/math-workspace",
+      "edges": 37,
+      "confidence": {
+        "EXTRACTED": 37
+      }
+    },
+    {
       "a": "root",
       "b": "tools/graphify",
       "edges": 37,
@@ -1998,6 +2040,15 @@
       }
     },
     {
+      "a": "backend/app/curriculum",
+      "b": "backend/tests/math_solutions",
+      "edges": 34,
+      "confidence": {
+        "EXTRACTED": 30,
+        "INFERRED": 4
+      }
+    },
+    {
       "a": "backend/app/planning",
       "b": "backend/tests/classes",
       "edges": 34,
@@ -2031,6 +2082,14 @@
       "confidence": {
         "EXTRACTED": 8,
         "INFERRED": 26
+      }
+    },
+    {
+      "a": "frontend/src/features/math-workspace",
+      "b": "root",
+      "edges": 34,
+      "confidence": {
+        "EXTRACTED": 34
       }
     },
     {
@@ -2270,21 +2329,12 @@
       }
     },
     {
-      "a": "backend/app/auth",
-      "b": "backend/tests/math_solutions",
+      "a": "backend/app/core",
+      "b": "backend/app/math_ink",
       "edges": 30,
       "confidence": {
-        "EXTRACTED": 26,
-        "INFERRED": 4
-      }
-    },
-    {
-      "a": "backend/app/curriculum",
-      "b": "backend/tests/math_solutions",
-      "edges": 30,
-      "confidence": {
-        "EXTRACTED": 26,
-        "INFERRED": 4
+        "EXTRACTED": 24,
+        "INFERRED": 6
       }
     },
     {
@@ -2374,6 +2424,14 @@
       "confidence": {
         "EXTRACTED": 12,
         "INFERRED": 18
+      }
+    },
+    {
+      "a": "frontend/e2e",
+      "b": "root",
+      "edges": 30,
+      "confidence": {
+        "EXTRACTED": 30
       }
     },
     {
@@ -2769,14 +2827,6 @@
       }
     },
     {
-      "a": "frontend/e2e",
-      "b": "root",
-      "edges": 25,
-      "confidence": {
-        "EXTRACTED": 25
-      }
-    },
-    {
       "a": "frontend/package.json",
       "b": "frontend/src/features/math-canvas",
       "edges": 25,
@@ -2879,7 +2929,7 @@
       }
     },
     {
-      "a": "frontend/src/features/math-workspace",
+      "a": "frontend/src/app",
       "b": "root",
       "edges": 24,
       "confidence": {
@@ -3490,6 +3540,15 @@
       "edges": 19,
       "confidence": {
         "EXTRACTED": 19
+      }
+    },
+    {
+      "a": "backend/app/auth",
+      "b": "backend/app/math_ink",
+      "edges": 18,
+      "confidence": {
+        "EXTRACTED": 16,
+        "INFERRED": 2
       }
     },
     {
@@ -4306,6 +4365,14 @@
     },
     {
       "a": "backend/app/database",
+      "b": "backend/app/math_ink",
+      "edges": 15,
+      "confidence": {
+        "EXTRACTED": 15
+      }
+    },
+    {
+      "a": "backend/app/database",
       "b": "backend/app/planning",
       "edges": 15,
       "confidence": {
@@ -4372,6 +4439,14 @@
       "confidence": {
         "EXTRACTED": 10,
         "INFERRED": 5
+      }
+    },
+    {
+      "a": "frontend/e2e",
+      "b": "frontend/package.json",
+      "edges": 15,
+      "confidence": {
+        "EXTRACTED": 15
       }
     },
     {
@@ -4672,14 +4747,6 @@
     },
     {
       "a": "backend/app/database",
-      "b": "backend/app/math_ink",
-      "edges": 13,
-      "confidence": {
-        "EXTRACTED": 13
-      }
-    },
-    {
-      "a": "backend/app/database",
       "b": "backend/app/tutor",
       "edges": 13,
       "confidence": {
@@ -4865,14 +4932,6 @@
       }
     },
     {
-      "a": "frontend/src/app",
-      "b": "frontend/src/features/math-workspace",
-      "edges": 13,
-      "confidence": {
-        "EXTRACTED": 13
-      }
-    },
-    {
       "a": "frontend/src/components",
       "b": "root",
       "edges": 13,
@@ -5024,6 +5083,15 @@
       }
     },
     {
+      "a": "backend/app/database",
+      "b": "backend/tests/math_solutions",
+      "edges": 12,
+      "confidence": {
+        "EXTRACTED": 10,
+        "INFERRED": 2
+      }
+    },
+    {
       "a": "backend/app/digital_twin",
       "b": "backend/app/misconceptions",
       "edges": 12,
@@ -5056,6 +5124,15 @@
       "edges": 12,
       "confidence": {
         "INFERRED": 12
+      }
+    },
+    {
+      "a": "backend/app/math_ink",
+      "b": "backend/app/users",
+      "edges": 12,
+      "confidence": {
+        "EXTRACTED": 9,
+        "INFERRED": 3
       }
     },
     {
@@ -5133,14 +5210,6 @@
       "edges": 12,
       "confidence": {
         "INFERRED": 12
-      }
-    },
-    {
-      "a": "frontend/src/app",
-      "b": "root",
-      "edges": 12,
-      "confidence": {
-        "EXTRACTED": 12
       }
     },
     {
@@ -5261,15 +5330,6 @@
       "confidence": {
         "EXTRACTED": 8,
         "INFERRED": 3
-      }
-    },
-    {
-      "a": "backend/app/core",
-      "b": "backend/app/math_ink",
-      "edges": 11,
-      "confidence": {
-        "EXTRACTED": 10,
-        "INFERRED": 1
       }
     },
     {
@@ -5502,6 +5562,14 @@
       }
     },
     {
+      "a": "backend/tests/math_solutions",
+      "b": "backend/tests/migrations.py",
+      "edges": 11,
+      "confidence": {
+        "EXTRACTED": 11
+      }
+    },
+    {
       "a": "backend/tests/migrations.py",
       "b": "root",
       "edges": 11,
@@ -5539,6 +5607,14 @@
       "edges": 11,
       "confidence": {
         "EXTRACTED": 11
+      }
+    },
+    {
+      "a": "tools/ocr-v2-lab",
+      "b": "tools/pdf_metadata",
+      "edges": 11,
+      "confidence": {
+        "INFERRED": 11
       }
     },
     {
@@ -5650,15 +5726,6 @@
       "edges": 10,
       "confidence": {
         "EXTRACTED": 10
-      }
-    },
-    {
-      "a": "backend/app/database",
-      "b": "backend/tests/math_solutions",
-      "edges": 10,
-      "confidence": {
-        "EXTRACTED": 8,
-        "INFERRED": 2
       }
     },
     {
@@ -5924,6 +5991,15 @@
       }
     },
     {
+      "a": "backend/app/api",
+      "b": "backend/app/math_ink",
+      "edges": 9,
+      "confidence": {
+        "EXTRACTED": 8,
+        "INFERRED": 1
+      }
+    },
+    {
       "a": "backend/app/assignments",
       "b": "backend/app/math_ink",
       "edges": 9,
@@ -6184,6 +6260,14 @@
       }
     },
     {
+      "a": "backend/app/math_ink",
+      "b": "backend/tests/curriculum",
+      "edges": 9,
+      "confidence": {
+        "EXTRACTED": 9
+      }
+    },
+    {
       "a": "backend/app/math_solutions",
       "b": "backend/tests/curriculum",
       "edges": 9,
@@ -6369,14 +6453,6 @@
       "edges": 9,
       "confidence": {
         "INFERRED": 9
-      }
-    },
-    {
-      "a": "frontend/e2e",
-      "b": "frontend/package.json",
-      "edges": 9,
-      "confidence": {
-        "EXTRACTED": 9
       }
     },
     {
@@ -6905,14 +6981,6 @@
       }
     },
     {
-      "a": "backend/tests/math_solutions",
-      "b": "backend/tests/migrations.py",
-      "edges": 8,
-      "confidence": {
-        "EXTRACTED": 8
-      }
-    },
-    {
       "a": "backend/tests/practice",
       "b": "backend/tests/question_validation",
       "edges": 8,
@@ -6943,6 +7011,14 @@
       "edges": 8,
       "confidence": {
         "EXTRACTED": 8
+      }
+    },
+    {
+      "a": "frontend/src/features/math-workspace",
+      "b": "frontend/src/features/teacher",
+      "edges": 8,
+      "confidence": {
+        "INFERRED": 8
       }
     },
     {
@@ -7311,6 +7387,23 @@
       }
     },
     {
+      "a": "backend/app/math_ink",
+      "b": "backend/app/math_solutions",
+      "edges": 7,
+      "confidence": {
+        "EXTRACTED": 5,
+        "INFERRED": 2
+      }
+    },
+    {
+      "a": "backend/app/math_ink",
+      "b": "tools/pdf_metadata",
+      "edges": 7,
+      "confidence": {
+        "INFERRED": 7
+      }
+    },
+    {
       "a": "backend/app/misconceptions",
       "b": "backend/app/practice",
       "edges": 7,
@@ -7368,8 +7461,8 @@
       "b": "backend/app/seed_step_review_demo.py",
       "edges": 7,
       "confidence": {
-        "EXTRACTED": 4,
-        "INFERRED": 3
+        "EXTRACTED": 5,
+        "INFERRED": 2
       }
     },
     {
@@ -7914,23 +8007,6 @@
       }
     },
     {
-      "a": "backend/app/math_ink",
-      "b": "backend/app/math_solutions",
-      "edges": 6,
-      "confidence": {
-        "EXTRACTED": 5,
-        "INFERRED": 1
-      }
-    },
-    {
-      "a": "backend/app/math_ink",
-      "b": "tools/pdf_metadata",
-      "edges": 6,
-      "confidence": {
-        "INFERRED": 6
-      }
-    },
-    {
       "a": "backend/app/math_paper",
       "b": "backend/app/math_solutions",
       "edges": 6,
@@ -8304,14 +8380,6 @@
     {
       "a": "backend/tests/academic",
       "b": "tools/pdf_metadata",
-      "edges": 6,
-      "confidence": {
-        "INFERRED": 6
-      }
-    },
-    {
-      "a": "backend/tests/conftest.py",
-      "b": "backend/tests/math_solutions",
       "edges": 6,
       "confidence": {
         "INFERRED": 6
@@ -8829,6 +8897,15 @@
       }
     },
     {
+      "a": "backend/app/seed_step_review_demo.py",
+      "b": "backend/app/users",
+      "edges": 5,
+      "confidence": {
+        "EXTRACTED": 3,
+        "INFERRED": 2
+      }
+    },
+    {
       "a": "backend/app/students",
       "b": "backend/app/subjects",
       "edges": 5,
@@ -9033,15 +9110,6 @@
       "edges": 4,
       "confidence": {
         "EXTRACTED": 4
-      }
-    },
-    {
-      "a": "backend/app/api",
-      "b": "backend/app/math_ink",
-      "edges": 4,
-      "confidence": {
-        "EXTRACTED": 3,
-        "INFERRED": 1
       }
     },
     {
@@ -9413,6 +9481,14 @@
       }
     },
     {
+      "a": "backend/app/questions",
+      "b": "train/comer_hme500",
+      "edges": 4,
+      "confidence": {
+        "INFERRED": 4
+      }
+    },
+    {
       "a": "backend/app/recommendations",
       "b": "backend/app/review",
       "edges": 4,
@@ -9462,6 +9538,14 @@
       "edges": 4,
       "confidence": {
         "INFERRED": 4
+      }
+    },
+    {
+      "a": "backend/app/seed_step_review_demo.py",
+      "b": "backend/tests/math_solutions",
+      "edges": 4,
+      "confidence": {
+        "EXTRACTED": 4
       }
     },
     {
@@ -9576,8 +9660,8 @@
       }
     },
     {
-      "a": "backend/tests/ai",
-      "b": "backend/tests/conftest.py",
+      "a": "backend/tests/conftest.py",
+      "b": "backend/tests/math_solutions",
       "edges": 4,
       "confidence": {
         "INFERRED": 4
@@ -9685,6 +9769,14 @@
     {
       "a": "backend/app/application.py",
       "b": "backend/tests/auth",
+      "edges": 3,
+      "confidence": {
+        "EXTRACTED": 3
+      }
+    },
+    {
+      "a": "backend/app/application.py",
+      "b": "backend/tests/math_solutions",
       "edges": 3,
       "confidence": {
         "EXTRACTED": 3
@@ -10280,10 +10372,18 @@
     },
     {
       "a": "backend/app/math_ink",
-      "b": "backend/app/users",
+      "b": "backend/tests/academic",
       "edges": 3,
       "confidence": {
-        "EXTRACTED": 3
+        "INFERRED": 3
+      }
+    },
+    {
+      "a": "backend/app/math_ink",
+      "b": "backend/tests/auth",
+      "edges": 3,
+      "confidence": {
+        "INFERRED": 3
       }
     },
     {
@@ -10628,6 +10728,15 @@
       "edges": 3,
       "confidence": {
         "EXTRACTED": 3
+      }
+    },
+    {
+      "a": "backend/app/seed_step_review_demo.py",
+      "b": "backend/app/subjects",
+      "edges": 3,
+      "confidence": {
+        "EXTRACTED": 2,
+        "INFERRED": 1
       }
     },
     {
@@ -11169,26 +11278,10 @@
     },
     {
       "a": "backend/tests/academic",
-      "b": "backend/tests/conftest.py",
-      "edges": 3,
-      "confidence": {
-        "INFERRED": 3
-      }
-    },
-    {
-      "a": "backend/tests/academic",
       "b": "backend/tests/migrations.py",
       "edges": 3,
       "confidence": {
         "EXTRACTED": 3
-      }
-    },
-    {
-      "a": "backend/tests/admission",
-      "b": "backend/tests/conftest.py",
-      "edges": 3,
-      "confidence": {
-        "INFERRED": 3
       }
     },
     {
@@ -11210,14 +11303,6 @@
     {
       "a": "backend/tests/ai",
       "b": "tools/pdf_metadata",
-      "edges": 3,
-      "confidence": {
-        "INFERRED": 3
-      }
-    },
-    {
-      "a": "backend/tests/assignments",
-      "b": "backend/tests/conftest.py",
       "edges": 3,
       "confidence": {
         "INFERRED": 3
@@ -11241,74 +11326,10 @@
     },
     {
       "a": "backend/tests/classes",
-      "b": "backend/tests/conftest.py",
-      "edges": 3,
-      "confidence": {
-        "INFERRED": 3
-      }
-    },
-    {
-      "a": "backend/tests/classes",
       "b": "backend/tests/migrations.py",
       "edges": 3,
       "confidence": {
         "EXTRACTED": 3
-      }
-    },
-    {
-      "a": "backend/tests/conftest.py",
-      "b": "backend/tests/exams",
-      "edges": 3,
-      "confidence": {
-        "INFERRED": 3
-      }
-    },
-    {
-      "a": "backend/tests/conftest.py",
-      "b": "backend/tests/parents",
-      "edges": 3,
-      "confidence": {
-        "INFERRED": 3
-      }
-    },
-    {
-      "a": "backend/tests/conftest.py",
-      "b": "backend/tests/practice",
-      "edges": 3,
-      "confidence": {
-        "INFERRED": 3
-      }
-    },
-    {
-      "a": "backend/tests/conftest.py",
-      "b": "backend/tests/profiles",
-      "edges": 3,
-      "confidence": {
-        "INFERRED": 3
-      }
-    },
-    {
-      "a": "backend/tests/conftest.py",
-      "b": "backend/tests/questions",
-      "edges": 3,
-      "confidence": {
-        "INFERRED": 3
-      }
-    },
-    {
-      "a": "backend/tests/conftest.py",
-      "b": "backend/tests/student_learning_state",
-      "edges": 3,
-      "confidence": {
-        "INFERRED": 3
-      }
-    },
-    {
-      "a": "backend/tests/conftest.py",
-      "b": "backend/tests/tutor",
-      "edges": 3,
-      "confidence": {
-        "INFERRED": 3
       }
     },
     {
@@ -11464,6 +11485,22 @@
       }
     },
     {
+      "a": "frontend/src/lib",
+      "b": "root",
+      "edges": 3,
+      "confidence": {
+        "EXTRACTED": 3
+      }
+    },
+    {
+      "a": "root",
+      "b": "tools/lan-dev.cjs",
+      "edges": 3,
+      "confidence": {
+        "EXTRACTED": 3
+      }
+    },
+    {
       "a": "tools/ocr-layout-service",
       "b": "tools/pdf_metadata",
       "edges": 3,
@@ -11578,14 +11615,6 @@
     {
       "a": "backend/app/auth",
       "b": "backend/app/mastery",
-      "edges": 2,
-      "confidence": {
-        "EXTRACTED": 2
-      }
-    },
-    {
-      "a": "backend/app/auth",
-      "b": "backend/app/math_ink",
       "edges": 2,
       "confidence": {
         "EXTRACTED": 2
@@ -11809,6 +11838,22 @@
     },
     {
       "a": "backend/app/math_ink",
+      "b": "backend/tests/classes",
+      "edges": 2,
+      "confidence": {
+        "INFERRED": 2
+      }
+    },
+    {
+      "a": "backend/app/math_ink",
+      "b": "backend/tests/questions",
+      "edges": 2,
+      "confidence": {
+        "INFERRED": 2
+      }
+    },
+    {
+      "a": "backend/app/math_ink",
       "b": "frontend/e2e",
       "edges": 2,
       "confidence": {
@@ -11857,7 +11902,7 @@
     },
     {
       "a": "backend/app/seed_step_review_demo.py",
-      "b": "backend/tests/math_solutions",
+      "b": "root",
       "edges": 2,
       "confidence": {
         "EXTRACTED": 2
@@ -11944,22 +11989,6 @@
       }
     },
     {
-      "a": "backend/tests/auth",
-      "b": "backend/tests/conftest.py",
-      "edges": 2,
-      "confidence": {
-        "INFERRED": 2
-      }
-    },
-    {
-      "a": "backend/tests/conftest.py",
-      "b": "backend/tests/rag",
-      "edges": 2,
-      "confidence": {
-        "INFERRED": 2
-      }
-    },
-    {
       "a": "backend/tests/data_foundation",
       "b": "backend/tests/misconceptions",
       "edges": 2,
@@ -12024,6 +12053,14 @@
       }
     },
     {
+      "a": "frontend/next.config.mjs",
+      "b": "root",
+      "edges": 2,
+      "confidence": {
+        "EXTRACTED": 2
+      }
+    },
+    {
       "a": "frontend/package.json",
       "b": "frontend/tests",
       "edges": 2,
@@ -12040,11 +12077,19 @@
       }
     },
     {
-      "a": "frontend/src/lib",
-      "b": "root",
+      "a": "frontend/src/features/math-workspace",
+      "b": "frontend/src/features/theory-maps",
       "edges": 2,
       "confidence": {
-        "EXTRACTED": 2
+        "INFERRED": 2
+      }
+    },
+    {
+      "a": "tools/graphify",
+      "b": "tools/pdf_metadata",
+      "edges": 2,
+      "confidence": {
+        "INFERRED": 2
       }
     },
     {
@@ -12061,6 +12106,14 @@
       "edges": 1,
       "confidence": {
         "EXTRACTED": 1
+      }
+    },
+    {
+      "a": "backend/app/activate_grade12_development_tree.py",
+      "b": "backend/app/math_ink",
+      "edges": 1,
+      "confidence": {
+        "INFERRED": 1
       }
     },
     {
@@ -12344,6 +12397,14 @@
       }
     },
     {
+      "a": "backend/app/generate_synthetic_students.py",
+      "b": "backend/app/math_ink",
+      "edges": 1,
+      "confidence": {
+        "INFERRED": 1
+      }
+    },
+    {
       "a": "backend/app/hints",
       "b": "backend/tests/curriculum",
       "edges": 1,
@@ -12352,19 +12413,59 @@
       }
     },
     {
+      "a": "backend/app/import_curriculum.py",
+      "b": "backend/app/math_ink",
+      "edges": 1,
+      "confidence": {
+        "INFERRED": 1
+      }
+    },
+    {
+      "a": "backend/app/math_ink",
+      "b": "backend/app/reconcile_question_data.py",
+      "edges": 1,
+      "confidence": {
+        "INFERRED": 1
+      }
+    },
+    {
+      "a": "backend/app/math_ink",
+      "b": "backend/app/seed.py",
+      "edges": 1,
+      "confidence": {
+        "INFERRED": 1
+      }
+    },
+    {
+      "a": "backend/app/math_ink",
+      "b": "backend/tests/data_foundation",
+      "edges": 1,
+      "confidence": {
+        "INFERRED": 1
+      }
+    },
+    {
+      "a": "backend/app/math_ink",
+      "b": "backend/tests/diagnostics",
+      "edges": 1,
+      "confidence": {
+        "INFERRED": 1
+      }
+    },
+    {
+      "a": "backend/app/math_ink",
+      "b": "backend/tests/synthetic",
+      "edges": 1,
+      "confidence": {
+        "INFERRED": 1
+      }
+    },
+    {
       "a": "backend/app/math_ocr",
       "b": "backend/tests/curriculum",
       "edges": 1,
       "confidence": {
         "EXTRACTED": 1
-      }
-    },
-    {
-      "a": "backend/app/questions",
-      "b": "tools/graphify",
-      "edges": 1,
-      "confidence": {
-        "INFERRED": 1
       }
     },
     {
@@ -12385,10 +12486,10 @@
     },
     {
       "a": "backend/app/seed_step_review_demo.py",
-      "b": "root",
+      "b": "tools/pdf_metadata",
       "edges": 1,
       "confidence": {
-        "EXTRACTED": 1
+        "INFERRED": 1
       }
     },
     {
@@ -12424,11 +12525,131 @@
       }
     },
     {
+      "a": "backend/tests/academic",
+      "b": "backend/tests/conftest.py",
+      "edges": 1,
+      "confidence": {
+        "INFERRED": 1
+      }
+    },
+    {
+      "a": "backend/tests/admission",
+      "b": "backend/tests/conftest.py",
+      "edges": 1,
+      "confidence": {
+        "INFERRED": 1
+      }
+    },
+    {
+      "a": "backend/tests/ai",
+      "b": "backend/tests/conftest.py",
+      "edges": 1,
+      "confidence": {
+        "INFERRED": 1
+      }
+    },
+    {
+      "a": "backend/tests/assignments",
+      "b": "backend/tests/conftest.py",
+      "edges": 1,
+      "confidence": {
+        "INFERRED": 1
+      }
+    },
+    {
+      "a": "backend/tests/auth",
+      "b": "backend/tests/conftest.py",
+      "edges": 1,
+      "confidence": {
+        "INFERRED": 1
+      }
+    },
+    {
+      "a": "backend/tests/classes",
+      "b": "backend/tests/conftest.py",
+      "edges": 1,
+      "confidence": {
+        "INFERRED": 1
+      }
+    },
+    {
+      "a": "backend/tests/conftest.py",
+      "b": "backend/tests/exams",
+      "edges": 1,
+      "confidence": {
+        "INFERRED": 1
+      }
+    },
+    {
+      "a": "backend/tests/conftest.py",
+      "b": "backend/tests/parents",
+      "edges": 1,
+      "confidence": {
+        "INFERRED": 1
+      }
+    },
+    {
+      "a": "backend/tests/conftest.py",
+      "b": "backend/tests/practice",
+      "edges": 1,
+      "confidence": {
+        "INFERRED": 1
+      }
+    },
+    {
+      "a": "backend/tests/conftest.py",
+      "b": "backend/tests/profiles",
+      "edges": 1,
+      "confidence": {
+        "INFERRED": 1
+      }
+    },
+    {
+      "a": "backend/tests/conftest.py",
+      "b": "backend/tests/questions",
+      "edges": 1,
+      "confidence": {
+        "INFERRED": 1
+      }
+    },
+    {
+      "a": "backend/tests/conftest.py",
+      "b": "backend/tests/student_learning_state",
+      "edges": 1,
+      "confidence": {
+        "INFERRED": 1
+      }
+    },
+    {
+      "a": "backend/tests/conftest.py",
+      "b": "backend/tests/tutor",
+      "edges": 1,
+      "confidence": {
+        "INFERRED": 1
+      }
+    },
+    {
       "a": "backend/tests/curriculum",
       "b": "tools/ocr-layout-service",
       "edges": 1,
       "confidence": {
         "EXTRACTED": 1
+      }
+    },
+    {
+      "a": "backend/tests/curriculum",
+      "b": "tools/ocr-v2-lab",
+      "edges": 1,
+      "confidence": {
+        "EXTRACTED": 1
+      }
+    },
+    {
+      "a": "backend/tests/math_solutions",
+      "b": "backend/tests/profiles",
+      "edges": 1,
+      "confidence": {
+        "INFERRED": 1
       }
     },
     {
@@ -12505,6 +12726,14 @@
     },
     {
       "a": "tools/graphify",
+      "b": "tools/ocr-v2-lab",
+      "edges": 1,
+      "confidence": {
+        "INFERRED": 1
+      }
+    },
+    {
+      "a": "tools/ocr-fixtures",
       "b": "tools/pdf_metadata",
       "edges": 1,
       "confidence": {

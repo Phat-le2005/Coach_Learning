@@ -203,59 +203,80 @@ class StudyPlanningPolicy:
         candidates: list[CandidateTask],
         *,
         horizon_days: int = 7,
+        day0_budget_minutes: int | None = None,
     ) -> dict[date, list[CandidateTask]]:
         """
         Distribute candidate tasks across the horizon days respecting available_daily_minutes.
         Ensures NO giant backlog: each day only receives tasks up to available_daily_minutes.
+        Applies progressive pedagogical transformation (Repair -> Practice -> Review) across horizon.
         """
         schedule: dict[date, list[CandidateTask]] = {}
-        daily_budget = max(ctx.available_daily_minutes, 15)
+        standard_daily_budget = max(ctx.available_daily_minutes, 15)
 
-        # Track which candidate index we are on
         candidate_idx = 0
         total_candidates = len(candidates)
 
         for day_offset in range(horizon_days):
             current_date = ctx.as_of + timedelta(days=day_offset)
             schedule[current_date] = []
-            minutes_remaining = daily_budget
 
-            # Keep adding tasks to current_date until daily budget is satisfied
+            daily_budget = (
+                day0_budget_minutes
+                if day_offset == 0 and day0_budget_minutes is not None
+                else standard_daily_budget
+            )
+            minutes_remaining = daily_budget
+            if minutes_remaining < 10:
+                continue
+
             attempts = 0
             while minutes_remaining >= 10 and attempts < total_candidates:
                 candidate = candidates[candidate_idx % total_candidates]
                 candidate_idx += 1
                 attempts += 1
 
-                # Check if this exact target is already scheduled for this day
+                task_type = candidate.task_type
+                reason_code = candidate.reason_code
+                duration = candidate.estimated_duration_minutes
+
+                # Progressive pedagogical transformation across days
+                if day_offset in (2, 3) and task_type == StudyTaskType.REPAIR:
+                    task_type = StudyTaskType.PRACTICE
+                    reason_code = StudyTaskReasonCode.DIAGNOSTIC_FOLLOWUP
+                    duration = self.DEFAULT_DURATION_MAP.get(StudyTaskType.PRACTICE, 20)
+                elif day_offset in (4, 5) and task_type in (StudyTaskType.REPAIR, StudyTaskType.PRACTICE):
+                    task_type = StudyTaskType.REVIEW
+                    reason_code = StudyTaskReasonCode.REVIEW_DUE
+                    duration = self.DEFAULT_DURATION_MAP.get(StudyTaskType.REVIEW, 15)
+                elif day_offset == 6 and horizon_days == 7 and minutes_remaining >= 25:
+                    task_type = StudyTaskType.MINI_TEST
+                    reason_code = StudyTaskReasonCode.EXAM_PREPARATION
+                    duration = 30
+
                 already_scheduled = any(
-                    existing.task_type == candidate.task_type
+                    existing.task_type == task_type
                     and existing.problem_type_id == candidate.problem_type_id
                     and existing.concept_id == candidate.concept_id
-                    and existing.reason_code == candidate.reason_code
                     for existing in schedule[current_date]
                 )
                 if already_scheduled and len(schedule[current_date]) > 0:
                     continue
 
-                duration = min(candidate.estimated_duration_minutes, minutes_remaining)
-                if duration < 10 and len(schedule[current_date]) > 0:
-                    # Budget practically exhausted for this day
+                if duration > minutes_remaining and len(schedule[current_date]) > 0:
                     break
 
                 task_to_add = CandidateTask(
-                    task_type=candidate.task_type,
-                    reason_code=candidate.reason_code,
+                    task_type=task_type,
+                    reason_code=reason_code,
                     problem_type_id=candidate.problem_type_id,
                     concept_id=candidate.concept_id,
                     subject_id=candidate.subject_id,
-                    estimated_duration_minutes=candidate.estimated_duration_minutes,
+                    estimated_duration_minutes=duration,
                     priority_score=candidate.priority_score,
                 )
                 schedule[current_date].append(task_to_add)
-                minutes_remaining -= candidate.estimated_duration_minutes
+                minutes_remaining -= duration
 
-                # Allow a small 5-minute overrun tolerance to fit standard modules
                 if minutes_remaining <= 5:
                     break
 

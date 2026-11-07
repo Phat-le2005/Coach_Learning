@@ -2,7 +2,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any, Literal
 
-from pydantic import AnyHttpUrl, Field, SecretStr, field_validator, model_validator
+from pydantic import AliasChoices, AnyHttpUrl, Field, SecretStr, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy import URL
 
@@ -40,6 +40,10 @@ class Settings(BaseSettings):
     backend_host: str = "127.0.0.1"
     backend_port: int = Field(default=8000, ge=1, le=65535)
     frontend_url: AnyHttpUrl = AnyHttpUrl("http://localhost:3000")
+    # Explicit additional frontend origins for LAN clients; no wildcard.
+    live_ink_origins: str = ""
+    lan_mode: bool = Field(default=False, validation_alias=AliasChoices("COACH_LAN_MODE", "lan_mode"))
+    lan_frontend_port: int = Field(default=3000, ge=1, le=65535, validation_alias=AliasChoices("COACH_LAN_FRONTEND_PORT", "lan_frontend_port"))
 
     jwt_secret_key: SecretStr = SecretStr("")
     jwt_issuer: str = Field(default="edums", min_length=1)
@@ -64,6 +68,7 @@ class Settings(BaseSettings):
     ai_embedding_model: str = Field(default="text-embedding-004", min_length=1)
     ai_timeout_seconds: float = Field(default=30.0, ge=0.5, le=300.0)
     ai_max_retries: int = Field(default=2, ge=0, le=5)
+    ai_step_review_timeout_seconds: float = Field(default=90.0, ge=1.0, le=180.0)
     ai_rate_limit_per_minute: int = Field(default=20, ge=1, le=600)
     ai_daily_requests_limit_per_student: int = Field(default=100, ge=1, le=10000)
     ai_rag_top_k: int = Field(default=3, ge=1, le=10)
@@ -107,6 +112,8 @@ class Settings(BaseSettings):
     @model_validator(mode="after")
     def validate_production_config(self) -> "Settings":
         if self.app_env == "production":
+            if self.lan_mode:
+                raise ValueError("COACH_LAN_MODE is for local development only")
             jwt_secret = self.jwt_secret_key.get_secret_value()
             if not jwt_secret or len(jwt_secret.encode("utf-8")) < 32:
                 raise ValueError("JWT_SECRET_KEY must contain at least 32 bytes in production")

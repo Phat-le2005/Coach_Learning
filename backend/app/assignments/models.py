@@ -42,6 +42,11 @@ class AssignmentType(StrEnum):
     ADAPTIVE_SET = "ADAPTIVE_SET"
 
 
+class AssignmentDeliveryMode(StrEnum):
+    PRACTICE = "PRACTICE"
+    EXAM = "EXAM"
+
+
 class AssignmentStatus(StrEnum):
     DRAFT = "DRAFT"
     PUBLISHED = "PUBLISHED"
@@ -85,6 +90,17 @@ class Assignment(Base):
             name="assignment_type",
         ),
         nullable=False,
+    )
+    delivery_mode: Mapped[AssignmentDeliveryMode] = mapped_column(
+        Enum(
+            AssignmentDeliveryMode,
+            native_enum=False,
+            create_constraint=True,
+            name="assignment_delivery_mode",
+        ),
+        nullable=False,
+        default=AssignmentDeliveryMode.PRACTICE,
+        server_default=AssignmentDeliveryMode.PRACTICE.value,
     )
     status: Mapped[AssignmentStatus] = mapped_column(
         Enum(

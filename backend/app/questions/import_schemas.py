@@ -77,7 +77,10 @@ class QuestionImportRecord(BaseModel):
     question_type: QuestionType
     difficulty: float = Field(ge=0.0, le=1.0, allow_inf_nan=False)
     correct_answer: str | None = Field(default=None, min_length=1, max_length=10000)
-    explanation: str | None = Field(default=None, min_length=1, max_length=20000)
+    explanation: str | None = Field(
+        default=None, min_length=1, max_length=20000,
+        validation_alias=AliasChoices("explanation", "reference_solution"),
+    )
     source: str = Field(
         min_length=1,
         max_length=50,

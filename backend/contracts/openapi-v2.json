@@ -459,6 +459,35 @@
         "title": "Body_upload_teacher_theory_upload_post",
         "type": "object"
       },
+      "ClaimRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "maxLength": 80,
+            "minLength": 40,
+            "title": "Code",
+            "type": "string"
+          },
+          "device_name": {
+            "default": "Điện thoại",
+            "maxLength": 40,
+            "minLength": 1,
+            "title": "Device Name",
+            "type": "string"
+          },
+          "origin": {
+            "maxLength": 250,
+            "title": "Origin",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "origin"
+        ],
+        "title": "ClaimRequest",
+        "type": "object"
+      },
       "ErrorDetail": {
         "properties": {
           "code": {
@@ -888,6 +917,65 @@
           "points"
         ],
         "title": "InkStroke",
+        "type": "object"
+      },
+      "InviteRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "origin": {
+            "maxLength": 250,
+            "title": "Origin",
+            "type": "string"
+          },
+          "page_index": {
+            "exclusiveMaximum": 30.0,
+            "minimum": 0.0,
+            "title": "Page Index",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "page_index",
+          "origin"
+        ],
+        "title": "InviteRequest",
+        "type": "object"
+      },
+      "LiveOperation": {
+        "additionalProperties": false,
+        "properties": {
+          "add": {
+            "items": {
+              "$ref": "#/components/schemas/InkStroke"
+            },
+            "maxItems": 400,
+            "title": "Add",
+            "type": "array"
+          },
+          "client_action_id": {
+            "format": "uuid",
+            "title": "Client Action Id",
+            "type": "string"
+          },
+          "expected_document_revision": {
+            "minimum": 0.0,
+            "title": "Expected Document Revision",
+            "type": "integer"
+          },
+          "remove": {
+            "items": {
+              "$ref": "#/components/schemas/InkStroke"
+            },
+            "maxItems": 400,
+            "title": "Remove",
+            "type": "array"
+          }
+        },
+        "required": [
+          "client_action_id",
+          "expected_document_revision"
+        ],
+        "title": "LiveOperation",
         "type": "object"
       },
       "MathArtifactDraft": {
@@ -2556,6 +2644,28 @@
         "title": "TheoryNode",
         "type": "object"
       },
+      "TicketRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "origin": {
+            "maxLength": 250,
+            "title": "Origin",
+            "type": "string"
+          },
+          "page_index": {
+            "exclusiveMaximum": 30.0,
+            "minimum": 0.0,
+            "title": "Page Index",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "page_index",
+          "origin"
+        ],
+        "title": "TicketRequest",
+        "type": "object"
+      },
       "ValidationIssue": {
         "properties": {
           "field": {
@@ -2589,6 +2699,292 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/math-ink-device/claim": {
+      "post": {
+        "operationId": "claim_math_ink_device_claim_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClaimRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Claim",
+        "tags": [
+          "Writing devices"
+        ]
+      }
+    },
+    "/math-ink-device/disconnect": {
+      "post": {
+        "operationId": "disconnect_math_ink_device_disconnect_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Disconnect",
+        "tags": [
+          "Writing devices"
+        ]
+      }
+    },
+    "/math-ink-device/ink/live-ticket": {
+      "post": {
+        "operationId": "ticket_math_ink_device_ink_live_ticket_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InviteRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Ticket",
+        "tags": [
+          "Writing devices"
+        ]
+      }
+    },
+    "/math-ink-device/ink/pages/{page_index}": {
+      "get": {
+        "operationId": "read_math_ink_device_ink_pages__page_index__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "page_index",
+            "required": true,
+            "schema": {
+              "title": "Page Index",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Read",
+        "tags": [
+          "Writing devices"
+        ]
+      }
+    },
+    "/math-ink-device/ink/pages/{page_index}/operations": {
+      "post": {
+        "operationId": "write_math_ink_device_ink_pages__page_index__operations_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "page_index",
+            "required": true,
+            "schema": {
+              "title": "Page Index",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LiveOperation"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Write",
+        "tags": [
+          "Writing devices"
+        ]
+      }
+    },
+    "/math-ink-device/session": {
+      "get": {
+        "operationId": "session_math_ink_device_session_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Session",
+        "tags": [
+          "Writing devices"
+        ]
+      }
+    },
     "/math-solutions/attempts": {
       "get": {
         "operationId": "list_attempts_math_solutions_attempts_get",
@@ -3057,6 +3453,72 @@
         ]
       }
     },
+    "/math-solutions/attempts/{attempt_id}/ink/live-ticket": {
+      "post": {
+        "operationId": "ticket_math_solutions_attempts__attempt_id__ink_live_ticket_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "attempt_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Attempt Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TicketRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Ticket",
+        "tags": [
+          "Live Math Ink"
+        ]
+      }
+    },
     "/math-solutions/attempts/{attempt_id}/ink/pages/{page_index}": {
       "get": {
         "operationId": "get_page_math_solutions_attempts__attempt_id__ink_pages__page_index__get",
@@ -3280,6 +3742,347 @@
         "summary": "Save Page",
         "tags": [
           "Math Ink"
+        ]
+      }
+    },
+    "/math-solutions/attempts/{attempt_id}/ink/pages/{page_index}/operations": {
+      "post": {
+        "operationId": "operation_math_solutions_attempts__attempt_id__ink_pages__page_index__operations_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "attempt_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Attempt Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "page_index",
+            "required": true,
+            "schema": {
+              "title": "Page Index",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LiveOperation"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InkPageRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Operation",
+        "tags": [
+          "Live Math Ink"
+        ]
+      }
+    },
+    "/math-solutions/attempts/{attempt_id}/ink/pairings": {
+      "post": {
+        "operationId": "create_math_solutions_attempts__attempt_id__ink_pairings_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "attempt_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Attempt Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InviteRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create",
+        "tags": [
+          "Writing devices"
+        ]
+      }
+    },
+    "/math-solutions/attempts/{attempt_id}/ink/pairings/{pairing_id}": {
+      "get": {
+        "operationId": "status_math_solutions_attempts__attempt_id__ink_pairings__pairing_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "attempt_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Attempt Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "pairing_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Pairing Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Status",
+        "tags": [
+          "Writing devices"
+        ]
+      }
+    },
+    "/math-solutions/attempts/{attempt_id}/ink/pairings/{pairing_id}/approve": {
+      "post": {
+        "operationId": "approve_math_solutions_attempts__attempt_id__ink_pairings__pairing_id__approve_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "attempt_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Attempt Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "pairing_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Pairing Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Approve",
+        "tags": [
+          "Writing devices"
+        ]
+      }
+    },
+    "/math-solutions/attempts/{attempt_id}/ink/pairings/{pairing_id}/revoke": {
+      "post": {
+        "operationId": "revoke_math_solutions_attempts__attempt_id__ink_pairings__pairing_id__revoke_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "attempt_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Attempt Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "pairing_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Pairing Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Revoke",
+        "tags": [
+          "Writing devices"
         ]
       }
     },

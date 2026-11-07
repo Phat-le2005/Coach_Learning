@@ -747,9 +747,14 @@ def export_mindmap_nodes(
     _prefill_learning_steps(nodes, page_texts)
 
     # Invariant: Never allow a FORMULA node with empty LaTeX
+    parent_ids = {n.parent_id for n in nodes if n.parent_id is not None}
     for n in nodes:
         if n.kind == NodeKind.FORMULA and not (n.latex or "").strip():
             n.kind = NodeKind.CONCEPT
+        if n.kind != NodeKind.ROOT and n.id not in parent_ids and not (
+            n.body.strip() or (n.latex or "").strip() or n.learning_steps
+        ):
+            n.body = f"Xem nội dung kiến thức chi tiết tại trang {n.source_page} của tài liệu PDF gốc."
 
     return nodes
 

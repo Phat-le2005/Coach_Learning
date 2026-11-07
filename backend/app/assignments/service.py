@@ -42,6 +42,11 @@ from app.assignments.schemas import (
     StudentQuestionOptionRead,
     StudentRosterStatusItem,
     TeacherAssignmentRosterRead,
+    TeacherFinalizeSubmissionResponse,
+    TeacherStudentSubmissionDetail,
+    TeacherSubmissionItemRead,
+    TeacherSubmissionPaperAttachment,
+    TeacherSubmissionStepDetail,
 )
 from app.classes.models import Classroom, EnrollmentStatus, StudentEnrollment, TeacherClassroom
 from app.concepts.models import Concept
@@ -74,6 +79,14 @@ from app.assignments.teacher_grading_schemas import (
     CanonicalQuestionGradeRead, CanonicalQuestionGradeRequest,
 )
 from app.users.models import User
+from app.math_solutions.models import (
+    EvaluationDecision,
+    SolutionAttempt,
+    SolutionStep,
+    StepEvaluation,
+    StepRevision,
+)
+from app.math_paper.models import MathPaperAttachment
 
 logger = logging.getLogger(__name__)
 
@@ -152,6 +165,7 @@ class AssignmentService:
             title=data.title,
             description=data.description,
             assignment_type=data.assignment_type,
+            delivery_mode=data.delivery_mode,
             status=AssignmentStatus.DRAFT,
             question_count=data.question_count,
             difficulty_distribution=data.difficulty_distribution,
@@ -278,6 +292,7 @@ class AssignmentService:
                 title=a.title,
                 description=a.description,
                 assignment_type=a.assignment_type,
+                delivery_mode=a.delivery_mode,
                 status=a.status,
                 question_count=a.question_count,
                 start_at=a.start_at,
@@ -409,6 +424,7 @@ class AssignmentService:
             title=assignment.title,
             description=assignment.description,
             assignment_type=assignment.assignment_type,
+            delivery_mode=assignment.delivery_mode,
             status=assignment.status,
             question_count=assignment.question_count,
             difficulty_distribution=assignment.difficulty_distribution,
@@ -666,6 +682,7 @@ class AssignmentService:
                     title=a.title,
                     description=a.description,
                     assignment_type=a.assignment_type,
+                    delivery_mode=a.delivery_mode,
                     status=sa.status,
                     question_count=a.question_count,
                     start_at=a.start_at,
@@ -817,6 +834,7 @@ class AssignmentService:
             title=assignment.title,
             description=assignment.description,
             assignment_type=assignment.assignment_type,
+            delivery_mode=assignment.delivery_mode,
             status=sa.status,
             question_count=assignment.question_count,
             start_at=assignment.start_at,
@@ -1148,58 +1166,65 @@ class AssignmentService:
             raise ApplicationError(404, "ASSIGNMENT_QUESTION_NOT_FOUND", "Assigned question was not found.")
         if item.question.question_type != QuestionType.OPEN_RESPONSE:
             raise ApplicationError(409, "QUESTION_NOT_OPEN_RESPONSE", "Only open responses use teacher review here.")
-        if assigned.status != StudentAssignmentStatus.SUBMITTED or item.answered_at is None:
-            raise ApplicationError(409, "QUESTION_NOT_PENDING", "The question is not submitted for review.")
         previous = self.session.scalar(
             select(LearningEvidenceEvent.id).where(
                 LearningEvidenceEvent.source_kind == LearningEvidenceSourceKind.ASSIGNMENT_CANONICAL_QUESTION,
                 LearningEvidenceEvent.source_entity_id == item.id,
             )
         )
-        if item.score is not None or item.is_correct is not None or previous is not None:
-            raise ApplicationError(409, "QUESTION_ALREADY_EVALUATED", "The question has already been evaluated.")
+        if not data.allow_override:
+            if assigned.status != StudentAssignmentStatus.SUBMITTED or item.answered_at is None:
+                raise ApplicationError(409, "QUESTION_NOT_PENDING", "The question is not submitted for review.")
+            if item.score is not None or item.is_correct is not None or previous is not None:
+                raise ApplicationError(409, "QUESTION_ALREADY_EVALUATED", "The question has already been evaluated.")
+        else:
+            if assigned.status not in {StudentAssignmentStatus.SUBMITTED, StudentAssignmentStatus.GRADED}:
+                raise ApplicationError(409, "QUESTION_NOT_PENDING", "The question is not submitted for review.")
+            if item.answered_at is None:
+                item.answered_at = datetime.now(timezone.utc)
 
         now = datetime.now(timezone.utc)
         item.score = data.score
         item.is_correct = data.is_correct
         question = item.question
         try:
-            self.evidence_publisher.publish(
-                LearningEvidencePayload(
-                    student_id=assigned.student_id,
-                    subject_id=assigned.assignment.subject_id,
-                    classroom_id=assigned.assignment.classroom_id,
-                    teaching_plan_id=assigned.assignment.teaching_plan_id,
-                    assignment_id=assigned.assignment_id,
-                    source_kind=LearningEvidenceSourceKind.ASSIGNMENT_CANONICAL_QUESTION,
-                    source_entity_id=item.id,
-                    is_correct=data.is_correct,
-                    score=data.score,
-                    difficulty=question.difficulty if question.difficulty is not None else 0.5,
-                    response_time_seconds=None,
-                    hint_count=0,
-                    evaluation_status=EvaluationStatus.EVALUATED,
-                    occurred_at=now,
-                    concepts=tuple(
-                        WeightedConceptEvidence(mapping.concept_id, mapping.weight)
-                        for mapping in question.concept_links
+            if previous is None:
+                self.evidence_publisher.publish(
+                    LearningEvidencePayload(
+                        student_id=assigned.student_id,
+                        subject_id=assigned.assignment.subject_id,
+                        classroom_id=assigned.assignment.classroom_id,
+                        teaching_plan_id=assigned.assignment.teaching_plan_id,
+                        assignment_id=assigned.assignment_id,
+                        source_kind=LearningEvidenceSourceKind.ASSIGNMENT_CANONICAL_QUESTION,
+                        source_entity_id=item.id,
+                        is_correct=data.is_correct,
+                        score=data.score,
+                        difficulty=question.difficulty if question.difficulty is not None else 0.5,
+                        response_time_seconds=None,
+                        hint_count=0,
+                        evaluation_status=EvaluationStatus.EVALUATED,
+                        occurred_at=now,
+                        concepts=tuple(
+                            WeightedConceptEvidence(mapping.concept_id, mapping.weight)
+                            for mapping in question.concept_links
+                        ),
+                        problem_types=tuple(
+                            WeightedProblemTypeEvidence(
+                                mapping.problem_type_id, mapping.weight or 1.0,
+                                is_primary=mapping.is_primary,
+                            )
+                            for mapping in question.problem_type_links
+                        ),
+                        metadata={
+                            "question_id": str(question.id),
+                            "grading_source": "TEACHER",
+                            "graded_by": str(teacher_user_id),
+                            "feedback": data.feedback,
+                        },
                     ),
-                    problem_types=tuple(
-                        WeightedProblemTypeEvidence(
-                            mapping.problem_type_id, mapping.weight or 1.0,
-                            is_primary=mapping.is_primary,
-                        )
-                        for mapping in question.problem_type_links
-                    ),
-                    metadata={
-                        "question_id": str(question.id),
-                        "grading_source": "TEACHER",
-                        "graded_by": str(teacher_user_id),
-                        "feedback": data.feedback,
-                    },
-                ),
-                self.session,
-            )
+                    self.session,
+                )
             assignment_score = recalculate_student_assignment_score(assigned, finalize=True)
             self.session.commit()
         except Exception:
@@ -1257,15 +1282,22 @@ class AssignmentService:
                 LearningEvidenceEvent.source_entity_id == sm.id,
             )
         )
-        if existing is not None or sm.evaluation_status == EvaluationStatus.EVALUATED:
-            raise ApplicationError(409, "MATERIAL_ITEM_ALREADY_EVALUATED", "Material item has already been evaluated.")
-        if sa.status != StudentAssignmentStatus.SUBMITTED or sm.answered_at is None:
-            raise ApplicationError(409, "MATERIAL_ITEM_NOT_PENDING", "Material item is not pending teacher grading.")
-        if sm.evaluation_status not in {
-            EvaluationStatus.NEEDS_EVALUATION,
-            EvaluationStatus.NEEDS_TEACHER_REVIEW,
-        }:
-            raise ApplicationError(409, "MATERIAL_ITEM_NOT_PENDING", "Material item is not pending teacher grading.")
+        if not data.allow_override:
+            if existing is not None or sm.evaluation_status == EvaluationStatus.EVALUATED:
+                raise ApplicationError(409, "MATERIAL_ITEM_ALREADY_EVALUATED", "Material item has already been evaluated.")
+            if sa.status != StudentAssignmentStatus.SUBMITTED or sm.answered_at is None:
+                raise ApplicationError(409, "MATERIAL_ITEM_NOT_PENDING", "Material item is not pending teacher grading.")
+            if sm.evaluation_status not in {
+                EvaluationStatus.NEEDS_EVALUATION,
+                EvaluationStatus.NEEDS_TEACHER_REVIEW,
+            }:
+                raise ApplicationError(409, "MATERIAL_ITEM_NOT_PENDING", "Material item is not pending teacher grading.")
+        else:
+            if sa.status not in {StudentAssignmentStatus.SUBMITTED, StudentAssignmentStatus.GRADED}:
+                raise ApplicationError(409, "MATERIAL_ITEM_NOT_PENDING", "Material item is not pending teacher grading.")
+            if sm.answered_at is None:
+                sm.answered_at = datetime.now(timezone.utc)
+
         now = datetime.now(timezone.utc)
         sm.score = data.score
         sm.is_correct = data.is_correct
@@ -1275,7 +1307,8 @@ class AssignmentService:
         sm.evaluation_status = EvaluationStatus.EVALUATED
         sm.evaluation_details = {"evaluation": "teacher"}
         try:
-            self._publish_material_evidence(sa, sm, now, "TEACHER")
+            if existing is None:
+                self._publish_material_evidence(sa, sm, now, "TEACHER")
             assignment_score = recalculate_student_assignment_score(sa, finalize=True)
             self.session.commit()
         except Exception:
@@ -1361,6 +1394,262 @@ class AssignmentService:
                 },
             ),
             self.session,
+        )
+
+    def get_student_submission_for_teacher(
+        self, teacher_user_id: UUID, assignment_id: UUID, student_id: UUID
+    ) -> TeacherStudentSubmissionDetail:
+        teacher = self._teacher_for_user(teacher_user_id)
+        sa = self.session.scalar(
+            select(StudentAssignment)
+            .options(
+                selectinload(StudentAssignment.assignment),
+                selectinload(StudentAssignment.student),
+                selectinload(StudentAssignment.student_questions)
+                .selectinload(AssignmentStudentQuestion.question)
+                .selectinload(Question.options),
+                selectinload(StudentAssignment.student_material_items)
+                .selectinload(StudentAssignmentMaterialItem.assignment_material_item)
+                .selectinload(AssignmentMaterialItem.options),
+            )
+            .where(
+                StudentAssignment.assignment_id == assignment_id,
+                StudentAssignment.student_id == student_id,
+            )
+        )
+        if sa is None:
+            raise ApplicationError(404, "STUDENT_ASSIGNMENT_NOT_FOUND", "Student assignment was not found.")
+        self._require_teacher_in_classroom(teacher.id, sa.assignment.classroom_id)
+
+        student_user = self.session.get(User, sa.student.user_id) if sa.student else None
+        student_name = student_user.full_name if student_user else "Học sinh"
+
+        attempts = list(
+            self.session.scalars(
+                select(SolutionAttempt).where(
+                    SolutionAttempt.student_assignment_id == sa.id
+                )
+            ).all()
+        )
+        canonical_attempt_map = {
+            a.assignment_student_question_id: a
+            for a in attempts
+            if a.source_kind == "CANONICAL" and a.assignment_student_question_id is not None
+        }
+        material_attempt_map = {
+            a.student_assignment_material_item_id: a
+            for a in attempts
+            if a.source_kind == "TEACHER_MATERIAL" and a.student_assignment_material_item_id is not None
+        }
+
+        items: list[TeacherSubmissionItemRead] = []
+
+        for sq in sa.student_questions:
+            q = sq.question
+            options = [
+                AssignmentQuestionOptionRead(
+                    id=opt.id,
+                    label=opt.label,
+                    content=opt.content,
+                    order_index=opt.order_index,
+                )
+                for opt in (q.options if q else [])
+            ]
+            attempt = canonical_attempt_map.get(sq.id)
+            step_details, paper_attachments = self._extract_attempt_steps_and_paper(attempt)
+
+            items.append(
+                TeacherSubmissionItemRead(
+                    id=sq.id,
+                    source_kind="CANONICAL",
+                    order_index=sq.order_index,
+                    content=q.content if q else None,
+                    question_type=q.question_type.value if q else None,
+                    options=options,
+                    correct_answer=q.correct_answer if q else None,
+                    explanation=q.explanation if q else None,
+                    student_answer=sq.student_answer,
+                    is_correct=sq.is_correct,
+                    score=sq.score,
+                    evaluation_status="EVALUATED" if sq.score is not None else "NEEDS_EVALUATION",
+                    teacher_feedback=None,
+                    graded_at=sq.answered_at,
+                    graded_by=None,
+                    attempt_id=attempt.id if attempt else None,
+                    attempt_status=attempt.status if attempt else None,
+                    steps=step_details,
+                    paper_attachments=paper_attachments,
+                )
+            )
+
+        for sm in sa.student_material_items:
+            snapshot = sm.assignment_material_item
+            options = [
+                AssignmentQuestionOptionRead(
+                    id=opt.id,
+                    label=opt.label,
+                    content=opt.content,
+                    order_index=opt.order_index,
+                )
+                for opt in (snapshot.options if snapshot else [])
+            ]
+            attempt = material_attempt_map.get(sm.id)
+            step_details, paper_attachments = self._extract_attempt_steps_and_paper(attempt)
+
+            items.append(
+                TeacherSubmissionItemRead(
+                    id=sm.id,
+                    source_kind="TEACHER_MATERIAL",
+                    order_index=sm.order_index,
+                    content=snapshot.content if snapshot else None,
+                    question_type=(
+                        snapshot.question_type.value
+                        if snapshot and snapshot.question_type
+                        else (snapshot.evaluation_mode.value if snapshot and snapshot.evaluation_mode else "OPEN_RESPONSE")
+                    ),
+                    options=options,
+                    correct_answer=snapshot.correct_answer if snapshot else None,
+                    explanation=snapshot.explanation if snapshot else None,
+                    student_answer=sm.student_answer,
+                    is_correct=sm.is_correct,
+                    score=sm.score,
+                    evaluation_status=sm.evaluation_status.value if sm.evaluation_status else None,
+                    teacher_feedback=sm.teacher_feedback,
+                    graded_at=sm.graded_at,
+                    graded_by=sm.graded_by,
+                    attempt_id=attempt.id if attempt else None,
+                    attempt_status=attempt.status if attempt else None,
+                    steps=step_details,
+                    paper_attachments=paper_attachments,
+                )
+            )
+
+        items.sort(key=lambda x: x.order_index)
+
+        return TeacherStudentSubmissionDetail(
+            assignment_id=sa.assignment.id,
+            assignment_title=sa.assignment.title,
+            delivery_mode=sa.assignment.delivery_mode,
+            classroom_id=sa.assignment.classroom_id,
+            student_id=sa.student_id,
+            student_name=student_name,
+            status=sa.status,
+            score=sa.score,
+            submitted_at=sa.submitted_at,
+            items=items,
+        )
+
+    def _extract_attempt_steps_and_paper(
+        self, attempt: SolutionAttempt | None
+    ) -> tuple[list[TeacherSubmissionStepDetail], list[TeacherSubmissionPaperAttachment]]:
+        if not attempt:
+            return [], []
+
+        steps_db = self.session.scalars(
+            select(SolutionStep)
+            .where(SolutionStep.attempt_id == attempt.id, SolutionStep.is_deleted == False)
+            .order_by(SolutionStep.step_index)
+        ).all()
+
+        step_details: list[TeacherSubmissionStepDetail] = []
+        for s in steps_db:
+            rev = self.session.scalar(
+                select(StepRevision)
+                .where(StepRevision.step_id == s.id)
+                .order_by(StepRevision.step_revision_number.desc())
+            )
+            eval_step = None
+            if rev:
+                eval_step = self.session.scalar(
+                    select(StepEvaluation)
+                    .where(StepEvaluation.step_revision_id == rev.id)
+                    .order_by(StepEvaluation.evaluated_at.desc())
+                )
+            step_details.append(
+                TeacherSubmissionStepDetail(
+                    step_id=s.id,
+                    step_index=s.step_index,
+                    step_type=s.step_type,
+                    content_latex=rev.content_latex if rev else None,
+                    explanation_text=rev.explanation_text if rev else None,
+                    math_validity=eval_step.math_validity if eval_step else None,
+                    confidence=eval_step.confidence if eval_step else None,
+                    error_detected=eval_step.error_detected if eval_step else None,
+                    error_description=eval_step.error_description if eval_step else None,
+                )
+            )
+
+        papers_db = self.session.scalars(
+            select(MathPaperAttachment).where(MathPaperAttachment.attempt_id == attempt.id)
+        ).all()
+        paper_attachments = [
+            TeacherSubmissionPaperAttachment(
+                id=p.id,
+                file_name=p.file_name,
+                content_type=p.content_type,
+                storage_key=p.storage_key,
+            )
+            for p in papers_db
+        ]
+
+        return step_details, paper_attachments
+
+    def finalize_student_submission(
+        self, teacher_user_id: UUID, assignment_id: UUID, student_id: UUID
+    ) -> TeacherFinalizeSubmissionResponse:
+        teacher = self._teacher_for_user(teacher_user_id)
+        sa = self.session.scalar(
+            select(StudentAssignment)
+            .options(
+                selectinload(StudentAssignment.assignment),
+                selectinload(StudentAssignment.student_questions),
+                selectinload(StudentAssignment.student_material_items),
+            )
+            .where(
+                StudentAssignment.assignment_id == assignment_id,
+                StudentAssignment.student_id == student_id,
+            )
+            .with_for_update()
+        )
+        if sa is None:
+            raise ApplicationError(404, "STUDENT_ASSIGNMENT_NOT_FOUND", "Student assignment was not found.")
+        self._require_teacher_in_classroom(teacher.id, sa.assignment.classroom_id)
+
+        now = datetime.now(timezone.utc)
+        # Any item left un-evaluated or skipped by student is resolved to 0.0 upon teacher finalization
+        for smi in sa.student_material_items:
+            if smi.score is None:
+                smi.score = 0.0
+                smi.is_correct = False
+                smi.evaluation_status = EvaluationStatus.EVALUATED
+                smi.graded_by = teacher_user_id
+                smi.graded_at = now
+                if smi.answered_at is None:
+                    smi.answered_at = now
+        for sq in sa.student_questions:
+            if sq.score is None:
+                sq.score = 0.0
+                sq.is_correct = False
+                if sq.answered_at is None:
+                    sq.answered_at = now
+
+        final_score = recalculate_student_assignment_score(sa, finalize=True)
+        sa.status = StudentAssignmentStatus.GRADED
+        self.session.commit()
+
+        try:
+            from app.planning.study_service import StudyPlanService
+            StudyPlanService(self.session).complete_matching_tasks(student_id=sa.student_id)
+            self.session.commit()
+        except Exception as exc:
+            logger.warning("Could not sync study plan on finalize submission: %s", exc)
+
+        return TeacherFinalizeSubmissionResponse(
+            assignment_id=sa.assignment_id,
+            student_id=sa.student_id,
+            status=sa.status,
+            score=final_score,
+            finalized_at=now,
         )
 
     # -------------------------------------------------------------------------

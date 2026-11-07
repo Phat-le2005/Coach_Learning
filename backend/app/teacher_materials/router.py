@@ -64,3 +64,7 @@ def set_primary_problem_type(item_id:UUID,target_id:UUID,user:Teacher,service:An
 
 @router.post("/{material_id}/ready",response_model=TeacherMaterialRead)
 def mark_ready(material_id:UUID,user:Teacher,service:Annotated[TeacherMaterialService,Depends(get_service)]): return service.mark_ready(user.id,material_id)
+
+@router.post("/{material_id}/prepare-assignment", response_model=TeacherMaterialRead)
+def prepare_for_assignment(material_id: UUID, user: Teacher, service: Annotated[TeacherMaterialService, Depends(get_service)]):
+    return service.prepare_for_assignment(user.id, material_id)

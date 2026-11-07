@@ -1,17 +1,24 @@
 """Install a reviewed reference for the existing development OCR sandbox question.
 
-Run ``python -m app.seed_step_review_demo`` from backend. This command never
-creates a new academic question or changes production data.
+Run ``python -m app.seed_step_review_demo`` from backend. This development-only command installs the fixed sample question when absent,
+and never changes production data.
 """
 
 from uuid import UUID
 
+from sqlalchemy import select
+
 from app.core.config import get_settings
 from app.database.session import get_session_factory
 from app.questions.models import Question, QuestionStatus, QuestionType
+from app.subjects.models import Subject
+from app.users.models import Role, User
 
 
 DEMO_QUESTION_ID = UUID("c0000000-0000-0000-0000-000000000001")
+DEMO_SUBJECT_CODE = "MATH_G12"
+DEMO_TEACHER_ID = UUID("821ffe49-f0f1-5776-b5f0-d7d04c26b659")
+DEMO_CONTENT = r"Khảo sát sự biến thiên và vẽ đồ thị hàm số $y = \frac{1}{3}x^3 - x^2 - 3x + 1$."
 DEMO_CONTENT_MARKER = r"\frac{1}{3}x^3 - x^2 - 3x + 1"
 DEMO_ANSWER = (
     "f'(x)=x^2-2x-3=(x+1)(x-3). "
@@ -36,15 +43,48 @@ def install() -> str:
         raise RuntimeError("Development sample reference is disabled in production.")
     with get_session_factory()() as session:
         question = session.get(Question, DEMO_QUESTION_ID)
-        if (question is None or question.source_type != "SAMPLE_TEST"
+        if question is None:
+            subject = session.scalar(select(Subject).where(Subject.code == DEMO_SUBJECT_CODE))
+            if subject is None:
+                raise RuntimeError(f"Subject {DEMO_SUBJECT_CODE} is missing from database.")
+            teacher_id = session.scalar(select(User.id).where(User.id == DEMO_TEACHER_ID))
+            if teacher_id is None:
+                teacher_id = session.scalar(
+                    select(User.id)
+                    .where(User.role.in_([Role.TEACHER, Role.ADMIN]), User.is_active.is_(True))
+                    .order_by(User.created_at)
+                )
+            if teacher_id is None:
+                raise RuntimeError("No active teacher or admin user found to author sample question.")
+            question = Question(
+                id=DEMO_QUESTION_ID,
+                subject_id=subject.id,
+                content=DEMO_CONTENT,
+                question_type=QuestionType.OPEN_RESPONSE,
+                difficulty=0.5,
+                correct_answer=DEMO_ANSWER,
+                explanation=DEMO_EXPLANATION,
+                source_type="SAMPLE_TEST",
+                source_reference="Đề bài mẫu luyện tập tự do Toán 12",
+                exam_weight=1.0,
+                status=QuestionStatus.APPROVED,
+                created_by=teacher_id,
+            )
+            session.add(question)
+            session.commit()
+            return "installed"
+
+        if (question.source_type != "SAMPLE_TEST"
                 or question.question_type != QuestionType.OPEN_RESPONSE
-                or question.status != QuestionStatus.APPROVED
                 or DEMO_CONTENT_MARKER not in question.content):
-            raise RuntimeError("The expected development sample question is missing or changed.")
+            raise RuntimeError("The expected development sample question has conflicting attributes.")
         if question.correct_answer not in {None, DEMO_ANSWER}:
             raise RuntimeError("The sample already has a different reviewed answer; no overwrite was made.")
-        if question.correct_answer == DEMO_ANSWER and question.explanation == DEMO_EXPLANATION:
+        if (question.status == QuestionStatus.APPROVED
+                and question.correct_answer == DEMO_ANSWER
+                and question.explanation == DEMO_EXPLANATION):
             return "already_installed"
+        question.status = QuestionStatus.APPROVED
         question.correct_answer = DEMO_ANSWER
         question.explanation = DEMO_EXPLANATION
         session.commit()

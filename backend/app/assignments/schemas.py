@@ -3,7 +3,12 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-from app.assignments.models import AssignmentStatus, AssignmentType, StudentAssignmentStatus
+from app.assignments.models import (
+    AssignmentDeliveryMode,
+    AssignmentStatus,
+    AssignmentType,
+    StudentAssignmentStatus,
+)
 
 
 class AssignmentProblemTypeConfig(BaseModel):
@@ -30,6 +35,7 @@ class AssignmentCreate(BaseModel):
     title: str = Field(min_length=1, max_length=255)
     description: str | None = None
     assignment_type: AssignmentType
+    delivery_mode: AssignmentDeliveryMode = AssignmentDeliveryMode.PRACTICE
     question_count: int = Field(default=5, ge=1)
     difficulty_distribution: dict[str, float] | None = None
     target_problem_types: list[AssignmentProblemTypeConfig] = Field(default_factory=list)
@@ -123,6 +129,7 @@ class AssignmentSummaryRead(BaseModel):
     title: str
     description: str | None = None
     assignment_type: AssignmentType
+    delivery_mode: AssignmentDeliveryMode = AssignmentDeliveryMode.PRACTICE
     status: AssignmentStatus
     question_count: int
     start_at: datetime
@@ -177,6 +184,7 @@ class StudentAssignmentRead(BaseModel):
     title: str
     description: str | None = None
     assignment_type: AssignmentType
+    delivery_mode: AssignmentDeliveryMode = AssignmentDeliveryMode.PRACTICE
     status: StudentAssignmentStatus
     question_count: int
     start_at: datetime
@@ -253,6 +261,7 @@ class MaterialItemGradeRequest(BaseModel):
     score: float = Field(ge=0, le=1)
     is_correct: bool
     feedback: str | None = None
+    allow_override: bool = False
 
 
 class MaterialItemGradeRead(BaseModel):
@@ -265,3 +274,65 @@ class MaterialItemGradeRead(BaseModel):
     graded_by: UUID
     assignment_score: float | None
     assignment_status: StudentAssignmentStatus
+
+
+class TeacherSubmissionStepDetail(BaseModel):
+    step_id: UUID
+    step_index: int
+    step_type: str
+    content_latex: str | None = None
+    explanation_text: str | None = None
+    math_validity: str | None = None
+    confidence: float | None = None
+    error_detected: bool | None = None
+    error_description: str | None = None
+
+
+class TeacherSubmissionPaperAttachment(BaseModel):
+    id: UUID
+    file_name: str
+    content_type: str
+    storage_key: str
+
+
+class TeacherSubmissionItemRead(BaseModel):
+    id: UUID
+    source_kind: str  # "CANONICAL" or "TEACHER_MATERIAL"
+    order_index: int
+    content: str | None = None
+    question_type: str | None = None
+    options: list[AssignmentQuestionOptionRead] = Field(default_factory=list)
+    correct_answer: str | None = None
+    explanation: str | None = None
+    student_answer: str | None = None
+    is_correct: bool | None = None
+    score: float | None = None
+    evaluation_status: str | None = None
+    teacher_feedback: str | None = None
+    graded_at: datetime | None = None
+    graded_by: UUID | None = None
+    attempt_id: UUID | None = None
+    attempt_status: str | None = None
+    steps: list[TeacherSubmissionStepDetail] = Field(default_factory=list)
+    paper_attachments: list[TeacherSubmissionPaperAttachment] = Field(default_factory=list)
+
+
+class TeacherStudentSubmissionDetail(BaseModel):
+    assignment_id: UUID
+    assignment_title: str
+    delivery_mode: AssignmentDeliveryMode
+    classroom_id: UUID
+    student_id: UUID
+    student_name: str
+    status: StudentAssignmentStatus
+    score: float | None = None
+    submitted_at: datetime | None = None
+    items: list[TeacherSubmissionItemRead] = Field(default_factory=list)
+
+
+class TeacherFinalizeSubmissionResponse(BaseModel):
+    assignment_id: UUID
+    student_id: UUID
+    status: StudentAssignmentStatus
+    score: float | None = None
+    finalized_at: datetime

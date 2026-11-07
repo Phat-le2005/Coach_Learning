@@ -1,7 +1,9 @@
 "use client";
 
-import { ClipboardList, Calendar, CheckCircle2, Clock, HelpCircle, FileCheck2, User, AlertCircle } from "lucide-react";
+import { useState } from "react";
+import { ClipboardList, Calendar, CheckCircle2, Clock, HelpCircle, FileCheck2, User, AlertCircle, Eye, Sparkles, Layers } from "lucide-react";
 import type { TeacherAssignment, TeacherClassroom, TeacherRoster } from "../api";
+import { TeacherSubmissionReviewModal } from "./TeacherSubmissionReviewModal";
 import styles from "../TeacherDashboard.module.css";
 
 export interface SubmissionsTabProps {
@@ -14,6 +16,7 @@ export interface SubmissionsTabProps {
   isLoading: boolean;
   focusedStudent?: { id: string; name: string } | null;
   onClearStudent?: () => void;
+  onRefreshRoster?: () => void;
 }
 
 export function SubmissionsTab({
@@ -26,7 +29,9 @@ export function SubmissionsTab({
   isLoading,
   focusedStudent,
   onClearStudent,
+  onRefreshRoster,
 }: SubmissionsTabProps) {
+  const [reviewingStudent, setReviewingStudent] = useState<{ id: string; name: string } | null>(null);
   const visibleRoster = roster?.roster.filter((student) => !focusedStudent || student.student_id === focusedStudent.id) ?? [];
   const formatDate = (dateStr: string | null) => {
     if (!dateStr) return "Không có hạn";
@@ -42,9 +47,16 @@ export function SubmissionsTab({
 
   const getScoreBadgeClass = (score: number | null) => {
     if (score === null) return styles.scoreBadgeUnscored;
-    if (score >= 8) return styles.scoreBadgeHigh;
-    if (score >= 5) return styles.scoreBadgeMid;
+    const s10 = score <= 1.0 ? score * 10 : score;
+    if (s10 >= 8) return styles.scoreBadgeHigh;
+    if (s10 >= 5) return styles.scoreBadgeMid;
     return styles.scoreBadgeLow;
+  };
+
+  const formatScore = (score: number | null) => {
+    if (score === null) return "Chưa chấm";
+    const s10 = score <= 1.0 ? score * 10 : score;
+    return `${Number(s10.toFixed(1))}/10`;
   };
 
   if (!selectedClass) {
@@ -112,6 +124,17 @@ export function SubmissionsTab({
                     >
                       <div className={styles.assignmentCardTop}>
                         <span className={styles.assignmentStatusPill}>{item.status}</span>
+                        {item.delivery_mode && (
+                          <span
+                            className={
+                              item.delivery_mode === "EXAM"
+                                ? styles.modeTagPurpleSmall
+                                : styles.modeTagGreenSmall
+                            }
+                          >
+                            {item.delivery_mode === "EXAM" ? "Đề Thi" : "Luyện tập"}
+                          </span>
+                        )}
                         <span className={styles.assignmentQuestionsCount}>
                           {item.question_count} câu hỏi
                         </span>
@@ -178,6 +201,7 @@ export function SubmissionsTab({
                             <th scope="col">Trạng thái</th>
                             <th scope="col">Điểm số</th>
                             <th scope="col">Thời điểm nộp</th>
+                            <th scope="col" style={{ textAlign: "right", width: "160px" }}>Thao tác</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -191,16 +215,34 @@ export function SubmissionsTab({
                               </td>
                               <td>
                                 <span className={student.status === "SUBMITTED" ? styles.statusPillActive : styles.statusPillInactive}>
-                                  {student.status === "SUBMITTED" ? "Đã nộp" : student.status}
+                                  {student.status === "SUBMITTED" ? "Chờ GV duyệt" : student.status === "GRADED" ? "Đã duyệt" : student.status}
                                 </span>
                               </td>
                               <td>
                                 <span className={`${styles.scoreBadge} ${getScoreBadgeClass(student.score)}`}>
-                                  {student.score !== null ? `${Number(student.score.toFixed(2))}/10` : "Chưa chấm"}
+                                  {formatScore(student.score)}
                                 </span>
                               </td>
                               <td className={styles.tdDate}>
                                 {formatDate(student.submitted_at)}
+                              </td>
+                              <td className={styles.tdActionRight}>
+                                {student.status === "SUBMITTED" || student.status === "GRADED" ? (
+                                  <button
+                                    type="button"
+                                    className={styles.btnSecondarySmall}
+                                    onClick={() =>
+                                      setReviewingStudent({
+                                        id: student.student_id,
+                                        name: student.student_name,
+                                      })
+                                    }
+                                  >
+                                    <Eye size={13} /> Xem &amp; Duyệt bài
+                                  </button>
+                                ) : (
+                                  <span className={styles.tagPillMuted}>Chưa nộp</span>
+                                )}
                               </td>
                             </tr>
                           ))}
@@ -226,6 +268,17 @@ export function SubmissionsTab({
           </span>
         </div>
       </div>
+
+      <TeacherSubmissionReviewModal
+        isOpen={Boolean(reviewingStudent)}
+        onClose={() => setReviewingStudent(null)}
+        assignmentId={assignmentId}
+        studentId={reviewingStudent?.id || ""}
+        studentName={reviewingStudent?.name}
+        onUpdated={() => {
+          onRefreshRoster?.();
+        }}
+      />
     </div>
   );
 }

@@ -1,0 +1,55 @@
+.connectionDialog { padding: 0; border: 1px solid #e2e9e5; border-radius: 26px; width: min(480px, calc(100vw - 32px)); max-height: calc(100dvh - 40px); overflow: auto; color: #193c33; box-shadow: 0 24px 90px #15372b38; }
+.connectionDialog::backdrop { background: #172c2766; backdrop-filter: blur(5px); }
+.dialogContent { padding: 28px 32px 20px; position: relative; text-align: center; background: linear-gradient(165deg, #f0f7f2 0, #fff 180px); }
+.closeButton { position: absolute; right: 14px; top: 14px; width: 34px; height: 34px; border: 0; border-radius: 50%; background: #ffffffb3; color: #6b7d75; display: grid; place-items: center; cursor: pointer; }
+.deviceIllustration { display: flex; align-items: center; justify-content: center; gap: 14px; margin: 8px auto 20px; color: #347b60; }
+.deviceIllustration span { width: 26px; border-top: 2px dashed #9bc8ad; }
+.eyebrow { color: #608271; font-size: 10px; letter-spacing: .16em; font-weight: 700; margin: 0 0 8px; }
+.dialogContent h2 { font-size: 26px; font-weight: 650; line-height: 1.25; letter-spacing: -.7px; margin: 0; }
+.description { color: #6b7e74; font-size: 13px; line-height: 1.65; max-width: 330px; margin: 12px auto 20px; }
+.qrCard { width: 250px; min-height: 250px; margin: 0 auto 20px; background: white; border: 1px solid #d9e7dd; border-radius: 18px; padding: 8px; display: grid; place-items: center; box-shadow: 0 5px 18px #365e4b0a; }
+.qrCard img { width: 232px; height: 232px; }
+.instructions { list-style: none; padding: 0; margin: 0 auto; text-align: left; max-width: 330px; display: grid; gap: 12px; font-size: 13px; color: #3c5549; }
+.instructions li { display: flex; align-items: center; gap: 10px; }
+.instructions li span { width: 23px; height: 23px; flex-shrink: 0; border-radius: 50%; background: #edf4ef; color: #447254; display: grid; place-items: center; font-size: 11px; font-weight: 700; }
+.expiryNote { font-size: 11px; color: #8b9890; margin: 17px 0; }
+.privacy { font-size: 11px; color: #84968b; display: flex; align-items: center; justify-content: center; gap: 6px; padding-top: 16px; margin: 17px 0 0; border-top: 1px solid #eef2ee; }
+.help { text-align: left; border-top: 1px solid #edf1ed; padding-top: 14px; font-size: 12px; color: #6b7e74; }
+.help summary { display: flex; align-items: center; justify-content: center; gap: 7px; cursor: pointer; color: #4e7560; list-style: none; }
+.help p { line-height: 1.6; }
+.help label { display: block; margin: 16px 0 7px; font-size: 11px; }
+.help input { display: block; width: 100%; box-sizing: border-box; margin-top: 5px; border: 1px solid #dce4de; border-radius: 8px; padding: 9px; color: #476050; background: #f9fbfa; }
+.joinLink { display: inline-block; margin-top: 8px; color: #326d52; text-decoration: underline; }
+.primaryButton, .secondaryButton, .textButton { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font: inherit; font-size: 13px; cursor: pointer; border-radius: 11px; padding: 11px 16px; }
+.primaryButton { background: #2d7658; color: #fff; border: 1px solid #2d7658; width: 100%; font-weight: 600; box-shadow: 0 3px 8px #2d76581a; }
+.primaryButton:hover { background: #235f46; }
+.secondaryButton { background: white; color: #3e6650; border: 1px solid #dce6df; }
+.textButton { background: transparent; border: 0; color: #6a7b70; padding: 10px; }
+.primaryButton:disabled, .secondaryButton:disabled, .textButton:disabled { opacity: .5; cursor: wait; }
+.approvalCard, .successCard, .expiredCard { display: flex; flex-direction: column; align-items: center; padding: 22px 12px 8px; gap: 10px; }
+.approvalCard h3, .successCard h3, .expiredCard h3 { font-size: 18px; margin: 3px 0; font-weight: 600; }
+.approvalCard p, .successCard p, .expiredCard p { font-size: 13px; color: #738477; line-height: 1.6; margin: 3px 0 8px; }
+.confirmationCode { font-size: 29px; font-variant-numeric: tabular-nums; letter-spacing: .22em; padding: 8px 0 16px; color: #285f43; }
+.successIcon { display: grid; place-items: center; width: 62px; height: 62px; background: #e7f3ea; color: #3e8c5a; border-radius: 50%; }
+.error { color: #a04538; background: #fff4f0; border-radius: 10px; font-size: 12px; padding: 12px; line-height: 1.6; }
+.spin { animation: rotate 1s linear infinite; }
+@keyframes rotate {to {transform: rotate(360deg);}}
+.writer { height: 100dvh; display: flex; flex-direction: column; background: #f1f4f0; color: #233c30; overflow: hidden; }
+.writerHeader { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 18px; background: #fff; border-bottom: 1px solid #e5ebe5; }
+.writerHeader strong { display: block; font-size: 15px; font-weight: 650; }
+.writerHeader small { display: flex; align-items: center; gap: 5px; color: #768c7c; font-size: 11px; margin-top: 4px; }
+.writerPaper { flex: 1; overflow: auto; padding: 16px 12px 32px; display: flex; justify-content: flex-start; align-items: flex-start; }
+.writerPage { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #718775; padding: 9px 16px; border-top: 1px solid #e3eae2; background: #fff; }
+.writerPage button { background: none; border: 1px solid #dfe6df; border-radius: 8px; padding: 6px 12px; color: #4e6f58; cursor: pointer; }
+.waitingPage { min-height: 100dvh; background: #f4f7f2; display: grid; place-items: center; padding: 24px; box-sizing: border-box; }
+.waitingCard { max-width: 370px; background: white; padding: 32px 26px; text-align: center; border: 1px solid #e2e9df; border-radius: 24px; box-shadow: 0 15px 50px #345b3d0a; }
+.waitingCard h1 { font-size: 23px; color: #244d32; line-height: 1.3; }
+.waitingCard p { font-size: 14px; line-height: 1.7; color: #72816e; }
+.compactToolbar { display: flex; align-items: center; justify-content: center; gap: 4px; padding: 8px; background: white; border-bottom: 1px solid #e4ebe3; flex-shrink: 0; flex-wrap: nowrap; overflow-x: auto; }
+.compactToolbar button { border: 0; border-radius: 10px; padding: 8px; display: inline-flex; align-items: center; gap: 5px; background: transparent; color: #758574; cursor: pointer; font-size: 12px; flex-shrink: 0; }
+.writer, .waitingPage, .connectionDialog { font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+.compactToolbar button[aria-pressed="true"] { background: #eaf3e9; color: #356b45; }
+.compactToolbar button:disabled { opacity: .3; cursor: default; }
+.toolSeparator { height: 22px; width: 1px; background: #e4eae2; margin: 0 4px; }
+.toolColor { width: 18px; height: 18px; border-radius: 50%; box-shadow: 0 0 0 3px #fff, 0 0 0 4px #d6dfd4; }
+@media (max-width: 480px) {.dialogContent {padding: 24px 20px 16px;} .dialogContent h2 {font-size: 24px;} .writerHeader {padding: 12px 14px;} }

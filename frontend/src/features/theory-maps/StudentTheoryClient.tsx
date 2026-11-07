@@ -26,6 +26,43 @@ export function StudentTheoryClient() {
         if (!active) return;
         setList(items);
         if (!items.length) return;
+        // Check query params (?topic=... or ?node=...)
+        let targetDoc = items[0];
+        let targetNodeId = "";
+        try {
+          const urlParams = new URLSearchParams(window.location.search);
+          const rawTopic = urlParams.get("topic")?.toLowerCase().trim();
+          const rawNode = urlParams.get("node")?.trim();
+
+          if (rawTopic) {
+            const matchedDoc = items.find((doc) =>
+              doc.title.toLowerCase().includes(rawTopic) || rawTopic.includes(doc.title.toLowerCase())
+            );
+            if (matchedDoc) targetDoc = matchedDoc;
+          }
+
+          const docData = await theoryApi.studentGet(targetDoc.id);
+          if (rawNode) {
+            const nodeMatch = docData.nodes.find((n) => n.id === rawNode);
+            if (nodeMatch) targetNodeId = nodeMatch.id;
+          } else if (rawTopic) {
+            const nodeMatch = docData.nodes.find((n) =>
+              n.title.toLowerCase().includes(rawTopic) || rawTopic.includes(n.title.toLowerCase())
+            );
+            if (nodeMatch) targetNodeId = nodeMatch.id;
+          }
+
+          if (active) {
+            setDocument(docData);
+            setPage(1);
+            setSelectedNodeId(targetNodeId || (docData.nodes[0]?.id ?? ""));
+            setView(docData.nodes.length > 0 && docData.status === "PUBLISHED" ? "map" : "source");
+            return;
+          }
+        } catch {
+          // fallback to first document
+        }
+
         const first = await theoryApi.studentGet(items[0].id);
         if (active) {
           setDocument(first);

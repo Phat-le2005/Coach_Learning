@@ -117,9 +117,9 @@ class BashWorkflow(unittest.TestCase):
         p=self.run_script('all',self.config);self.assertEqual(p.returncode,0,p.stderr)
         calls=self.calls.read_text().splitlines()
         self.assertEqual(len(calls),6)
-        for c,keyword in zip(calls,('pip','check_runtime','unittest','fetch_upstream','hme_comer.train','hme_comer.final_test')):
+        for c,keyword in zip(calls,('pip','check_runtime','unittest','fetch_upstream','hme_comer.launch','--finish')):
             self.assertIn(keyword,c)
-        self.assertIn(str(self.output),calls[-1])
+        self.assertIn(str(self.config),calls[-1])
     def test_setup_failure_prevents_training(self):
         self.env['FIXTURE_EXIT']='17'
         p=self.run_script('all',self.config);self.assertEqual(p.returncode,17)
@@ -134,7 +134,12 @@ class BashWorkflow(unittest.TestCase):
     def test_disable_final_test(self):
         self.env['RUN_FINAL_TEST']='0'
         p=self.run_script('all',self.config);self.assertEqual(p.returncode,0,p.stderr)
-        self.assertNotIn('final_test',self.calls.read_text())
+        self.assertNotIn('--finish',self.calls.read_text())
+    def test_review_dispatch_does_not_run_setup_or_training(self):
+        p=self.run_script('review',self.output)
+        self.assertEqual(p.returncode,0,p.stderr)
+        calls=self.calls.read_text().splitlines();self.assertEqual(len(calls),1)
+        self.assertIn('hme_comer.review',calls[0]);self.assertIn(str(self.output),calls[0])
 
 
 if __name__=='__main__':unittest.main()

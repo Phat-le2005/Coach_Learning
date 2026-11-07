@@ -674,6 +674,26 @@ export function TheoryMapView({
                 </button>
 
               )}
+              <a
+                href={`/student/practice?topic=${encodeURIComponent(target.title)}`}
+                className={styles.drawerPrimaryActionBtn}
+                style={{
+                  background: "linear-gradient(135deg, #23a67a, #10b981)",
+                  color: "#ffffff",
+                  textDecoration: "none",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  padding: "6px 12px",
+                  borderRadius: "8px",
+                  fontWeight: 650,
+                  fontSize: "0.82rem",
+                  boxShadow: "0 2px 8px rgba(35, 166, 122, 0.3)",
+                }}
+                title="Luyện giải bài tập dạng này trên giấy số"
+              >
+                ✍️ Luyện bài tập dạng này
+              </a>
 
             </div>
 
