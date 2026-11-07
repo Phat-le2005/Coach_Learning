@@ -13,6 +13,8 @@ export interface ClassroomNavQuestion {
   sourceKind?: string;
   questionId?: string | null;
   teacherMaterialItemId?: string | null;
+  studentAnswer?: string | null;
+  hasAnswer?: boolean;
 }
 
 export interface ClassroomNavData {
@@ -81,6 +83,29 @@ export async function launchClassroomCanvasAttempt(
       problems = assignment.questions;
     }
     if (problems.length === 0) return null;
+
+    if (assignment.questions && Array.isArray(assignment.questions)) {
+      const answerByOrder = new Map<number, string | null>();
+      const answerById = new Map<string, string | null>();
+      for (const q of assignment.questions) {
+        if (q.student_answer) {
+          if (typeof q.order_index === "number") answerByOrder.set(q.order_index, q.student_answer);
+          if (q.question_id) answerById.set(q.question_id, q.student_answer);
+          if (q.teacher_material_item_id) answerById.set(q.teacher_material_item_id, q.student_answer);
+          if (q.student_material_item_id) answerById.set(q.student_material_item_id, q.student_answer);
+        }
+      }
+      for (const p of problems) {
+        if (!p.student_answer) {
+          p.student_answer =
+            (p.question_id && answerById.get(p.question_id)) ||
+            (p.student_assignment_material_item_id && answerById.get(p.student_assignment_material_item_id)) ||
+            (p.teacher_material_item_id && answerById.get(p.teacher_material_item_id)) ||
+            (typeof p.order_index === "number" && answerByOrder.get(p.order_index)) ||
+            null;
+        }
+      }
+    }
 
     // 4. Get existing attempts for this student assignment
     const attemptsRes = await fetch(
@@ -180,6 +205,10 @@ export async function launchClassroomCanvasAttempt(
         matchesClassroomAttempt(p, a)
       );
       const isCanonical = p.source_kind === "CANONICAL" || p.source_kind === "CANONICAL_QUESTION";
+      const studentAnswer = p.student_answer ?? null;
+      const stepCount = Array.isArray(match?.steps) ? match.steps.length : (match?.step_count ?? 0);
+      const hasSteps = stepCount > 0;
+      const hasAnswer = hasSteps || match?.status === "SUBMITTED" || match?.status === "EVALUATED" || Boolean(studentAnswer && studentAnswer.trim().length > 0);
       return {
         index: idx,
         label: `Câu ${idx + 1}`,
@@ -188,10 +217,12 @@ export async function launchClassroomCanvasAttempt(
         isCurrent: idx === targetIndex,
         status: match?.status ?? "NOT_STARTED",
         score: match?.final_score ?? null,
-        stepCount: Array.isArray(match?.steps) ? match.steps.length : 0,
+        stepCount,
         sourceKind: isCanonical ? "CANONICAL" : "TEACHER_MATERIAL",
         questionId: p.question_id || (isCanonical ? p.id : null),
         teacherMaterialItemId: p.teacher_material_item_id || p.student_material_item_id || (!isCanonical ? p.id : null),
+        studentAnswer,
+        hasAnswer,
       };
     });
 
@@ -251,6 +282,29 @@ export async function getClassroomAssignmentNav(
     }
     if (problems.length === 0) return null;
 
+    if (assignment.questions && Array.isArray(assignment.questions)) {
+      const answerByOrder = new Map<number, string | null>();
+      const answerById = new Map<string, string | null>();
+      for (const q of assignment.questions) {
+        if (q.student_answer) {
+          if (typeof q.order_index === "number") answerByOrder.set(q.order_index, q.student_answer);
+          if (q.question_id) answerById.set(q.question_id, q.student_answer);
+          if (q.teacher_material_item_id) answerById.set(q.teacher_material_item_id, q.student_answer);
+          if (q.student_material_item_id) answerById.set(q.student_material_item_id, q.student_answer);
+        }
+      }
+      for (const p of problems) {
+        if (!p.student_answer) {
+          p.student_answer =
+            (p.question_id && answerById.get(p.question_id)) ||
+            (p.student_assignment_material_item_id && answerById.get(p.student_assignment_material_item_id)) ||
+            (p.teacher_material_item_id && answerById.get(p.teacher_material_item_id)) ||
+            (typeof p.order_index === "number" && answerByOrder.get(p.order_index)) ||
+            null;
+        }
+      }
+    }
+
     const attemptsRes = await fetch(
       `${backendUrl}/api/v2/math-solutions/attempts?student_assignment_id=${encodeURIComponent(studentAssignmentId)}&size=100`,
       { headers, cache: "no-store" }
@@ -269,6 +323,10 @@ export async function getClassroomAssignmentNav(
       const isCurrent = match?.id === currentAttemptId;
       if (isCurrent) currentIndex = idx;
       const isCanonical = p.source_kind === "CANONICAL" || p.source_kind === "CANONICAL_QUESTION";
+      const studentAnswer = p.student_answer ?? null;
+      const stepCount = Array.isArray(match?.steps) ? match.steps.length : (match?.step_count ?? 0);
+      const hasSteps = stepCount > 0;
+      const hasAnswer = hasSteps || match?.status === "SUBMITTED" || match?.status === "EVALUATED" || Boolean(studentAnswer && studentAnswer.trim().length > 0);
       return {
         index: idx,
         label: `Câu ${idx + 1}`,
@@ -277,10 +335,12 @@ export async function getClassroomAssignmentNav(
         isCurrent,
         status: match?.status ?? "NOT_STARTED",
         score: match?.final_score ?? null,
-        stepCount: Array.isArray(match?.steps) ? match.steps.length : 0,
+        stepCount,
         sourceKind: isCanonical ? "CANONICAL" : "TEACHER_MATERIAL",
         questionId: p.question_id || (isCanonical ? p.id : null),
         teacherMaterialItemId: p.teacher_material_item_id || p.student_material_item_id || (!isCanonical ? p.id : null),
+        studentAnswer,
+        hasAnswer,
       };
     });
 

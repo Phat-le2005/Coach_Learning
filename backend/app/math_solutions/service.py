@@ -603,16 +603,15 @@ class MathSolutionService:
         status: str | None = None,
     ) -> dict[str, Any]:
         student = self._student(actor_user_id)
-        stmt = select(SolutionAttempt).where(
-            SolutionAttempt.student_id == student.id,
-            SolutionAttempt.hidden_at.is_(None),
-        )
+        stmt = select(SolutionAttempt).where(SolutionAttempt.student_id == student.id)
+        if student_assignment_id is not None:
+            stmt = stmt.where(SolutionAttempt.student_assignment_id == student_assignment_id)
+        else:
+            stmt = stmt.where(SolutionAttempt.hidden_at.is_(None))
         if question_id is not None:
             stmt = stmt.where(SolutionAttempt.question_id == question_id)
         if practice_session_id is not None:
             stmt = stmt.where(SolutionAttempt.practice_session_id == practice_session_id)
-        if student_assignment_id is not None:
-            stmt = stmt.where(SolutionAttempt.student_assignment_id == student_assignment_id)
         if status is not None:
             stmt = stmt.where(SolutionAttempt.status == status)
 

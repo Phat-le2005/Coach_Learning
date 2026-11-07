@@ -6,14 +6,14 @@ export interface TeacherSubject { id: string; code: string; name: string; grade_
 export interface TeacherStudent { student_id: string; full_name: string; email: string; status: string; is_synthetic: boolean; }
 export interface TeacherMaterial { id: string; title: string; original_file_name: string; mime_type: string; file_size_bytes: number; status: string; subject_id: string; created_at: string; items_count?: number; }
 export interface TeacherAssignment { id: string; title: string; status: string; question_count: number; due_at: string | null; subject_id: string; delivery_mode?: string; }
-export interface TeacherRosterStudent { student_id: string; student_name: string; status: string; score: number | null; submitted_at: string | null; }
+export interface TeacherRosterStudent { student_id: string; student_name: string; status: string; score: number | null; provisional_score?: number | null; submitted_at: string | null; }
 export interface TeacherRoster { assignment_id: string; title: string; total_students: number; submitted_count: number; graded_count: number; roster: TeacherRosterStudent[]; }
 export interface TeacherMaterialItemOption { id: string; label: string; content: string; order_index: number; }
 export interface TeacherMaterialItem { id: string; order_index: number; content: string; question_type: string | null; correct_answer: string | null; explanation: string | null; difficulty: number | null; extraction_status: string; evaluation_mode: string; options: TeacherMaterialItemOption[]; }
 export interface TeacherSubmissionStepDetail { step_id: string; step_index: number; step_type: string; content_latex: string | null; explanation_text: string | null; math_validity: string | null; confidence: number | null; error_detected: boolean | null; error_description: string | null; }
 export interface TeacherSubmissionPaperAttachment { id: string; file_name: string; content_type: string; storage_key: string; }
-export interface TeacherSubmissionItem { id: string; source_kind: string; order_index: number; content: string | null; question_type: string | null; options: { id: string; label: string; content: string; order_index: number }[]; correct_answer: string | null; explanation: string | null; student_answer: string | null; is_correct: boolean | null; score: number | null; evaluation_status: string | null; teacher_feedback: string | null; graded_at: string | null; graded_by: string | null; attempt_id: string | null; attempt_status: string | null; steps: TeacherSubmissionStepDetail[]; paper_attachments: TeacherSubmissionPaperAttachment[]; }
-export interface TeacherStudentSubmissionDetail { assignment_id: string; assignment_title: string; delivery_mode: string; classroom_id: string; student_id: string; student_name: string; status: string; score: number | null; submitted_at: string | null; items: TeacherSubmissionItem[]; }
+export interface TeacherSubmissionItem { id: string; source_kind: string; order_index: number; content: string | null; question_type: string | null; options: { id: string; label: string; content: string; order_index: number }[]; correct_answer: string | null; explanation: string | null; student_answer: string | null; is_correct: boolean | null; score: number | null; provisional_score?: number | null; evaluation_status: string | null; teacher_feedback: string | null; graded_at: string | null; graded_by: string | null; attempt_id: string | null; attempt_status: string | null; steps: TeacherSubmissionStepDetail[]; paper_attachments: TeacherSubmissionPaperAttachment[]; }
+export interface TeacherStudentSubmissionDetail { assignment_id: string; assignment_title: string; delivery_mode: string; classroom_id: string; student_id: string; student_name: string; status: string; score: number | null; provisional_score?: number | null; submitted_at: string | null; items: TeacherSubmissionItem[]; }
 export interface TeacherAnalytics {
   student_count: number;
   subject_progress: { subject_id: string; subject_name: string; average_mastery: number; coverage_percentage: number }[];
@@ -63,7 +63,14 @@ export function parseRoster(value: unknown, path = "roster"): TeacherRoster {
     total_students: integer(row.total_students, `${path}.total_students`), submitted_count: integer(row.submitted_count, `${path}.submitted_count`), graded_count: integer(row.graded_count, `${path}.graded_count`),
     roster: array(row.roster, `${path}.roster`, (item, itemPath) => {
       const student = record(item, itemPath);
-      return { student_id: string(student.student_id, `${itemPath}.student_id`), student_name: string(student.student_name, `${itemPath}.student_name`), status: string(student.status, `${itemPath}.status`), score: student.score === null ? null : number(student.score, `${itemPath}.score`), submitted_at: student.submitted_at === null ? null : string(student.submitted_at, `${itemPath}.submitted_at`) };
+      return {
+        student_id: string(student.student_id, `${itemPath}.student_id`),
+        student_name: string(student.student_name, `${itemPath}.student_name`),
+        status: string(student.status, `${itemPath}.status`),
+        score: student.score === null || student.score === undefined ? null : number(student.score, `${itemPath}.score`),
+        provisional_score: student.provisional_score === null || student.provisional_score === undefined ? null : number(student.provisional_score, `${itemPath}.provisional_score`),
+        submitted_at: student.submitted_at === null ? null : string(student.submitted_at, `${itemPath}.submitted_at`),
+      };
     }),
   };
 }
@@ -145,6 +152,7 @@ export function parseStudentSubmission(value: unknown, path = "submission"): Tea
     student_name: string(row.student_name, `${path}.student_name`),
     status: string(row.status, `${path}.status`),
     score: row.score === null || row.score === undefined ? null : number(row.score, `${path}.score`),
+    provisional_score: row.provisional_score === null || row.provisional_score === undefined ? null : number(row.provisional_score, `${path}.provisional_score`),
     submitted_at: row.submitted_at === null || row.submitted_at === undefined ? null : string(row.submitted_at, `${path}.submitted_at`),
     items: array(row.items ?? [], `${path}.items`, (item, itemP) => {
       const i = record(item, itemP);
@@ -168,6 +176,7 @@ export function parseStudentSubmission(value: unknown, path = "submission"): Tea
         student_answer: i.student_answer === null || i.student_answer === undefined ? null : string(i.student_answer, `${itemP}.student_answer`),
         is_correct: i.is_correct === null || i.is_correct === undefined ? null : boolean(i.is_correct, `${itemP}.is_correct`),
         score: i.score === null || i.score === undefined ? null : number(i.score, `${itemP}.score`),
+        provisional_score: i.provisional_score === null || i.provisional_score === undefined ? null : number(i.provisional_score, `${itemP}.provisional_score`),
         evaluation_status: i.evaluation_status === null || i.evaluation_status === undefined ? null : string(i.evaluation_status, `${itemP}.evaluation_status`),
         teacher_feedback: i.teacher_feedback === null || i.teacher_feedback === undefined ? null : string(i.teacher_feedback, `${itemP}.teacher_feedback`),
         graded_at: i.graded_at === null || i.graded_at === undefined ? null : string(i.graded_at, `${itemP}.graded_at`),

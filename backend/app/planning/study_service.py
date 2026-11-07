@@ -208,10 +208,10 @@ class StudyPlanService:
         plan = self.get_or_create_active_plan(student_id, as_of=current_date)
         self._skip_past_pending_tasks(plan.id, current_date)
 
-        tasks = self._query_tasks(plan.id)
+        tasks = self._query_tasks(plan.id, from_date=current_date)
         if not tasks:
             self.recalculate_study_plan(student_id, as_of=current_date)
-            tasks = self._query_tasks(plan.id)
+            tasks = self._query_tasks(plan.id, from_date=current_date)
 
         daily_minutes = self._get_daily_budget(plan)
         days_to_exam: int | None = None
@@ -261,7 +261,7 @@ class StudyPlanService:
         if plan is None:
             return None
 
-        tasks = self._query_tasks(plan.id)
+        tasks = self._query_tasks(plan.id, from_date=current_date)
         daily_minutes = self._get_daily_budget(plan)
         days_to_exam: int | None = None
         if plan.target_date:
@@ -492,12 +492,36 @@ class StudyPlanService:
             )
         )
 
+        # Developing problem types needing diagnostic followup (0.50 <= mastery < 0.72)
+        diagnostic_followup_pt_ids = list(
+            self.session.scalars(
+                select(StudentProblemTypeMastery.problem_type_id).where(
+                    StudentProblemTypeMastery.student_id == student_id,
+                    StudentProblemTypeMastery.mastery_score >= 0.50,
+                    StudentProblemTypeMastery.mastery_score < 0.72,
+                    StudentProblemTypeMastery.attempt_count >= 1,
+                )
+            )
+        )
+
         # Student Concept Mastery: weak concepts (mastery < 0.60)
         weak_concept_ids = list(
             self.session.scalars(
                 select(StudentConceptMastery.concept_id).where(
                     StudentConceptMastery.student_id == student_id,
                     StudentConceptMastery.mastery_score < 0.60,
+                )
+            )
+        )
+
+        # Developing concepts needing diagnostic followup (0.60 <= mastery < 0.75)
+        diagnostic_followup_c_ids = list(
+            self.session.scalars(
+                select(StudentConceptMastery.concept_id).where(
+                    StudentConceptMastery.student_id == student_id,
+                    StudentConceptMastery.mastery_score >= 0.60,
+                    StudentConceptMastery.mastery_score < 0.75,
+                    StudentConceptMastery.attempt_count >= 1,
                 )
             )
         )
@@ -538,6 +562,8 @@ class StudyPlanService:
             weak_concept_ids=weak_concept_ids,
             due_review_problem_type_ids=due_pt_ids,
             due_review_concept_ids=due_c_ids,
+            diagnostic_followup_problem_type_ids=diagnostic_followup_pt_ids,
+            diagnostic_followup_concept_ids=diagnostic_followup_c_ids,
         )
 
     def _query_tasks(
@@ -545,6 +571,7 @@ class StudyPlanService:
         plan_id: UUID,
         *,
         planned_date: date | None = None,
+        from_date: date | None = None,
     ) -> list[StudyTask]:
         stmt = (
             select(StudyTask)
@@ -553,10 +580,15 @@ class StudyPlanService:
                 selectinload(StudyTask.concept),
                 selectinload(StudyTask.subject),
             )
-            .where(StudyTask.study_plan_id == plan_id)
+            .where(
+                StudyTask.study_plan_id == plan_id,
+                StudyTask.status != StudyTaskStatus.SKIPPED,
+            )
         )
         if planned_date is not None:
             stmt = stmt.where(StudyTask.planned_date == planned_date)
+        elif from_date is not None:
+            stmt = stmt.where(StudyTask.planned_date >= from_date)
         stmt = stmt.order_by(
             StudyTask.planned_date,
             StudyTask.priority.desc(),
@@ -567,24 +599,24 @@ class StudyPlanService:
 
     def _get_hierarchy_map(
         self, problem_type_ids: set[UUID]
-    ) -> dict[UUID, tuple[UUID, str, UUID, str]]:
+    ) -> dict[UUID, tuple[UUID, str, UUID, str, UUID]]:
         if not problem_type_ids:
             return {}
         rows = self.session.execute(
-            select(ProblemType.id, Topic.id, Topic.name, Chapter.id, Chapter.name)
+            select(ProblemType.id, Topic.id, Topic.name, Chapter.id, Chapter.name, Chapter.subject_id)
             .join(Topic, Topic.id == ProblemType.topic_id)
             .join(Chapter, Chapter.id == Topic.chapter_id)
             .where(ProblemType.id.in_(problem_type_ids))
         ).all()
         return {
-            row[0]: (row[1], row[2], row[3], row[4])
+            row[0]: (row[1], row[2], row[3], row[4], row[5])
             for row in rows
         }
 
     def _to_task_read(
         self,
         task: StudyTask,
-        hierarchy_map: dict[UUID, tuple[UUID, str, UUID, str]] | None = None,
+        hierarchy_map: dict[UUID, tuple[UUID, str, UUID, str, UUID]] | None = None,
     ) -> StudyTaskRead:
         pt_name = task.problem_type.name if task.problem_type else None
         c_name = task.concept.name if task.concept else None
@@ -594,9 +626,15 @@ class StudyPlanService:
         topic_name = None
         chapter_id = None
         chapter_name = None
+        resolved_subject_id = task.subject_id
 
         if hierarchy_map and task.problem_type_id in hierarchy_map:
-            topic_id, topic_name, chapter_id, chapter_name = hierarchy_map[task.problem_type_id]
+            topic_id, topic_name, chapter_id, chapter_name, ch_subject_id = hierarchy_map[task.problem_type_id]
+            if resolved_subject_id is None:
+                resolved_subject_id = ch_subject_id
+
+        if resolved_subject_id is None and task.concept is not None:
+            resolved_subject_id = task.concept.subject_id
 
         return StudyTaskRead(
             id=task.id,
@@ -612,7 +650,7 @@ class StudyPlanService:
             topic_name=topic_name,
             chapter_id=chapter_id,
             chapter_name=chapter_name,
-            subject_id=task.subject_id,
+            subject_id=resolved_subject_id,
             subject_name=s_name,
             estimated_duration_minutes=task.estimated_duration_minutes,
             priority=task.priority,

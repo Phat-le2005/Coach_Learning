@@ -28,6 +28,18 @@ test("exam counts confirmed questions or questions with steps", () => {
   );
 });
 
+test("exam counts pre-answered questions or text responses as completed", () => {
+  const questions = Array.from({ length: 10 }, (_, index) => ({
+    index,
+    attemptId: null,
+    status: "NOT_STARTED",
+    studentAnswer: index < 5 ? "A" : null,
+    hasAnswer: index < 5,
+  }));
+  const missing = getExamMissingQuestions(questions, "none", "NOT_STARTED");
+  assert.deepEqual(missing.map((q) => q.index), [5, 6, 7, 8, 9]);
+});
+
 test("missing IDs never attach all questions to the same attempt", () => {
   assert.equal(matchesClassroomAttempt({ id: "item-2", source_kind: "TEACHER_MATERIAL" },
     { id: "attempt-1", student_assignment_material_item_id: "item-1" }), false);

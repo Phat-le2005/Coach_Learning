@@ -623,6 +623,17 @@ class AssignmentService:
             if sa.score is not None:
                 scores.append(sa.score)
 
+            prov_score = None
+            if sa.score is None and sa.status in (StudentAssignmentStatus.SUBMITTED, StudentAssignmentStatus.GRADED):
+                from app.math_solutions.models import SolutionAttempt
+                attempts_for_sa = self.session.scalars(
+                    select(SolutionAttempt).where(SolutionAttempt.student_assignment_id == sa.id)
+                ).all()
+                if attempts_for_sa:
+                    scored_attempts = [a.total_score for a in attempts_for_sa if a.total_score is not None]
+                    if scored_attempts:
+                        prov_score = round(sum(scored_attempts) / len(attempts_for_sa), 2)
+
             roster_items.append(
                 StudentRosterStatusItem(
                     student_id=sa.student_id,
@@ -632,6 +643,7 @@ class AssignmentService:
                     started_at=sa.started_at,
                     submitted_at=sa.submitted_at,
                     score=sa.score,
+                    provisional_score=prov_score,
                 )
             )
 
@@ -1092,7 +1104,6 @@ class AssignmentService:
             select(SolutionAttempt).where(
                 SolutionAttempt.student_assignment_id == assigned.id,
                 SolutionAttempt.student_id == assigned.student_id,
-                SolutionAttempt.hidden_at.is_(None),
             ).with_for_update()
         ).all())
         active_ids = set(self.session.scalars(
@@ -1122,7 +1133,10 @@ class AssignmentService:
             answer = (canonical_answers if canonical else material_answers).get(source_id)
             text_answer = answer.student_answer.strip() if answer else ""
             if rows and text_answer:
-                raise ApplicationError(409, "ASSIGNMENT_ANSWER_SOURCE_CONFLICT", "Submit either confirmed steps or a text answer.")
+                if text_answer == "(Chưa làm)":
+                    text_answer = ""
+                else:
+                    raise ApplicationError(409, "ASSIGNMENT_ANSWER_SOURCE_CONFLICT", "Submit either confirmed steps or a text answer.")
             if not rows and not text_answer:
                 missing.append(item.order_index + 1)
         if missing:
@@ -1540,6 +1554,7 @@ class AssignmentService:
                     student_answer=sq.student_answer,
                     is_correct=sq.is_correct,
                     score=sq.score,
+                    provisional_score=attempt.total_score if attempt else None,
                     evaluation_status="EVALUATED" if sq.score is not None else "NEEDS_EVALUATION",
                     teacher_feedback=None,
                     graded_at=sq.answered_at,
@@ -1582,6 +1597,7 @@ class AssignmentService:
                     student_answer=sm.student_answer,
                     is_correct=sm.is_correct,
                     score=sm.score,
+                    provisional_score=attempt.total_score if attempt else None,
                     evaluation_status=sm.evaluation_status.value if sm.evaluation_status else None,
                     teacher_feedback=sm.teacher_feedback,
                     graded_at=sm.graded_at,
@@ -1595,6 +1611,10 @@ class AssignmentService:
 
         items.sort(key=lambda x: x.order_index)
 
+        prov_scores = [item.score if item.score is not None else item.provisional_score for item in items]
+        valid_provs = [p for p in prov_scores if p is not None]
+        overall_prov = round(sum(valid_provs) / len(items), 2) if items and len(valid_provs) > 0 else None
+
         return TeacherStudentSubmissionDetail(
             assignment_id=sa.assignment.id,
             assignment_title=sa.assignment.title,
@@ -1604,6 +1624,7 @@ class AssignmentService:
             student_name=student_name,
             status=sa.status,
             score=sa.score,
+            provisional_score=overall_prov,
             submitted_at=sa.submitted_at,
             items=items,
         )
@@ -1672,7 +1693,15 @@ class AssignmentService:
             .options(
                 selectinload(StudentAssignment.assignment),
                 selectinload(StudentAssignment.student_questions),
-                selectinload(StudentAssignment.student_material_items),
+                selectinload(StudentAssignment.student_material_items)
+                .selectinload(StudentAssignmentMaterialItem.assignment_material_item)
+                .selectinload(AssignmentMaterialItem.concept_mappings),
+                selectinload(StudentAssignment.student_material_items)
+                .selectinload(StudentAssignmentMaterialItem.assignment_material_item)
+                .selectinload(AssignmentMaterialItem.problem_type_mappings),
+                selectinload(StudentAssignment.student_material_items)
+                .selectinload(StudentAssignmentMaterialItem.assignment_material_item)
+                .selectinload(AssignmentMaterialItem.learning_outcome_mappings),
             )
             .where(
                 StudentAssignment.assignment_id == assignment_id,
@@ -1685,20 +1714,63 @@ class AssignmentService:
         self._require_teacher_in_classroom(teacher.id, sa.assignment.classroom_id)
 
         now = datetime.now(timezone.utc)
-        # Any item left un-evaluated or skipped by student is resolved to 0.0 upon teacher finalization
+        from app.math_solutions.models import SolutionAttempt
+        attempts = list(
+            self.session.scalars(
+                select(SolutionAttempt).where(
+                    SolutionAttempt.student_assignment_id == sa.id
+                )
+            ).all()
+        )
+        canonical_attempt_map = {
+            a.assignment_student_question_id: a
+            for a in attempts
+            if a.source_kind == "CANONICAL" and a.assignment_student_question_id is not None
+        }
+        material_attempt_map = {
+            a.student_assignment_material_item_id: a
+            for a in attempts
+            if a.source_kind == "TEACHER_MATERIAL" and a.student_assignment_material_item_id is not None
+        }
+
+        # Any item left un-evaluated: apply AI provisional score if available, else 0.0
         for smi in sa.student_material_items:
             if smi.score is None:
-                smi.score = 0.0
-                smi.is_correct = False
+                att = material_attempt_map.get(smi.id)
+                if att and att.total_score is not None:
+                    smi.score = att.total_score
+                    smi.is_correct = (att.total_score >= 0.8) if att.is_correct is None else att.is_correct
+                else:
+                    smi.score = 0.0
+                    smi.is_correct = False
                 smi.evaluation_status = EvaluationStatus.EVALUATED
                 smi.graded_by = teacher_user_id
                 smi.graded_at = now
                 if smi.answered_at is None:
                     smi.answered_at = now
+            elif smi.is_correct is None:
+                smi.is_correct = smi.score >= 0.8
+                smi.evaluation_status = EvaluationStatus.EVALUATED
+            existing_ev = self.session.scalar(
+                select(LearningEvidenceEvent.id).where(
+                    LearningEvidenceEvent.source_kind == LearningEvidenceSourceKind.TEACHER_MATERIAL_ITEM,
+                    LearningEvidenceEvent.source_entity_id == smi.id,
+                )
+            )
+            if existing_ev is None and smi.assignment_material_item is not None and smi.assignment_material_item.snapshotted_at is not None:
+                try:
+                    self._publish_material_evidence(sa, smi, now, "TEACHER")
+                except Exception as exc:
+                    logger.warning("Could not publish material evidence on finalize for %s: %s", smi.id, exc)
         for sq in sa.student_questions:
             if sq.score is None:
-                sq.score = 0.0
-                sq.is_correct = False
+                att = canonical_attempt_map.get(sq.id)
+                if att and att.total_score is not None:
+                    sq.score = att.total_score
+                    sq.is_correct = (att.total_score >= 0.8) if att.is_correct is None else att.is_correct
+                else:
+                    sq.score = 0.0
+                    sq.is_correct = False
                 if sq.answered_at is None:
                     sq.answered_at = now
 
@@ -1708,7 +1780,9 @@ class AssignmentService:
 
         try:
             from app.planning.study_service import StudyPlanService
-            StudyPlanService(self.session).complete_matching_tasks(student_id=sa.student_id)
+            plan_svc = StudyPlanService(self.session)
+            plan_svc.complete_matching_tasks(student_id=sa.student_id)
+            plan_svc.recalculate_study_plan(sa.student_id, as_of=now.date())
             self.session.commit()
         except Exception as exc:
             logger.warning("Could not sync study plan on finalize submission: %s", exc)
