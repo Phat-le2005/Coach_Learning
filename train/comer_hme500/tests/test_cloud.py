@@ -9,7 +9,7 @@ import unittest
 from unittest.mock import patch
 from types import SimpleNamespace
 import zipfile
-from hme_comer.cloud import ROOT,RESULT_PATTERN,prepare,read_config,verify_download,submit,extract_verified,expand_trials,package_suite
+from hme_comer.cloud import ROOT,RESULT_PATTERN,prepare,read_config,verify_download,submit,extract_verified,expand_trials,package_suite,follow_logs
 
 
 class CloudConfig(unittest.TestCase):
@@ -121,6 +121,22 @@ class CloudConfig(unittest.TestCase):
             self.assertEqual(set(checks),set(z.namelist())-{'checksums.json'})
             for name,digest in checks.items():self.assertEqual(hashlib.sha256(z.read(name)).hexdigest(),digest)
             for result in results:self.assertEqual(z.read(Path(result['archive']).name),Path(result['archive']).read_bytes())
+    def test_live_log_reconnect_deduplicates_and_redacts_without_stopping_training(self):
+        class Api:
+            calls=0
+            def kernels_logs_stream(self,ref):
+                self.calls+=1
+                yield {'data':'Allocated GPUs: two; token=unit-test-private'}
+                if self.calls==1:raise ConnectionError('transient stream drop')
+                yield {'data':None}
+                yield {'data':'Epoch 1 (2 workers): train_loss=0.4 {"exp_rate":0.5,"loss":0.3}'}
+        output=io.StringIO();api=Api()
+        with patch.dict('os.environ',{'KAGGLE_API_TOKEN':'unit-test-private'}),patch('sys.stdout',output),patch('hme_comer.cloud.time.sleep'):
+            follow_logs(api,'owner/kernel/5',self.root)
+        self.assertEqual(api.calls,2)
+        saved=(self.root/'live-log.jsonl').read_text()
+        self.assertEqual(len(saved.splitlines()),3);self.assertNotIn('unit-test-private',saved)
+        self.assertNotIn('unit-test-private',output.getvalue());self.assertEqual(output.getvalue().count('epoch 1'),1)
 
 
 if __name__=='__main__':unittest.main()

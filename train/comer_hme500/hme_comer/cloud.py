@@ -341,23 +341,43 @@ def expand_trials(cfg):
 
 def follow_logs(api,ref,folder):
     """Live SDK stream is separate from the persisted log available at completion."""
+    seen=failures=0
+    while failures<5:
+        before=seen
+        try:
+            seen=_follow_connection(api,ref,folder,seen)
+            return
+        except Exception:
+            # Midtier may close idle SSE connections; its replay starts at event 0.
+            marker=folder/'observer-position.json'
+            if marker.exists():seen=json.loads(marker.read_text())['seen']
+            failures=failures+1 if seen==before else 0
+            time.sleep(1)
+    print('Live log stream unavailable; status polling and saved outputs remain active.',flush=True)
+
+
+def _follow_connection(api,ref,folder,seen):
     try:
         with (folder/'live-log.jsonl').open('a',encoding='utf-8') as stream:
-            for event in api.kernels_logs_stream(ref):
+            for number,event in enumerate(api.kernels_logs_stream(ref)):
+                if number<seen:continue
+                seen=number+1
+                (folder/'observer-position.json').write_text(json.dumps({'seen':seen}))
                 raw=json.dumps(event,ensure_ascii=False)
                 for key in ('KAGGLE_API_TOKEN','WANDB_API_KEY'):
                     if os.environ.get(key):raw=raw.replace(os.environ[key],'[REDACTED]')
                 raw=re.sub(r'wandb_v1_[A-Za-z0-9_-]+','[REDACTED]',raw)
                 stream.write(raw+'\n');stream.flush()
                 message=json.loads(raw).get('data','')
+                if not isinstance(message,str):continue
                 epoch=re.search(r'Epoch (\d+) \(2 workers\): train_loss=([\d.]+) (\{.*\})',message)
                 if epoch:
                     metrics=json.loads(epoch[3])
                     print(f'[{ref}] epoch {epoch[1]} | train loss {epoch[2]} | validation EM {metrics["exp_rate"]:.0%} | validation loss {metrics["loss"]:.5f}',flush=True)
                 elif re.search(r'Allocated GPUs|Secret unavailable|before evaluation:|after evaluation:|Traceback',message):
                     print(message.strip(),flush=True)
-    except Exception:
-        print('Live log stream unavailable; status polling and saved outputs remain active.',flush=True)
+        return seen
+    except Exception:raise
 
 
 def run_submission(api,folder,cfg,no_wait=False):
