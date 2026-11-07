@@ -48,6 +48,11 @@ Không có tài khoản/mật khẩu tác giả được nhúng trong repository
 CoMER ONNX int8, vocab, ORT/WASM và license đi kèm đã được track tại
 `frontend/public/ocr/`; không tải model ngẫu nhiên khi bấm OCR.
 
+Sau khi cập nhật một checkout đã có, chạy lại `npm ci` và cài lại
+`backend/requirements-lock.txt` vào **venv của checkout hiện tại**. Live Sync cần
+`websockets==15.0.1` trong lockfile; một venv cũ thiếu package này vẫn trả HTTP health
+200 nhưng không nhận WebSocket. Không dựa vào venv của worktree đã bỏ.
+
 ## Live Sync / điện thoại
 
 [Hướng dẫn chi tiết](docs/mathcanvas-live-device-sync.md). Laptop và điện thoại phải
