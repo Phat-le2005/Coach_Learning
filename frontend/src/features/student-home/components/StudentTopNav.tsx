@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Flame, Sparkles, Wind } from "lucide-react";
+import { Activity, Flame, Sparkles, Wind } from "lucide-react";
 import Link from "next/link";
 
 import { AccountMenu } from "@/components/auth/AccountMenu";
+import { StudentTutor } from "@/features/ai-tutor/StudentTutor";
+import coreStyles from "@/features/ai-core/ai-core.module.css";
 
 import styles from "../StudentHome.module.css";
 import { BrandMark } from "./BrandMark";
@@ -60,7 +62,7 @@ export function StudentTopNav({
   const isTheory = currentRoute.startsWith("/student/theory");
   const isHome =
     currentRoute === "/student" ||
-    (!isKnowledge && !isAttempts && !isTheory && currentRoute.startsWith("/student"));
+    (!isKnowledge && !isAttempts && !isTheory && !currentRoute.startsWith("/student/ai-core") && currentRoute.startsWith("/student"));
 
   const knowledgeHref = subjectId
     ? `/student/knowledge?subject_id=${encodeURIComponent(subjectId)}`
@@ -112,6 +114,11 @@ export function StudentTopNav({
         </div>
 
         <div className={styles.navActions}>
+          <Link href="/student/ai-core" className={coreStyles.coreLink} title="Xem AI Core" aria-label="Xem AI Core"
+            aria-current={currentRoute === "/student/ai-core" ? "page" : undefined}>
+            <Activity size={16} aria-hidden="true" /><span>AI Core</span>
+          </Link>
+          <StudentTutor />
           {showAmbientToggle ? (
             <button
               type="button"

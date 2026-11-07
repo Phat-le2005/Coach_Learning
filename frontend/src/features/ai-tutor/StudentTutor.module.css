@@ -1,0 +1,75 @@
+.trigger {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 38px;
+  padding: 0 12px;
+  border: 1px solid #196b53;
+  border-radius: 999px;
+  background: #175a46;
+  color: #fff;
+  font-size: .78rem;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.trigger:hover { background: #104634; }
+.trigger:focus-visible, .close:focus-visible, .send:focus-visible, .suggestions button:focus-visible {
+  outline: 3px solid #d4a94f;
+  outline-offset: 3px;
+}
+.dialog {
+  width: min(700px, calc(100vw - 32px));
+  max-height: min(88dvh, 860px);
+  margin: auto;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid #d5e5da;
+  border-radius: 24px;
+  background: #fbfcf7;
+  color: #163e32;
+  box-shadow: 0 30px 90px #092d2540;
+}
+.dialog[open] { display: flex; flex-direction: column; }
+.dialog::backdrop { background: #082c2266; backdrop-filter: blur(4px); }
+.header { display: flex; flex-shrink: 0; align-items: center; gap: 12px; padding: 20px 24px; border-bottom: 1px solid #dce8df; background: #edf5ed; }
+.avatar { display: grid; place-items: center; width: 46px; height: 46px; border-radius: 15px; background: #175a46; color: white; }
+.heading { flex: 1; }
+.heading p { margin: 0 0 3px; color: #527367; font-size: .76rem; }
+.heading h2 { margin: 0; font-size: 1.35rem; }
+.close { display: grid; place-items: center; width: 38px; height: 38px; border: 1px solid #d3e1d5; border-radius: 50%; color: #355c4d; background: #fff; cursor: pointer; }
+.body { padding: 22px 24px; overflow-y: auto; overscroll-behavior: contain; }
+.intro { margin: 0 0 16px; color: #526b60; line-height: 1.65; font-size: .9rem; }
+.suggestions { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.suggestions button { display: inline-flex; align-items: center; gap: 5px; padding: 8px 10px; border: 1px solid #d8e5d7; border-radius: 999px; background: #f1f6e9; color: #48653c; font-size: .75rem; cursor: pointer; }
+.suggestions button:hover { background: #e4efd6; }
+.form { display: flex; flex-direction: column; gap: 8px; }
+.form label { font-size: .84rem; font-weight: 750; }
+.form textarea { box-sizing: border-box; width: 100%; min-height: 116px; resize: vertical; padding: 13px 14px; border: 1px solid #c8d9ce; border-radius: 14px; background: #fff; color: #173e32; font: inherit; font-size: .9rem; line-height: 1.65; }
+.form textarea:focus { border-color: #278566; outline: 3px solid #27856620; }
+.formFooter { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.formFooter > span { color: #6e8176; font-size: .72rem; }
+.send { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 42px; padding: 0 17px; border: 0; border-radius: 12px; background: #175a46; color: white; font-weight: 700; cursor: pointer; }
+.send:disabled, .suggestions button:disabled { opacity: .55; cursor: not-allowed; }
+.pending { padding: 14px; border-radius: 12px; background: #eaf2ed; font-size: .85rem; line-height: 1.6; }
+.error { margin-top: 18px; padding: 14px 16px; border: 1px solid #efc8b5; border-radius: 13px; background: #fff4ec; color: #8b4029; font-size: .86rem; line-height: 1.6; }
+.error p { margin: 0; }
+.error a { display: inline-block; margin-top: 8px; font-weight: 750; text-decoration: underline; }
+.answer { margin-top: 24px; padding: 18px; border: 1px solid #d4e4d9; border-radius: 16px; background: #fff; overflow-wrap: anywhere; line-height: 1.8; font-size: .92rem; }
+.asked { margin: 0 0 16px; padding-bottom: 14px; border-bottom: 1px solid #e7ece6; color: #62796c; font-size: .8rem; white-space: pre-wrap; }
+.answer h3 { display: flex; align-items: center; gap: 7px; margin: 0 0 10px; font-size: .92rem; color: #226b50; }
+.answer :global(.katex-display) { overflow-x: auto; overflow-y: hidden; padding: 4px 0; }
+.note { margin: 20px 0 0; color: #6e8176; font-size: .74rem; line-height: 1.65; }
+.spinner { animation: tutor-spin 1s linear infinite; }
+@keyframes tutor-spin { to { transform: rotate(360deg); } }
+@media (max-width: 640px) {
+  .trigger { width: 38px; padding: 0; }
+  .trigger span { display: none; }
+  .dialog { width: calc(100vw - 20px); max-height: 92dvh; border-radius: 18px; }
+  .header { padding: 16px; }
+  .body { padding: 18px 16px; }
+  .suggestions { gap: 6px; }
+}
+@media (prefers-reduced-motion: reduce) { .spinner { animation: none; } }
