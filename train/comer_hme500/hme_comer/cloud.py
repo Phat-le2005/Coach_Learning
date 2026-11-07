@@ -147,6 +147,29 @@ def verify_download(folder):
     return archives[0],index
 
 
+def submit(api,folder):
+    """Explicit Save & Run All; do not rely on an unspecified execution type."""
+    from kagglesdk.kernels.types.kernels_api_service import ApiSaveKernelRequest
+    from kagglesdk.kernels.types.kernels_enums import KernelExecutionType
+    folder=Path(folder)
+    metadata=json.loads((folder/'kernel-metadata.json').read_text())
+    request=ApiSaveKernelRequest()
+    request.slug=metadata['id'];request.new_title=metadata['title']
+    notebook=json.loads((folder/metadata['code_file']).read_text(encoding='utf-8'))
+    for cell in notebook['cells']:
+        if isinstance(cell.get('source'),list):cell['source']=''.join(cell['source'])
+        if cell['cell_type']=='code':cell['outputs']=[];cell['execution_count']=None
+    request.text=json.dumps(notebook)
+    request.language='python';request.kernel_type='notebook';request.is_private=True
+    request.enable_gpu=True;request.enable_tpu=False;request.enable_internet=True
+    request.machine_shape='NvidiaTeslaT4';request.session_timeout_seconds=3600
+    request.dataset_data_sources=metadata['dataset_sources']
+    request.competition_data_sources=[];request.kernel_data_sources=[];request.model_data_sources=[]
+    request.kernel_execution_type=KernelExecutionType.SAVE_AND_RUN_ALL
+    with api.build_kaggle_client() as client:
+        return client.kernels.kernels_api_client.save_kernel(request)
+
+
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--config',required=True,type=Path)
     p.add_argument('--prepare-only',action='store_true');p.add_argument('--no-wait',action='store_true')
@@ -158,7 +181,7 @@ def main():
     try:
         from kaggle.api.kaggle_api_extended import KaggleApi
         api=KaggleApi();api.authenticate()
-        result=api.kernels_push(str(folder),timeout='10800',acc='NvidiaTeslaT4')
+        result=submit(api,folder)
         if getattr(result,'error',''):raise RuntimeError('KAGGLE_SUBMISSION_REJECTED')
         url=getattr(result,'url',None) or 'https://www.kaggle.com/code/'+cfg['kernel_ref']
         ref=cfg['kernel_ref']+'/'+str(result.version_number)

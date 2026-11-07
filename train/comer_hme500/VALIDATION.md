@@ -98,6 +98,8 @@ Runner local dùng input ẩn hoặc WANDB_API_KEY trong môi trường; không 
 
 ## Nộp job Kaggle bằng một config · 2026-11-07
 
-Đã chạy **53/53 unit tests** sau khi bổ sung `hme_comer.cloud` và `kaggle.v5.json`. Các kiểm tra mới xác nhận notebook sinh ra không chứa key, đọc W&B secret lúc runtime, yêu cầu đúng hai GPU, giữ notebook private, chặn policy upload checkpoint theo epoch, và kiểm checksum/world_size của ZIP tải về.
+Đã chạy **54/54 unit tests** sau khi bổ sung `hme_comer.cloud` và `kaggle.v5.json`. Các kiểm tra mới xác nhận notebook sinh ra không chứa key, đọc W&B secret lúc runtime, yêu cầu đúng hai GPU, giữ notebook private, chặn policy upload checkpoint theo epoch, kiểm checksum/world_size của ZIP tải về và gửi tường minh `SAVE_AND_RUN_ALL` với notebook đã chuẩn hóa.
 
 Đã xác thực Kaggle bằng API token mới qua input ẩn và sao lưu notebook gốc trước khi cập nhật. API đã nhận phiên bản mới của notebook riêng tư với accelerator `NvidiaTeslaT4`; trạng thái nhận job/queued không được xem là bằng chứng CUDA/DDP đã chạy. Kết quả runtime phải được xác nhận từ log thực thi và ZIP của phiên tương ứng. Trial local một GPU trước đó được dừng theo yêu cầu chuyển sang Kaggle, giữ nguyên last/best; job DDP2 bắt đầu mới vì world size và batch mỗi GPU thay đổi.
+
+Quyền đọc Secrets của notebook phải được bật riêng trên Kaggle; API token nộp job không tự cấp quyền này. Lượt nộp đầu bị chặn tại kiểm tra secret, trước khi huấn luyện; không dùng trạng thái queued để suy ra nguyên nhân thiếu GPU. Source/controller không chứa giá trị token.

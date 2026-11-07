@@ -4,8 +4,10 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
+from types import SimpleNamespace
 import zipfile
-from hme_comer.cloud import ROOT,prepare,read_config,verify_download
+from hme_comer.cloud import ROOT,prepare,read_config,verify_download,submit
 
 
 class CloudConfig(unittest.TestCase):
@@ -44,6 +46,25 @@ class CloudConfig(unittest.TestCase):
         self.assertEqual(result,path);self.assertEqual(index['world_size'],2)
     def test_download_refuses_missing_archive(self):
         with self.assertRaisesRegex(RuntimeError,'ONE_RESULT_ZIP'):verify_download(self.root)
+    def test_submission_requests_run_all_with_t4_and_normalized_notebook(self):
+        self.write();folder,_=prepare(self.path,self.root/'submission')
+        captured=[]
+        class Client:
+            def __enter__(self):
+                self.kernels=SimpleNamespace(kernels_api_client=SimpleNamespace(save_kernel=lambda request:captured.append(request) or 'accepted'))
+                return self
+            def __exit__(self,*args):pass
+        api=SimpleNamespace(build_kaggle_client=Client)
+        modules={
+            'kagglesdk.kernels.types.kernels_api_service':SimpleNamespace(ApiSaveKernelRequest=SimpleNamespace),
+            'kagglesdk.kernels.types.kernels_enums':SimpleNamespace(KernelExecutionType=SimpleNamespace(SAVE_AND_RUN_ALL=1))}
+        with patch.dict('sys.modules',modules):self.assertEqual(submit(api,folder),'accepted')
+        request=captured[0]
+        self.assertEqual(request.kernel_execution_type,1)
+        self.assertEqual(request.machine_shape,'NvidiaTeslaT4')
+        self.assertEqual(request.session_timeout_seconds,3600)
+        self.assertTrue(request.is_private)
+        self.assertIsInstance(json.loads(request.text)['cells'][1]['source'],str)
 
 
 if __name__=='__main__':unittest.main()
