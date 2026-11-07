@@ -12,6 +12,18 @@ from . import VERSION
 from .checkpoints import record_name
 
 
+def compact_content(row):
+    """Shared public content shape; acquisition methods keep their own provenance."""
+    content = {'collection_number': row['collection_number'], 'question_id': row['question_id'],
+            'chapter_title': row['chapter_title'], 'source': row['source'],
+            'question': row['parts']['question'], 'solution': row['parts']['solution'],
+            'answer': row['parts']['answer'], 'tables': row['tables'],
+            'academic_review': 'PENDING', 'grading_support': 'NOT_ASSESSED', 'publishable': False}
+    if 'visual_assets' in row:
+        content['visual_assets'] = row['visual_assets']
+    return content
+
+
 @contextmanager
 def atomic_text(path):
     pending = path.with_name(path.name + '.' + uuid.uuid4().hex + '.pending')
@@ -45,11 +57,7 @@ def publish(output, selection, identity, source_sha, valid_ids, *, status, extra
             if item['question_id'] not in valid_ids:
                 continue
             row = read_json(output / 'records' / record_name(item['question_id']))
-            content = {'collection_number': row['collection_number'], 'question_id': row['question_id'],
-                       'chapter_title': row['chapter_title'], 'source': row['source'],
-                       'question': row['parts']['question'], 'solution': row['parts']['solution'],
-                       'answer': row['parts']['answer'], 'tables': row['tables'],
-                       'academic_review': 'PENDING', 'grading_support': 'NOT_ASSESSED', 'publishable': False}
+            content = compact_content(row)
             for stream, value in [(streams[0], row), (streams[2], content)]:
                 stream.write(json.dumps(value, ensure_ascii=False) + '\n')
             for stream, value in [(streams[1], row), (streams[3], content)]:

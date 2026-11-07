@@ -28,7 +28,9 @@ def needs_text_ocr(page):
     count=sum(len(b['text_raw'].strip()) for b in content)
     area=page['width']*page['height']
     image_area=sum((i['bbox'][2]-i['bbox'][0])*(i['bbox'][3]-i['bbox'][1]) for i in page.get('images',[]))
-    return count<60 or (image_area>.7*area and count<400)
+    # Source books can put several native captions above image-only exercises.
+    # Those captions must not prevent OCR of the actual question and solution.
+    return count<60 or (image_area>.2*area and count<400)
 
 
 class LocalOCR:

@@ -18,7 +18,7 @@ from ..storage import configure_storage,file_hash,read_json,write_json,write_jso
 from ..gemini_client import content_hash
 from ..validate import validate_candidates
 from .boundaries import detach
-from .corpus_layout import restore,split_columns
+from .corpus_layout import restore,split_columns,source_book_labels
 
 
 CHAPTERS={'derivative_applications':'Ứng dụng đạo hàm và đồ thị hàm số',
@@ -71,6 +71,7 @@ def document(source,work,runtime,*,use_ocr=True):
             p['ocr_failed']=True;ocr_errors.append({'page_number':p['page_number'],'reason':type(e).__name__})
     mark_margins(pages)
     for p in pages:p['image_path']=str((native/p['image_path']).resolve())
+    pages=[source_book_labels(p) for p in pages]
     virtual,mapping,layout_issues=split_columns(pages)
     items,orphans=assemble(virtual,record['sha256'])
     items,orphans,boundaries=detach(items,virtual,orphans,heading_pattern=CORPUS_HEADING,title_size=20)

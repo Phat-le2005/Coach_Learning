@@ -6,10 +6,11 @@ param(
     [switch]$RetryFailed
 )
 $ErrorActionPreference='Stop'
+. (Join-Path $PSScriptRoot 'paths.ps1')
 $imageRepo=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..\..')).Path
-if (-not $Runtime) { $Runtime=Join-Path $imageRepo '.tmp\pdf-pipeline-runtime' }
+if (-not $Runtime) { $Runtime=$PdfRuntimeRoot }
 $Runtime=[IO.Path]::GetFullPath($Runtime)
-if ($Runtime -notmatch '^[Ee]:\\') { throw 'Keep image verification runtime on E.' }
+$env:PDFMETA_RUNTIME_ROOT=$Runtime
 $Job=(Resolve-Path -LiteralPath $Job).Path
 $imagePython=Join-Path $Runtime '.venv\Scripts\python.exe'
 $env:PYTHONPATH=$PSScriptRoot;$env:PYTHONUTF8='1';$env:PYTHONIOENCODING='utf-8';$env:PYTHONDONTWRITEBYTECODE='1'

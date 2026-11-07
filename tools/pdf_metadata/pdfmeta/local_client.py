@@ -12,9 +12,10 @@ import httpx
 
 from .gemini_client import GeminiError, read_env
 from .storage import read_json, write_json
+from .paths import runtime_root
 
 
-DEFAULT_RUNTIME = Path(__file__).parents[3] / ".tmp" / "pdf-pipeline-runtime"
+DEFAULT_RUNTIME = runtime_root()
 
 
 def local_schema(value):
@@ -40,8 +41,11 @@ class LocalConfig:
     max_total_tokens: int = 100_000
     provider: str = "local"
     input_mode: str = "vision"
+    device: str = "cpu"
 
     def __post_init__(self):
+        if self.device not in {'cpu', 'gpu'}:
+            raise ValueError('LOCAL_DEVICE_MUST_BE_CPU_OR_GPU')
         if self.input_mode not in {"vision", "metadata"}:
             raise ValueError("LOCAL_INPUT_MODE_INVALID")
         url = urlsplit(self.base_url)
@@ -80,15 +84,18 @@ class LocalClient:
             raise GeminiError("LOCAL_SERVER_UNAVAILABLE_RUN_LOCAL_START") from None
         if self.served_model not in {m.get("id") for m in models}:
             raise GeminiError("LOCAL_MODEL_NOT_SERVED")
-        manifest_path = self.config.runtime / "local-qwen-runtime.json"
-        manifest = read_json(manifest_path) if manifest_path.exists() else {}
+        from .local_backend import load_manifest, manifest_path
+        path = manifest_path(self.config.runtime, self.config.device)
+        manifest = load_manifest(self.config.runtime, self.config.device) if path.exists() else {}
+        if self.config.device == 'gpu' and not manifest:
+            raise GeminiError('GPU_PROFILE_MISSING_RUN_LOCAL_BACKEND_SETUP')
         # Include exact weights in shared job cache keys; a filename alone is not identity.
         if manifest.get("served_model") == self.served_model:
             self.config.model = self.served_model + "@" + manifest["model_sha256"][:16]
         result = {"schema_version": "local-model-preflight/v1", "provider": "local", "selected_model": self.config.model,
                   "served_model": self.served_model, "base_url": self.config.base_url,
                   "model_sha256": manifest.get("model_sha256"), "threads": manifest.get("threads"),
-                  "gpu_layers": manifest.get("gpu_layers"), "cloud_api_calls": 0}
+                  "gpu_layers": manifest.get("gpu_layers"), "device": self.config.device, "cloud_api_calls": 0}
         result["input_mode"] = self.config.input_mode
         if target:
             write_json(target, result)
@@ -131,9 +138,11 @@ class LocalClient:
         started = time.perf_counter()
         try:
             response = self.client.post(self.config.base_url + "/chat/completions", json=body)
-        except httpx.RequestError:
-            self._record({"job_key": job_key, "status": "LOCAL_NETWORK_ERROR_USAGE_UNKNOWN"})
-            raise GeminiError("LOCAL_NETWORK_ERROR_USAGE_UNKNOWN") from None
+        except httpx.RequestError as error:
+            self._record({"job_key": job_key, "status": "LOCAL_NETWORK_ERROR_USAGE_UNKNOWN",
+                          "error_type": type(error).__name__, "error": str(error),
+                          "seconds": round(time.perf_counter() - started, 3)})
+            raise GeminiError("LOCAL_NETWORK_ERROR_USAGE_UNKNOWN: " + type(error).__name__ + ': ' + str(error)) from None
         if response.status_code != 200:
             self._record({"job_key": job_key, "http_status": response.status_code})
             raise GeminiError(f"LOCAL_INFERENCE_HTTP_{response.status_code}")

@@ -4,10 +4,10 @@ param(
     [switch]$Open
 )
 $ErrorActionPreference='Stop'
+. (Join-Path $PSScriptRoot 'paths.ps1')
 $pairRepo=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..\..')).Path
-if (-not $Storage) { $Storage=if ($pairRepo -match '^[Ee]:\\') { Join-Path $pairRepo '.tmp' } else { 'E:\CoachLearningPdf' } }
+if (-not $Storage) { $Storage=$PdfStorageRoot }
 $Storage=[IO.Path]::GetFullPath($Storage)
-if ($Storage -notmatch '^[Ee]:\\') { throw 'Keep converted files and runtime on drive E.' }
 $Pdf=(Resolve-Path -LiteralPath $Pdf.Trim().Trim('"')).Path
 if ([IO.Path]::GetExtension($Pdf) -ine '.pdf') { throw 'Select a PDF file.' }
 $runtime=Join-Path $Storage 'pdf-pipeline-runtime'

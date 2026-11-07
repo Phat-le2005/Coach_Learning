@@ -84,8 +84,7 @@ def run(args):
     source, output = args.input, args.output
     if output == source.parent or (args.v1 and output == args.v1):
         raise ValueError('SEPARATE_V2_OUTPUT_REQUIRED')
-    if os.name == 'nt' and (output.drive.upper() != 'E:' or args.runtime.drive.upper() != 'E:'):
-        raise ValueError('KEEP_RUNTIME_AND_OUTPUT_ON_E')
+
     if (args.workers not in (1, 2) or args.chunk_size < 1 or args.max_page_cache < 1
             or args.chunk_timeout <= 0 or args.run_timeout <= 0 or args.memory_limit_mb < 0
             or args.min_free_disk_mb < 0 or args.stop_after_chunks < 0):

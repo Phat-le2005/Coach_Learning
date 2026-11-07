@@ -6,10 +6,11 @@ param(
     [switch]$Open
 )
 $ErrorActionPreference='Stop'
+. (Join-Path $PSScriptRoot 'paths.ps1')
 $reviewRepo=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..\..')).Path
-if (-not $Runtime) { $Runtime=Join-Path $reviewRepo '.tmp\pdf-pipeline-runtime' }
+if (-not $Runtime) { $Runtime=$PdfRuntimeRoot }
 $Runtime=[IO.Path]::GetFullPath($Runtime)
-if ($Runtime -notmatch '^[Ee]:\\') { throw 'Keep the local model runtime on E.' }
+$env:PDFMETA_RUNTIME_ROOT=$Runtime
 $Job=(Resolve-Path -LiteralPath $Job).Path
 $env:PYTHONPATH=$PSScriptRoot
 $env:PYTHONUTF8='1'

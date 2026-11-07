@@ -1,4 +1,4 @@
-"""Download pinned official llama.cpp runtime and maintainer-built Qwen GGUFs to E."""
+"""Set up pinned llama.cpp and Qwen files in the configured local runtime."""
 from __future__ import annotations
 
 import argparse
@@ -61,8 +61,6 @@ def download(url: str, target: Path, digest: str, size: int):
 
 def setup(runtime: Path):
     runtime = runtime.resolve()
-    if os.name == "nt" and runtime.drive.lower() != "e:":
-        raise ValueError("LOCAL_RUNTIME_MUST_STAY_ON_E")
     for url, relative, digest, size in FILES:
         download(url, runtime / relative, digest, size)
     binary_root = runtime / "llama.cpp" / RELEASE
