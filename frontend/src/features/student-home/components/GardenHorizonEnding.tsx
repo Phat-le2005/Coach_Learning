@@ -2,6 +2,7 @@
 
 import { ArrowUp, Sprout } from "lucide-react";
 
+import { AppFooter } from "@/components/app-shell/AppFooter";
 import styles from "../StudentHome.module.css";
 import { useGardenMotion, useGardenSectionInView } from "./nature/GardenMotionContext";
 
@@ -104,6 +105,7 @@ export function GardenHorizonEnding() {
           </g>
         </svg>
       </div>
+      <AppFooter variant="student" compact />
     </footer>
   );
 }

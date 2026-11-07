@@ -26,7 +26,7 @@ export async function getCsrfToken(): Promise<string> {
   return body.csrf_token;
 }
 
-export async function authenticatedMutation(path: "/auth/login" | "/auth/refresh" | "/auth/logout", body?: Record<string, unknown>): Promise<Record<string, unknown>> {
+export async function authenticatedMutation(path: "/auth/login" | "/auth/register" | "/auth/refresh" | "/auth/logout", body?: Record<string, unknown>): Promise<Record<string, unknown>> {
   const csrfToken = await getCsrfToken();
   const response = await fetch(path, {
     method: "POST",

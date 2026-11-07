@@ -3,9 +3,9 @@ import test from "node:test";
 
 import { accountMenuReducer, initialAccountMenuState } from "../src/lib/auth/account-menu-state";
 import { BrowserAuthError, endBrowserSession, logoutAndRedirect } from "../src/lib/auth/browser";
-import { hasLoginFieldErrors, validateLoginFields } from "../src/lib/auth/login-validation";
+import { hasLoginFieldErrors, validateLoginFields, validateRegisterFields } from "../src/lib/auth/login-validation";
 import { verifiedLoginRole } from "../src/lib/auth/login-session";
-import type { UserRead } from "../src/lib/api/contracts";
+import { validateRegisterRequest, type UserRead } from "../src/lib/api/contracts";
 import type { SessionPayload } from "../src/lib/auth/session-codec";
 
 test("login fields report clear errors before a request is sent", () => {
@@ -19,6 +19,36 @@ test("login fields report clear errors before a request is sent", () => {
     password: "Mật khẩu không được vượt quá 128 ký tự.",
   });
   assert.equal(hasLoginFieldErrors(validateLoginFields("student@example.com", "secret")), false);
+});
+
+test("register fields and contract validate full name, email, 12-char password and confirmation", () => {
+  assert.deepEqual(validateRegisterFields("", "", "short", "mismatch"), {
+    fullName: "Vui lòng nhập họ và tên.",
+    email: "Vui lòng nhập email.",
+    password: "Mật khẩu đăng ký cần ít nhất 12 ký tự.",
+    confirmPassword: "Mật khẩu xác nhận chưa khớp.",
+  });
+  const validErrors = validateRegisterFields(
+    "  Nguyễn Văn An  ",
+    "  student@edums.vn  ",
+    "MatKhauAnToan123!",
+    "MatKhauAnToan123!"
+  );
+  assert.deepEqual(validErrors, {});
+  assert.equal(hasLoginFieldErrors(validErrors), false);
+  assert.deepEqual(
+    validateRegisterRequest({
+      full_name: "  Nguyễn Văn An ",
+      email: "  Student@EduMS.vn ",
+      password: "MatKhauAnToan123!",
+    }),
+    {
+      full_name: "Nguyễn Văn An",
+      email: "student@edums.vn",
+      password: "MatKhauAnToan123!",
+      role: "STUDENT",
+    }
+  );
 });
 
 test("account menu keyboard transitions focus into the dialog and restores the trigger on Escape", () => {

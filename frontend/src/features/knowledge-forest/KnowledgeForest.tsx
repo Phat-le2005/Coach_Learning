@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 
+import { AppFooter } from "@/components/app-shell/AppFooter";
 import { KnowledgeDetailDrawer, type SelectedKnowledgeItem } from "./components/KnowledgeDetailDrawer";
 import { KnowledgeForestFilters } from "./components/KnowledgeForestFilters";
 import { KnowledgeForestHeader } from "./components/KnowledgeForestHeader";
@@ -183,6 +184,7 @@ export function KnowledgeForest({ data, initialSelectedId }: KnowledgeForestProp
             subjectId={data.subject.id}
             onClose={handleCloseDetail}
           />
+          <AppFooter variant="student" compact />
         </>
       )}
     </main>

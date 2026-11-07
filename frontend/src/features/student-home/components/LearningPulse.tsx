@@ -390,92 +390,64 @@ export function LearningPulse({ data }: LearningPulseProps) {
         {/* Card 4: Today's Plan — Stepping-Stone Path */}
         <motion.div variants={fadeUp}>
           <article className={`${styles.pulseGardenCard} ${styles.pulseCardPlan}`}>
-            <div className={styles.metricCopy}>
-              <span
-                className={`${styles.metricIcon} ${styles.metricIconMomentum}`}
-                aria-hidden="true"
-              >
-                <CalendarCheck size={19} />
-              </span>
-              <span className={styles.pulseCardKicker}>Lối bước trong ngày</span>
-              <strong>Kế hoạch hôm nay</strong>
-              <small>
-                {todayPlan
-                  ? todayPlan.notice ?? `${todayPlan.totalEstimatedMinutes} phút ước tính`
-                  : "Chưa có kế hoạch ngày"}
-              </small>
-            </div>
-
-            <div
-              className={styles.planTrailVisual}
-              aria-label={
-                todayPlan
-                  ? `Kế hoạch hôm nay: ${todayPlan.completedCount} trên ${todayPlan.totalCount} nhiệm vụ`
-                  : "Chưa có kế hoạch hôm nay"
-              }
-            >
-              <b>{todayPlan ? `${todayPlan.completedCount}/${todayPlan.totalCount}` : "—"}</b>
-              <div className={styles.steppingStonesRow} aria-hidden="true">
-                {Array.from({ length: totalStones }, (_, idx) => {
-                  const isLit = Boolean(todayPlan && idx < litStones);
-                  return (
-                    <span
-                      key={idx}
-                      className={`${styles.steppingStoneDot} ${
-                        isLit ? styles.steppingStoneLit : ""
-                      }`}
-                    />
-                  );
-                })}
+            <div className={styles.pulseCardTopRow}>
+              <div className={styles.metricCopy}>
+                <span
+                  className={`${styles.metricIcon} ${styles.metricIconMomentum}`}
+                  aria-hidden="true"
+                >
+                  <CalendarCheck size={19} />
+                </span>
+                <span className={styles.pulseCardKicker}>Lối bước trong ngày</span>
+                <strong>Kế hoạch hôm nay</strong>
+                <small>
+                  {todayPlan
+                    ? todayPlan.notice ?? `${todayPlan.totalEstimatedMinutes} phút ước tính`
+                    : "Chưa có kế hoạch ngày"}
+                </small>
               </div>
-              <small>{todayPlan ? `${todayPlan.totalEstimatedMinutes} phút` : "Chưa lập lịch"}</small>
+
+              <div
+                className={styles.planTrailVisual}
+                aria-label={
+                  todayPlan
+                    ? `Kế hoạch hôm nay: ${todayPlan.completedCount} trên ${todayPlan.totalCount} nhiệm vụ`
+                    : "Chưa có kế hoạch hôm nay"
+                }
+              >
+                <b>{todayPlan ? `${todayPlan.completedCount}/${todayPlan.totalCount}` : "—"}</b>
+                <div className={styles.steppingStonesRow} aria-hidden="true">
+                  {Array.from({ length: totalStones }, (_, idx) => {
+                    const isLit = Boolean(todayPlan && idx < litStones);
+                    return (
+                      <span
+                        key={idx}
+                        className={`${styles.steppingStoneDot} ${
+                          isLit ? styles.steppingStoneLit : ""
+                        }`}
+                      />
+                    );
+                  })}
+                </div>
+                <small>{todayPlan ? `${todayPlan.totalEstimatedMinutes} phút` : "Chưa lập lịch"}</small>
+              </div>
             </div>
 
             {!todayPlan || todayPlan.totalCount === 0 ? (
               <button
                 type="button"
                 onClick={() => setShowGoalModal(true)}
-                style={{
-                  marginTop: "12px",
-                  width: "100%",
-                  padding: "8px 12px",
-                  borderRadius: "10px",
-                  border: "1px solid rgba(35, 166, 122, 0.4)",
-                  background: "linear-gradient(135deg, rgba(35, 166, 122, 0.22), rgba(139, 229, 194, 0.15))",
-                  color: "#14533f",
-                  fontWeight: 700,
-                  fontSize: "0.82rem",
-                  cursor: "pointer",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "6px",
-                  transition: "all 0.2s ease",
-                }}
+                className={styles.pulsePlanPrimaryBtn}
               >
                 <Sparkles size={14} aria-hidden="true" />
                 Gieo lộ trình 7 ngày
               </button>
             ) : (
-              <div style={{ marginTop: "12px", display: "flex", flexDirection: "column", gap: "6px" }}>
+              <div className={styles.pulsePlanActionStack}>
                 <button
                   type="button"
                   onClick={() => setShowRoadmapModal(true)}
-                  style={{
-                    width: "100%",
-                    padding: "7px 10px",
-                    borderRadius: "8px",
-                    border: "1px solid rgba(35, 166, 122, 0.45)",
-                    background: "linear-gradient(135deg, rgba(35, 166, 122, 0.18), rgba(139, 229, 194, 0.12))",
-                    color: "#14533f",
-                    fontWeight: 700,
-                    fontSize: "0.8rem",
-                    cursor: "pointer",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: "6px",
-                  }}
+                  className={styles.pulsePlanPrimaryBtn}
                 >
                   <Compass size={13} aria-hidden="true" />
                   Xem lộ trình 7 ngày
@@ -484,21 +456,7 @@ export function LearningPulse({ data }: LearningPulseProps) {
                   type="button"
                   onClick={handleRecalculate}
                   disabled={isRecalculating}
-                  style={{
-                    width: "100%",
-                    padding: "5px 8px",
-                    borderRadius: "6px",
-                    border: "1px solid rgba(35, 166, 122, 0.2)",
-                    background: "rgba(255, 255, 255, 0.5)",
-                    color: "#556d63",
-                    fontWeight: 600,
-                    fontSize: "0.74rem",
-                    cursor: isRecalculating ? "wait" : "pointer",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: "5px",
-                  }}
+                  className={styles.pulsePlanSecondaryBtn}
                   title="Tái cân bằng khối lượng học 7 ngày theo nhịp mới"
                 >
                   <RotateCcw size={11} aria-hidden="true" />

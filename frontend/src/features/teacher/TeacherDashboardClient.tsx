@@ -24,6 +24,7 @@ import { AnalyticsTab } from "./components/AnalyticsTab";
 import { CreateClassModal } from "./components/CreateClassModal";
 import { UploadMaterialModal } from "./components/UploadMaterialModal";
 import { TeacherTheoryClient } from "@/features/theory-maps/TeacherTheoryClient";
+import { AppFooter } from "@/components/app-shell/AppFooter";
 import styles from "./TeacherDashboard.module.css";
 
 export type TabKey = "classes" | "materials" | "theory" | "submissions" | "analytics";
@@ -460,6 +461,8 @@ export function TeacherDashboardClient({
           )}
         </div>
       </main>
+
+      <AppFooter variant="teacher" />
 
       {/* 5. Modals */}
       <CreateClassModal

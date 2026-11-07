@@ -1,4 +1,4 @@
-﻿/* ==========================================================================
+/* ==========================================================================
    Knowledge Forest Â· Interactive Knowledge Map Styles
    ========================================================================== */
 
@@ -1367,33 +1367,36 @@
   flex-wrap: wrap;
   position: relative;
   z-index: 2;
+  min-width: 0;
+  width: 100%;
 }
 
 .cosmicNavPills {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 8px;
-  overflow-x: auto;
   padding: 4px 2px 8px;
+  width: 100%;
   max-width: 100%;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(99, 201, 154, 0.3) transparent;
+  min-width: 0;
 }
 
 .cosmicNavBtn {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  padding: 8px 16px;
+  padding: 8px 14px;
   border-radius: var(--radius-pill);
-  font-size: 0.82rem;
+  font-size: 0.81rem;
   font-weight: 750;
   background: rgba(255, 255, 255, 0.88);
   border: 1.5px solid rgba(220, 235, 228, 0.9);
   color: #173f34;
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  white-space: nowrap;
+  white-space: normal;
+  text-align: left;
   box-shadow: 0 4px 14px rgba(16, 46, 38, 0.04);
 }
 

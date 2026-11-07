@@ -291,7 +291,7 @@ export function KnowledgeForestTree({
                   }}
                 />
                 <span>
-                  {index + 1}. {shortLabel(chapter.name, 18)}
+                  {index + 1}. {chapter.name}
                 </span>
               </button>
             );
@@ -441,20 +441,15 @@ export function KnowledgeForestTree({
 
                       {/* Topics Preview Badges */}
                       <div className={styles.islandTopicPills}>
-                        {chapter.topics.slice(0, 3).map((topic) => (
+                        {(chapter.topics.some((t) => t.problemTypes.length > 0)
+                          ? chapter.topics.filter((t) => t.problemTypes.length > 0)
+                          : chapter.topics
+                        ).map((topic) => (
                           <span key={topic.id} className={styles.islandTopicPillItem}>
-                            <BookOpen size={11} style={{ color: theme.color }} />
-                            {shortLabel(topic.name, 18)}
+                            <BookOpen size={11} style={{ color: theme.color, flexShrink: 0 }} />
+                            <span>{topic.name}</span>
                           </span>
                         ))}
-                        {chapter.topics.length > 3 ? (
-                          <span
-                            className={styles.islandTopicPillItem}
-                            style={{ color: "#047857", fontWeight: 800 }}
-                          >
-                            +{chapter.topics.length - 3} chủ đề nữa
-                          </span>
-                        ) : null}
                       </div>
                     </div>
 
@@ -618,7 +613,10 @@ export function KnowledgeForestTree({
                   </span>
                 </div>
 
-                {activeChapter.topics.map((topic, topicIdx) => (
+                {(activeChapter.topics.some((t) => t.problemTypes.length > 0)
+                  ? activeChapter.topics.filter((t) => t.problemTypes.length > 0)
+                  : activeChapter.topics
+                ).map((topic, topicIdx) => (
                   <div key={topic.id} className={styles.satelliteTopicCard}>
                     <div
                       style={{
