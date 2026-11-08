@@ -31,6 +31,7 @@ logger = logging.getLogger(__name__)
 # Cache genai.Client by API key to reuse TLS / HTTP/2 connection
 _CLIENT_CACHE: dict[str, Any] = {}
 _MODEL_STRATEGY_CACHE: dict[str, str] = {}
+_LAST_WORKING_MODEL: str | None = None
 
 
 def _get_genai_client(api_key: str) -> Any:
@@ -163,17 +164,17 @@ class GeminiMathOCRAdapter(MathOCRAdapter):
             f"Xuất kết quả đúng cấu trúc JSON yêu cầu."
         )
 
-        # 3. Build Turbo Thinking and Media Resolution Config
+        # 3. Build Turbo Thinking (thinking_budget=0) and Media Resolution Config
         thinking_cfg = None
         if hasattr(types, "ThinkingConfig"):
             try:
                 thinking_cfg = types.ThinkingConfig(
-                    thinking_level="MINIMAL", include_thoughts=False
+                    thinking_budget=0, include_thoughts=False
                 )
             except Exception:
                 try:
                     thinking_cfg = types.ThinkingConfig(
-                        thinking_budget=0, include_thoughts=False
+                        thinking_level="LOW", include_thoughts=False
                     )
                 except Exception:
                     thinking_cfg = None
@@ -191,16 +192,18 @@ class GeminiMathOCRAdapter(MathOCRAdapter):
 
         gen_config = types.GenerateContentConfig(**cfg_kwargs)
 
-        # 4. Fallback chain: Primary Model -> Gemini 3.8 Flash -> Gemini 3.5 Flash -> Gemini 3.5 Flash Lite
+        # 4. Fallback chain: prioritize cached working model & gemini-3.5-flash (zero 503 delay)
+        global _LAST_WORKING_MODEL
         model_candidates = [
+            _LAST_WORKING_MODEL,
+            "gemini-3.5-flash",
             self.model_name,
             "gemini-3.8-flash",
-            "gemini-3.5-flash",
             "gemini-3.5-flash-lite",
         ]
-        # Keep unique models preserving order
+        # Keep unique non-empty models preserving order
         seen = set()
-        model_queue = [m for m in model_candidates if not (m in seen or seen.add(m))]
+        model_queue = [m for m in model_candidates if m and not (m in seen or seen.add(m))]
 
         last_error = None
         for candidate_model in model_queue:
@@ -221,6 +224,7 @@ class GeminiMathOCRAdapter(MathOCRAdapter):
                     )
                     text = response.text or ""
                     parsed = json.loads(text)
+                    _LAST_WORKING_MODEL = candidate_model
                     return self._to_response(parsed, strokes)
                 except Exception as exc:
                     last_error = exc

@@ -135,9 +135,9 @@ export function PageOcrReviewModal({
     activeRunRef.current = run;
 
     async function recognizeUnitStrokes(strokes: InkStroke[]) {
-      if (apiClient && accessToken && attemptId) {
+      if (apiClient && attemptId) {
         try {
-          return await apiClient.recognizeMathInk(accessToken, attemptId, {
+          return await apiClient.recognizeMathInk(accessToken ?? "", attemptId, {
             page_index: pageIndex,
             stroke_ids: strokes.map((s) => s.id),
             strokes,
@@ -202,9 +202,9 @@ export function PageOcrReviewModal({
     changeRow({ status: 'recognizing', error: null, touched: false });
     try {
       let result;
-      if (apiClient && accessToken && attemptId) {
+      if (apiClient && attemptId) {
         try {
-          result = await apiClient.recognizeMathInk(accessToken, attemptId, {
+          result = await apiClient.recognizeMathInk(accessToken ?? "", attemptId, {
             page_index: pageIndex,
             stroke_ids: row.region.strokes.map((s) => s.id),
             strokes: row.region.strokes,

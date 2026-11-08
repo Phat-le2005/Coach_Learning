@@ -7,7 +7,7 @@ import { OcrInkPreview } from "./OcrInkPreview";
 import { OcrMathPreview } from "./OcrMathPreview";
 import { prepareCoreReview, recognizeCoreUnit, applyRecognition, declareStepBoundary, optionalLayout, sourceIdentity, type CoreReview } from "../utils/ocr-v2-core";
 import { recognizeHandwrittenMathEvidence, type HandwrittenMathEvidence } from "../utils/handwritten-ocr";
-import { buildScopeIR, groupIrUnits, ungroupIrUnit, reassignScope, lassoIds, type OcrSource, type RouteKind } from "../utils/ocr-v2-geometry";
+import { buildScopeIR, groupIrUnits, ungroupIrUnit, reassignScope, lassoIds, type OcrSource, type RouteKind, type ScopeProposal } from "../utils/ocr-v2-geometry";
 import { approveContentUnit, editContentUnit, editContainerRelation, confirmTranscriptionReadingOrder, getOrderedReviewUnits, getRootContentUnits, setSiblingReadingOrder, type ContentUnitKind } from "../utils/structured-transcription-ir";
 import { loadTranscription, saveTranscription, transcriptionKey } from "../utils/ocr-transcription-storage";
 import { generateUuid } from "../utils/ink-math";
@@ -37,21 +37,54 @@ export function PageOcrV2ReviewModal(props: Props) {
   const ink = review?.ir.sourceSnapshot.strokes ?? [], strokes = ink.filter(s => unit?.sourceStrokeIds.includes(s.id));
   const locked = busy || stale || storageBlocked || Boolean(props.blockedByBatch) || Boolean(unit && review?.savedUnitIds.includes(unit.id));
   async function persist(value:CoreReview){persistedVersion.current=await saveTranscription(key.current,value,persistedVersion.current);}
+  function buildUnifiedGeminiReview(source: OcrSource, attemptId: string): CoreReview {
+    const pen = source.strokes.filter(s => s.tool === "PEN");
+    const scope: ScopeProposal = {
+      id: "gemini-1",
+      regionIds: ["gemini-region-1"],
+      rawLabel: "formula",
+      rawScore: 1,
+      kind: "MATH",
+      strokeIds: pen.map(s => s.id),
+      candidateStrokeIds: pen.map(s => s.id),
+      coverage: Object.fromEntries(pen.map(s => [s.id, 1])),
+      flags: ["GEMINI_UNIFIED_PAGE_SCOPE"],
+      method: "GEMINI_UNIFIED_PAGE_SCOPE",
+    };
+    const scopes = pen.length ? [scope] : [];
+    const ir = { ...buildScopeIR(source, scopes), attemptId };
+    return {
+      schemaVersion: "ocr-core-review/1",
+      ir,
+      scopes,
+      mode: "HYBRID",
+      detectorStatus: "GEMINI_VISION",
+      relations: [],
+      evidence: [],
+      savedUnitIds: [],
+      savedSteps: [],
+      boundaries: [],
+    };
+  }
+
   async function runUnitRecognition(unitStrokes: InkStroke[]): Promise<HandwrittenMathEvidence> {
-    if (props.apiClient && props.accessToken && props.attemptId) {
+    if (props.apiClient && props.attemptId) {
       try {
-        const res = await props.apiClient.recognizeMathInk(props.accessToken, props.attemptId, {
+        const res = await props.apiClient.recognizeMathInk(props.accessToken ?? "", props.attemptId, {
           page_index: props.pageIndex,
           stroke_ids: unitStrokes.map(s => s.id),
           strokes: unitStrokes,
         });
+        if (res.suggested_step_type && STEP_KINDS.includes(res.suggested_step_type)) {
+          setStepKind(prev => prev || res.suggested_step_type);
+        }
         return {
           rawLatex: res.latex,
           latex: res.latex,
-          tokenIds: [],
-          durationMs: 0,
-          encoderMs: 0,
-          decoderMs: 0,
+          tokenIds: [1],
+          durationMs: 1,
+          encoderMs: 1,
+          decoderMs: 1,
         };
       } catch (err: unknown) {
         console.warn("Gemini OCR recognition failed, falling back to local CoMER:", err);
@@ -73,12 +106,12 @@ export function PageOcrV2ReviewModal(props: Props) {
   useEffect(() => {
     live.current = true; const generation = ++runId.current;
     void (async () => { try {
-      key.current = await transcriptionKey(props.attemptId!, sourceIdentity(props.source));
+      key.current = `gemini-v2:${await transcriptionKey(props.attemptId!, sourceIdentity(props.source))}`;
       const stored = await loadTranscription(key.current);
       if (!live.current || generation !== runId.current) return;
       persistedVersion.current=stored?.localVersion;
       skipStoredSave.current=Boolean(stored);
-      let initial = stored ?? await prepareCoreReview(props.source, props.attemptId!, optionalLayout);
+      let initial = stored ?? (props.apiClient && props.attemptId ? buildUnifiedGeminiReview(props.source, props.attemptId) : await prepareCoreReview(props.source, props.attemptId!, optionalLayout));
       // A server commit can finish before the local transcription ledger is written.
       // Recover only frozen, explicit boundary actions verified against the actual server step.
       if(stored&&props.apiClient){
@@ -92,8 +125,9 @@ export function PageOcrV2ReviewModal(props: Props) {
       if (!live.current || generation !== runId.current || !sourceGuard.current()) return;
       if (JSON.stringify(initial.ir.sourceSnapshot.strokes) !== JSON.stringify(props.source.strokes.filter(s => s.tool === "PEN")) || initial.ir.sourceRevision !== props.source.sourceRevision) throw Error("STORED_SOURCE_MISMATCH");
       latest.current = initial; setReview(initial); setSelected(getRootContentUnits(initial.ir.contentUnits)[0]?.id ?? "");
-      if (!stored) await recognize(initial.ir.contentUnits.filter(u => u.kind === "MATH" && u.role === "ATOMIC").slice(0,12).map(u=>u.id), initial, generation);
-      setStorageStatus(stored ? "Đã khôi phục bản chép local đúng revision" : "Bản chép mới; phần chưa nhận diện cần đối chiếu");
+      const pendingIds = initial.ir.contentUnits.filter(u => u.kind === "MATH" && u.role === "ATOMIC" && (!stored || !u.rawRecognition || u.rawRecognition === "UNRESOLVED")).slice(0,12).map(u=>u.id);
+      if (pendingIds.length) await recognize(pendingIds, initial, generation);
+      setStorageStatus(stored ? "Đã khôi phục bản chép Gemini OCR" : "Đã nhận diện bằng Gemini OCR; đối chiếu và xác nhận");
     } catch (e) { if (live.current && generation === runId.current) setError(String(e)); } finally { if (live.current && generation === runId.current) setBusy(false); } })();
     return () => { live.current = false; runId.current++; };
     // Snapshot identity is immutable for this modal session.
