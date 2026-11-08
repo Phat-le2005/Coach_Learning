@@ -1,10 +1,10 @@
 # Kiến trúc Coach Learning — Graphify
 
-Sinh lúc 2026-11-08T07:25:31+07:00; Graphify `0.9.102`; HEAD `98c0ae252d76c823e6944160052e2668c2add083`.
+Sinh lúc 2026-11-08T07:52:39+07:00; Graphify `0.9.102`; HEAD `9f2e5ac412ad84e8e9329f97d168d0ecb96d9dd8`.
 Snapshot gồm cả source chưa commit trong working tree. Không đại diện riêng cho HEAD hoặc production.
 
-Đã phát hiện **1,636 file code**, tạo **15,912 nodes / 69,982 quan hệ / 453 communities**.
-Có 1,611 file xuất hiện trên node. Fingerprint source: `6b85b563bfa3f0267c8b97e8f928c54989b852010494d92cecd48c9501fee8a3`.
+Đã phát hiện **1,650 file code**, tạo **15,947 nodes / 70,069 quan hệ / 456 communities**.
+Có 1,623 file xuất hiện trên node. Fingerprint source: `03f1068042c82fa2b348414444a69141d6db3e3f5ece56c5df892594c2eab6c0`.
 Chỉ phân tích AST cục bộ; semantic LLM: **0 tokens**. Nhãn community lấy từ hub, không dùng model.
 
 ![Sơ đồ kiến trúc](architecture.svg)
@@ -55,9 +55,9 @@ flowchart LR
 |---|---:|---:|
 | AI | 377 | 39 |
 | Backend | 5,419 | 574 |
-| Frontend | 2,440 | 372 |
-| Other | 2,011 | 22 |
-| Tests | 3,741 | 406 |
+| Frontend | 2,463 | 379 |
+| Other | 2,015 | 22 |
+| Tests | 3,749 | 411 |
 | Tools | 1,924 | 198 |
 
 AI trong bảng chỉ gồm `backend/app/ai`, `rag`, `tutor`; adapter AI/OCR trong domain khác vẫn thuộc Backend.
@@ -75,13 +75,13 @@ Các cặp không có hướng; số lượng là link lưu trong graph, không 
 | Backend | Other | 6,093 |
 | Backend | Tests | 13,423 |
 | Backend | Tools | 428 |
-| Frontend | Other | 179 |
-| Frontend | Tests | 752 |
-| Other | Tests | 4,351 |
+| Frontend | Other | 183 |
+| Frontend | Tests | 768 |
+| Other | Tests | 4,358 |
 | Other | Tools | 1,331 |
 | Tests | Tools | 1,333 |
 
-Confidence: `EXTRACTED`: 59,734, `INFERRED`: 10,248.
+Confidence: `EXTRACTED`: 59,820, `INFERRED`: 10,249.
 
 ## Các cặp module liên kết nhiều nhất
 

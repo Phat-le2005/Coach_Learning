@@ -1,0 +1,22 @@
+.wrap { position:sticky; top:12px; z-index:70; width:min(100%,1320px); margin:0 auto 24px; }
+.nav { display:flex; align-items:center; justify-content:space-between; gap:24px; min-height:76px; padding:10px 16px 10px 22px; border:1px solid var(--line,#dfe8dd); border-radius:22px; background:var(--surface,#f8fcf8); color:var(--ink,#173e31); box-shadow:0 10px 30px #153d2b0c; font-family:EdumsHome,sans-serif; }
+.brand { display:inline-flex; align-items:center; min-width:155px; text-decoration:none; }
+.brand svg { width:37px; height:37px; }
+.links { display:flex; align-items:center; gap:8px; }
+.link { display:flex; align-items:center; gap:6px; min-height:44px; padding:8px 13px; border-radius:12px; color:var(--muted,#586d60); font-size:13px; line-height:1.5; text-decoration:none; white-space:nowrap; }
+.link:hover { color:var(--ink,#173e31); background:var(--soft,#eaf0e5); }
+.link[aria-current=page] { color:var(--ink,#173e31); background:var(--soft,#eaf0e5); font-weight:600; }
+.actions { display:flex; align-items:center; gap:4px; }
+.icon { width:44px; height:44px; display:grid; place-items:center; border:0; border-radius:50%; background:transparent; color:var(--muted,#586d60); cursor:pointer; }
+.icon:hover { background:var(--soft,#eaf0e5); color:var(--ink,#173e31); }
+.badge { font-size:11px; min-width:19px; height:19px; display:grid; place-items:center; border-radius:50%; color:var(--surface,#fff); background:var(--brand,#176a53); }
+.streak { font-size:12px; color:var(--muted,#586d60); white-space:nowrap; }
+.mobile { display:none; }
+.nav :is(a,button):focus-visible,.mobile a:focus-visible { outline:3px solid var(--focus,#187c5c); outline-offset:3px; }
+@media(max-width:1120px) { .nav { gap:12px; padding-left:16px; } .brand { min-width:130px; } .link { font-size:12px; padding:8px 9px; } .links { gap:2px; } .streak { display:none; } }
+@media(max-width:760px) { .wrap { top:8px; margin-bottom:18px; } .nav { min-height:68px; border-radius:18px; padding:8px 10px 8px 15px; gap:6px; } .links { display:none; } .brand { min-width:116px; } .brand svg { width:31px; height:31px; } .brand small { display:none; } .actions { gap:0; }
+  .mobile { position:fixed; bottom:0; left:0; right:0; z-index:80; display:flex; justify-content:space-around; padding:7px 10px calc(7px + env(safe-area-inset-bottom)); border-top:1px solid var(--line,#dfe8dd); background:var(--surface,#fff); font-family:EdumsHome,sans-serif; }
+  .mobile a { min-width:64px; min-height:48px; padding:2px 7px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; position:relative; text-decoration:none; color:var(--muted,#586d60); font-size:12px; line-height:1.5; }
+  .mobile a[aria-current=page] { color:var(--brand,#176a53); font-weight:600; }
+  .mobile .badge { position:absolute; top:0; right:0; font-size:10px; }
+}

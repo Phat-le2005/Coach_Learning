@@ -101,7 +101,7 @@ export function ActionDetailModal({ isOpen, onClose, action, priority }: ActionD
   const title = priority ? priority.targetName : action?.title ?? "Chi tiết hành động";
   const badgeLabel = priority ? "Mục tiêu ưu tiên" : action?.badgeLabel ?? "Học tập";
   const description = priority
-    ? `Dạng bài này được thuật toán tối ưu hóa đường cong học tập gợi ý dựa trên năng lực và mục tiêu học tập.`
+    ? `Nội dung được đề xuất từ dữ liệu học tập và các ưu tiên hiện tại của bạn.`
     : action?.description;
 
   return (
@@ -233,7 +233,7 @@ export function ActionDetailModal({ isOpen, onClose, action, priority }: ActionD
             <p className={styles.guidanceText}>
               {action
                 ? action.guidanceText
-                : "Mục tiêu được ưu tiên để bù đắp các lỗ hổng biến đổi trong các bài làm trước. Bạn chỉ cần dành khoảng 5 phút làm 2-3 câu ngắn để củng cố ngay."}
+                : "Xem lại lý do ưu tiên, đối chiếu kiến thức liên quan rồi chọn bài luyện phù hợp."}
             </p>
           </div>
         </div>

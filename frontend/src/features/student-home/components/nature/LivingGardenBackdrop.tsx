@@ -63,12 +63,12 @@ const BACKGROUND_FALLING_LEAVES: BackgroundLeafSpec[] = [
   },
 ];
 
-export function LivingGardenBackdrop() {
+export function LivingGardenBackdrop({ refined = false }: { refined?: boolean }) {
   const { shouldAnimate, isMobile } = useGardenMotion();
   const { scrollYProgress } = useScroll();
 
   // Gentle 2.5D depth parallax across the entire page scroll (disabled on mobile or when paused)
-  const enableParallax = shouldAnimate && !isMobile;
+  const enableParallax = shouldAnimate && !isMobile && !refined;
   const horizonY = useTransform(
     scrollYProgress,
     [0, 1],
@@ -86,7 +86,7 @@ export function LivingGardenBackdrop() {
 
   return (
     <div
-      className={`${styles.backdropRoot} ${!shouldAnimate ? styles.paused : ""}`}
+      className={`${styles.backdropRoot} ${refined ? styles.refined : ""} ${!shouldAnimate ? styles.paused : ""}`}
       aria-hidden="true"
     >
       {/* 1. Global Natural Sunlight Shafts */}
@@ -160,7 +160,7 @@ export function LivingGardenBackdrop() {
       </motion.div>
 
       {/* 6. Soft Background Pendulum Falling Leaves */}
-      <div className={styles.floatingLeavesLayer}>
+      {!refined && <div className={styles.floatingLeavesLayer}>
         {visibleBgLeaves.map((leaf, index) => {
           const dropStyle: CSSProperties & Record<string, string> = {
             left: leaf.left,
@@ -181,7 +181,7 @@ export function LivingGardenBackdrop() {
             </div>
           );
         })}
-      </div>
+      </div>}
 
       {/* 7. Ambient Sunlight & Pollen Particles */}
       <FloatingParticles reducedDensity={isMobile} />

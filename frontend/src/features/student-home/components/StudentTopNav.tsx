@@ -7,7 +7,11 @@ import Link from "next/link";
 import { AccountMenu } from "@/components/auth/AccountMenu";
 
 import styles from "../StudentHome.module.css";
+import ui from "../HomeRefresh.module.css";
+import { useHomeAppearance } from "./HomeAppearance";
+import { HomeIcon } from "./HomeIcon";
 import { BrandMark } from "./BrandMark";
+import nav from "./StudentNav.module.css";
 import { useGardenMotion } from "./nature/GardenMotionContext";
 
 export interface StudentTopNavProps {
@@ -18,6 +22,7 @@ export interface StudentTopNavProps {
   subjectId?: string;
   showAmbientToggle?: boolean;
   pendingAssignmentsCount?: number;
+  refreshed?: boolean;
 }
 
 export function StudentTopNav({
@@ -28,8 +33,10 @@ export function StudentTopNav({
   subjectId,
   showAmbientToggle = false,
   pendingAssignmentsCount,
+  refreshed = false,
 }: StudentTopNavProps) {
   const { ambientEnabled, toggleAmbient } = useGardenMotion();
+  const { theme, toggleTheme } = useHomeAppearance();
   const [badgeCount, setBadgeCount] = useState<number | undefined>(pendingAssignmentsCount);
 
   useEffect(() => {
@@ -89,53 +96,48 @@ export function StudentTopNav({
   const effectsActive = ambientEnabled;
 
   return (
-    <header className={styles.topNavWrap}>
-      <nav className={styles.topNav} aria-label="Điều hướng học sinh">
-        <Link className={styles.brandLink} href={homeHref}>
+    <header className={nav.wrap}>
+      <nav className={nav.nav} aria-label="Điều hướng học sinh">
+        <Link className={nav.brand} href={homeHref}>
           <BrandMark />
         </Link>
 
-        <div className={styles.desktopNav}>
+        <div className={nav.links}>
           {navItems.map((item) => (
             <Link
-              className={item.current ? styles.desktopNavActive : styles.desktopNavLink}
+              className={nav.link}
               href={item.href}
               aria-current={item.current ? "page" : undefined}
               key={item.label}
             >
               <span>{item.label}</span>
               {item.isAttempts && item.badge !== undefined && item.badge > 0 && (
-                <span className={styles.navNotificationBadge}>{item.badge}</span>
+                <span className={nav.badge}>{item.badge}</span>
               )}
             </Link>
           ))}
         </div>
 
-        <div className={styles.navActions}>
+        <div className={nav.actions}>
           {showAmbientToggle ? (
             <button
               type="button"
               onClick={toggleAmbient}
-              className={`${styles.ambientToggleBtn} ${
-                effectsActive ? styles.ambientToggleActive : styles.ambientToggleMuted
-              }`}
+              className={nav.icon}
               aria-pressed={effectsActive}
+              aria-label={effectsActive ? "Tắt hiệu ứng lá rơi" : "Bật hiệu ứng lá rơi"}
               title={
                 effectsActive
                   ? "Đang bật chuyển động thiên nhiên (Nhấn để chuyển sang chế độ tĩnh)"
                   : "Đang tắt chuyển động thiên nhiên (Nhấn để bật lại)"
               }
             >
-              {effectsActive ? (
-                <Wind size={15} aria-hidden="true" />
-              ) : (
-                <Sparkles size={15} aria-hidden="true" />
-              )}
-              <span>{effectsActive ? "Gió vườn" : "Tĩnh"}</span>
+              <HomeIcon name="wind" />
             </button>
           ) : null}
 
-          {activeDays !== undefined && activeDays > 0 ? (
+          <button type="button" className={nav.icon} aria-pressed={theme === "dark"} aria-label={theme === "dark" ? "Chuyển sang giao diện sáng" : "Chuyển sang giao diện tối"} title={theme === "dark" ? "Giao diện sáng" : "Giao diện tối"} onClick={toggleTheme}><HomeIcon name={theme === "dark" ? "sun" : "moon"} /></button>
+          {!refreshed && activeDays !== undefined && activeDays > 0 ? (
             <span
               className={styles.momentumPill}
               aria-label={`${activeDays} ngày học liên tục`}

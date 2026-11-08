@@ -1,0 +1,28 @@
+{
+  "fonts": [
+    {
+      "file": "BeVietnamPro-Bold.woff2",
+      "sha256": "f93643fcd4f00bc8ac7c758d19b2f37f8d8ec04059530c550b741520513a16ef"
+    },
+    {
+      "file": "BeVietnamPro-Medium.woff2",
+      "sha256": "e2a311d1fedab57ead29797f29c151b54ad56f3df44fad1f660f1baa1d9a5d37"
+    },
+    {
+      "file": "BeVietnamPro-Regular.woff2",
+      "sha256": "69aecc992c3aeef213fb8c1ce4dec7b2956a7ed9754db7f3b65b43f56b9ae6dd"
+    },
+    {
+      "file": "BeVietnamPro-SemiBold.woff2",
+      "sha256": "746dcc657f272a1229febc6cf5b2da3929983343cdb605a828f7909de465dfea"
+    },
+    {
+      "file": "PatrickHand-Regular.woff2",
+      "sha256": "4693b4de059ac3d651ef2165800fe01b8ca6eef8f2d6a7f8498c474191448b08"
+    }
+  ],
+  "fontSource": "https://github.com/google/fonts/tree/main/ofl",
+  "iconsSource": "https://github.com/phosphor-icons/core/tree/main/assets/duotone",
+  "iconsSha256": "89d10b110481f7d3ce94b85798f643946b0a8002ccb0fc04bbcf8cfc7a9dd19f",
+  "dataPolicy": "No private captures, account data or OCR model outputs included."
+}

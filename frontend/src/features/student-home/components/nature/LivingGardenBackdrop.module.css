@@ -27,6 +27,25 @@
 }
 
 /* Global Sunlight Shafts (God Rays) */
+.refined {
+  background: radial-gradient(ellipse at 12% 20%, #bddfd3aa, transparent 58%),
+    radial-gradient(ellipse at 96% 75%, #dde9be80, transparent 52%),
+    linear-gradient(180deg, #e4f1eb, #f2f6ed 48%, #dfede3);
+}
+.refined .sunlightLayer { opacity: .4; }
+.refined .distantHorizonSvg { top: 32vh; opacity: .3; }
+.refined .midgroundCanopy { opacity: .45; }
+.refined .foregroundCornerLeft, .refined .foregroundCornerRight { opacity: .3; }
+:global([data-home-theme="dark"]) .refined {
+  background: radial-gradient(ellipse at 8% 24%, #264f3c70, transparent 60%),
+    radial-gradient(ellipse at 98% 85%, #38452d60, transparent 58%),
+    linear-gradient(180deg, #16271f, #1a2d24 55%, #14251d);
+}
+:global([data-home-theme="dark"]) .refined .sunlightLayer { opacity: .08; }
+:global([data-home-theme="dark"]) .refined .skyCloudLayer { opacity: .12; }
+:global([data-home-theme="dark"]) .refined .landscapeLayer,
+:global([data-home-theme="dark"]) .refined .midgroundCanopy { opacity: .16; }
+
 .sunlightLayer {
   position: absolute;
   inset: -10% -10% 0 -10%;

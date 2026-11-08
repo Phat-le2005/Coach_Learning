@@ -14,6 +14,7 @@ export interface KnowledgeCanopyProps {
   ghost?: boolean;
   actionType?: StudentHomeActionType;
   targetName?: string;
+  compact?: boolean;
 }
 
 const NODE_CONFIGS = [
@@ -47,6 +48,7 @@ export function KnowledgeCanopy({
   subjectName,
   ghost = false,
   targetName,
+  compact = false,
 }: KnowledgeCanopyProps) {
   const titleId = useId();
   const { shouldAnimate } = useGardenMotion();
@@ -63,7 +65,7 @@ export function KnowledgeCanopy({
 
   return (
     <div
-      className={`${styles.canopyWrap} ${!shouldAnimate ? styles.canopyPaused : ""}`}
+      className={`${styles.canopyWrap} ${compact ? styles.canopyCompact : ""} ${!shouldAnimate ? styles.canopyPaused : ""}`}
       data-testid="galaxy-radar-widget"
     >
       <svg
@@ -280,7 +282,7 @@ export function KnowledgeCanopy({
       </svg>
 
       {/* Dynamic Glass Status Pill below Canopy */}
-      <div
+      {(!compact || activeRegion) && <div
         className={`${styles.tooltipWrap} ${
           activeRegion ? styles.tooltipWrapActive : ""
         }`}
@@ -306,7 +308,7 @@ export function KnowledgeCanopy({
             </span>
           </span>
         )}
-      </div>
+      </div>}
     </div>
   );
 }
