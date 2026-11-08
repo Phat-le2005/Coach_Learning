@@ -36,7 +36,7 @@ def _normalize_math_text(s: str) -> str:
     for k, v in _SUPERSCRIPTS.items():
         s = s.replace(k, v)
     s = s.replace(r'\\', ' ')
-    s = re.sub(r'\\begin\{[^}]*\}|\\end\{[^}]*\}|\\[a-zA-Z]+|[{}[\]\\]', ' ', s)
+    s = re.sub(r'\\begin\{[^}]*\}|\\end\{[^}]*\}|\\[a-zA-Z]+|[{}[\]\\$]', ' ', s)
     s = re.sub(r'\s+', ' ', s).strip()
     return s
 

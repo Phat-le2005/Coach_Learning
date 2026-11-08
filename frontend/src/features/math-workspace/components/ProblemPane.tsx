@@ -391,6 +391,16 @@ export function ProblemPane({
             <div className={styles.footerSubmitAction}>
               <button
                 type="button"
+                className={styles.buttonSecondary}
+                onClick={onPrepareSubmission}
+                disabled={isSubmitting || isReviewing}
+                title="Mở giao diện trích xuất trang chi tiết để kiểm tra và chỉnh sửa từng bước"
+                style={{ width: "100%", justifyContent: "center", marginBottom: "0.5rem" }}
+              >
+                <Sparkles size={15} /> Trích xuất trang (OCR)
+              </button>
+              <button
+                type="button"
                 className={styles.primaryGradeButton}
                 onClick={() => void onSubmitSolution()}
                 disabled={isSubmitting || isReviewing || submissionBlocked || !submission.showSubmitButton}

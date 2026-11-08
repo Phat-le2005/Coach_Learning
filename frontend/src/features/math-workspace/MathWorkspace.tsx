@@ -746,6 +746,14 @@ export function MathWorkspace({
     setOcrError(null);
     setIsRecognizingOCR(true);
     try {
+      if (attempt && ["SUBMITTED", "EVALUATED"].includes(attempt.status)) {
+        try {
+          const reopened = await apiClient.reopenMathAttempt(accessToken, attemptId);
+          setAttempt(reopened);
+        } catch (reopenErr) {
+          console.warn("Could not reopen attempt for OCR:", reopenErr);
+        }
+      }
       if (liveEnabledRef.current) {
         // Live Ink persists with operation ACKs; a legacy full-page PUT here
         // could overwrite another device's committed strokes.
@@ -1867,7 +1875,7 @@ export function MathWorkspace({
         onZoomIn={() => setZoomLevel((z) => Math.min(2.0, z + 0.1))}
         onZoomOut={() => setZoomLevel((z) => Math.max(0.6, z - 0.1))}
         onResetZoom={() => setZoomLevel(1.0)}
-        onTriggerOCR={paperMode || isReadOnlyAttempt ? undefined : handleTriggerOCR}
+        onTriggerOCR={paperMode ? undefined : handleTriggerOCR}
         ocrBlocked={!batchJournalReady || Boolean(pendingBatch || batchJournalLoadError || batchResuming || pageOcrReview)
           || (liveEnabled && (!live.ready || live.pendingCount > 0 || live.drafts.length > 0))}
         onOpenVariationTable={attempt && ["DRAFT", "IN_PROGRESS"].includes(attempt.status) && !pageOcrReview && !isReadOnlyAttempt
