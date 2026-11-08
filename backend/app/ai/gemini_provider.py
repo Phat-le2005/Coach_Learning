@@ -36,6 +36,11 @@ def _sanitize_schema_for_gemini(raw_schema: dict) -> dict:
             return resolve(copy.deepcopy(defs.get(ref, {})))
         res = {}
         for k, v in node.items():
+            if k == "properties" and isinstance(v, dict):
+                # Names such as "title" are data properties here, not schema
+                # metadata. Keep them consistent with the required-name list.
+                res[k] = {name: resolve(child) for name, child in v.items()}
+                continue
             if k in (
                 "$defs", "definitions", "title", "description", "default",
                 "additionalProperties", "minLength", "maxLength", "pattern",

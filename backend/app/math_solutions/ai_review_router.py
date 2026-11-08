@@ -149,6 +149,21 @@ def _review_key(attempt, reference):
     return (attempt.id, f"{_POLICY_VERSION}:{reference.content_sha256}:{revision}")
 
 
+def _is_gemini_evaluation(evaluation: StepEvaluation) -> bool:
+    # Storage uses the schema's existing AI_HEURISTIC category; provider-specific
+    # provenance belongs in evidence, not in a new, unmigrated enum value.
+    kind = getattr(evaluation, "evaluator_type", "")
+    if kind == "GEMINI_REFERENCE":
+        return True
+    if kind != "AI_HEURISTIC":
+        return False
+    try:
+        evidence = json.loads(evaluation.evidence_quote or "{}")
+    except (TypeError, ValueError):
+        return False
+    return isinstance(evidence, dict) and evidence.get("evaluator") == "GEMINI_REFERENCE"
+
+
 def _final_review(session: Session, attempt_id: UUID, decision: EvaluationDecision) -> AIReviewRead:
     """Read the persisted grade; never reconstruct a score from AI suggestions."""
     rows = session.execute(
@@ -167,7 +182,7 @@ def _final_review(session: Session, attempt_id: UUID, decision: EvaluationDecisi
         verdict = evaluation.math_validity
         if verdict not in {"VALID", "INVALID"}:
             continue
-        gemini = gemini or getattr(evaluation, "evaluator_type", "") == "GEMINI_REFERENCE"
+        gemini = gemini or _is_gemini_evaluation(evaluation)
         grades[index] = StepSuggestionRead(
             step_index=index, verdict=verdict, score=evaluation.score,
             confidence=evaluation.confidence,

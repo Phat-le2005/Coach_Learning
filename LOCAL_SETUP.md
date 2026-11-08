@@ -53,6 +53,42 @@ Sau khi cập nhật một checkout đã có, chạy lại `npm ci` và cài l�
 `websockets==15.0.1` trong lockfile; một venv cũ thiếu package này vẫn trả HTTP health
 200 nhưng không nhận WebSocket. Không dựa vào venv của worktree đã bỏ.
 
+## Gemini OCR và chấm bài viết tay
+
+Trong `backend/.env`, đặt `AI_PROVIDER=gemini`, `MATH_OCR_PROVIDER=gemini` và
+`AI_API_KEY` (hoặc `GEMINI_API_KEY`). OCR và chấm bài dùng cùng key phía máy chủ;
+không điền key vào frontend hoặc biến `NEXT_PUBLIC_*`. Khởi động lại backend sau
+khi đổi cấu hình.
+
+Luồng làm bài: **Trích xuất trang (OCR)** → sửa bản chép, đối chiếu với nét gốc →
+chọn loại bước, tích xác nhận nội dung/thứ tự → **Xác nhận & lưu bước** →
+**Nộp bài & kiểm tra**. Trên điện thoại, chuyển giữa **Bản chép** và **Nét gốc**
+để đối chiếu; nút lưu luôn ở cuối cửa sổ.
+Gemini tự đề xuất các bước logic, tiêu đề và loại bước ngay trong lần OCR:
+đạo hàm, giải phương trình (giữ cả các nghiệm), bảng xét dấu/biến thiên và kết luận
+nếu học sinh có viết. Cả bảng giữ trong một bước. Bên trái hiển thị từng bước với
+nét gốc tương ứng; sửa nội dung/loại hoặc đổi thứ tự khi cần, rồi chọn
+**Xác nhận & lưu N bước** để lưu riêng theo thứ tự. Chỉ sau khi nộp, bộ chấm mới
+đánh giá các bước đã lưu theo dữ liệu đề/đáp án/rubric.
+Gemini chỉ chép lại nội dung nhìn thấy, giữ nguyên phép tính của học sinh.
+Khi nộp, ứng dụng giữ nội dung đã sửa và xác nhận, không chạy OCR để ghi đè bước.
+Nếu Gemini OCR lỗi, bản chép vẫn sửa được thủ công; giao diện hiển thị lỗi.
+
+Chấm bài lấy đề, đáp án/lời giải đã duyệt và rubric hiện có của đúng câu hỏi;
+bài giao dùng bản nội dung đã chốt khi giao. Thiếu dữ liệu tham chiếu hoặc rubric
+thì không tự tạo điểm chính thức. Độ tin cậy OCR không phải điểm bài làm.
+
+Kết quả chấm Gemini dùng nhóm lưu trữ `AI_HEURISTIC` hiện có trong database;
+`GEMINI_REFERENCE` và trích dẫn đáp án được giữ trong `evidence_quote`/metadata.
+Không ghi tên provider thành một giá trị mới ngoài ràng buộc `evaluator_type`.
+
+Kiểm tra luồng giao diện bằng dữ liệu mẫu, không truy cập database:
+
+```powershell
+cd frontend
+npx.cmd playwright test --config playwright.gemini-review.config.ts
+```
+
 ## Live Sync / điện thoại
 
 Chế độ LAN tự động (hai terminal PowerShell ở repo root; không sửa IP trong `.env`):

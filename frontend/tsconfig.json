@@ -41,7 +41,9 @@
     ".next-integration-hybrid/types/**/*.ts",
     ".next-integration-hybrid/dev/types/**/*.ts",
     ".next-teacher-pdf-qa/types/**/*.ts",
-    ".next-teacher-pdf-qa/dev/types/**/*.ts"
+    ".next-teacher-pdf-qa/dev/types/**/*.ts",
+    ".next-gemini-review-qa/types/**/*.ts",
+    ".next-gemini-review-qa/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"

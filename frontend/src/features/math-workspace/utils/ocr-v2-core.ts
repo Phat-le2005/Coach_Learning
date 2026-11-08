@@ -14,6 +14,9 @@ export interface CoreReview {
   relations: ScopeConstruction["relations"]; evidence: RecognitionEvidence[];
   savedUnitIds: string[]; savedSteps: { unitId: string; stepId?: string | null; actionId: string }[];
   boundaries: ExplicitBoundary[];
+  stepHints?: Record<string, { title: string; stepKind: StepKind | ""; explanationText?: string }>;
+  segmentationVersion?: string;
+  segmentationWarning?: string | null;
 }
 export interface ExplicitBoundary { unitId: string; stepKind: StepKind; actionId: string; contentLatex: string | null; explanationText: string }
 export function sourceIdentity(source: OcrSource) { return JSON.stringify([source.pageIndex, source.sourceRevision, source.strokes]); }
@@ -51,7 +54,7 @@ export function declareStepBoundary(review: CoreReview, unitId: string, stepKind
   if (review.ir.readingOrderStatus !== "CONFIRMED" || unit.reviewStatus !== "APPROVED" || !unit.approvedContent?.trim()) throw Error("CONFIRMED_TRANSCRIPTION_AND_ORDER_REQUIRED");
   if (review.savedUnitIds.includes(unitId)) throw Error("UNIT_ALREADY_SAVED");
   if (unit.kind === "MATH" && !renderOcrLatexHtml(unit.approvedContent)) throw Error("LATEX_NOT_REPRESENTABLE; keep transcription for manual correction");
-  return { unitId, stepKind, actionId, contentLatex: unit.kind === "MATH" ? unit.approvedContent : null, explanationText: unit.kind === "TEXT" ? unit.approvedContent : "" };
+  return { unitId, stepKind, actionId, contentLatex: unit.kind === "MATH" ? unit.approvedContent : null, explanationText: unit.kind === "TEXT" ? unit.approvedContent : review.stepHints?.[unitId]?.explanationText ?? "" };
 }
 /** Same-origin optional layout. Absent service always means V2 Geometry, never legacy segmentation. */
 export async function optionalLayout(png: string): Promise<PerceptionResult> {
