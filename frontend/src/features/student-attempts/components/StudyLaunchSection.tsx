@@ -104,7 +104,7 @@ export function StudyLaunchSection({
             </div>
           )}
           {process.env.NODE_ENV !== "production" && subjects.some((subject) => subject.code === "MATH_G12") ? (
-            <StepReviewDemoForm />
+            <details className={styles.demoTools}><summary>Bài mẫu để thử chấm từng bước</summary><StepReviewDemoForm /></details>
           ) : null}
         </div>
 

@@ -12,3 +12,8 @@
 .back { display: inline-flex; min-height: 44px; align-items: center; padding: 10px 18px; color: var(--text-inverse); border-radius: var(--radius-pill); background: var(--verdant-700); font-weight: 650; }
 .back:hover { background: var(--verdant-900); }
 @media (max-width: 520px) { .header { margin-bottom: 30px; } .details > div { grid-template-columns: 1fr; gap: 2px; } }
+.studentProfile { max-width: 860px; margin: 36px auto 60px; }
+.studentProfile .card { background: var(--surface); border: 1px solid var(--line); box-shadow: none; border-radius: 16px; color: var(--ink); }
+.studentProfile .card h1 { font-size: clamp(26px, 3vw, 34px); letter-spacing: -.02em; font-weight: 600; }
+.studentProfile :is(.description, .details dt) { color: var(--muted); }
+.studentProfile .back { background: #176a53; color: white; text-decoration: none; border-radius: 10px; }

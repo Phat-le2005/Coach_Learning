@@ -102,7 +102,7 @@ export function StudentAttemptsView({ data }: StudentAttemptsViewProps) {
                   onClick={() => handleTabChange("classroom")}
                 >
                   <ClipboardCheck size={18} aria-hidden="true" />
-                  <span>Bài tập của lớp</span>
+                  <span>Bài của lớp</span>
                   {classroomPendingCount > 0 ? (
                     <span className={styles.tabBadgeActive}>{classroomPendingCount}</span>
                   ) : (
@@ -118,9 +118,9 @@ export function StudentAttemptsView({ data }: StudentAttemptsViewProps) {
                   onClick={() => handleTabChange("practice")}
                 >
                   <PenTool size={18} aria-hidden="true" />
-                  <span>Tự luyện & Giấy số</span>
+                  <span>Tự luyện</span>
                   {data.totalActiveCount > 0 && (
-                    <span className={styles.tabBadgeNotice}>{data.totalActiveCount} đang làm</span>
+                    <span className={styles.tabBadgeNotice}>{data.totalActiveCount}<span className={styles.tabCountLabel}> đang làm</span></span>
                   )}
                 </button>
 
@@ -132,7 +132,7 @@ export function StudentAttemptsView({ data }: StudentAttemptsViewProps) {
                   onClick={() => handleTabChange("history")}
                 >
                   <History size={18} aria-hidden="true" />
-                  <span>Lịch sử bài làm</span>
+                  <span>Lịch sử</span>
                   <span className={styles.tabBadgeMuted}>{data.pagination.total}</span>
                 </button>
               </div>
@@ -152,6 +152,10 @@ export function StudentAttemptsView({ data }: StudentAttemptsViewProps) {
             {/* TAB 2 — SELF-STUDY & DIGITAL PAPER */}
             {activeTab === "practice" && (
               <section className={styles.tabPanel} role="tabpanel" aria-label="Tự luyện & Giấy số">
+                <ContinueLearningSection
+                  items={data.continueLearningItems}
+                  totalActiveCount={data.totalActiveCount}
+                />
                 <StudyLaunchSection
                   subjects={data.subjects}
                   subjectsLoaded={data.subjectsLoaded}
@@ -159,10 +163,7 @@ export function StudentAttemptsView({ data }: StudentAttemptsViewProps) {
                   classroomPendingCount={classroomPendingCount}
                   onSelectClassroomTab={() => handleTabChange("classroom")}
                 />
-                <ContinueLearningSection
-                  items={data.continueLearningItems}
-                  totalActiveCount={data.totalActiveCount}
-                />
+
               </section>
             )}
 

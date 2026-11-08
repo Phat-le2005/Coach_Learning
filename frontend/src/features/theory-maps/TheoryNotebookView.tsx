@@ -28,6 +28,8 @@ export function TheoryNotebookView({
   const [error, setError] = useState("");
   const [retry, setRetry] = useState(0);
   const [failedImage, setFailedImage] = useState("");
+  const [contentsOpen, setContentsOpen] = useState(false);
+  useEffect(() => { setContentsOpen(role === "teacher" || window.matchMedia("(min-width: 901px)").matches); }, [role]);
   useEffect(() => {
     let active = true;
     (role === "teacher" ? theoryApi.teacherNotebook(documentId) : theoryApi.studentNotebook(documentId))
@@ -95,7 +97,7 @@ export function TheoryNotebookView({
   const base = role === "teacher" ? "/api/teacher/theory/" : "/api/student/theory/";
   const imageUrl = base + encodeURIComponent(documentId) + "/notebook/blocks/" + block.page + "/" + block.ordinal;
 
-  function chooseSection(index: number) { setSectionIndex(index); setCardIndex(0); }
+  function chooseSection(index: number) { setSectionIndex(index); setCardIndex(0); if (role === "student" && window.matchMedia("(max-width: 900px)").matches) setContentsOpen(false); }
   function move(delta: number) {
     const nextCard = cardIndex + delta;
     if (nextCard >= 0 && nextCard < section.blocks.length) { setCardIndex(nextCard); return; }
@@ -107,11 +109,13 @@ export function TheoryNotebookView({
   }
 
   return <div className={styles.notebook}>
-    <div className={styles.notebookIntro}>
-      <span className={styles.notebookKicker}>SỔ HỌC TOÁN · TRÍCH TỪ TÀI LIỆU GỐC</span>
+    <details className={styles.notebookIntro} open={role === "teacher" ? true : undefined}>
+      <summary>Về sổ tay bài học</summary>
       <p>Chọn chủ đề rồi xem lý thuyết, cách làm và ví dụ theo từng thẻ. Công thức và hình được giữ nguyên từ PDF; số trang giúp em đối chiếu bản gốc.</p>
-    </div>
+    </details>
     <div className={styles.notebookLayout}>
+      <details className={styles.notebookContents} open={contentsOpen} onToggle={event => setContentsOpen(event.currentTarget.open)}>
+      <summary>Chọn chủ đề <span>{section.title}</span></summary>
       <nav className={styles.notebookNav} aria-label="Mục lục sổ học">
         {chapters.map((chapter) => <div key={chapter.first} className={styles.notebookChapter}>
           <button type="button" className={styles.notebookChapterButton} onClick={() => chooseSection(chapter.first)}>
@@ -126,6 +130,7 @@ export function TheoryNotebookView({
           </div>
         </div>)}
       </nav>
+      </details>
       <article className={styles.notebookSheet} aria-live="polite">
         <div className={styles.notebookSheetHeader}>
           <span>{section.chapter_title}</span>

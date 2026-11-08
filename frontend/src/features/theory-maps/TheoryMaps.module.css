@@ -3121,22 +3121,20 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  color: #163d2e;
+  color: var(--ink, #163d2e);
 }
 
 .studentTopBar {
-  width: min(calc(100% - 28px), var(--container-max, 1280px));
-  margin: 12px auto 4px;
+  width: 100%;
+  margin: 0 auto 20px;
   min-height: 58px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 8px clamp(12px, 2vw, 22px);
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(12px);
-  border: 1px solid #d4e7db;
-  border-radius: 18px;
-  box-shadow: 0 4px 16px rgba(15, 60, 35, 0.05);
+  background: var(--surface, #fff);
+  border: 1px solid var(--line, #d4e7db);
+  border-radius: 16px;
   gap: 12px;
   flex-wrap: wrap;
 }
@@ -3302,7 +3300,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 10px clamp(10px, 1.5vw, 20px) 16px;
+  padding: 0 0 16px;
   width: 100%;
   margin: 0 auto;
 }
@@ -3370,6 +3368,72 @@
   border-radius: 18px;
   padding: 16px;
   box-shadow: 0 8px 26px rgba(20, 60, 40, 0.04);
+}
+
+/* Student reader chrome follows the shared student surface, without changing teacher tools. */
+.readerHeading { margin: 4px 0 26px; }
+.readerHeading h1 { margin: 0; font-size: 32px; line-height: 1.4; letter-spacing: -.02em; font-weight: 600; }
+.readerHeading p { margin: 9px 0 0; color: var(--muted, #586d60); font-size: 14px; }
+.readerNotice, .studentEmptyState { width: min(100%, 600px); margin: 36px auto; padding: 40px 28px; border-radius: 16px; border: 1px solid var(--line, #dfe8dd); background: var(--surface, #fff); color: var(--ink, #173e31); box-shadow: none; text-align: center; }
+.readerNotice > svg { color: var(--brand, #176a53); }
+.readerNotice h2 { margin: 12px 0; font-size: 21px; }
+.readerNotice p, .studentEmptyState p { color: var(--muted, #586d60); }
+.studentEmptyState h3 { color: inherit; }
+.studentEmptyIcon { display: grid; place-items: center; width: 68px; height: 68px; margin-bottom: 4px; border-radius: 20px; background: var(--soft, #eaf0e5); color: var(--brand, #176a53); }
+.studentAppContainer .studentBackLink { background: var(--soft, #eaf0e5); color: var(--brand, #176a53); border-color: var(--line, #dfe8dd); min-height: 44px; }
+.studentAppContainer :is(.studentDocChip, .studentDocSwitcher, .studentSourceLayout) { background: var(--surface, #fff); border-color: var(--line, #dfe8dd); box-shadow: none; min-width: 0; }
+.studentAppContainer :is(.studentDocTitle, .studentDocSelect) { color: inherit; }
+.studentDocSelect { min-height: 44px; max-width: 100%; font-weight: 600; }
+.studentDocSelect option { background: var(--surface, #fff); color: var(--ink, #173e31); }
+.studentAppContainer :is(.studentSegmentedTabs, .studentStatsPill, .studentDocCount) { background: var(--soft, #eaf0e5); border-color: var(--line, #dfe8dd); color: var(--muted, #586d60); box-shadow: none; }
+.studentTabBtn { min-height: 44px; color: var(--muted, #586d60); font-weight: 600; }
+.studentTabActive, .studentTabActive:hover { background: #176a53; color: #fff; box-shadow: none; }
+.studentTabIcon, .studentDocIcon { display: inline-flex; align-items: center; }
+.studentLoadingState { color: var(--muted, #586d60); }
+.studentAppContainer :is(.drawerPrimaryActionBtn, .drawerSecondaryActionBtn, .drawerCloseButton) { min-height: 44px; }
+.studentAppContainer .drawerCloseButton { min-width: 44px; }
+.studentAppContainer .inlineTopicBadge { letter-spacing: 0; text-transform: none; }
+@media (max-width: 760px) {
+  .readerHeading h1 { font-size: 26px; }
+  .studentTopBar { padding: 12px; gap: 12px; }
+  .studentNavLeft, .studentDocSwitcher, .studentNavCenter { width: 100%; min-width: 0; }
+  .studentDocSelect { width: 100%; font-size: 13px; }
+  .studentSegmentedTabs { width: 100%; overflow-x: auto; }
+  .studentTabBtn { padding-inline: 10px; font-size: 12px; flex: 1 0 auto; justify-content: center; }
+  .studentStatsPill { font-size: 12px; }
+  .readerNotice, .studentEmptyState { margin-block: 20px; padding: 30px 20px; }
+}
+
+/* Student reading controls stay above the page; only the selected view owns its tools. */
+.studentAppContainer .readerHeading { margin:0 0 16px; }
+.studentAppContainer .readerHeading p { margin-top:4px; }
+.studentAppContainer .studentTopBar { padding:10px 14px; gap:10px; }
+.readerMeta { font-size:12px; color:var(--muted,#586d60); }
+.readerMeta summary { min-height:36px; padding:8px 0; cursor:pointer; }
+.readerMeta .studentStatsPill { margin-bottom:8px; }
+.studentAppContainer .notebook { margin-top:4px; }
+.studentAppContainer .notebookIntro { padding:0 4px; margin-bottom:12px; border:0; background:none; }
+.notebookIntro > summary { min-height:40px; padding:8px 0; cursor:pointer; font-size:13px; color:var(--muted,#586d60); }
+.studentAppContainer .notebookIntro p { margin:0 0 16px; color:var(--muted,#586d60); font-size:13px; }
+.notebookContents { min-width:0; background:#f2f7ed; }
+.notebookContents > summary { padding:14px 16px; min-height:48px; cursor:pointer; font-size:13px; font-weight:600; color:#21593f; }
+.notebookContents > summary span { display:block; font-size:12px; font-weight:400; margin-top:3px; }
+.studentAppContainer .notebookLayout { border-top:1px solid #bfd8c8; border-radius:16px; }
+.studentAppContainer .notebookNav { padding-top:0; border-right:0; }
+@media(max-width:900px) {
+  .studentAppContainer .studentNavRight { width:100%; }
+  .studentAppContainer .readerMeta summary { padding:2px 0; min-height:32px; }
+  .studentAppContainer .studentTopBar { gap:6px; }
+  .studentAppContainer .studentDocChip { width:100%; padding:4px 8px; }
+  .studentAppContainer .studentDocCount { white-space:nowrap; }
+  .studentAppContainer .notebookSheet { padding:16px; }
+  .studentAppContainer .notebookContents { border-bottom:1px solid #d7e4d8; }
+  .studentAppContainer .notebookContents > summary span { display:none; }
+  .studentAppContainer .notebookSheetHeader > span { display:none; }
+  .studentAppContainer .notebookSheetHeader h3 { margin-top:0; font-family:inherit; font-size:18px; }
+}
+@media (max-width: 600px) {
+  .studentAppContainer .floatingDrawerOverlay { top: auto; bottom: calc(78px + env(safe-area-inset-bottom)); left: 16px; right: 16px; width: auto; max-width: none; max-height: 65dvh; }
 }
 
 

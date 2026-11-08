@@ -1,4 +1,4 @@
-import { BookOpen, Compass, GraduationCap, Leaf, Sparkles, Trees } from "lucide-react";
+import { BookOpen, ChevronDown, Compass, GraduationCap, Leaf, Sparkles, Trees } from "lucide-react";
 import Link from "next/link";
 
 import styles from "./AppFooter.module.css";
@@ -9,6 +9,12 @@ export interface AppFooterProps {
 }
 
 export function AppFooter({ variant = "student", compact = false }: AppFooterProps) {
+  if (compact && variant === "student") return (
+    <details className={styles.footerDisclosure}>
+      <summary><Leaf size={17} aria-hidden="true" /><strong>EduMS</strong><span>Thông tin &amp; liên kết</span><ChevronDown size={16} aria-hidden="true" /></summary>
+      <AppFooter variant={variant} />
+    </details>
+  );
   const homeHref =
     variant === "teacher" ? "/teacher" : variant === "auth" ? "/login" : "/student";
 

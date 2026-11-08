@@ -43,6 +43,7 @@ export function PageNavigator({
         </button>
 
         <div className={styles.pageIndicator}>
+          <span className={styles.pageIndicatorLabel}>Trang</span>
           <span className={styles.currentNumber}>{currentPageIndex + 1}</span>
           <span className={styles.slash}>/</span>
           <span className={styles.totalNumber}>{pageCount}</span>
@@ -69,6 +70,7 @@ export function PageNavigator({
             className={`${styles.pageTab} ${i === currentPageIndex ? styles.activePageTab : ""}`}
             onClick={() => onSelectPage(i)}
             title={`Chuyển đến trang ${i + 1}`}
+            aria-current={i === currentPageIndex ? "page" : undefined}
           >
             {i + 1}
           </button>

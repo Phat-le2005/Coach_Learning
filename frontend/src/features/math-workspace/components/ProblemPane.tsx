@@ -422,6 +422,7 @@ function formatQuestionType(type: string): string {
     case "SHORT_ANSWER":
       return "Trả lời ngắn";
     case "ESSAY":
+    case "OPEN_RESPONSE":
       return "Tự luận";
     default:
       return type;
@@ -430,6 +431,8 @@ function formatQuestionType(type: string): string {
 
 function formatAttemptStatus(status: string): string {
   switch (status.toUpperCase()) {
+    case "DRAFT":
+      return "Bản nháp";
     case "IN_PROGRESS":
       return "Đang thực hiện";
     case "SUBMITTED":

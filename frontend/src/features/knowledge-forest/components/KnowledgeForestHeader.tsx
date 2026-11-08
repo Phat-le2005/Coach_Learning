@@ -77,8 +77,8 @@ export function KnowledgeForestHeader({ data }: KnowledgeForestHeaderProps) {
 
       <p className={styles.subtitle}>
         {data.accessMode === "SELF_STUDY_DISCOVERY"
-          ? "Khám phá các chòm sao, chủ đề và dạng bài đã được phát hành theo nhịp của bạn. Các trạng thái chưa học là dữ liệu thật; chưa có điểm số nào được giả lập."
-          : "Bản đồ năng lực học tập cá nhân hóa được kết nối trực tiếp từ dữ liệu thực tế. Khám phá từng chòm sao kiến thức, kích hoạt ngôi sao dạng bài và theo dõi tiến trình làm chủ môn học."}
+          ? "Khám phá các chương, chủ đề và dạng bài theo nhịp của bạn. Chọn một dạng bài để bắt đầu luyện tập."
+          : "Xem kiến thức đã vững, tìm phần cần ôn và chọn dạng bài để luyện tập tiếp."}
       </p>
 
       {/* Stats Bar */}

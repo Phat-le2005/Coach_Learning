@@ -12,9 +12,11 @@
   overflow: hidden;
   user-select: none;
   font-family: inherit;
+  border-radius: 20px;
 }
 
 /* --- Canvas Element --- */
+.worldHeading { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .canvas3D {
   position: absolute;
   top: 0;
@@ -216,8 +218,10 @@
   position: absolute;
   top: 88px;
   left: 16px;
-  width: 42px;
+  width: auto;
   height: 42px;
+  padding: 0 14px;
+  gap: 8px;
   background: rgba(9, 45, 37, 0.85);
   backdrop-filter: blur(16px);
   border: 1px solid rgba(139, 229, 194, 0.25);
@@ -227,6 +231,8 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  font: inherit;
+  font-size: 12px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
   z-index: 24;
   transition: all 0.2s ease;
@@ -263,7 +269,7 @@
   color: rgba(247, 247, 238, 0.6);
   cursor: pointer;
   display: flex;
-  padding: 4px;
+  padding: 10px;
   border-radius: 6px;
   transition: all 0.2s ease;
 }
@@ -433,12 +439,12 @@
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(103, 232, 249, 0.3);
-  border-radius: 20px;
-  padding: 6px 14px;
+  border-radius: 12px;
+  padding: 6px 10px;
+  max-width: 240px;
   display: flex;
   align-items: center;
   gap: 8px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
   pointer-events: auto;
   cursor: pointer;
   transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
@@ -446,7 +452,7 @@
 }
 
 .chapterBadge3D:hover {
-  transform: translate(-50%, -50%) scale(1.08);
+  transform: translate(-50%, -50%) scale(1.02);
   border-color: #8be5c2;
   box-shadow: 0 8px 26px rgba(35, 166, 122, 0.5);
   background: rgba(13, 56, 46, 0.95);
@@ -467,6 +473,9 @@
 }
 
 .chapterBadgeTitle {
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
   font-size: 12px;
   font-weight: 700;
   color: #f7f7ee;
@@ -1039,9 +1048,15 @@
 
 /* --- Mobile Responsiveness --- */
 @media (max-width: 768px) {
+  .chapterBadge3D { max-width:170px; gap:5px; padding:6px 8px; }
+  .chapterBadgeTitle { font-size:11px; letter-spacing:0; }
+  .worldContainer { height: min(780px, calc(100dvh - 180px)); min-height: 540px; border-radius: 16px; }
   .topNav {
+    top: 10px;
+    left: 10px;
+    right: 10px;
     height: auto;
-    padding: 10px 14px;
+    padding: 10px;
     flex-wrap: wrap;
     gap: 10px;
   }
@@ -1051,13 +1066,21 @@
     max-width: 100%;
     width: 100%;
   }
+  .topNavLeft { width: 100%; min-width: 0; gap: 8px; }
+  .brandBadge { padding: 4px 8px; font-size: 11px; white-space: nowrap; }
+  .subjectTitle { min-width: 0; overflow: hidden; text-overflow: ellipsis; font-size: 12px; }
+  .subjectTag { display: none; }
+  .topNavRight { width: 100%; justify-content: space-between; gap: 6px; }
+  .viewModeBtn { min-height: 40px; padding: 5px 10px; white-space: nowrap; }
+  .navIconButton { width: 40px; height: 40px; }
+  .searchInput { height: 42px; }
 
   .leftSidebar {
     top: auto;
     bottom: 0;
     left: 0;
     width: 100%;
-    max-height: 50vh;
+    max-height: 62%;
     border-radius: 20px 20px 0 0;
   }
 
@@ -1067,7 +1090,7 @@
 
   .sidebarToggleTrigger {
     top: auto;
-    bottom: 20px;
+    bottom: 64px;
     left: 16px;
   }
 
@@ -1087,8 +1110,14 @@
 
   .bottomControls {
     bottom: 12px;
+    max-width: calc(100% - 24px);
+    overflow-x: auto;
+    justify-content: flex-start;
+    white-space: nowrap;
   }
 }
+
+.worldContainer :is(button, input):focus-visible { outline: 2px solid #a5e7c9; outline-offset: 3px; }
 
 /* Reduced Motion Support */
 @media (prefers-reduced-motion: reduce) {

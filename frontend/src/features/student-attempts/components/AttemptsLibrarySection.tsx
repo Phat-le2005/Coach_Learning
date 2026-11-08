@@ -170,7 +170,6 @@ export function AttemptsLibrarySection({
       {/* Header */}
       <div className={styles.sectionHeaderRow}>
         <div>
-          <p className={styles.sectionEyebrow}>Thư viện lưu trữ cá nhân</p>
           <h2 id="attempts-library-heading" className={styles.sectionTitle}>
             Lịch sử bài làm của tôi
           </h2>

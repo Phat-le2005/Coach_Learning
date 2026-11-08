@@ -29,36 +29,35 @@ export function StudentTheoryClient() {
         if (!active) return;
         setList(items);
         if (!items.length) return;
-        // Check query params (?topic=... or ?node=...)
         let targetNodeId = "";
-          const urlParams = new URLSearchParams(window.location.search);
-          const rawTopic = urlParams.get("topic")?.trim();
-          const rawNode = urlParams.get("node")?.trim();
-          const targetDoc = resolveTheoryDocument(items, rawTopic);
-          if (!targetDoc) {
-            setTargetMessage(`Chưa tìm thấy tài liệu khớp duy nhất với “${rawTopic}”. Bạn có thể chọn một tài liệu trong danh sách.`);
-            return;
-          }
+        const urlParams = new URLSearchParams(window.location.search);
+        const rawTopic = urlParams.get("topic")?.trim();
+        const rawNode = urlParams.get("node")?.trim();
+        const targetDoc = resolveTheoryDocument(items, rawTopic);
+        if (!targetDoc) {
+          setTargetMessage(`Chưa tìm thấy tài liệu khớp duy nhất với “${rawTopic}”. Bạn có thể chọn một tài liệu trong danh sách.`);
+          return;
+        }
 
-          const docData = await theoryApi.studentGet(targetDoc.id);
-          if (rawNode) {
-            const nodeMatch = docData.nodes.find((n) => n.id === rawNode);
-            if (nodeMatch) targetNodeId = nodeMatch.id;
-            else { if (active) setTargetMessage("Chưa tìm thấy phần kiến thức được yêu cầu. Bạn có thể chọn tài liệu để đọc tiếp."); return; }
-          } else if (rawTopic) {
-            const nodeMatch = docData.nodes.find((n) =>
-              n.title.toLocaleLowerCase("vi").includes(rawTopic.toLocaleLowerCase("vi")) || rawTopic.toLocaleLowerCase("vi").includes(n.title.toLocaleLowerCase("vi"))
-            );
-            if (nodeMatch) targetNodeId = nodeMatch.id;
-          }
+        const docData = await theoryApi.studentGet(targetDoc.id);
+        if (rawNode) {
+          const nodeMatch = docData.nodes.find((n) => n.id === rawNode);
+          if (nodeMatch) targetNodeId = nodeMatch.id;
+          else { if (active) setTargetMessage("Chưa tìm thấy phần kiến thức được yêu cầu. Bạn có thể chọn tài liệu để đọc tiếp."); return; }
+        } else if (rawTopic) {
+          const nodeMatch = docData.nodes.find((n) =>
+            n.title.toLocaleLowerCase("vi").includes(rawTopic.toLocaleLowerCase("vi")) || rawTopic.toLocaleLowerCase("vi").includes(n.title.toLocaleLowerCase("vi"))
+          );
+          if (nodeMatch) targetNodeId = nodeMatch.id;
+        }
 
-          if (active) {
-            setDocument(docData);
-            setPage(1);
-            setSelectedNodeId(targetNodeId || (docData.nodes[0]?.id ?? ""));
-            setView(docData.nodes.length > 0 && docData.status === "PUBLISHED" ? "map" : "source");
-            return;
-          }
+        if (active) {
+          setDocument(docData);
+          setPage(1);
+          setSelectedNodeId(targetNodeId);
+          setView(docData.nodes.length > 0 && docData.status === "PUBLISHED" ? "map" : "source");
+          return;
+        }
       })
       .catch((reason) => {
         if (active) setError(reason instanceof Error ? reason.message : "Không thể tải kho lý thuyết.");
@@ -81,7 +80,8 @@ export function StudentTheoryClient() {
       window.history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
       setDocument(next);
       setPage(1);
-      setSelectedNodeId(next.nodes[0]?.id ?? "");
+      setSelectedNodeId("");
+      setNotebookPage(undefined);
       setView(next.nodes.length > 0 && next.status === "PUBLISHED" ? "map" : "source");
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "Không thể mở tài liệu.");
@@ -105,17 +105,8 @@ export function StudentTheoryClient() {
   return (
     <div className={styles.studentAppContainer}>
       <div className={styles.readerHeading}><h1>Kho lý thuyết</h1><p>Chọn tài liệu, xem sơ đồ kiến thức hoặc mở lại trang bài học.</p></div>
-      {/* 1. COMPACT, BEAUTIFUL APP HEADER */}
-      <header className={styles.studentTopBar}>
-        {/* Left: Back Link & Document Selector */}
+      {list.length > 0 && <div className={styles.studentTopBar}>
         <div className={styles.studentNavLeft}>
-          <Link href="/student" className={styles.studentBackLink} title="Quay lại không gian học tập">
-            <span>←</span>
-            <span>Khu vườn học tập</span>
-          </Link>
-
-          <div className={styles.studentNavDivider} />
-
           {list.length > 1 || (!document && list.length > 0) ? (
             <div className={styles.studentDocSwitcher}>
               <span className={styles.studentDocIcon} aria-hidden="true">
@@ -138,7 +129,7 @@ export function StudentTheoryClient() {
           ) : (
             <div className={styles.studentDocChip}>
               <span className={styles.studentDocIcon} aria-hidden="true">
-                📚
+                <BookOpen size={19} />
               </span>
               <span className={styles.studentDocTitle}>
                 {document?.title || "Kho lý thuyết Toán học"}
@@ -163,7 +154,7 @@ export function StudentTheoryClient() {
                   aria-selected={view === "map"}
                 >
                   <span className={styles.studentTabIcon} aria-hidden="true">
-                    🧠
+                    <Network size={17} />
                   </span>
                   <span>Sơ đồ tư duy</span>
                 </button>
@@ -177,9 +168,9 @@ export function StudentTheoryClient() {
                   aria-selected={view === "notebook"}
                 >
                   <span className={styles.studentTabIcon} aria-hidden="true">
-                    📖
+                    <NotebookPen size={17} />
                   </span>
-                  <span>Sổ tay bài học &amp; Dạng toán</span>
+                  <span>Sổ tay bài học</span>
                 </button>
               )}
               {document.source_available && (
@@ -191,7 +182,7 @@ export function StudentTheoryClient() {
                   aria-selected={view === "source"}
                 >
                   <span className={styles.studentTabIcon} aria-hidden="true">
-                    📄
+                    <FileText size={17} />
                   </span>
                   <span>Tài liệu PDF gốc</span>
                 </button>
@@ -203,14 +194,14 @@ export function StudentTheoryClient() {
         {/* Right: Topic & Formula Stats */}
         <div className={styles.studentNavRight}>
           {document && document.nodes.length > 0 && (
-            <div className={styles.studentStatsPill} title="Thống kê tri thức chuyên đề">
-              <span>🎯 {stats.topicsCount} dạng bài</span>
+            <details className={styles.readerMeta}><summary>Thông tin tài liệu</summary><div className={styles.studentStatsPill}>
+              <span>{stats.topicsCount} dạng bài</span>
               <span>&bull;</span>
-              <span>📐 {stats.formulasCount} công thức</span>
-            </div>
+              <span>{stats.formulasCount} công thức</span>
+            </div></details>
           )}
         </div>
-      </header>
+      </div>}
 
       {/* 2. MAIN LEARNING CANVAS */}
       <main className={styles.studentMainStage}>
@@ -238,9 +229,9 @@ export function StudentTheoryClient() {
 
         {!loading && !error && list.length === 0 && (
           <div className={styles.studentEmptyState}>
-            <div className={styles.studentEmptyIcon}>🌱</div>
+            <div className={styles.studentEmptyIcon}><Sprout size={40} strokeWidth={1.5} aria-hidden="true" /></div>
             <h3>Chưa có tài liệu lý thuyết nào được chia sẻ</h3>
-            <p>Thầy cô bộ môn sẽ sớm chia sẻ sơ đồ tư duy và chuyên đề bài giảng với lớp em nhé!</p>
+            <p>Khi thầy cô chia sẻ tài liệu, bạn có thể xem bài học, sơ đồ kiến thức và PDF ngay tại đây.</p>
             <Link href="/student" className={styles.studentBackLink}>
               ← Quay lại khu vườn học tập
             </Link>
@@ -262,10 +253,10 @@ export function StudentTheoryClient() {
                   setNotebookPage(p);
                   setView("notebook");
                 }}
-                onOpenSource={(p) => {
+                onOpenSource={document.source_available ? (p) => {
                   setPage(p);
                   setView("source");
-                }}
+                } : undefined}
               />
             )}
 

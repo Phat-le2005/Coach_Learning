@@ -60,7 +60,7 @@ export interface PageOcrReviewModalProps {
   onBatchUpdate?: (journal: BatchJournal | null) => void;
 }
 
-const STEP_LABELS: Record<StepKind, string> = {
+export const STEP_LABELS: Record<StepKind, string> = {
   ASSUMPTION: 'Giả thiết / điều kiện',
   DERIVATIVE_CALCULATION: 'Tính đạo hàm',
   ROOT_FINDING: 'Tìm nghiệm',

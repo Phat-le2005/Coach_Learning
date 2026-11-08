@@ -93,7 +93,6 @@ export function DeviceConnection(props: {attemptId: string; page: number; pairin
     <div className={styles.dialogContent}>
       <button type="button" className={styles.closeButton} aria-label="Đóng" onClick={props.onClose}><X size={20}/></button>
       <div className={styles.deviceIllustration} aria-hidden="true"><Laptop size={32}/><span/><Smartphone size={25}/></div>
-      <p className={styles.eyebrow}>THÊM THIẾT BỊ VIẾT</p>
       <h2 id="device-connection-title">Viết thoải mái hơn<br/>trên điện thoại, iPad</h2>
       <p className={styles.description}>Viết trên màn hình cảm ứng. Nét bút xuất hiện ngay trong bài làm trên máy tính.</p>
       {networkChanged ? <p role="status" className={styles.expiryNote}>Mạng đã thay đổi. Quét mã mới để kết nối lại.</p> : null}

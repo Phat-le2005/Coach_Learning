@@ -13,6 +13,7 @@ import {
   Layers,
   PenTool,
   Sparkles,
+  Sprout,
 } from "lucide-react";
 
 import styles from "./assignments.module.css";
@@ -87,7 +88,7 @@ export function AssignmentsListClient({
             </p>
           </div>
           <Link href="/student" className={styles.btnActionSecondary}>
-            🌱 Về Khu vườn học tập
+            <Sprout size={16} aria-hidden="true" /> Về Khu vườn học tập
           </Link>
         </div>
       )}
@@ -127,7 +128,7 @@ export function AssignmentsListClient({
       {/* Assignments Cards Grid */}
       {filtered.length === 0 ? (
         <div className={styles.emptyState}>
-          <div className={styles.emptyIcon}>📚</div>
+          <div className={styles.emptyIcon}><BookOpen size={36} aria-hidden="true" /></div>
           <h3>Không có bài tập nào trong mục này</h3>
           <p>Tuyệt vời! Bạn đã hoàn thành các nhiệm vụ được giao hoặc chưa có bài tập mới.</p>
         </div>

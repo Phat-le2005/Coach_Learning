@@ -35,7 +35,6 @@ export function ContinueLearningSection({
     >
       <div className={styles.sectionHeaderRow}>
         <div>
-          <p className={styles.sectionEyebrow}>Tiếp nối mạch tư duy</p>
           <h2 id="continue-learning-heading" className={styles.sectionTitle}>
             Bài làm đang thực hiện
           </h2>

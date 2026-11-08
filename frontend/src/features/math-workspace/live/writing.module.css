@@ -1,21 +1,21 @@
 .connectionDialog { padding: 0; border: 1px solid #e2e9e5; border-radius: 26px; width: min(480px, calc(100vw - 32px)); max-height: calc(100dvh - 40px); overflow: auto; color: #193c33; box-shadow: 0 24px 90px #15372b38; }
 .connectionDialog::backdrop { background: #172c2766; backdrop-filter: blur(5px); }
 .dialogContent { padding: 28px 32px 20px; position: relative; text-align: center; background: linear-gradient(165deg, #f0f7f2 0, #fff 180px); }
-.closeButton { position: absolute; right: 14px; top: 14px; width: 34px; height: 34px; border: 0; border-radius: 50%; background: #ffffffb3; color: #6b7d75; display: grid; place-items: center; cursor: pointer; }
+.closeButton { position: absolute; right: 10px; top: 10px; width: 44px; height: 44px; border: 0; border-radius: 50%; background: #ffffffb3; color: #496454; display: grid; place-items: center; cursor: pointer; }
 .deviceIllustration { display: flex; align-items: center; justify-content: center; gap: 14px; margin: 8px auto 20px; color: #347b60; }
 .deviceIllustration span { width: 26px; border-top: 2px dashed #9bc8ad; }
 .eyebrow { color: #608271; font-size: 10px; letter-spacing: .16em; font-weight: 700; margin: 0 0 8px; }
 .dialogContent h2 { font-size: 26px; font-weight: 650; line-height: 1.25; letter-spacing: -.7px; margin: 0; }
-.description { color: #6b7e74; font-size: 13px; line-height: 1.65; max-width: 330px; margin: 12px auto 20px; }
+.description { color: #52695c; font-size: 14px; line-height: 1.65; max-width: 330px; margin: 12px auto 20px; }
 .qrCard { width: 250px; min-height: 250px; margin: 0 auto 20px; background: white; border: 1px solid #d9e7dd; border-radius: 18px; padding: 8px; display: grid; place-items: center; box-shadow: 0 5px 18px #365e4b0a; }
 .qrCard img { width: 232px; height: 232px; }
 .instructions { list-style: none; padding: 0; margin: 0 auto; text-align: left; max-width: 330px; display: grid; gap: 12px; font-size: 13px; color: #3c5549; }
 .instructions li { display: flex; align-items: center; gap: 10px; }
 .instructions li span { width: 23px; height: 23px; flex-shrink: 0; border-radius: 50%; background: #edf4ef; color: #447254; display: grid; place-items: center; font-size: 11px; font-weight: 700; }
-.expiryNote { font-size: 11px; color: #8b9890; margin: 17px 0; }
-.privacy { font-size: 11px; color: #84968b; display: flex; align-items: center; justify-content: center; gap: 6px; padding-top: 16px; margin: 17px 0 0; border-top: 1px solid #eef2ee; }
+.expiryNote { font-size: 12px; color: #586e60; margin: 17px 0; }
+.privacy { font-size: 12px; color: #586e60; display: flex; align-items: center; justify-content: center; gap: 6px; padding-top: 16px; margin: 17px 0 0; border-top: 1px solid #eef2ee; }
 .help { text-align: left; border-top: 1px solid #edf1ed; padding-top: 14px; font-size: 12px; color: #6b7e74; }
-.help summary { display: flex; align-items: center; justify-content: center; gap: 7px; cursor: pointer; color: #4e7560; list-style: none; }
+.help summary { display: flex; align-items: center; justify-content: center; gap: 7px; min-height: 44px; cursor: pointer; color: #356249; list-style: none; }
 .help p { line-height: 1.6; }
 .help label { display: block; margin: 16px 0 7px; font-size: 11px; }
 .help input { display: block; width: 100%; box-sizing: border-box; margin-top: 5px; border: 1px solid #dce4de; border-radius: 8px; padding: 9px; color: #476050; background: #f9fbfa; }
@@ -26,6 +26,7 @@
 .secondaryButton { background: white; color: #3e6650; border: 1px solid #dce6df; }
 .textButton { background: transparent; border: 0; color: #6a7b70; padding: 10px; }
 .primaryButton:disabled, .secondaryButton:disabled, .textButton:disabled { opacity: .5; cursor: wait; }
+.connectionDialog :is(button, a, summary):focus-visible { outline: 3px solid #217958; outline-offset: 3px; }
 .approvalCard, .successCard, .expiredCard { display: flex; flex-direction: column; align-items: center; padding: 22px 12px 8px; gap: 10px; }
 .approvalCard h3, .successCard h3, .expiredCard h3 { font-size: 18px; margin: 3px 0; font-weight: 600; }
 .approvalCard p, .successCard p, .expiredCard p { font-size: 13px; color: #738477; line-height: 1.6; margin: 3px 0 8px; }
