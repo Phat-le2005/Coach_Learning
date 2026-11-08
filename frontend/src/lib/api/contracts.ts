@@ -551,6 +551,7 @@ export type StepKind = (typeof STEP_KINDS)[number];
 export interface OCRRecognizeRequest {
   page_index: number;
   stroke_ids?: string[] | null;
+  strokes?: InkStroke[] | null;
   hint_topic?: string | null;
   include_alternatives?: boolean;
 }

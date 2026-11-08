@@ -1,9 +1,11 @@
 """OCR provider selection for the current FastAPI application."""
 
+import os
 from fastapi import Request
 from app.core.config import Settings, get_settings
 from app.core.exceptions import ApplicationError
 from app.math_ocr.adapter import MathOCRAdapter, MockMathOCRAdapter
+from app.math_ocr.gemini_adapter import GeminiMathOCRAdapter
 from app.math_ocr.mathpix_adapter import MathpixStrokesAdapter
 from app.math_ocr.local_pix2tex_adapter import LocalPix2TexAdapter
 from app.math_ocr.local_rapid_adapter import LocalRapidOCRAdapter
@@ -12,6 +14,19 @@ from app.math_ocr.local_rapid_adapter import LocalRapidOCRAdapter
 def get_ocr_adapter(settings: Settings | None = None) -> MathOCRAdapter:
     settings = settings or get_settings()
     provider = settings.math_ocr_provider
+
+    if provider == "gemini":
+        has_api_key = bool(
+            settings.ai_api_key.get_secret_value()
+            if settings.ai_api_key
+            else False
+        ) or bool(os.getenv("GEMINI_API_KEY") or os.getenv("GEMINI_API_KEYS"))
+        if not has_api_key and settings.app_env == "test":
+            return MockMathOCRAdapter()
+        return GeminiMathOCRAdapter(
+            model_name=getattr(settings, "gemini_ocr_model", "gemini-3.8-flash"),
+            fast_mode=getattr(settings, "gemini_ocr_fast_mode", True),
+        )
 
     if provider == "local_rapid":
         return LocalRapidOCRAdapter()
@@ -32,7 +47,7 @@ def get_ocr_adapter(settings: Settings | None = None) -> MathOCRAdapter:
             timeout_seconds=settings.math_ocr_timeout_seconds,
         )
 
-    if provider == "mock" or (provider == "disabled" and settings.app_env == "test"):
+    if provider == "mock" or (provider in ("disabled", "gemini") and settings.app_env == "test"):
         if settings.app_env == "production":
             raise ApplicationError(
                 503, "OCR_NOT_CONFIGURED", "Mock OCR is unavailable in production."

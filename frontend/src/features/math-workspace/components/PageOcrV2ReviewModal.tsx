@@ -1,12 +1,13 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import type { StepKind } from "@/lib/api/contracts";
+import type { InkStroke, StepKind } from "@/lib/api/contracts";
 import { STEP_KINDS } from "@/lib/api/contracts";
 import { PageOcrReviewModal, type PageOcrReviewModalProps, type PreparedOcrStep } from "./PageOcrReviewModal";
 import { OcrInkPreview } from "./OcrInkPreview";
 import { OcrMathPreview } from "./OcrMathPreview";
 import { prepareCoreReview, recognizeCoreUnit, applyRecognition, declareStepBoundary, optionalLayout, sourceIdentity, type CoreReview } from "../utils/ocr-v2-core";
-import { buildScopeIR, groupIrUnits, ungroupIrUnit, reassignScope, lassoIds, type OcrSource, type RouteKind } from "../utils/ocr-v2-geometry";
+import { recognizeHandwrittenMathEvidence, type HandwrittenMathEvidence } from "../utils/handwritten-ocr";
+import { buildScopeIR, groupIrUnits, ungroupIrUnit, reassignScope, lassoIds, type OcrSource, type RouteKind, type ScopeProposal } from "../utils/ocr-v2-geometry";
 import { approveContentUnit, editContentUnit, editContainerRelation, confirmTranscriptionReadingOrder, getOrderedReviewUnits, getRootContentUnits, setSiblingReadingOrder, type ContentUnitKind } from "../utils/structured-transcription-ir";
 import { loadTranscription, saveTranscription, transcriptionKey } from "../utils/ocr-transcription-storage";
 import { generateUuid } from "../utils/ink-math";
@@ -36,25 +37,81 @@ export function PageOcrV2ReviewModal(props: Props) {
   const ink = review?.ir.sourceSnapshot.strokes ?? [], strokes = ink.filter(s => unit?.sourceStrokeIds.includes(s.id));
   const locked = busy || stale || storageBlocked || Boolean(props.blockedByBatch) || Boolean(unit && review?.savedUnitIds.includes(unit.id));
   async function persist(value:CoreReview){persistedVersion.current=await saveTranscription(key.current,value,persistedVersion.current);}
+  function buildUnifiedGeminiReview(source: OcrSource, attemptId: string): CoreReview {
+    const pen = source.strokes.filter(s => s.tool === "PEN");
+    const scope: ScopeProposal = {
+      id: "gemini-1",
+      regionIds: ["gemini-region-1"],
+      rawLabel: "formula",
+      rawScore: 1,
+      kind: "MATH",
+      strokeIds: pen.map(s => s.id),
+      candidateStrokeIds: pen.map(s => s.id),
+      coverage: Object.fromEntries(pen.map(s => [s.id, 1])),
+      flags: ["GEMINI_UNIFIED_PAGE_SCOPE"],
+      method: "GEMINI_UNIFIED_PAGE_SCOPE",
+    };
+    const scopes = pen.length ? [scope] : [];
+    const ir = { ...buildScopeIR(source, scopes), attemptId };
+    return {
+      schemaVersion: "ocr-core-review/1",
+      ir,
+      scopes,
+      mode: "HYBRID",
+      detectorStatus: "GEMINI_VISION",
+      relations: [],
+      evidence: [],
+      savedUnitIds: [],
+      savedSteps: [],
+      boundaries: [],
+    };
+  }
+
+  async function runUnitRecognition(unitStrokes: InkStroke[]): Promise<HandwrittenMathEvidence> {
+    if (props.apiClient && props.attemptId) {
+      try {
+        const res = await props.apiClient.recognizeMathInk(props.accessToken ?? "", props.attemptId, {
+          page_index: props.pageIndex,
+          stroke_ids: unitStrokes.map(s => s.id),
+          strokes: unitStrokes,
+        });
+        if (res.suggested_step_type && STEP_KINDS.includes(res.suggested_step_type)) {
+          setStepKind(prev => prev || res.suggested_step_type);
+        }
+        return {
+          rawLatex: res.latex,
+          latex: res.latex,
+          tokenIds: [1],
+          durationMs: 1,
+          encoderMs: 1,
+          decoderMs: 1,
+        };
+      } catch (err: unknown) {
+        console.warn("Gemini OCR recognition failed, falling back to local CoMER:", err);
+      }
+    }
+    return recognizeHandwrittenMathEvidence(unitStrokes);
+  }
+
   async function recognize(ids: string[], base: CoreReview, generation: number) {
     let current = base;
     for (const id of ids) {
       if (!live.current || runId.current !== generation || !sourceGuard.current()) break;
-      const evidence = await recognizeCoreUnit(current.ir, id);
+      const evidence = await recognizeCoreUnit(current.ir, id, runUnitRecognition);
       if (!live.current || runId.current !== generation || !sourceGuard.current()) break;
       current = applyRecognition(latest.current ?? current, evidence); latest.current = current; setReview(current);
-      if (evidence.error) setError("CoMER chưa nhận diện được hoặc model chưa tải được. Em có thể nhập tay và thử lại.");
+      if (evidence.error) setError("Gemini OCR chưa nhận diện được hoặc có lỗi kết nối. Em có thể nhập tay và thử lại.");
     }
   }
   useEffect(() => {
     live.current = true; const generation = ++runId.current;
     void (async () => { try {
-      key.current = await transcriptionKey(props.attemptId!, sourceIdentity(props.source));
+      key.current = `gemini-v2:${await transcriptionKey(props.attemptId!, sourceIdentity(props.source))}`;
       const stored = await loadTranscription(key.current);
       if (!live.current || generation !== runId.current) return;
       persistedVersion.current=stored?.localVersion;
       skipStoredSave.current=Boolean(stored);
-      let initial = stored ?? await prepareCoreReview(props.source, props.attemptId!, optionalLayout);
+      let initial = stored ?? (props.apiClient && props.attemptId ? buildUnifiedGeminiReview(props.source, props.attemptId) : await prepareCoreReview(props.source, props.attemptId!, optionalLayout));
       // A server commit can finish before the local transcription ledger is written.
       // Recover only frozen, explicit boundary actions verified against the actual server step.
       if(stored&&props.apiClient){
@@ -68,8 +125,9 @@ export function PageOcrV2ReviewModal(props: Props) {
       if (!live.current || generation !== runId.current || !sourceGuard.current()) return;
       if (JSON.stringify(initial.ir.sourceSnapshot.strokes) !== JSON.stringify(props.source.strokes.filter(s => s.tool === "PEN")) || initial.ir.sourceRevision !== props.source.sourceRevision) throw Error("STORED_SOURCE_MISMATCH");
       latest.current = initial; setReview(initial); setSelected(getRootContentUnits(initial.ir.contentUnits)[0]?.id ?? "");
-      if (!stored) await recognize(initial.ir.contentUnits.filter(u => u.kind === "MATH" && u.role === "ATOMIC").slice(0,12).map(u=>u.id), initial, generation);
-      setStorageStatus(stored ? "Đã khôi phục bản chép local đúng revision" : "Bản chép mới; phần chưa nhận diện cần đối chiếu");
+      const pendingIds = initial.ir.contentUnits.filter(u => u.kind === "MATH" && u.role === "ATOMIC" && (!stored || !u.rawRecognition || u.rawRecognition === "UNRESOLVED")).slice(0,12).map(u=>u.id);
+      if (pendingIds.length) await recognize(pendingIds, initial, generation);
+      setStorageStatus(stored ? "Đã khôi phục bản chép Gemini OCR" : "Đã nhận diện bằng Gemini OCR; đối chiếu và xác nhận");
     } catch (e) { if (live.current && generation === runId.current) setError(String(e)); } finally { if (live.current && generation === runId.current) setBusy(false); } })();
     return () => { live.current = false; runId.current++; };
     // Snapshot identity is immutable for this modal session.
@@ -107,20 +165,20 @@ export function PageOcrV2ReviewModal(props: Props) {
   if(prepared)return <PageOcrReviewModal {...props} regions={prepared.map(p=>p.region)} pageStrokes={props.source.strokes} preparedSteps={prepared} beforePreparedSave={async()=>{await saveQueue.current;const stored=await loadTranscription(key.current);if(stored?.localVersion!==persistedVersion.current)throw Error("REVIEW_CHANGED_IN_ANOTHER_TAB");await props.beforeSave();}} onPreparedSaved={preparedSaved.current} onClose={()=>setPrepared(null)}/>;
   return <div ref={dialogRef} className={`${styles.modalOverlay} ${styles.pageReviewOverlay}`} role="dialog" aria-modal="true" aria-busy={busy} aria-label="Bản chép OCR V2" data-testid="ocr-v2-main-review" data-engine={review?.mode??"STARTING"} data-stale={String(stale)} onKeyDown={event=>{event.stopPropagation();if(event.key==='Escape'){event.preventDefault();void close();}if(event.key==='Tab'){const fields=[...event.currentTarget.querySelectorAll<HTMLElement>('button:not(:disabled), input:not(:disabled), textarea:not(:disabled), select:not(:disabled), summary')].filter(e=>e.getClientRects().length);const first=fields[0],last=fields.at(-1);if(event.shiftKey&&document.activeElement===first){event.preventDefault();last?.focus();}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first?.focus();}}}}>
     <div className={styles.pageReviewModal}>
-      <header className={styles.pageReviewHeader}><div><h2>Bản chép trang {props.pageIndex+1} · OCR V2</h2><p>Đối chiếu nét viết và xác nhận nội dung trước khi chọn bước để lưu.</p></div><button className={styles.buttonSecondary} onClick={()=>void close()}>Đóng</button></header>
-      <div className={styles.pageReviewNotice} role="status">{busy?"Đang nhận diện…":`${review?.mode??"Chưa sẵn sàng"} · ${review?.ir.approvedUnitCount??0}/${review?.ir.contentUnits.length??0} đơn vị xác nhận`} · {storageStatus}
-        {review?.detectorStatus!=="DETECTED"&&<p>Detector {review?.detectorStatus??"đang kiểm tra"}: dùng Geometry V2 trên máy. TEXT/UNKNOWN cần nhập tay khi chưa có recognizer phù hợp.</p>}
+      <header className={styles.pageReviewHeader}><div><h2>Bản chép trang {props.pageIndex+1} · Gemini OCR</h2><p>Đối chiếu nét viết và xác nhận nội dung trước khi chọn bước để lưu.</p></div><button className={styles.buttonSecondary} onClick={()=>void close()}>Đóng</button></header>
+      <div className={styles.pageReviewNotice} role="status">{busy?"Đang nhận diện qua Gemini OCR…":`${review?.mode??"Chưa sẵn sàng"} · ${review?.ir.approvedUnitCount??0}/${review?.ir.contentUnits.length??0} đơn vị xác nhận`} · {storageStatus}
+        <p>Pipeline nhận diện: <strong>Google Gemini OCR</strong> (Ultra-Turbo 1-Tile WebP + Vector Telemetry). TEXT/UNKNOWN có thể chỉnh sửa trực tiếp.</p>
         {stale&&<p role="alert">Ink/revision đã thay đổi. Bản chép snapshot được giữ; không thể duyệt hoặc lưu. Đóng và trích xuất lại trang.</p>}{error&&<p role="alert">{error}</p>}
       </div>
       <div className={styles.pageReviewContent}>
         <nav className={styles.pageReviewList} aria-label="Đơn vị bản chép">{rows.map(({unit:u,depth})=><div key={u.id} style={{paddingLeft:depth*12}}><input type="checkbox" aria-label={`Chọn đơn vị ${u.id}`} checked={checks.includes(u.id)} disabled={busy||stale} onChange={e=>setChecks(a=>e.target.checked?[...a,u.id]:a.filter(id=>id!==u.id))}/><button className={selected===u.id?styles.pageReviewRowActive:styles.pageReviewRow} data-testid="ocr-v2-unit" onClick={()=>{setSelected(u.id);setBoundaryChecked(false);setStepKind("");setPicked([]);}}>{u.readingOrder+1}. {u.kind} · {u.sourceStrokeIds.length} nét · {review?.savedUnitIds.includes(u.id)?"ĐÃ LƯU":u.reviewStatus}</button></div>)}</nav>
         <div className={styles.pageReviewEditor}>{unit&&review?<>
-          <OcrInkPreview strokes={strokes}/><p>Raw CoMER:</p><pre style={{margin:0,padding:8,maxHeight:160,overflow:"auto",whiteSpace:"pre-wrap",overflowWrap:"anywhere",background:"#f2f6f2"}} data-testid="ocr-v2-raw">{unit.rawRecognition??"UNRESOLVED"}</pre>
+          <OcrInkPreview strokes={strokes}/><p>Kết quả nhận diện Gemini OCR:</p><pre style={{margin:0,padding:8,maxHeight:160,overflow:"auto",whiteSpace:"pre-wrap",overflowWrap:"anywhere",background:"#f2f6f2"}} data-testid="ocr-v2-raw">{unit.rawRecognition??"UNRESOLVED"}</pre>
           {unit.role==='CONTAINER'?<label>Quan hệ <select className={styles.formSelect} value={unit.structureKind??"UNKNOWN"} disabled={locked} onChange={e=>change(r=>({...r,ir:editContainerRelation(r.ir,unit.id,e.target.value as typeof relation)}))}>{["UNKNOWN","SYSTEM","ALTERNATIVES","FRACTION","INDEPENDENT"].map(k=><option key={k}>{k}</option>)}</select></label>:<>
             <label>Loại nội dung <select className={styles.formSelect} data-testid="ocr-v2-kind" value={unit.kind} disabled={locked} onChange={e=>change(r=>({...r,ir:editContentUnit(r.ir,unit.id,{kind:e.target.value as ContentUnitKind})}))}>{["MATH","TEXT","UNKNOWN"].map(k=><option key={k}>{k}</option>)}</select></label>
             <label>Bản chép đã đối chiếu <textarea className={styles.formInput} data-testid="ocr-v2-content" value={unit.approvedContent??unit.rawRecognition??""} disabled={locked} onChange={e=>change(r=>({...r,ir:editContentUnit(r.ir,unit.id,{content:e.target.value})}))}/></label>
             {unit.kind==='MATH'&&<div className={styles.mathPreviewBox} data-testid="ocr-v2-math-preview"><OcrMathPreview latex={unit.approvedContent??unit.rawRecognition??""}/></div>}
-            <button className={styles.buttonSecondary} onClick={()=>void retry()} disabled={locked||unit.kind!=="MATH"}>Nhận diện lại bằng CoMER</button>
+            <button className={styles.buttonSecondary} onClick={()=>void retry()} disabled={locked||unit.kind!=="MATH"}>Nhận diện lại bằng Gemini</button>
           </>}
           <button className={styles.buttonSecondary} data-testid="ocr-v2-approve" disabled={locked} onClick={()=>change(r=>({...r,ir:approveContentUnit(r.ir,unit.id)}))}>Xác nhận bản chép / cấu trúc</button>
           {unit.role==='CONTAINER'&&<button className={styles.buttonSecondary} disabled={locked||review.savedUnitIds.length>0} onClick={()=>change(r=>({...r,ir:ungroupIrUnit(r.ir,unit.id)}))}>Tháo cấu trúc, giữ các đơn vị con</button>}
