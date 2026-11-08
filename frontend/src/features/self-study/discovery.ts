@@ -9,6 +9,9 @@ export interface StudentSubjectAccess {
   subjects: StudentLearningSubjectRead[];
   /** Subjects added by the self-study publication gate, before the first activity exists. */
   discoveryOnlySubjectIds: string[];
+  /** Accessible subjects with a published hierarchy, used for default navigation. */
+  curriculumSubjectIds?: string[];
+  emptyCurriculumSubjectIds?: string[];
 }
 
 const SUBJECT_CODE_PATTERN = /^[A-Z0-9][A-Z0-9_:-]{0,63}$/;
@@ -102,7 +105,14 @@ export function resolveStudentSubjectAccess(
     discoveryOnlySubjectIds.push(subject.subject_id);
   }
 
-  return { subjects, discoveryOnlySubjectIds };
+  const accessibleIds = new Set(subjects.map((subject) => subject.id));
+  const curriculumSubjectIds = (mastery?.subjects ?? [])
+    .filter((subject) => accessibleIds.has(subject.subject_id) && hasBrowsableCurriculum(subject))
+    .map((subject) => subject.subject_id);
+  const emptyCurriculumSubjectIds = (mastery?.subjects ?? [])
+    .filter((subject) => accessibleIds.has(subject.subject_id) && !hasBrowsableCurriculum(subject))
+    .map((subject) => subject.subject_id);
+  return { subjects, discoveryOnlySubjectIds, curriculumSubjectIds, emptyCurriculumSubjectIds };
 }
 
 export function selectAccessibleSubject(
@@ -118,7 +128,10 @@ export function selectAccessibleSubject(
     );
   }
 
-  return (
-    access.subjects.find((subject) => subject.id === focusSubjectId) ?? access.subjects[0]
-  );
+  const focused = access.subjects.find((subject) => subject.id === focusSubjectId);
+  // A missing mastery response is unknown, not proof that an activity subject is empty.
+  if (focused && !access.emptyCurriculumSubjectIds?.includes(focused.id)) return focused;
+  const browsable = access.curriculumSubjectIds === undefined ? access.subjects : access.subjects
+    .filter((subject) => access.curriculumSubjectIds!.includes(subject.id));
+  return browsable.find((subject) => subject.id === focusSubjectId) ?? browsable[0] ?? focused ?? access.subjects[0];
 }

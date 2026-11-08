@@ -149,3 +149,15 @@ test("subject selection accepts only the merged accessible scope", () => {
   assert.equal(selectAccessibleSubject(access, "math_g12", "class-id")?.id, "math-id");
   assert.equal(selectAccessibleSubject(access, "unknown-id", "class-id"), undefined);
 });
+
+test("an empty activity subject does not hide a released curriculum by default", () => {
+  const access = resolveStudentSubjectAccess(
+    [{ id: "qa-id", code: "INK-PG-QA", name: "Ink PostgreSQL Concurrency" }],
+    mastery(subject("qa-id", "INK-PG-QA", "Ink PostgreSQL Concurrency", false),
+      subject("math-id", "MATH_G12", "Toán 12")),
+    ["MATH_G12"]
+  );
+  assert.equal(selectAccessibleSubject(access, undefined, "qa-id")?.id, "math-id");
+  assert.equal(selectAccessibleSubject(access, "qa-id", "qa-id")?.id, "qa-id");
+  assert.equal(access.subjects.length, 2);
+});

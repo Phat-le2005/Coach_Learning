@@ -112,13 +112,13 @@ export function AIReviewSummary({
         <div>
           <strong style={{ fontSize: "0.92rem", color: "#113928" }}>
             {review.is_final
-              ? `${review.review_source === "TEACHER" ? "Điểm giáo viên ghi nhận" : "Điểm theo rubric được duyệt"}: ${Math.round((review.final_score ?? 0) * 100)}%.`
+              ? `${review.review_source === "TEACHER" ? "Điểm giáo viên ghi nhận" : review.review_source === "ANSWER_GROUNDED_AI" ? "Điểm Gemini theo rubric được duyệt" : "Điểm theo rubric được duyệt"}: ${Math.round((review.final_score ?? 0) * 100)}%.`
               : review.review_source === "UNANSWERED_AI"
                 ? "Chưa có đáp án được duyệt. Các góp ý dưới đây không xác định đúng sai và không cho điểm."
                 : review.review_source === "ANSWER_GROUNDED_AI"
                 ? stats.invalidCount === 0 && stats.needsReviewCount === 0
-                  ? "Tất cả các bước giải đều chuẩn xác theo đáp án mẫu. Đã cập nhật độ vững Cây Tri Thức!"
-                  : `Đã đối chiếu với đáp án chuẩn: ghi nhận ${stats.validCount}/${stats.totalSteps} bước đúng và cập nhật Cây Tri Thức.`
+                  ? "AI đã đối chiếu các bước với đáp án mẫu. Kết quả đang ở mức góp ý tham khảo."
+                  : `AI nhận xét ${stats.validCount}/${stats.totalSteps} bước hợp lý; kết quả chưa phải điểm chính thức.`
                 : stats.invalidCount === 0 && stats.needsReviewCount === 0
               ? "AI chưa đánh dấu bước nào cần xem lại."
               : `AI gợi ý kiểm tra lại ${stats.issueStepIndices.length} bước.`}
@@ -192,6 +192,8 @@ export function AIReviewSummary({
       <p className={styles.disclaimerNote}>{review.is_final
         ? review.review_source === "TEACHER"
           ? "Điểm này do giáo viên ghi nhận. Nhận xét theo từng bước chỉ hiện nếu đã được lưu."
+          : review.review_source === "ANSWER_GROUNDED_AI"
+          ? "Điểm và năng lực được cập nhật từ kết quả Gemini theo rubric đã duyệt."
           : "Điểm này được tính từ rubric đã duyệt và các bước được quy tắc toán học kiểm chứng."
         : review.review_source === "UNANSWERED_AI"
           ? "AI chỉ gợi ý điều cần kiểm tra. Giáo viên cần bổ sung hoặc duyệt đáp án trước khi có điểm chính thức."
@@ -216,7 +218,7 @@ export function AIReviewSummary({
       >
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <span style={{ fontSize: "0.86rem", fontWeight: 700, color: hasIssues ? "#b45309" : "#14533f" }}>
-            {hasIssues
+            {!review.is_final ? "Đã nhận góp ý cho bài làm" : hasIssues
               ? "⚡ Cần củng cố thêm công thức trước khi sang câu mới?"
               : "🌱 Đã hoàn thành chặng luyện tập có kiểm chứng AI!"}
           </span>
@@ -230,7 +232,7 @@ export function AIReviewSummary({
               color: hasIssues ? "#b45309" : "#14533f",
             }}
           >
-            {hasIssues ? "Cần gỡ lỗi" : "Đã ghi nhận độ vững"}
+            {!review.is_final ? "Góp ý tham khảo" : hasIssues ? "Cần gỡ lỗi" : "Đã ghi nhận độ vững"}
           </span>
         </div>
 

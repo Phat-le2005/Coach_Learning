@@ -48,10 +48,7 @@ artifacts/
 /graphify-out/
 /.codex/config.toml
 /.codex/hooks.json.bak*
-<<<<<<< HEAD
 commit-history.txt
-frontend/package-lock.json
-=======
 
 # Local academic handoff and generated review exports; acquire separately.
 # Keep the small, versioned backend/data/dev_only test pack in Git.
@@ -82,4 +79,3 @@ frontend/package-lock.json
 *.gguf
 *.pdiparams
 *.pth
->>>>>>> dd06028365cf701c3021e365fc5f9419fe1d6b20

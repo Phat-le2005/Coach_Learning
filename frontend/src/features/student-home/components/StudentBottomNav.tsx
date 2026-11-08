@@ -9,23 +9,16 @@ export interface StudentBottomNavProps {
   pendingAssignmentsCount?: number;
 }
 
-export function StudentBottomNav({ currentRoute = "/student", subjectId }: StudentBottomNavProps) {
-  const isAssignments = currentRoute.startsWith("/student/assignments");
-  const isKnowledge = currentRoute.startsWith("/student/knowledge");
-  const isTheory = currentRoute.startsWith("/student/theory");
-  const isAttempts = currentRoute.startsWith("/student/attempts");
-  const isHome =
-    currentRoute === "/student" ||
-    (!isAssignments && !isKnowledge && !isTheory && !isAttempts && currentRoute.startsWith("/student"));
 export function StudentBottomNav({
   currentRoute = "/student",
   subjectId,
   pendingAssignmentsCount,
 }: StudentBottomNavProps) {
   const isKnowledge = currentRoute.startsWith("/student/knowledge");
-  const isAttempts =
-    currentRoute.startsWith("/student/attempts") || currentRoute.startsWith("/student/assignments");
-  const isHome = currentRoute === "/student" || (!isKnowledge && !isAttempts && currentRoute.startsWith("/student"));
+  const isAssignments = currentRoute.startsWith("/student/assignments");
+  const isTheory = currentRoute.startsWith("/student/theory");
+  const isAttempts = currentRoute.startsWith("/student/attempts");
+  const isHome = currentRoute === "/student" || (!isKnowledge && !isAssignments && !isTheory && !isAttempts && currentRoute.startsWith("/student"));
 
   const knowledgeHref = subjectId
     ? `/student/knowledge?subject_id=${encodeURIComponent(subjectId)}`
@@ -39,7 +32,6 @@ export function StudentBottomNav({
     { label: "Vũ trụ", href: knowledgeHref, icon: Orbit, current: isKnowledge },
     { label: "Lý thuyết", href: "/student/theory", icon: FileText, current: isTheory },
     { label: "Luyện tập", href: "/student/attempts", icon: Edit3, current: isAttempts },
-    { label: "Bài tập", href: "/student/attempts", icon: Edit3, current: isAttempts },
     { label: "Nhiệm vụ", href: isHome ? "#learning-pulse" : `${homeHref}#learning-pulse`, icon: BookOpen, current: false },
   ];
 

@@ -10,6 +10,7 @@ class RubricCriterionMatch:
     weight: float
     score_achieved: float
     matched_step_index: int
+    details: dict | None = None
 
 
 DEFAULT_M12_MONOTONICITY_CRITERIA = [
@@ -50,6 +51,8 @@ class SolutionRubricEvaluator:
 
         matches: list[RubricCriterionMatch] = []
         total_score = 0.0
+        numeric = (self.rubric is not None and isinstance(self.rubric.criteria, dict)
+                   and self.rubric.criteria.get("grading_profile") == "numeric-reference-v1")
 
         for crit in criteria:
             crit_id = crit.get("id", "crit")
@@ -71,6 +74,8 @@ class SolutionRubricEvaluator:
                     factor = 1.0 if raw is None else float(raw)
                 elif val == "NEEDS_REVIEW":
                     factor = 0.0
+                elif val == "INVALID" and numeric and raw is not None:
+                    factor = min(1.0, max(0.0, float(raw)))
                 else:
                     factor = 0.0
 
@@ -82,6 +87,7 @@ class SolutionRubricEvaluator:
                         weight=weight,
                         score_achieved=achieved,
                         matched_step_index=step_idx,
+                        details=matched_step.get("details"),
                     )
                 )
             else:

@@ -87,6 +87,7 @@ class QuestionImportService:
         file_name: str,
         content: bytes,
         trusted_seed_data: bool = False,
+        commit: bool = True,
     ) -> QuestionImportBatchRead:
         if trusted_seed_data and actor.role != Role.ADMIN:
             raise ApplicationError(
@@ -131,7 +132,7 @@ class QuestionImportService:
 
         self._mark_duplicates(validated_rows)
         self.session.add(batch)
-        self.session.commit()
+        self.session.commit() if commit else self.session.flush()
         logger.info(
             "Question import preview created (batch_id=%s, actor_id=%s, rows=%s)",
             batch.id,
@@ -166,7 +167,7 @@ class QuestionImportService:
                 f"Row {row_number}: staging candidates require an explicit promotion step.",
             )
 
-    def confirm(self, actor: User, batch_id: UUID) -> QuestionImportBatchRead:
+    def confirm(self, actor: User, batch_id: UUID, *, commit: bool = True) -> QuestionImportBatchRead:
         batch = self._batch_for_update(batch_id)
         if batch.created_by != actor.id:
             raise ApplicationError(
@@ -203,7 +204,7 @@ class QuestionImportService:
 
         batch.status = ImportBatchStatus.IMPORTED
         batch.confirmed_at = datetime.now(UTC)
-        self.session.commit()
+        self.session.commit() if commit else self.session.flush()
         logger.info(
             "Question import confirmed (batch_id=%s, actor_id=%s, imported=%s)",
             batch.id,

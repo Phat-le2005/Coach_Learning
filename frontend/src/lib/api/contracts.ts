@@ -112,6 +112,8 @@ export interface ProblemTypeMasteryRead extends MasteryMetricRead {
   topic_id: string;
   code: string;
   name: string;
+  concept_ids?: string[];
+  available_question_count?: number;
 }
 
 export interface ConceptMasteryRead extends MasteryMetricRead {
@@ -396,6 +398,8 @@ export function parseProblemTypeMastery(value: unknown, path = "problem_type"): 
     topic_id: nonEmptyString(source.topic_id, `${path}.topic_id`),
     code: nonEmptyString(source.code, `${path}.code`),
     name: nonEmptyString(source.name, `${path}.name`),
+    concept_ids: optional(source.concept_ids, `${path}.concept_ids`, (v, p) => array(v, p, nonEmptyString)),
+    available_question_count: optional(source.available_question_count, `${path}.available_question_count`, integer),
   };
 }
 
@@ -702,7 +706,7 @@ export function parseAIReviewRead(value: unknown, path = "ai_review"): AIReviewR
     ? null : number(source.final_score, `${path}.final_score`);
   if ((isFinal && (finalScore === null || finalScore < 0 || finalScore > 1)) ||
       (!isFinal && finalScore !== null) ||
-      (isFinal && reviewSource !== "DETERMINISTIC" && reviewSource !== "TEACHER") ||
+      (isFinal && reviewSource !== "DETERMINISTIC" && reviewSource !== "TEACHER" && reviewSource !== "ANSWER_GROUNDED_AI") ||
       (!isFinal && (reviewSource === "DETERMINISTIC" || reviewSource === "TEACHER"))) {
     throw new ApiContractError("Review source and final score conflict", path);
   }

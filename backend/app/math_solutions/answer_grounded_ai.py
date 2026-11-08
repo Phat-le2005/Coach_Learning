@@ -1,10 +1,12 @@
 """Answer-grounded AI review of confirmed, submitted math-solution steps.
 
-This layer returns an auditable per-step assessment. It never writes a final
-score, LearningEvidence or Mastery: an AI suggestion is not a trusted grade.
+This layer returns auditable per-step and approved-criterion assessments.
+It does not write grades: curated_ai_grading publishes eligible PA2 assessments
+through the existing evidence/mastery pipeline in one transaction.
 """
 
 from dataclasses import dataclass
+from hashlib import sha256
 import json
 import re
 from typing import Literal
@@ -113,9 +115,31 @@ class AIStepGrade(BaseModel):
         return self
 
 
+class AICheckGrade(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    label: str = Field(min_length=1, max_length=100)
+    score: float = Field(ge=0, le=1)
+    confidence: float = Field(ge=0, le=1)
+    step_indices: list[int] = Field(max_length=100)
+    answer_quote: str = Field(min_length=1, max_length=400)
+    feedback: str = Field(min_length=1, max_length=1200)
+
+
+class AICriterionGrade(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    criterion_id: str = Field(min_length=1, max_length=100)
+    score: float = Field(ge=0, le=1)
+    confidence: float = Field(ge=0, le=1)
+    step_indices: list[int] = Field(max_length=100)
+    answer_quote: str = Field(min_length=1, max_length=400)
+    feedback: str = Field(min_length=1, max_length=1200)
+    checks: list[AICheckGrade] = Field(default_factory=list, max_length=100)
+
+
 class AIGradeOutput(BaseModel):
     model_config = ConfigDict(extra="forbid")
     steps: list[AIStepGrade] = Field(min_length=1, max_length=100)
+    criteria: list[AICriterionGrade] = Field(default_factory=list, max_length=100)
 
 
 class PreliminaryStepComment(BaseModel):
@@ -137,6 +161,8 @@ class AnswerGroundedReview:
     answer_sha256: str
     step_grades: tuple[AIStepGrade, ...]
     needs_teacher_review: bool
+    criterion_grades: tuple[AICriterionGrade, ...] = ()
+    submission_sha256: str = ""
 
 
 class AnswerGroundedAIService:
@@ -159,11 +185,16 @@ class AnswerGroundedAIService:
             raise ApplicationError(409, "SOLUTION_ALREADY_EVALUATED", "This solution already has a final grade.")
 
         student_steps, step_texts = _load_confirmed_steps(self.session, attempt_id)
+        submission_hash = sha256(json.dumps(student_steps, sort_keys=True, ensure_ascii=False).encode("utf-8")).hexdigest()
 
         context = {"problem": reference.problem_content, "correct_answer": reference.correct_answer or None,
                    "reference_solution": reference.reference_solution,
                    "reference_basis": "REFERENCE_SOLUTION" if reference.explanation else "FINAL_ANSWER",
                    "student_steps": student_steps}
+        from app.math_solutions.curated_ai_grading import curated_context
+        reviewed = curated_context(self.session, attempt)
+        if reviewed is not None:
+            context["approved_criteria"] = reviewed.rubric.criteria["criteria"]
         serialized = json.dumps(context, ensure_ascii=False, separators=(",", ":"))
         if len(serialized) > 24000:
             raise ApplicationError(422, "AI_GRADING_CONTEXT_TOO_LONG", "This solution is too long for one review.")
@@ -185,6 +216,14 @@ class AnswerGroundedAIService:
             "'ARITHMETIC_SLIP' (student used the correct algebraic/calculus formula or method, but made a numerical or sign calculation slip), "
             "'CONSEQUENTIAL' (student executed analytical procedure, sign table, variation table, or conclusion correctly based on miscalculated earlier roots), or "
             "'CONCEPTUAL' (student violated fundamental definitions, calculus theorems, monotonicity rules, or extremum criteria). "
+            "If approved_criteria are supplied, also return criteria with exactly one entry per criterion id. "
+            "Use its approved weight and requirements; assess mathematical content across all submitted steps, "
+            "not student step-type labels or literal similarity. Allow equivalent methods. Give partial credit "
+            "between 0 and 1 where justified. Cite contributing step_indices and an exact answer_quote from the "
+            "reference. Missing work earns 0 with empty step_indices; uncertainty has low confidence. "
+            "For criteria containing checks, also return checks with exactly one entry per supplied label, "
+            "each with score, confidence, step_indices, answer_quote and feedback. The criterion score must "
+            "equal the mean check score. Cite reference_solution, correct_answer, problem or approved_criteria. "
             "Never invent a reference or grade from OCR confidence. Use the supplied JSON schema only."
         )
         response = await self.gateway.generate_structured(
@@ -198,7 +237,7 @@ class AnswerGroundedAIService:
             # repeatedly and multiply latency/provider work.
             timeout=get_settings().ai_step_review_timeout_seconds,
             max_retries=0,
-            prompt_name="answer_grounded_step_review", prompt_version="v2",
+            prompt_name="answer_grounded_step_review", prompt_version="v3-curated-rubric",
             user_id=attempt.student_id,
         )
         output = response.data
@@ -215,6 +254,20 @@ class AnswerGroundedAIService:
                 or not _is_valid_evidence_quote(grade.answer_quote, reference_text)
             ):
                 raise ApplicationError(422, "AI_EVIDENCE_INVALID", "AI cited text outside the submitted work or reviewed answer.")
+        if reviewed is not None:
+            criterion_reference = reference_text + "\n" + json.dumps(context["approved_criteria"], ensure_ascii=False)
+            criterion_ids = {c["id"] for c in context["approved_criteria"]}
+            if (len(output.criteria) != len(criterion_ids)
+                    or {g.criterion_id for g in output.criteria} != criterion_ids):
+                raise ApplicationError(422, "AI_CRITERION_COVERAGE_INVALID", "AI must assess every approved criterion once.")
+            for grade in output.criteria:
+                if (not set(grade.step_indices) <= expected
+                        or len(set(grade.step_indices)) != len(grade.step_indices)
+                        or (grade.score > 0 and not grade.step_indices)
+                        or not _is_valid_evidence_quote(grade.answer_quote, criterion_reference)):
+                    raise ApplicationError(422, "AI_CRITERION_EVIDENCE_INVALID", "AI criterion evidence is invalid.")
+            from app.math_solutions.curated_ai_grading import criterion_matches
+            criterion_matches(context["approved_criteria"], output.criteria, expected, criterion_reference)
         ordered = tuple(sorted(output.steps, key=lambda step: step.step_index))
         return AnswerGroundedReview(
             attempt_id=attempt_id, answer_sha256=reference.content_sha256,
@@ -222,7 +275,13 @@ class AnswerGroundedAIService:
             needs_teacher_review=any(
                 grade.verdict == "NEEDS_REVIEW" or grade.confidence < confidence_threshold
                 for grade in ordered
+            ) or any(
+                grade.confidence < confidence_threshold for grade in output.criteria
+            ) or any(
+                check.confidence < confidence_threshold for grade in output.criteria for check in grade.checks
             ),
+            criterion_grades=tuple(output.criteria) if reviewed is not None else (),
+            submission_sha256=submission_hash,
         )
 
 

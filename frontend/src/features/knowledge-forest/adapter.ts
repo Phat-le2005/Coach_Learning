@@ -415,6 +415,12 @@ export function toKnowledgeForestViewModel(
           }
 
           const hasEvidence = pt.attempt_count > 0;
+          const relatedConcepts = pt.concept_ids === undefined ? chapterConcepts : pt.concept_ids
+            .map((id) => concepts.find((c) => c.id === id))
+            .filter((c): c is KnowledgeConceptNode => Boolean(c))
+            .map((c) => ({ id: c.id, code: c.code, name: c.name, masteryScore: c.masteryScore,
+              confidence: c.confidence, attemptCount: c.attemptCount, state: c.state,
+              isWeakPrerequisite: c.state === "WEAK" }));
           const masteryScore = hasEvidence ? safePercent(pt.mastery_score) : undefined;
           const confidence = hasEvidence ? safePercent(pt.confidence) : undefined;
 
@@ -448,15 +454,17 @@ export function toKnowledgeForestViewModel(
             fogCount += 1;
           }
 
-          const diagnosticSummary = buildDiagnosticSummary(
+          const diagnosticSummary = pt.available_question_count === 0
+            ? "Dạng bài đã có trên cây tri thức; bộ câu hỏi luyện tập đang được bổ sung."
+            : buildDiagnosticSummary(
             pt.state,
             masteryScore,
             pt.attempt_count,
             scopeState,
-            chapterConcepts
+            relatedConcepts
           );
 
-          const recommendedTasks = buildRecommendedTasksForNode(
+          const recommendedTasks = pt.available_question_count === 0 ? [] : buildRecommendedTasksForNode(
             {
               id: pt.problem_type_id,
               code: pt.code,
@@ -465,7 +473,7 @@ export function toKnowledgeForestViewModel(
               masteryScore,
               scopeState,
             },
-            chapterConcepts,
+            relatedConcepts,
             learningState
           );
 
@@ -473,6 +481,7 @@ export function toKnowledgeForestViewModel(
             id: pt.problem_type_id,
             code: pt.code,
             name: pt.name,
+            availableQuestionCount: pt.available_question_count,
             topicId: topic.topic_id,
             topicName: topic.name,
             chapterId: chapter.chapter_id,
@@ -489,7 +498,7 @@ export function toKnowledgeForestViewModel(
             teacherScopeLabel,
             priorityReasonCode: priorityReasonByPtId.get(pt.problem_type_id),
             diagnosticSummary,
-            relatedConcepts: chapterConcepts,
+            relatedConcepts,
             recommendedTasks,
           };
         });

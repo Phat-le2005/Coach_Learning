@@ -2,13 +2,15 @@ from collections import defaultdict
 from typing import Any
 from uuid import UUID
 
-from sqlalchemy import select
+from sqlalchemy import select, func, or_
 from sqlalchemy.orm import Session
 
 from app.classes.access import TeacherStudentAccessService
 from app.concepts.models import Concept
 from app.core.exceptions import ApplicationError
-from app.curriculum.models import Chapter, ProblemType, Topic
+from app.curriculum.models import Chapter, ProblemType, ProblemTypeConcept, Topic
+from app.questions.models import Question, QuestionProblemType, QuestionStatus, QuestionType
+from app.questions.eligibility import standalone_question_only
 from app.mastery.aggregation import MasteryAggregationService, MasterySnapshot
 from app.mastery.models import StudentConceptMastery, StudentProblemTypeMastery
 from app.mastery.schemas import (
@@ -94,6 +96,7 @@ class MasteryQueryService:
                 )
             )
         )
+        supply = self._supply_metadata([p.id for p in problem_types])
         problem_mastery = {
             item.problem_type_id: item
             for item in self.session.scalars(
@@ -140,7 +143,7 @@ class MasteryQueryService:
                         problem_reads.append(
                             self._problem_type_from_parts(
                                 problem_type, self.aggregation.snapshot(row)
-                            )
+                            ).model_copy(update=supply[problem_type.id])
                         )
                     chapter_problem_rows.extend(topic_rows)
                     subject_problem_rows.extend(topic_rows)
@@ -192,7 +195,24 @@ class MasteryQueryService:
                 404, "PROBLEM_TYPE_NOT_FOUND", "Problem type was not found."
             )
         snapshot = self.aggregation.get_problem_type_mastery(student_id, problem_type_id)
-        return self._problem_type_from_parts(problem_type, snapshot)
+        return self._problem_type_from_parts(problem_type, snapshot).model_copy(
+            update=self._supply_metadata([problem_type_id])[problem_type_id])
+
+    def _supply_metadata(self, problem_ids: list[UUID]) -> dict:
+        metadata = {identifier: {"concept_ids": [], "available_question_count": 0} for identifier in problem_ids}
+        for problem_id, concept_id in self.session.execute(select(
+            ProblemTypeConcept.problem_type_id, ProblemTypeConcept.concept_id
+        ).where(ProblemTypeConcept.problem_type_id.in_(problem_ids))):
+            metadata[problem_id]["concept_ids"].append(concept_id)
+        for problem_id, count in self.session.execute(select(
+            QuestionProblemType.problem_type_id, func.count(func.distinct(Question.id))
+        ).join(Question, Question.id == QuestionProblemType.question_id).where(
+            QuestionProblemType.problem_type_id.in_(problem_ids), Question.status == QuestionStatus.APPROVED,
+            standalone_question_only(), Question.concept_links.any(), Question.learning_outcome_links.any(),
+            or_(Question.question_type == QuestionType.OPEN_RESPONSE, Question.correct_answer.is_not(None)),
+        ).group_by(QuestionProblemType.problem_type_id)):
+            metadata[problem_id]["available_question_count"] = count
+        return metadata
 
     def _concept_read(self, student_id: UUID, concept_id: UUID) -> ConceptMasteryRead:
         concept = self.session.get(Concept, concept_id)

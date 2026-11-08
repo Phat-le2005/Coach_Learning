@@ -15,9 +15,12 @@ export async function getWorkspaceSubjects(accessToken: string): Promise<Student
   } catch {
     // Existing student activity remains accessible if the mastery read model is unavailable.
   }
-  return resolveStudentSubjectAccess(
+  const access = resolveStudentSubjectAccess(
     learningState.available_subjects,
     mastery,
     getPublishedSelfStudySubjectCodes(),
-  ).subjects;
+  );
+  const browsable = new Set(access.curriculumSubjectIds ?? []);
+  return [...access.subjects.filter((subject) => browsable.has(subject.id)),
+    ...access.subjects.filter((subject) => !browsable.has(subject.id))];
 }

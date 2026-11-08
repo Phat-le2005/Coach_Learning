@@ -23,7 +23,7 @@ interface Props {
 
 export default async function StudentAssignmentWorkspacePage(props: Props) {
   const { assignmentId } = await props.params;
-  await requirePageRole("STUDENT", `/student/assignments/${assignmentId}`);
+  const session = await requirePageRole("STUDENT", `/student/assignments/${assignmentId}`);
   const accessToken = await readAccessToken();
 
   if (!accessToken) {
