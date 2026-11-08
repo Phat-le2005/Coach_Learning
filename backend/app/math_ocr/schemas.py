@@ -1,13 +1,15 @@
 from typing import Literal
 from uuid import UUID
 from pydantic import BaseModel, ConfigDict, Field
+from app.math_ink.schemas import InkStroke
 from app.math_solutions.schemas import StepKind
 
 
 class OCRRecognizeRequest(BaseModel):
     model_config = ConfigDict(extra="forbid", hide_input_in_errors=True)
-    page_index: int = Field(ge=0, le=29, description="Chỉ số trang chứa nét vẽ cần nhận diện (0-29)")
+    page_index: int = Field(default=0, ge=0, le=29, description="Chỉ số trang chứa nét vẽ cần nhận diện (0-29)")
     stroke_ids: list[UUID] | None = Field(default=None, description="Danh sách ID nét vẽ được chọn để nhận diện, hoặc None để nhận diện cả trang")
+    strokes: list[InkStroke] | None = Field(default=None, description="Nét vẽ gửi trực tiếp từ client để nhận diện ngay lập tức mà không cần qua DB")
     hint_topic: str | None = Field(default=None, max_length=200, description="Gợi ý chủ đề bài toán để tăng độ chính xác của mô hình")
     include_alternatives: bool = Field(default=False, description="Thử thêm cách đọc từ cùng nét bút; chỉ trả gợi ý để học sinh chọn")
 

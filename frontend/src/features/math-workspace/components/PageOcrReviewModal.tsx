@@ -133,13 +133,29 @@ export function PageOcrReviewModal({
     if (preparedSteps) return;
     const run = { cancelled: false };
     activeRunRef.current = run;
+
+    async function recognizeUnitStrokes(strokes: InkStroke[]) {
+      if (apiClient && accessToken && attemptId) {
+        try {
+          return await apiClient.recognizeMathInk(accessToken, attemptId, {
+            page_index: pageIndex,
+            stroke_ids: strokes.map((s) => s.id),
+            strokes,
+          });
+        } catch (err: unknown) {
+          console.warn("Gemini OCR recognition failed, falling back to local CoMER:", err);
+        }
+      }
+      return recognizeHandwrittenMath(strokes);
+    }
+
     async function recognizePage() {
       for (const item of regions) {
         if (run.cancelled) break;
         setRows((current) => current.map((candidate) => candidate.region.id === item.id
           ? { ...candidate, status: 'recognizing' } : candidate));
         try {
-          const result = await recognizeHandwrittenMath(item.strokes);
+          const result = await recognizeUnitStrokes(item.strokes);
           if (run.cancelled) break;
           setRows((current) => current.map((candidate) => candidate.region.id === item.id
             ? candidate.touched
@@ -185,7 +201,20 @@ export function PageOcrReviewModal({
     const id = row.region.id;
     changeRow({ status: 'recognizing', error: null, touched: false });
     try {
-      const result = await recognizeHandwrittenMath(row.region.strokes);
+      let result;
+      if (apiClient && accessToken && attemptId) {
+        try {
+          result = await apiClient.recognizeMathInk(accessToken, attemptId, {
+            page_index: pageIndex,
+            stroke_ids: row.region.strokes.map((s) => s.id),
+            strokes: row.region.strokes,
+          });
+        } catch {
+          result = await recognizeHandwrittenMath(row.region.strokes);
+        }
+      } else {
+        result = await recognizeHandwrittenMath(row.region.strokes);
+      }
       setRows((current) => current.map((item) => item.region.id === id && item.status === 'recognizing'
         ? item.touched
           ? { ...item, status: 'manual' }
