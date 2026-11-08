@@ -60,7 +60,7 @@ def resolve_grading_context(session: Session, attempt: SolutionAttempt) -> Gradi
                 or student_item.assignment_material_item_id != snapshot.id
                 or student_item.student_assignment_id != attempt.student_assignment_id
                 or snapshot.question_type != QuestionType.OPEN_RESPONSE
-                or snapshot.evaluation_mode != MaterialEvaluationMode.OPEN_RESPONSE
+                or snapshot.evaluation_mode not in (MaterialEvaluationMode.OPEN_RESPONSE, MaterialEvaluationMode.TEACHER_REVIEW)
                 or rubric.assignment_material_item_id != attempt.assignment_material_item_id
                 or rubric.question_id is not None):
             raise ApplicationError(409, "GRADING_SOURCE_MISMATCH", "The rubric does not match a reviewed assignment snapshot.")
