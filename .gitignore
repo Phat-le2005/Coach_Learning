@@ -56,6 +56,9 @@ commit-history.txt
 /backend/data/content.draft.pretty.json
 /backend/data/content.method.pretty.json
 /backend/data/ocr-direct-grouped_statistics/
+/backend/data/milestone-345.json
+/backend/data/deploy-report.json
+/backend/data/completion.json
 /backend/data/questions/math/grade12/pdf_handoff_200_v0_1/
 /backend/data/materials/
 /reports/data_audits/
