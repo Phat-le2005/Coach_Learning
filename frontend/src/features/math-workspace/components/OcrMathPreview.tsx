@@ -16,10 +16,10 @@ export function OcrMathPreview({ latex }: OcrMathPreviewProps) {
   if (html === null) {
     // Graceful fallback to rich math renderer when input contains mixed prose or $ delimiters
     return (
-      <span className={styles.renderedFormula}>
-        <MathRenderer content={latex} inline />
-      </span>
+      <div className={styles.renderedFormula}>
+        <MathRenderer content={latex} />
+      </div>
     );
   }
-  return <span className={styles.renderedFormula} dangerouslySetInnerHTML={{ __html: html }} />;
+  return <div className={styles.renderedFormula} dangerouslySetInnerHTML={{ __html: html }} />;
 }

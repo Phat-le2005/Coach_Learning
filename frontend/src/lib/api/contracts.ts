@@ -558,6 +558,15 @@ export interface OCRRecognizeRequest {
   include_alternatives?: boolean;
 }
 
+export interface OCRStepProposal {
+  title: string;
+  content_kind: "MATH" | "TEXT";
+  latex: string;
+  explanation_text: string | null;
+  suggested_step_type: StepKind;
+  source_stroke_ids: string[];
+}
+
 export interface OCRRecognizeResponse {
   latex: string;
   confidence: number;
@@ -565,6 +574,8 @@ export interface OCRRecognizeResponse {
   explanation_text: string | null;
   detected_symbols: string[];
   alternative_latex: string[];
+  steps?: OCRStepProposal[];
+  segmentation_warning?: string | null;
 }
 
 export interface AttemptMutationToken {
@@ -932,6 +943,17 @@ export function parseOCRRecognizeResponse(value: unknown, path = "ocr_recognize"
     explanation_text: typeof source.explanation_text === "string" ? source.explanation_text : null,
     detected_symbols: array(source.detected_symbols ?? [], `${path}.detected_symbols`, (v, p) => string(v, p)),
     alternative_latex: array(source.alternative_latex ?? [], `${path}.alternative_latex`, (v, p) => string(v, p)),
+    steps: array(source.steps ?? [], `${path}.steps`, (value, p): OCRStepProposal => {
+      const step = record(value, p);
+      const kind = string(step.content_kind, `${p}.content_kind`);
+      const type = string(step.suggested_step_type, `${p}.suggested_step_type`);
+      if (!["MATH", "TEXT"].includes(kind) || !STEP_KINDS.includes(type as StepKind)) throw new ApiContractError("Invalid OCR step proposal", p);
+      return { title: nonEmptyString(step.title, `${p}.title`), content_kind: kind as "MATH" | "TEXT",
+        latex: string(step.latex, `${p}.latex`), explanation_text: typeof step.explanation_text === "string" ? step.explanation_text : null,
+        suggested_step_type: type as StepKind,
+        source_stroke_ids: array(step.source_stroke_ids, `${p}.source_stroke_ids`, nonEmptyString) };
+    }),
+    segmentation_warning: typeof source.segmentation_warning === "string" ? source.segmentation_warning : null,
   };
 }
 

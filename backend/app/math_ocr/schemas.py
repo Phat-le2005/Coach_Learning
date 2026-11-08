@@ -14,6 +14,17 @@ class OCRRecognizeRequest(BaseModel):
     include_alternatives: bool = Field(default=False, description="Thử thêm cách đọc từ cùng nét bút; chỉ trả gợi ý để học sinh chọn")
 
 
+class OCRStepProposal(BaseModel):
+    """One ungraded, reviewable logical step tied to its original pen strokes."""
+    model_config = ConfigDict(extra="forbid", hide_input_in_errors=True)
+    title: str = Field(min_length=1, max_length=120)
+    content_kind: Literal["MATH", "TEXT"] = "MATH"
+    latex: str = Field(default="", max_length=12000)
+    explanation_text: str | None = Field(default=None, max_length=12000)
+    suggested_step_type: StepKind
+    source_stroke_ids: list[UUID] = Field(min_length=1)
+
+
 class OCRRecognizeResponse(BaseModel):
     model_config = ConfigDict(extra="forbid", hide_input_in_errors=True)
     latex: str = Field(description="Công thức LaTeX toán học được nhận diện từ nét vẽ")
@@ -22,3 +33,5 @@ class OCRRecognizeResponse(BaseModel):
     explanation_text: str | None = Field(default=None, description="Văn bản diễn giải tiếng Việt kèm theo (nếu phát hiện)")
     detected_symbols: list[str] = Field(default_factory=list, description="Các ký hiệu toán học chính được phát hiện trong nét vẽ")
     alternative_latex: list[str] = Field(default_factory=list, max_length=2, description="Các cách đọc khác chưa được xác minh; không tự tạo bước giải")
+    steps: list[OCRStepProposal] = Field(default_factory=list, max_length=24, description="Các bước logic được đề xuất theo thứ tự đọc; chưa được xác nhận hoặc chấm điểm")
+    segmentation_warning: str | None = Field(default=None, description="Lý do chưa thể đề xuất đầy đủ ranh giới bước; giữ bản chép để đối chiếu")

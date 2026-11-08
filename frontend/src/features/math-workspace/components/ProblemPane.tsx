@@ -393,7 +393,7 @@ export function ProblemPane({
                 type="button"
                 className={styles.buttonSecondary}
                 onClick={onPrepareSubmission}
-                disabled={isSubmitting || isReviewing}
+                disabled={isSubmitting || isReviewing || submissionBlocked}
                 title="Mở giao diện trích xuất trang chi tiết để kiểm tra và chỉnh sửa từng bước"
                 style={{ width: "100%", justifyContent: "center", marginBottom: "0.5rem" }}
               >
@@ -403,14 +403,14 @@ export function ProblemPane({
                 type="button"
                 className={styles.primaryGradeButton}
                 onClick={() => void onSubmitSolution()}
-                disabled={isSubmitting || isReviewing || submissionBlocked || !submission.showSubmitButton}
+                disabled={isSubmitting || isReviewing || submissionBlocked || !submission.canSubmit}
                 title={submissionBlocked ? "Hãy hoàn tất phục hồi lưu OCR trước khi nộp bài" : !attempt.steps?.length ? "Trích xuất hoặc nhập bước giải để xác nhận trước khi nộp" : "Nộp bài và kiểm tra các bước đã xác nhận"}
               >
                 <Sparkles size={16} />
-                {isSubmitting ? "Đang trích xuất & nộp..." : isReviewing ? "Đang kiểm tra bài..." : "Nộp bài & kiểm tra"}
+                {isSubmitting ? "Đang nộp bản đã xác nhận…" : isReviewing ? "Đang kiểm tra bài..." : "Nộp bài & kiểm tra"}
               </button>
               {!attempt.steps?.length ? (
-                <small className={styles.footerHint}>Tự động nhận diện chữ viết tay qua Gemini OCR khi nộp</small>
+                <small className={styles.footerHint}>Trích xuất bằng Gemini → sửa và xác nhận bản chép → lưu bước giải → nộp chấm</small>
               ) : (
                 <small className={styles.footerHint}>Đã có {attempt.steps.length} bước giải • Điểm chính thức chỉ có khi đủ đáp án và rubric</small>
               )}

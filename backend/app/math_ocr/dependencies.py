@@ -1,6 +1,5 @@
 """OCR provider selection for the current FastAPI application."""
 
-import os
 from fastapi import Request
 from app.core.config import Settings, get_settings
 from app.core.exceptions import ApplicationError
@@ -20,10 +19,12 @@ def get_ocr_adapter(settings: Settings | None = None) -> MathOCRAdapter:
             settings.ai_api_key.get_secret_value()
             if settings.ai_api_key
             else False
-        ) or bool(os.getenv("GEMINI_API_KEY") or os.getenv("GEMINI_API_KEYS"))
+        )
         if not has_api_key and settings.app_env == "test":
             return MockMathOCRAdapter()
         return GeminiMathOCRAdapter(
+            settings=settings,
+            api_key=settings.ai_api_key.get_secret_value(),
             model_name=getattr(settings, "gemini_ocr_model", "gemini-3.8-flash"),
             fast_mode=getattr(settings, "gemini_ocr_fast_mode", True),
         )

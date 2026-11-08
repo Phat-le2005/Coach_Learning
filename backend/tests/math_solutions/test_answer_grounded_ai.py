@@ -1,6 +1,7 @@
 """AI feedback must cover confirmed steps and never invent a final grade."""
 
 import asyncio
+import json
 from types import SimpleNamespace
 from uuid import uuid4
 
@@ -94,6 +95,19 @@ def test_mock_provider_cannot_issue_ai_grades(monkeypatch):
         asyncio.run(AnswerGroundedAIService(session, gateway).review_attempt(attempt.id))
     assert error.value.code == "REAL_AI_PROVIDER_REQUIRED"
     assert gateway.calls == 0
+
+
+def test_review_uses_student_correction_and_bound_reference_not_raw_ocr(monkeypatch):
+    attempt, session, gateway = fixture_case(monkeypatch)
+    session.revisions[0].content_latex = "y'=3x^2+0"
+    session.revisions[0].explanation_text = "Bản đã sửa sau OCR"
+    asyncio.run(AnswerGroundedAIService(session, gateway).review_attempt(attempt.id))
+    context = json.loads(gateway.messages[1].content)
+    assert context["student_steps"][0]["text"] == "y'=3x^2+0\nBản đã sửa sau OCR"
+    assert context["problem"] == "Find the derivative and intervals for y=x^3"
+    assert context["correct_answer"] == "y'=3x^2; increasing on (0,2)"
+    assert context["reference_solution"]
+    assert "raw_ocr" not in context
 
 
 def test_missing_answer_stops_before_model_call(monkeypatch):

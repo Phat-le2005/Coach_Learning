@@ -52,7 +52,7 @@ class Settings(BaseSettings):
     refresh_token_expire_days: int = Field(default=7, ge=1, le=30)
     seed_demo_password: SecretStr = SecretStr("")
 
-    # OCR is disabled by default; no mock output is ever served automatically.
+    # OCR and answer-grounded review share a server-side Gemini key.
     math_ocr_provider: Literal["disabled", "gemini", "mathpix", "local_rapid", "local_pix2tex", "mock"] = "gemini"
     gemini_ocr_model: str = Field(default="gemini-3.8-flash", min_length=1)
     gemini_ocr_fast_mode: bool = True
@@ -64,6 +64,8 @@ class Settings(BaseSettings):
 
     ai_provider: str = Field(default="mock", min_length=1)
     ai_api_key: SecretStr = SecretStr("")
+    gemini_api_key: SecretStr = SecretStr("")
+    gemini_api_keys: SecretStr = SecretStr("")
     ai_model_fast: str = Field(default="gemini-3.6-flash", min_length=1)
     ai_model_standard: str = Field(default="gemini-3.6-flash", min_length=1)
     ai_model_reasoning: str = Field(default="gemini-3.6-flash", min_length=1)
@@ -86,6 +88,17 @@ class Settings(BaseSettings):
     question_acquisition_allowed_domains: str = ""
     question_acquisition_storage_dir: Path = BACKEND_DIR / "var" / "question_acquisition"
     question_acquisition_max_bytes: int = Field(default=25 * 1024 * 1024, ge=1)
+
+    @model_validator(mode="after")
+    def share_gemini_key(self) -> "Settings":
+        # Also accept GEMINI_API_KEY from .env, including when AI_API_KEY is empty.
+        # Keep an explicitly configured AI_API_KEY authoritative for both services.
+        if not self.ai_api_key.get_secret_value().strip():
+            value = self.gemini_api_key.get_secret_value().strip()
+            if not value:
+                value = next((key.strip() for key in self.gemini_api_keys.get_secret_value().split(",") if key.strip()), "")
+            self.ai_api_key = SecretStr(value)
+        return self
 
     @field_validator("jwt_secret_key")
     @classmethod

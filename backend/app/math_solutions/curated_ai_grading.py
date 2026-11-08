@@ -124,10 +124,10 @@ def finalize_curated_ai_review(session: Session, attempt_id: UUID, review):
         grade = step_grades[step.step_index]
         session.add(StepEvaluation(
             step_revision_id=revision.id, rubric_id=context.rubric.id,
-            evaluator_type="GEMINI_REFERENCE", math_validity=grade.verdict,
+            evaluator_type="AI_HEURISTIC", math_validity=grade.verdict,
             score=grade.score, confidence=grade.confidence, error_detected=grade.verdict == "INVALID",
             error_description=grade.feedback,
-            evidence_quote=json.dumps({"reference_sha256": review.answer_sha256,
+            evidence_quote=json.dumps({"evaluator": "GEMINI_REFERENCE", "reference_sha256": review.answer_sha256,
                                        "review": grade.model_dump(mode="json")}, ensure_ascii=False),
             evaluated_at=now,
         ))

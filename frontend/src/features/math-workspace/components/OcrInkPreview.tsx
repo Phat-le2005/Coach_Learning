@@ -9,9 +9,10 @@ const PAGE_HEIGHT = 1123;
 
 interface OcrInkPreviewProps {
   strokes: InkStroke[];
+  label?: string;
 }
 
-export function OcrInkPreview({ strokes }: OcrInkPreviewProps) {
+export function OcrInkPreview({ strokes, label = "Nét viết gốc — đối chiếu từng ký hiệu trước khi lưu:" }: OcrInkPreviewProps) {
   const pens = strokes.filter((stroke) => stroke.tool === "PEN" && stroke.points.length > 0);
   if (pens.length === 0) return null;
 
@@ -36,7 +37,7 @@ export function OcrInkPreview({ strokes }: OcrInkPreviewProps) {
 
   return (
     <div className={styles.inkPreview}>
-      <span className={styles.formLabel}>Nét viết gốc — đối chiếu từng ký hiệu trước khi lưu:</span>
+      {label && <span className={styles.formLabel}>{label}</span>}
       <svg
         className={styles.inkPreviewSvg}
         viewBox={`${left} ${top} ${Math.max(1, right - left)} ${Math.max(1, bottom - top)}`}

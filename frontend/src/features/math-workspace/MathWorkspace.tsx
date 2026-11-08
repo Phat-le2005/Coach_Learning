@@ -36,7 +36,7 @@ import { SyncStatusBadge } from "./components/SyncStatusBadge";
 import { PageOcrV2ReviewModal } from "./components/PageOcrV2ReviewModal";
 import { VariationTableModal } from "./components/VariationTableModal";
 import { AIReviewWorkspace } from "./components/ai-review/AIReviewWorkspace";
-import { STEP_KINDS, type AIReviewRead, type AIReviewAvailabilityRead, type StepKind, type VariationTablePayload } from "@/lib/api/contracts";
+import { type AIReviewRead, type AIReviewAvailabilityRead, type StepKind, type VariationTablePayload } from "@/lib/api/contracts";
 import { SequentialBatchManager, type BatchJournal } from "./utils/batch-manager";
 import { IndexedDbBatchJournal, BrowserBatchLock } from "./utils/batch-journal";
 import { createBatchApi } from "./utils/ocr-batch-adapter";
@@ -908,6 +908,8 @@ export function MathWorkspace({
           ? "Gemini chưa được cấu hình trên máy chủ. Hãy liên hệ người quản trị."
           : code === "AI_RATE_LIMIT_EXCEEDED"
             ? "Đã hết lượt Gemini hiện tại. Hãy thử lại sau."
+            : code === "INTERNAL_SERVER_ERROR"
+              ? "Máy chủ chưa lưu được kết quả chấm. Bài làm đã nộp vẫn được giữ; hãy thử lại sau."
             : error instanceof ApiResponseError && error.status === 401
               ? "Phiên đăng nhập đã hết hạn. Hãy đăng nhập lại rồi thử tiếp."
               : error instanceof ApiResponseError ? error.message
@@ -971,60 +973,10 @@ export function MathWorkspace({
       const dirty = await mathInkStorage.listDirtyPages(attemptId).catch(() => []);
       if (dirty.length) throw new Error("Vẫn còn trang viết chưa đồng bộ. Hãy thử lưu lại.");
 
-      // Auto-extract handwriting from canvas via Gemini OCR if needed
-      let currentAttempt = attempt;
-      const allPenStrokes = currentPageMemory.strokes.filter((s) => s.tool === "PEN" && s.points.length > 0);
-      if (allPenStrokes.length > 0) {
-        try {
-          const ocrRes = await apiClient.recognizeMathInk(accessToken ?? "", attemptId, {
-            page_index: currentPageIndex,
-            stroke_ids: allPenStrokes.map((s) => s.id),
-            strokes: allPenStrokes,
-          });
-          const recognizedLatex = ocrRes.latex ? ocrRes.latex.trim() : "";
-          if (recognizedLatex) {
-            const cleanOcr = recognizedLatex.replace(/[\s\$\\]/g, "");
-            const matchesExisting = cleanOcr.length > 0 && (currentAttempt.steps ?? []).some((step) => {
-              const cleanStep = (step.content_latex ?? "").replace(/[\s\$\\]/g, "");
-              return cleanStep && (cleanStep.includes(cleanOcr) || cleanOcr.includes(cleanStep));
-            });
-
-            if (!matchesExisting) {
-              const suggestedKind = ocrRes.suggested_step_type && STEP_KINDS.includes(ocrRes.suggested_step_type as StepKind)
-                ? (ocrRes.suggested_step_type as StepKind)
-                : "CUSTOM";
-
-              if (currentAttempt.steps?.length === 1) {
-                const stepId = currentAttempt.steps[0]!.id;
-                const updated = await apiClient.updateMathStep(accessToken, attemptId, stepId, {
-                  expected_attempt_revision: currentAttempt.current_revision,
-                  client_action_id: generateUuid(),
-                  step_type: suggestedKind,
-                  content_latex: recognizedLatex,
-                  explanation_text: null,
-                });
-                currentAttempt = updated;
-                setAttempt(updated);
-              } else {
-                const updated = await apiClient.createMathStep(accessToken, attemptId, {
-                  expected_attempt_revision: currentAttempt.current_revision,
-                  client_action_id: generateUuid(),
-                  step_type: suggestedKind,
-                  content_latex: recognizedLatex,
-                  explanation_text: null,
-                });
-                currentAttempt = updated;
-                setAttempt(updated);
-              }
-            }
-          }
-        } catch (ocrErr: unknown) {
-          console.warn("Auto Gemini OCR failed during submit, continuing with existing steps if any:", ocrErr);
-        }
-      }
-
-      if (!currentAttempt.steps?.length) {
-        throw new Error("Hãy viết bài giải trên giấy hoặc xác nhận ít nhất một bước giải trước khi nộp.");
+      // Submit exactly the saved, student-confirmed revisions. Running OCR here
+      // would overwrite corrections or create steps the student has not reviewed.
+      if (!attempt.steps?.length) {
+        throw new Error("Hãy trích xuất bằng Gemini, sửa bản chép và lưu ít nhất một bước đã xác nhận trước khi nộp.");
       }
 
       // Read IndexedDB while holding the exact Web Lock used by the batch engine.
@@ -1033,7 +985,7 @@ export function MathWorkspace({
       const submitted = await withSafeBatchSubmission(
         attemptId, new IndexedDbBatchJournal(), new BrowserBatchLock(),
         () => {
-          const pending = submitActionRef.current ?? { revision: currentAttempt.current_revision, actionId: generateUuid() };
+          const pending = submitActionRef.current ?? { revision: attempt.current_revision, actionId: generateUuid() };
           submitActionRef.current = pending;
           return apiClient.submitMathAttempt(accessToken, attemptId, {
             expected_attempt_revision: pending.revision, client_action_id: pending.actionId,
@@ -1882,7 +1834,7 @@ export function MathWorkspace({
           gradingError={gradingError}
           isSubmitting={isSubmitting}
           isReviewing={isReviewing}
-          submissionBlocked={Boolean(pendingBatch || batchJournalLoadError || batchResuming)}
+          submissionBlocked={!batchJournalReady || Boolean(pendingBatch || batchJournalLoadError || batchResuming || pageOcrReview)}
           examMode={isClassroomExam && !examSubmitted}
         /> : null}
 
