@@ -34,6 +34,7 @@ from app.teacher_materials.pdf_schemas import PdfImportQuestion, PdfImportRead, 
 from app.teacher_materials.difficulty import DIFFICULTY_SCORES, MaterialDifficultyLevel
 from app.teacher_materials.service import TeacherMaterialService
 from app.teacher_materials.ocr_source import normalize_source
+from app.teacher_materials.visual_schemas import QuestionVisualRead, markdown_image_paths
 
 logger = logging.getLogger(__name__)
 REPO_ROOT = Path(__file__).resolve().parents[3]
@@ -166,6 +167,7 @@ def process_import(directory: Path, runner: LocalPdfOcrRunner, root: Path) -> No
 class TeacherPdfImportService:
     def __init__(self, materials: TeacherMaterialService, root: Path, runner: LocalPdfOcrRunner):
         self.materials, self.root, self.runner = materials, Path(root).resolve(), runner
+        self._visual_questions: dict[UUID, list[PdfImportQuestion]] = {}
 
     def _directory(self, job_id: UUID) -> Path:
         return self.root / str(job_id)
@@ -283,6 +285,18 @@ class TeacherPdfImportService:
                 source_assets=list(dict.fromkeys(asset_index(f["source_asset"]) for f in fragments if f.get("source_asset"))),
                 visual_assets=list(dict.fromkeys(asset_index(a["path"]) for a in row.get("visual_assets", []) if a.get("path"))),
             ))
+            for asset in row.get("visual_assets", []):
+                if not asset.get("path"):
+                    continue
+                index = asset_index(asset["path"])
+                role = asset.get("role")
+                if role not in {"question", "answer", "solution"}:
+                    role = next((name for name in ("question", "answer", "solution")
+                                 if asset["path"] in markdown_image_paths(row.get(name, {}).get("markdown", ""))), "question")
+                questions[-1].visuals.append(QuestionVisualRead(
+                    index=index, path=asset["path"], role=role,
+                    url=f"/api/teacher/materials/pdf-imports/{directory.name}/assets/{index}",
+                ))
         return questions, assets, records
 
     def _image_candidate(self, directory: Path, job: dict) -> list[dict]:
@@ -495,6 +509,45 @@ class TeacherPdfImportService:
         item = next((i for i in material.items if index in i.raw_metadata.get("visual_assets", [])), None)
         if item is None or not item.raw_metadata.get("pdf_import_id"):
             raise ApplicationError(404, "PDF_ASSET_NOT_FOUND", "Không tìm thấy hình minh họa đã duyệt.")
+        return self._asset_path(self._directory(UUID(item.raw_metadata["pdf_import_id"])), index)
+
+    def item_visuals(self, item: TeacherMaterialItem, base_url: str, content: str,
+                     *, include_references: bool = False) -> list[QuestionVisualRead]:
+        """Recover legacy imports on read; the assigned question text stays immutable."""
+        metadata = item.raw_metadata or {}
+        if not metadata.get("pdf_import_id") or not metadata.get("visual_assets"):
+            return []
+        try:
+            job_id = UUID(metadata["pdf_import_id"])
+        except (ValueError, TypeError):
+            return []
+        if job_id not in self._visual_questions:
+            self._visual_questions[job_id] = self._questions(self._directory(job_id))[0]
+        questions = self._visual_questions[job_id]
+        source = next((q for q in questions if q.question_id == metadata.get("source_question_id")), None)
+        if source is None:
+            candidates = [q for q in questions if q.visual_assets == metadata["visual_assets"]]
+            source = candidates[0] if len(candidates) == 1 else None
+        if source is None:
+            return []
+        referenced = markdown_image_paths(content)
+        seen: set[int] = set()
+        result = []
+        for visual in source.visuals:
+            if visual.index not in metadata["visual_assets"] or visual.index in seen:
+                continue
+            if not include_references and visual.role != "question" and visual.path not in referenced:
+                continue
+            seen.add(visual.index)
+            result.append(visual.model_copy(update={"url": f"{base_url}/{visual.index}"}))
+        return result
+
+    def assigned_asset(self, item: TeacherMaterialItem, index: int, content: str,
+                       *, include_references: bool = False) -> Path:
+        """The caller must authorize the assigned item before resolving its image."""
+        allowed = self.item_visuals(item, "", content, include_references=include_references)
+        if not any(visual.index == index for visual in allowed):
+            raise ApplicationError(404, "PDF_ASSET_NOT_FOUND", "Không tìm thấy hình minh họa của câu này.")
         return self._asset_path(self._directory(UUID(item.raw_metadata["pdf_import_id"])), index)
 
     def _asset_path(self, directory: Path, index: int, *, assets: list[str] | None = None) -> Path:

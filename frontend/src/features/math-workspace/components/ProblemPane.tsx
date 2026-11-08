@@ -6,7 +6,7 @@ import { BookOpen, PanelLeftClose, PanelLeft, Trash2, Sparkles, PenLine } from "
 import type { ProblemRead, SolutionAttemptRead } from "../types";
 import type { AIReviewRead, AIReviewAvailabilityRead, SolutionStepRead, VariationTablePayload } from "@/lib/api/contracts";
 import { parseVariationTablePayload } from "@/lib/api/contracts";
-import { MathRenderer } from "@/components/ui/MathRenderer";
+import { QuestionContent } from "@/components/ui/QuestionContent";
 import { ApiNetworkError, ApiResponseError } from "@/lib/api/client";
 import { OcrMathPreview } from "./OcrMathPreview";
 import { VariationTableGrid } from "./VariationTableModal";
@@ -166,7 +166,7 @@ export function ProblemPane({
                 {/* Question Text */}
                 <div className={styles.problemBody}>
                   <div className={styles.problemContentText}>
-                    <MathRenderer content={problem.content} />
+                    <QuestionContent content={problem.content} visuals={problem.visuals} relatedContent={problem.options.map((option) => option.content)} />
                   </div>
                 </div>
 
@@ -179,7 +179,7 @@ export function ProblemPane({
                         <div key={opt.id} className={styles.optionCard}>
                           <span className={styles.optionLabel}>{opt.label}</span>
                           <div className={styles.optionContent}>
-                            <MathRenderer content={opt.content} />
+                            <QuestionContent content={opt.content} visuals={problem.visuals} gallery={false} />
                           </div>
                         </div>
                       ))}

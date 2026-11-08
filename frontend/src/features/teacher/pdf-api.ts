@@ -2,6 +2,7 @@ import { getCsrfToken } from "../../lib/auth/browser";
 import { array, boolean, integer, oneOf, record, string } from "../../lib/api/validation";
 import { parseMaterial, teacherRequest } from "./api";
 import { parseMaterialDifficulty, type MaterialDifficultyLevel } from "./material-difficulty";
+import { parseQuestionVisuals, type QuestionVisual } from "../../lib/api/question-visuals";
 
 export interface PdfReviewDecision {
   question_id: string;
@@ -14,6 +15,7 @@ export interface PdfReviewDecision {
 }
 export interface PdfReviewSubmit { title: string; decisions: PdfReviewDecision[]; }
 export interface PdfImportQuestion {
+  visuals?: QuestionVisual[];
   question_id: string;
   number: number;
   source_number: number | null;
@@ -83,6 +85,7 @@ export function parsePdfImport(value: unknown, path = "pdfImport"): TeacherPdfIm
         suggested: boolean(q.suggested, `${p}.suggested`), pages: array(q.pages, `${p}.pages`, integer),
         warnings: array(q.warnings, `${p}.warnings`, string), source_assets: array(q.source_assets, `${p}.source_assets`, integer),
         visual_assets: array(q.visual_assets, `${p}.visual_assets`, integer),
+        visuals: parseQuestionVisuals(q.visuals, `${p}.visuals`),
       };
     }),
   };

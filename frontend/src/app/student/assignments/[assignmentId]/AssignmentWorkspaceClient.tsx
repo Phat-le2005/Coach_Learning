@@ -18,6 +18,8 @@ import {
 
 import styles from "../assignments.module.css";
 import { getCsrfToken } from "@/lib/auth/browser";
+import { QuestionContent } from "@/components/ui/QuestionContent";
+import type { QuestionVisual } from "@/lib/api/question-visuals";
 
 export interface QuestionItem {
   source_kind: "CANONICAL_QUESTION" | "TEACHER_MATERIAL_ITEM" | "CANONICAL" | "TEACHER_MATERIAL";
@@ -27,6 +29,7 @@ export interface QuestionItem {
   student_material_item_id?: string | null;
   order_index: number;
   content: string;
+  visuals?: QuestionVisual[];
   question_type: string;
   difficulty?: number | null;
   options?: Array<{ id: string; label: string; content: string; order_index: number }>;
@@ -345,7 +348,7 @@ export function AssignmentWorkspaceClient({
 
             {/* Question Content */}
             <div className={styles.questionContentBox}>
-              {currentQ.content}
+              <QuestionContent content={currentQ.content} visuals={currentQ.visuals} relatedContent={currentQ.options?.map((option) => option.content)} />
             </div>
 
             {/* Multiple Choice Options (if present) */}
@@ -366,9 +369,9 @@ export function AssignmentWorkspaceClient({
                         onChange={() => !isFinalized && handleAnswerChange(opt.label)}
                         disabled={isFinalized}
                       />
-                      <span>
-                        <b>{opt.label}.</b> {opt.content}
-                      </span>
+                      <div>
+                        <b>{opt.label}.</b> <QuestionContent content={opt.content} visuals={currentQ.visuals} gallery={false} inline />
+                      </div>
                     </label>
                   );
                 })}
@@ -454,8 +457,8 @@ export function AssignmentWorkspaceClient({
                 <div className={styles.explanationRevealBox}>
                   <b>💡 Lời giải tham khảo từ Giáo viên:</b>
                   <div style={{ marginTop: "0.5rem" }}>
-                    {currentQ.correct_answer && <div><b>Đáp số:</b> {currentQ.correct_answer}</div>}
-                    {currentQ.explanation && <div style={{ marginTop: "0.25rem" }}>{currentQ.explanation}</div>}
+                    {currentQ.correct_answer && <div><b>Đáp số:</b> <QuestionContent content={currentQ.correct_answer} visuals={currentQ.visuals} role="answer" /></div>}
+                    {currentQ.explanation && <div style={{ marginTop: "0.25rem" }}><QuestionContent content={currentQ.explanation} visuals={currentQ.visuals} role="solution" /></div>}
                   </div>
                 </div>
               )}

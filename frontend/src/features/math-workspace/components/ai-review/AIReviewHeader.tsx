@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Sparkles, BookOpen, X, ChevronUp, ArrowRight, LoaderCircle } from "lucide-react";
-import { MathRenderer } from "@/components/ui/MathRenderer";
+import { QuestionContent } from "@/components/ui/QuestionContent";
 import type { ProblemRead } from "../../types";
 import type { AIReviewUIState } from "../../utils/ai-review-controller";
 import type { AIReviewRead } from "@/lib/api/contracts";
@@ -153,7 +153,7 @@ export function AIReviewHeader({
             <span>Đề bài tham chiếu</span>
           </div>
           <div className={styles.problemDrawerBody}>
-            <MathRenderer content={problem.content} />
+            <QuestionContent content={problem.content} visuals={problem.visuals} />
           </div>
         </section>
       )}

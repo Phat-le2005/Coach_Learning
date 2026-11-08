@@ -2,6 +2,7 @@
 
 import React, { useMemo } from "react";
 import katex from "katex";
+import { isQuestionImageUrl } from "../../lib/api/question-visuals";
 
 interface MathRendererProps {
   content: string;
@@ -100,14 +101,14 @@ export function formatPlainText(text: string): string {
 }
 
 interface Segment {
-  type: "text" | "inline_math" | "display_math";
+  type: "text" | "inline_math" | "display_math" | "image";
   value: string;
 }
 
 function parseMathSegments(text: string): Segment[] {
   const segments: Segment[] = [];
-  // Regex to match $$...$$, \[...\], $...$, \(...\)
-  const mathRegex = /(\$\$[\s\S]+?\$\$|\\\[[\s\S]+?\\\]|\$(?!\$)[\s\S]+?\$|\\\([\s\S]+?\\\))/g;
+  // Read images before formulas so filenames and labels are not rewritten as maths.
+  const mathRegex = /(!\[[^\]\n]*\]\(\s*(?:<[^>\n]+>|[^\s)]+)\s*\)|\$\$[\s\S]+?\$\$|\\\[[\s\S]+?\\\]|\$(?!\$)[\s\S]+?\$|\\\([\s\S]+?\\\))/g;
 
   let lastIndex = 0;
   let match: RegExpExecArray | null;
@@ -121,7 +122,9 @@ function parseMathSegments(text: string): Segment[] {
     }
 
     const raw = match[0];
-    if (raw.startsWith("$$") && raw.endsWith("$$")) {
+    if (raw.startsWith("![")) {
+      segments.push({ type: "image", value: raw });
+    } else if (raw.startsWith("$$") && raw.endsWith("$$")) {
       segments.push({
         type: "display_math",
         value: raw.slice(2, -2).trim(),
@@ -244,19 +247,19 @@ export function MathRenderer({ content, className = "", inline = false }: MathRe
     const trimmed = content.trim();
 
     // 1. Check if content is a single wrapped display math expression: $$...$$ or \[...\]
-    if (
+    if (!trimmed.includes("![") && (
       (trimmed.startsWith("$$") && trimmed.endsWith("$$") && trimmed.length >= 4) ||
       (trimmed.startsWith("\\[") && trimmed.endsWith("\\]") && trimmed.length >= 4)
-    ) {
+    )) {
       const inner = trimmed.startsWith("$$") ? trimmed.slice(2, -2).trim() : trimmed.slice(2, -2).trim();
       return renderKatexSafe(inner, true);
     }
 
     // 2. Check if content is a single wrapped inline math expression: \(...\) or $...$
-    if (
+    if (!trimmed.includes("![") && (
       (trimmed.startsWith("\\(") && trimmed.endsWith("\\)") && trimmed.length >= 4) ||
       (trimmed.startsWith("$") && trimmed.endsWith("$") && trimmed.length >= 2 && !trimmed.slice(1, -1).includes("$"))
-    ) {
+    )) {
       const inner = trimmed.startsWith("\\(") ? trimmed.slice(2, -2).trim() : trimmed.slice(1, -1).trim();
       return renderKatexSafe(inner, false);
     }
@@ -268,6 +271,7 @@ export function MathRenderer({ content, className = "", inline = false }: MathRe
       !/[\u00c0-\u1ef9]/iu.test(trimmed) &&
       !/\b[A-Za-z]{4,}\s+[A-Za-z]{4,}\b/.test(trimmed) &&
       !trimmed.includes("$") &&
+      !trimmed.includes("![") &&
       !trimmed.includes("\\[")
     ) {
       return renderKatexSafe(trimmed, !inline);
@@ -278,6 +282,14 @@ export function MathRenderer({ content, className = "", inline = false }: MathRe
 
     return segments
       .map((segment) => {
+        if (segment.type === "image") {
+          const match = /^!\[([^\]\n]*)\]\(\s*(?:<([^>\n]+)>|([^\s)]+))\s*\)$/.exec(segment.value);
+          if (!match) return escapeHtml(segment.value);
+          const source = match[2] ?? match[3];
+          return isQuestionImageUrl(source)
+            ? `<img src="${escapeHtml(source)}" alt="${escapeHtml(match[1])}" loading="lazy" decoding="async" style="display:block;max-width:100%;height:auto;margin:1rem auto"/>`
+            : '<span role="status">Hình minh họa chưa khả dụng.</span>';
+        }
         if (segment.type === "text") {
           const enhanced = enhanceTextWithInlineMath(segment.value);
           if (enhanced.includes("$")) {

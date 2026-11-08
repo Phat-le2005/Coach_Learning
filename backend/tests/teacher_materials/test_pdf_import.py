@@ -187,6 +187,10 @@ def test_submitted_material_can_be_revised_without_overwriting_previous_content(
     assert material.items[0].content == "Đề bài mới"
     index = material.items[0].raw_metadata["visual_assets"][0]
     assert env.service.material_asset(env.d.teacher.id, material.id, index).read_bytes() == b"original-visual"
+    visuals = env.service.item_visuals(material.items[0], f"/api/teacher/materials/{material.id}/assets", material.items[0].content)
+    assert len(visuals) == 1
+    assert visuals[0].path == "visual_assets/question.png"
+    assert visuals[0].url == f"/api/teacher/materials/{material.id}/assets/{index}"
     previous = env.d.service.get(env.d.teacher.id, original.id)
     assert previous.items[0].content != "Đề bài mới"
     assert env.d.service.storage.read(previous.storage_key) == original_bytes

@@ -2,6 +2,7 @@ from datetime import datetime
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
+from app.teacher_materials.visual_schemas import QuestionVisualRead
 
 from app.assignments.models import (
     AssignmentDeliveryMode,
@@ -166,6 +167,7 @@ class StudentQuestionItemRead(BaseModel):
     student_material_item_id: UUID | None = None
     order_index: int
     content: str
+    visuals: list[QuestionVisualRead] = Field(default_factory=list)
     question_type: str
     difficulty: float | None
     options: list[StudentQuestionOptionRead] = Field(default_factory=list)
@@ -301,6 +303,7 @@ class TeacherSubmissionItemRead(BaseModel):
     source_kind: str  # "CANONICAL" or "TEACHER_MATERIAL"
     order_index: int
     content: str | None = None
+    visuals: list[QuestionVisualRead] = Field(default_factory=list)
     question_type: str | None = None
     options: list[AssignmentQuestionOptionRead] = Field(default_factory=list)
     correct_answer: str | None = None
