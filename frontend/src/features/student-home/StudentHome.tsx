@@ -14,7 +14,6 @@ import type { ResolvedStudentAction } from "./action-resolver";
 import { ActionDetailModal } from "./components/ActionDetailModal";
 import { FocusHero } from "./components/FocusHero";
 import { HomeAppearance, useHomeAppearance } from "./components/HomeAppearance";
-import { GardenHorizonEnding } from "./components/GardenHorizonEnding";
 import { KnowledgeCanopy } from "./components/KnowledgeCanopy";
 import { KnowledgeGarden } from "./components/KnowledgeGarden";
 import { CoachCard } from "./components/CoachCard";
@@ -114,7 +113,6 @@ export function StudentHome({ data }: StudentHomeProps) {
           </main>
 
           {/* SECTION 7 — PAGE ENDING: Meadow Horizon */}
-          <footer className={ui.pageFooter}><strong>EduMS</strong><p>Không gian cho cách nghĩ của bạn.</p></footer>
 
           <StudentBottomNav
             currentRoute="/student"
@@ -195,7 +193,7 @@ export function StudentHomeDisconnected() {
               </div>
             </section>
           </main>
-          <GardenHorizonEnding />
+
           <StudentBottomNav />
         </LivingGardenCanvas>
       </GardenMotionProvider>

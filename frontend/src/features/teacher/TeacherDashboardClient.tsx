@@ -1,6 +1,5 @@
 "use client";
 
-import { AppFooter } from "@/components/app-shell/AppFooter";
 import { TeacherTheoryClient } from "@/features/theory-maps/TeacherTheoryClient";
 import { AlertCircle, BarChart3, BookOpen, ClipboardList, Network, RefreshCw, Users } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -530,8 +529,6 @@ export function TeacherDashboardClient({
           </div>
         )}
       </main>
-
-      <AppFooter variant="teacher" />
 
       {/* 5. Modals */}
       <CreateClassModal

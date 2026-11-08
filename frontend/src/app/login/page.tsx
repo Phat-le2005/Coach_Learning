@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Compass, GitBranch, ShieldCheck, Sparkles } from "lucide-react";
 
-import { AppFooter } from "@/components/app-shell/AppFooter";
 import { KnowledgeTreeIllustration } from "@/components/auth/KnowledgeTreeIllustration";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { BrandMark } from "@/features/student-home/components/BrandMark";
@@ -103,7 +102,6 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
         </div>
       </section>
 
-      <AppFooter variant="auth" compact />
     </main>
   );
 }

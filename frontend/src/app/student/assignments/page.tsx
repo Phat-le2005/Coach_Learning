@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
-import { AppFooter } from "@/components/app-shell/AppFooter";
 import { SessionHeartbeat } from "@/components/auth/SessionHeartbeat";
 import { StudentShell } from "@/features/student-home/components/StudentShell";
 import { requirePageRole } from "@/lib/auth/page-session";
@@ -40,7 +39,7 @@ export default async function StudentAssignmentsPage() {
   }
 
   return (
-    <StudentShell displayName={session.fullName} email={session.email} route="/student/assignments" footer={<AppFooter variant="student" compact />}>
+    <StudentShell displayName={session.fullName} email={session.email} route="/student/assignments">
       <SessionHeartbeat />
       <AssignmentsListClient
         initialAssignments={assignments}

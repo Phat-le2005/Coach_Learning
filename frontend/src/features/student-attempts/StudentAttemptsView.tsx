@@ -19,7 +19,6 @@ import { springSoft } from "@/lib/motion";
 import { AttemptsLibrarySection } from "./components/AttemptsLibrarySection";
 import { ContinueLearningSection } from "./components/ContinueLearningSection";
 import { StudyGardenBackdrop } from "./components/StudyGardenBackdrop";
-import { StudyGardenEnding } from "./components/StudyGardenEnding";
 import { StudyLaunchSection } from "./components/StudyLaunchSection";
 import { StudentShell } from "@/features/student-home/components/StudentShell";
 import styles from "./StudentAttempts.module.css";

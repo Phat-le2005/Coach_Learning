@@ -3,7 +3,6 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { AccountMenu } from "@/components/auth/AccountMenu";
 import { SessionHeartbeat } from "@/components/auth/SessionHeartbeat";
-import { AppFooter } from "@/components/app-shell/AppFooter";
 import { BrandMark } from "@/features/student-home/components/BrandMark";
 import { StudentShell } from "@/features/student-home/components/StudentShell";
 import { readSession } from "@/lib/auth/server";
@@ -31,7 +30,7 @@ export default async function AccountPage() {
   );
 
   if (session.role === "STUDENT") return (
-    <StudentShell displayName={session.fullName} email={session.email} route="/account" footer={<AppFooter variant="student" compact />}>
+    <StudentShell displayName={session.fullName} email={session.email} route="/account">
       <SessionHeartbeat />
       <main className={styles.studentProfile}>{profile}</main>
     </StudentShell>
@@ -47,7 +46,7 @@ export default async function AccountPage() {
         </header>
         {profile}
       </div>
-      <AppFooter variant={session.role === "TEACHER" ? "teacher" : "student"} compact />
+
     </main>
   );
 }

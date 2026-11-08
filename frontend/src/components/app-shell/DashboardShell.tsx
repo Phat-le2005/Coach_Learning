@@ -7,7 +7,6 @@ import type { SessionPayload } from "@/lib/auth/session-codec";
 import { AccountMenu } from "@/components/auth/AccountMenu";
 import { SessionHeartbeat } from "@/components/auth/SessionHeartbeat";
 
-import { AppFooter } from "./AppFooter";
 import styles from "./app-shell.module.css";
 
 const labels: Record<Role, string> = { STUDENT: "Học sinh", TEACHER: "Giáo viên", PARENT: "Phụ huynh", ADMIN: "Quản trị" };
@@ -31,7 +30,7 @@ export function DashboardShell({ session, children, title, description }: Dashbo
         </section>
         {children}
       </main>
-      <AppFooter variant={session.role === "TEACHER" ? "teacher" : "default"} />
+
     </div>
   );
 }

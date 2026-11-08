@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 
-import { AppFooter } from "@/components/app-shell/AppFooter";
 import { SessionHeartbeat } from "@/components/auth/SessionHeartbeat";
 import { StudentShell } from "@/features/student-home/components/StudentShell";
 import { getBackendBaseUrl } from "@/lib/api/client";
@@ -63,7 +62,7 @@ export default async function StudentAssignmentWorkspacePage(props: Props) {
   }
 
   return (
-    <StudentShell displayName={session.fullName} email={session.email} route="/student/assignments" footer={<AppFooter variant="student" compact />}>
+    <StudentShell displayName={session.fullName} email={session.email} route="/student/assignments">
       <SessionHeartbeat />
       <AssignmentWorkspaceClient initialAssignment={assignment} />
     </StudentShell>
