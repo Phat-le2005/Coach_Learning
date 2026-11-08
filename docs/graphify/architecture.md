@@ -1,10 +1,10 @@
 # Kiến trúc Coach Learning — Graphify
 
-Sinh lúc 2026-11-08T07:52:39+07:00; Graphify `0.9.102`; HEAD `9f2e5ac412ad84e8e9329f97d168d0ecb96d9dd8`.
+Sinh lúc 2026-11-08T07:56:51+07:00; Graphify `0.9.102`; HEAD `a60877fdd156c0d6a004f4701878c665bbe517ec`.
 Snapshot gồm cả source chưa commit trong working tree. Không đại diện riêng cho HEAD hoặc production.
 
-Đã phát hiện **1,650 file code**, tạo **15,947 nodes / 70,069 quan hệ / 456 communities**.
-Có 1,623 file xuất hiện trên node. Fingerprint source: `03f1068042c82fa2b348414444a69141d6db3e3f5ece56c5df892594c2eab6c0`.
+Đã phát hiện **1,650 file code**, tạo **15,946 nodes / 70,069 quan hệ / 439 communities**.
+Có 1,623 file xuất hiện trên node. Fingerprint source: `bd4259e7df00f59579545b1a944f4fe912980e6ed068c14028da32ab0e915863`.
 Chỉ phân tích AST cục bộ; semantic LLM: **0 tokens**. Nhãn community lấy từ hub, không dùng model.
 
 ![Sơ đồ kiến trúc](architecture.svg)
@@ -56,7 +56,7 @@ flowchart LR
 | AI | 377 | 39 |
 | Backend | 5,419 | 574 |
 | Frontend | 2,463 | 379 |
-| Other | 2,015 | 22 |
+| Other | 2,014 | 22 |
 | Tests | 3,749 | 411 |
 | Tools | 1,924 | 198 |
 

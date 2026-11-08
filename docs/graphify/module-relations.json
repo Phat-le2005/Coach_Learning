@@ -1,14 +1,14 @@
 {
   "stats": {
-    "nodes": 15947,
+    "nodes": 15946,
     "edges": 70069,
-    "communities": 456,
+    "communities": 439,
     "code_files_detected": 1650,
     "files_with_nodes": 1623,
     "graphify_version": "0.9.102",
-    "head_commit": "9f2e5ac412ad84e8e9329f97d168d0ecb96d9dd8",
-    "generated_at": "2026-11-08T07:52:39+07:00",
-    "source_sha256": "03f1068042c82fa2b348414444a69141d6db3e3f5ece56c5df892594c2eab6c0",
+    "head_commit": "a60877fdd156c0d6a004f4701878c665bbe517ec",
+    "generated_at": "2026-11-08T07:56:51+07:00",
+    "source_sha256": "bd4259e7df00f59579545b1a944f4fe912980e6ed068c14028da32ab0e915863",
     "confidence": {
       "EXTRACTED": 59820,
       "INFERRED": 10249
@@ -42,7 +42,7 @@
     },
     {
       "name": "Other",
-      "nodes": 2015,
+      "nodes": 2014,
       "files_with_nodes": 22
     },
     {
