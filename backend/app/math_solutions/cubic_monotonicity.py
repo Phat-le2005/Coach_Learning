@@ -150,6 +150,7 @@ class CubicModel:
         if text[:directions[0].start()].strip(" ,.;:\n") not in {"", "vậy hàm số", "hàm số", "vậy", "the function", "function"}:
             return "NEEDS_REVIEW", None
         claims: set[tuple[float, float, str]] = set()
+        parsed_claims: list[tuple[int, str]] = []
         for index, direction in enumerate(directions):
             end = directions[index + 1].start() if index + 1 < len(directions) else len(text)
             clause = text[direction.end():end]
@@ -170,9 +171,12 @@ class CubicModel:
                 position = next((i for i in range(3) if same(left, self.boundaries[i]) and same(right, self.boundaries[i + 1])), None)
                 if position is None:
                     return "NEEDS_REVIEW", None
-                if sign != self.signs[position]:
-                    return "INVALID", "SIGN_TABLE_CONSEQUENCE_ERROR"
-                claims.add((self.boundaries[position], self.boundaries[position + 1], sign))
+                parsed_claims.append((position, sign))
+
+        for position, sign in parsed_claims:
+            if sign != self.signs[position]:
+                return "INVALID", "SIGN_TABLE_CONSEQUENCE_ERROR"
+            claims.add((self.boundaries[position], self.boundaries[position + 1], sign))
         if complete and len(claims) != 3:
             return "NEEDS_REVIEW", None
         return "VALID", None
