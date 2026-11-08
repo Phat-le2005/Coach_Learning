@@ -31,7 +31,7 @@ export function DashboardShell({ session, children, title, description }: Dashbo
         </section>
         {children}
       </main>
-      <AppFooter variant="default" />
+      <AppFooter variant={session.role === "TEACHER" ? "teacher" : "default"} />
     </div>
   );
 }
