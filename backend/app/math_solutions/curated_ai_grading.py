@@ -57,12 +57,15 @@ def criterion_matches(criteria, reviews, step_indices, reference_text):
 
 
 def curated_context(session: Session, attempt: SolutionAttempt, *, refresh: bool = False):
-    if attempt.source_kind != "CANONICAL" or not attempt.question_id or not attempt.rubric_id:
+    source_kind = getattr(attempt, "source_kind", None)
+    question_id = getattr(attempt, "question_id", None)
+    rubric_id = getattr(attempt, "rubric_id", None)
+    if source_kind != "CANONICAL" or not question_id or not rubric_id:
         return None
-    question = session.get(Question, attempt.question_id)
+    question = session.get(Question, question_id)
     if refresh and question is not None:
         session.refresh(question)
-        rubric = session.get(SolutionRubric, attempt.rubric_id)
+        rubric = session.get(SolutionRubric, rubric_id)
         if rubric is not None:
             session.refresh(rubric)
     if question is None or question.source_type != OCR_SOURCE:
