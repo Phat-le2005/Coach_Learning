@@ -2,6 +2,7 @@ from typing import Annotated
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query
+from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 
 from app.assignments.schemas import (
@@ -23,6 +24,8 @@ from app.auth.dependencies import require_role
 from app.core.errors import ErrorResponse
 from app.database.session import get_db
 from app.users.models import Role, User
+from app.teacher_materials.router import PdfService
+from app.teacher_materials.visual_delivery import QuestionVisualDelivery
 
 teacher_router = APIRouter(
     prefix="/teacher",
@@ -49,6 +52,9 @@ student_router = APIRouter(
 
 TeacherUser = Annotated[User, Depends(require_role(Role.TEACHER))]
 StudentUser = Annotated[User, Depends(require_role(Role.STUDENT))]
+QUESTION_IMAGE_RESPONSES = {200: {"description": "Private question image", "content": {
+    mime: {"schema": {"type": "string", "format": "binary"}} for mime in ("image/png", "image/jpeg")
+}}}
 
 
 def get_assignment_service(session: Annotated[Session, Depends(get_db)]) -> AssignmentService:
@@ -176,8 +182,19 @@ def get_student_submission(
     student_id: UUID,
     user: TeacherUser,
     service: Annotated[AssignmentService, Depends(get_assignment_service)],
+    pdf: PdfService,
 ) -> TeacherStudentSubmissionDetail:
-    return service.get_student_submission_for_teacher(user.id, assignment_id, student_id)
+    return QuestionVisualDelivery(pdf).teacher_submission(service.get_student_submission_for_teacher(user.id, assignment_id, student_id))
+
+
+@teacher_router.get("/assignments/{assignment_id}/students/{student_id}/material-items/{item_id}/assets/{index}",
+                    response_class=FileResponse, responses=QUESTION_IMAGE_RESPONSES)
+def teacher_question_image(assignment_id: UUID, student_id: UUID, item_id: UUID, index: int,
+                           user: TeacherUser, service: Annotated[AssignmentService, Depends(get_assignment_service)], pdf: PdfService):
+    delivery = QuestionVisualDelivery(pdf)
+    snapshot, source = delivery.teacher_source(service, user.id, assignment_id, student_id, item_id)
+    return FileResponse(pdf.assigned_asset(source, index, delivery.question_text(snapshot), include_references=True),
+                        headers={"Cache-Control": "private, no-store", "X-Content-Type-Options": "nosniff"})
 
 
 @teacher_router.post(
@@ -218,8 +235,19 @@ def get_student_assignment_detail(
     assignment_id: UUID,
     user: StudentUser,
     service: Annotated[AssignmentService, Depends(get_assignment_service)],
+    pdf: PdfService,
 ) -> StudentAssignmentRead:
-    return service.get_student_assignment(user.id, assignment_id)
+    return QuestionVisualDelivery(pdf).student_assignment(service.get_student_assignment(user.id, assignment_id))
+
+
+@student_router.get("/{assignment_id}/material-items/{item_id}/assets/{index}",
+                    response_class=FileResponse, responses=QUESTION_IMAGE_RESPONSES)
+def student_question_image(assignment_id: UUID, item_id: UUID, index: int,
+                           user: StudentUser, service: Annotated[AssignmentService, Depends(get_assignment_service)], pdf: PdfService):
+    delivery = QuestionVisualDelivery(pdf)
+    snapshot, source, revealed = delivery.student_source(service, user.id, assignment_id, item_id)
+    return FileResponse(pdf.assigned_asset(source, index, delivery.question_text(snapshot), include_references=revealed),
+                        headers={"Cache-Control": "private, no-store", "X-Content-Type-Options": "nosniff"})
 
 
 @student_router.post(

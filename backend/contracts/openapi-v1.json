@@ -2663,6 +2663,10 @@
             "title": "Classroom Id",
             "type": "string"
           },
+          "delivery_mode": {
+            "$ref": "#/components/schemas/AssignmentDeliveryMode",
+            "default": "PRACTICE"
+          },
           "description": {
             "anyOf": [
               {
@@ -2801,6 +2805,14 @@
         ],
         "title": "AssignmentCreate",
         "type": "object"
+      },
+      "AssignmentDeliveryMode": {
+        "enum": [
+          "PRACTICE",
+          "EXAM"
+        ],
+        "title": "AssignmentDeliveryMode",
+        "type": "string"
       },
       "AssignmentLearningObjectiveConfig": {
         "properties": {
@@ -3227,6 +3239,10 @@
             "title": "Created By",
             "type": "string"
           },
+          "delivery_mode": {
+            "$ref": "#/components/schemas/AssignmentDeliveryMode",
+            "default": "PRACTICE"
+          },
           "description": {
             "anyOf": [
               {
@@ -3524,6 +3540,10 @@
             "format": "uuid",
             "title": "Created By",
             "type": "string"
+          },
+          "delivery_mode": {
+            "$ref": "#/components/schemas/AssignmentDeliveryMode",
+            "default": "PRACTICE"
           },
           "description": {
             "anyOf": [
@@ -3892,6 +3912,37 @@
           "reason"
         ],
         "title": "BlockSourceRequest",
+        "type": "object"
+      },
+      "Body_import_pdf_teacher_materials_pdf_imports_post": {
+        "properties": {
+          "classroom_id": {
+            "format": "uuid",
+            "title": "Classroom Id",
+            "type": "string"
+          },
+          "file": {
+            "contentMediaType": "application/octet-stream",
+            "title": "File",
+            "type": "string"
+          },
+          "subject_id": {
+            "format": "uuid",
+            "title": "Subject Id",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "file",
+          "classroom_id",
+          "subject_id",
+          "title"
+        ],
+        "title": "Body_import_pdf_teacher_materials_pdf_imports_post",
         "type": "object"
       },
       "Body_preview_admission_import_file_admission_import_preview_post": {
@@ -10551,6 +10602,16 @@
         "title": "MasteryLevel",
         "type": "string"
       },
+      "MaterialDifficultyLevel": {
+        "enum": [
+          "NHAN_BIET",
+          "THONG_HIEU",
+          "VAN_DUNG",
+          "VAN_DUNG_CAO"
+        ],
+        "title": "MaterialDifficultyLevel",
+        "type": "string"
+      },
       "MaterialEvaluationMode": {
         "enum": [
           "OBJECTIVE_AUTO",
@@ -10641,6 +10702,11 @@
       },
       "MaterialItemGradeRequest": {
         "properties": {
+          "allow_override": {
+            "default": false,
+            "title": "Allow Override",
+            "type": "boolean"
+          },
           "feedback": {
             "anyOf": [
               {
@@ -11399,6 +11465,311 @@
           "overall_weekly_summary"
         ],
         "title": "ParentWeeklyDataRead",
+        "type": "object"
+      },
+      "PdfImportQuestion": {
+        "properties": {
+          "answer": {
+            "title": "Answer",
+            "type": "string"
+          },
+          "content": {
+            "title": "Content",
+            "type": "string"
+          },
+          "difficulty_level": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/MaterialDifficultyLevel"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "explanation": {
+            "title": "Explanation",
+            "type": "string"
+          },
+          "number": {
+            "title": "Number",
+            "type": "integer"
+          },
+          "pages": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Pages",
+            "type": "array"
+          },
+          "question_id": {
+            "title": "Question Id",
+            "type": "string"
+          },
+          "source_assets": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Source Assets",
+            "type": "array"
+          },
+          "source_number": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Number"
+          },
+          "suggested": {
+            "title": "Suggested",
+            "type": "boolean"
+          },
+          "visual_assets": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Visual Assets",
+            "type": "array"
+          },
+          "visuals": {
+            "items": {
+              "$ref": "#/components/schemas/QuestionVisualRead"
+            },
+            "title": "Visuals",
+            "type": "array"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "question_id",
+          "number",
+          "content",
+          "answer",
+          "explanation",
+          "pages",
+          "warnings",
+          "suggested",
+          "source_assets",
+          "visual_assets"
+        ],
+        "title": "PdfImportQuestion",
+        "type": "object"
+      },
+      "PdfImportRead": {
+        "properties": {
+          "classroom_id": {
+            "format": "uuid",
+            "title": "Classroom Id",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "material_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Material Id"
+          },
+          "original_file_name": {
+            "title": "Original File Name",
+            "type": "string"
+          },
+          "progress": {
+            "additionalProperties": true,
+            "title": "Progress",
+            "type": "object"
+          },
+          "questions": {
+            "items": {
+              "$ref": "#/components/schemas/PdfImportQuestion"
+            },
+            "title": "Questions",
+            "type": "array"
+          },
+          "review": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PdfReviewSubmit"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "revision_of": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Revision Of"
+          },
+          "source_kind": {
+            "default": "PDF",
+            "enum": [
+              "PDF",
+              "IMAGE"
+            ],
+            "title": "Source Kind",
+            "type": "string"
+          },
+          "source_mime_type": {
+            "default": "application/pdf",
+            "enum": [
+              "application/pdf",
+              "image/png",
+              "image/jpeg"
+            ],
+            "title": "Source Mime Type",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "QUEUED",
+              "PROCESSING",
+              "NEEDS_REVIEW",
+              "FAILED",
+              "SUBMITTED"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "subject_id": {
+            "format": "uuid",
+            "title": "Subject Id",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "classroom_id",
+          "subject_id",
+          "title",
+          "original_file_name",
+          "status",
+          "created_at"
+        ],
+        "title": "PdfImportRead",
+        "type": "object"
+      },
+      "PdfReviewDecision": {
+        "properties": {
+          "accepted": {
+            "default": false,
+            "title": "Accepted",
+            "type": "boolean"
+          },
+          "answer": {
+            "default": "",
+            "maxLength": 100000,
+            "title": "Answer",
+            "type": "string"
+          },
+          "content": {
+            "maxLength": 200000,
+            "title": "Content",
+            "type": "string"
+          },
+          "difficulty_level": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/MaterialDifficultyLevel"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "explanation": {
+            "default": "",
+            "maxLength": 200000,
+            "title": "Explanation",
+            "type": "string"
+          },
+          "question_id": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Question Id",
+            "type": "string"
+          },
+          "source_checked": {
+            "default": false,
+            "title": "Source Checked",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "question_id",
+          "content"
+        ],
+        "title": "PdfReviewDecision",
+        "type": "object"
+      },
+      "PdfReviewSubmit": {
+        "properties": {
+          "decisions": {
+            "items": {
+              "$ref": "#/components/schemas/PdfReviewDecision"
+            },
+            "maxItems": 10000,
+            "title": "Decisions",
+            "type": "array"
+          },
+          "title": {
+            "maxLength": 255,
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "decisions"
+        ],
+        "title": "PdfReviewSubmit",
         "type": "object"
       },
       "PracticeAnswerCreate": {
@@ -12287,9 +12658,23 @@
             "title": "Attempt Count",
             "type": "integer"
           },
+          "available_question_count": {
+            "default": 0,
+            "minimum": 0.0,
+            "title": "Available Question Count",
+            "type": "integer"
+          },
           "code": {
             "title": "Code",
             "type": "string"
+          },
+          "concept_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "title": "Concept Ids",
+            "type": "array"
           },
           "confidence": {
             "title": "Confidence",
@@ -15380,6 +15765,40 @@
         "title": "QuestionValidationRightsDecision",
         "type": "string"
       },
+      "QuestionVisualRead": {
+        "properties": {
+          "index": {
+            "minimum": 0.0,
+            "title": "Index",
+            "type": "integer"
+          },
+          "path": {
+            "title": "Path",
+            "type": "string"
+          },
+          "role": {
+            "default": "question",
+            "enum": [
+              "question",
+              "answer",
+              "solution"
+            ],
+            "title": "Role",
+            "type": "string"
+          },
+          "url": {
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "index",
+          "path",
+          "url"
+        ],
+        "title": "QuestionVisualRead",
+        "type": "object"
+      },
       "QuickCheckConceptSignal": {
         "properties": {
           "concept_code": {
@@ -17576,6 +17995,10 @@
             "title": "Classroom Id",
             "type": "string"
           },
+          "delivery_mode": {
+            "$ref": "#/components/schemas/AssignmentDeliveryMode",
+            "default": "PRACTICE"
+          },
           "description": {
             "anyOf": [
               {
@@ -17905,6 +18328,15 @@
       },
       "StudentClassContextRead": {
         "properties": {
+          "assigned_problem_type_ids": {
+            "default": [],
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "title": "Assigned Problem Type Ids",
+            "type": "array"
+          },
           "classroom_id": {
             "format": "uuid",
             "title": "Classroom Id",
@@ -17925,6 +18357,15 @@
               }
             ],
             "title": "Teaching Plan Id"
+          },
+          "teaching_plan_problem_type_ids": {
+            "default": [],
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "title": "Teaching Plan Problem Type Ids",
+            "type": "array"
           }
         },
         "required": [
@@ -19118,6 +19559,13 @@
               }
             ],
             "title": "Teacher Material Item Id"
+          },
+          "visuals": {
+            "items": {
+              "$ref": "#/components/schemas/QuestionVisualRead"
+            },
+            "title": "Visuals",
+            "type": "array"
           }
         },
         "required": [
@@ -19409,6 +19857,17 @@
             "format": "date-time",
             "title": "Assigned At",
             "type": "string"
+          },
+          "provisional_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Provisional Score"
           },
           "score": {
             "anyOf": [
@@ -21108,6 +21567,47 @@
         "title": "TeacherCopilotStudentAttention",
         "type": "object"
       },
+      "TeacherFinalizeSubmissionResponse": {
+        "properties": {
+          "assignment_id": {
+            "format": "uuid",
+            "title": "Assignment Id",
+            "type": "string"
+          },
+          "finalized_at": {
+            "format": "date-time",
+            "title": "Finalized At",
+            "type": "string"
+          },
+          "score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Score"
+          },
+          "status": {
+            "$ref": "#/components/schemas/StudentAssignmentStatus"
+          },
+          "student_id": {
+            "format": "uuid",
+            "title": "Student Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "assignment_id",
+          "student_id",
+          "status",
+          "finalized_at"
+        ],
+        "title": "TeacherFinalizeSubmissionResponse",
+        "type": "object"
+      },
       "TeacherMaterialItemRead": {
         "properties": {
           "concept_mappings": {
@@ -21235,6 +21735,13 @@
             "format": "uuid",
             "title": "Teacher Material Id",
             "type": "string"
+          },
+          "visuals": {
+            "items": {
+              "$ref": "#/components/schemas/QuestionVisualRead"
+            },
+            "title": "Visuals",
+            "type": "array"
           }
         },
         "required": [
@@ -21410,6 +21917,18 @@
             ],
             "title": "Parse Error"
           },
+          "pdf_import_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pdf Import Id"
+          },
           "sha256": {
             "title": "Sha256",
             "type": "string"
@@ -21543,6 +22062,419 @@
           "updated_at"
         ],
         "title": "TeacherProfileRead",
+        "type": "object"
+      },
+      "TeacherStudentSubmissionDetail": {
+        "properties": {
+          "assignment_id": {
+            "format": "uuid",
+            "title": "Assignment Id",
+            "type": "string"
+          },
+          "assignment_title": {
+            "title": "Assignment Title",
+            "type": "string"
+          },
+          "classroom_id": {
+            "format": "uuid",
+            "title": "Classroom Id",
+            "type": "string"
+          },
+          "delivery_mode": {
+            "$ref": "#/components/schemas/AssignmentDeliveryMode"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/TeacherSubmissionItemRead"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "provisional_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Provisional Score"
+          },
+          "score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Score"
+          },
+          "status": {
+            "$ref": "#/components/schemas/StudentAssignmentStatus"
+          },
+          "student_id": {
+            "format": "uuid",
+            "title": "Student Id",
+            "type": "string"
+          },
+          "student_name": {
+            "title": "Student Name",
+            "type": "string"
+          },
+          "submitted_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Submitted At"
+          }
+        },
+        "required": [
+          "assignment_id",
+          "assignment_title",
+          "delivery_mode",
+          "classroom_id",
+          "student_id",
+          "student_name",
+          "status"
+        ],
+        "title": "TeacherStudentSubmissionDetail",
+        "type": "object"
+      },
+      "TeacherSubmissionItemRead": {
+        "properties": {
+          "attempt_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Attempt Id"
+          },
+          "attempt_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Attempt Status"
+          },
+          "content": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Content"
+          },
+          "correct_answer": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Correct Answer"
+          },
+          "evaluation_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Evaluation Status"
+          },
+          "explanation": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Explanation"
+          },
+          "graded_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Graded At"
+          },
+          "graded_by": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Graded By"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "is_correct": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Correct"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/components/schemas/AssignmentQuestionOptionRead"
+            },
+            "title": "Options",
+            "type": "array"
+          },
+          "order_index": {
+            "title": "Order Index",
+            "type": "integer"
+          },
+          "paper_attachments": {
+            "items": {
+              "$ref": "#/components/schemas/TeacherSubmissionPaperAttachment"
+            },
+            "title": "Paper Attachments",
+            "type": "array"
+          },
+          "provisional_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Provisional Score"
+          },
+          "question_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Question Type"
+          },
+          "score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Score"
+          },
+          "source_kind": {
+            "title": "Source Kind",
+            "type": "string"
+          },
+          "steps": {
+            "items": {
+              "$ref": "#/components/schemas/TeacherSubmissionStepDetail"
+            },
+            "title": "Steps",
+            "type": "array"
+          },
+          "student_answer": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Student Answer"
+          },
+          "teacher_feedback": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Teacher Feedback"
+          },
+          "visuals": {
+            "items": {
+              "$ref": "#/components/schemas/QuestionVisualRead"
+            },
+            "title": "Visuals",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "source_kind",
+          "order_index"
+        ],
+        "title": "TeacherSubmissionItemRead",
+        "type": "object"
+      },
+      "TeacherSubmissionPaperAttachment": {
+        "properties": {
+          "content_type": {
+            "title": "Content Type",
+            "type": "string"
+          },
+          "file_name": {
+            "title": "File Name",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "storage_key": {
+            "title": "Storage Key",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "file_name",
+          "content_type",
+          "storage_key"
+        ],
+        "title": "TeacherSubmissionPaperAttachment",
+        "type": "object"
+      },
+      "TeacherSubmissionStepDetail": {
+        "properties": {
+          "confidence": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Confidence"
+          },
+          "content_latex": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Content Latex"
+          },
+          "error_description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error Description"
+          },
+          "error_detected": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error Detected"
+          },
+          "explanation_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Explanation Text"
+          },
+          "math_validity": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Math Validity"
+          },
+          "step_id": {
+            "format": "uuid",
+            "title": "Step Id",
+            "type": "string"
+          },
+          "step_index": {
+            "title": "Step Index",
+            "type": "integer"
+          },
+          "step_type": {
+            "title": "Step Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "step_id",
+          "step_index",
+          "step_type"
+        ],
+        "title": "TeacherSubmissionStepDetail",
         "type": "object"
       },
       "TeachingPlanCreate": {
@@ -34452,6 +35384,130 @@
         ]
       }
     },
+    "/students/me/assignments/{assignment_id}/material-items/{item_id}/assets/{index}": {
+      "get": {
+        "operationId": "student_question_image_students_me_assignments__assignment_id__material_items__item_id__assets__index__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "assignment_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Assignment Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Item Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "index",
+            "required": true,
+            "schema": {
+              "title": "Index",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "image/jpeg": {
+                "schema": {
+                  "format": "binary",
+                  "type": "string"
+                }
+              },
+              "image/png": {
+                "schema": {
+                  "format": "binary",
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Private question image"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Student Question Image",
+        "tags": [
+          "Student assignments"
+        ]
+      }
+    },
     "/students/me/assignments/{assignment_id}/submit": {
       "post": {
         "operationId": "submit_student_assignment_students_me_assignments__assignment_id__submit_post",
@@ -37001,6 +38057,553 @@
         ]
       }
     },
+    "/teacher-materials/pdf-imports": {
+      "get": {
+        "operationId": "list_pdf_imports_teacher_materials_pdf_imports_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "classroom_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Classroom Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/PdfImportRead"
+                  },
+                  "title": "Response List Pdf Imports Teacher Materials Pdf Imports Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Pdf Imports",
+        "tags": [
+          "Teacher materials"
+        ]
+      },
+      "post": {
+        "operationId": "import_pdf_teacher_materials_pdf_imports_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_import_pdf_teacher_materials_pdf_imports_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PdfImportRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Import Pdf",
+        "tags": [
+          "Teacher materials"
+        ]
+      }
+    },
+    "/teacher-materials/pdf-imports/{job_id}": {
+      "get": {
+        "operationId": "get_pdf_import_teacher_materials_pdf_imports__job_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "job_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Job Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PdfImportRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Pdf Import",
+        "tags": [
+          "Teacher materials"
+        ]
+      }
+    },
+    "/teacher-materials/pdf-imports/{job_id}/assets/{index}": {
+      "get": {
+        "operationId": "pdf_import_asset_teacher_materials_pdf_imports__job_id__assets__index__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "job_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Job Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "index",
+            "required": true,
+            "schema": {
+              "title": "Index",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Pdf Import Asset",
+        "tags": [
+          "Teacher materials"
+        ]
+      }
+    },
+    "/teacher-materials/pdf-imports/{job_id}/retry": {
+      "post": {
+        "operationId": "retry_pdf_import_teacher_materials_pdf_imports__job_id__retry_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "job_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Job Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PdfImportRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Retry Pdf Import",
+        "tags": [
+          "Teacher materials"
+        ]
+      }
+    },
+    "/teacher-materials/pdf-imports/{job_id}/review": {
+      "put": {
+        "operationId": "save_pdf_review_teacher_materials_pdf_imports__job_id__review_put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "job_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Job Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PdfReviewSubmit"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PdfImportRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Save Pdf Review",
+        "tags": [
+          "Teacher materials"
+        ]
+      }
+    },
+    "/teacher-materials/pdf-imports/{job_id}/revise": {
+      "post": {
+        "operationId": "revise_pdf_import_teacher_materials_pdf_imports__job_id__revise_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "job_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Job Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PdfImportRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Revise Pdf Import",
+        "tags": [
+          "Teacher materials"
+        ]
+      }
+    },
+    "/teacher-materials/pdf-imports/{job_id}/source": {
+      "get": {
+        "operationId": "pdf_import_source_teacher_materials_pdf_imports__job_id__source_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "job_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Job Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Pdf Import Source",
+        "tags": [
+          "Teacher materials"
+        ]
+      }
+    },
+    "/teacher-materials/pdf-imports/{job_id}/submit": {
+      "post": {
+        "operationId": "submit_pdf_import_teacher_materials_pdf_imports__job_id__submit_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "job_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Job Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PdfReviewSubmit"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeacherMaterialRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Submit Pdf Import",
+        "tags": [
+          "Teacher materials"
+        ]
+      }
+    },
     "/teacher-materials/upload": {
       "post": {
         "operationId": "upload_material_teacher_materials_upload_post",
@@ -37058,6 +38661,55 @@
       }
     },
     "/teacher-materials/{material_id}": {
+      "delete": {
+        "operationId": "delete_material_teacher_materials__material_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "material_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Material Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Delete Material",
+        "tags": [
+          "Teacher materials"
+        ]
+      },
       "get": {
         "operationId": "get_material_teacher_materials__material_id__get",
         "parameters": [
@@ -37110,6 +38762,127 @@
           }
         ],
         "summary": "Get Material",
+        "tags": [
+          "Teacher materials"
+        ]
+      }
+    },
+    "/teacher-materials/{material_id}/assets/{index}": {
+      "get": {
+        "operationId": "material_visual_asset_teacher_materials__material_id__assets__index__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "material_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Material Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "index",
+            "required": true,
+            "schema": {
+              "title": "Index",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Material Visual Asset",
+        "tags": [
+          "Teacher materials"
+        ]
+      }
+    },
+    "/teacher-materials/{material_id}/document": {
+      "get": {
+        "operationId": "download_material_teacher_materials__material_id__document_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "material_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Material Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Download Material",
         "tags": [
           "Teacher materials"
         ]
@@ -37228,6 +39001,64 @@
           }
         ],
         "summary": "Map Material",
+        "tags": [
+          "Teacher materials"
+        ]
+      }
+    },
+    "/teacher-materials/{material_id}/prepare-assignment": {
+      "post": {
+        "operationId": "prepare_for_assignment_teacher_materials__material_id__prepare_assignment_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "material_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Material Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeacherMaterialRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Prepare For Assignment",
         "tags": [
           "Teacher materials"
         ]
@@ -37686,6 +39517,356 @@
           }
         ],
         "summary": "Publish Assignment",
+        "tags": [
+          "Teacher assignments"
+        ]
+      }
+    },
+    "/teacher/assignments/{assignment_id}/students/{student_id}": {
+      "get": {
+        "operationId": "get_student_submission_teacher_assignments__assignment_id__students__student_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "assignment_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Assignment Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "student_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Student Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeacherStudentSubmissionDetail"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Student Submission",
+        "tags": [
+          "Teacher assignments"
+        ]
+      }
+    },
+    "/teacher/assignments/{assignment_id}/students/{student_id}/finalize": {
+      "post": {
+        "operationId": "finalize_student_submission_teacher_assignments__assignment_id__students__student_id__finalize_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "assignment_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Assignment Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "student_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Student Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeacherFinalizeSubmissionResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Finalize Student Submission",
+        "tags": [
+          "Teacher assignments"
+        ]
+      }
+    },
+    "/teacher/assignments/{assignment_id}/students/{student_id}/material-items/{item_id}/assets/{index}": {
+      "get": {
+        "operationId": "teacher_question_image_teacher_assignments__assignment_id__students__student_id__material_items__item_id__assets__index__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "assignment_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Assignment Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "student_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Student Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Item Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "index",
+            "required": true,
+            "schema": {
+              "title": "Index",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "image/jpeg": {
+                "schema": {
+                  "format": "binary",
+                  "type": "string"
+                }
+              },
+              "image/png": {
+                "schema": {
+                  "format": "binary",
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Private question image"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Teacher Question Image",
         "tags": [
           "Teacher assignments"
         ]

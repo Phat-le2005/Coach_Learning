@@ -9,14 +9,17 @@ export interface AppFooterProps {
 }
 
 export function AppFooter({ variant = "student", compact = false }: AppFooterProps) {
+  if (variant === "teacher") return null;
+
   if (compact && variant === "student") return (
     <details className={styles.footerDisclosure}>
       <summary><Leaf size={17} aria-hidden="true" /><strong>EduMS</strong><span>Thông tin &amp; liên kết</span><ChevronDown size={16} aria-hidden="true" /></summary>
       <AppFooter variant={variant} />
     </details>
   );
+
   const homeHref =
-    variant === "teacher" ? "/teacher" : variant === "auth" ? "/login" : "/student";
+    variant === "auth" ? "/login" : "/student";
 
   return (
     <footer

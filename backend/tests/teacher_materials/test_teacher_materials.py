@@ -107,6 +107,26 @@ def test_ready_requires_review_and_confirmed_mappings(db_session:Session,tmp_pat
     _,item=upload_ready(d,db_session)
     assert item.extraction_status==MaterialItemExtractionStatus.READY and item.material.status==TeacherMaterialStatus.READY
 
+
+def test_delete_keeps_published_assignment_content_and_grading(db_session: Session, tmp_path):
+    d = setup_domain(db_session, tmp_path)
+    material, item = upload_ready(d, db_session)
+    assignments = AssignmentService(db_session)
+    assignment = assignments.create_assignment(d.teacher.id, AssignmentCreate(
+        classroom_id=d.classroom.id, subject_id=d.subject.id, title="Published before deletion",
+        assignment_type=AssignmentType.SAME_SET, teacher_material_item_ids=[item.id], question_count=1))
+    assignments.publish_assignment(d.teacher.id, assignment.id)
+    d.service.archive(d.teacher.id, material.id)
+    assert d.service.list(d.teacher.id, d.classroom.id) == []
+    assert d.service.storage.exists(material.storage_key)
+    view = assignments.get_student_assignment(d.student.id, assignment.id)
+    assert view.questions[0].content == item.content
+    submitted = assignments.submit_assignment(d.student.id, assignment.id, AssignmentSubmissionRequest(answers=[
+        AnswerSubmitItem(teacher_material_item_id=item.id, student_answer="A")]))
+    assert submitted.score == 10
+    with pytest.raises(ApplicationError):
+        d.service.prepare_for_assignment(d.teacher.id, material.id)
+
 def test_material_assignment_emits_idempotent_evidence_and_mastery(db_session:Session,tmp_path):
     d=setup_domain(db_session,tmp_path); _,item=upload_ready(d,db_session)
     assignments=AssignmentService(db_session)

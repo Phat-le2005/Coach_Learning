@@ -34,14 +34,17 @@ class MathOCRService:
         if attempt.student_id != student.id:
             raise _fail(404, "ATTEMPT_NOT_FOUND", "Solution attempt not found.")
 
-        # Load page strokes from MathInkService
-        ink_service = MathInkService(self.session)
-        page_read = ink_service.get_page(actor_user_id, attempt_id, req.page_index)
+        if req.strokes is not None and len(req.strokes) > 0:
+            strokes = req.strokes
+        else:
+            # Load page strokes from MathInkService
+            ink_service = MathInkService(self.session)
+            page_read = ink_service.get_page(actor_user_id, attempt_id, req.page_index)
 
-        strokes = page_read.strokes
-        if req.stroke_ids is not None:
-            id_set = set(req.stroke_ids)
-            strokes = [s for s in strokes if s.id in id_set]
+            strokes = page_read.strokes
+            if req.stroke_ids is not None:
+                id_set = set(req.stroke_ids)
+                strokes = [s for s in strokes if s.id in id_set]
 
         if not strokes:
             raise _fail(

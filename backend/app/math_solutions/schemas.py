@@ -8,6 +8,7 @@ from uuid import UUID
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from app.questions.models import QuestionType
+from app.teacher_materials.visual_schemas import QuestionVisualRead
 
 
 class SolutionContext(StrEnum):
@@ -248,6 +249,7 @@ class ProblemRead(BaseModel):
     source_kind: SolutionSourceKind
     context_type: SolutionContext
     content: str
+    visuals: list[QuestionVisualRead] = Field(default_factory=list)
     question_type: QuestionType
     options: list[ProblemOptionRead] = Field(default_factory=list)
     order_index: int | None = None

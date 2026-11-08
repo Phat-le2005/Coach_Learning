@@ -28,19 +28,46 @@ def margin_key(text: str) -> str:
 
 def mark_margins(pages: list[dict]) -> None:
     """Only suppress repeated text at the outer edges; preserve all raw blocks."""
-    counts: Counter = Counter()
+    positions = {}
+    protected = re.compile(r'^(?:Câu|Bài|Ví dụ|Dạng|Chủ đề|Chương|Lời giải|Giải|Phần|Tìm|Tính|Ứng dụng|[IVX]+[.)])\b', re.I)
+    def edge(line, page):
+        if line['bbox'][1] < min(60, page['height'] * .15):return 'header'
+        if line['bbox'][3] > page['height'] - min(90, page['height'] * .30):return 'footer'
+        return None
     for page in pages:
-        counts.update({margin_key(line["text_raw"]) for line in page["blocks"]
-                       if line["bbox"][1] < page["height"] * 0.045
-                       or line["bbox"][3] > page["height"] * 0.95})
-    threshold = max(3, len(pages) * 0.5)
+        for line in page['blocks']:
+            side = edge(line, page)
+            if side:
+                distance = line['bbox'][1] if side == 'header' else page['height'] - line['bbox'][3]
+                positions.setdefault((side, margin_key(line['text_raw'])), []).append((page['page_number'], distance))
+    threshold = 2 if len(pages) <= 5 else 3
+    # A cropped title strip changes relative edge distances. Reuse only an
+    # exact running-header signature already established on multiple pages.
+    header_templates = set()
+    for (side, key), samples in positions.items():
+        if (side == 'header' and not protected.match(key)
+                and len(re.findall(r'[^\W\d_]', key)) >= 12
+                and not re.search(r'[=∩∪<>]|\bP\s*\(', key)
+                and any(len({pn for pn, d in samples if abs(d-anchor) <= 5}) >= threshold
+                        for _, anchor in samples)):
+            header_templates.add(key)
     for page in pages:
         for line in page["blocks"]:
-            edge = (line["bbox"][1] < page["height"] * 0.045
-                    or line["bbox"][3] > page["height"] * 0.95)
+            side = edge(line, page)
             key = margin_key(line["text_raw"])
-            footer_link = line["bbox"][1] > page["height"] * 0.90 and bool(re.search(r"https?://", line["text_raw"]))
-            line["is_margin"] = bool((edge and counts[key] >= threshold) or footer_link)
+            learned_header = (line is page['blocks'][0] and key in header_templates
+                              and line['bbox'][1] < 60)
+            if learned_header:side = 'header'
+            text = line['text_raw'].strip()
+            distance = line['bbox'][1] if side == 'header' else page['height'] - line['bbox'][3]
+            repeats = len({pn for pn, d in positions.get((side, key), []) if abs(d-distance) <= 5})
+            footer = side == 'footer' and bool(re.search(
+                r'https?://|^(?:Page|Trang|T\s*r\s*a\s*n\s*g)\s*\d+\s*$|^Sưu tầm và biên soạn\s*$', text, re.I))
+            repeated = (side and repeats >= threshold and not protected.match(text)
+                        and len(re.findall(r'[^\W\d_]', text)) >= 12
+                        and not re.search(r'[=∩∪<>]|\bP\s*\(', text))
+            line['is_margin'] = bool(footer or repeated or learned_header)
+            line['margin_role'] = side if line['is_margin'] else None
         content = [line for line in page["blocks"] if not line["is_margin"]]
         page["content_bounds"] = [
             0.0,

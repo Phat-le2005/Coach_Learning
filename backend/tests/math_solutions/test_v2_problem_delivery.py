@@ -4,6 +4,7 @@ from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from threading import Barrier
+import json
 from unittest.mock import patch
 from uuid import UUID, uuid4
 
@@ -789,6 +790,89 @@ def test_workspace_loop_teacher_material_pdf(
     assert read_prob["source_kind"] == "TEACHER_MATERIAL"
     assert read_prob["content"] == "SNAPSHOT: Câu 1 PDF: Tìm khoảng nghịch biến của g(x)."
     assert read_prob["source_metadata"]["title"] == "Đề thi thử PDF Chương 1"
+
+
+def test_legacy_question_images_are_shared_across_views_and_authorized_per_role(
+    db_client, db_app, db_session, delivery_domain, auth_headers, tmp_path, monkeypatch,
+):
+    from app.classes.models import TeacherClassroom
+    from app.teachers.models import TeacherProfile
+
+    domain = delivery_domain
+    teacher = db_session.scalar(select(TeacherProfile).where(TeacherProfile.user_id == domain.teacher.id))
+    db_session.add(TeacherClassroom(teacher_id=teacher.id, classroom_id=domain.classroom.id, role="OWNER"))
+    job_id = uuid4()
+    directory = tmp_path / str(job_id)
+    image = "visual_assets/page-0002/truck.png"
+    reference = "visual_assets/solution.png"
+    other = "visual_assets/another-question.png"
+    payload = b"\x89PNG\r\n\x1a\n\xff\x00\x80"
+    for asset in (image, reference, other):
+        target = directory / "ocr" / asset
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(payload)
+    (directory / "job.json").write_text("{}", encoding="utf-8")
+    # Old imports only store indexes and source_question_id; no migration or re-OCR.
+    records = [dict(question_id="q1", collection_number=1,
+                    question=dict(markdown=f"Đề bài\n\n![Hình nguồn]({image})"),
+                    solution=dict(markdown=f"![Lời giải]({reference})"),
+                    visual_assets=[dict(path=image, role="question"), dict(path=reference, role="solution")]),
+               dict(question_id="q2", collection_number=2, question=dict(markdown="Another question"),
+                    visual_assets=[dict(path=other, role="question")])]
+    (directory / "ocr/content.draft.pretty.json").write_text(json.dumps(records), encoding="utf-8")
+    monkeypatch.setattr(db_app.state.settings, "teacher_pdf_import_dir", tmp_path)
+    domain.teacher_material_item.raw_metadata = dict(pdf_import_id=str(job_id), source_question_id="q1", visual_assets=[0, 1])
+    # Teacher edits may remove Markdown links without removing approved attachments.
+    db_session.commit()
+    student_headers = auth_headers(domain.student_a)
+    teacher_headers = auth_headers(domain.teacher)
+    teacher_items = db_client.get(f"/teacher-materials/{domain.teacher_material.id}/items", headers=teacher_headers)
+    assert teacher_items.status_code == 200
+    teacher_visuals = teacher_items.json()[0]["visuals"]
+    assert [v["path"] for v in teacher_visuals] == [image, reference]
+    sa_id = domain.student_assignment_a.id
+    base = "/api/v2/math-solutions"
+    prepared = db_client.post(f"{base}/student-assignments/{sa_id}/prepare", headers=student_headers)
+    assert prepared.status_code == 200
+    problem = next(p for p in prepared.json()["problems"] if p["source_kind"] == "TEACHER_MATERIAL")
+    assert [v["path"] for v in problem["visuals"]] == [image]
+    assert "correct_answer" not in problem and "explanation" not in problem
+    item_id = problem["student_assignment_material_item_id"]
+    image_base = f"/students/me/assignments/{sa_id}/material-items/{item_id}/assets"
+    student_visual = problem["visuals"][0]
+    assert student_visual["url"] == f"/api/student/assignments/{sa_id}/material-items/{item_id}/assets/0"
+    created = db_client.post(f"{base}/attempts", headers=student_headers, json=dict(
+        source_kind="TEACHER_MATERIAL", context_type="CLASSROOM_ASSIGNMENT", mode="INDEPENDENT_SOLUTION",
+        create_idempotency_key="shared-visuals", student_assignment_id=str(sa_id), student_assignment_material_item_id=item_id))
+    assert created.status_code == 201
+    attempt_id = created.json()["id"]
+    assert db_client.get(f"{base}/attempts/{attempt_id}/problem", headers=student_headers).json()["visuals"] == [student_visual]
+    listed = db_client.get(f"{base}/student-assignments/{sa_id}/problems", headers=student_headers)
+    assert next(p for p in listed.json() if p["id"] == item_id)["visuals"] == [student_visual]
+    detail = db_client.get(f"/students/me/assignments/{sa_id}", headers=student_headers)
+    assert next(q for q in detail.json()["questions"] if q["student_material_item_id"] == item_id)["visuals"] == [student_visual]
+    response = db_client.get(f"{image_base}/0", headers=student_headers)
+    assert response.status_code == 200 and response.content == payload
+    assert "no-store" in response.headers["cache-control"]
+    assert db_client.get(f"{image_base}/0").status_code == 401
+    assert db_client.get(f"{image_base}/0", headers=auth_headers(domain.student_b)).status_code == 404
+    assert db_client.get(f"{image_base}/1", headers=student_headers).status_code == 404
+    assert db_client.get(f"{image_base}/2", headers=student_headers).status_code == 404
+    review_base = f"/teacher/assignments/{domain.assignment.id}/students/{domain.student_profile_a.id}"
+    reviewed = db_client.get(review_base, headers=teacher_headers)
+    assert reviewed.status_code == 200
+    review_visuals = next(q for q in reviewed.json()["items"] if q["id"] == item_id)["visuals"]
+    assert [v["path"] for v in review_visuals] == [image, reference]
+    assert db_client.get(f"{review_base}/material-items/{item_id}/assets/1", headers=teacher_headers).content == payload
+    domain.student_assignment_a.status = StudentAssignmentStatus.SUBMITTED
+    db_session.commit()
+    assert db_client.get(f"{image_base}/1", headers=student_headers).content == payload
+    domain.teacher_material.status = TeacherMaterialStatus.ARCHIVED
+    db_session.commit()
+    assert db_client.get(f"{image_base}/0", headers=student_headers).content == payload
+    assert db_client.get(f"{review_base}/material-items/{item_id}/assets/0", headers=teacher_headers).content == payload
+    (directory / "ocr" / image).unlink()
+    assert db_client.get(f"{image_base}/0", headers=student_headers).status_code == 404
 
 
 # =========================================================================

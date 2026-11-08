@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { X, BookOpen, Send, CheckCircle2, AlertCircle, FileText, HelpCircle } from "lucide-react";
-import { MathRenderer } from "@/components/ui/MathRenderer";
+import { QuestionContent } from "@/components/ui/QuestionContent";
 import { teacherApi, type TeacherMaterial, type TeacherMaterialItem } from "../api";
 import styles from "../TeacherDashboard.module.css";
+import { MATERIAL_DIFFICULTY_LABELS } from "../material-difficulty";
 
 export interface MaterialPreviewModalProps {
   isOpen: boolean;
@@ -117,7 +118,7 @@ export function MaterialPreviewModal({
                           {item.question_type === "MULTIPLE_CHOICE" ? "Trắc nghiệm" : "Tự luận"}
                         </span>
                       )}
-                      {item.difficulty !== null && (
+                      {item.difficulty_level ? <span className={styles.tagPillMuted}>{MATERIAL_DIFFICULTY_LABELS[item.difficulty_level]}</span> : item.difficulty !== null && (
                         <span className={styles.tagPillMuted}>
                           Độ khó: {Number((item.difficulty * 10).toFixed(1))}/10
                         </span>
@@ -126,7 +127,7 @@ export function MaterialPreviewModal({
                   </div>
 
                   <div className={styles.previewQuestionContent}>
-                    <MathRenderer content={item.content} />
+                    <QuestionContent content={item.content} visuals={item.visuals} relatedContent={item.options.map((option) => option.content)} />
                   </div>
 
                   {item.options && item.options.length > 0 && (
@@ -140,7 +141,7 @@ export function MaterialPreviewModal({
                         >
                           <span className={styles.optionLabelBadge}>{opt.label}</span>
                           <div className={styles.optionTextContent}>
-                            <MathRenderer content={opt.content} inline={true} />
+                            <QuestionContent content={opt.content} visuals={item.visuals} gallery={false} inline />
                           </div>
                           {item.correct_answer === opt.label && (
                             <CheckCircle2 size={15} className={styles.textVerdant} />
@@ -153,9 +154,11 @@ export function MaterialPreviewModal({
                   {item.correct_answer && item.options.length === 0 && (
                     <div className={styles.previewAnswerNotice}>
                       <strong>Đáp án tham chiếu: </strong>
-                      <MathRenderer content={item.correct_answer} inline={true} />
+                      <QuestionContent content={item.correct_answer} visuals={item.visuals} role="answer" inline />
                     </div>
                   )}
+
+                  {item.explanation && <details><summary>Lời giải tham chiếu</summary><QuestionContent content={item.explanation} visuals={item.visuals} role="solution" /></details>}
                 </div>
               ))}
             </div>

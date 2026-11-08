@@ -1052,6 +1052,7 @@
             "type": "boolean"
           },
           "page_index": {
+            "default": 0,
             "description": "Chỉ số trang chứa nét vẽ cần nhận diện (0-29)",
             "maximum": 29.0,
             "minimum": 0.0,
@@ -1073,11 +1074,23 @@
             ],
             "description": "Danh sách ID nét vẽ được chọn để nhận diện, hoặc None để nhận diện cả trang",
             "title": "Stroke Ids"
+          },
+          "strokes": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/InkStroke"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Nét vẽ gửi trực tiếp từ client để nhận diện ngay lập tức mà không cần qua DB",
+            "title": "Strokes"
           }
         },
-        "required": [
-          "page_index"
-        ],
         "title": "OCRRecognizeRequest",
         "type": "object"
       },
@@ -1454,6 +1467,13 @@
               }
             ],
             "title": "Student Assignment Material Item Id"
+          },
+          "visuals": {
+            "items": {
+              "$ref": "#/components/schemas/QuestionVisualRead"
+            },
+            "title": "Visuals",
+            "type": "array"
           }
         },
         "required": [
@@ -1552,6 +1572,40 @@
         ],
         "title": "QuestionType",
         "type": "string"
+      },
+      "QuestionVisualRead": {
+        "properties": {
+          "index": {
+            "minimum": 0.0,
+            "title": "Index",
+            "type": "integer"
+          },
+          "path": {
+            "title": "Path",
+            "type": "string"
+          },
+          "role": {
+            "default": "question",
+            "enum": [
+              "question",
+              "answer",
+              "solution"
+            ],
+            "title": "Role",
+            "type": "string"
+          },
+          "url": {
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "index",
+          "path",
+          "url"
+        ],
+        "title": "QuestionVisualRead",
+        "type": "object"
       },
       "ReorderStepsRequest": {
         "additionalProperties": false,

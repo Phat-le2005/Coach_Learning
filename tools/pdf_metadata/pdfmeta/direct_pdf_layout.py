@@ -14,6 +14,7 @@ import sys
 
 from .direct_pdf_regions import plan_visual_regions
 from .storage import configure_storage, file_hash, inference_versions, read_json, write_json
+from .pdf_text_layout import inspect_document, content_regions, heading_only_text, report as text_layout_report
 
 VERSION = 'direct-pdf-layout/v1'
 MODEL = 'PP-DocLayoutV3'
@@ -56,7 +57,9 @@ def layout_identity(pdf, runtime, dpi, *, model=None, source_sha=None):
                    'raster': raster_identity(source_sha, dpi),
                    'assembly': function_identity(__file__, ['_build_record']),
                    'page_geometry': function_identity(Path(__file__).with_name('direct_pdf_ocr.py'), ['page_regions', 'pdf_box']),
-                   'geometry_code': file_hash(Path(__file__).with_name('direct_pdf_regions.py'))})
+                   'geometry_code': file_hash(Path(__file__).with_name('direct_pdf_regions.py')),
+                   'text_layout': {name: file_hash(Path(__file__).parent / name)
+                                   for name in ['pdf_text_layout.py', 'native.py', 'paired/fast_native.py']}})
 
 
 class Detector:
@@ -256,12 +259,15 @@ def prepare(pdf, runtime, output, *, pages='all', dpi=240, detector=None, model=
     counts = {}
     with pdfium.PdfDocument(pdf) as doc:
         page_count = len(doc)
+        profiles = inspect_document(doc)
+        write_json(output / 'text-layout.json', text_layout_report(profiles))
         chosen = selected_pages(pages, page_count)
         for pn in chosen:
             page = doc[pn - 1]
             image = None
             try:
                 boxes, image_mode = page_regions(page)
+                boxes = content_regions(boxes, profiles[pn])
                 counts[str(pn)] = len(boxes)
                 width, height = page.get_size()
                 for ri, box in enumerate(boxes, 1):
@@ -313,7 +319,9 @@ def prepare(pdf, runtime, output, *, pages='all', dpi=240, detector=None, model=
                         target = output / asset
                         prediction_key = digest({'model': prediction_model, 'image': image_sha,
                                                  'threshold': THRESHOLD, 'adapter': VERSION})
-                        if previous.get('prediction_identity') == prediction_key and isinstance(previous.get('detections'), list):
+                        if heading_only_text(profiles[pn]):
+                            detections = []
+                        elif previous.get('prediction_identity') == prediction_key and isinstance(previous.get('detections'), list):
                             detections = previous['detections']
                             hits += 1
                         else:

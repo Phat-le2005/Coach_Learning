@@ -1,4 +1,5 @@
 import { ApiContractError, array, boolean, integer, nonEmptyString, nullable, number, oneOf, optional, record, string } from "./validation";
+import { parseQuestionVisuals, type QuestionVisual } from "./question-visuals";
 
 export const ROLES = ["STUDENT", "TEACHER", "PARENT", "ADMIN"] as const;
 export type Role = (typeof ROLES)[number];
@@ -523,6 +524,7 @@ export interface ProblemRead {
   id: string;
   subject_id?: string | null;
   content: string;
+  visuals?: QuestionVisual[];
   question_type: string;
   options: ProblemOptionRead[];
   order_index?: number | null;
@@ -551,6 +553,7 @@ export type StepKind = (typeof STEP_KINDS)[number];
 export interface OCRRecognizeRequest {
   page_index: number;
   stroke_ids?: string[] | null;
+  strokes?: InkStroke[] | null;
   hint_topic?: string | null;
   include_alternatives?: boolean;
 }
@@ -843,6 +846,7 @@ export function parseProblemRead(value: unknown, path = "problem"): ProblemRead 
 
     subject_id: typeof source.subject_id === 'string' ? source.subject_id : null,
     content: string(source.content, `${path}.content`),
+    visuals: parseQuestionVisuals(source.visuals, `${path}.visuals`),
     question_type: string(source.question_type, `${path}.question_type`),
     options: array(source.options, `${path}.options`, parseProblemOptionRead),
     order_index: typeof source.order_index === "number" ? source.order_index : null,

@@ -13,7 +13,8 @@ from app.api.export_contract import (
 )
 from app.api.version import API_VERSION
 
-FROZEN_CONTRACT_SHA256 = "01b558addf218c6d47a0e22d7ccd04f6d246170e8661b8d5c0fb844ea513e008"
+# Reviewed additive image delivery and current teacher-library endpoints, 2026-11-08.
+FROZEN_CONTRACT_SHA256 = "68dc226232562c1646ec8aaab1b7c2170c27307f4165cf47376fc046b6ee4acf"
 
 
 @pytest.fixture(scope="module")

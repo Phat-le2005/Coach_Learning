@@ -53,7 +53,9 @@ class Settings(BaseSettings):
     seed_demo_password: SecretStr = SecretStr("")
 
     # OCR is disabled by default; no mock output is ever served automatically.
-    math_ocr_provider: Literal["disabled", "mathpix", "local_rapid", "local_pix2tex", "mock"] = "disabled"
+    math_ocr_provider: Literal["disabled", "gemini", "mathpix", "local_rapid", "local_pix2tex", "mock"] = "gemini"
+    gemini_ocr_model: str = Field(default="gemini-3.8-flash", min_length=1)
+    gemini_ocr_fast_mode: bool = True
     math_ocr_model_dir: Path | None = None
     mathpix_app_id: str = ""
     mathpix_app_key: SecretStr = SecretStr("")
@@ -76,6 +78,11 @@ class Settings(BaseSettings):
     teacher_material_storage_dir: Path = BACKEND_DIR / "var" / "teacher_materials"
     math_paper_storage_dir: Path = BACKEND_DIR / "var" / "math_paper"
     teacher_material_max_bytes: int = Field(default=25 * 1024 * 1024, ge=1)
+    # Provision the PDF tool runtime explicitly; private imports stay outside Git.
+    teacher_pdf_import_dir: Path = BACKEND_DIR.parent / ".tmp" / "teacher-pdf-imports"
+    teacher_pdf_runtime_dir: Path = BACKEND_DIR.parent / ".tmp" / "pdf-pipeline-runtime"
+    teacher_pdf_device: Literal["CPU", "GPU"] = "CPU"
+    teacher_pdf_port: int = Field(default=8790, ge=1, le=65535)
     question_acquisition_allowed_domains: str = ""
     question_acquisition_storage_dir: Path = BACKEND_DIR / "var" / "question_acquisition"
     question_acquisition_max_bytes: int = Field(default=25 * 1024 * 1024, ge=1)

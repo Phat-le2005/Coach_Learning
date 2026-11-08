@@ -1,6 +1,7 @@
 param(
     [Parameter(Mandatory=$true)][string]$Pdf,
     [string]$Storage,
+    [string]$Runtime,
     [string]$Output,
     [string]$Pages='all',
     [ValidateRange(72,400)][int]$Dpi=240,
@@ -15,7 +16,7 @@ $ErrorActionPreference='Stop'
 . (Join-Path $PSScriptRoot 'paths.ps1')
 if (-not $Storage) { $Storage=$PdfStorageRoot }
 $Storage=[IO.Path]::GetFullPath($Storage);$Pdf=(Resolve-Path -LiteralPath $Pdf).Path
-$directRuntime=Join-Path $Storage 'pdf-pipeline-runtime'
+$directRuntime=if ($Runtime) {[IO.Path]::GetFullPath($Runtime)} else {Join-Path $Storage 'pdf-pipeline-runtime'}
 $directPython=Join-Path $directRuntime '.venv\Scripts\python.exe'
 if (-not $Output) {
     $directId=(Get-FileHash -LiteralPath $Pdf -Algorithm SHA256).Hash.ToLowerInvariant().Substring(0,24)

@@ -1,6 +1,7 @@
 from datetime import datetime
 from uuid import UUID
 from pydantic import BaseModel, ConfigDict, Field
+from app.teacher_materials.visual_schemas import QuestionVisualRead
 from app.questions.models import QuestionType
 from app.teacher_materials.models import MaterialEvaluationMode, MaterialItemExtractionStatus, MaterialMappingSource, MaterialMappingStatus, TeacherMaterialStatus
 
@@ -69,6 +70,7 @@ class TeacherMaterialItemRead(BaseModel):
     extraction_status: MaterialItemExtractionStatus
     evaluation_mode: MaterialEvaluationMode
     raw_metadata: dict
+    visuals: list[QuestionVisualRead] = Field(default_factory=list)
     options: list[MaterialOptionRead] = Field(default_factory=list)
     problem_type_mappings: list[ProblemTypeMappingRead] = Field(default_factory=list)
     concept_mappings: list[ConceptMappingRead] = Field(default_factory=list)
@@ -91,3 +93,4 @@ class TeacherMaterialRead(BaseModel):
     parse_error: str | None
     created_at: datetime
     updated_at: datetime
+    pdf_import_id: UUID | None = None
