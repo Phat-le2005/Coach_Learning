@@ -1,15 +1,16 @@
 import { getCsrfToken, refreshBrowserSession } from "../../lib/auth/browser";
 import { ApiContractError, array, boolean, integer, number, record, string } from "../../lib/api/validation";
+import { parseMaterialDifficulty, type MaterialDifficultyLevel } from "./material-difficulty";
 
 export interface TeacherClassroom { id: string; name: string; academic_year: string; grade_level: number; }
 export interface TeacherSubject { id: string; code: string; name: string; grade_level: number | null; }
 export interface TeacherStudent { student_id: string; full_name: string; email: string; status: string; is_synthetic: boolean; }
-export interface TeacherMaterial { id: string; title: string; original_file_name: string; mime_type: string; file_size_bytes: number; status: string; subject_id: string; created_at: string; items_count?: number; }
+export interface TeacherMaterial { id: string; title: string; original_file_name: string; mime_type: string; file_size_bytes: number; status: string; subject_id: string; created_at: string; items_count?: number; pdf_import_id?: string | null; }
 export interface TeacherAssignment { id: string; title: string; status: string; question_count: number; due_at: string | null; subject_id: string; delivery_mode?: string; }
 export interface TeacherRosterStudent { student_id: string; student_name: string; status: string; score: number | null; provisional_score?: number | null; submitted_at: string | null; }
 export interface TeacherRoster { assignment_id: string; title: string; total_students: number; submitted_count: number; graded_count: number; roster: TeacherRosterStudent[]; }
 export interface TeacherMaterialItemOption { id: string; label: string; content: string; order_index: number; }
-export interface TeacherMaterialItem { id: string; order_index: number; content: string; question_type: string | null; correct_answer: string | null; explanation: string | null; difficulty: number | null; extraction_status: string; evaluation_mode: string; options: TeacherMaterialItemOption[]; }
+export interface TeacherMaterialItem { id: string; order_index: number; content: string; question_type: string | null; correct_answer: string | null; explanation: string | null; difficulty: number | null; difficulty_level?: MaterialDifficultyLevel | null; extraction_status: string; evaluation_mode: string; options: TeacherMaterialItemOption[]; visual_assets?: number[]; }
 export interface TeacherSubmissionStepDetail { step_id: string; step_index: number; step_type: string; content_latex: string | null; explanation_text: string | null; math_validity: string | null; confidence: number | null; error_detected: boolean | null; error_description: string | null; }
 export interface TeacherSubmissionPaperAttachment { id: string; file_name: string; content_type: string; storage_key: string; }
 export interface TeacherSubmissionItem { id: string; source_kind: string; order_index: number; content: string | null; question_type: string | null; options: { id: string; label: string; content: string; order_index: number }[]; correct_answer: string | null; explanation: string | null; student_answer: string | null; is_correct: boolean | null; score: number | null; provisional_score?: number | null; evaluation_status: string | null; teacher_feedback: string | null; graded_at: string | null; graded_by: string | null; attempt_id: string | null; attempt_status: string | null; steps: TeacherSubmissionStepDetail[]; paper_attachments: TeacherSubmissionPaperAttachment[]; }
@@ -42,7 +43,7 @@ export function parseStudent(value: unknown, path = "student"): TeacherStudent {
 }
 export function parseMaterial(value: unknown, path = "material"): TeacherMaterial {
   const row = record(value, path);
-  return { id: string(row.id, `${path}.id`), title: string(row.title, `${path}.title`), original_file_name: string(row.original_file_name, `${path}.original_file_name`), mime_type: string(row.mime_type, `${path}.mime_type`), file_size_bytes: integer(row.file_size_bytes, `${path}.file_size_bytes`), status: string(row.status, `${path}.status`), subject_id: string(row.subject_id, `${path}.subject_id`), created_at: string(row.created_at, `${path}.created_at`) };
+  return { id: string(row.id, `${path}.id`), title: string(row.title, `${path}.title`), original_file_name: string(row.original_file_name, `${path}.original_file_name`), mime_type: string(row.mime_type, `${path}.mime_type`), file_size_bytes: integer(row.file_size_bytes, `${path}.file_size_bytes`), status: string(row.status, `${path}.status`), subject_id: string(row.subject_id, `${path}.subject_id`), created_at: string(row.created_at, `${path}.created_at`), pdf_import_id: row.pdf_import_id == null ? null : string(row.pdf_import_id, `${path}.pdf_import_id`) };
 }
 export function parseAssignment(value: unknown, path = "assignment"): TeacherAssignment {
   const row = record(value, path);
@@ -108,6 +109,7 @@ async function request<T>(path: string, parse: (value: unknown) => T, init: Requ
     throw error;
   }
 }
+export { request as teacherRequest };
 const list = <T,>(value: unknown, parse: (value: unknown, path?: string) => T): T[] => array(value, "items", parse);
 async function pages<T>(path: string, parse: (value: unknown, path?: string) => T): Promise<T[]> {
   const all: T[] = [];
@@ -119,14 +121,17 @@ async function pages<T>(path: string, parse: (value: unknown, path?: string) => 
 }
 export function parseMaterialItem(value: unknown, path = "item"): TeacherMaterialItem {
   const row = record(value, path);
+  const metadata = row.raw_metadata == null ? {} : record(row.raw_metadata, `${path}.raw_metadata`);
   return {
     id: string(row.id, `${path}.id`),
     order_index: integer(row.order_index, `${path}.order_index`),
     content: string(row.content, `${path}.content`),
+    visual_assets: array(metadata.visual_assets ?? [], `${path}.visual_assets`, integer),
     question_type: row.question_type === null || row.question_type === undefined ? null : string(row.question_type, `${path}.question_type`),
     correct_answer: row.correct_answer === null || row.correct_answer === undefined ? null : string(row.correct_answer, `${path}.correct_answer`),
     explanation: row.explanation === null || row.explanation === undefined ? null : string(row.explanation, `${path}.explanation`),
     difficulty: row.difficulty === null || row.difficulty === undefined ? null : number(row.difficulty, `${path}.difficulty`),
+    difficulty_level: parseMaterialDifficulty(metadata.difficulty_level, `${path}.difficulty_level`),
     extraction_status: string(row.extraction_status, `${path}.extraction_status`),
     evaluation_mode: string(row.evaluation_mode, `${path}.evaluation_mode`),
     options: array(row.options ?? [], `${path}.options`, (opt, optP) => {
@@ -212,6 +217,9 @@ export function parseStudentSubmission(value: unknown, path = "submission"): Tea
 }
 
 export const teacherApi = {
+  deleteMaterial: async (materialId: string) => request(`materials/${encodeURIComponent(materialId)}`, () => undefined, {
+    method: "DELETE", headers: { "X-CSRF-Token": await getCsrfToken() },
+  }),
   subjects: () => request("subjects", (v) => list(v, parseSubject)),
   classes: () => pages("classes", parseClassroom),
   students: (id: string) => pages(`classes/${encodeURIComponent(id)}/students`, parseStudent),

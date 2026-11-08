@@ -58,7 +58,7 @@ class TeacherMaterialService:
             self.session.rollback(); self.storage.delete(key); raise
         return self.get(user_id, material.id)
 
-    def get(self, user_id: UUID, material_id: UUID) -> TeacherMaterial:
+    def get(self, user_id: UUID, material_id: UUID, *, include_archived: bool = False) -> TeacherMaterial:
         row = self.session.scalar(select(TeacherMaterial).execution_options(populate_existing=True).options(
             selectinload(TeacherMaterial.items).selectinload(TeacherMaterialItem.options),
             selectinload(TeacherMaterial.items).selectinload(TeacherMaterialItem.problem_type_mappings),
@@ -66,10 +66,24 @@ class TeacherMaterialService:
             selectinload(TeacherMaterial.items).selectinload(TeacherMaterialItem.learning_outcome_mappings),
         ).where(TeacherMaterial.id == material_id))
         if row is None: raise ApplicationError(404, "MATERIAL_NOT_FOUND", "Teacher material was not found.")
-        self._authorize(user_id, row.classroom_id); return row
+        self._authorize(user_id, row.classroom_id)
+        if row.status == TeacherMaterialStatus.ARCHIVED and not include_archived:
+            raise ApplicationError(410, "MATERIAL_ARCHIVED", "Tài liệu đã được xóa khỏi kho học liệu.")
+        return row
 
     def list(self, user_id: UUID, classroom_id: UUID) -> list[TeacherMaterial]:
-        self._authorize(user_id, classroom_id); return list(self.session.scalars(select(TeacherMaterial).where(TeacherMaterial.classroom_id == classroom_id).order_by(TeacherMaterial.created_at.desc())))
+        self._authorize(user_id, classroom_id); return list(self.session.scalars(select(TeacherMaterial).where(TeacherMaterial.classroom_id == classroom_id, TeacherMaterial.status != TeacherMaterialStatus.ARCHIVED).order_by(TeacherMaterial.created_at.desc())))
+
+    def archive(self, user_id: UUID, material_id: UUID) -> None:
+        material = self.get(user_id, material_id, include_archived=True)
+        if material.status == TeacherMaterialStatus.ARCHIVED:
+            return
+        material.status = TeacherMaterialStatus.ARCHIVED
+        for item in material.items:
+            item.extraction_status = MaterialItemExtractionStatus.ARCHIVED
+        # Published assignments refer to immutable snapshots; retain their source
+        # rows and private assets rather than breaking restrictive foreign keys.
+        self.session.commit()
 
     def update_item(
         self,
@@ -401,7 +415,10 @@ class TeacherMaterialService:
             .where(TeacherMaterialItem.id == item_id)
         )
         if row is None: raise ApplicationError(404,"MATERIAL_ITEM_NOT_FOUND","Material item was not found.")
-        self._authorize(user_id,row.material.classroom_id); return row
+        self._authorize(user_id,row.material.classroom_id)
+        if row.material.status == TeacherMaterialStatus.ARCHIVED:
+            raise ApplicationError(410, "MATERIAL_ARCHIVED", "Tài liệu đã được xóa khỏi kho học liệu.")
+        return row
 
     @staticmethod
     def _mapping_spec(kind:str):

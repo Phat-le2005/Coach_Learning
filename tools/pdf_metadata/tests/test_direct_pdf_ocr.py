@@ -227,7 +227,7 @@ def test_content_export_preserves_unlabelled_material_and_never_infers_an_answer
     assert content[0]['question']['fragments'][0]['coverage']['complete_formula_recall_established'] is False
     assert read_json(tmp_path/'content.unassigned.pretty.json')[0]['markdown']=='Printed heading'
     assert set(content[0])=={'collection_number','question_id','chapter_title','source','question','solution','answer','tables',
-                             'academic_review','grading_support','publishable','visual_assets'}
+                             'academic_review','grading_support','publishable','visual_assets','source_number','topic_context'}
 
 
 def test_uncertainty_is_not_reported_as_a_complete_success(tmp_path):

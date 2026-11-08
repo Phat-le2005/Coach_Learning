@@ -21,6 +21,8 @@ def compact_content(row):
             'academic_review': 'PENDING', 'grading_support': 'NOT_ASSESSED', 'publishable': False}
     if 'visual_assets' in row:
         content['visual_assets'] = row['visual_assets']
+    for key in ['topic_context', 'source_number']:
+        if key in row:content[key] = row[key]
     return content
 
 

@@ -91,3 +91,4 @@ class TeacherMaterialRead(BaseModel):
     parse_error: str | None
     created_at: datetime
     updated_at: datetime
+    pdf_import_id: UUID | None = None

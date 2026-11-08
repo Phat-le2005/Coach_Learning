@@ -10,8 +10,11 @@ import subprocess
 import uuid
 
 from .storage import file_hash, read_json, write_json
+from .math_display import prepare as prepare_display, CODE_SHA256 as DISPLAY_CODE_SHA256
 
 VERSION = 'source-latex-quality/v1'
+# Pin the loaded validator's identity before a checkout can replace its source.
+_CODE_SHA256 = file_hash(Path(__file__))
 RELATION = re.compile(r'\\(?:Leftrightarrow|Rightarrow|Leftarrow|leftrightarrow|rightarrow|leftarrow|rightleftharpoons|leftrightharpoons|triangleq|doteq)\b|[⇔⇒⇐↔→←⇌≜≐]')
 AMBIGUOUS = re.compile(r'\\(?:rightleftharpoons|leftrightharpoons|triangleq|doteq)\b|[⇌≜≐]')
 MATH = re.compile(r'(?<!\\)(\$\$|\$)([\s\S]*?)(?<!\\)\1')
@@ -93,10 +96,13 @@ def equivalent_arrows(image_bytes):
 
 
 def validate(markdown):
-    math = [m[2] for m in MATH.finditer(markdown)]
-    issues = []
-    if len(re.findall(r'(?<!\\)\$', markdown)) % 2:
-        issues.append({'kind': 'UNBALANCED_MATH_DELIMITERS'})
+    prepared = prepare_display(markdown)
+    math = [t['latex'] for t in prepared['tokens'] if t['kind']=='math']
+    issues = [{'kind': code} for code in prepared['issues']]
+    if 'EXPLICIT_EQUATION_DELIMITED' in prepared['repairs']:
+        issues.append({'kind': 'MATH_DELIMITERS_MISSING'})
+    if any(code in prepared['repairs'] for code in ['ESCAPED_CLOSING_MATH_DELIMITER_FIXED','MISSING_CLOSING_MATH_DELIMITER_ADDED']):
+        issues.append({'kind': 'MATH_DELIMITERS_REPAIRED_FOR_DISPLAY'})
     if any(re.search(r'[\x00-\x08\x0b-\x1f]', expression) for expression in math):
         issues.append({'kind': 'MATH_CONTROL_CHARACTER'})
     if any('\n' in m[2] for m in MATH.finditer(markdown) if m[1] == '$'):
@@ -119,7 +125,7 @@ def validate(markdown):
 def review(markdown, image_bytes, binding, output, generate=None):
     identity = hashlib.sha256(json.dumps({
         'version': VERSION, 'binding': binding, 'image': hashlib.sha256(image_bytes).hexdigest(),
-        'markdown': markdown, 'code': file_hash(Path(__file__)),
+        'markdown': markdown, 'code': _CODE_SHA256, 'display_code': DISPLAY_CODE_SHA256,
         'katex': file_hash(KATEX) if KATEX.is_file() else None}, sort_keys=True).encode()).hexdigest()
     path = output / 'quality' / (identity + '.json')
     if path.exists():
@@ -131,7 +137,9 @@ def review(markdown, image_bytes, binding, output, generate=None):
         except (ValueError, OSError):
             pass
     original = markdown
-    evidence, flags = [], []
+    display = prepare_display(markdown)
+    markdown = display['markdown']
+    evidence, flags = [], list(display['repairs'])
     spans = list(MATH.finditer(markdown))
     relation_count = sum(len(RELATION.findall(m[2])) for m in spans)
     if any(AMBIGUOUS.search(m[2]) for m in spans):

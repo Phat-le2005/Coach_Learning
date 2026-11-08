@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { X, Send, Calendar, Clock, CheckCircle2, AlertCircle, Sparkles, BookOpen, Layers } from "lucide-react";
 import { teacherApi, type TeacherAssignment, type TeacherClassroom, type TeacherMaterial, type TeacherMaterialItem } from "../api";
 import styles from "../TeacherDashboard.module.css";
+import { MATERIAL_DIFFICULTY_LABELS } from "../material-difficulty";
 
 export interface AssignMaterialModalProps {
   isOpen: boolean;
@@ -302,6 +303,7 @@ export function AssignMaterialModal({
                       />
                       <div className={styles.itemCheckInfo}>
                         <span className={styles.itemNumberBadge}>Câu {idx + 1}</span>
+                        {item.difficulty_level && <span className={styles.tagPillMuted}>{MATERIAL_DIFFICULTY_LABELS[item.difficulty_level]}</span>}
                         <p className={styles.itemSnippet}>{cleanSnippet.slice(0, 140)}...</p>
                       </div>
                     </label>

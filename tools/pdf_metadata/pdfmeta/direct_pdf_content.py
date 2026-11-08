@@ -9,6 +9,7 @@ from .section_markers import hint
 from .storage import read_json, write_json, write_jsonl
 from .paired.transcription_v2.exports import atomic_text, compact_content
 from .direct_pdf_preview import publish_preview
+from .pdf_text_layout import heading
 
 
 QUESTION = re.compile(r'^(?:Câu|Bài|Ví\s+dụ|Question|Example)\s*\d+[a-z]?(?=[\s.:)\-]|$)', re.I)
@@ -26,7 +27,8 @@ def pieces(markdown):
     for line in markdown.splitlines():
         plain = bare_line(line)
         section = hint(plain)
-        role = ('question' if QUESTION.match(plain) else
+        role = ('heading' if heading(plain) else
+                'question' if QUESTION.match(plain) else
                 'solution' if (section and section['kind'] == 'SOLUTION') or SOLUTION.match(plain) else
                 'answer' if ANSWER.match(plain) else None)
         if role:
@@ -51,10 +53,13 @@ def export_content(output, pages, source):
             assets = {n['visual_asset']['id']: dict(n['visual_asset']) for r in layout['regions']
                       for n in r['nodes'] if n.get('visual_asset')}
     current, role = None, None
+    context = {}
     previous_page = None
     for page in pages:
+        native_used = set()
         if previous_page is not None and page['page_number'] != previous_page + 1:
             current, role = None, None
+            context = {}
         previous_page = page['page_number']
         for region in page['regions']:
             for block in region.get('blocks', []):
@@ -67,11 +72,37 @@ def export_content(output, pages, source):
                 for label, text in parts:
                     if not text:
                         continue
+                    if label == 'heading':
+                        found = heading(bare_line(text.splitlines()[0]))
+                        if found:
+                            found.update(page_number=page['page_number'], bbox=block['bbox'],
+                                         method='PRINTED_OCR_HEADING', source_verified=False)
+                            if found['kind'] == 'chapter':context = {'chapter': found}
+                            elif found['kind'] == 'topic':
+                                context.pop('exercise_type', None)
+                                context['topic'] = found
+                            elif found['kind'] == 'section':
+                                context.pop('exercise_type', None)
+                                context.pop('topic', None)
+                                context['section'] = found
+                            else:context['exercise_type'] = found
+                        current, role = None, None
+                        unassigned.append({'page_number': page['page_number'], 'block': block, 'markdown': text,
+                                           'reason': 'PRINTED_HEADING_CONTEXT'})
+                        continue
                     if label == 'question':
+                        match = re.search(r'(?:Câu|Bài|Ví\s+dụ|Question|Example)\s*(\d+)', bare_line(text), re.I)
+                        source_number = int(match[1]) if match else None
+                        native_index = next((i for i, c in enumerate(page.get('question_contexts', []))
+                                             if i not in native_used and c['source_number'] == source_number), None)
+                        native = page['question_contexts'][native_index] if native_index is not None else None
+                        if native_index is not None:native_used.add(native_index)
+                        topic_context = native['context'] if native else context
                         number = len(records) + 1
                         current = {'collection_number': number,
                                    'question_id': f"{source['sha256'][:24]}:p{page['page_number']:04}:r{region['region_number']:03}:q{number:04}",
-                                   'chapter_title': source['name'].rsplit('.', 1)[0], 'source': source,
+                                   'chapter_title': topic_context.get('chapter', {}).get('title', source['name'].rsplit('.', 1)[0]), 'source': source,
+                                   'source_number': source_number, 'topic_context': dict(topic_context),
                                    'parts': {r: empty_part() for r in ['question', 'solution', 'answer']},
                                    'tables': [], 'visual_assets': []}
                         records.append(current)
@@ -86,7 +117,8 @@ def export_content(output, pages, source):
                         continue
                     part = current['parts'][role]
                     span = {'page_number': page['page_number'], 'bbox': block['bbox'], 'block_ids': [],
-                            'column': None, 'layout_method': 'PRESERVED_VISUAL_SOURCE' if block['kind'] == 'VISUAL' else 'DIRECT_VISUAL_OCR_CROP'}
+                            'column': None, 'layout_method': block.get('acquisition_method',
+                                'PRESERVED_VISUAL_SOURCE' if block['kind'] == 'VISUAL' else 'DIRECT_VISUAL_OCR_CROP')}
                     fragment = {'page_number': page['page_number'], 'bbox': block['bbox'],
                                 'source_asset': block['source_image'], 'source_asset_sha256': block['source_image_sha256'],
                                 'markdown': text, 'choices': [],
@@ -118,10 +150,20 @@ def export_content(output, pages, source):
     write_jsonl(output / 'content.draft.jsonl', contents)
     write_json(output / 'content.unassigned.pretty.json', unassigned)
     write_json(output / 'visual-assets.json', list(assets.values()))
+    topics = {}
+    for row in contents:
+        topic = next((row.get('topic_context', {}).get(k) for k in ['exercise_type', 'topic', 'chapter']
+                      if row.get('topic_context', {}).get(k)), None)
+        if topic:
+            topics.setdefault(topic['label'], []).append(row['collection_number'])
+    write_json(output / 'topics.json', {'method': 'PRINTED_SOURCE_HEADINGS', 'topics': [
+        {'label': label, 'question_numbers': numbers, 'count': len(numbers)} for label, numbers in topics.items()],
+        'unclassified_questions': [r['collection_number'] for r in contents if not any(
+            r.get('topic_context', {}).get(k) for k in ['exercise_type', 'topic', 'chapter'])]})
     write_json(output / 'content-structure.json', {
         'method': 'PRINTED_LABEL_HEURISTIC', 'questions': len(contents),
         'status': 'BOUNDARIES_REQUIRE_REVIEW' if contents else 'NO_PRINTED_QUESTION_LABELS',
-        'chapter_title_method': 'INPUT_FILENAME_FALLBACK',
+        'chapter_title_method': 'PRINTED_HEADING_OR_INPUT_FILENAME_FALLBACK',
         'questions_with_solutions': sum(bool(c['solution']['markdown']) for c in contents),
         'unassigned_fragments': len(unassigned), 'question_boundaries_verified': False,
         'uses_reference_json': False, 'source_coordinates': 'INPUT_PDF_ONLY'})

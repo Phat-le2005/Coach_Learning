@@ -28,6 +28,36 @@ if (Test-Path -LiteralPath $localPidPath) {
         $localServerProcess = $localCandidate
     }
 }
+# A web worker may not be allowed to read an elevated server's executable or
+# command line through CIM. Reuse only our recorded listener and matching profile,
+# after the server accepts the runtime's private API key and serves its model.
+# This attachment never authorizes stopping a process we could not inspect.
+if (-not $localServerProcess -and $Action -ne 'stop' -and
+    (Test-Path -LiteralPath $localPidPath) -and (Test-Path -LiteralPath $localStatePath)) {
+    $localAttachmentState = Get-Content -LiteralPath $localStatePath -Raw -Encoding UTF8 | ConvertFrom-Json
+    $localAttachmentKeyPath = Join-Path $Runtime 'local-qwen-server.key'
+    $localRecordedListener = @(Get-NetTCPConnection -LocalPort $Port -State Listen -ErrorAction SilentlyContinue |
+        Where-Object { $_.OwningProcess -eq $localRecordedPid })
+    if ($localRecordedListener.Count -gt 0 -and
+        $localAttachmentState.process_id -eq $localRecordedPid -and
+        $localAttachmentState.port -eq $Port -and
+        $localAttachmentState.device -eq $Device -and
+        $localAttachmentState.signature -eq $localSignature -and
+        (Test-Path -LiteralPath $localAttachmentKeyPath)) {
+        try {
+            $localAttachmentHeaders = @{Authorization = 'Bearer ' + [IO.File]::ReadAllText($localAttachmentKeyPath).Trim()}
+            $localAttachedModels = Invoke-RestMethod -Uri "http://127.0.0.1:$Port/v1/models" -Headers $localAttachmentHeaders -TimeoutSec 5
+            if (@($localAttachedModels.data | Where-Object { $_.id -eq $localManifest.served_model }).Count -gt 0) {
+                $localServerProcess = [PSCustomObject]@{ProcessId = $localRecordedPid}
+                Write-Host 'Reused authenticated local Qwen server using its recorded runtime profile.'
+            }
+        } catch {
+            # A healthy but unrelated listener must never be adopted.
+        } finally {
+            $localAttachmentHeaders = $null
+        }
+    }
+}
 if ($localServerProcess -and $Action -eq 'start') {
     if (Test-Path -LiteralPath $localStatePath) {
         $localState=Get-Content -LiteralPath $localStatePath -Raw -Encoding UTF8 | ConvertFrom-Json
