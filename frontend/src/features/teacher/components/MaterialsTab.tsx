@@ -251,7 +251,7 @@ export function MaterialsTab({
                       {isReviewed ? "Bài tập" : isPdf ? "PDF" : "TXT"}
                     </span>
                     <div className={styles.materialStatusActions}><span className={styles.materialStatusPill}>
-                      {({ READY: "Đã duyệt", NEEDS_REVIEW: "Cần duyệt", PARSED: "Đã tách câu", UPLOADED: "Đã tải lên", MAPPING_PENDING: "Chờ phân loại", FAILED: "Xử lý lỗi" } as Record<string, string>)[item.status] ?? item.status}
+                      {({ READY: "Đã duyệt", APPROVED: "Đã duyệt", PUBLISHED: "Đã phát hành", NEEDS_REVIEW: "Cần duyệt", PARSED: "Đã tách câu", UPLOADED: "Đã tải lên", MAPPING_PENDING: "Chờ phân loại", FAILED: "Xử lý lỗi" } as Record<string, string>)[item.status] ?? item.status}
                     </span>
                     <button type="button" className={styles.deleteMaterialButton} aria-label={`Xóa tài liệu ${item.title}`}
                       onClick={(event) => { deleteTrigger.current = event.currentTarget; setDeleteTarget(item); setDeleteError(""); setDeleteNotice(""); }}>
@@ -280,10 +280,6 @@ export function MaterialsTab({
                     <span className={styles.materialDateText}>
                       <Calendar size={12} aria-hidden="true" />
                       {formatDate(item.created_at)}
-                    </span>
-                    <span className={styles.materialVerifiedHint}>
-                      <Sparkles size={12} aria-hidden="true" />
-                      Đã lưu trữ an toàn
                     </span>
                   </div>
 

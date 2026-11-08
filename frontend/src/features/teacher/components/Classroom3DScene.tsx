@@ -132,6 +132,7 @@ export default function Classroom3DScene({
       ref={stageRef}
       className={styles.stage}
       data-scene-state={status}
+      data-scene-motion={motion ? "on" : "off"}
       data-view-mode={viewMode}
       data-station={station}
       role="group"

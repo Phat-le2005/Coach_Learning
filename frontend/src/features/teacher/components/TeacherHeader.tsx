@@ -1,6 +1,7 @@
 "use client";
 
-import { GraduationCap, RefreshCw, Plus, UploadCloud, ChevronDown, ChevronUp } from "lucide-react";
+import { useEffect, useRef } from "react";
+import { Leaf, RefreshCw, Plus, UploadCloud, ChevronDown, ChevronUp, Ellipsis } from "lucide-react";
 import { AccountMenu } from "@/components/auth/AccountMenu";
 import type { TeacherClassroom } from "../api";
 import styles from "../TeacherDashboard.module.css";
@@ -33,14 +34,13 @@ export function TeacherHeader({
   onToggleCollapse,
 }: TeacherHeaderProps) {
   const selectedClass = classes.find((c) => c.id === selectedClassId);
-  const initials = teacherName
-    ? teacherName
-        .split(" ")
-        .filter(Boolean)
-        .slice(-2)
-        .map((w) => w[0]?.toUpperCase())
-        .join("")
-    : "GV";
+  const actions = useRef<HTMLDetailsElement>(null);
+  useEffect(() => {
+    const close = (event: PointerEvent) => { if (actions.current && !actions.current.contains(event.target as Node)) actions.current.open = false; };
+    document.addEventListener("pointerdown", close);
+    return () => document.removeEventListener("pointerdown", close);
+  }, []);
+  const closeActions = () => { if (actions.current) actions.current.open = false; };
 
   if (isCollapsed) {
     return (
@@ -52,9 +52,7 @@ export function TeacherHeader({
           title="Mở rộng lại thanh Header quản lý lớp"
         >
           <ChevronDown size={14} aria-hidden="true" />
-          <span>
-            Mở Header · <strong>{selectedClass ? selectedClass.name : teacherName}</strong>
-          </span>
+          <span>Mở thanh công cụ <strong>{selectedClass ? selectedClass.name : "Giảng dạy"}</strong></span>
         </button>
       </div>
     );
@@ -62,28 +60,12 @@ export function TeacherHeader({
 
   return (
     <header className={styles.header}>
-      <div className={styles.headerInner}>
+      <div className={styles.teacherHeaderInner}>
         {/* Brand & Teacher Persona */}
-        <div className={styles.headerTop}>
-          <div className={styles.headerLeft}>
-            <div className={styles.teacherAvatar} aria-hidden="true">
-              {initials}
-            </div>
-            <div className={styles.teacherInfo}>
-              <div className={styles.teacherNameRow}>
-                <h1 className={styles.teacherName}>{teacherName}</h1>
-                <span className={styles.roleBadge}>
-                  <GraduationCap size={13} aria-hidden="true" />
-                  Giáo viên THPT
-                </span>
-              </div>
-              <p className={styles.teacherSubtitle}>
-                Hệ thống Quản lý Giảng dạy &amp; Cố vấn Học tập EduMS
-              </p>
-            </div>
-          </div>
+        <div className={styles.teacherHeaderRow}>
+          <div className={styles.teacherBrand} aria-label="EduMS · Không gian giảng dạy"><Leaf size={28} aria-hidden="true" /><span><strong>EduMS</strong><h1>Không gian giảng dạy</h1></span></div>
 
-          <div className={styles.headerRight}>
+          <div className={styles.teacherClassPicker}>
             {/* Quick Classroom Dropdown */}
             <div className={styles.classSelectorCard}>
               <label htmlFor="teacher-classroom-select" className={styles.classSelectorLabel}>
@@ -101,7 +83,7 @@ export function TeacherHeader({
                   {classes.length === 0 && <option value="">Chưa có lớp</option>}
                   {classes.map((item) => (
                     <option key={item.id} value={item.id}>
-                      {item.name} · Khối {item.grade_level} ({item.academic_year})
+                      {item.name} · {item.academic_year}
                     </option>
                   ))}
                 </select>
@@ -109,39 +91,29 @@ export function TeacherHeader({
               </div>
             </div>
 
-            {/* Actions: Refresh + Create + Upload */}
-            <button
-              type="button"
-              className={styles.btnSecondary}
-              onClick={onReload}
-              disabled={isReloading}
-              title="Đồng bộ dữ liệu mới nhất từ hệ thống"
-            >
-              <RefreshCw size={15} className={isReloading ? styles.spinIcon : ""} aria-hidden="true" />
-              <span className={styles.hideMobile}>Làm mới</span>
-            </button>
-
-            <button
-              type="button"
-              className={styles.btnSecondary}
-              onClick={onOpenCreateClass}
-              title="Tạo lớp học mới"
-            >
-              <Plus size={15} aria-hidden="true" />
-              <span className={styles.hideMobile}>Tạo lớp</span>
-            </button>
-
+          </div>
+          <div className={styles.teacherHeaderActions}>
             {selectedClass && (
               <button
                 type="button"
                 className={styles.btnPrimary}
                 onClick={onOpenUpload}
                 title="Tải đề thi hoặc tài liệu bài giảng lên lớp"
+                aria-label="Tải học liệu"
               >
                 <UploadCloud size={15} aria-hidden="true" />
-                <span className={styles.hideMobile}>Tải học liệu</span>
+                <span className={styles.teacherUploadLabel}>Tải học liệu</span>
               </button>
             )}
+
+            <details ref={actions} className={styles.teacherMore} onKeyDown={event => { if (event.key === "Escape") { closeActions(); event.currentTarget.querySelector("summary")?.focus(); } }}>
+              <summary aria-label="Thao tác quản lý khác" title="Thao tác quản lý khác"><Ellipsis size={20} aria-hidden="true" /></summary>
+              <div className={styles.teacherMoreMenu}>
+                <button type="button" disabled={isReloading} onClick={() => { closeActions(); onReload(); }}><RefreshCw size={16} className={isReloading ? styles.spinIcon : ""} aria-hidden="true" />Làm mới dữ liệu</button>
+                <button type="button" onClick={() => { closeActions(); onOpenCreateClass(); }}><Plus size={16} aria-hidden="true" />Tạo lớp mới</button>
+                {onToggleCollapse && <button type="button" onClick={() => { closeActions(); onToggleCollapse(); }}><ChevronUp size={16} aria-hidden="true" />Thu gọn thanh công cụ</button>}
+              </div>
+            </details>
 
             <div className={styles.accountMenuWrap}>
               <AccountMenu
@@ -152,17 +124,6 @@ export function TeacherHeader({
               />
             </div>
 
-            {onToggleCollapse && (
-              <button
-                type="button"
-                className={styles.collapseHeaderBtn}
-                onClick={onToggleCollapse}
-                title="Thu gọn thanh Header để mở rộng tối đa không gian 3D"
-              >
-                <ChevronUp size={15} aria-hidden="true" />
-                <span>Thu gọn</span>
-              </button>
-            )}
           </div>
         </div>
       </div>

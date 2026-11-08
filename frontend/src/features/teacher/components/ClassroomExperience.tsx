@@ -19,6 +19,7 @@ interface Props {
   preview: boolean;
   onPreview: (preview: boolean) => void;
   view: "3d" | "list";
+  showViewSwitcher?: boolean;
   onView: (view: "3d" | "list") => void;
   query: string;
   onQuery: (query: string) => void;
@@ -40,6 +41,7 @@ export function ClassroomExperience({
   preview,
   onPreview,
   view,
+  showViewSwitcher = true,
   onView,
   query,
   onQuery,
@@ -68,7 +70,7 @@ export function ClassroomExperience({
           classroomName={preview ? "Lớp Mình · Minh họa" : selectedClass?.name ?? "Lớp Mình"}
           isDemo={preview}
           onToggleDemo={onPreview}
-          onSwitchTo2D={() => onView("list")}
+          onSwitchTo2D={showViewSwitcher ? () => onView("list") : undefined}
           onViewStudentWorkspace={preview ? undefined : onViewStudentWorkspace}
           currentStation={currentStation}
           stationPhase={stationPhase}
@@ -94,7 +96,7 @@ export function ClassroomExperience({
             Minh họa 10 bạn
           </button>
         </div>
-        <div className={styles.viewSwitcher} role="group" aria-label="Chế độ hiển thị lớp học">
+        {showViewSwitcher && <div className={styles.viewSwitcher} role="group" aria-label="Chế độ hiển thị lớp học">
           <button type="button" className={styles.viewButton} aria-pressed={view === "3d"} onClick={() => onView("3d")}>
             <Box size={15} aria-hidden="true" />
             Lớp học 3D
@@ -108,7 +110,7 @@ export function ClassroomExperience({
             <List size={15} aria-hidden="true" />
             Danh sách
           </button>
-        </div>
+        </div>}
       </div>
       {preview && (
         <p className={styles.demoNotice}>

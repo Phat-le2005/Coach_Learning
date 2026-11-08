@@ -5,6 +5,54 @@ import fs from "node:fs/promises";
 
 test.skip(process.env.CLASSROOM_E2E !== "1", "Run with playwright.classroom.config.ts against the isolated classroom server.");
 
+test("[live] [ui-layout] task navigation and management menu remain available in 3D", async ({ page }) => {
+  const nav = page.getByRole("navigation", { name: "Các phân hệ quản lý" });
+  await expect(nav).toBeVisible();
+  await expect(nav.getByRole("button")).toHaveCount(5);
+  const menu = page.getByLabel("Thao tác quản lý khác", { exact: true });
+  await menu.click();
+  await expect(page.getByRole("button", { name: "Tạo lớp mới", exact: true })).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("button", { name: "Tạo lớp mới", exact: true })).not.toBeVisible();
+  await expect(menu).toBeFocused();
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(page.locator('[data-scene-state="ready"]')).toHaveAttribute("data-scene-motion", "off");
+});
+
+test("[live] [ui-layout] mobile submissions fit the page and sticky navigation stays readable", async ({ page }, testInfo) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.getByRole("button", { name: "Danh sách", exact: true }).click();
+  const nav = page.getByRole("navigation", { name: "Các phân hệ quản lý" });
+  await nav.getByRole("button", { name: "Bài giao & Chấm bài", exact: true }).click();
+  const roster = page.getByRole("region", { name: "Danh sách bài nộp của học sinh" });
+  await expect(roster).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(390);
+  const review = page.getByRole("button", { name: "Xem & Duyệt bài", exact: true }).first();
+  await expect(review).toBeVisible();
+  const action = (await review.boundingBox())!;
+  expect(action.x).toBeGreaterThanOrEqual(0);
+  expect(action.x + action.width).toBeLessThanOrEqual(390);
+  await page.evaluate(() => window.scrollTo(0, 600));
+  const header = (await page.locator("header").boundingBox())!;
+  const tabs = (await nav.boundingBox())!;
+  expect(header.height).toBeLessThan(130);
+  expect(tabs.y).toBeGreaterThanOrEqual(header.y + header.height);
+  await expect(nav.getByRole("button", { name: "Bài giao & Chấm bài", exact: true })).toBeInViewport();
+  await page.screenshot({ path: testInfo.outputPath("teacher-submissions-mobile.png"), animations: "disabled" });
+});
+
+test("[live] [ui-layout] mobile room controls do not cover the label and task tabs open the existing room", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  const badge = (await page.locator('[class*="floatingStationBadge"]').boundingBox())!;
+  const controls = (await page.locator('[class*="rosterDrawerWrap"]').boundingBox())!;
+  expect(badge.y + badge.height).toBeLessThanOrEqual(controls.y);
+  await page.getByRole("navigation", { name: "Các phân hệ quản lý" }).getByRole("button", { name: "Kho học liệu & Đề thi", exact: true }).click();
+  await expect(page.getByRole("region", { name: /Khung thông tin nổi/ })).toBeVisible({ timeout: 30_000 });
+  await expect(page.getByRole("button", { name: "Xem phòng 3D", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Về lớp học", exact: true }).last().click();
+  await expect(page.locator('[data-scene-state="ready"]')).toHaveAttribute("data-station", "classes");
+});
+
 const classId = "00000000-0000-4000-8000-000000000001";
 const otherClassId = "00000000-0000-4000-8000-000000000002";
 const assignmentId = "00000000-0000-4000-8000-000000000003";
