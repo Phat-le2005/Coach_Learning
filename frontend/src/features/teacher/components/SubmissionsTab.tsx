@@ -78,12 +78,12 @@ export function SubmissionsTab({
           <div>
             <div className={styles.badgeCluster}>
               <h3 className={styles.sectionHeading}>
-                Bài giao &amp; Tiến độ nộp bài · {selectedClass.name}
+                Bài giao &amp; Chấm bài
               </h3>
               <span className={styles.studentTotalPill}>{assignments.length} đợt giao</span>
             </div>
             <p className={styles.sectionSubheading}>
-              Chọn bài tập bên dưới để kiểm tra danh sách học sinh đã nộp, trạng thái và điểm số
+              {selectedClass.name} · Chọn bài giao để xem bài nộp và duyệt điểm.
             </p>
           </div>
         </div>
@@ -119,11 +119,11 @@ export function SubmissionsTab({
                       role="button"
                       tabIndex={0}
                       onKeyDown={(e) => {
-                        if (e.key === "Enter" || e.key === " ") onSelectAssignment(item.id);
+                        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onSelectAssignment(item.id); }
                       }}
                     >
                       <div className={styles.assignmentCardTop}>
-                        <span className={styles.assignmentStatusPill}>{item.status}</span>
+                        <span className={styles.assignmentStatusPill}>{({ DRAFT: "Bản nháp", PUBLISHED: "Đang giao", CLOSED: "Đã đóng", SUBMITTED: "Đã nộp", GRADED: "Đã chấm" } as Record<string, string>)[item.status] ?? item.status}</span>
                         {item.delivery_mode && (
                           <span
                             className={
@@ -192,7 +192,7 @@ export function SubmissionsTab({
                       <p className={styles.emptyDesc}>{focusedStudent ? "Chưa có bài làm của học sinh này trong bài tập đã chọn." : "Chưa có học sinh nào nộp bài tập này."}</p>
                     </div>
                   ) : (
-                    <div className={styles.tableWrap}>
+                    <div className={`${styles.tableWrap} ${styles.mobileRoster}`} role="region" aria-label="Danh sách bài nộp của học sinh" tabIndex={0}>
                       <table className={styles.dataTable}>
                         <thead>
                           <tr>
@@ -274,7 +274,7 @@ export function SubmissionsTab({
         <div className={styles.pedagogicalNotice}>
           <HelpCircle size={16} aria-hidden="true" />
           <span>
-            Hệ thống chấm điểm của EduMS bảo toàn 100% dữ liệu thực từ giáo viên và bộ quy tắc toán học, không suy diễn điểm ảo khi học sinh chưa nộp bài.
+            Điểm AI là gợi ý sơ bộ. Mở bài làm để đối chiếu và xác nhận điểm của học sinh.
           </span>
         </div>
       </div>

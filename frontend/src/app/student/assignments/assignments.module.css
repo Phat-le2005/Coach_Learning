@@ -8,25 +8,30 @@
 
 .canvas {
   flex: 1;
-  color: #1E293B;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: var(--ink, #1E293B);
+  font-family: inherit;
   display: flex;
   flex-direction: column;
 }
 
+.canvas :is(.assignmentCard, .questionCardMain, .workspaceTopBar, .emptyState) { background: var(--surface, #fff); border-color: var(--line, #dfe8dd); color: var(--ink, #173e31); box-shadow: none; }
+.canvas :is(.cardTitle, .questionIndexTitle, .sectionSubtitle) { color: var(--ink, #173e31); }
+.canvas :is(.cardDescription, .cardMetaRow) { color: var(--muted, #586d60); }
+.canvas .filterTabBtn { background: var(--surface, #fff); border-color: var(--line, #dfe8dd); color: var(--muted, #586d60); min-height: 44px; }
+.canvas .filterTabBtnActive { background: #176a53; border-color: #176a53; color: #fff; }
+
 .mainContainer {
-  max-width: 1120px;
+  max-width: 1320px;
   margin: 0 auto;
   width: 100%;
-  padding: 1.5rem 1.5rem 2.5rem;
+  padding: 0 0 2.5rem;
 }
 
 .headerBanner {
-  background: white;
-  border-radius: 1.25rem;
-  padding: 1.75rem 2rem;
-  border: 1px solid #E2E8F0;
-  box-shadow: 0 4px 20px -2px rgba(16, 185, 129, 0.08);
+  background: var(--surface, white);
+  border-radius: 16px;
+  padding: 28px;
+  border: 1px solid var(--line, #dfe8dd);
   margin-bottom: 2rem;
   display: flex;
   justify-content: space-between;
@@ -38,7 +43,7 @@
 .headerTitle {
   font-size: 1.625rem;
   font-weight: 700;
-  color: #0F172A;
+  color: var(--ink, #173e31);
   margin: 0 0 0.35rem;
   display: flex;
   align-items: center;
@@ -47,7 +52,7 @@
 
 .headerSubtitle {
   font-size: 0.95rem;
-  color: #64748B;
+  color: var(--muted, #586d60);
   margin: 0;
 }
 

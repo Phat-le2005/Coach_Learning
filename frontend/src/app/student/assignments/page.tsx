@@ -1,15 +1,12 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
-import { AppFooter } from "@/components/app-shell/AppFooter";
 import { SessionHeartbeat } from "@/components/auth/SessionHeartbeat";
-import { StudentBottomNav } from "@/features/student-home/components/StudentBottomNav";
-import { StudentTopNav } from "@/features/student-home/components/StudentTopNav";
+import { StudentShell } from "@/features/student-home/components/StudentShell";
 import { requirePageRole } from "@/lib/auth/page-session";
 import { readAccessToken } from "@/lib/auth/server";
 import { getBackendBaseUrl } from "@/lib/api/client";
 import { AssignmentsListClient } from "./AssignmentsListClient";
-import styles from "./assignments.module.css";
 
 export const metadata: Metadata = {
   title: "Bài tập từ lớp · EduMS",
@@ -42,19 +39,12 @@ export default async function StudentAssignmentsPage() {
   }
 
   return (
-    <div className={styles.pageShell}>
+    <StudentShell displayName={session.fullName} email={session.email} route="/student/assignments">
       <SessionHeartbeat />
-      <StudentTopNav
-        displayName={session.fullName}
-        email={session.email}
-        currentRoute="/student/assignments"
-      />
       <AssignmentsListClient
         initialAssignments={assignments}
         studentName={session.fullName || session.email.split("@")[0]}
       />
-      <AppFooter variant="student" compact />
-      <StudentBottomNav currentRoute="/student/assignments" />
-    </div>
+    </StudentShell>
   );
 }

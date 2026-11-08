@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef, useCallback, useMemo } from "react"
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Sparkles, Smartphone } from "lucide-react";
+import { Sparkles, Smartphone, PenLine, ArrowLeft } from "lucide-react";
 import { ApiResponseError, ApiNetworkError } from "@/lib/api/client";
 import { getCsrfToken } from "@/lib/auth/browser";
 import { createBrowserMathApiClient } from "@/lib/api/browser-math";
@@ -30,6 +30,7 @@ import { WorkspaceToolbar } from "./components/WorkspaceToolbar";
 import { PaperUploadPanel } from "./components/PaperUploadPanel";
 import { PageNavigator } from "./components/PageNavigator";
 import { ProblemPane } from "./components/ProblemPane";
+import { ClassroomNavigation } from "./components/ClassroomNavigation";
 import { MathCanvas } from "./components/MathCanvas";
 import { SyncStatusBadge } from "./components/SyncStatusBadge";
 import { PageOcrV2ReviewModal } from "./components/PageOcrV2ReviewModal";
@@ -90,6 +91,9 @@ export function MathWorkspace({
   // Layout & View
   const [isProblemPaneCollapsed, setIsProblemPaneCollapsed] = useState(initialWritingMode);
   const [writingMode, setWritingMode] = useState(initialWritingMode);
+  const [leavingWorkspace, setLeavingWorkspace] = useState(false);
+  const [navigationError, setNavigationError] = useState<string | null>(null);
+  const leavingRef = useRef(false);
   const [liveEnabled, setLiveEnabled] = useState(false);
   const [pairingOpen, setPairingOpen] = useState(false);
   const [liveStarting, setLiveStarting] = useState(false);
@@ -1594,6 +1598,33 @@ export function MathWorkspace({
       currentHasSteps
     );
   }, [classroomNav?.questions, attemptId, attempt?.status, currentHasSteps]);
+  const handleBackToAttempts = async () => {
+    if (leavingRef.current || canvasDrawing || liveStarting || !draftRecoveryReady) return;
+    leavingRef.current = true; setLeavingWorkspace(true); setNavigationError(null);
+    const snapshots = new Map(latestStrokesRef.current);
+    try {
+      if (pendingBatch || batchJournalLoadError || batchResuming || pageOcrReview || pendingDeleteRef.current) {
+        throw new Error("Hãy hoàn tất thao tác lưu bước hoặc đóng bản chép trước khi quay lại.");
+      }
+      if (saveTimeoutRef.current) { clearTimeout(saveTimeoutRef.current); saveTimeoutRef.current = null; }
+      await saveQueueRef.current;
+      if (liveEnabledRef.current) {
+        if (!await liveRef.current.flush()) throw new Error("Nét viết chưa đồng bộ xong. Giữ trang này mở và thử lại khi có mạng.");
+      } else {
+        for (const [index, page] of pagesMap) {
+          if (page.isDirty && !await flushSavePage(index, snapshots.get(index) ?? page.strokes)) {
+            throw new Error("Chưa lưu được nét viết. Trang này được giữ mở để em thử lưu lại.");
+          }
+        }
+      }
+      if ((!liveEnabledRef.current && [...snapshots].some(([index, strokes]) => latestStrokesRef.current.get(index) !== strokes))
+        || (await mathInkStorage.listDirtyPages(attemptId)).length) {
+        throw new Error("Còn nét viết mới chưa đồng bộ. Hãy thử quay lại sau khi lưu xong.");
+      }
+      router.push(`/student/attempts?tab=${classroomNav ? "classroom" : "practice"}`);
+    } catch (error) { setNavigationError(error instanceof Error ? error.message : "Chưa thể quay lại. Nét viết vẫn được giữ."); }
+    finally { leavingRef.current = false; setLeavingWorkspace(false); }
+  };
   const toggleWritingMode = () => {
     if (canvasDrawing) return;
     if (writingMode) {
@@ -1608,86 +1639,16 @@ export function MathWorkspace({
 
   return (
     <div className={`${styles.workspaceContainer} ${writingMode ? styles.mobileWriting : ""}`}>
-      {/* Classroom Assignment Top Bar */}
-      {classroomNav && (
-        <div className={styles.classroomBar} role="navigation" aria-label="Điều hướng bài tập lớp">
-          <div className={styles.classroomLeft}>
-            <Link href="/student/attempts?tab=classroom" className={styles.classroomBackLink}>
-              ← Bài tập lớp
-            </Link>
-            <span
-              className={`${styles.classroomModeBadge} ${
-                classroomNav.deliveryMode === "EXAM"
-                  ? styles.classroomModeBadgeExam
-                  : styles.classroomModeBadgePractice
-              }`}
-            >
-              {classroomNav.deliveryMode === "EXAM" ? "Kiểm tra" : "Luyện tập"}
-            </span>
-            <span className={styles.classroomTitle} title={classroomNav.title}>
-              {classroomNav.title}
-            </span>
-          </div>
+      {classroomNav ? <ClassroomNavigation
+        nav={classroomNav} attemptId={attemptId} attempt={attempt} switching={switchingQuestion}
+        examMode={isClassroomExam} examSubmitted={examSubmitted}
+        backDisabled={leavingWorkspace || canvasDrawing || liveStarting || !draftRecoveryReady}
+        onBack={() => void handleBackToAttempts()}
+        onNavigate={index => void handleExamSwitchQuestion(index)}
+        onSubmitExam={() => { setExamSubmitError(null); setExamSubmitOpen(true); }}
+      /> : null}
 
-          <div className={styles.classroomCenter}>
-            {classroomNav.questions.map((q) => {
-              const isCurrent = q.isCurrent;
-              const isCompleted =
-                (q.attemptId === attemptId && (attempt?.status === "SUBMITTED" || attempt?.status === "EVALUATED" || (attempt?.steps?.length ?? 0) > 0)) ||
-                (q.status === "SUBMITTED" || q.status === "EVALUATED" || (q.stepCount ?? 0) > 0) ||
-                Boolean(q.hasAnswer || (q.studentAnswer && q.studentAnswer.trim().length > 0));
-              let pillClass = styles.qNavPill;
-              if (isCurrent) pillClass += ` ${styles.qNavPillActive}`;
-              else if (isCompleted) pillClass += ` ${styles.qNavPillCompleted}`;
-
-              return (
-                <button
-                  key={q.index}
-                  type="button"
-                  className={pillClass}
-                  onClick={() => void handleExamSwitchQuestion(q.index)}
-                  disabled={switchingQuestion}
-                  title={`Chuyển sang Câu ${q.index + 1}`}
-                >
-                  {q.index + 1}
-                </button>
-              );
-            })}
-          </div>
-
-          <div className={styles.classroomRight}>
-            <button
-              type="button"
-              className={styles.navStepBtn}
-              disabled={classroomNav.currentIndex === 0 || switchingQuestion}
-              onClick={() => void handleExamSwitchQuestion(classroomNav.currentIndex - 1)}
-            >
-              ← Câu trước
-            </button>
-            <button
-              type="button"
-              className={styles.navStepBtn}
-              disabled={
-                classroomNav.currentIndex >= classroomNav.totalQuestions - 1 || switchingQuestion
-              }
-              onClick={() => void handleExamSwitchQuestion(classroomNav.currentIndex + 1)}
-            >
-              {switchingQuestion ? "Đang chuyển..." : "Câu tiếp theo →"}
-            </button>
-            {isClassroomExam && !examSubmitted ? (
-              <button
-                type="button"
-                className={styles.navStepBtnPrimary}
-                onClick={() => { setExamSubmitError(null); setExamSubmitOpen(true); }}
-              >
-                Nộp bài kiểm tra
-              </button>
-            ) : isClassroomExam ? (
-              <span className={styles.examSubmittedLabel}>Đã nộp toàn bài</span>
-            ) : null}
-          </div>
-        </div>
-      )}
+      {navigationError ? <div className={styles.ocrErrorBanner} role="alert">{navigationError}</div> : null}
 
       {isClassroomExam && examSubmitted ? (
         <div className={styles.examStatusBanner} role="status">
@@ -1703,6 +1664,7 @@ export function MathWorkspace({
       {/* Top Header Bar */}
       <header className={styles.topHeader}>
         <div className={styles.headerLeft}>
+          {!classroomNav ? <button type="button" className={styles.workspaceBackButton} aria-label="Quay lại danh sách bài tập" title="Quay lại danh sách bài tập" disabled={leavingWorkspace || canvasDrawing || liveStarting || !draftRecoveryReady} onClick={() => void handleBackToAttempts()}><ArrowLeft size={18} aria-hidden="true" /><span>{leavingWorkspace ? "Đang lưu…" : "Quay lại"}</span></button> : null}
           <h1 className={styles.headerTitle}>Không gian giải bài Toán</h1>
           <button
             type="button"
@@ -1710,12 +1672,13 @@ export function MathWorkspace({
             disabled={liveStarting || canvasDrawing || !draftRecoveryReady}
             onClick={() => void startLive()}
             title="Quét mã QR để kết nối điện thoại hoặc iPad làm bảng viết"
+            aria-label={liveStarting ? "Đang kết nối…" : liveEnabled ? "Thiết bị viết (Đang kết nối)" : "Kết nối thiết bị viết"}
           >
             <Smartphone size={15} />
-            {liveStarting ? "Đang kết nối…" : liveEnabled ? "Thiết bị viết (Đang kết nối)" : "Kết nối thiết bị viết"}
+            <span className={styles.headerActionLabel}>{liveStarting ? "Đang kết nối…" : liveEnabled ? "Thiết bị viết (Đang kết nối)" : "Kết nối thiết bị viết"}</span>
           </button>
-          <button type="button" className={styles.buttonSecondary} disabled={canvasDrawing} onClick={toggleWritingMode}>
-            {writingMode ? "Về MathWorkspace" : "Chế độ viết cảm ứng"}
+          <button type="button" className={styles.buttonSecondary} disabled={canvasDrawing} onClick={toggleWritingMode} aria-label={writingMode ? "Về MathWorkspace" : "Chế độ viết cảm ứng"} title={writingMode ? "Về MathWorkspace" : "Chế độ viết cảm ứng"}>
+            <PenLine size={16} aria-hidden="true" /><span className={styles.headerActionLabel}>{writingMode ? "Về MathWorkspace" : "Chế độ viết cảm ứng"}</span>
           </button>
           {liveEnabled ? <span className={styles.liveConnectionStatus} role="status" data-live-status={live.status} data-pending={live.pendingCount}>
             <span/>{live.pendingCount ? "Đang lưu nét viết…" : live.drafts.length ? "Thiết bị khác đang viết…" : live.status === "connected" ? live.devices > 1 ? "Đã kết nối thiết bị viết" : "Sẵn sàng kết nối thiết bị" : live.status === "offline" ? "Mất mạng · Đang giữ nét viết" : "Đang kết nối lại…"}

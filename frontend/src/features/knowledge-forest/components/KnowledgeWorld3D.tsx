@@ -567,6 +567,7 @@ export function KnowledgeWorld3D({
 
   return (
     <div ref={containerRef} className={styles.worldContainer}>
+      <h1 className={styles.worldHeading}>Vũ trụ tri thức</h1>
       {/* Three.js Canvas */}
       <canvas ref={canvasRef} className={styles.canvas3D} />
 

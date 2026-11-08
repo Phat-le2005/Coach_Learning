@@ -1046,7 +1046,7 @@ export function TheoryBilateralMindmap({
         }}
       >
         <span>
-          💡 <strong>Kéo chuột</strong> để lướt sơ đồ • <strong>Cuộn chuột</strong> để zoom theo con
+          <strong>Kéo chuột</strong> để lướt sơ đồ • <strong>Cuộn chuột</strong> để zoom theo con
           trỏ • <strong>Bấm nút + / −</strong> mở nhánh • <strong>Bấm vào thẻ bất kỳ</strong> để xem
           công thức &amp; các bước giải!
         </span>

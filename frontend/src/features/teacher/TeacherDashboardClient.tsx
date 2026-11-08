@@ -1,9 +1,8 @@
 "use client";
 
-import { AppFooter } from "@/components/app-shell/AppFooter";
 import { TeacherTheoryClient } from "@/features/theory-maps/TeacherTheoryClient";
-import { AlertCircle, BarChart3, BookOpen, ClipboardList, Network, RefreshCw, Users } from "lucide-react";
-import { useEffect, useState } from "react";
+import { AlertCircle, BarChart3, BookOpen, ClipboardList, Network, RefreshCw, Users, Box, List } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import {
   teacherApi,
   TeacherApiError,
@@ -48,6 +47,14 @@ export function TeacherDashboardClient({
   const [classroomQuery, setClassroomQuery] = useState("");
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [headerCollapsed, setHeaderCollapsed] = useState(false);
+  const navigation = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const bar = navigation.current;
+    const active = bar?.querySelector<HTMLElement>('[aria-current="page"]');
+    if (!bar || !active) return;
+    const list = bar.getBoundingClientRect(), item = active.getBoundingClientRect();
+    if (item.left < list.left || item.right > list.right) bar.scrollLeft += item.left - list.left - (list.width - item.width) / 2;
+  }, [tab]);
 
   useEffect(() => {
     if (initialTab) {
@@ -383,7 +390,7 @@ export function TeacherDashboardClient({
       data-3d-fullscreen={embedStationIn3D}
       data-header-collapsed={headerCollapsed}
     >
-      {/* 1. Header */}
+      <div className={styles.teacherChrome}>
       <TeacherHeader
         teacherName={teacherName}
         teacherEmail={teacherEmail}
@@ -397,6 +404,75 @@ export function TeacherDashboardClient({
         isCollapsed={headerCollapsed}
         onToggleCollapse={() => setHeaderCollapsed((v) => !v)}
       />
+          <div className={styles.tabsStickyWrap}>
+            <nav ref={navigation} className={styles.tabsBar} aria-label="Các phân hệ quản lý">
+              <button
+                type="button"
+                className={`${styles.tabItem} ${tab === "classes" ? styles.tabItemActive : ""}`}
+                aria-label="Lớp học &amp; Học sinh"
+                onClick={() => handleSelectTab("classes")}
+                aria-current={tab === "classes" ? "page" : undefined}
+              >
+                <Users size={17} aria-hidden="true" />
+                <span>Lớp học</span>
+                <span className={styles.tabCounterBadge}>{students.length}</span>
+              </button>
+
+              <button
+                type="button"
+                className={`${styles.tabItem} ${tab === "materials" ? styles.tabItemActive : ""}`}
+                aria-label="Kho học liệu &amp; Đề thi"
+                onClick={() => handleSelectTab("materials")}
+                aria-current={tab === "materials" ? "page" : undefined}
+              >
+                <BookOpen size={17} aria-hidden="true" />
+                <span>Học liệu</span>
+                <span className={styles.tabCounterBadge}>{materials.length}</span>
+              </button>
+
+              <button
+                type="button"
+                className={`${styles.tabItem} ${tab === "theory" ? styles.tabItemActive : ""}`}
+                aria-label="Sơ đồ tư duy &amp; Lý thuyết"
+                onClick={() => handleSelectTab("theory")}
+                aria-current={tab === "theory" ? "page" : undefined}
+              >
+                <Network size={17} aria-hidden="true" />
+                <span>Lý thuyết</span>
+              </button>
+
+              <button
+                type="button"
+                className={`${styles.tabItem} ${tab === "submissions" ? styles.tabItemActive : ""}`}
+                aria-label="Bài giao &amp; Chấm bài"
+                onClick={() => handleSelectTab("submissions")}
+                aria-current={tab === "submissions" ? "page" : undefined}
+              >
+                <ClipboardList size={17} aria-hidden="true" />
+                <span>Chấm bài</span>
+                <span className={styles.tabCounterBadge}>{assignments.length}</span>
+              </button>
+
+              <button
+                type="button"
+                className={`${styles.tabItem} ${tab === "analytics" ? styles.tabItemActive : ""}`}
+                aria-label="Năng lực &amp; Báo cáo AI"
+                onClick={() => handleSelectTab("analytics")}
+                aria-current={tab === "analytics" ? "page" : undefined}
+              >
+                <BarChart3 size={17} aria-hidden="true" />
+                <span>Báo cáo</span>
+                {analytics && analytics.students_needing_attention.length > 0 && (
+                  <span className={styles.tabAlertBadge}>{analytics.students_needing_attention.length}</span>
+                )}
+              </button>
+            </nav>
+            <div className={styles.teacherViewSwitch} role="group" aria-label="Chế độ hiển thị lớp học">
+              <button type="button" aria-label="Lớp học 3D" aria-pressed={viewMode3D === "3d"} onClick={() => { setViewMode3D("3d"); setWorldViewMode("full"); }}><Box size={16} aria-hidden="true" /><span>3D</span></button>
+              <button type="button" aria-label="Danh sách" aria-pressed={viewMode3D === "list"} onClick={() => setViewMode3D("list")}><List size={16} aria-hidden="true" /><span>Danh sách</span></button>
+            </div>
+          </div>
+      </div>
 
       <main
         className={`${styles.mainContent} ${
@@ -423,7 +499,7 @@ export function TeacherDashboardClient({
         )}
 
         {/* 2. Persistent 3D Cozy Campus Simulation World (Kept alive across all tab switches) */}
-        {!isPdfReview && <div className={styles.persistentWorldWrap} data-view-mode={worldViewMode}>
+        {!isPdfReview && (viewMode3D === "3d" || tab === "classes") && <div className={styles.persistentWorldWrap} data-view-mode={worldViewMode}>
           <ClassroomExperience
             students={students}
             selectedClass={selectedClass}
@@ -432,6 +508,7 @@ export function TeacherDashboardClient({
             preview={previewDemo}
             onPreview={setPreviewDemo}
             view={viewMode3D}
+            showViewSwitcher={false}
             onView={setViewMode3D}
             query={classroomQuery}
             onQuery={setClassroomQuery}
@@ -443,69 +520,6 @@ export function TeacherDashboardClient({
             stationWorkspace={embedStationIn3D ? activeStationWorkspace : null}
           />
         </div>}
-
-        {/* 3. Navigation Tabs (shown when in 2D list or compact mode) */}
-        {!embedStationIn3D && (
-          <div className={styles.tabsStickyWrap}>
-            <nav className={styles.tabsBar} aria-label="Các phân hệ quản lý">
-              <button
-                type="button"
-                className={`${styles.tabItem} ${tab === "classes" ? styles.tabItemActive : ""}`}
-                onClick={() => handleSelectTab("classes")}
-                aria-current={tab === "classes" ? "page" : undefined}
-              >
-                <Users size={17} aria-hidden="true" />
-                <span>Lớp học &amp; Học sinh</span>
-                <span className={styles.tabCounterBadge}>{students.length}</span>
-              </button>
-
-              <button
-                type="button"
-                className={`${styles.tabItem} ${tab === "materials" ? styles.tabItemActive : ""}`}
-                onClick={() => handleSelectTab("materials")}
-                aria-current={tab === "materials" ? "page" : undefined}
-              >
-                <BookOpen size={17} aria-hidden="true" />
-                <span>Kho học liệu &amp; Đề thi</span>
-                <span className={styles.tabCounterBadge}>{materials.length}</span>
-              </button>
-
-              <button
-                type="button"
-                className={`${styles.tabItem} ${tab === "theory" ? styles.tabItemActive : ""}`}
-                onClick={() => handleSelectTab("theory")}
-                aria-current={tab === "theory" ? "page" : undefined}
-              >
-                <Network size={17} aria-hidden="true" />
-                <span>Sơ đồ tư duy &amp; Lý thuyết</span>
-              </button>
-
-              <button
-                type="button"
-                className={`${styles.tabItem} ${tab === "submissions" ? styles.tabItemActive : ""}`}
-                onClick={() => handleSelectTab("submissions")}
-                aria-current={tab === "submissions" ? "page" : undefined}
-              >
-                <ClipboardList size={17} aria-hidden="true" />
-                <span>Bài giao &amp; Chấm bài</span>
-                <span className={styles.tabCounterBadge}>{assignments.length}</span>
-              </button>
-
-              <button
-                type="button"
-                className={`${styles.tabItem} ${tab === "analytics" ? styles.tabItemActive : ""}`}
-                onClick={() => handleSelectTab("analytics")}
-                aria-current={tab === "analytics" ? "page" : undefined}
-              >
-                <BarChart3 size={17} aria-hidden="true" />
-                <span>Năng lực &amp; Báo cáo AI</span>
-                {analytics && analytics.students_needing_attention.length > 0 && (
-                  <span className={styles.tabAlertBadge}>{analytics.students_needing_attention.length}</span>
-                )}
-              </button>
-            </nav>
-          </div>
-        )}
 
         {/* 4. Class Roster or Fallback Work View (only when 3D is compact or 2D list mode is active) */}
         {!embedStationIn3D && (
@@ -530,8 +544,6 @@ export function TeacherDashboardClient({
           </div>
         )}
       </main>
-
-      <AppFooter variant="teacher" />
 
       {/* 5. Modals */}
       <CreateClassModal

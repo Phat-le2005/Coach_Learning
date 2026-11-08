@@ -21,7 +21,6 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { AccountMenu } from "@/components/auth/AccountMenu";
-import { AppFooter } from "@/components/app-shell/AppFooter";
 import styles from "@/features/teacher/TeacherDashboard.module.css";
 import {
   parentApi,
@@ -1108,7 +1107,6 @@ export function ParentDashboardClient({
         )}
       </main>
 
-      <AppFooter variant="default" />
     </div>
   );
 }

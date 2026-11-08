@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from "react";
 
-import { AppFooter } from "@/components/app-shell/AppFooter";
 import { KnowledgeDetailDrawer, type SelectedKnowledgeItem } from "./components/KnowledgeDetailDrawer";
 import { KnowledgeForestFilters } from "./components/KnowledgeForestFilters";
 import { KnowledgeForestHeader } from "./components/KnowledgeForestHeader";
@@ -123,38 +122,9 @@ export function KnowledgeForest({ data, initialSelectedId }: KnowledgeForestProp
       ) : (
         <>
           <KnowledgeForestHeader data={data} />
-          {/* Mode Switcher Banner in 2D Mode */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginBottom: "16px",
-              padding: "10px 16px",
-              background: "rgba(16, 46, 38, 0.04)",
-              borderRadius: "12px",
-              border: "1px solid rgba(16, 46, 38, 0.08)",
-            }}
-          >
-            <span style={{ fontSize: "13px", fontWeight: "600", color: "#102e26" }}>
-              Đang ở chế độ xem: <strong>Quần đảo Tri thức 2D</strong>
-            </span>
-            <button
-              onClick={() => setViewMode("3D")}
-              style={{
-                background: "#23a67a",
-                color: "#ffffff",
-                border: "none",
-                borderRadius: "8px",
-                padding: "6px 14px",
-                fontSize: "12px",
-                fontWeight: "700",
-                cursor: "pointer",
-                boxShadow: "0 2px 8px rgba(35, 166, 122, 0.3)",
-              }}
-            >
-              Chuyển sang Thế giới 3D ✦
-            </button>
+          <div className={styles.modeStrip}>
+            <p>Bản đồ 2D <span>Chọn một dạng bài để xem chi tiết và luyện tập.</span></p>
+            <button type="button" onClick={() => setViewMode("3D")}>Khám phá cây 3D</button>
           </div>
 
           <KnowledgeForestFilters
@@ -184,7 +154,7 @@ export function KnowledgeForest({ data, initialSelectedId }: KnowledgeForestProp
             subjectId={data.subject.id}
             onClose={handleCloseDetail}
           />
-          <AppFooter variant="student" compact />
+
         </>
       )}
     </main>

@@ -1563,6 +1563,22 @@
   transform: translateY(-8px);
 }
 
+/* Keep scene controls separate from the room label on touch screens. */
+.badgeIcon { display:flex; align-items:center; }
+.badgeSub { letter-spacing:0; font-size:11px; font-weight:400; }
+.topRightHudRow :is(.hudMiniBtn,.rosterToggleBtn) { min-height:40px; border-width:1px; border-radius:10px; box-shadow:0 3px 12px #193e3110; font-weight:500; }
+.floatingStationBadge { box-shadow:0 3px 12px #193e3110; }
+@media(max-width:640px) {
+  .floatingStationBadge { top:10px; left:12px; right:12px; max-width:none; padding:8px 10px; border-radius:12px; min-height:44px; }
+  .badgeText { min-width:0; }
+  .badgeTitle { font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .rosterDrawerWrap { top:74px; right:12px; left:12px; }
+  .topRightHudRow { gap:6px; width:100%; justify-content:flex-start; }
+  .topRightHudRow :is(.hudMiniBtn,.rosterToggleBtn) { min-height:44px; padding:6px 8px; font-size:11px; }
+  .rosterDrawer { max-width:100%; }
+  .fullBleed3DSection .stage { min-height:0; }
+}
+
 /* Wide, Comprehensive Popover Card Centered in Remaining Viewport */
 .stationOverlayBackdrop {
   padding: 12px 22px;
@@ -1579,7 +1595,7 @@
 }
 
 .stationBookHeader {
-  padding: 10px 20px;
+  padding: 10px 16px;
   flex-shrink: 0;
 }
 
@@ -1588,4 +1604,12 @@
   min-height: 0;
   overflow-y: auto;
   padding: 14px 20px;
+}
+
+@media(max-width:640px) {
+  .stationOverlayBackdrop { padding:8px; }
+  .stationBookOverlay { width:100%; height:100%; max-height:100%; border-radius:14px; }
+  .stationBookHeader { padding:12px; gap:10px; }
+  .stationBookBody { padding:12px; }
+  .stationBookActions { gap:6px; }
 }

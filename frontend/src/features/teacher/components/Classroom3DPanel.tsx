@@ -24,6 +24,7 @@ import {
   Wifi,
   WifiOff,
   X,
+  School, ClipboardList, Network, BarChart3, FlaskConical, List, Users, Footprints, DoorOpen,
 } from "lucide-react";
 import type { ClassroomStudentInfo } from "../classroom-types";
 import { ACTIVITY_LABELS, assignmentProgress, classroomActivity, classroomPage, presenceLabel } from "../classroom-model";
@@ -60,8 +61,8 @@ export const STATIONS = [
     key: "classes",
     label: "Phòng Học Chính",
     stationTitle: "Phòng 1 · Lớp Học Chính",
-    icon: "🏫",
-    openIcon: "👀",
+    icon: <School size={18} aria-hidden="true" />,
+    openIcon: <School size={18} aria-hidden="true" />,
     desc: "Quan sát 10 bàn học sinh & tương tác cùng Mầm Xanh",
     actionHint: "Về phòng học chính",
     interactingText: "Đang quan sát Lớp Học Chính...",
@@ -70,8 +71,8 @@ export const STATIONS = [
     key: "submissions",
     label: "Phòng Chấm Bài",
     stationTitle: "Phòng 2 · Văn Phòng Chấm Bài",
-    icon: "📝",
-    openIcon: "📖",
+    icon: <ClipboardList size={18} aria-hidden="true" />,
+    openIcon: <BookOpen size={18} aria-hidden="true" />,
     desc: "Đi qua cửa sang Văn Phòng Giáo Viên, lật Sổ chấm bài 3D & mở toàn màn hình",
     actionHint: "Sang phòng chấm bài →",
     interactingText: "Đang lật mở Sổ Chấm Bài 3D tại Văn Phòng Giáo Viên...",
@@ -80,8 +81,8 @@ export const STATIONS = [
     key: "theory",
     label: "Studio Lý Thuyết",
     stationTitle: "Phòng 4 · Studio Sơ Đồ Lý Thuyết",
-    icon: "🧠",
-    openIcon: "✨",
+    icon: <Network size={18} aria-hidden="true" />,
+    openIcon: <Network size={18} aria-hidden="true" />,
     desc: "Đi sang Phòng Studio Lý Thuyết, bật Đại Bảng Sơ Đồ Tư Duy 3D",
     actionHint: "← Sang phòng lý thuyết",
     interactingText: "Đang kích hoạt Đại Bảng Sơ Đồ Tư Duy 3D tại Studio...",
@@ -90,8 +91,8 @@ export const STATIONS = [
     key: "materials",
     label: "Thư Viện Học Liệu",
     stationTitle: "Phòng 3 · Thư Viện Học Liệu & Đề Thi",
-    icon: "📚",
-    openIcon: "📂",
+    icon: <BookOpen size={18} aria-hidden="true" />,
+    openIcon: <BookOpen size={18} aria-hidden="true" />,
     desc: "Đi sang Thư Viện Học Liệu, mở Tủ Đề Thi & Sổ Học Liệu 3D",
     actionHint: "Sang thư viện học liệu →",
     interactingText: "Đang kéo ngăn tủ & lật mở Sổ Đề Thi 3D tại Thư Viện...",
@@ -100,8 +101,8 @@ export const STATIONS = [
     key: "analytics",
     label: "Phòng Lab AI",
     stationTitle: "Phòng 5 · Phòng Lab Phân Tích AI",
-    icon: "🌱",
-    openIcon: "📊",
+    icon: <BarChart3 size={18} aria-hidden="true" />,
+    openIcon: <BarChart3 size={18} aria-hidden="true" />,
     desc: "Đi sang Phòng Lab Mầm Xanh AI, bật Đài Quan Sát Biểu Đồ Hologram 3D",
     actionHint: "← Sang phòng Lab AI",
     interactingText: "Đang kích hoạt Đài Quan Sát Biểu Đồ Năng Lực Hologram 3D...",
@@ -211,9 +212,7 @@ export function Classroom3DPanel({
   useEffect(() => {
     const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
     const update = () => {
-      // Only auto-lock reducedMotion on small mobile viewports where battery/reduced-motion is strict;
-      // on desktop, keep 3D character & book animations enabled by default unless user clicks Pause.
-      setReducedMotion(preference.matches && window.innerWidth <= 640);
+      setReducedMotion(preference.matches);
     };
     update();
     preference.addEventListener("change", update);
@@ -345,7 +344,7 @@ export function Classroom3DPanel({
       ? `${student.name.replace(/\s*\(Demo\s*\d+\)/i, "")} đang cần hỗ trợ. Thầy cô mở bài làm để xem nhé!`
       : isAtWorkStation
       ? `Thầy cô đang ở ${currentStationMeta.stationTitle} (${currentStationMeta.label}). Nhấp "Về giữa lớp 3D" khi muốn đi tuần lại nhé!`
-      : "Nhấp vào Sổ chấm bài, Tủ học liệu, Bảng lý thuyết hoặc bàn học sinh trong phòng 3D để giáo viên đi bộ lại tương tác nhé!");
+      : "Chọn một học sinh để xem tình hình học tập, hoặc mở Học liệu, Lý thuyết, Chấm bài ở thanh phía trên.");
 
   return (
     <section aria-label="Lớp học 3D" className={cozy.campus}>
@@ -411,15 +410,11 @@ export function Classroom3DPanel({
               aria-live="polite"
             >
               <span className={styles.badgeIcon} aria-hidden="true">
-                {activePhase === "walking" ? "🚶" : activePhase === "interacting" ? currentStationMeta.openIcon : currentStationMeta.icon}
+                {activePhase === "walking" ? <Footprints size={18} aria-hidden="true" /> : activePhase === "interacting" ? currentStationMeta.openIcon : currentStationMeta.icon}
               </span>
               <div className={styles.badgeText}>
                 <span className={styles.badgeSub}>
-                  {activePhase === "walking"
-                    ? "ĐANG ĐI TỚI MỞ CỬA PHÒNG"
-                    : activePhase === "interacting"
-                    ? "ĐANG MỞ HỌC CỤ 3D TRÊN BÀN"
-                    : "KHÔNG GIAN 3D · NHẤN CỬA TRÊN TƯỜNG ĐỂ ĐỔI PHÒNG"}
+                  {activePhase === "walking" ? "Đang chuyển phòng…" : activePhase === "interacting" ? "Đang mở nội dung…" : "Lớp học 3D"}
                 </span>
                 <span className={styles.badgeTitle}>{currentStationMeta.stationTitle}</span>
               </div>
@@ -441,7 +436,7 @@ export function Classroom3DPanel({
                   title="Đi bộ ra mở Cửa số 5 về Phòng Học Chính"
                 >
                   <ArrowLeft size={13} aria-hidden="true" />
-                  <span>🚪 Mở cửa về Lớp Học</span>
+                  <span>Về lớp học</span>
                 </button>
               )}
             </div>
@@ -470,7 +465,7 @@ export function Classroom3DPanel({
                     onClick={() => onToggleDemo(!isDemo)}
                     title="Bật/tắt chế độ minh họa 10 học sinh mẫu"
                   >
-                    <span>{isDemo ? "✨ Đang xem 10 HS mẫu" : "🧪 Minh họa 10 bạn"}</span>
+                    <FlaskConical size={14} aria-hidden="true" /><span>{isDemo ? "Đang xem lớp mẫu" : "Minh họa 10 bạn"}</span>
                   </button>
                 )}
                 {onSwitchTo2D && (
@@ -480,7 +475,7 @@ export function Classroom3DPanel({
                     onClick={onSwitchTo2D}
                     title="Chuyển sang chế độ danh sách 2D"
                   >
-                    <span>📋 Chế độ 2D</span>
+                    <List size={14} aria-hidden="true" /><span>Chế độ 2D</span>
                   </button>
                 )}
                 <button
@@ -490,7 +485,7 @@ export function Classroom3DPanel({
                   onClick={() => setRosterOpen((v) => !v)}
                   title={rosterOpen ? "Thu gọn danh sách học sinh" : "Mở danh sách học sinh"}
                 >
-                  <span>👥 DS Học sinh ({students.length})</span>
+                  <Users size={14} aria-hidden="true" /><span>Học sinh ({students.length})</span>
                   {rosterOpen ? <ChevronRight size={14} aria-hidden="true" /> : <ChevronLeft size={14} aria-hidden="true" />}
                 </button>
               </div>
@@ -618,7 +613,7 @@ export function Classroom3DPanel({
               (currentStation === "classes" && activePhase === "walking")) && (
               <div className={styles.choreographyBanner} role="status" aria-live="polite">
                 <div className={styles.choreographyIconWrap} aria-hidden="true">
-                  {activePhase === "walking" ? "🚪" : currentStationMeta.openIcon}
+                  {activePhase === "walking" ? <DoorOpen size={20} aria-hidden="true" /> : currentStationMeta.openIcon}
                 </div>
                 <div className={styles.choreographyMeta}>
                   <strong>
@@ -663,13 +658,7 @@ export function Classroom3DPanel({
                 >
                   <div className={styles.stationBookHeader}>
                     <div className={styles.stationBookTitleGroup}>
-                      <span className={styles.stationBookBadgeIcon} aria-hidden="true">
-                        {currentStationMeta.openIcon}
-                      </span>
                       <div>
-                        <span className={styles.stationBookEyebrow}>
-                          {currentStationMeta.stationTitle.toUpperCase()} · KHUNG NỔI 70% MÀN HÌNH
-                        </span>
                         <h4 className={styles.stationBookTitle}>{currentStationMeta.label}</h4>
                       </div>
                     </div>
@@ -679,10 +668,10 @@ export function Classroom3DPanel({
                         type="button"
                         className={styles.stationPeek3DBtn}
                         onClick={() => setDrawerPeeking3D(true)}
-                        title="Thu khung thông tin để nhìn toàn cảnh phòng 3D và bấm vào Cánh cửa"
+                        title="Thu nội dung để xem phòng 3D"
                       >
                         <Eye size={14} aria-hidden="true" />
-                        <span>Ẩn khung · Tương tác Phòng &amp; Cửa 3D</span>
+                        <span>Xem phòng 3D</span>
                       </button>
                       <button
                         type="button"
@@ -690,7 +679,7 @@ export function Classroom3DPanel({
                         onClick={() => onStationSelect?.("classes")}
                       >
                         <ArrowLeft size={14} aria-hidden="true" />
-                        <span>🚪 Mở cửa về Lớp Học Chính</span>
+                        <span>Về lớp học</span>
                       </button>
                     </div>
                   </div>

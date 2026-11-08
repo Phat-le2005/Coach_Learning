@@ -3,8 +3,8 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { AccountMenu } from "@/components/auth/AccountMenu";
 import { SessionHeartbeat } from "@/components/auth/SessionHeartbeat";
-import { AppFooter } from "@/components/app-shell/AppFooter";
 import { BrandMark } from "@/features/student-home/components/BrandMark";
+import { StudentShell } from "@/features/student-home/components/StudentShell";
 import { readSession } from "@/lib/auth/server";
 import styles from "./account.module.css";
 
@@ -16,6 +16,26 @@ export default async function AccountPage() {
   const session = await readSession();
   if (!session) redirect("/login?returnTo=%2Faccount");
 
+  const profile = (
+    <section className={styles.card} aria-labelledby="account-title">
+      <h1 id="account-title">Hồ sơ của tôi</h1>
+      <p className={styles.description}>Thông tin tài khoản đang đăng nhập. Bạn có thể quay lại không gian học tập bất cứ lúc nào.</p>
+      <dl className={styles.details}>
+        <div><dt>Họ và tên</dt><dd>{session.fullName}</dd></div>
+        <div><dt>Email</dt><dd>{session.email}</dd></div>
+        <div><dt>Vai trò</dt><dd>{roleLabel[session.role]}</dd></div>
+      </dl>
+      <Link className={styles.back} href={`/${session.role.toLowerCase()}`}>Quay về không gian của tôi</Link>
+    </section>
+  );
+
+  if (session.role === "STUDENT") return (
+    <StudentShell displayName={session.fullName} email={session.email} route="/account">
+      <SessionHeartbeat />
+      <main className={styles.studentProfile}>{profile}</main>
+    </StudentShell>
+  );
+
   return (
     <main className={styles.page}>
       <SessionHeartbeat />
@@ -24,19 +44,9 @@ export default async function AccountPage() {
           <BrandMark />
           <AccountMenu fullName={session.fullName} email={session.email} role={session.role} compact />
         </header>
-        <section className={styles.card} aria-labelledby="account-title">
-          <p className={styles.eyebrow}>EduMS · Tài khoản</p>
-          <h1 id="account-title">Hồ sơ của tôi</h1>
-          <p className={styles.description}>Thông tin lấy từ phiên đăng nhập đã được xác thực. Bạn có thể quay lại không gian học tập bất cứ lúc nào.</p>
-          <dl className={styles.details}>
-            <div><dt>Họ và tên</dt><dd>{session.fullName}</dd></div>
-            <div><dt>Email</dt><dd>{session.email}</dd></div>
-            <div><dt>Vai trò</dt><dd>{roleLabel[session.role]}</dd></div>
-          </dl>
-          <Link className={styles.back} href={`/${session.role.toLowerCase()}`}>Quay về không gian của tôi →</Link>
-        </section>
+        {profile}
       </div>
-      <AppFooter variant={session.role === "TEACHER" ? "teacher" : "student"} compact />
+
     </main>
   );
 }

@@ -3219,3 +3219,112 @@
   min-height: 270px;
   padding: 1.25rem;
 }
+
+/* Teacher workspace: one shared header and task navigation, in either view. */
+.teacherChrome { position:sticky; top:0; z-index:50; flex-shrink:0; background:#fbfdf9; border-bottom:1px solid #d5e1d7; }
+.teacherChrome .header { position:static; background:transparent; border:0; box-shadow:none; }
+.teacherHeaderInner { max-width:1240px; margin:0 auto; padding:8px 20px 4px; }
+.teacherHeaderRow { display:grid; grid-template-columns:minmax(180px,1fr) minmax(200px,300px) auto; align-items:center; gap:16px; }
+.teacherBrand { display:flex; align-items:center; gap:10px; color:#20543e; text-decoration:none; justify-self:start; }
+.teacherBrand > span { display:grid; gap:1px; }
+.teacherBrand strong { font-size:18px; line-height:1.2; }
+.teacherBrand h1 { margin:0; font-size:12px; font-weight:400; color:#52675d; }
+.teacherClassPicker, .teacherClassPicker .classSelectWrap { min-width:0; }
+.teacherClassPicker .classSelectorCard { padding:0 10px; min-height:42px; box-shadow:none; border-radius:10px; background:#fff; }
+.teacherClassPicker .classSelectorLabel { white-space:nowrap; font-size:12px; font-weight:400; }
+.teacherClassPicker .classSelectControl { width:100%; max-width:100%; min-width:0; font-size:13px; text-overflow:ellipsis; }
+.teacherHeaderActions { display:flex; align-items:center; justify-content:flex-end; gap:8px; }
+.teacherHeaderActions > .btnPrimary { min-height:42px; padding:8px 14px; border-radius:10px; font-size:13px; box-shadow:none; }
+.teacherMore { position:relative; }
+.teacherMore > summary { display:grid; place-items:center; width:42px; height:42px; border-radius:10px; color:#315c45; background:#eff5ee; cursor:pointer; list-style:none; }
+.teacherMore > summary::-webkit-details-marker { display:none; }
+.teacherMoreMenu { position:absolute; top:calc(100% + 8px); right:0; width:240px; display:grid; padding:6px; border:1px solid #d5e1d7; border-radius:12px; background:#fff; box-shadow:0 12px 30px #193e3124; z-index:5; }
+.teacherMoreMenu button { display:flex; align-items:center; gap:10px; min-height:44px; padding:8px 12px; font:inherit; font-size:13px; border:0; border-radius:8px; background:transparent; color:#315c45; text-align:left; cursor:pointer; }
+.teacherMoreMenu button:hover { background:#edf5ee; }
+.teacherMoreMenu button:disabled { opacity:.5; cursor:wait; }
+.teacherChrome .tabsStickyWrap { display:flex; align-items:center; gap:16px; position:static; max-width:1240px; margin:auto; padding:0 20px 6px; background:transparent; border:0; }
+.teacherChrome .tabsBar { flex:1; min-width:0; border:0; border-radius:0; padding:2px; background:transparent; box-shadow:none; gap:4px; }
+.teacherChrome .tabItem { min-height:38px; padding:6px 12px; border-radius:9px; font-size:13px; font-weight:500; flex-shrink:0; box-shadow:none; }
+.teacherChrome .tabItemActive { background:#e5f0e7; color:#175b3e; font-weight:650; }
+.teacherChrome .tabCounterBadge { background:#edf2ed; color:#52675d; font-size:11px; }
+.teacherChrome .tabAlertBadge { background:#fff0cf; color:#755315; }
+.teacherViewSwitch { display:flex; align-items:center; padding:3px; border-radius:10px; background:#edf3ed; flex-shrink:0; }
+.teacherViewSwitch button { display:flex; align-items:center; justify-content:center; gap:6px; min-height:36px; padding:6px 10px; border:0; border-radius:7px; font:inherit; font-size:12px; color:#496652; background:transparent; cursor:pointer; }
+.teacherViewSwitch button[aria-pressed="true"] { background:#fff; color:#20543e; box-shadow:0 2px 5px #193e3110; }
+.teacherChrome .collapsedHeaderBar { border:0; box-shadow:none; background:transparent; padding:4px 16px; backdrop-filter:none; }
+.teacherChrome .expandHeaderPill { min-height:36px; box-shadow:none; border:0; background:transparent; }
+.teacherChrome .expandHeaderPill strong { margin-left:8px; }
+.dashboard[data-3d-fullscreen="true"] { height:100dvh; max-height:100dvh; }
+.dashboard .mainContent { margin-top:24px; gap:24px; }
+.dashboard .mainContent[data-3d-fullscreen="true"] { margin:0; gap:0; }
+.dashboard .persistentWorldWrap { margin-bottom:0; }
+.dashboard .viewContainer { min-width:0; }
+.dashboard :is(button,summary,a,input,select):focus-visible { outline:3px solid #2a7956; outline-offset:3px; }
+.dashboard .sectionCard { border-radius:16px; box-shadow:none; padding:24px; gap:20px; }
+.dashboard[data-3d-fullscreen="true"] .sectionCard { padding:0; border:0; border-radius:0; background:transparent; box-shadow:none; }
+.dashboard .sectionHeading { font-size:19px; line-height:1.45; }
+.dashboard .sectionSubheading { margin-top:6px; color:#52675d; font-size:13px; line-height:1.6; }
+.dashboard .badgeCluster { gap:8px; align-items:center; }
+.dashboard .assignmentsSplitLayout { grid-template-columns:minmax(220px,280px) minmax(0,1fr); gap:24px; min-width:0; }
+.dashboard .assignmentsSplitLayout > *, .dashboard .rosterSummaryCard, .dashboard .rosterDetailPane { min-width:0; max-width:100%; }
+.dashboard .assignmentCard { padding:16px; border-radius:12px; box-shadow:none; }
+.dashboard .assignmentCardTitle { font-size:14px; line-height:1.6; overflow-wrap:anywhere; }
+.dashboard .paneSubHeading { text-transform:none; letter-spacing:0; font-size:13px; color:#52675d; }
+.dashboard .tableWrap { min-width:0; max-width:100%; width:100%; overflow-x:auto; scrollbar-width:thin; }
+.dashboard .dataTable { min-width:600px; }
+.dashboard .dataTable th { text-transform:none; letter-spacing:0; font-weight:600; }
+.dashboard .rosterDetailPane { padding:0; }
+.dashboard .rosterSummaryCard { padding:20px; border-radius:14px; box-shadow:none; }
+.dashboard .pedagogicalNotice { border:0; border-radius:0; padding:8px 0 0; color:#52675d; background:transparent; font-size:12px; text-align:left; }
+.dashboard .pedagogicalNotice > svg { flex-shrink:0; }
+.dashboard .deleteMaterialButton { border-color:transparent; background:transparent; color:#87615a; }
+.dashboard .materialCard { box-shadow:none; }
+.dashboard .materialCardTitle { line-height:1.55; }
+@media(max-width:960px) {
+  .teacherHeaderInner { padding:10px 16px 6px; }
+  .teacherHeaderRow { grid-template-columns:minmax(0,1fr) auto; gap:10px; }
+  .teacherClassPicker { grid-column:1/-1; grid-row:2; }
+  .teacherHeaderActions { grid-column:2; grid-row:1; }
+  .teacherBrand h1 { font-size:11px; }
+  .teacherChrome .tabsStickyWrap { padding:0 16px 8px; gap:8px; }
+  .teacherChrome .tabItem { padding:8px 10px; }
+  .dashboard .assignmentsSplitLayout, .dashboard[data-3d-fullscreen="true"] .assignmentsSplitLayout { grid-template-columns:minmax(0,1fr); gap:20px; }
+}
+@media(max-width:640px) {
+  .teacherHeaderInner { padding:8px 12px 4px; }
+  .teacherHeaderRow { gap:6px; }
+  .teacherBrand { gap:6px; }
+  .teacherBrand > svg { width:24px; }
+  .teacherBrand strong { font-size:17px; }
+  .teacherBrand h1 { display:none; }
+  .teacherHeaderActions { gap:4px; }
+  .teacherHeaderActions > .btnPrimary { width:44px; height:44px; padding:8px; }
+  .teacherUploadLabel { display:none; }
+  .teacherMore > summary { width:44px; height:44px; }
+  .teacherClassPicker .classSelectorCard { min-height:40px; width:100%; }
+  .teacherChrome .tabsStickyWrap { gap:6px; padding:2px 8px 6px; }
+  .teacherChrome .tabItem { min-height:44px; padding:8px 10px; gap:6px; }
+  .teacherViewSwitch button { width:40px; min-height:44px; padding:6px; }
+  .teacherViewSwitch button span { display:none; }
+  .dashboard .mainContent { padding:0 12px; margin-top:16px; gap:16px; }
+  .dashboard .sectionCard { padding:16px; gap:16px; }
+  .dashboard .sectionHeading { font-size:17px; }
+  .dashboard .sectionCardHeader { flex-wrap:wrap; gap:12px; }
+  .dashboard .rosterSummaryCard { padding:12px; }
+  .dashboard .assignmentsSplitLayout > * { width:100%; }
+  .dashboard .mobileRoster .dataTable { min-width:0; display:block; }
+  .mobileRoster thead { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
+  .mobileRoster tbody { display:block; }
+  .dashboard .mobileRoster tbody tr { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:10px 12px; padding:16px; border-bottom:1px solid #e1e9e2; }
+  .dashboard .mobileRoster tbody tr:last-child { border-bottom:0; }
+  .dashboard .mobileRoster tbody td { display:block; padding:0; border:0; min-width:0; white-space:normal; }
+  .mobileRoster td:nth-child(1) { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); }
+  .mobileRoster td:nth-child(2) { grid-column:1; grid-row:1; }
+  .mobileRoster td:nth-child(3) { grid-column:2; grid-row:1; text-align:right; }
+  .mobileRoster td:nth-child(4) { grid-column:1; grid-row:2; }
+  .mobileRoster td:nth-child(5) { grid-column:2; grid-row:2; text-align:right; font-size:12px; }
+  .mobileRoster td:nth-child(4)::before { content:"Điểm"; display:block; margin-bottom:4px; font-size:12px; color:#52675d; }
+  .mobileRoster td:nth-child(5)::before { content:"Nộp lúc"; display:block; margin-bottom:4px; font-size:12px; color:#52675d; }
+  .mobileRoster td:nth-child(6) { grid-column:1/-1; grid-row:3; }
+  .mobileRoster td:nth-child(6) button { width:100%; justify-content:center; min-height:44px; }
+}

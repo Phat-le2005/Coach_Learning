@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { UploadCloud, FileText, ChevronDown, ChevronUp, Trash2 } from "lucide-react";
+import { UploadCloud, FileText, ChevronDown, ChevronUp, Trash2, Ellipsis, Network, NotebookPen, Check, Send, Undo2, Lock, Save, AlertTriangle, Sparkles, Leaf, Pencil, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { teacherApi, type TeacherClassroom, type TeacherSubject } from "@/features/teacher/api";
 import { theoryApi, type TheoryMap, type TheoryNode, type TheorySummary, type NodeKind } from "./api";
 import { TheoryFormulaField } from "./TheoryFormulaField";
@@ -67,6 +67,7 @@ export function TeacherTheoryClient({
   const [map, setMap] = useState<TheoryMap | null>(null);
   const [nodes, setNodes] = useState<TheoryNode[]>([]);
   const [editingNodeId, setEditingNodeId] = useState("");
+  const [selectedMapNode, setSelectedMapNode] = useState<string | undefined>();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [isBranchEditorCollapsed, setIsBranchEditorCollapsed] = useState(true);
@@ -75,6 +76,8 @@ export function TeacherTheoryClient({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+
+  useEffect(() => { setSelectedMapNode(undefined); }, [map?.id]);
 
   useEffect(() => {
     let active = true;
@@ -199,7 +202,7 @@ export function TeacherTheoryClient({
       let currentMap = map;
       currentMap = await theoryApi.save(currentMap, targetNodes);
       return await theoryApi.publish(currentMap);
-    }, "🚀 Đã duyệt học thuật và phát hành Sơ đồ tư duy thành công cho học sinh trong lớp!");
+    }, "Đã duyệt học thuật và phát hành Sơ đồ tư duy thành công cho học sinh trong lớp!");
   }
 
   async function handleDeleteDocument(target: TheorySummary | TheoryMap) {
@@ -231,7 +234,7 @@ export function TeacherTheoryClient({
           setEditingNodeId("");
         }
       }
-      setNotice(`🗑️ Đã xóa tài liệu "${target.title}" thành công.`);
+      setNotice(`Đã xóa tài liệu "${target.title}" thành công.`);
     } catch (reason) {
       setError(errorText(reason));
     } finally {
@@ -338,7 +341,7 @@ export function TeacherTheoryClient({
 
   return (
     <RootTag className={isEmbedded ? styles.embeddedRoot : styles.page}>
-      <div className={isEmbedded ? styles.embeddedShell : styles.shell}>
+      <div className={`${styles.teacherWorkspace} ${isEmbedded ? styles.embeddedShell : styles.shell}`}>
         {!isEmbedded && (
           <header className={styles.header}>
             <div>
@@ -453,7 +456,7 @@ export function TeacherTheoryClient({
                                 {item.page_count} trang
                               </span>
                               <span className={item.status === "PUBLISHED" ? styles.docStatusPublished : styles.docStatusDraft}>
-                                {item.status === "PUBLISHED" ? "🚀 Đã phát hành" : "🌿 Bản nháp"}
+                                {item.status === "PUBLISHED" ? <><Send size={13} aria-hidden="true" />Đã phát hành</> : <><FileText size={13} aria-hidden="true" />Bản nháp</>}
                               </span>
                             </div>
                           </div>
@@ -481,7 +484,7 @@ export function TeacherTheoryClient({
           <section className={styles.panel}>
             {!map ? (
               <div className={styles.emptyStateCard}>
-                <div className={styles.emptyStateIcon}>📑</div>
+                <div className={styles.emptyStateIcon}><FileText size={24} aria-hidden="true" /></div>
                 <h3>Chưa chọn tài liệu</h3>
                 <p>
                   Vui lòng chọn một tài liệu từ danh sách bên trái để khám phá Sơ đồ tư duy, hoặc bấm nút &ldquo;+ Tải PDF&rdquo; để thêm tài liệu mới cho lớp.
@@ -503,15 +506,15 @@ export function TeacherTheoryClient({
                     <h2>{map.title}</h2>
                     <div className={styles.badges}>
                       {map.status === "PUBLISHED" ? (
-                        <span className={styles.badgeSuccess}>🚀 Đã phát hành cho lớp</span>
+                        <span className={styles.badgeSuccess}><><Send size={13} aria-hidden="true" /> Đã phát hành</> cho lớp</span>
                       ) : (
-                        <span className={styles.badgeMuted}>🌿 Bản nháp</span>
+                        <span className={styles.badgeMuted}><FileText size={13} aria-hidden="true" />Bản nháp</span>
                       )}
-                      {map.ai_model === "gemini" && <span className={styles.badgeAi}>✨ AI Gemini</span>}
-                      {map.ai_model === "local_heuristic" && <span className={styles.badgeMuted}>🌿 Dàn ý cục bộ</span>}
+                      {map.ai_model === "gemini" && <span className={styles.badgeAi}><><Sparkles size={13} aria-hidden="true" /> AI Gemini</></span>}
+                      {map.ai_model === "local_heuristic" && <span className={styles.badgeMuted}><><Leaf size={13} aria-hidden="true" /> Dàn ý cục bộ</></span>}
                       {nodes.length > 0 && (
                         <span className={allReviewed ? styles.badgeSuccess : styles.badgeWarning}>
-                          {allReviewed ? "✅ Đã duyệt 100% học thuật" : `⚠️ Đã duyệt ${reviewedCount}/${nodes.length} nhánh`}
+                          {allReviewed ? "Đã duyệt tất cả nhánh" : `Đã duyệt ${reviewedCount}/${nodes.length} nhánh`}
                         </span>
                       )}
                       <span className={styles.badgeMuted}>{nodes.length} nhánh tri thức</span>
@@ -521,13 +524,13 @@ export function TeacherTheoryClient({
                           className={styles.badgeWarning}
                           title={`Các trang có font/ký hiệu toán học cần kiểm tra mắt: trang ${map.extraction_warning_pages.join(", ")}`}
                         >
-                          ⚠️ {map.extraction_warning_pages.length} trang có font toán cần đối chiếu
+                          <AlertTriangle size={13} aria-hidden="true" />{map.extraction_warning_pages.length} trang có font toán cần đối chiếu
                         </span>
                       )}
                       {map.source_available ? (
-                        <span className={styles.badgeInfo}>📄 PDF: Đang chia sẻ</span>
+                        <span className={styles.badgeInfo}><><FileText size={13} aria-hidden="true" /> PDF đang chia sẻ</></span>
                       ) : (
-                        <span className={styles.badgeMuted}>📄 PDF: Chưa chia sẻ</span>
+                        <span className={styles.badgeMuted}><><Lock size={13} aria-hidden="true" /> PDF chưa chia sẻ</></span>
                       )}
                     </div>
                   </div>
@@ -556,7 +559,7 @@ export function TeacherTheoryClient({
                         }}
                         title={allReviewed ? "Nhấn để hủy duyệt học thuật toàn bộ" : "Duyệt học thuật tất cả nhánh sau khi đã rà soát"}
                       >
-                        📋 {allReviewed ? "Đã duyệt học thuật (100%)" : `Duyệt tất cả nhánh (${reviewedCount}/${nodes.length})`}
+                        <Check size={15} aria-hidden="true" /> {allReviewed ? "Đã duyệt học thuật (100%)" : `Duyệt tất cả nhánh (${reviewedCount}/${nodes.length})`}
                       </button>
                     )}
 
@@ -569,7 +572,7 @@ export function TeacherTheoryClient({
                         onClick={() => void handlePublish()}
                         title={!allReviewed ? `Cần duyệt tất cả các nhánh học thuật trước khi phát hành (${reviewedCount}/${nodes.length} đã duyệt) - Bấm để duyệt & phát hành` : "Phát hành tài liệu cho học sinh"}
                       >
-                        🚀 Phát hành cho học sinh
+                        <Send size={15} aria-hidden="true" />Phát hành cho học sinh
                       </button>
                     ) : (
                       <button
@@ -578,7 +581,7 @@ export function TeacherTheoryClient({
                         disabled={busy}
                         onClick={() => void run(() => theoryApi.unpublish(map), "Đã hủy phát hành sơ đồ về bản nháp.")}
                       >
-                        ↩️ Hủy phát hành
+                        <Undo2 size={15} aria-hidden="true" /> Hủy phát hành
                       </button>
                     )}
 
@@ -591,10 +594,12 @@ export function TeacherTheoryClient({
                         onClick={() => void run(() => theoryApi.save(map, nodes), "Đã lưu các chỉnh sửa của sơ đồ.")}
                         title="Bạn có chỉnh sửa chưa lưu"
                       >
-                        💾 Lưu thay đổi
+                        <Save size={15} aria-hidden="true" /> Lưu thay đổi
                       </button>
                     )}
 
+                    <details className={styles.teacherDocumentOptions} onKeyDown={event => { if (event.key === "Escape") { event.currentTarget.open = false; event.currentTarget.querySelector("summary")?.focus(); } }}>
+                      <summary><Ellipsis size={16} aria-hidden="true" />Tùy chọn tài liệu</summary><div>
                     {/* Share PDF Toggle */}
                     <button
                       className={`${styles.button} ${styles.buttonSecondary}`}
@@ -608,7 +613,7 @@ export function TeacherTheoryClient({
                       }
                       title={map.source_available ? "Bấm để tắt chia sẻ file PDF cho học sinh" : "Bấm để học sinh có thể xem file PDF gốc"}
                     >
-                      {map.source_available ? "🔒 Khóa PDF gốc" : "📄 Chia sẻ PDF cho lớp"}
+                      {map.source_available ? <><Lock size={15} aria-hidden="true" />Khóa PDF gốc</> : <><FileText size={15} aria-hidden="true" />Chia sẻ PDF cho lớp</>}
                     </button>
 
                     {/* Delete Document Button */}
@@ -619,9 +624,11 @@ export function TeacherTheoryClient({
                       onClick={() => void handleDeleteDocument(map)}
                       title="Xóa tài liệu và toàn bộ sơ đồ tư duy này"
                     >
-                      🗑️ Xóa tài liệu
+                      <Trash2 size={15} aria-hidden="true" /> Xóa tài liệu
                     </button>
 
+                      </div>
+                    </details>
                     {/* Sidebar Toggle */}
                     <button
                       type="button"
@@ -629,7 +636,7 @@ export function TeacherTheoryClient({
                       onClick={() => setIsSidebarCollapsed((prev) => !prev)}
                       title={isSidebarCollapsed ? "Hiện danh sách tài liệu bên trái" : "Thu gọn danh sách để mở rộng 100% không gian"}
                     >
-                      {isSidebarCollapsed ? "▶ Hiện danh sách" : "◀ Thu gọn"}
+                      {isSidebarCollapsed ? <><PanelLeftOpen size={15} aria-hidden="true" />Danh sách tài liệu</> : <><PanelLeftClose size={15} aria-hidden="true" />Thu gọn danh sách</>}
                     </button>
                   </div>
                 </div>
@@ -640,14 +647,14 @@ export function TeacherTheoryClient({
                     className={docViewMode === "map" ? styles.studyTabActive : styles.studyTab}
                     onClick={() => setDocViewMode("map")}
                   >
-                    🧠 Sơ đồ tư duy tương tác
+                    <Network size={16} aria-hidden="true" /> Sơ đồ tư duy
                   </button>
                   <button
                     type="button"
                     className={docViewMode === "notebook" ? styles.studyTabActive : styles.studyTab}
                     onClick={() => setDocViewMode("notebook")}
                   >
-                    📖 Sổ tay bài học &amp; Dạng toán
+                    <NotebookPen size={16} aria-hidden="true" /> Sổ tay bài học
                   </button>
                 </div>
 
@@ -659,10 +666,10 @@ export function TeacherTheoryClient({
                   />
                 ) : nodes.length === 0 ? (
                   <div className={styles.emptyStateCard}>
-                    <div className={styles.emptyStateIcon}>🧠</div>
+                    <div className={styles.emptyStateIcon}><Network size={28} aria-hidden="true" /></div>
                     <h3>Chưa có sơ đồ tư duy cho tài liệu này</h3>
                     <p>
-                      Hãy để AI Gemini phân tích tài liệu PDF, bóc tách cấu trúc phân cấp bài giảng, công thức toán học KaTeX và các bước phương pháp giải một cách thông minh chỉ trong vài giây.
+                      Tạo bản nháp sơ đồ từ PDF, sau đó kiểm tra từng nhánh trước khi phát hành cho lớp.
                     </p>
                     <button
                       className={styles.buttonAi}
@@ -679,9 +686,9 @@ export function TeacherTheoryClient({
                           setEditingNodeId(initialNodeId(result.nodes));
                           setList((old) => [result, ...old.filter((item) => item.id !== result.id)]);
                           if (result.ai_model === "gemini") {
-                            setNotice("✨ AI Gemini đã phân tích tài liệu và kiến tạo Sơ đồ tư duy thành công!");
+                            setNotice("AI Gemini đã phân tích tài liệu và tạo sơ đồ tư duy.");
                           } else {
-                            setNotice("🌿 Đã khởi tạo cấu trúc Sơ đồ tư duy từ văn bản PDF cục bộ (AI Gemini tạm thời không phản hồi).");
+                            setNotice("Đã khởi tạo cấu trúc Sơ đồ tư duy từ văn bản PDF cục bộ (AI Gemini tạm thời không phản hồi).");
                           }
                         } catch (reason) {
                           setError(errorText(reason));
@@ -690,7 +697,7 @@ export function TeacherTheoryClient({
                         }
                       }}
                     >
-                      {busy ? "Đang xử lý PDF với AI..." : "✨ Tạo Sơ đồ tư duy bằng AI ngay"}
+                      <Sparkles size={15} aria-hidden="true" />{busy ? "Đang xử lý PDF với AI..." : "Tạo sơ đồ tư duy bằng AI"}
                     </button>
                   </div>
                 ) : (
@@ -698,8 +705,8 @@ export function TeacherTheoryClient({
                     <TheoryMapView
                       key={map.id}
                       nodes={nodes}
-                      selectedNodeId={editingNodeId}
-                      onSelectNode={setEditingNodeId}
+                      selectedNodeId={selectedMapNode}
+                      onSelectNode={id => { setEditingNodeId(id); setSelectedMapNode(id); }}
                       sourceUrl={`/api/teacher/theory/${map.id}/source`}
                       sourceTitle={map.title}
                       sourcePageCount={map.page_count}
@@ -730,7 +737,7 @@ export function TeacherTheoryClient({
                       >
                         <div className={styles.quickEditHeader}>
                           <div className={styles.quickEditTitleRow}>
-                            <h3>✏️ Tinh chỉnh nhánh: &ldquo;{editingNode.title}&rdquo;</h3>
+                            <h3>Chỉnh sửa nhánh: &ldquo;{editingNode.title}&rdquo;</h3>
                             <span className={`${styles.kindBadge} ${getKindBadgeClass(editingNode.kind)}`}>
                               {getKindLabel(editingNode.kind)}
                             </span>
@@ -740,7 +747,7 @@ export function TeacherTheoryClient({
                               onClick={() => edit(editingIndex, { reviewed: !editingNode.reviewed })}
                               title="Nhấn để đổi trạng thái duyệt học thuật của nhánh này"
                             >
-                              {editingNode.reviewed ? "✅ Đã duyệt nhánh này" : "⚠️ Chưa duyệt (Bấm để duyệt)"}
+                              {editingNode.reviewed ? <><Check size={13} aria-hidden="true" />Đã duyệt nhánh này</> : <><AlertTriangle size={13} aria-hidden="true" />Chưa duyệt (Bấm để duyệt)</>}
                             </button>
                             <span className={styles.small}>
                               Nhánh {editingIndex + 1}/{nodes.length}
@@ -783,7 +790,7 @@ export function TeacherTheoryClient({
 
                         {isBranchEditorCollapsed ? (
                           <p className={styles.collapsedHint}>
-                            💡 Nhánh đang chọn: <strong>{editingNode.title}</strong> ({getKindLabel(editingNode.kind)}). Bấm <em>&ldquo;Mở rộng tinh chỉnh&rdquo;</em> để sửa tiêu đề, công thức LaTeX và các bước giải mẫu.
+                            Nhánh đang chọn: <strong>{editingNode.title}</strong> ({getKindLabel(editingNode.kind)}). Bấm <em>&ldquo;Mở rộng tinh chỉnh&rdquo;</em> để sửa tiêu đề, công thức LaTeX và các bước giải mẫu.
                           </p>
                         ) : (
                           <>
@@ -858,7 +865,7 @@ export function TeacherTheoryClient({
                                         ↓
                                       </button>
                                       <button type="button" onClick={() => removeStep(sIdx)}>
-                                        ✕ Xóa
+                                        <Trash2 size={13} aria-hidden="true" />Xóa
                                       </button>
                                     </div>
                                   </div>

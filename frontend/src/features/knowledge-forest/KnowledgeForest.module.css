@@ -1706,6 +1706,11 @@
 }
 
 /* Keep the map as the main visual, and quiet the surrounding controls. */
+.modeStrip { display:flex; align-items:center; justify-content:space-between; gap:16px; margin:20px 0; padding:16px 0; border-block:1px solid var(--line,#dfe8dd); }
+.modeStrip p { margin:0; font-weight:600; }
+.modeStrip p span { display:block; font-size:13px; font-weight:400; color:var(--muted,#586d60); }
+.modeStrip button { min-height:44px; padding:8px 16px; border:0; border-radius:10px; background:#176a53; color:white; font:inherit; font-size:13px; cursor:pointer; }
+@media(max-width:600px) { .modeStrip { align-items:flex-start; flex-direction:column; } }
 .pageContainer { width:100%; padding:24px 0; color:var(--ink,var(--text-primary)); }
 .header { background:var(--surface,#fff); padding:26px; border:1px solid var(--line,#dfe8dd); border-radius:16px; }
 .mainTitle { font-size:32px; font-weight:600; letter-spacing:-.6px; color:var(--ink,#173e31); }

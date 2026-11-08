@@ -15,7 +15,7 @@ function Surface({ children, displayName, email, route, subjectId }: { children:
     <LivingGardenBackdrop refined />
     <StudentTopNav displayName={displayName} email={email} currentRoute={route} subjectId={subjectId} showAmbientToggle />
     <div className={skin.content}>{children}</div>
-    <footer className={skin.footer}><strong>EduMS</strong><span>Không gian cho cách nghĩ của bạn.</span></footer>
+
     <StudentBottomNav currentRoute={route} subjectId={subjectId} />
   </div>;
 }

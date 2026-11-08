@@ -86,7 +86,7 @@ test("restore workspace layout and pair a logged-out phone with explicit owner a
     expect((await read()).strokes.map((stroke: {id: string}) => stroke.id).sort()).toEqual(original.strokes.map((stroke: {id: string}) => stroke.id).sort());
     await b.reload();
     await expect(b.locator("[data-live-status]")).toHaveAttribute("data-live-status", "connected");
-    await a.getByRole("button", {name: "Kết nối thiết bị viết", exact: true}).click();
+    await a.getByRole("button", {name: "Thiết bị viết (Đang kết nối)", exact: true}).click();
     await a.getByRole("button", {name: "Ngắt thiết bị", exact: true}).click();
     await expect(b.getByRole("heading", {name: "Chưa thể kết nối"})).toBeVisible({timeout: 15000});
     expect(await b.evaluate(async () => (await fetch("/api/ink-device/ink/pages/0")).status)).toBe(401);

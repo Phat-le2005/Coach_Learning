@@ -1,5 +1,7 @@
 "use client";
 
+import { BookOpen, FileText, Lightbulb, MoveRight, Network, Orbit, PenLine, Scan, X } from "lucide-react";
+
 
 
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -73,31 +75,31 @@ function isValidLearningStep(st: { instruction: string; latex?: string | null })
 
 
 function getKindBadgeLabel(kind: string, title: string): string {
-  if (/^Dạng\s+/i.test(title)) return "🎯 Dạng bài toán";
-  if (/^Định nghĩa\b/i.test(title)) return "📖 Định nghĩa";
-  if (/^Định l[ýí]/i.test(title)) return "📖 Định lý";
-  if (/^(Nhận xét|Chú ý|Lưu ý|⚠️)/i.test(title)) return "⚠️ Chú ý & Bẫy sai lầm";
-  if (/^(Mẹo|Công thức giải nhanh|Tính chất đặc biệt|⚡)/i.test(title)) return "⚡ Mẹo giải nhanh";
+  if (/^Dạng\s+/i.test(title)) return "Dạng bài toán";
+  if (/^Định nghĩa\b/i.test(title)) return "Định nghĩa";
+  if (/^Định l[ýí]/i.test(title)) return "Định lý";
+  if (/^(Nhận xét|Chú ý|Lưu ý|⚠️)/i.test(title)) return "Chú ý & Bẫy sai lầm";
+  if (/^(Mẹo|Công thức giải nhanh|Tính chất đặc biệt|⚡)/i.test(title)) return "Mẹo giải nhanh";
 
   switch (kind) {
     case "CHAPTER":
-      return "📚 Chương bài học";
+      return "Chương bài học";
     case "SECTION":
-      return "📌 Phần bài học";
+      return "Phần bài học";
     case "CONCEPT":
-      return "📖 Khái niệm & Định lý";
+      return "Khái niệm & Định lý";
     case "FORMULA":
-      return "📐 Công thức trọng tâm";
+      return "Công thức trọng tâm";
     case "METHOD":
-      return "📝 Dạng toán & Phương pháp";
+      return "Dạng toán & Phương pháp";
     case "EXAMPLE":
-      return "💡 Ví dụ mẫu";
+      return "Ví dụ mẫu";
     case "NOTE":
-      return "⚠️ Chú ý & Bẫy sai lầm";
+      return "Chú ý & Bẫy sai lầm";
     case "QUICK_TRICK":
-      return "⚡ Mẹo giải nhanh";
+      return "Mẹo giải nhanh";
     default:
-      return "🌿 Mục học";
+      return "Mục học";
   }
 }
 
@@ -656,7 +658,7 @@ export function TheoryMapView({
 
                 >
 
-                  📖 Mở Sổ tay bài học
+                  <BookOpen size={16} aria-hidden="true" /> Mở sổ tay bài học
 
                 </button>
 
@@ -676,7 +678,7 @@ export function TheoryMapView({
 
                 >
 
-                  📄 Mở PDF gốc trang {target.source_page}
+                  <FileText size={16} aria-hidden="true" /> Mở PDF gốc trang {target.source_page}
 
                 </button>
 
@@ -685,7 +687,7 @@ export function TheoryMapView({
                 href={`/student/practice?topic=${encodeURIComponent(target.title)}`}
                 className={styles.drawerPrimaryActionBtn}
                 style={{
-                  background: "linear-gradient(135deg, #23a67a, #10b981)",
+                  background: "#176a53",
                   color: "#ffffff",
                   textDecoration: "none",
                   display: "inline-flex",
@@ -699,7 +701,7 @@ export function TheoryMapView({
                 }}
                 title="Luyện giải bài tập dạng này trên giấy số"
               >
-                ✍️ Luyện bài tập dạng này
+                <PenLine size={16} aria-hidden="true" /> Luyện bài tập dạng này
               </a>
 
             </div>
@@ -718,7 +720,7 @@ export function TheoryMapView({
 
           >
 
-            ✕
+            <X size={18} aria-hidden="true" />
 
           </button>
 
@@ -750,7 +752,7 @@ export function TheoryMapView({
 
                 <div style={{ fontWeight: 800, color: "#14593e", marginBottom: "4px", fontSize: ".85rem" }}>
 
-                  📖 Bản chất lý thuyết &amp; Nhận diện
+                  <BookOpen size={16} aria-hidden="true" /> Bản chất lý thuyết &amp; Nhận diện
 
                 </div>
 
@@ -930,7 +932,7 @@ export function TheoryMapView({
 
                 <div className={styles.inlineExampleHeading}>
 
-                  <span>💡</span>
+                  <Lightbulb size={17} aria-hidden="true" />
 
                   <span>Ví dụ minh họa &amp; Hướng dẫn giải</span>
 
@@ -1200,7 +1202,7 @@ export function TheoryMapView({
 
               >
 
-                📄 Mở trang {target.source_page} trong PDF ↗
+                <FileText size={16} aria-hidden="true" /> Mở trang {target.source_page} trong PDF
 
               </button>
 
@@ -1218,7 +1220,7 @@ export function TheoryMapView({
 
               >
 
-                📄 Mở trang {target.source_page} trong PDF ↗
+                <FileText size={16} aria-hidden="true" /> Mở trang {target.source_page} trong PDF
 
               </a>
 
@@ -1278,7 +1280,7 @@ export function TheoryMapView({
 
           >
 
-            🌟 Tỏa từ tâm (Xung quanh)
+            <Network size={16} aria-hidden="true" /> Tỏa từ tâm
 
           </button>
 
@@ -1296,7 +1298,7 @@ export function TheoryMapView({
 
           >
 
-            ➡️ Nhánh ngang 1 chiều
+            <MoveRight size={16} aria-hidden="true" /> Nhánh ngang
 
           </button>
 
@@ -1314,7 +1316,7 @@ export function TheoryMapView({
 
           >
 
-            🌐 Không gian 3D
+            <Orbit size={16} aria-hidden="true" /> Không gian 3D
 
           </button>
 
@@ -1334,7 +1336,7 @@ export function TheoryMapView({
 
             >
 
-              📄 Tài liệu PDF gốc
+              <FileText size={16} aria-hidden="true" /> Tài liệu PDF gốc
 
             </button>
 
@@ -1350,19 +1352,19 @@ export function TheoryMapView({
 
           <div className={styles.statBadgeCounter}>
 
-            <span>📚 {stats.sectionsCount} bài học</span>
+            <span>{stats.sectionsCount} bài học</span>
 
             <span>&bull;</span>
 
-            <span>🎯 {stats.topicsCount} dạng bài</span>
+            <span>{stats.topicsCount} dạng bài</span>
 
             <span>&bull;</span>
 
-            <span>📐 {stats.formulasCount} công thức</span>
+            <span>{stats.formulasCount} công thức</span>
 
             <span>&bull;</span>
 
-            <span>💡 {stats.examplesCount} ví dụ</span>
+            <span>{stats.examplesCount} ví dụ</span>
 
           </div>
 
@@ -1406,7 +1408,7 @@ export function TheoryMapView({
 
               >
 
-                ✕
+                <X size={18} aria-hidden="true" />
 
               </button>
 
@@ -1534,7 +1536,7 @@ export function TheoryMapView({
 
             <span className={styles.eyebrow} style={{ fontSize: ".8rem" }}>
 
-              🌿 Sơ đồ tư duy 1 chiều (Trái sang Phải)
+              <Network size={16} aria-hidden="true" /> Sơ đồ trái sang phải
 
             </span>
 
@@ -1586,7 +1588,7 @@ export function TheoryMapView({
 
               >
 
-                🎯 Vừa khung
+                <Scan size={16} aria-hidden="true" /> Vừa khung
 
               </button>
 
@@ -1624,7 +1626,7 @@ export function TheoryMapView({
 
             <span>
 
-              💡 <strong>Thao tác trực tiếp:</strong> Kéo chuột để di chuyển canvas • Cuộn chuột để phóng to/thu nhỏ • Bấm nút tròn để mở/gập cành nhánh • <strong>Bấm vào tên nhánh bất kỳ</strong> để mở bảng công thức &amp; ví dụ giải chi tiết ngay trên sơ đồ!
+              Kéo để di chuyển, cuộn để phóng to. Chọn một nhánh để xem nội dung bài học.
 
             </span>
 

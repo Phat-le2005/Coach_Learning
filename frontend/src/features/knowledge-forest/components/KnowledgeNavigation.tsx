@@ -15,7 +15,7 @@ import {
   Sparkles,
   Zap,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import type {
   KnowledgeForestViewModel,
@@ -80,6 +80,10 @@ export function KnowledgeNavigation({
   isFullscreen,
 }: KnowledgeNavigationProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  useEffect(() => {
+    // Keep the tree visible on entry; progress and filters remain one tap away.
+    if (window.matchMedia("(max-width: 768px)").matches) setSidebarCollapsed(true);
+  }, []);
 
   const { summary, classroomContext } = data;
   const overallScore = summary.masteryScore ?? 0;
@@ -156,14 +160,14 @@ export function KnowledgeNavigation({
               onClick={() => onViewModeChange("3D")}
               title="Chế độ Cây tri thức 3D"
             >
-              3D Tree
+              Cây 3D
             </button>
             <button
               className={`${styles.viewModeBtn} ${viewMode === "2D" ? styles.viewModeBtnActive : ""}`}
               onClick={() => onViewModeChange("2D")}
               title="Chế độ Quần đảo 2D"
             >
-              2D Bản đồ
+              Bản đồ 2D
             </button>
           </div>
 
@@ -210,8 +214,9 @@ export function KnowledgeNavigation({
           onClick={() => setSidebarCollapsed(false)}
           title="Mở bảng điều khiển"
           aria-label="Mở bảng điều khiển"
+          aria-expanded={false}
         >
-          <ChevronRight size={20} />
+          <Orbit size={18} /><span>Tiến độ & bộ lọc</span>
         </button>
       ) : (
         <aside
@@ -228,6 +233,7 @@ export function KnowledgeNavigation({
               className={styles.sidebarCollapseBtn}
               onClick={() => setSidebarCollapsed(true)}
               aria-label="Thu gọn bảng điều khiển"
+              aria-expanded={true}
             >
               <ChevronLeft size={18} />
             </button>

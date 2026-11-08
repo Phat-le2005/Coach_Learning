@@ -1,15 +1,12 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 
-import { AppFooter } from "@/components/app-shell/AppFooter";
 import { SessionHeartbeat } from "@/components/auth/SessionHeartbeat";
-import { StudentBottomNav } from "@/features/student-home/components/StudentBottomNav";
-import { StudentTopNav } from "@/features/student-home/components/StudentTopNav";
+import { StudentShell } from "@/features/student-home/components/StudentShell";
 import { getBackendBaseUrl } from "@/lib/api/client";
 import { requirePageRole } from "@/lib/auth/page-session";
 import { readAccessToken } from "@/lib/auth/server";
 import { launchClassroomCanvasAttempt } from "@/lib/classroom-assignments/launch";
-import styles from "../assignments.module.css";
 import { AssignmentWorkspaceClient } from "./AssignmentWorkspaceClient";
 
 export const metadata: Metadata = {
@@ -65,16 +62,9 @@ export default async function StudentAssignmentWorkspacePage(props: Props) {
   }
 
   return (
-    <div className={styles.pageShell}>
+    <StudentShell displayName={session.fullName} email={session.email} route="/student/assignments">
       <SessionHeartbeat />
-      <StudentTopNav
-        displayName={session.fullName}
-        email={session.email}
-        currentRoute="/student/assignments"
-      />
       <AssignmentWorkspaceClient initialAssignment={assignment} />
-      <AppFooter variant="student" compact />
-      <StudentBottomNav currentRoute="/student/assignments" />
-    </div>
+    </StudentShell>
   );
 }
