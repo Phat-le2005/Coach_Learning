@@ -7,6 +7,8 @@ import { TheoryMapView } from "./TheoryMapView";
 import { TheoryNotebookView } from "./TheoryNotebookView";
 import { TheorySourceViewer } from "./TheorySourceViewer";
 import styles from "./TheoryMaps.module.css";
+import { BookOpen, FileText, Network, NotebookPen, Sprout } from "lucide-react";
+import { resolveTheoryDocument } from "./theory-target";
 
 export function StudentTheoryClient() {
   const [list, setList] = useState<TheorySummary[]>([]);
@@ -17,6 +19,7 @@ export function StudentTheoryClient() {
   const [view, setView] = useState<"map" | "notebook" | "source">("map");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [targetMessage, setTargetMessage] = useState("");
 
   useEffect(() => {
     let active = true;
@@ -27,27 +30,24 @@ export function StudentTheoryClient() {
         setList(items);
         if (!items.length) return;
         // Check query params (?topic=... or ?node=...)
-        let targetDoc = items[0];
         let targetNodeId = "";
-        try {
           const urlParams = new URLSearchParams(window.location.search);
-          const rawTopic = urlParams.get("topic")?.toLowerCase().trim();
+          const rawTopic = urlParams.get("topic")?.trim();
           const rawNode = urlParams.get("node")?.trim();
-
-          if (rawTopic) {
-            const matchedDoc = items.find((doc) =>
-              doc.title.toLowerCase().includes(rawTopic) || rawTopic.includes(doc.title.toLowerCase())
-            );
-            if (matchedDoc) targetDoc = matchedDoc;
+          const targetDoc = resolveTheoryDocument(items, rawTopic);
+          if (!targetDoc) {
+            setTargetMessage(`Chưa tìm thấy tài liệu khớp duy nhất với “${rawTopic}”. Bạn có thể chọn một tài liệu trong danh sách.`);
+            return;
           }
 
           const docData = await theoryApi.studentGet(targetDoc.id);
           if (rawNode) {
             const nodeMatch = docData.nodes.find((n) => n.id === rawNode);
             if (nodeMatch) targetNodeId = nodeMatch.id;
+            else { if (active) setTargetMessage("Chưa tìm thấy phần kiến thức được yêu cầu. Bạn có thể chọn tài liệu để đọc tiếp."); return; }
           } else if (rawTopic) {
             const nodeMatch = docData.nodes.find((n) =>
-              n.title.toLowerCase().includes(rawTopic) || rawTopic.includes(n.title.toLowerCase())
+              n.title.toLocaleLowerCase("vi").includes(rawTopic.toLocaleLowerCase("vi")) || rawTopic.toLocaleLowerCase("vi").includes(n.title.toLocaleLowerCase("vi"))
             );
             if (nodeMatch) targetNodeId = nodeMatch.id;
           }
@@ -59,17 +59,6 @@ export function StudentTheoryClient() {
             setView(docData.nodes.length > 0 && docData.status === "PUBLISHED" ? "map" : "source");
             return;
           }
-        } catch {
-          // fallback to first document
-        }
-
-        const first = await theoryApi.studentGet(items[0].id);
-        if (active) {
-          setDocument(first);
-          setPage(1);
-          setSelectedNodeId(first.nodes[0]?.id ?? "");
-          setView(first.nodes.length > 0 && first.status === "PUBLISHED" ? "map" : "source");
-        }
       })
       .catch((reason) => {
         if (active) setError(reason instanceof Error ? reason.message : "Không thể tải kho lý thuyết.");
@@ -86,6 +75,10 @@ export function StudentTheoryClient() {
     setError("");
     try {
       const next = await theoryApi.studentGet(id);
+      setTargetMessage("");
+      const url = new URL(window.location.href);
+      url.searchParams.delete("topic"); url.searchParams.delete("node");
+      window.history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
       setDocument(next);
       setPage(1);
       setSelectedNodeId(next.nodes[0]?.id ?? "");
@@ -111,6 +104,7 @@ export function StudentTheoryClient() {
 
   return (
     <div className={styles.studentAppContainer}>
+      <div className={styles.readerHeading}><h1>Kho lý thuyết</h1><p>Chọn tài liệu, xem sơ đồ kiến thức hoặc mở lại trang bài học.</p></div>
       {/* 1. COMPACT, BEAUTIFUL APP HEADER */}
       <header className={styles.studentTopBar}>
         {/* Left: Back Link & Document Selector */}
@@ -122,10 +116,10 @@ export function StudentTheoryClient() {
 
           <div className={styles.studentNavDivider} />
 
-          {list.length > 1 ? (
+          {list.length > 1 || (!document && list.length > 0) ? (
             <div className={styles.studentDocSwitcher}>
               <span className={styles.studentDocIcon} aria-hidden="true">
-                📚
+                <BookOpen size={19} />
               </span>
               <select
                 value={document?.id ?? ""}
@@ -133,6 +127,7 @@ export function StudentTheoryClient() {
                 className={styles.studentDocSelect}
                 aria-label="Chọn tài liệu bài học"
               >
+                {!document && <option value="" disabled>Chọn tài liệu bài học</option>}
                 {list.map((item) => (
                   <option key={item.id} value={item.id}>
                     {item.title} ({item.page_count} trang)
@@ -219,6 +214,7 @@ export function StudentTheoryClient() {
 
       {/* 2. MAIN LEARNING CANVAS */}
       <main className={styles.studentMainStage}>
+        {targetMessage && <div className={styles.readerNotice} role="status"><BookOpen size={28} /><h2>Chọn tài liệu để tiếp tục</h2><p>{targetMessage}</p></div>}
         {error && (
           <div className={styles.error} role="alert" style={{ marginBottom: "16px" }}>
             {error}{" "}

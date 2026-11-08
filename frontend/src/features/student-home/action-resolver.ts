@@ -95,10 +95,10 @@ export function resolveStudentAction(action: StudentCurrentActionRead): Resolved
       resourceId = action.adaptive_repair_session_id ?? action.resource_id ?? undefined;
       resourceType = "adaptive_repair_session";
       title = "Tiếp tục vá mắt xích hổng kiến thức";
-      description = "Hệ thống đã xác minh nguyên nhân gốc rễ. Hãy hoàn thành 2-3 câu ngắn để củng cố vững chắc nền tảng.";
-      primaryLabel = "Vá mắt xích ngay (~5p)";
+      description = "Tiếp tục phiên sửa sai đang dở để củng cố phần kiến thức cần luyện.";
+      primaryLabel = "Tiếp tục sửa sai";
       badgeLabel = phase ? `Vá sửa sai · Giai đoạn ${phase}` : "Vá sửa sai thích ứng";
-      guidanceText = "Phiên sửa sai thích ứng tập trung khắc phục ngộ nhận cốt lõi. AI đối chiếu từng bước giải để phát hiện sai sót biến đổi ngay lập tức.";
+      guidanceText = "Xem phản hồi của phiên sửa sai, rồi tiếp tục phần luyện tập đang dở.";
       break;
     }
     case "CONTINUE_VERIFICATION": {
@@ -106,7 +106,7 @@ export function resolveStudentAction(action: StudentCurrentActionRead): Resolved
       resourceType = "root_cause_verification";
       title = "Tiếp tục xác minh lỗ hổng kiến thức";
       description = "Hệ thống đang kiểm chứng giả thuyết về ngộ nhận kiến thức để đưa ra lộ trình sửa sai chính xác nhất.";
-      primaryLabel = "Xác minh ngay (~5p)";
+      primaryLabel = "Tiếp tục xác minh";
       badgeLabel = "Xác minh ngộ nhận";
       guidanceText = "Phiên xác minh kiểm tra xem bạn có thực sự gặp khó khăn ở mắt xích này không trước khi mở chu kỳ sửa sai.";
       break;

@@ -1,0 +1,16 @@
+.surface { --ground:#edf5ed; --surface:#fff; --ink:#173e31; --muted:#586d60; --line:#dfe8dd; --soft:#eaf0e5; --brand:#176a53; --focus:#187c5c;
+  --text-primary:var(--ink); --text-secondary:var(--muted); --text-tertiary:var(--muted); --surface-elevated:var(--surface); --surface-muted:var(--soft); --surface-glass-strong:var(--surface); --border-soft:var(--line); --verdant-950:var(--ink); --verdant-900:var(--ink); --verdant-800:var(--ink); --verdant-700:var(--brand);
+  min-height:100vh; position:relative; isolation:isolate; padding:14px 32px 90px; color:var(--ink); background:var(--ground); font-family:EdumsHome,sans-serif; line-height:1.7; color-scheme:light;
+}
+.surface[data-home-theme=dark] { --ground:#192a21; --surface:#222e28; --ink:#e5ece6; --muted:#b4c3b8; --line:#3b4c41; --soft:#2d3d32; --brand:#b1d3ba; --focus:#c0dbc5; color-scheme:dark; }
+.surface :where(button,input,select,textarea) { font-family:inherit; }
+.surface :where(a,button,input,select):focus-visible { outline:3px solid var(--focus); outline-offset:3px; }
+.surface :where(h1,h2,h3) { text-wrap:balance; }
+.content { width:min(100%,1320px); margin:auto; }
+.pageHeading { margin:8px 0 25px; display:flex; align-items:flex-start; justify-content:space-between; gap:24px; }
+.pageHeading h1 { font-size:32px; line-height:1.4; letter-spacing:-.7px; font-weight:600; margin:0; }
+.pageHeading p { margin:9px 0 0; color:var(--muted); font-size:14px; max-width:68ch; }
+.panel { padding:28px; background:var(--surface); border:1px solid var(--line); border-radius:16px; }
+.footer { width:min(100%,1320px); margin:36px auto 0; border-top:1px solid var(--line); padding:20px 2px; color:var(--muted); font-size:12px; display:flex; justify-content:space-between; gap:20px; }
+@media(max-width:760px) { .surface { padding:10px 16px 90px; } .pageHeading { margin:6px 0 20px; } .pageHeading h1 { font-size:26px; } .pageHeading p { font-size:13px; } .panel { padding:20px; } }
+@media(prefers-reduced-motion:reduce) { .surface *,.surface *::before,.surface *::after { animation:none!important; scroll-behavior:auto!important; } }

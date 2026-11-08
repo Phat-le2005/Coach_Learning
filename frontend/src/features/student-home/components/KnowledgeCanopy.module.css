@@ -330,3 +330,7 @@
 :global([data-garden-motion="off"]) .starSparkle {
   animation: none !important;
 }
+
+/* A reserved tooltip slot keeps the homepage carousel stable on hover/focus. */
+.canopyCompact{padding-bottom:36px}.canopyCompact .tooltipWrap{position:absolute;bottom:0;margin:0;width:100%;font-size:11px;min-height:30px;padding:6px 10px}.canopyCompact .canopy{flex-shrink:0}
+@media(max-width:700px){.canopyCompact{padding-bottom:28px}.canopyCompact .tooltipWrap{font-size:9px;padding:4px 7px;min-height:24px}}

@@ -1,17 +1,17 @@
 {
   "stats": {
-    "nodes": 15912,
-    "edges": 69982,
-    "communities": 453,
-    "code_files_detected": 1636,
-    "files_with_nodes": 1611,
+    "nodes": 15946,
+    "edges": 70069,
+    "communities": 439,
+    "code_files_detected": 1650,
+    "files_with_nodes": 1623,
     "graphify_version": "0.9.102",
-    "head_commit": "98c0ae252d76c823e6944160052e2668c2add083",
-    "generated_at": "2026-11-08T07:25:31+07:00",
-    "source_sha256": "6b85b563bfa3f0267c8b97e8f928c54989b852010494d92cecd48c9501fee8a3",
+    "head_commit": "a60877fdd156c0d6a004f4701878c665bbe517ec",
+    "generated_at": "2026-11-08T07:56:51+07:00",
+    "source_sha256": "bd4259e7df00f59579545b1a944f4fe912980e6ed068c14028da32ab0e915863",
     "confidence": {
-      "EXTRACTED": 59734,
-      "INFERRED": 10248
+      "EXTRACTED": 59820,
+      "INFERRED": 10249
     },
     "semantic_llm_tokens": 0
   },
@@ -37,18 +37,18 @@
     },
     {
       "name": "Frontend",
-      "nodes": 2440,
-      "files_with_nodes": 372
+      "nodes": 2463,
+      "files_with_nodes": 379
     },
     {
       "name": "Other",
-      "nodes": 2011,
+      "nodes": 2014,
       "files_with_nodes": 22
     },
     {
       "name": "Tests",
-      "nodes": 3741,
-      "files_with_nodes": 406
+      "nodes": 3749,
+      "files_with_nodes": 411
     },
     {
       "name": "Tools",
@@ -105,17 +105,17 @@
     {
       "a": "Frontend",
       "b": "Frontend",
-      "edges": 7918
+      "edges": 7972
     },
     {
       "a": "Frontend",
       "b": "Other",
-      "edges": 179
+      "edges": 183
     },
     {
       "a": "Frontend",
       "b": "Tests",
-      "edges": 752
+      "edges": 768
     },
     {
       "a": "Other",
@@ -125,7 +125,7 @@
     {
       "a": "Other",
       "b": "Tests",
-      "edges": 4351
+      "edges": 4358
     },
     {
       "a": "Other",
@@ -135,7 +135,7 @@
     {
       "a": "Tests",
       "b": "Tests",
-      "edges": 6517
+      "edges": 6523
     },
     {
       "a": "Tests",
@@ -489,20 +489,20 @@
       }
     },
     {
+      "a": "frontend/tests",
+      "b": "root",
+      "edges": 148,
+      "confidence": {
+        "EXTRACTED": 148
+      }
+    },
+    {
       "a": "backend/app/questions",
       "b": "backend/tests/curriculum",
       "edges": 144,
       "confidence": {
         "EXTRACTED": 125,
         "INFERRED": 19
-      }
-    },
-    {
-      "a": "frontend/tests",
-      "b": "root",
-      "edges": 144,
-      "confidence": {
-        "EXTRACTED": 144
       }
     },
     {
@@ -584,9 +584,9 @@
     {
       "a": "frontend/src/app",
       "b": "frontend/src/components",
-      "edges": 120,
+      "edges": 114,
       "confidence": {
-        "EXTRACTED": 120
+        "EXTRACTED": 114
       }
     },
     {
@@ -1615,14 +1615,6 @@
       }
     },
     {
-      "a": "frontend/package.json",
-      "b": "frontend/src/features/student-home",
-      "edges": 45,
-      "confidence": {
-        "EXTRACTED": 45
-      }
-    },
-    {
       "a": "frontend/src/features/theory-maps",
       "b": "frontend/src/lib",
       "edges": 45,
@@ -1688,6 +1680,14 @@
       "confidence": {
         "EXTRACTED": 16,
         "INFERRED": 26
+      }
+    },
+    {
+      "a": "frontend/package.json",
+      "b": "frontend/src/features/student-home",
+      "edges": 42,
+      "confidence": {
+        "EXTRACTED": 42
       }
     },
     {
@@ -1848,14 +1848,6 @@
     {
       "a": "frontend/src/app",
       "b": "frontend/src/features/student-home",
-      "edges": 39,
-      "confidence": {
-        "EXTRACTED": 39
-      }
-    },
-    {
-      "a": "frontend/src/features/student-home",
-      "b": "frontend/src/lib",
       "edges": 39,
       "confidence": {
         "EXTRACTED": 39
@@ -2194,6 +2186,14 @@
       }
     },
     {
+      "a": "frontend/e2e",
+      "b": "root",
+      "edges": 33,
+      "confidence": {
+        "EXTRACTED": 33
+      }
+    },
+    {
       "a": "frontend/src/features/knowledge-forest",
       "b": "frontend/tests",
       "edges": 33,
@@ -2377,14 +2377,6 @@
       }
     },
     {
-      "a": "frontend/src/components",
-      "b": "frontend/src/features/student-home",
-      "edges": 31,
-      "confidence": {
-        "EXTRACTED": 31
-      }
-    },
-    {
       "a": "backend/app/ai",
       "b": "backend/app/tutor",
       "edges": 30,
@@ -2480,14 +2472,6 @@
       "confidence": {
         "EXTRACTED": 12,
         "INFERRED": 18
-      }
-    },
-    {
-      "a": "frontend/e2e",
-      "b": "root",
-      "edges": 30,
-      "confidence": {
-        "EXTRACTED": 30
       }
     },
     {
@@ -2587,7 +2571,7 @@
       }
     },
     {
-      "a": "frontend/src/app",
+      "a": "frontend/src/features/student-home",
       "b": "root",
       "edges": 29,
       "confidence": {
@@ -2647,6 +2631,14 @@
       }
     },
     {
+      "a": "frontend/src/app",
+      "b": "root",
+      "edges": 28,
+      "confidence": {
+        "EXTRACTED": 28
+      }
+    },
+    {
       "a": "frontend/src/features/theory-maps",
       "b": "frontend/tests",
       "edges": 28,
@@ -2702,6 +2694,14 @@
     {
       "a": "backend/tests/hints",
       "b": "root",
+      "edges": 27,
+      "confidence": {
+        "EXTRACTED": 27
+      }
+    },
+    {
+      "a": "frontend/src/features/student-home",
+      "b": "frontend/src/lib",
       "edges": 27,
       "confidence": {
         "EXTRACTED": 27
@@ -2859,6 +2859,14 @@
     {
       "a": "frontend/package.json",
       "b": "frontend/src/features/math-canvas",
+      "edges": 25,
+      "confidence": {
+        "EXTRACTED": 25
+      }
+    },
+    {
+      "a": "frontend/src/components",
+      "b": "frontend/src/features/student-home",
       "edges": 25,
       "confidence": {
         "EXTRACTED": 25
@@ -3080,14 +3088,6 @@
       }
     },
     {
-      "a": "frontend/src/features/student-home",
-      "b": "root",
-      "edges": 23,
-      "confidence": {
-        "EXTRACTED": 23
-      }
-    },
-    {
       "a": "backend/app/assignments",
       "b": "backend/app/questions",
       "edges": 22,
@@ -3298,6 +3298,14 @@
       }
     },
     {
+      "a": "frontend/package.json",
+      "b": "frontend/src/features/theory-maps",
+      "edges": 21,
+      "confidence": {
+        "EXTRACTED": 21
+      }
+    },
+    {
       "a": "backend/app/ai",
       "b": "backend/app/knowledge_gap",
       "edges": 20,
@@ -3376,14 +3384,6 @@
       "confidence": {
         "EXTRACTED": 17,
         "INFERRED": 3
-      }
-    },
-    {
-      "a": "frontend/package.json",
-      "b": "frontend/src/features/theory-maps",
-      "edges": 20,
-      "confidence": {
-        "EXTRACTED": 20
       }
     },
     {
@@ -3585,6 +3585,14 @@
     {
       "a": "backend/tests/test_foundation.py",
       "b": "root",
+      "edges": 19,
+      "confidence": {
+        "EXTRACTED": 19
+      }
+    },
+    {
+      "a": "frontend/e2e",
+      "b": "frontend/package.json",
       "edges": 19,
       "confidence": {
         "EXTRACTED": 19
@@ -4427,8 +4435,8 @@
       }
     },
     {
-      "a": "frontend/e2e",
-      "b": "frontend/package.json",
+      "a": "frontend/src/features/student-home",
+      "b": "frontend/tests",
       "edges": 15,
       "confidence": {
         "EXTRACTED": 15
@@ -8647,14 +8655,6 @@
       }
     },
     {
-      "a": "frontend/src/components",
-      "b": "frontend/src/features/student-attempts",
-      "edges": 6,
-      "confidence": {
-        "EXTRACTED": 6
-      }
-    },
-    {
       "a": "frontend/src/features/math-workspace",
       "b": "frontend/src/features/self-study",
       "edges": 6,
@@ -9268,6 +9268,14 @@
     },
     {
       "a": "frontend/src/components",
+      "b": "frontend/src/features/student-attempts",
+      "edges": 5,
+      "confidence": {
+        "EXTRACTED": 5
+      }
+    },
+    {
+      "a": "frontend/src/components",
       "b": "frontend/tests",
       "edges": 5,
       "confidence": {
@@ -9286,14 +9294,6 @@
     {
       "a": "frontend/src/features/self-study",
       "b": "frontend/src/lib",
-      "edges": 5,
-      "confidence": {
-        "EXTRACTED": 5
-      }
-    },
-    {
-      "a": "frontend/src/features/student-home",
-      "b": "frontend/tests",
       "edges": 5,
       "confidence": {
         "EXTRACTED": 5
@@ -12343,8 +12343,8 @@
       }
     },
     {
-      "a": "frontend/next.config.mjs",
-      "b": "root",
+      "a": "frontend/e2e",
+      "b": "frontend/src/features/student-home",
       "edges": 2,
       "confidence": {
         "EXTRACTED": 2
@@ -12980,6 +12980,14 @@
       "edges": 1,
       "confidence": {
         "INFERRED": 1
+      }
+    },
+    {
+      "a": "frontend/next.config.mjs",
+      "b": "root",
+      "edges": 1,
+      "confidence": {
+        "EXTRACTED": 1
       }
     },
     {

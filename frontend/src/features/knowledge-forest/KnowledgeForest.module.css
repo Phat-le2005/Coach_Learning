@@ -1705,4 +1705,13 @@
   color: #4b5563;
 }
 
+/* Keep the map as the main visual, and quiet the surrounding controls. */
+.pageContainer { width:100%; padding:24px 0; color:var(--ink,var(--text-primary)); }
+.header { background:var(--surface,#fff); padding:26px; border:1px solid var(--line,#dfe8dd); border-radius:16px; }
+.mainTitle { font-size:32px; font-weight:600; letter-spacing:-.6px; color:var(--ink,#173e31); }
+.subjectSelect { background:var(--soft,#eaf0e5); border-color:var(--line,#dfe8dd); color:var(--ink,#173e31); min-height:44px; border-radius:10px; box-shadow:none; }
+.emptyCard { background:var(--surface,#fff); color:var(--ink,#173e31); border-color:var(--line,#dfe8dd); border-radius:16px; }
+.emptyDesc { color:var(--muted,#586d60); }
+@media(max-width:760px) { .header { padding:20px; } .mainTitle { font-size:26px; } .pageContainer { padding-top:8px; } }
+
 

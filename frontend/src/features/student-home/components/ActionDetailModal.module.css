@@ -193,3 +193,16 @@
   background: rgba(35, 166, 122, 0.08);
   border-color: rgba(35, 166, 122, 0.4);
 }
+
+/* Share the homepage palette, including its dark theme. */
+.modal { background:var(--surface,#fff); color:var(--ink,#173e31); border-color:var(--line,#dfe8dd); border-radius:16px; box-shadow:0 24px 64px #091c1533; }
+.title,.detailValue { color:var(--ink,#173e31); }
+.description,.detailLabel,.guidanceSubtext { color:var(--muted,#586d60); }
+.badge,.codeBadge { color:var(--brand,#176a53); background:var(--soft,#eaf0e5); }
+.closeButton,.secondaryButton { background:var(--soft,#eaf0e5); color:var(--ink,#173e31); border-color:var(--line,#dfe8dd); min-height:44px; }
+.closeButton { width:44px; height:44px; }
+.detailCard,.guidanceCallout { background:var(--soft,#eaf0e5); border-color:var(--line,#dfe8dd); }
+.guidanceTitle,.guidanceText { color:var(--ink,#173e31); }
+.footer { border-color:var(--line,#dfe8dd); }
+.modal :is(a,button):focus-visible { outline:3px solid var(--focus,#187c5c); outline-offset:3px; }
+@media(max-width:700px) { .modal { padding:22px; } .detailRow { flex-wrap:wrap; } .detailValue { text-align:left; } }

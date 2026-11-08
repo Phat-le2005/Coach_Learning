@@ -21,6 +21,7 @@ import { ContinueLearningSection } from "./components/ContinueLearningSection";
 import { StudyGardenBackdrop } from "./components/StudyGardenBackdrop";
 import { StudyGardenEnding } from "./components/StudyGardenEnding";
 import { StudyLaunchSection } from "./components/StudyLaunchSection";
+import { StudentShell } from "@/features/student-home/components/StudentShell";
 import styles from "./StudentAttempts.module.css";
 import type { StudentAttemptsViewModel } from "./types";
 
@@ -80,27 +81,14 @@ export function StudentAttemptsView({ data }: StudentAttemptsViewProps) {
   };
 
   return (
-    <MotionProvider>
-      <GardenMotionProvider>
-        <LivingStudyGardenShell>
-          {/* Unified Navigation shared with Student Home & Knowledge World */}
-          <StudentTopNav
-            displayName={data.student.displayName}
-            email={data.student.email}
-            currentRoute="/student/attempts"
-            subjectId={data.defaultSubjectId}
-            showAmbientToggle
-            pendingAssignmentsCount={classroomPendingCount}
-          />
-
+    <StudentShell displayName={data.student.displayName} email={data.student.email} route="/student/attempts" subjectId={data.defaultSubjectId}>
           <main className={styles.main}>
             {/* CONSOLIDATED HUB HEADER & SEGMENTED TABS */}
             <header className={styles.hubHeader}>
               <div className={styles.hubHeaderCopy}>
-                <span className={styles.hubKicker}>EduMS · Trung tâm Thực hành & Bài tập</span>
-                <h1 className={styles.hubTitle}>Không gian Làm bài & Luyện tập</h1>
+                <h1 className={styles.hubTitle}>Bài tập & luyện tập</h1>
                 <p className={styles.hubSubtitle}>
-                  Nơi hội tụ toàn bộ bài tập giáo viên giao cho lớp, trang giấy số tự luyện và nhật ký giải toán chi tiết của bạn.
+                  Tiếp tục bài đang làm, luyện tập trên giấy số hoặc xem lại kết quả của bạn.
                 </p>
               </div>
 
@@ -191,16 +179,6 @@ export function StudentAttemptsView({ data }: StudentAttemptsViewProps) {
             )}
           </main>
 
-          {/* PAGE ENDING */}
-          <StudyGardenEnding defaultSubjectId={data.defaultSubjectId} />
-
-          <StudentBottomNav
-            currentRoute="/student/attempts"
-            subjectId={data.defaultSubjectId}
-            pendingAssignmentsCount={classroomPendingCount}
-          />
-        </LivingStudyGardenShell>
-      </GardenMotionProvider>
-    </MotionProvider>
+    </StudentShell>
   );
 }
