@@ -53,6 +53,38 @@ Sau khi cập nhật một checkout đã có, chạy lại `npm ci` và cài l�
 `websockets==15.0.1` trong lockfile; một venv cũ thiếu package này vẫn trả HTTP health
 200 nhưng không nhận WebSocket. Không dựa vào venv của worktree đã bỏ.
 
+## Đồng bộ code giữa các máy
+
+Nhánh đồng bộ phần ảnh bài tập, giao diện giáo viên và các cập nhật mới từ `main`:
+
+```powershell
+git fetch origin
+# Lần đầu lấy nhánh này trên máy bạn:
+git switch --track origin/fix/exercise-image-paths
+# Những lần tiếp theo, khi đang ở nhánh này:
+git pull --ff-only
+backend/.venv/Scripts/python.exe -m pip install -r backend/requirements-lock.txt
+Push-Location frontend
+npm ci
+Pop-Location
+```
+
+Nếu đã có nhánh local cùng tên, dùng `git switch fix/exercise-image-paths` thay cho
+`git switch --track`. Giữ lại hoặc commit thay đổi riêng trước khi chuyển nhánh.
+Máy chưa có venv, database hoặc cấu hình `.env` cần làm phần cài đặt phía trên trước.
+Nếu phiên bản mới có migration, từ thư mục `backend` chạy
+`.venv/Scripts/python.exe -m alembic upgrade head`.
+Khởi động lại backend và frontend sau khi cài dependency.
+
+Git đồng bộ source, test và dependency; các tài liệu đã upload trong kho học liệu,
+tài khoản, lớp học, bài đã giao và bài làm nằm trong database riêng. File học liệu
+nằm ở `backend/var/teacher_materials/`, còn nguồn PDF/ảnh OCR mặc định nằm ở
+`.tmp/teacher-pdf-imports/` (có thể đổi qua cấu hình backend). Ảnh của bài đã giao
+cần đúng dữ liệu database và thư mục OCR tương ứng. Để cùng xem một kho học liệu,
+dùng chung backend/database và storage được cấu hình, hoặc tải và duyệt học liệu
+trên máy mới. Không đưa `.env`, database, model/cache hoặc học liệu riêng vào Git.
+Gemini cần khóa riêng trong cấu hình backend; khóa không được phân phối cùng code.
+
 ## Live Sync / điện thoại
 
 Chế độ LAN tự động (hai terminal PowerShell ở repo root; không sửa IP trong `.env`):
