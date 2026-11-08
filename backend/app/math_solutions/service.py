@@ -9,6 +9,8 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from hashlib import sha256
 import json
+import re
+from pathlib import Path
 from typing import Any, Callable
 from uuid import UUID
 
@@ -51,6 +53,7 @@ from app.questions.presentation_quality import question_has_broken_math_extracti
 from app.students.models import StudentProfile
 from app.teacher_materials.models import TeacherMaterial, TeacherMaterialItem
 from app.teacher_materials.models import MaterialEvaluationMode
+from app.teacher_materials.pdf_import import TeacherPdfImportService
 
 
 def _fail(status: int, code: str, message: str) -> ApplicationError:
@@ -760,6 +763,31 @@ class MathSolutionService:
             )
         else:
             raise _fail(422, "INVALID_SOURCE_KIND", f"Unsupported source kind: {attempt.source_kind}")
+
+    def get_attempt_problem_asset(
+        self, actor_user_id: UUID, attempt_id: UUID, asset_path: str,
+        pdf_service: TeacherPdfImportService,
+    ) -> Path:
+        # Reuse problem delivery's ownership and snapshot validation, including history.
+        problem = self.get_attempt_problem(actor_user_id, attempt_id)
+        if problem.source_kind != SolutionSourceKind.TEACHER_MATERIAL:
+            raise _fail(404, "PDF_ASSET_NOT_FOUND", "Không tìm thấy hình minh họa.")
+        if not re.fullmatch(r"[\w./-]+\.(?:png|jpe?g)", asset_path, re.IGNORECASE) or any(
+            part in {"", ".", ".."} for part in asset_path.split("/")
+        ):
+            raise _fail(404, "PDF_ASSET_NOT_FOUND", "Không tìm thấy hình minh họa.")
+        references = re.findall(
+            r"!\[[^\]\n]*\]\(\s*(?:<([^>\n]+)>|([^\s)]+))\s*\)",
+            "\n".join([problem.content, *(option.content for option in problem.options)]),
+        )
+        paths = {(angle or plain).removeprefix("./") for angle, plain in references}
+        if asset_path not in paths:
+            raise _fail(404, "PDF_ASSET_NOT_FOUND", "Không tìm thấy hình minh họa của câu này.")
+        assigned = self.session.get(StudentAssignmentMaterialItem, problem.student_assignment_material_item_id)
+        item = self.session.get(TeacherMaterialItem, assigned.teacher_material_item_id) if assigned else None
+        if item is None:
+            raise _fail(404, "PDF_ASSET_NOT_FOUND", "Không tìm thấy hình minh họa.")
+        return pdf_service.assigned_item_asset(item, asset_path)
 
     def get_practice_next_problem(self, actor_user_id: UUID, session_id: UUID) -> ProblemRead:
         student = self._student(actor_user_id)

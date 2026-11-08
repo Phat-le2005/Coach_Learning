@@ -6,6 +6,15 @@ import { mathWorkspaceProxyPath } from "../src/lib/api/math-workspace-path.js";
 const id = "01234567-89ab-4cde-8012-3456789abcde";
 const stepId = "a1234567-89ab-4cde-8012-3456789abcde";
 
+test("question image proxy accepts only GET image paths scoped to an attempt", () => {
+  const parts = [id, "problem-assets", "visual_assets", "page-0002", "question.png"];
+  assert.equal(mathWorkspaceProxyPath(parts, "GET"), `/api/v2/math-solutions/attempts/${parts.join("/")}`);
+  assert.equal(mathWorkspaceProxyPath(parts, "POST"), null);
+  for (const suffix of [["..", "source.png"], ["%2e%2e", "source.png"], ["source.pdf"], ["source.svg"], ["a/b.png"], ["a\\b.png"]]) {
+    assert.equal(mathWorkspaceProxyPath([id, "problem-assets", ...suffix], "GET"), null);
+  }
+});
+
 test("Math Workspace BFF permits only the owner-scoped routes needed by the canvas", () => {
   assert.equal(mathWorkspaceProxyPath([id], "GET"), `/api/v2/math-solutions/attempts/${id}`);
   assert.equal(mathWorkspaceProxyPath([id, "ink", "pages", "0"], "PUT"), `/api/v2/math-solutions/attempts/${id}/ink/pages/0`);

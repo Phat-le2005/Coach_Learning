@@ -420,6 +420,8 @@
 .emptyStateIcon { font-size: 2.8rem; margin-bottom: 12px; }
 .emptyStateCard h3 { font-family: Georgia, serif; font-size: 1.5rem; color: #164030; margin: 0 0 8px; }
 .emptyStateCard p { max-width: 580px; margin: 0 auto 24px; color: #436655; line-height: 1.6; }
+.emptyStateCard .generationFeedback { margin: 16px auto 0; }
+.emptyStateCard .error { color: #8d3528; }
 .quickEditCard { margin-top: 24px; padding: 22px; border: 1px solid #cbe0d3; border-radius: 18px; background: #fdfefc; box-shadow: 0 6px 20px rgba(20, 60, 40, .04); }
 .quickEditHeader { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #dce8df; }
 .quickEditHeader h3 { margin: 0; font-size: 1.15rem; color: #184835; }

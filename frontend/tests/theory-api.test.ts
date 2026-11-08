@@ -6,6 +6,23 @@ const id = "00000000-0000-4000-8000-000000000001";
 const summary = { id, classroom_id: id, subject_id: id, title: "Đạo hàm", file_name: "theory.pdf",
   sha256: "a".repeat(64), page_count: 1, status: "PUBLISHED", revision: 3, source_available: true };
 
+test("teacher generation explains missing Gemini configuration and timeout recovery", async () => {
+  const original = globalThis.fetch;
+  try {
+    for (const [status, code, expected] of [
+      [500, "AI_CONFIGURATION_ERROR", /Gemini chưa được cấu hình.*khởi động lại backend/],
+      [504, "AI_GATEWAY_TIMEOUT", /Gemini xử lý quá lâu.*thử tạo sơ đồ lại/],
+    ] as const) {
+      globalThis.fetch = (async (input: RequestInfo | URL) => String(input) === "/auth/csrf"
+        ? Response.json({ csrf_token: "csrf-test" })
+        : Response.json({ error: { code, message: "Provider failure" } }, { status })) as typeof fetch;
+      await assert.rejects(() => theoryApi.generate(id), expected);
+    }
+  } finally {
+    globalThis.fetch = original;
+  }
+});
+
 test("theory map contract requires cited, typed nodes", () => {
   const map = parseMap({ ...summary, ai_model: "gemini", extraction_warning_pages: [1], nodes: [{ id: "root", parent_id: null,
     kind: "ROOT", title: "Đạo hàm", body: "", latex: null, source_page: 1,

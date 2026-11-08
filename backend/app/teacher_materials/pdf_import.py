@@ -497,6 +497,18 @@ class TeacherPdfImportService:
             raise ApplicationError(404, "PDF_ASSET_NOT_FOUND", "Không tìm thấy hình minh họa đã duyệt.")
         return self._asset_path(self._directory(UUID(item.raw_metadata["pdf_import_id"])), index)
 
+    def assigned_item_asset(self, item: TeacherMaterialItem, asset_path: str) -> Path:
+        """Resolve an approved visual after the caller authorizes its assignment."""
+        metadata = item.raw_metadata or {}
+        if not metadata.get("pdf_import_id"):
+            raise ApplicationError(404, "PDF_ASSET_NOT_FOUND", "Không tìm thấy hình minh họa đã duyệt.")
+        directory = self._directory(UUID(metadata["pdf_import_id"]))
+        assets = self._questions(directory)[1]
+        for index in metadata.get("visual_assets", []):
+            if isinstance(index, int) and 0 <= index < len(assets) and assets[index] == asset_path:
+                return self._asset_path(directory, index, assets=assets)
+        raise ApplicationError(404, "PDF_ASSET_NOT_FOUND", "Không tìm thấy hình minh họa đã duyệt.")
+
     def _asset_path(self, directory: Path, index: int, *, assets: list[str] | None = None) -> Path:
         if assets is None:
             assets = self._questions(directory)[1]

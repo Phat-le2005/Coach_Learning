@@ -61,7 +61,7 @@ async function forward(request: NextRequest, context: Context): Promise<NextResp
       method: request.method,
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        Accept: "application/json",
+        Accept: path.includes("/problem-assets/") ? "image/png,image/jpeg" : "application/json",
         ...(request.method === "GET" ? {} : { "Content-Type": "application/json" }),
       },
       body,
@@ -72,9 +72,9 @@ async function forward(request: NextRequest, context: Context): Promise<NextResp
       const result = await upstream.json();
       return NextResponse.json({ ...result, websocket_url: inkWebSocketUrl(path.replace(/\/live-ticket$/, "/live"), request.headers.get("origin")!) }, { headers: { "Cache-Control": "no-store" } });
     }
-    return new NextResponse(await upstream.text(), {
+    return new NextResponse(upstream.body, {
       status: upstream.status,
-      headers: { "Content-Type": upstream.headers.get("Content-Type") ?? "application/json", "Cache-Control": "no-store" },
+      headers: { "Content-Type": upstream.headers.get("Content-Type") ?? "application/json", "Cache-Control": "private, no-store", "X-Content-Type-Options": "nosniff" },
     });
   } catch (error) {
     if (error instanceof Error && error.message === "LAN_ADDRESS_UNAVAILABLE") return errorResponse(503, "LAN_ADDRESS_UNAVAILABLE", "Chưa tìm thấy địa chỉ mạng nội bộ. Kết nối Wi-Fi hoặc cáp mạng rồi thử lại.");

@@ -144,7 +144,7 @@ export function TeacherTheoryClient({
   const reviewedCount = nodes.filter((n) => n.reviewed).length;
   const allReviewed = nodes.length > 0 && reviewedCount === nodes.length;
 
-  async function run(action: () => Promise<TheoryMap>, success: string) {
+  async function run(action: () => Promise<TheoryMap>, success: string | ((result: TheoryMap) => string)) {
     if (busy) return;
     setBusy(true);
     setError("");
@@ -157,7 +157,7 @@ export function TeacherTheoryClient({
         result.id === map?.id && result.nodes.some((node) => node.id === current) ? current : initialNodeId(result.nodes)
       );
       setList((old) => [result, ...old.filter((item) => item.id !== result.id)]);
-      setNotice(success);
+      setNotice(typeof success === "function" ? success(result) : success);
     } catch (reason) {
       setError(errorText(reason));
     } finally {
@@ -354,7 +354,7 @@ export function TeacherTheoryClient({
           </header>
         )}
 
-        {error && <p className={styles.error} role="alert">{error}</p>}
+        {error && !(map && nodes.length === 0 && docViewMode === "map") && <p className={styles.error} role="alert">{error}</p>}
         {notice && <p className={styles.notice} role="status">{notice}</p>}
 
         <div className={isSidebarCollapsed ? styles.columnsCollapsed : styles.columns}>
@@ -657,40 +657,27 @@ export function TeacherTheoryClient({
                     initialPage={notebookPage}
                   />
                 ) : nodes.length === 0 ? (
-                  <div className={styles.emptyStateCard}>
+                  <div className={styles.emptyStateCard} aria-busy={busy}>
                     <div className={styles.emptyStateIcon}>🧠</div>
                     <h3>Chưa có sơ đồ tư duy cho tài liệu này</h3>
                     <p>
-                      Hãy để AI Gemini phân tích tài liệu PDF, bóc tách cấu trúc phân cấp bài giảng, công thức toán học KaTeX và các bước phương pháp giải một cách thông minh chỉ trong vài giây.
+                      AI Gemini phân tích tài liệu PDF để tạo bản nháp sơ đồ bài giảng, công thức và phương pháp giải. Thời gian xử lý phụ thuộc độ dài tài liệu; bạn cần kiểm tra bản nháp trước khi phát hành.
                     </p>
                     <button
                       className={styles.buttonAi}
                       type="button"
                       disabled={busy}
-                      onClick={async () => {
-                        setBusy(true);
-                        setError("");
-                        setNotice("");
-                        try {
-                          const result = await theoryApi.generate(map.id);
-                          setMap(result);
-                          setNodes(result.nodes);
-                          setEditingNodeId(initialNodeId(result.nodes));
-                          setList((old) => [result, ...old.filter((item) => item.id !== result.id)]);
-                          if (result.ai_model === "gemini") {
-                            setNotice("✨ AI Gemini đã phân tích tài liệu và kiến tạo Sơ đồ tư duy thành công!");
-                          } else {
-                            setNotice("🌿 Đã khởi tạo cấu trúc Sơ đồ tư duy từ văn bản PDF cục bộ (AI Gemini tạm thời không phản hồi).");
-                          }
-                        } catch (reason) {
-                          setError(errorText(reason));
-                        } finally {
-                          setBusy(false);
-                        }
-                      }}
+                      onClick={() => void run(
+                        () => theoryApi.generate(map.id),
+                        (result) => result.ai_model === "gemini" || result.ai_model === "gemini_enriched"
+                          ? "✨ Đã tạo bản nháp sơ đồ có hỗ trợ Gemini. Hãy kiểm tra các nhánh trước khi phát hành."
+                          : "🌿 Đã tạo bản nháp từ nội dung PDF trên máy. Gemini chưa bổ sung nội dung; hãy kiểm tra bản nháp trước khi phát hành."
+                      )}
                     >
                       {busy ? "Đang xử lý PDF với AI..." : "✨ Tạo Sơ đồ tư duy bằng AI ngay"}
                     </button>
+                    {busy && <p className={styles.generationFeedback} role="status">Đang phân tích tài liệu. Bạn có thể giữ trang này mở để nhận kết quả.</p>}
+                    {error && <p className={`${styles.error} ${styles.generationFeedback}`} role="alert">{error}</p>}
                   </div>
                 ) : (
                   <>

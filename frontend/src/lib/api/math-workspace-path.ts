@@ -6,6 +6,9 @@ export function mathWorkspaceProxyPath(parts: readonly string[], method: string)
   const tail = parts.slice(1).join("/");
   const allowed =
     (method === "GET" && ["", "problem", "ink"].includes(tail)) ||
+    (method === "GET" && parts[1] === "problem-assets" && parts.length >= 3
+      && parts.slice(2).every((part) => /^[\w.-]+$/.test(part) && part !== "." && part !== "..")
+      && /\.(?:png|jpe?g)$/i.test(parts.at(-1) ?? "")) ||
     (method === "GET" && /^ink\/pages\/(?:[0-9]|[12][0-9])$/.test(tail)) ||
     (method === "PUT" && /^ink\/pages\/(?:[0-9]|[12][0-9])$/.test(tail)) ||
     (method === "POST" && /^ink\/pages\/(?:[0-9]|[12][0-9])\/operations$/.test(tail)) ||

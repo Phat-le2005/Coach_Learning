@@ -7,6 +7,7 @@ interface MathRendererProps {
   content: string;
   className?: string;
   inline?: boolean;
+  imageBaseUrl?: string;
 }
 
 /**
@@ -100,14 +101,25 @@ export function formatPlainText(text: string): string {
 }
 
 interface Segment {
-  type: "text" | "inline_math" | "display_math";
+  type: "text" | "inline_math" | "display_math" | "image";
   value: string;
+}
+
+/** Images stay on the authenticated application origin. Never resolve against the page URL. */
+export function resolveMarkdownImageUrl(source: string, imageBaseUrl?: string): string | null {
+  if (/[\\\s\u0000-\u001f\u007f?#%]/.test(source)) return null;
+  const relative = source.replace(/^\.\//, "");
+  if (!/^[\w./-]+$/.test(relative)
+      || relative.replace(/^\//, "").split("/").some((part) => !part || part === "." || part === "..")) return null;
+  if (source.startsWith("/api/")) return source;
+  if (source.startsWith("/") || !imageBaseUrl?.startsWith("/api/")) return null;
+  return imageBaseUrl.replace(/\/$/, "") + "/" + relative.split("/").map(encodeURIComponent).join("/");
 }
 
 function parseMathSegments(text: string): Segment[] {
   const segments: Segment[] = [];
-  // Regex to match $$...$$, \[...\], $...$, \(...\)
-  const mathRegex = /(\$\$[\s\S]+?\$\$|\\\[[\s\S]+?\\\]|\$(?!\$)[\s\S]+?\$|\\\([\s\S]+?\\\))/g;
+  // Read images before formulas so underscores in filenames remain untouched.
+  const mathRegex = /(!\[[^\]\n]*\]\(\s*(?:<[^>\n]+>|[^\s)]+)\s*\)|\$\$[\s\S]+?\$\$|\\\[[\s\S]+?\\\]|\$(?!\$)[\s\S]+?\$|\\\([\s\S]+?\\\))/g;
 
   let lastIndex = 0;
   let match: RegExpExecArray | null;
@@ -121,7 +133,9 @@ function parseMathSegments(text: string): Segment[] {
     }
 
     const raw = match[0];
-    if (raw.startsWith("$$") && raw.endsWith("$$")) {
+    if (raw.startsWith("![")) {
+      segments.push({ type: "image", value: raw });
+    } else if (raw.startsWith("$$") && raw.endsWith("$$")) {
       segments.push({
         type: "display_math",
         value: raw.slice(2, -2).trim(),
@@ -238,7 +252,7 @@ function renderKatexSafe(expression: string, isDisplay: boolean): string {
   }
 }
 
-export function MathRenderer({ content, className = "", inline = false }: MathRendererProps) {
+export function MathRenderer({ content, className = "", inline = false, imageBaseUrl }: MathRendererProps) {
   const renderedHtml = useMemo(() => {
     if (!content) return "";
     const trimmed = content.trim();
@@ -268,6 +282,7 @@ export function MathRenderer({ content, className = "", inline = false }: MathRe
       !/[\u00c0-\u1ef9]/iu.test(trimmed) &&
       !/\b[A-Za-z]{4,}\s+[A-Za-z]{4,}\b/.test(trimmed) &&
       !trimmed.includes("$") &&
+      !trimmed.includes("![") &&
       !trimmed.includes("\\[")
     ) {
       return renderKatexSafe(trimmed, !inline);
@@ -278,6 +293,13 @@ export function MathRenderer({ content, className = "", inline = false }: MathRe
 
     return segments
       .map((segment) => {
+        if (segment.type === "image") {
+          const match = /^!\[([^\]\n]*)\]\(\s*(?:<([^>\n]+)>|([^\s)]+))\s*\)$/.exec(segment.value);
+          const source = match && resolveMarkdownImageUrl(match[2] ?? match[3], imageBaseUrl);
+          return source
+            ? `<img src="${escapeHtml(source)}" alt="${escapeHtml(match![1])}" loading="lazy" decoding="async" style="display:block;max-width:100%;height:auto;margin:1rem auto"/>`
+            : escapeHtml(segment.value);
+        }
         if (segment.type === "text") {
           const enhanced = enhanceTextWithInlineMath(segment.value);
           if (enhanced.includes("$")) {
@@ -297,7 +319,7 @@ export function MathRenderer({ content, className = "", inline = false }: MathRe
         return renderKatexSafe(segment.value, isDisplay);
       })
       .join("");
-  }, [content, inline]);
+  }, [content, inline, imageBaseUrl]);
 
   return (
     <div

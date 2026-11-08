@@ -308,6 +308,7 @@ export function AIReviewWorkspace({
       </div>
 
       <AIReviewHeader
+        attemptId={attemptId}
         uiState={effectiveHeaderState}
         confirmedStepCount={confirmedCount}
         problem={problem}

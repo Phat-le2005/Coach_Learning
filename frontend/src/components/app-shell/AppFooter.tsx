@@ -9,8 +9,10 @@ export interface AppFooterProps {
 }
 
 export function AppFooter({ variant = "student", compact = false }: AppFooterProps) {
+  if (variant === "teacher") return null;
+
   const homeHref =
-    variant === "teacher" ? "/teacher" : variant === "auth" ? "/login" : "/student";
+    variant === "auth" ? "/login" : "/student";
 
   return (
     <footer

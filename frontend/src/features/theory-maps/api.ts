@@ -124,12 +124,18 @@ async function request<T>(url: string, parse: (value: unknown) => T, init: Reque
   }
   const body: unknown = await response.json().catch(() => null);
   if (!response.ok) {
-    const error = body && typeof body === "object" && "error" in body ? (body as { error?: { message?: string } }).error : null;
+    const error = body && typeof body === "object" && "error" in body ? (body as { error?: { code?: string; message?: string } }).error : null;
     const rawMsg = error?.message || "";
+    const aiMessages: Record<string, string> = {
+      AI_CONFIGURATION_ERROR: "Gemini chưa được cấu hình trên máy chủ. Hãy nhờ quản trị viên cấu hình khóa Gemini, khởi động lại backend rồi thử lại.",
+      AI_GATEWAY_TIMEOUT: "Gemini xử lý quá lâu. Bạn có thể thử tạo sơ đồ lại sau; tài liệu PDF vẫn được giữ nguyên.",
+      AI_RATE_LIMIT_EXCEEDED: "Gemini đã đạt giới hạn sử dụng. Vui lòng chờ rồi thử lại hoặc kiểm tra hạn mức của khóa API.",
+      AI_SERVICE_UNAVAILABLE: "Chưa kết nối được Gemini. Vui lòng kiểm tra dịch vụ AI rồi thử lại.",
+    };
     const message =
-      rawMsg === "An unexpected error occurred."
+      aiMessages[error?.code ?? ""] ?? (rawMsg === "An unexpected error occurred."
         ? "Không thể tải dữ liệu kho lý thuyết lúc này (vui lòng kiểm tra kết nối hoặc cập nhật cơ sở dữ liệu máy chủ)."
-        : rawMsg || `Yêu cầu thất bại (${response.status}).`;
+        : rawMsg || `Yêu cầu thất bại (${response.status}).`);
     throw new Error(message);
   }
   return parse(body);

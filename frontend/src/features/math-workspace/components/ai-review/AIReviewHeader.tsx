@@ -9,6 +9,7 @@ import type { AIReviewRead } from "@/lib/api/contracts";
 import styles from "./AIReview.module.css";
 
 interface AIReviewHeaderProps {
+  attemptId: string;
   uiState: AIReviewUIState;
   confirmedStepCount: number;
   problem: ProblemRead | null;
@@ -59,6 +60,7 @@ function getStatusBadgeMeta(uiState: AIReviewUIState, review: AIReviewRead | nul
 }
 
 export function AIReviewHeader({
+  attemptId,
   uiState,
   confirmedStepCount,
   problem,
@@ -153,7 +155,7 @@ export function AIReviewHeader({
             <span>Đề bài tham chiếu</span>
           </div>
           <div className={styles.problemDrawerBody}>
-            <MathRenderer content={problem.content} />
+            <MathRenderer content={problem.content} imageBaseUrl={`/api/v3/math-solutions/attempts/${attemptId}/problem-assets`} />
           </div>
         </section>
       )}

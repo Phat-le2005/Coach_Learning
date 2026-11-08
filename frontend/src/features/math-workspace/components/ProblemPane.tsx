@@ -166,7 +166,7 @@ export function ProblemPane({
                 {/* Question Text */}
                 <div className={styles.problemBody}>
                   <div className={styles.problemContentText}>
-                    <MathRenderer content={problem.content} />
+                    <MathRenderer content={problem.content} imageBaseUrl={attempt ? `/api/v3/math-solutions/attempts/${attempt.id}/problem-assets` : undefined} />
                   </div>
                 </div>
 
@@ -179,7 +179,7 @@ export function ProblemPane({
                         <div key={opt.id} className={styles.optionCard}>
                           <span className={styles.optionLabel}>{opt.label}</span>
                           <div className={styles.optionContent}>
-                            <MathRenderer content={opt.content} />
+                            <MathRenderer content={opt.content} imageBaseUrl={attempt ? `/api/v3/math-solutions/attempts/${attempt.id}/problem-assets` : undefined} />
                           </div>
                         </div>
                       ))}

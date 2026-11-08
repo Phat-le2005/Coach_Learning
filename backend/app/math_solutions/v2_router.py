@@ -2,6 +2,7 @@ from typing import Annotated
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query, Response, status
+from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 
 from app.auth.dependencies import require_role
@@ -21,6 +22,7 @@ from app.math_solutions.schemas import (
     StepRevisionRead,
 )
 from app.math_solutions.service import MathSolutionService
+from app.teacher_materials.router import PdfService
 from app.users.models import Role, User
 
 
@@ -105,6 +107,17 @@ def get_attempt_problem(
     return MathSolutionService(session).get_attempt_problem(
         current_user.id, attempt_id
     )
+
+
+@router.get("/attempts/{attempt_id}/problem-assets/{asset_path:path}")
+def get_attempt_problem_asset(
+    attempt_id: UUID, asset_path: str, current_user: StudentUser,
+    session: Database, pdf_service: PdfService,
+) -> FileResponse:
+    path = MathSolutionService(session).get_attempt_problem_asset(
+        current_user.id, attempt_id, asset_path, pdf_service,
+    )
+    return FileResponse(path, headers={"Cache-Control": "private, no-store", "X-Content-Type-Options": "nosniff"})
 
 
 @router.post(

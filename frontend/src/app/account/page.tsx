@@ -36,7 +36,7 @@ export default async function AccountPage() {
           <Link className={styles.back} href={`/${session.role.toLowerCase()}`}>Quay về không gian của tôi →</Link>
         </section>
       </div>
-      <AppFooter variant={session.role === "TEACHER" ? "teacher" : "student"} compact />
+      {session.role !== "TEACHER" && <AppFooter variant="student" compact />}
     </main>
   );
 }

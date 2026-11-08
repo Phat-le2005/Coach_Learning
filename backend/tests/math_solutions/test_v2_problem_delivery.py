@@ -4,6 +4,7 @@ from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from threading import Barrier
+import json
 from unittest.mock import patch
 from uuid import UUID, uuid4
 
@@ -794,6 +795,59 @@ def test_workspace_loop_teacher_material_pdf(
 # =========================================================================
 # 4. Paginated Attempts List Tests
 # =========================================================================
+
+def test_question_visual_assets_are_private_and_scoped_to_snapshot(
+    db_client, db_app, db_session, delivery_domain, auth_headers, tmp_path, monkeypatch,
+):
+    domain = delivery_domain
+    job_id = uuid4()
+    asset = "visual_assets/page-0002/question.png"
+    hidden = "visual_assets/answer.png"
+    directory = tmp_path / str(job_id)
+    image = directory / "ocr" / asset
+    image.parent.mkdir(parents=True)
+    # PNG bytes must pass through FileResponse unchanged.
+    payload = b"\x89PNG\r\n\x1a\n\xff\x00\x80"
+    image.write_bytes(payload)
+    (directory / "ocr" / hidden).write_bytes(b"private-answer")
+    (directory / "job.json").write_text("{}", encoding="utf-8")
+    records = [dict(question_id="q1", collection_number=1, question=dict(markdown="Question"),
+                    visual_assets=[dict(path=asset), dict(path=hidden)])]
+    (directory / "ocr/content.draft.pretty.json").write_text(json.dumps(records), encoding="utf-8")
+    monkeypatch.setattr(db_app.state.settings, "teacher_pdf_import_dir", tmp_path)
+    domain.teacher_material_item.raw_metadata = dict(pdf_import_id=str(job_id), visual_assets=[0, 1])
+    domain.material_snapshot.content += f"\n\n![Hình nguồn]({asset})"
+    db_session.commit()
+    headers = auth_headers(domain.student_a)
+    prep = db_client.post(
+        f"/api/v2/math-solutions/student-assignments/{domain.student_assignment_a.id}/prepare", headers=headers,
+    )
+    assert prep.status_code == 200
+    problem = next(p for p in prep.json()["problems"] if p["source_kind"] == "TEACHER_MATERIAL")
+    created = db_client.post("/api/v2/math-solutions/attempts", headers=headers, json=dict(
+        source_kind=problem["source_kind"], context_type=problem["context_type"],
+        mode="INDEPENDENT_SOLUTION", create_idempotency_key="visual-asset-test",
+        student_assignment_id=problem["student_assignment_id"],
+        student_assignment_material_item_id=problem["student_assignment_material_item_id"],
+    ))
+    assert created.status_code == 201
+    base = f"/api/v2/math-solutions/attempts/{created.json()['id']}/problem-assets"
+    response = db_client.get(f"{base}/{asset}", headers=headers)
+    assert response.status_code == 200
+    assert response.content == payload
+    assert response.headers["content-type"] == "image/png"
+    assert "no-store" in response.headers["cache-control"]
+    assert db_client.get(f"{base}/{hidden}", headers=headers).status_code == 404
+    assert db_client.get(f"{base}/{asset}", headers=auth_headers(domain.student_b)).status_code == 404
+    assert db_client.get(f"{base}/{asset}").status_code == 401
+    assert db_client.get(f"{base}/visual_assets/%2e%2e/job.png", headers=headers).status_code == 404
+    # Archiving a source must preserve the picture in previously assigned work.
+    domain.teacher_material.status = TeacherMaterialStatus.ARCHIVED
+    db_session.commit()
+    assert db_client.get(f"{base}/{asset}", headers=headers).content == payload
+    image.unlink()
+    assert db_client.get(f"{base}/{asset}", headers=headers).status_code == 404
+
 
 def test_list_attempts_pagination_and_filtering(
     db_client: TestClient, delivery_domain: DeliveryDomain, auth_headers
