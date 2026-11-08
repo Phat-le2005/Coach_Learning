@@ -191,13 +191,12 @@ class GeminiMathOCRAdapter(MathOCRAdapter):
 
         gen_config = types.GenerateContentConfig(**cfg_kwargs)
 
-        # 4. Fallback chain: Primary Model -> Flash Lite -> Flash Latest -> 2.5 Flash
+        # 4. Fallback chain: Primary Model -> Gemini 3.8 Flash -> Gemini 3.5 Flash -> Gemini 3.5 Flash Lite
         model_candidates = [
             self.model_name,
             "gemini-3.8-flash",
-            "gemini-3.8-flash-lite",
-            "gemini-flash-latest",
-            "gemini-2.5-flash",
+            "gemini-3.5-flash",
+            "gemini-3.5-flash-lite",
         ]
         # Keep unique models preserving order
         seen = set()
@@ -205,30 +204,42 @@ class GeminiMathOCRAdapter(MathOCRAdapter):
 
         last_error = None
         for candidate_model in model_queue:
-            try:
-                response = client.models.generate_content(
-                    model=candidate_model,
-                    contents=prompt_parts,
-                    config=gen_config,
-                )
-                text = response.text or ""
-                parsed = json.loads(text)
-                return self._to_response(parsed, strokes)
-            except Exception as exc:
-                last_error = exc
-                err_str = str(exc).lower()
-                logger.warning(
-                    "Gemini OCR model %s failed (%s), attempting next fallback...",
-                    candidate_model,
-                    exc,
-                )
-                if any(k in err_str for k in ("401", "403", "api_key", "unauthorized")):
-                    raise ApplicationError(
-                        503,
-                        "OCR_API_KEY_INVALID",
-                        f"GEMINI_API_KEY không hợp lệ hoặc đã hết hạn: {exc}",
-                    ) from exc
-                continue
+            # Try with configured thinking, fallback to without thinking if rejected
+            configs_to_try = [gen_config]
+            if thinking_cfg is not None:
+                # Also prepare a config without thinking in case model doesn't support the level
+                no_think_kwargs = dict(cfg_kwargs)
+                no_think_kwargs.pop("thinking_config", None)
+                configs_to_try.append(types.GenerateContentConfig(**no_think_kwargs))
+
+            for current_cfg in configs_to_try:
+                try:
+                    response = client.models.generate_content(
+                        model=candidate_model,
+                        contents=prompt_parts,
+                        config=current_cfg,
+                    )
+                    text = response.text or ""
+                    parsed = json.loads(text)
+                    return self._to_response(parsed, strokes)
+                except Exception as exc:
+                    last_error = exc
+                    err_str = str(exc).lower()
+                    if "thinking" in err_str and current_cfg is not configs_to_try[-1]:
+                        logger.info("Retrying %s without thinking_config due to: %s", candidate_model, exc)
+                        continue
+                    logger.warning(
+                        "Gemini OCR model %s failed (%s), attempting next fallback...",
+                        candidate_model,
+                        exc,
+                    )
+                    if any(k in err_str for k in ("401", "403", "api_key", "unauthorized")):
+                        raise ApplicationError(
+                            503,
+                            "OCR_API_KEY_INVALID",
+                            f"GEMINI_API_KEY không hợp lệ hoặc đã hết hạn: {exc}",
+                        ) from exc
+                    break
 
         logger.error("All Gemini OCR models failed. Last error: %s", last_error)
         raise ApplicationError(
