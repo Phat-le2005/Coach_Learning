@@ -21,6 +21,8 @@ from app.math_solutions.schemas import (
     StepRevisionRead,
 )
 from app.math_solutions.service import MathSolutionService
+from app.teacher_materials.router import PdfService
+from app.teacher_materials.visual_delivery import QuestionVisualDelivery
 from app.users.models import Role, User
 
 
@@ -101,10 +103,11 @@ def get_attempt_problem(
     attempt_id: UUID,
     current_user: StudentUser,
     session: Database,
+    pdf: PdfService,
 ) -> ProblemRead:
-    return MathSolutionService(session).get_attempt_problem(
+    return QuestionVisualDelivery(pdf).problem(MathSolutionService(session).get_attempt_problem(
         current_user.id, attempt_id
-    )
+    ))
 
 
 @router.post(
@@ -286,10 +289,14 @@ def prepare_student_assignment(
     student_assignment_id: UUID,
     current_user: StudentUser,
     session: Database,
+    pdf: PdfService,
 ) -> PrepareAssignmentResponse:
-    return MathSolutionService(session).prepare_student_assignment(
+    result = MathSolutionService(session).prepare_student_assignment(
         current_user.id, student_assignment_id
     )
+    delivery = QuestionVisualDelivery(pdf)
+    result.problems = [delivery.problem(problem) for problem in result.problems]
+    return result
 
 
 @router.get(
@@ -300,7 +307,10 @@ def get_student_assignment_problems(
     student_assignment_id: UUID,
     current_user: StudentUser,
     session: Database,
+    pdf: PdfService,
 ) -> list[ProblemRead]:
-    return MathSolutionService(session).get_student_assignment_problems(
+    problems = MathSolutionService(session).get_student_assignment_problems(
         current_user.id, student_assignment_id
     )
+    delivery = QuestionVisualDelivery(pdf)
+    return [delivery.problem(problem) for problem in problems]

@@ -4,6 +4,7 @@ from uuid import UUID
 
 from pydantic import BaseModel, Field
 from app.teacher_materials.difficulty import MaterialDifficultyLevel
+from app.teacher_materials.visual_schemas import QuestionVisualRead
 
 
 class PdfReviewDecision(BaseModel):
@@ -34,6 +35,7 @@ class PdfImportQuestion(BaseModel):
     suggested: bool
     source_assets: list[int]
     visual_assets: list[int]
+    visuals: list[QuestionVisualRead] = Field(default_factory=list)
 
 
 class PdfImportRead(BaseModel):

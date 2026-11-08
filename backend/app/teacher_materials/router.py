@@ -103,7 +103,11 @@ def delete_material(material_id: UUID, user: Teacher, service: Annotated[Teacher
     return Response(status_code=204)
 
 @router.get("/{material_id}/items",response_model=list[TeacherMaterialItemRead])
-def get_items(material_id:UUID,user:Teacher,service:Annotated[TeacherMaterialService,Depends(get_service)]): return service.get(user.id,material_id).items
+def get_items(material_id:UUID,user:Teacher,service:Annotated[TeacherMaterialService,Depends(get_service)],pdf:PdfService):
+    items = service.get(user.id, material_id).items
+    return [TeacherMaterialItemRead.model_validate(item).model_copy(update={
+        "visuals": pdf.item_visuals(item, f"/api/teacher/materials/{material_id}/assets", item.content, include_references=True)
+    }) for item in items]
 
 
 @router.get("/{material_id}/document")
@@ -120,7 +124,11 @@ def material_visual_asset(material_id: UUID, index: int, user: Teacher, service:
     return FileResponse(service.material_asset(user.id, material_id, index), headers={"Cache-Control": "private, no-store"})
 
 @router.patch("/items/{item_id}",response_model=TeacherMaterialItemRead)
-def update_item(item_id:UUID,data:TeacherMaterialItemUpdate,user:Teacher,service:Annotated[TeacherMaterialService,Depends(get_service)]): return service.update_item(user.id,item_id,data)
+def update_item(item_id:UUID,data:TeacherMaterialItemUpdate,user:Teacher,service:Annotated[TeacherMaterialService,Depends(get_service)],pdf:PdfService):
+    item = service.update_item(user.id, item_id, data)
+    return TeacherMaterialItemRead.model_validate(item).model_copy(update={
+        "visuals": pdf.item_visuals(item, f"/api/teacher/materials/{item.teacher_material_id}/assets", item.content, include_references=True)
+    })
 
 @router.post("/{material_id}/map")
 async def map_material(material_id:UUID,user:Teacher,service:Annotated[TeacherMaterialService,Depends(get_service)],gateway:Annotated[AIGateway,Depends(get_ai_gateway)]):

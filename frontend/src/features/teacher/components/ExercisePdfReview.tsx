@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, CheckCircle2, ExternalLink, FileCheck2, Pencil, RefreshCw, Save, Send } from "lucide-react";
-import { MathRenderer } from "@/components/ui/MathRenderer";
+import { QuestionContent } from "@/components/ui/QuestionContent";
 import type { TeacherMaterial } from "../api";
 import { teacherPdfApi, type PdfReviewDecision, type TeacherPdfImport } from "../pdf-api";
 import styles from "../TeacherDashboard.module.css";
@@ -211,8 +211,7 @@ export function ExercisePdfReview({ jobId, onClose, onSubmitted, onOpenRevision 
               </div>
             </div>
             {!q.suggested && <details className={reviewStyles.warnings}><summary>Cảnh báo cần đối chiếu</summary><ul>{Array.from(new Set(q.warnings.map(warningLabel))).map((w) => <li key={w}>{w}</li>)}</ul></details>}
-            <div className={reviewStyles.preview}><MathRenderer content={decision.content} /></div>
-            {q.visual_assets.map((index) => <img key={index} src={teacherPdfApi.assetUrl(jobId, index)} alt={`Hình minh họa câu ${q.source_number ?? q.number}`} loading="lazy" className={reviewStyles.sourceImage} />)}
+            <div className={reviewStyles.preview}><QuestionContent content={decision.content} visuals={q.visuals} /></div>
             {editing && <div id={`${inputId}-editor`} className={reviewStyles.editPanel} role="region" aria-label={`Chỉnh sửa câu ${q.source_number ?? q.number}`}>
               <p className={reviewStyles.editHint}>Sửa chữ trực tiếp; bấm vào công thức để sửa hoặc chọn “Chèn công thức” để mở bảng ký hiệu toán. Hệ thống tự lưu mã công thức, giáo viên không cần biết LaTeX.</p>
               <div className={reviewStyles.editGrid}>
@@ -226,17 +225,17 @@ export function ExercisePdfReview({ jobId, onClose, onSubmitted, onOpenRevision 
                 </div>
                 <div className={reviewStyles.livePreview} aria-label="Bản xem trước sau chỉnh sửa">
                   <h5>Xem trước sau chỉnh sửa</h5>
-                  <strong>Đề bài</strong><MathRenderer content={decision.content || "Chưa nhập đề bài."} />
-                  <strong>Đáp án</strong><MathRenderer content={decision.answer || "Chưa nhập đáp án."} />
-                  <strong>Lời giải</strong><MathRenderer content={decision.explanation || "Chưa nhập lời giải."} />
+                  <strong>Đề bài</strong><QuestionContent content={decision.content || "Chưa nhập đề bài."} visuals={q.visuals} />
+                  <strong>Đáp án</strong><QuestionContent content={decision.answer || "Chưa nhập đáp án."} visuals={q.visuals} role="answer" />
+                  <strong>Lời giải</strong><QuestionContent content={decision.explanation || "Chưa nhập lời giải."} visuals={q.visuals} role="solution" />
                 </div>
               </div>
               <p className={reviewStyles.editHint}>Sau khi sửa nội dung, hãy đối chiếu và tích duyệt lại câu này. Chọn Lưu nháp hoặc Lưu vào kho để ghi lại thay đổi.</p>
               <button type="button" className={styles.btnSecondarySmall} onClick={() => setEditingQuestionId(null)}>Xong chỉnh sửa</button>
             </div>}
             {(decision.answer || decision.explanation) && <details className={reviewStyles.editor}><summary>Xem đáp án / lời giải</summary>
-              {decision.answer && <><strong>Đáp án</strong><MathRenderer content={decision.answer} /></>}
-              {decision.explanation && <><strong>Lời giải</strong><MathRenderer content={decision.explanation} /></>}
+              {decision.answer && <><strong>Đáp án</strong><QuestionContent content={decision.answer} visuals={q.visuals} role="answer" /></>}
+              {decision.explanation && <><strong>Lời giải</strong><QuestionContent content={decision.explanation} visuals={q.visuals} role="solution" /></>}
             </details>}
             <fieldset className={reviewStyles.difficulty} aria-describedby={`${inputId}-difficulty-help`}>
               <legend>Mức độ câu hỏi</legend>

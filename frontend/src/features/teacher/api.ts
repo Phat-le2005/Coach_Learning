@@ -1,6 +1,7 @@
 import { getCsrfToken, refreshBrowserSession } from "../../lib/auth/browser";
 import { ApiContractError, array, boolean, integer, number, record, string } from "../../lib/api/validation";
 import { parseMaterialDifficulty, type MaterialDifficultyLevel } from "./material-difficulty";
+import { parseQuestionVisuals, type QuestionVisual } from "../../lib/api/question-visuals";
 
 export interface TeacherClassroom { id: string; name: string; academic_year: string; grade_level: number; }
 export interface TeacherSubject { id: string; code: string; name: string; grade_level: number | null; }
@@ -10,10 +11,10 @@ export interface TeacherAssignment { id: string; title: string; status: string; 
 export interface TeacherRosterStudent { student_id: string; student_name: string; status: string; score: number | null; provisional_score?: number | null; submitted_at: string | null; }
 export interface TeacherRoster { assignment_id: string; title: string; total_students: number; submitted_count: number; graded_count: number; roster: TeacherRosterStudent[]; }
 export interface TeacherMaterialItemOption { id: string; label: string; content: string; order_index: number; }
-export interface TeacherMaterialItem { id: string; order_index: number; content: string; question_type: string | null; correct_answer: string | null; explanation: string | null; difficulty: number | null; difficulty_level?: MaterialDifficultyLevel | null; extraction_status: string; evaluation_mode: string; options: TeacherMaterialItemOption[]; visual_assets?: number[]; }
+export interface TeacherMaterialItem { visuals?: QuestionVisual[]; id: string; order_index: number; content: string; question_type: string | null; correct_answer: string | null; explanation: string | null; difficulty: number | null; difficulty_level?: MaterialDifficultyLevel | null; extraction_status: string; evaluation_mode: string; options: TeacherMaterialItemOption[]; visual_assets?: number[]; }
 export interface TeacherSubmissionStepDetail { step_id: string; step_index: number; step_type: string; content_latex: string | null; explanation_text: string | null; math_validity: string | null; confidence: number | null; error_detected: boolean | null; error_description: string | null; }
 export interface TeacherSubmissionPaperAttachment { id: string; file_name: string; content_type: string; storage_key: string; }
-export interface TeacherSubmissionItem { id: string; source_kind: string; order_index: number; content: string | null; question_type: string | null; options: { id: string; label: string; content: string; order_index: number }[]; correct_answer: string | null; explanation: string | null; student_answer: string | null; is_correct: boolean | null; score: number | null; provisional_score?: number | null; evaluation_status: string | null; teacher_feedback: string | null; graded_at: string | null; graded_by: string | null; attempt_id: string | null; attempt_status: string | null; steps: TeacherSubmissionStepDetail[]; paper_attachments: TeacherSubmissionPaperAttachment[]; }
+export interface TeacherSubmissionItem { visuals?: QuestionVisual[]; id: string; source_kind: string; order_index: number; content: string | null; question_type: string | null; options: { id: string; label: string; content: string; order_index: number }[]; correct_answer: string | null; explanation: string | null; student_answer: string | null; is_correct: boolean | null; score: number | null; provisional_score?: number | null; evaluation_status: string | null; teacher_feedback: string | null; graded_at: string | null; graded_by: string | null; attempt_id: string | null; attempt_status: string | null; steps: TeacherSubmissionStepDetail[]; paper_attachments: TeacherSubmissionPaperAttachment[]; }
 export interface TeacherStudentSubmissionDetail { assignment_id: string; assignment_title: string; delivery_mode: string; classroom_id: string; student_id: string; student_name: string; status: string; score: number | null; provisional_score?: number | null; submitted_at: string | null; items: TeacherSubmissionItem[]; }
 export interface TeacherAnalytics {
   student_count: number;
@@ -127,6 +128,7 @@ export function parseMaterialItem(value: unknown, path = "item"): TeacherMateria
     order_index: integer(row.order_index, `${path}.order_index`),
     content: string(row.content, `${path}.content`),
     visual_assets: array(metadata.visual_assets ?? [], `${path}.visual_assets`, integer),
+    visuals: parseQuestionVisuals(row.visuals, `${path}.visuals`),
     question_type: row.question_type === null || row.question_type === undefined ? null : string(row.question_type, `${path}.question_type`),
     correct_answer: row.correct_answer === null || row.correct_answer === undefined ? null : string(row.correct_answer, `${path}.correct_answer`),
     explanation: row.explanation === null || row.explanation === undefined ? null : string(row.explanation, `${path}.explanation`),
@@ -166,6 +168,7 @@ export function parseStudentSubmission(value: unknown, path = "submission"): Tea
         source_kind: string(i.source_kind, `${itemP}.source_kind`),
         order_index: integer(i.order_index, `${itemP}.order_index`),
         content: i.content === null || i.content === undefined ? null : string(i.content, `${itemP}.content`),
+        visuals: parseQuestionVisuals(i.visuals, `${itemP}.visuals`),
         question_type: i.question_type === null || i.question_type === undefined ? null : string(i.question_type, `${itemP}.question_type`),
         options: array(i.options ?? [], `${itemP}.options`, (o, oP) => {
           const opt = record(o, oP);

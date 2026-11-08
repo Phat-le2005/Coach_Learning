@@ -90,6 +90,17 @@ tài khoản học sinh. Stroke operation ACK mới được coi là đã lưu. 
 
 ## PDF bài tập trong kho học liệu giáo viên
 
+Ảnh trong đề bài dùng chung danh sách `visuals` ở các trang xem học liệu, duyệt OCR,
+làm bài học sinh, xem lại và chấm bài giáo viên. Backend tự đọc lại metadata ảnh từ
+bản nhập OCR cũ; không cần nhập lại học liệu hoặc sửa snapshot bài đã giao. Khởi động
+lại backend và tải lại trang sau khi cập nhật cả backend/frontend. API ảnh sử dụng
+cookie đăng nhập qua frontend, không cần mở công khai thư mục ảnh. Ảnh đáp án/lời
+giải chỉ gửi cho học sinh khi trạng thái bài đã nộp cho phép xem lời giải.
+
+Khi chạy trên máy khác, cần dùng cùng backend/database/storage hoặc tải và duyệt lại
+học liệu trên máy đó. Dữ liệu học liệu ở `backend/var/teacher_materials/` và nguồn OCR
+mặc định ở `.tmp/teacher-pdf-imports/` là dữ liệu riêng, không được đưa vào Git.
+
 Tại `/teacher?tab=materials`, cùng nút tải tài liệu nhận **PDF, ảnh PNG/JPG/JPEG**
 để tạo bản nháp OCR; TXT vẫn đi theo luồng văn bản hiện có. Máy chủ gọi trực tiếp
 `tools/pdf_metadata/ocr_pdf_direct.ps1` (layout + OCR + kiểm tra chất lượng hiện có),

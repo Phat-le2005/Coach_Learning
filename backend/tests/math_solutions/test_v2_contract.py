@@ -88,6 +88,10 @@ def test_v2_response_contract_does_not_expose_protected_answer_or_rubric() -> No
     option_properties = schema["components"]["schemas"]["ProblemOptionRead"]["properties"]
     assert "is_correct" not in option_properties
 
+    visual_properties = schema["components"]["schemas"]["QuestionVisualRead"]["properties"]
+    assert set(visual_properties) == {"index", "path", "url", "role"}
+    assert "visuals" in problem_properties
+
 
 def test_v2_contract_snapshot_is_current() -> None:
     assert check_v2_contract() == 0

@@ -17,6 +17,7 @@ import {
   HelpCircle,
 } from "lucide-react";
 import { MathRenderer } from "@/components/ui/MathRenderer";
+import { QuestionContent } from "@/components/ui/QuestionContent";
 import {
   teacherApi,
   type TeacherStudentSubmissionDetail,
@@ -302,7 +303,7 @@ export function TeacherSubmissionReviewModal({
 
                   {/* Problem statement */}
                   <div className={styles.reviewQuestionBox}>
-                    <MathRenderer content={currentItem.content || "Không có nội dung câu hỏi."} />
+                    <QuestionContent content={currentItem.content || "Không có nội dung câu hỏi."} visuals={currentItem.visuals} relatedContent={currentItem.options.map((option) => option.content)} />
                   </div>
 
                   {/* Options if MCQ */}
@@ -323,7 +324,7 @@ export function TeacherSubmissionReviewModal({
                         >
                           <span className={styles.optionLabelBadge}>{opt.label}</span>
                           <div className={styles.optionTextContent}>
-                            <MathRenderer content={opt.content} inline={true} />
+                            <QuestionContent content={opt.content} visuals={currentItem.visuals} gallery={false} inline />
                           </div>
                           {currentItem.student_answer === opt.label && (
                             <span className={styles.badgeChosen}>Học sinh chọn</span>
@@ -341,7 +342,7 @@ export function TeacherSubmissionReviewModal({
                     <div className={styles.referenceAnswerBox}>
                       <span className={styles.referenceAnswerLabel}>Đáp án chuẩn giáo viên:</span>
                       <div className={styles.referenceAnswerBody}>
-                        <MathRenderer content={currentItem.correct_answer} />
+                        <QuestionContent content={currentItem.correct_answer} visuals={currentItem.visuals} role="answer" />
                       </div>
                     </div>
                   )}

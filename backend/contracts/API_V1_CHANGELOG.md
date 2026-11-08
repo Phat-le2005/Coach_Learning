@@ -4,6 +4,19 @@ Tất cả các thay đổi về cấu trúc giao tiếp, schema, endpoint, para
 
 ---
 
+## 2026-11-08 — Ảnh câu hỏi dùng chung
+
+- Thêm trường `visuals` (mặc định `[]`) cho câu hỏi học liệu, bản nháp OCR,
+  chi tiết bài học sinh và màn hình chấm bài. API v2 `ProblemRead` dùng cùng schema.
+- Thêm API GET ảnh theo câu đã giao cho học sinh và theo lớp/học sinh cho giáo viên.
+  Mỗi yêu cầu kiểm tra quyền, câu nguồn và chỉ mục ảnh; ảnh đáp án/lời giải chỉ cấp
+  cho học sinh sau khi đã nộp bài. Phản hồi ảnh dùng `private, no-store`.
+- Khôi phục liên kết ảnh của bản nhập cũ từ thông tin OCR đã lưu, không thay nội dung
+  snapshot đã giao và không cần migration database hay chạy OCR lại.
+- Cập nhật snapshot theo các endpoint kho học liệu đã có trên `main` và phần ảnh
+  mới; hash v1 hiện hành: `68dc226232562c1646ec8aaab1b7c2170c27307f4165cf47376fc046b6ee4acf`.
+  Snapshot v2 cũng đồng bộ trường OCR `strokes` đã có trên `main`.
+
 ## [1.0.0] - 2026-10-07
 
 ### Đóng băng chính thức API v1 (API-V1-FREEZE)

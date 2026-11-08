@@ -54,6 +54,11 @@ export function teacherBackendPath(parts: string[], method: string, search: stri
       if (parts.length === 3 && ["generate", "regenerate", "prefill", "publish", "share-source", "unshare-source"].includes(action ?? "") && method === "POST") return `/api/v2/teacher/theory/${id}/${action}`;
     }
   }  if (first === "assignments" && UUID.test(id ?? "")) {
+    if (parts.length === 8 && parts[2] === "students" && UUID.test(parts[3])
+        && parts[4] === "material-items" && UUID.test(parts[5]) && parts[6] === "assets"
+        && /^\d{1,6}$/.test(parts[7]) && method === "GET" && !search) {
+      return `/teacher/assignments/${id}/students/${parts[3]}/material-items/${parts[5]}/assets/${parts[7]}`;
+    }
     if (action === "submissions" && parts.length === 3 && method === "GET" && !search) {
       return `/teacher/assignments/${id}/submissions`;
     }
