@@ -1,10 +1,10 @@
 # Kiến trúc Coach Learning — Graphify
 
-Sinh lúc 2026-11-08T06:48:40+07:00; Graphify `0.9.102`; HEAD `6260096858eb4e3f342daf4659a0149743b228e6`.
+Sinh lúc 2026-11-08T07:08:33+07:00; Graphify `0.9.102`; HEAD `d3cd309a39f5a9d72fbdde65e1dac046711c1186`.
 Snapshot gồm cả source chưa commit trong working tree. Không đại diện riêng cho HEAD hoặc production.
 
-Đã phát hiện **1,638 file code**, tạo **15,835 nodes / 69,676 quan hệ / 449 communities**.
-Có 1,611 file xuất hiện trên node. Fingerprint source: `2bc62a0083cd35f6486dfeb1ff0260e6cc536c34c0001b87397ec88785be7780`.
+Đã phát hiện **1,638 file code**, tạo **15,837 nodes / 69,674 quan hệ / 434 communities**.
+Có 1,611 file xuất hiện trên node. Fingerprint source: `aa39aab8f054c92b33376b78bd3b214790f4633bc9b820f528e7551c6fb61b8e`.
 Chỉ phân tích AST cục bộ; semantic LLM: **0 tokens**. Nhãn community lấy từ hub, không dùng model.
 
 ![Sơ đồ kiến trúc](architecture.svg)
@@ -55,7 +55,7 @@ flowchart LR
 |---|---:|---:|
 | AI | 377 | 39 |
 | Backend | 5,418 | 574 |
-| Frontend | 2,354 | 369 |
+| Frontend | 2,356 | 369 |
 | Other | 2,015 | 22 |
 | Tests | 3,747 | 409 |
 | Tools | 1,924 | 198 |
@@ -72,7 +72,7 @@ Các cặp không có hướng; số lượng là link lưu trong graph, không 
 | AI | Other | 272 |
 | AI | Tests | 628 |
 | AI | Tools | 15 |
-| Backend | Other | 6,089 |
+| Backend | Other | 6,092 |
 | Backend | Tests | 13,432 |
 | Backend | Tools | 428 |
 | Frontend | Other | 178 |
@@ -81,7 +81,7 @@ Các cặp không có hướng; số lượng là link lưu trong graph, không 
 | Other | Tools | 1,331 |
 | Tests | Tools | 1,333 |
 
-Confidence: `EXTRACTED`: 59,391, `INFERRED`: 10,285.
+Confidence: `EXTRACTED`: 59,404, `INFERRED`: 10,270.
 
 ## Các cặp module liên kết nhiều nhất
 
@@ -91,7 +91,7 @@ Confidence: `EXTRACTED`: 59,391, `INFERRED`: 10,285.
 | `root` | `tools/pdf_metadata` | 1,257 |
 | `backend/app/questions` | `backend/tests/questions` | 956 |
 | `backend/tests/questions` | `root` | 916 |
-| `frontend/src/app` | `frontend/src/lib` | 529 |
+| `frontend/src/app` | `frontend/src/lib` | 532 |
 | `backend/app/math_solutions` | `backend/tests/math_solutions` | 504 |
 | `backend/app/curriculum` | `root` | 465 |
 | `backend/tests/math_solutions` | `root` | 421 |
@@ -102,7 +102,7 @@ Confidence: `EXTRACTED`: 59,391, `INFERRED`: 10,285.
 | `backend/app/classes` | `backend/tests/classes` | 308 |
 | `backend/app/question_supply` | `backend/tests/question_supply` | 299 |
 | `root` | `train/comer_hme500` | 294 |
-| `frontend/src/features/math-workspace` | `frontend/src/lib` | 254 |
+| `frontend/src/features/math-workspace` | `frontend/src/lib` | 257 |
 | `backend/tests/curriculum` | `root` | 236 |
 | `backend/migrations` | `root` | 235 |
 | `root` | `tools/ocr-v2-lab` | 218 |

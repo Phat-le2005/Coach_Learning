@@ -47,6 +47,15 @@ Giữ cấu hình DB/JWT/origin hiện có; restart backend/frontend sau đổi 
 Tầng 1 không cần Gemini. Tầng 2 cần Internet, khóa và quota. Không đặt key vào
 biến `NEXT_PUBLIC_*`. Không có model/cache local hay Graphify trong runtime.
 
+Nếu trang hiện môn `Ink PostgreSQL Concurrency`, kiểm tra backend mà tiến trình
+frontend thực sự dùng. Server QA `resume_server.py` cổng 8050 dùng DB/schema
+kiểm thử riêng, không chứa milestone đã cài vào DB development. `API_BASE_URL`
+được launcher truyền vào tiến trình có thể ghi đè `.env.local`. Để chạy frontend
+cổng 3050 với DB development, dùng `tools/start-backend.ps1 -Lan -Port 8000
+-FrontendPort 3050` và `tools/start-local.ps1 -Lan -Port 3050 -ApiUrl
+http://127.0.0.1:8000` từ repo root. Đăng nhập lại bằng tài khoản development khi
+chuyển backend; không sao chép tài khoản, token hay dữ liệu QA vào DB development.
+
 ## Hai tầng và cập nhật năng lực
 
 Tầng 1 kiểm toán bằng CAS/đại lượng đã duyệt, không dùng độ giống chuỗi làm điểm.
