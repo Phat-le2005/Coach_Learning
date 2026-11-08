@@ -59,6 +59,7 @@ commit-history.txt
 /backend/data/milestone-345.json
 /backend/data/deploy-report.json
 /backend/data/completion.json
+/backend/math-ocr-pipeline/
 /backend/data/questions/math/grade12/pdf_handoff_200_v0_1/
 /backend/data/materials/
 /reports/data_audits/

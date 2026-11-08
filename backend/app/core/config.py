@@ -53,7 +53,9 @@ class Settings(BaseSettings):
     seed_demo_password: SecretStr = SecretStr("")
 
     # OCR is disabled by default; no mock output is ever served automatically.
-    math_ocr_provider: Literal["disabled", "mathpix", "local_rapid", "local_pix2tex", "mock"] = "disabled"
+    math_ocr_provider: Literal["disabled", "gemini", "mathpix", "local_rapid", "local_pix2tex", "mock"] = "gemini"
+    gemini_ocr_model: str = Field(default="gemini-3.8-flash", min_length=1)
+    gemini_ocr_fast_mode: bool = True
     math_ocr_model_dir: Path | None = None
     mathpix_app_id: str = ""
     mathpix_app_key: SecretStr = SecretStr("")
