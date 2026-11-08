@@ -81,7 +81,11 @@ class AIStepGrade(BaseModel):
     confidence: float = Field(ge=0, le=1)
     student_quote: str = Field(min_length=1, max_length=400)
     answer_quote: str = Field(min_length=1, max_length=400)
-    feedback: str = Field(min_length=1, max_length=1200)
+    feedback: str = Field(
+        min_length=1,
+        max_length=1200,
+        description="Lời nhận xét sư phạm chi tiết dành cho học sinh, viết hoàn toàn bằng Tiếng Việt chuẩn mực, tự nhiên.",
+    )
     error_nature: Literal["ARITHMETIC_SLIP", "CONSEQUENTIAL", "CONCEPTUAL"] | None = Field(
         default=None,
         description=(
@@ -122,7 +126,11 @@ class AICheckGrade(BaseModel):
     confidence: float = Field(ge=0, le=1)
     step_indices: list[int] = Field(max_length=100)
     answer_quote: str = Field(min_length=1, max_length=400)
-    feedback: str = Field(min_length=1, max_length=1200)
+    feedback: str = Field(
+        min_length=1,
+        max_length=1200,
+        description="Lời nhận xét sư phạm chi tiết dành cho học sinh, viết hoàn toàn bằng Tiếng Việt chuẩn mực, tự nhiên.",
+    )
 
 
 class AICriterionGrade(BaseModel):
@@ -132,7 +140,11 @@ class AICriterionGrade(BaseModel):
     confidence: float = Field(ge=0, le=1)
     step_indices: list[int] = Field(max_length=100)
     answer_quote: str = Field(min_length=1, max_length=400)
-    feedback: str = Field(min_length=1, max_length=1200)
+    feedback: str = Field(
+        min_length=1,
+        max_length=1200,
+        description="Lời nhận xét sư phạm chi tiết dành cho học sinh, viết hoàn toàn bằng Tiếng Việt chuẩn mực, tự nhiên.",
+    )
     checks: list[AICheckGrade] = Field(default_factory=list, max_length=100)
 
 
@@ -147,7 +159,11 @@ class PreliminaryStepComment(BaseModel):
     step_index: int = Field(ge=1)
     student_quote: str = Field(min_length=1, max_length=400)
     problem_quote: str = Field(min_length=1, max_length=400)
-    feedback: str = Field(min_length=1, max_length=1200)
+    feedback: str = Field(
+        min_length=1,
+        max_length=1200,
+        description="Lời nhận xét sư phạm chi tiết dành cho học sinh, viết hoàn toàn bằng Tiếng Việt chuẩn mực, tự nhiên.",
+    )
 
 
 class PreliminaryOutput(BaseModel):
