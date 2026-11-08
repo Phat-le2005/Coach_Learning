@@ -1,0 +1,26 @@
+{
+  "kernel_ref": "lhngphc/comer-finetune",
+  "title": "CoMER-Finetune",
+  "is_private": true,
+  "source_revision": "79ceeb2a0f5e66eab50694b1a31010af497c2071",
+  "dataset_source": "lhngphc/data-finetune-comer",
+  "version": "v5-kaggle-ddp2",
+  "training": {
+    "devices": 2,
+    "device": "cuda:0",
+    "batch_size": 4,
+    "accumulate": 2,
+    "epochs": 30,
+    "decoder_lr": 0.00005,
+    "encoder_lr": 0.00001,
+    "preprocess": "jpeg-gray-invert-aspect128x1024-min32-pad32-v1-otsu-v2",
+    "amp_init_scale": 1024,
+    "checkpoint_upload": "final_inference",
+    "compare_before_after": true
+  },
+  "wandb": {
+    "entity": "phucga15062005",
+    "project": "coachlearning-handwritten-math",
+    "secret_label": "WANDB_API_KEY"
+  }
+}

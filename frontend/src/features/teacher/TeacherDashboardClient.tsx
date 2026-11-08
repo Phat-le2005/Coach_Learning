@@ -1,9 +1,9 @@
 "use client";
 
+import { AppFooter } from "@/components/app-shell/AppFooter";
+import { TeacherTheoryClient } from "@/features/theory-maps/TeacherTheoryClient";
+import { AlertCircle, BarChart3, BookOpen, ClipboardList, Network, RefreshCw, Users } from "lucide-react";
 import { useEffect, useState } from "react";
-import Link from "next/link";
-import canvasStyles from "@/features/math-canvas/MathCanvas.module.css";
-import { Users, BookOpen, ClipboardList, BarChart3, ArrowRight, AlertCircle, RefreshCw, Network } from "lucide-react";
 import {
   teacherApi,
   TeacherApiError,
@@ -15,16 +15,15 @@ import {
   type TeacherStudent,
   type TeacherSubject,
 } from "./api";
-import { TeacherHeader } from "./components/TeacherHeader";
-import { TeacherCockpitBanner } from "./components/TeacherCockpitBanner";
+import { AnalyticsTab } from "./components/AnalyticsTab";
+import type { ViewMode } from "./components/Classroom3DPanel";
+import { ClassroomExperience } from "./components/ClassroomExperience";
 import { ClassroomsTab } from "./components/ClassroomsTab";
+import { CreateClassModal } from "./components/CreateClassModal";
 import { MaterialsTab } from "./components/MaterialsTab";
 import { SubmissionsTab } from "./components/SubmissionsTab";
-import { AnalyticsTab } from "./components/AnalyticsTab";
-import { CreateClassModal } from "./components/CreateClassModal";
+import { TeacherHeader } from "./components/TeacherHeader";
 import { UploadMaterialModal } from "./components/UploadMaterialModal";
-import { TeacherTheoryClient } from "@/features/theory-maps/TeacherTheoryClient";
-import { AppFooter } from "@/components/app-shell/AppFooter";
 import styles from "./TeacherDashboard.module.css";
 
 export type TabKey = "classes" | "materials" | "theory" | "submissions" | "analytics";
@@ -42,6 +41,12 @@ export function TeacherDashboardClient({
   initialTab?: TabKey;
 }) {
   const [tab, setTab] = useState<TabKey>(initialTab);
+  const [worldViewMode, setWorldViewMode] = useState<ViewMode>("full");
+  const [viewMode3D, setViewMode3D] = useState<"3d" | "list">("3d");
+  const [previewDemo, setPreviewDemo] = useState(false);
+  const [classroomQuery, setClassroomQuery] = useState("");
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [headerCollapsed, setHeaderCollapsed] = useState(false);
 
   useEffect(() => {
     if (initialTab) {
@@ -50,7 +55,13 @@ export function TeacherDashboardClient({
   }, [initialTab]);
 
   const handleSelectTab = (nextTab: TabKey) => {
+    if (nextTab === tab) return;
     setTab(nextTab);
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setIsTransitioning(false);
+    }, 350);
+
     if (typeof window !== "undefined") {
       const url = new URL(window.location.href);
       url.searchParams.set("tab", nextTab);
@@ -121,9 +132,7 @@ export function TeacherDashboardClient({
         setClasses(nextClasses);
         setSubjects(nextSubjects);
         setClassId((current) =>
-          nextClasses.some((item) => item.id === current)
-            ? current
-            : nextClasses[0]?.id ?? ""
+          nextClasses.some((item) => item.id === current) ? current : (nextClasses[0]?.id ?? ""),
         );
       })
       .catch((error) => {
@@ -184,7 +193,13 @@ export function TeacherDashboardClient({
           errors.push(`Tài liệu: ${getErrorMessage(results[1].reason)}`);
         }
         if (results[2].status === "fulfilled") {
-          setAssignments(results[2].value);
+          const loadedAssignments = results[2].value;
+          setAssignments(loadedAssignments);
+          if (loadedAssignments.length > 0) {
+            setAssignmentId((curr) =>
+              curr && loadedAssignments.some((a) => a.id === curr) ? curr : loadedAssignments[0].id
+            );
+          }
         } else {
           errors.push(`Bài giao: ${getErrorMessage(results[2].reason)}`);
         }
@@ -232,7 +247,7 @@ export function TeacherDashboardClient({
 
   const selectedClass = classes.find((item) => item.id === classId);
   const eligibleSubjects = subjects.filter(
-    (subject) => subject.grade_level === null || subject.grade_level === selectedClass?.grade_level
+    (subject) => subject.grade_level === null || subject.grade_level === selectedClass?.grade_level,
   );
 
   // Mutation Handlers
@@ -252,18 +267,21 @@ export function TeacherDashboardClient({
   }
 
   async function handleUploadMaterial(subjectId: string, title: string, file: File) {
-    if (!classId) return;
+    if (!classId) {
+      setUploadError("Vui lòng chọn lớp học trước khi tải lên học liệu.");
+      return;
+    }
     setUploadBusy(true);
     setUploadError("");
     setUploadSuccess("");
     try {
-      const saved = await teacherApi.uploadMaterial(classId, subjectId, title, file);
-      setMaterials((current) => [saved, ...current]);
-      setUploadSuccess(`Đã lưu thành công "${saved.title}" vào lớp.`);
+      const created = await teacherApi.uploadMaterial(classId, subjectId, title, file);
+      setMaterials((current) => [created, ...current]);
+      setUploadSuccess(`Đã tải lên thành công: ${created.title}`);
       setTimeout(() => {
         setIsUploadOpen(false);
         setUploadSuccess("");
-      }, 1400);
+      }, 1200);
     } catch (error) {
       setUploadError(getErrorMessage(error));
     } finally {
@@ -272,20 +290,65 @@ export function TeacherDashboardClient({
   }
 
   const handleReload = () => {
-    setReloadCount((v) => v + 1);
+    setReloadCount((c) => c + 1);
   };
 
   function handleViewStudentWorkspace(studentId: string) {
     const student = students.find((item) => item.student_id === studentId);
     if (!student) return;
     setFocusedStudent({ id: student.student_id, name: student.full_name });
-    setAssignmentId((current) => assignments.some((item) => item.id === current) ? current : assignments[0]?.id ?? "");
+    setAssignmentId((current) => (assignments.some((item) => item.id === current) ? current : (assignments[0]?.id ?? "")));
     handleSelectTab("submissions");
   }
 
+  const embedStationIn3D = viewMode3D === "3d" && worldViewMode !== "compact";
+
+  const activeStationWorkspace =
+    tab === "materials" ? (
+      <MaterialsTab
+        selectedClass={selectedClass}
+        materials={materials}
+        subjects={subjects}
+        isLoading={classLoading}
+        onOpenUpload={() => setIsUploadOpen(true)}
+        onAssignmentCreated={(newAssignment) => {
+          setAssignments((current) => [newAssignment, ...current]);
+          setAssignmentId(newAssignment.id);
+          handleSelectTab("submissions");
+        }}
+      />
+    ) : tab === "theory" ? (
+      <TeacherTheoryClient initialClassId={classId} onSelectClass={setClassId} isEmbedded={true} />
+    ) : tab === "submissions" ? (
+      <SubmissionsTab
+        selectedClass={selectedClass}
+        assignments={assignments}
+        assignmentId={assignmentId}
+        onSelectAssignment={setAssignmentId}
+        roster={roster}
+        rosterError={rosterError}
+        focusedStudent={focusedStudent}
+        onClearStudent={() => setFocusedStudent(null)}
+        isLoading={classLoading}
+        onRefreshRoster={() => {
+          if (assignmentId) {
+            teacherApi
+              .roster(assignmentId)
+              .then(setRoster)
+              .catch(() => {});
+          }
+        }}
+      />
+    ) : tab === "analytics" ? (
+      <AnalyticsTab selectedClass={selectedClass} analytics={analytics} isLoading={classLoading} />
+    ) : null;
+
   return (
-    <div className={`${styles.dashboard} ${tab === "classes" ? styles.classroomDashboard : ""}`}>
-      <Link href="/teacher/math-canvas" className={canvasStyles.teacherLink}>Math Canvas</Link>
+    <div
+      className={`${styles.dashboard} ${tab === "classes" ? styles.classroomDashboard : ""}`}
+      data-3d-fullscreen={embedStationIn3D}
+      data-header-collapsed={headerCollapsed}
+    >
       {/* 1. Header */}
       <TeacherHeader
         teacherName={teacherName}
@@ -297,9 +360,16 @@ export function TeacherDashboardClient({
         isReloading={initialLoading || classLoading}
         onOpenCreateClass={() => setIsCreateClassOpen(true)}
         onOpenUpload={() => setIsUploadOpen(true)}
+        isCollapsed={headerCollapsed}
+        onToggleCollapse={() => setHeaderCollapsed((v) => !v)}
       />
 
-      <main className={`${styles.mainContent} ${tab === "classes" ? styles.mainContentClassroom : tab === "theory" ? styles.mainContentWide : ""}`}>
+      <main
+        className={`${styles.mainContent} ${
+          tab === "classes" ? styles.mainContentClassroom : tab === "theory" ? styles.mainContentWide : ""
+        }`}
+        data-3d-fullscreen={embedStationIn3D}
+      >
         {/* Error notification bar */}
         {initialError && (
           <div className={styles.systemAlertBar} role="alert">
@@ -318,148 +388,113 @@ export function TeacherDashboardClient({
           </div>
         )}
 
-        {/* 2. Keep classroom and theory workspaces focused on their main content. */}
-        {tab !== "theory" && tab !== "classes" && (
-          <TeacherCockpitBanner
-            teacherName={teacherName}
-            selectedClass={selectedClass}
+        {/* 2. Persistent 3D Cozy Campus Simulation World (Kept alive across all tab switches) */}
+        <div className={styles.persistentWorldWrap} data-view-mode={worldViewMode}>
+          <ClassroomExperience
             students={students}
-            assignments={assignments}
-            analytics={analytics}
-            onOpenCreateClass={() => setIsCreateClassOpen(true)}
-            onOpenUpload={() => setIsUploadOpen(true)}
-            onSelectTab={handleSelectTab}
+            selectedClass={selectedClass}
+            isLoading={classLoading}
+            error={studentError}
+            preview={previewDemo}
+            onPreview={setPreviewDemo}
+            view={viewMode3D}
+            onView={setViewMode3D}
+            query={classroomQuery}
+            onQuery={setClassroomQuery}
+            onViewStudentWorkspace={handleViewStudentWorkspace}
+            currentStation={tab}
+            onStationSelect={(st) => handleSelectTab(st as TabKey)}
+            viewMode={worldViewMode}
+            onToggleViewMode={setWorldViewMode}
+            stationWorkspace={embedStationIn3D ? activeStationWorkspace : null}
           />
+        </div>
+
+        {/* 3. Navigation Tabs (shown when in 2D list or compact mode) */}
+        {!embedStationIn3D && (
+          <div className={styles.tabsStickyWrap}>
+            <nav className={styles.tabsBar} aria-label="Các phân hệ quản lý">
+              <button
+                type="button"
+                className={`${styles.tabItem} ${tab === "classes" ? styles.tabItemActive : ""}`}
+                onClick={() => handleSelectTab("classes")}
+                aria-current={tab === "classes" ? "page" : undefined}
+              >
+                <Users size={17} aria-hidden="true" />
+                <span>Lớp học &amp; Học sinh</span>
+                <span className={styles.tabCounterBadge}>{students.length}</span>
+              </button>
+
+              <button
+                type="button"
+                className={`${styles.tabItem} ${tab === "materials" ? styles.tabItemActive : ""}`}
+                onClick={() => handleSelectTab("materials")}
+                aria-current={tab === "materials" ? "page" : undefined}
+              >
+                <BookOpen size={17} aria-hidden="true" />
+                <span>Kho học liệu &amp; Đề thi</span>
+                <span className={styles.tabCounterBadge}>{materials.length}</span>
+              </button>
+
+              <button
+                type="button"
+                className={`${styles.tabItem} ${tab === "theory" ? styles.tabItemActive : ""}`}
+                onClick={() => handleSelectTab("theory")}
+                aria-current={tab === "theory" ? "page" : undefined}
+              >
+                <Network size={17} aria-hidden="true" />
+                <span>Sơ đồ tư duy &amp; Lý thuyết</span>
+              </button>
+
+              <button
+                type="button"
+                className={`${styles.tabItem} ${tab === "submissions" ? styles.tabItemActive : ""}`}
+                onClick={() => handleSelectTab("submissions")}
+                aria-current={tab === "submissions" ? "page" : undefined}
+              >
+                <ClipboardList size={17} aria-hidden="true" />
+                <span>Bài giao &amp; Chấm bài</span>
+                <span className={styles.tabCounterBadge}>{assignments.length}</span>
+              </button>
+
+              <button
+                type="button"
+                className={`${styles.tabItem} ${tab === "analytics" ? styles.tabItemActive : ""}`}
+                onClick={() => handleSelectTab("analytics")}
+                aria-current={tab === "analytics" ? "page" : undefined}
+              >
+                <BarChart3 size={17} aria-hidden="true" />
+                <span>Năng lực &amp; Báo cáo AI</span>
+                {analytics && analytics.students_needing_attention.length > 0 && (
+                  <span className={styles.tabAlertBadge}>{analytics.students_needing_attention.length}</span>
+                )}
+              </button>
+            </nav>
+          </div>
         )}
 
-        {/* 3. Navigation Tabs */}
-        <div className={styles.tabsStickyWrap}>
-          <nav className={styles.tabsBar} aria-label="Các phân hệ quản lý">
-            <button
-              type="button"
-              className={`${styles.tabItem} ${tab === "classes" ? styles.tabItemActive : ""}`}
-              onClick={() => handleSelectTab("classes")}
-              aria-current={tab === "classes" ? "page" : undefined}
-            >
-              <Users size={17} aria-hidden="true" />
-              <span>Lớp học &amp; Học sinh</span>
-              <span className={styles.tabCounterBadge}>{students.length}</span>
-            </button>
+        {/* 4. Class Roster or Fallback Work View (only when 3D is compact or 2D list mode is active) */}
+        {!embedStationIn3D && (
+          <div
+            className={`${styles.viewContainer} ${isTransitioning ? styles.viewContainerTransitioning : ""}`}
+            data-transitioning={isTransitioning}
+          >
+            {tab === "classes" && (
+              <ClassroomsTab
+                classes={classes}
+                selectedClassId={classId}
+                onSelectClass={setClassId}
+                students={students}
+                isLoading={initialLoading || classLoading}
+                studentError={initialError || studentError}
+                onViewStudentWorkspace={handleViewStudentWorkspace}
+                onOpenCreateClass={() => setIsCreateClassOpen(true)}
+              />
+            )}
 
-            <button
-              type="button"
-              className={`${styles.tabItem} ${tab === "materials" ? styles.tabItemActive : ""}`}
-              onClick={() => handleSelectTab("materials")}
-              aria-current={tab === "materials" ? "page" : undefined}
-            >
-              <BookOpen size={17} aria-hidden="true" />
-              <span>Kho học liệu &amp; Đề thi</span>
-              <span className={styles.tabCounterBadge}>{materials.length}</span>
-            </button>
-
-            <button
-              type="button"
-              className={`${styles.tabItem} ${tab === "theory" ? styles.tabItemActive : ""}`}
-              onClick={() => handleSelectTab("theory")}
-              aria-current={tab === "theory" ? "page" : undefined}
-            >
-              <Network size={17} aria-hidden="true" />
-              <span>Sơ đồ tư duy &amp; Lý thuyết</span>
-            </button>
-
-            <button
-              type="button"
-              className={`${styles.tabItem} ${tab === "submissions" ? styles.tabItemActive : ""}`}
-              onClick={() => handleSelectTab("submissions")}
-              aria-current={tab === "submissions" ? "page" : undefined}
-            >
-              <ClipboardList size={17} aria-hidden="true" />
-              <span>Bài giao &amp; Chấm bài</span>
-              <span className={styles.tabCounterBadge}>{assignments.length}</span>
-            </button>
-
-            <button
-              type="button"
-              className={`${styles.tabItem} ${tab === "analytics" ? styles.tabItemActive : ""}`}
-              onClick={() => handleSelectTab("analytics")}
-              aria-current={tab === "analytics" ? "page" : undefined}
-            >
-              <BarChart3 size={17} aria-hidden="true" />
-              <span>Năng lực &amp; Báo cáo AI</span>
-              {analytics && analytics.students_needing_attention.length > 0 && (
-                <span className={styles.tabAlertBadge}>
-                  {analytics.students_needing_attention.length}
-                </span>
-              )}
-            </button>
-          </nav>
-        </div>
-
-        {/* 4. Tab Views */}
-        <div className={styles.viewContainer}>
-          {tab === "classes" && (
-            <ClassroomsTab
-              classes={classes}
-              selectedClassId={classId}
-              onSelectClass={setClassId}
-              students={students}
-              isLoading={initialLoading || classLoading}
-              studentError={initialError || studentError}
-              onViewStudentWorkspace={handleViewStudentWorkspace}
-              onOpenCreateClass={() => setIsCreateClassOpen(true)}
-            />
-          )}
-
-          {tab === "materials" && (
-            <MaterialsTab
-              selectedClass={selectedClass}
-              materials={materials}
-              subjects={subjects}
-              isLoading={classLoading}
-              onOpenUpload={() => setIsUploadOpen(true)}
-              onAssignmentCreated={(newAssignment) => {
-                setAssignments((current) => [newAssignment, ...current]);
-                setAssignmentId(newAssignment.id);
-                handleSelectTab("submissions");
-              }}
-            />
-          )}
-
-          {tab === "theory" && (
-            <TeacherTheoryClient
-              initialClassId={classId}
-              onSelectClass={setClassId}
-              isEmbedded={true}
-            />
-          )}
-
-          {tab === "submissions" && (
-            <SubmissionsTab
-              selectedClass={selectedClass}
-              assignments={assignments}
-              assignmentId={assignmentId}
-              onSelectAssignment={setAssignmentId}
-              roster={roster}
-              rosterError={rosterError}
-              focusedStudent={focusedStudent}
-              onClearStudent={() => setFocusedStudent(null)}
-              isLoading={classLoading}
-              onRefreshRoster={() => {
-                if (assignmentId) {
-                  teacherApi.roster(assignmentId).then(setRoster).catch(() => {});
-                }
-              }}
-            />
-          )}
-
-          {tab === "analytics" && (
-            <AnalyticsTab
-              selectedClass={selectedClass}
-              analytics={analytics}
-              isLoading={classLoading}
-            />
-          )}
-        </div>
+            {activeStationWorkspace}
+          </div>
+        )}
       </main>
 
       <AppFooter variant="teacher" />

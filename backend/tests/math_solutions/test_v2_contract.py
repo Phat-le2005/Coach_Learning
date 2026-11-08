@@ -23,6 +23,7 @@ EXPECTED_PATHS = {
     "/math-solutions/attempts/{attempt_id}/ocr/recognize",
     "/math-solutions/attempts/{attempt_id}/problem",
     "/math-solutions/attempts/{attempt_id}/reorder",
+    "/math-solutions/attempts/{attempt_id}/reopen",
     "/math-solutions/attempts/{attempt_id}/steps",
     "/math-solutions/attempts/{attempt_id}/steps/{step_id}",
     "/math-solutions/attempts/{attempt_id}/steps/{step_id}/delete",

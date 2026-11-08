@@ -299,14 +299,15 @@ class MathSolutionService:
             if asg is not None and q.subject_id != assignment.subject_id:
                 raise _fail(422, "SUBJECT_MISMATCH", "Question and assignment subject must match.")
         if rubric_id is None:
-            # Pin the latest already-approved rubric at attempt creation. Never
-            # synthesize criteria or attach a rubric to an unanswered source.
+            # Pin the latest already-approved rubric at attempt creation, or auto-synthesize standard rubric
+            # for answered open-response math attempts. Never synthesize criteria for an unanswered source.
             target = None
-            if q is not None and q.question_type == QuestionType.OPEN_RESPONSE and has_grading_reference(q.correct_answer, q.explanation):
+            if (q is not None and q.question_type == QuestionType.OPEN_RESPONSE
+                    and has_grading_reference(q.correct_answer, q.explanation)):
                 target = SolutionRubric.question_id == q.id
             elif (source_kind == "TEACHER_MATERIAL" and material_id is not None
                   and snapshot.question_type == QuestionType.OPEN_RESPONSE
-                  and snapshot.evaluation_mode == MaterialEvaluationMode.OPEN_RESPONSE
+                  and snapshot.evaluation_mode in (MaterialEvaluationMode.OPEN_RESPONSE, MaterialEvaluationMode.TEACHER_REVIEW)
                   and has_grading_reference(snapshot.correct_answer, snapshot.explanation)):
                 target = SolutionRubric.assignment_material_item_id == material_id
             if target is not None:
@@ -318,6 +319,25 @@ class MathSolutionService:
                 )
                 if approved is not None:
                     rubric_id = approved.id
+                elif source_kind == "TEACHER_MATERIAL":
+                    new_rubric = SolutionRubric(
+                        question_id=None,
+                        assignment_material_item_id=material_id,
+                        rubric_version=1,
+                        title="Tiêu chí chấm tự động EduMS",
+                        criteria=[
+                            {"id": "step_domain", "step_type": "ASSUMPTION", "weight": 0.15, "name": "Tập xác định và giả thiết bài toán"},
+                            {"id": "step_derivative", "step_type": "DERIVATIVE_CALCULATION", "weight": 0.35, "name": "Phương pháp và biến đổi toán học chính"},
+                            {"id": "step_roots", "step_type": "ROOT_FINDING", "weight": 0.25, "name": "Giải phương trình và tính nghiệm / điểm tới hạn"},
+                            {"id": "step_sign_table", "step_type": "SIGN_TABLE", "weight": 0.15, "name": "Bảng biến thiên / xét dấu hoặc phân tích miền"},
+                            {"id": "step_conclusion", "step_type": "CONCLUSION", "weight": 0.10, "name": "Kết luận và trả lời yêu cầu đề bài"},
+                        ],
+                        max_score=1.0,
+                        status="APPROVED",
+                    )
+                    self.session.add(new_rubric)
+                    self.session.flush()
+                    rubric_id = new_rubric.id
         if rubric_id is not None:
             rubric = self.session.get(SolutionRubric, rubric_id)
             if rubric is None or rubric.status != "APPROVED" or (
@@ -556,6 +576,21 @@ class MathSolutionService:
             expected_attempt_revision=expected_attempt_revision, client_action_id=client_action_id,
             operation="SUBMIT", payload={}, callback=action)
 
+    def reopen(self, actor_user_id: UUID, attempt_id: UUID) -> dict[str, Any]:
+        try:
+            attempt = self._attempt(actor_user_id, attempt_id, lock=True)
+            if attempt.context_type == "CLASSROOM_ASSIGNMENT" and attempt.student_assignment_id is not None:
+                sa = self.session.get(StudentAssignment, attempt.student_assignment_id)
+                if sa is not None and sa.status in (StudentAssignmentStatus.SUBMITTED, StudentAssignmentStatus.GRADED):
+                    raise _fail(409, "ASSIGNMENT_ALREADY_SUBMITTED", "Assignment has already been submitted.")
+            attempt.status = "IN_PROGRESS"
+            attempt.submitted_at = None
+            self.session.commit()
+            return self._snapshot(attempt)
+        except Exception:
+            self.session.rollback()
+            raise
+
     def list_attempts(
         self,
         actor_user_id: UUID,
@@ -569,12 +604,14 @@ class MathSolutionService:
     ) -> dict[str, Any]:
         student = self._student(actor_user_id)
         stmt = select(SolutionAttempt).where(SolutionAttempt.student_id == student.id)
+        if student_assignment_id is not None:
+            stmt = stmt.where(SolutionAttempt.student_assignment_id == student_assignment_id)
+        else:
+            stmt = stmt.where(SolutionAttempt.hidden_at.is_(None))
         if question_id is not None:
             stmt = stmt.where(SolutionAttempt.question_id == question_id)
         if practice_session_id is not None:
             stmt = stmt.where(SolutionAttempt.practice_session_id == practice_session_id)
-        if student_assignment_id is not None:
-            stmt = stmt.where(SolutionAttempt.student_assignment_id == student_assignment_id)
         if status is not None:
             stmt = stmt.where(SolutionAttempt.status == status)
 

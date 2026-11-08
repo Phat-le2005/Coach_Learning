@@ -1,0 +1,55 @@
+{
+  "kernel_ref": "lhngphc/comer-finetune",
+  "title": "CoMER-Finetune",
+  "is_private": true,
+  "source_revision": "1712d05cdf0aa9381acea24197e4e2cc571cf485",
+  "dataset_source": "lhngphc/data-finetune-comer",
+  "version": "v4-v5-v6-e50-ddp2",
+  "training": {
+    "devices": 2,
+    "device": "cuda:0",
+    "batch_size": 4,
+    "accumulate": 2,
+    "epochs": 50,
+    "decoder_lr": 5e-05,
+    "encoder_lr": 1e-05,
+    "preprocess": "jpeg-gray-invert-aspect128x1024-min32-pad32-v1-otsu-v2",
+    "amp_init_scale": 1024,
+    "checkpoint_upload": "final_inference",
+    "compare_before_after": true,
+    "early_stopping_patience": 50,
+    "train_scale_min": 1.0,
+    "train_scale_max": 1.0,
+    "seed": 42
+  },
+  "wandb": {
+    "entity": "phucga15062005",
+    "project": "coachlearning-handwritten-math",
+    "secret_label": "WANDB_API_KEY"
+  },
+  "trials": [
+    {
+      "version": "v4-e50-ddp2",
+      "training": {
+        "decoder_lr": 0.0001
+      }
+    },
+    {
+      "version": "v5-e50-ddp2",
+      "training": {
+        "decoder_lr": 5e-05
+      }
+    },
+    {
+      "version": "v6-e50-scale-ddp2",
+      "training": {
+        "decoder_lr": 5e-05,
+        "train_scale_min": 0.9,
+        "train_scale_max": 1.1
+      },
+      "kernel_ref": "lhngphc/comer-hme500-v6-scale-e50",
+      "title": "CoMER HME500 V6 Scale E50"
+    }
+  ],
+  "parallel_sessions": 2
+}

@@ -141,6 +141,7 @@ export const API_PATHS = {
   mathAttempt: (id: string) => `/api/v2/math-solutions/attempts/${encodeURIComponent(id)}`,
   mathAttemptProblem: (id: string) => `/api/v2/math-solutions/attempts/${encodeURIComponent(id)}/problem`,
   mathAttemptSubmit: (id: string) => `/api/v2/math-solutions/attempts/${encodeURIComponent(id)}/submit`,
+  mathAttemptReopen: (id: string) => `/api/v2/math-solutions/attempts/${encodeURIComponent(id)}/reopen`,
   mathAttemptAIReview: (id: string) => `/api/v3/math-solutions/attempts/${encodeURIComponent(id)}/ai-review`,
   mathPaper: (id: string) => `/api/v3/math-solutions/attempts/${encodeURIComponent(id)}/paper`,
   mathPaperFile: (id: string, paperId: string) => `/api/v3/math-solutions/attempts/${encodeURIComponent(id)}/paper/${encodeURIComponent(paperId)}`,
@@ -286,7 +287,7 @@ export function createApiClient({ baseUrl, fetcher = fetch }: ApiClientOptions) 
           source_kind: "CANONICAL",
           context_type: "SELF_PRACTICE",
           mode: "INDEPENDENT_SOLUTION",
-          create_idempotency_key: `student-workspace:${sessionId}`,
+          create_idempotency_key: `student-workspace:${sessionId}:${questionId}`,
           question_id: questionId,
           practice_session_id: sessionId,
         }),
@@ -335,6 +336,10 @@ export function createApiClient({ baseUrl, fetcher = fetch }: ApiClientOptions) 
     submitMathAttempt(accessToken: string, attemptId: string, payload: AttemptMutationToken): Promise<SolutionAttemptRead> {
       return request(API_PATHS.mathAttemptSubmit(attemptId), parseSolutionAttemptRead,
         { method: "POST", body: JSON.stringify(payload) }, accessToken);
+    },
+    reopenMathAttempt(accessToken: string, attemptId: string): Promise<SolutionAttemptRead> {
+      return request(API_PATHS.mathAttemptReopen(attemptId), parseSolutionAttemptRead,
+        { method: "POST" }, accessToken);
     },
     getMathAIReviewAvailability(accessToken: string, attemptId: string): Promise<AIReviewAvailabilityRead> {
       return request(API_PATHS.mathAttemptAIReview(attemptId), parseAIReviewAvailabilityRead,

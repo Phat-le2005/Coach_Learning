@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Flame, Sparkles, Wind } from "lucide-react";
 import Link from "next/link";
 
@@ -16,6 +17,7 @@ export interface StudentTopNavProps {
   currentRoute?: string;
   subjectId?: string;
   showAmbientToggle?: boolean;
+  pendingAssignmentsCount?: number;
 }
 
 export function StudentTopNav({
@@ -25,16 +27,40 @@ export function StudentTopNav({
   currentRoute = "/student",
   subjectId,
   showAmbientToggle = false,
+  pendingAssignmentsCount,
 }: StudentTopNavProps) {
   const { ambientEnabled, toggleAmbient } = useGardenMotion();
+  const [badgeCount, setBadgeCount] = useState<number | undefined>(pendingAssignmentsCount);
+
+  useEffect(() => {
+    if (pendingAssignmentsCount !== undefined) {
+      setBadgeCount(pendingAssignmentsCount);
+      return;
+    }
+    let ignore = false;
+    fetch("/api/student/assignments")
+      .then((res) => (res.ok ? res.json() : []))
+      .then((list) => {
+        if (!ignore && Array.isArray(list)) {
+          const count = list.filter(
+            (a: any) => a.status === "NOT_STARTED" || a.status === "IN_PROGRESS"
+          ).length;
+          setBadgeCount(count);
+        }
+      })
+      .catch(() => {});
+    return () => {
+      ignore = true;
+    };
+  }, [pendingAssignmentsCount]);
 
   const isKnowledge = currentRoute.startsWith("/student/knowledge");
-  const isAttempts = currentRoute.startsWith("/student/attempts");
+  const isAttempts =
+    currentRoute.startsWith("/student/attempts") || currentRoute.startsWith("/student/assignments");
   const isTheory = currentRoute.startsWith("/student/theory");
-  const isAssignments = currentRoute.startsWith("/student/assignments");
   const isHome =
     currentRoute === "/student" ||
-    (!isKnowledge && !isAttempts && !isTheory && !isAssignments && currentRoute.startsWith("/student"));
+    (!isKnowledge && !isAttempts && !isTheory && currentRoute.startsWith("/student"));
 
   const knowledgeHref = subjectId
     ? `/student/knowledge?subject_id=${encodeURIComponent(subjectId)}`
@@ -44,12 +70,20 @@ export function StudentTopNav({
     ? `/student?subject_id=${encodeURIComponent(subjectId)}`
     : "/student";
 
+  const attemptsHref =
+    (badgeCount ?? 0) > 0 ? "/student/attempts?tab=classroom" : "/student/attempts";
+
   const navItems = [
-    { label: "Khu vườn học tập", href: homeHref, current: isHome },
-    { label: "Bài tập của lớp", href: "/student/assignments", current: isAssignments },
-    { label: "Vũ trụ tri thức", href: knowledgeHref, current: isKnowledge },
-    { label: "Kho lý thuyết", href: "/student/theory", current: isTheory },
-    { label: "Tự luyện toán", href: "/student/attempts", current: isAttempts },
+    { label: "Khu vườn học tập", href: homeHref, current: isHome, isAttempts: false },
+    {
+      label: "Bài tập & Luyện tập",
+      href: attemptsHref,
+      current: isAttempts,
+      isAttempts: true,
+      badge: badgeCount,
+    },
+    { label: "Vũ trụ tri thức", href: knowledgeHref, current: isKnowledge, isAttempts: false },
+    { label: "Kho lý thuyết", href: "/student/theory", current: isTheory, isAttempts: false },
   ];
 
   const effectsActive = ambientEnabled;
@@ -69,7 +103,10 @@ export function StudentTopNav({
               aria-current={item.current ? "page" : undefined}
               key={item.label}
             >
-              {item.label}
+              <span>{item.label}</span>
+              {item.isAttempts && item.badge !== undefined && item.badge > 0 && (
+                <span className={styles.navNotificationBadge}>{item.badge}</span>
+              )}
             </Link>
           ))}
         </div>

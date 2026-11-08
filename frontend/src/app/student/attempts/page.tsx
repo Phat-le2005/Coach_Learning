@@ -11,7 +11,12 @@ import {
   toStudentAttemptsViewModel,
 } from "@/features/student-attempts/adapter";
 import { StudentAttemptsView } from "@/features/student-attempts/StudentAttemptsView";
-import { ApiNetworkError, ApiResponseError, createBackendApiClient } from "@/lib/api/client";
+import {
+  ApiNetworkError,
+  ApiResponseError,
+  createBackendApiClient,
+  getBackendBaseUrl,
+} from "@/lib/api/client";
 import { requirePageRole } from "@/lib/auth/page-session";
 import { readAccessToken } from "@/lib/auth/server";
 
@@ -52,6 +57,7 @@ export interface StudentAttemptsPageProps {
     page?: string;
     status?: string;
     subject_id?: string;
+    tab?: string;
   }>;
 }
 
@@ -64,12 +70,22 @@ export default async function StudentAttemptsPage(props: StudentAttemptsPageProp
   const requestedPage = parseAttemptsPageParam(resolvedSearchParams?.page);
   const activeStatusFilter = parseAttemptsStatusParam(resolvedSearchParams?.status);
   const requestedSubjectId = resolvedSearchParams?.subject_id?.trim() || undefined;
+  const requestedTab = resolvedSearchParams?.tab?.trim().toLowerCase();
+  const initialTab: "classroom" | "practice" | "history" | undefined =
+    requestedTab === "practice"
+      ? "practice"
+      : requestedTab === "history"
+      ? "history"
+      : requestedTab === "classroom"
+      ? "classroom"
+      : undefined;
 
   try {
     const client = createBackendApiClient();
+    const backendUrl = getBackendBaseUrl();
     const PAGE_SIZE = 12;
 
-    const [attemptsResult, inProgressResult, draftResult, subjectsResult] =
+    const [attemptsResult, inProgressResult, draftResult, subjectsResult, assignmentsResult] =
       await Promise.allSettled([
         client.listMathAttempts(accessToken, {
           page: requestedPage,
@@ -87,6 +103,13 @@ export default async function StudentAttemptsPage(props: StudentAttemptsPageProp
           status: "DRAFT",
         }),
         getWorkspaceSubjects(accessToken),
+        fetch(`${backendUrl}/students/me/assignments?limit=100`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            Accept: "application/json",
+          },
+          cache: "no-store",
+        }).then((res) => (res.ok ? res.json() : [])),
       ]);
 
     if (attemptsResult.status === "rejected") {
@@ -105,6 +128,8 @@ export default async function StudentAttemptsPage(props: StudentAttemptsPageProp
 
     const subjectsLoaded = subjectsResult.status === "fulfilled";
     const subjects = subjectsLoaded ? subjectsResult.value : [];
+    const classroomAssignments =
+      assignmentsResult.status === "fulfilled" ? assignmentsResult.value : [];
 
     const viewModel = toStudentAttemptsViewModel({
       displayName: session.fullName,
@@ -117,6 +142,8 @@ export default async function StudentAttemptsPage(props: StudentAttemptsPageProp
       inProgressPage:
         inProgressResult.status === "fulfilled" ? inProgressResult.value : null,
       draftPage: draftResult.status === "fulfilled" ? draftResult.value : null,
+      classroomAssignments,
+      initialTab,
     });
 
     return (

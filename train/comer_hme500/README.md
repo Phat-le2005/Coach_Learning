@@ -1,6 +1,59 @@
-# CoMER fine-tune · Coach Learning HME500 · Kaggle + W&B
+# CoMER fine-tune · Coach Learning HME500 · Local/Kaggle + W&B
 
 Kit chạy trực tiếp trên bộ **500 ảnh JPG viết tay thật** và `metadata.json` đã có. Luồng chạy: **Kaggle Secrets → clone/pull GitHub → Bash `.sh` → CoMER + W&B**. Giữ nguyên byte ảnh gốc; chuyển grayscale/invert/resize chỉ trong bộ nhớ để đưa vào model. Không tạo ảnh AI, không sinh dataset bổ sung.
+
+## V4 + V5 + V6: mỗi bản 50 epoch trên Kaggle T4 ×2
+
+Chỉ chỉnh `kaggle.suite50.json`, rồi chạy từ thư mục `train/comer_hme500`:
+
+```powershell
+& ../../.tmp/comer-kaggle-control/.venv/Scripts/python.exe -m hme_comer.cloud --config kaggle.suite50.json
+```
+
+Một lệnh chạy ba trial, tối đa hai phiên Kaggle song song (`parallel_sessions=2`), mỗi phiên hai GPU: V4 decoder LR `1e-4`; V5 `5e-5`; V6 giữ V5 và thêm scale train `0.9–1.1`. V4/V5 dùng notebook chính lần lượt, V6 dùng notebook riêng. Cả ba bắt đầu từ cùng pretrained checkpoint, seed 42, encoder LR `1e-5`, freeze 2 epoch, Otsu, batch 4/GPU × 2 GPU × accumulation 2 = 16. Split cố định 400/50/50. Đây là các trial DDP2 mới, không ghi đè hoặc tiếp tục run local cũ. `early_stopping_patience=50` bảo đảm đi đủ 50 epoch; model cuối dùng checkpoint do validation chọn, không mặc định epoch 50.
+
+Scale chỉ thay đổi tensor train sau resize cơ bản, trước khi padding; giới hạn kích thước 256×1024. RNG riêng theo seed/epoch/id không làm thay đổi RNG model/sampler. Không áp dụng augmentation cho baseline, validation hoặc test; JPG gốc và nhãn giữ nguyên. Mức 1.0/1.0 mặc định là đường xử lý cũ. Cấu hình augmentation nằm trong chữ ký checkpoint để chặn resume sai điều kiện.
+
+Runner tự đặt tên theo version, số epoch, scale, LR, seed, batch và UTC, giữ cùng W&B project. Log epoch được đọc qua SDK stream. Sau mỗi trial, runner kiểm ZIP và đồng bộ log đo trên Kaggle nếu cần fallback offline; chỉ hỏi key một lần cho cả suite. Cuối cùng xuất một ZIP chung chứa ba ZIP riêng, link W&B, CSV và biểu đồ so sánh. `--prepare-only` xem trước ba notebook; suite không hỗ trợ `--no-wait`. Giữ cửa sổ runner mở đến khi hoàn tất. Nếu tiến trình điều khiển bị ngắt, thêm `--resume-submissions <thư-mục-submission>` để nhận lại các ID đã lưu, không khởi động lại train; giữ nguyên source/data/training. Bộ điều phối không nộp hai version cùng một notebook khi version trước còn chạy. Chạy song song giảm thời gian chờ nhưng vẫn dùng tổng quota GPU của từng phiên.
+
+## Kaggle T4 ×2: chạy một trial bằng một config
+
+Chỉ chỉnh `kaggle.v5.json`, rồi chạy từ thư mục `train/comer_hme500`:
+
+```powershell
+& ../../.tmp/comer-kaggle-control/.venv/Scripts/python.exe -m hme_comer.cloud --config kaggle.v5.json
+```
+
+Môi trường điều khiển cần `pip install kaggle six wandb==0.26.0 Pillow matplotlib`; không cần PyTorch local. Khi thiếu `KAGGLE_API_TOKEN`, lệnh hỏi token bằng input ẩn, không lưu key. `WANDB_API_KEY` được đọc từ Kaggle Secrets của notebook lúc chạy; config chỉ chứa tên secret. Config mặc định cập nhật notebook riêng tư `lhngphc/comer-finetune`; thay `kernel_ref`, title, dataset và entity khi dùng tài khoản khác. Bật quyền secret trong Kaggle để log online.
+
+Runner tự sinh notebook/metadata vào `.tmp/`, yêu cầu `NvidiaTeslaT4` (T4 ×2), pin source theo commit, cài môi trường, kiểm tra, train, so sánh initial/best, xuất báo cáo validation và tạo ZIP có checksum. Không cần tự tạo/chỉnh nhiều file. Mặc định chờ job và tải ZIP về; `--no-wait` chỉ nộp job, `--prepare-only` chỉ tạo bản gửi để kiểm tra. Không tự chuyển sang CPU khi thiếu GPU.
+
+Nếu phiên API vẫn không đọc được Kaggle Secret, job tiếp tục với W&B offline. Sau khi tải ZIP, runner hỏi W&B key bằng input ẩn và gửi các số đo đã lưu, curve, ảnh JPG validation/test và model best gọn lên cùng project. Việc đồng bộ không train hoặc suy luận lại; run ghi rõ log được upload sau khi đo trên Kaggle. ZIP giữ nguyên dữ liệu đo và checksum. Nếu bị ngắt khi đồng bộ, chạy lại với `--sync-only <đường-dẫn-ZIP>`; không nộp một job train mới.
+
+v5 Kaggle dùng 4 ảnh mỗi GPU × 2 GPU × accumulation 2 = batch hiệu dụng 16; decoder LR 5e-5, Otsu, tối đa 30 epoch và early stopping 6. Đây là trial DDP2 mới; batch mỗi GPU khác bản local batch 1, không phải resume chính xác từ checkpoint một GPU. Mỗi lần chạy có tên/group W&B mới trong cùng project. Chỉ upload model best gọn ở cuối, giữ full initial/best/last cùng history trong `CoachLearning_CoMER_v5_Kaggle_DDP2_Results.zip`.
+
+## v4: chạy local một GPU, tách nền Otsu và so sánh trước/sau
+
+v4 dành cho GPU local VRAM 4 GB: batch 1 × accumulation 16 = batch hiệu dụng 16; AMP với loss scale ban đầu 1024; tối đa 30 epoch; freeze encoder 2 epoch đầu; early stopping 6. Giữ optimizer, seed, metric và split 400/50/50. Otsu áp dụng sau grayscale/invert/resize trong tensor cho **train, validation, baseline và final test**, không ghi lại JPG. v1/v2/v3 giữ cách tiền xử lý cũ và AMP scale mặc định 65536.
+
+Từ `train/comer_hme500`, dùng Python CUDA trong venv của repo:
+
+```powershell
+& ../../.tmp/comer-baseline-gpu/.venv/Scripts/python.exe -m hme_comer.local `
+  --data "DUONG_DAN/CoachLearning_500_HME100K" `
+  --upstream "DUONG_DAN/cache-CoMER-da-xac-minh" `
+  --epochs 30 --entity TEN_TAI_KHOAN_WANDB
+```
+
+Môi trường này cần PyTorch/torchvision bản CUDA phù hợp driver, rồi cài `requirements.txt`. Cache CoMER có thể được tải và xác minh bằng `python -m hme_comer.fetch_upstream --destination <cache>`; không dùng model/cache khác ngầm định.
+
+Runner hỏi key bằng input ẩn khi thiếu `WANDB_API_KEY`; key chỉ ở môi trường tiến trình, không nằm trong argv/config/source. Không cần ghi key vào file hoặc gọi `wandb.login(key=...)`. Project cố định `coachlearning-handwritten-math`; mỗi lần chạy tên mới dạng `comer-hme500-v4-otsu-local-cuda1-prepost-r001-s42-eb16-<UTC>`.
+
+Luồng local: xác thực W&B → QA 4 train/2 validation, 2 epoch freeze/unfreeze, accumulation 1 để thử 8 lần cập nhật → train đầy đủ với accumulation 16 → chọn best bằng validation → đánh giá initial/best tuần tự trên cùng 50 test → xuất báo cáo lỗi validation. QA được gắn `qa-only` và không dùng làm điểm chất lượng. Thêm `--smoke-only` nếu chỉ cần kiểm GPU/upload. Lệnh dừng nếu QA lỗi hoặc không có optimizer step; không tự chuyển sang CPU.
+
+Mặc định lưu dưới `.tmp/comer-local-experiments/` của checkout: session JSON, log đã che key, config, checkpoint, curves, dự đoán, ZIP. W&B có run QA và group riêng cho run train/`-before`/`-after`; không tạo project mới cho từng phiên. Nếu bị ngắt sau khi đã có `last.pt`, resume cùng config bằng `python -m hme_comer.train --config <config> --resume <output>/last.pt`; giữ lại W&B ID và điều kiện thí nghiệm. Config/checkpoint có ràng buộc preprocessing để chặn đánh giá/resume nhầm cách xử lý nền.
+
+v4 dùng `checkpoint_upload=final_inference`: vẫn ghi ảnh, metrics và curves theo epoch lên W&B, nhưng chỉ upload model best một lần ở cuối (`best-inference.pt`, giữ nguyên FP32 tensors, vocabulary và hparams). Optimizer/RNG được bỏ khỏi bản upload để giảm dung lượng; full `best.pt`/`last.pt` cho resume vẫn nằm trong output local và ZIP. v1/v2/v3 giữ chính sách `every_epoch`. Không cần gửi lại các checkpoint trung gian để có lịch sử train đầy đủ.
 
 ## Chạy trên Kaggle
 
@@ -20,6 +73,7 @@ Kit chạy trực tiếp trên bộ **500 ảnh JPG viết tay thật** và `met
 | v1 | 1 | Giữ luồng fine-tune một GPU để tái kiểm tra |
 | v2 | 2 | Fine-tune DDP, chọn best bằng validation, đánh giá best trên test |
 | v3 | 2 | Fine-tune DDP + so sánh đúng snapshot trước fine-tune với best trên cùng test |
+| v4 | 1 local | Otsu cho mọi giai đoạn, batch 1/accumulation 16, so sánh initial/best |
 
 Sau khi clone repo và truyền WANDB_API_KEY qua môi trường, mỗi lần chạy mới dùng:
 

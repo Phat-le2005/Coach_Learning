@@ -219,9 +219,19 @@ export function SubmissionsTab({
                                 </span>
                               </td>
                               <td>
-                                <span className={`${styles.scoreBadge} ${getScoreBadgeClass(student.score)}`}>
-                                  {formatScore(student.score)}
-                                </span>
+                                {student.score !== null ? (
+                                  <span className={`${styles.scoreBadge} ${getScoreBadgeClass(student.score)}`}>
+                                    {formatScore(student.score)}
+                                  </span>
+                                ) : student.provisional_score !== null && student.provisional_score !== undefined ? (
+                                  <span className={`${styles.scoreBadge} ${styles.scoreBadgeMid}`} title="Điểm AI sơ bộ từ các bước giải">
+                                    AI: {formatScore(student.provisional_score)}
+                                  </span>
+                                ) : (
+                                  <span className={`${styles.scoreBadge} ${styles.scoreBadgeUnscored}`}>
+                                    Chưa chấm
+                                  </span>
+                                )}
                               </td>
                               <td className={styles.tdDate}>
                                 {formatDate(student.submitted_at)}

@@ -7,6 +7,8 @@ import {
   Filter,
   RotateCcw,
   X,
+  ArrowRight,
+  LoaderCircle,
 } from "lucide-react";
 import type {
   AIReviewFilterMode,
@@ -23,6 +25,9 @@ interface AIReviewSummaryProps {
   onJumpToStep: (stepIndex: number) => void;
   onReplay: () => void;
   onClose: () => void;
+  onNextProblem?: () => void;
+  nextProblemLabel?: string;
+  isNextLoading?: boolean;
 }
 
 export function AIReviewSummary({
@@ -33,6 +38,9 @@ export function AIReviewSummary({
   onJumpToStep,
   onReplay,
   onClose,
+  onNextProblem,
+  nextProblemLabel,
+  isNextLoading = false,
 }: AIReviewSummaryProps) {
   const summaryRef = useRef<HTMLElement | null>(null);
   const hasIssues = stats.issueStepIndices.length > 0;
@@ -232,7 +240,28 @@ export function AIReviewSummary({
             : "Kết quả bài làm đã được đồng bộ vào bảng đo lường năng lực của bạn. Hãy quay lại xem nhánh cây vừa sáng hoặc tiếp tục chặng hôm nay."}
         </p>
 
-        <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginTop: "4px" }}>
+        <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginTop: "6px", alignItems: "center" }}>
+          {onNextProblem && (
+            <button
+              type="button"
+              onClick={onNextProblem}
+              disabled={isNextLoading}
+              className={styles.summaryNextBtn}
+            >
+              {isNextLoading ? (
+                <>
+                  <LoaderCircle className={styles.spin} size={15} />
+                  <span>Đang mở bài tiếp theo...</span>
+                </>
+              ) : (
+                <>
+                  <ArrowRight size={15} />
+                  <span>{nextProblemLabel || "Luyện tập bài tiếp theo →"}</span>
+                </>
+              )}
+            </button>
+          )}
+
           <a
             href="/student/knowledge"
             style={{
@@ -292,6 +321,26 @@ export function AIReviewSummary({
       </div>
 
       <div className={styles.summaryActions}>
+        {onNextProblem && (
+          <button
+            type="button"
+            onClick={onNextProblem}
+            disabled={isNextLoading}
+            className={styles.summaryNextBtn}
+          >
+            {isNextLoading ? (
+              <>
+                <LoaderCircle className={styles.spin} size={14} />
+                <span>Đang tải...</span>
+              </>
+            ) : (
+              <>
+                <ArrowRight size={15} />
+                <span>{nextProblemLabel || "Luyện tập bài tiếp theo →"}</span>
+              </>
+            )}
+          </button>
+        )}
         {hasIssues && (
           <button
             type="button"

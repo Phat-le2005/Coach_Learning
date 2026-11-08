@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Sparkles, BookOpen, X, ChevronUp } from "lucide-react";
+import { Sparkles, BookOpen, X, ChevronUp, ArrowRight, LoaderCircle } from "lucide-react";
 import { MathRenderer } from "@/components/ui/MathRenderer";
 import type { ProblemRead } from "../../types";
 import type { AIReviewUIState } from "../../utils/ai-review-controller";
@@ -14,6 +14,9 @@ interface AIReviewHeaderProps {
   problem: ProblemRead | null;
   review: AIReviewRead | null;
   onClose: () => void;
+  onNextProblem?: () => void;
+  nextProblemLabel?: string;
+  isNextLoading?: boolean;
 }
 
 function getStatusBadgeMeta(uiState: AIReviewUIState, review: AIReviewRead | null): {
@@ -61,6 +64,9 @@ export function AIReviewHeader({
   problem,
   review,
   onClose,
+  onNextProblem,
+  nextProblemLabel,
+  isNextLoading = false,
 }: AIReviewHeaderProps) {
   const [showProblem, setShowProblem] = useState(false);
   const statusMeta = getStatusBadgeMeta(uiState, review);
@@ -95,6 +101,26 @@ export function AIReviewHeader({
         </div>
 
         <div className={styles.headerActions}>
+          {onNextProblem && (
+            <button
+              type="button"
+              onClick={onNextProblem}
+              disabled={isNextLoading}
+              className={styles.nextProblemHeaderBtn}
+            >
+              {isNextLoading ? (
+                <>
+                  <LoaderCircle className={styles.spin} size={14} />
+                  <span>Đang mở...</span>
+                </>
+              ) : (
+                <>
+                  <ArrowRight size={14} />
+                  <span>{nextProblemLabel || "Bài tiếp theo →"}</span>
+                </>
+              )}
+            </button>
+          )}
           {problem && (
             <button
               type="button"

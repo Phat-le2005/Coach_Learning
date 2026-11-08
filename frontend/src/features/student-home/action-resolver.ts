@@ -29,22 +29,28 @@ const AVAILABLE_ROUTES: Partial<
   CONTINUE_REPAIR: (action) =>
     action.problem_type_id
       ? `/student/practice?problem_type_id=${encodeURIComponent(action.problem_type_id)}`
+      : action.concept_id
+      ? `/student/practice?concept_id=${encodeURIComponent(action.concept_id)}`
       : "/student/practice",
   CONTINUE_VERIFICATION: (action) =>
     action.concept_id
       ? `/student/practice?concept_id=${encodeURIComponent(action.concept_id)}`
+      : action.problem_type_id
+      ? `/student/practice?problem_type_id=${encodeURIComponent(action.problem_type_id)}`
       : "/student/practice",
   CONTINUE_ASSIGNMENT: (action) =>
     action.assignment_id
       ? `/student/assignments/${encodeURIComponent(action.assignment_id)}`
-      : "/student/assignments",
+      : "/student/attempts?tab=classroom",
   COMPLETE_OVERDUE_ASSIGNMENT: (action) =>
     action.assignment_id
       ? `/student/assignments/${encodeURIComponent(action.assignment_id)}`
-      : "/student/assignments",
+      : "/student/attempts?tab=classroom",
   CONTINUE_PRACTICE: (action) =>
     action.problem_type_id
       ? `/student/practice?problem_type_id=${encodeURIComponent(action.problem_type_id)}`
+      : action.concept_id
+      ? `/student/practice?concept_id=${encodeURIComponent(action.concept_id)}`
       : "/student/practice",
   REVIEW_DUE: (action) =>
     action.problem_type_id
@@ -55,6 +61,8 @@ const AVAILABLE_ROUTES: Partial<
   TODAY_TASK: (action) =>
     action.problem_type_id
       ? `/student/practice?problem_type_id=${encodeURIComponent(action.problem_type_id)}`
+      : action.concept_id
+      ? `/student/practice?concept_id=${encodeURIComponent(action.concept_id)}`
       : "/student/practice",
   LEARNING_PRIORITY: (action) =>
     action.problem_type_id

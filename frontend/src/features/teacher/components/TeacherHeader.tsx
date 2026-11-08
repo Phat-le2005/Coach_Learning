@@ -1,6 +1,6 @@
 "use client";
 
-import { GraduationCap, RefreshCw, Plus, UploadCloud, ChevronDown } from "lucide-react";
+import { GraduationCap, RefreshCw, Plus, UploadCloud, ChevronDown, ChevronUp } from "lucide-react";
 import { AccountMenu } from "@/components/auth/AccountMenu";
 import type { TeacherClassroom } from "../api";
 import styles from "../TeacherDashboard.module.css";
@@ -15,6 +15,8 @@ export interface TeacherHeaderProps {
   isReloading: boolean;
   onOpenCreateClass: () => void;
   onOpenUpload: () => void;
+  isCollapsed?: boolean;
+  onToggleCollapse?: () => void;
 }
 
 export function TeacherHeader({
@@ -27,6 +29,8 @@ export function TeacherHeader({
   isReloading,
   onOpenCreateClass,
   onOpenUpload,
+  isCollapsed = false,
+  onToggleCollapse,
 }: TeacherHeaderProps) {
   const selectedClass = classes.find((c) => c.id === selectedClassId);
   const initials = teacherName
@@ -37,6 +41,24 @@ export function TeacherHeader({
         .map((w) => w[0]?.toUpperCase())
         .join("")
     : "GV";
+
+  if (isCollapsed) {
+    return (
+      <div className={styles.collapsedHeaderBar}>
+        <button
+          type="button"
+          className={styles.expandHeaderPill}
+          onClick={onToggleCollapse}
+          title="Mở rộng lại thanh Header quản lý lớp"
+        >
+          <ChevronDown size={14} aria-hidden="true" />
+          <span>
+            Mở Header · <strong>{selectedClass ? selectedClass.name : teacherName}</strong>
+          </span>
+        </button>
+      </div>
+    );
+  }
 
   return (
     <header className={styles.header}>
@@ -122,8 +144,25 @@ export function TeacherHeader({
             )}
 
             <div className={styles.accountMenuWrap}>
-              <AccountMenu fullName={teacherName} email={teacherEmail} role="TEACHER" compact />
+              <AccountMenu
+                fullName={teacherName}
+                email={teacherEmail}
+                role="TEACHER"
+                compact
+              />
             </div>
+
+            {onToggleCollapse && (
+              <button
+                type="button"
+                className={styles.collapseHeaderBtn}
+                onClick={onToggleCollapse}
+                title="Thu gọn thanh Header để mở rộng tối đa không gian 3D"
+              >
+                <ChevronUp size={15} aria-hidden="true" />
+                <span>Thu gọn</span>
+              </button>
+            )}
           </div>
         </div>
       </div>

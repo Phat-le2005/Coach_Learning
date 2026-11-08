@@ -31,6 +31,7 @@ Desktop.ini
 
 # Local build/download workspace
 .tmp/
+.tmp_*
 *.sql
 backend/var/
 *.db
@@ -56,6 +57,8 @@ frontend/package-lock.json
 # Keep the small, versioned backend/data/dev_only test pack in Git.
 /backend/data/Toan12_200_cau_20261104/
 /backend/data/content.draft.pretty.json
+/backend/data/content.method.pretty.json
+/backend/data/ocr-direct-grouped_statistics/
 /backend/data/questions/math/grade12/pdf_handoff_200_v0_1/
 /backend/data/materials/
 /reports/data_audits/

@@ -27,7 +27,18 @@ export interface DeskAccessories {
   star: THREE.Group;
 }
 
-export interface MamRig { body: THREE.Group; head: THREE.Group; right: THREE.Group; leaves: THREE.Group; eyes: THREE.Mesh[] }
+export interface MamRig { body: THREE.Group; head: THREE.Group; right: THREE.Group; leaves: THREE.Group; eyes: THREE.Mesh[] }
+
+export interface TeacherRig {
+  body: THREE.Group;
+  head: THREE.Group;
+  leftArm: THREE.Group;
+  rightArm: THREE.Group;
+  leftLeg: THREE.Group;
+  rightLeg: THREE.Group;
+  eyes: THREE.Mesh[];
+  pointer: THREE.Group;
+}
 
 export function createCozyModels(resources: Resources) {
   const { geometry, material, color } = resources;
@@ -199,5 +210,98 @@ export function createCozyModels(resources: Resources) {
     return { body, head, right, leaves, eyes };
   }
 
-  return { pupil, accessories, applyStyle, mam, roundedGeometry: rounded };
+  function teacher(parent: THREE.Object3D): TeacherRig {
+    const skin = 0xffceac;
+    const hair = 0x3d2f2d;
+    const cloth = 0x235347; // Emerald teacher coat
+    const pants = 0x384542; // Slate pants
+    const shoes = 0x543c32; // Brown leather shoes
+
+    const body = new THREE.Group();
+    body.position.set(0, 0, 0);
+    parent.add(body);
+
+    const uniform = new THREE.Group();
+    body.add(uniform);
+    box(uniform, cloth, 0, 1.15, 0, 0.72, 0.78, 0.48);
+    box(uniform, 0xfff9ea, 0, 1.34, 0.14, 0.28, 0.22, 0.2);
+    for (const dy of [1.16, 0.98]) {
+      ball(uniform, 0xe3b579, 0, dy, 0.252, 0.032, 0.032, 0.02);
+    }
+    for (const side of [-1, 1]) {
+      box(uniform, 0xfff9ea, side * 0.16, 1.38, 0.18, 0.14, 0.12, 0.08).rotation.z = side * -0.3;
+    }
+    batch(uniform);
+
+    const head = new THREE.Group();
+    head.position.set(0, 1.82, 0);
+    body.add(head);
+
+    const features = new THREE.Group();
+    head.add(features);
+    ball(features, skin, 0, -0.01, 0, 0.53, 0.51, 0.47);
+    for (const side of [-1, 1]) {
+      ball(features, skin, side * 0.53, -0.045, 0, 0.09, 0.11, 0.07);
+      ball(features, 0xeca997, side * 0.26, -0.13, 0.4, 0.08, 0.04, 0.016);
+    }
+    mesh(features, cap, hair, 0, 0.08, -0.02, 0.55, 0.48, 0.48);
+    ball(features, hair, 0, 0.06, -0.48, 0.22, 0.2, 0.18);
+    for (let index = 0; index < 3; index++) {
+      ball(features, hair, -0.26 + index * 0.26, 0.28, 0.36, 0.18, 0.14, 0.16);
+    }
+    batch(features);
+
+    const eyes = [-0.17, 0.17].map((dx) => ball(head, 0x362e31, dx, -0.048, 0.46, 0.046, 0.068, 0.03));
+    const smile = new THREE.Mesh(smileShape, color(0x985e4e));
+    smile.position.set(0, -0.115, 0.472);
+    smile.rotation.z = Math.PI;
+    head.add(smile);
+
+    const glasses = new THREE.Group();
+    head.add(glasses);
+    for (const dx of [-0.17, 0.17]) mesh(glasses, glassesShape, 0x5a686b, dx, -0.048, 0.496, 0.95, 0.95, 0.95);
+    box(glasses, 0x5a686b, 0, -0.048, 0.499, 0.1, 0.018, 0.018);
+    for (const dx of [-0.31, 0.31]) box(glasses, 0x5a686b, dx, -0.032, 0.405, 0.035, 0.02, 0.16);
+    batch(glasses);
+
+    function arm(side: number) {
+      const shoulder = new THREE.Group();
+      shoulder.position.set(side * 0.42, 1.45, 0);
+      body.add(shoulder);
+      ball(shoulder, cloth, 0, -0.18, 0.02, 0.14, 0.26, 0.14);
+      ball(shoulder, skin, 0, -0.48, 0.06, 0.095, 0.18, 0.095);
+      ball(shoulder, skin, 0, -0.7, 0.06, 0.12, 0.12, 0.065);
+      batch(shoulder);
+      shoulder.rotation.set(-0.15, 0, side * 0.1);
+      return shoulder;
+    }
+    const leftArm = arm(-1);
+    const rightArm = arm(1);
+
+    const pointer = new THREE.Group();
+    pointer.position.set(0, -0.65, 0.15);
+    rightArm.add(pointer);
+    const stick = mesh(pointer, cylinder, 0xd0ab7d, 0, 0.22, 0, 0.022, 0.65, 0.022);
+    stick.rotation.x = 0.35;
+    ball(pointer, 0xe3b579, 0, 0.54, 0.18, 0.036);
+    batch(pointer);
+
+    function leg(side: number) {
+      const hip = new THREE.Group();
+      hip.position.set(side * 0.18, 0.72, 0);
+      body.add(hip);
+      const legMesh = new THREE.Group();
+      hip.add(legMesh);
+      box(legMesh, pants, 0, -0.32, 0, 0.22, 0.58, 0.26);
+      box(legMesh, shoes, 0, -0.64, 0.05, 0.23, 0.14, 0.35);
+      batch(legMesh);
+      return hip;
+    }
+    const leftLeg = leg(-1);
+    const rightLeg = leg(1);
+
+    return { body, head, leftArm, rightArm, leftLeg, rightLeg, eyes, pointer };
+  }
+
+  return { pupil, accessories, applyStyle, mam, teacher, roundedGeometry: rounded };
 }

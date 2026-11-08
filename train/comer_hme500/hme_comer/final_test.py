@@ -5,7 +5,7 @@ import json
 import os
 from pathlib import Path
 import torch
-from .data import audit, resolve_metadata
+from .data import audit, resolve_metadata, PREPROCESS, configure_preprocess
 from .metrics import evaluate, CONTRACT
 from .model import load_model, UPSTREAM
 from .tracking import write_json, log_predictions, bundle, prepare_wandb
@@ -17,10 +17,12 @@ def final_test(output,upstream=UPSTREAM,device='cuda:0'):
     if marker.exists(): raise ValueError('FINAL_TEST_ALREADY_RECORDED: do not overwrite the held-out record')
     cfg=json.loads((output/'config.json').read_text())
     rows,report=audit(resolve_metadata(cfg['data']))
+    method=configure_preprocess(rows,cfg,report)
     checkpoint=output/'best.pt'
     state=torch.load(checkpoint,map_location='cpu',weights_only=True)
     if state.get('format')!='coach-hme500-v1' or state.get('qa_only'): raise ValueError('FINAL_TEST_REQUIRES_FULL_TRAINING_CHECKPOINT')
     if state['dataset_fingerprint']!=report['fingerprint']: raise ValueError('TEST_DATASET_CHANGED')
+    if state['training_signature'].get('preprocess',PREPROCESS)!=method: raise ValueError('TEST_PREPROCESS_CHANGED')
     model,vocab,_=load_model(checkpoint,Path(upstream))
     tests=sorted([r for r in rows if r['split']=='test'],key=lambda r:r['id'])
     for r in tests:
@@ -30,7 +32,7 @@ def final_test(output,upstream=UPSTREAM,device='cuda:0'):
     metrics,predictions,groups=evaluate(model,tests,vocab.word2idx,torch.device(device),cfg['max_decode_tokens'])
     result={'split':'test','metrics':metrics,'groups':groups,'predictions':predictions,'epoch':state['epoch'],
             'checkpoint_sha256':hashlib.sha256(checkpoint.read_bytes()).hexdigest(),
-            'dataset_fingerprint':report['fingerprint'],'metric_contract':CONTRACT}
+            'dataset_fingerprint':report['fingerprint'],'metric_contract':{**CONTRACT,'preprocess':method}}
     # Save the held-out result before trying a network sync, so a network error never reruns inference.
     write_json(marker,result)
     summary=json.loads((output/'summary.json').read_text());summary.update(test_evaluated=True,test=metrics)

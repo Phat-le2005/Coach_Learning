@@ -151,7 +151,7 @@ export function PaperUploadPanel({
     } finally { setSavingStep(false); }
   };
 
-  return <div className={styles.paperUploadPanel}>
+  return <div id="paper-upload-panel" className={styles.paperUploadPanel}>
     <header>
       <h2>Bài viết trên giấy & Chụp ảnh</h2>
       <p>Bạn có thể chụp trang vở bằng điện thoại qua mã QR hoặc tải tệp ảnh/PDF trực tiếp từ máy tính.</p>
@@ -233,7 +233,7 @@ export function PaperUploadPanel({
         </div>
       ) : null}
       {selected && !isReadOnly ? <div className={styles.paperOcrControls}>
-        <button type="button" onClick={() => void recognize()} disabled={busy || recognizing || savedOcrPaperIds.has(selected.id)}>
+        <button id="paper-recognize-button" type="button" onClick={() => void recognize()} disabled={busy || recognizing || savedOcrPaperIds.has(selected.id)}>
           {recognizing ? "Đang trích xuất bài chụp..." : savedOcrPaperIds.has(selected.id)
             ? "Đã lưu bước từ OCR" : "Trích xuất OCR từ bài chụp"}
         </button>

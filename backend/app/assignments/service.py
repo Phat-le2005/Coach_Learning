@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 import logging
 from uuid import UUID
 
-from sqlalchemy import func, select
+from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session, selectinload
 
 from app.assignments.models import (
@@ -11,6 +11,7 @@ from app.assignments.models import (
     AssignmentConcept,
     AssignmentLearningObjective,
     AssignmentMaterialItem,
+    AssignmentDeliveryMode,
     AssignmentProblemType,
     AssignmentQuestion,
     AssignmentStatus,
@@ -622,6 +623,17 @@ class AssignmentService:
             if sa.score is not None:
                 scores.append(sa.score)
 
+            prov_score = None
+            if sa.score is None and sa.status in (StudentAssignmentStatus.SUBMITTED, StudentAssignmentStatus.GRADED):
+                from app.math_solutions.models import SolutionAttempt
+                attempts_for_sa = self.session.scalars(
+                    select(SolutionAttempt).where(SolutionAttempt.student_assignment_id == sa.id)
+                ).all()
+                if attempts_for_sa:
+                    scored_attempts = [a.total_score for a in attempts_for_sa if a.total_score is not None]
+                    if scored_attempts:
+                        prov_score = round(sum(scored_attempts) / len(attempts_for_sa), 2)
+
             roster_items.append(
                 StudentRosterStatusItem(
                     student_id=sa.student_id,
@@ -631,6 +643,7 @@ class AssignmentService:
                     started_at=sa.started_at,
                     submitted_at=sa.submitted_at,
                     score=sa.score,
+                    provisional_score=prov_score,
                 )
             )
 
@@ -711,7 +724,10 @@ class AssignmentService:
                 .selectinload(AssignmentMaterialItem.options),
             )
             .where(
-                StudentAssignment.assignment_id == assignment_id,
+                or_(
+                    StudentAssignment.assignment_id == assignment_id,
+                    StudentAssignment.id == assignment_id,
+                ),
                 StudentAssignment.student_id == student.id,
             )
         )
@@ -866,7 +882,10 @@ class AssignmentService:
                 selectinload(StudentAssignment.student_material_items).selectinload(StudentAssignmentMaterialItem.assignment_material_item).selectinload(AssignmentMaterialItem.learning_outcome_mappings),
             )
             .where(
-                StudentAssignment.assignment_id == assignment_id,
+                or_(
+                    StudentAssignment.assignment_id == assignment_id,
+                    StudentAssignment.id == assignment_id,
+                ),
                 StudentAssignment.student_id == student.id,
             )
             .with_for_update()
@@ -881,6 +900,12 @@ class AssignmentService:
             raise ApplicationError(409, "ASSIGNMENT_ALREADY_SUBMITTED", "Assignment has already been submitted.")
 
         from app.math_solutions.models import SolutionAttempt
+
+        canonical_answers = {ans.question_id: ans for ans in submission.answers if ans.question_id is not None}
+        material_answers = {ans.teacher_material_item_id: ans for ans in submission.answers if ans.teacher_material_item_id is not None}
+        now = datetime.now(timezone.utc)
+        if sa.assignment.delivery_mode == AssignmentDeliveryMode.EXAM:
+            self._validated_exam_solutions(sa, canonical_answers, material_answers)
 
         submitted_solutions = list(self.session.scalars(
             select(SolutionAttempt).where(
@@ -898,20 +923,17 @@ class AssignmentService:
             for attempt in submitted_solutions
             if attempt.source_kind == "TEACHER_MATERIAL"
         }
-        canonical_answers = {ans.question_id: ans for ans in submission.answers if ans.question_id is not None}
-        material_answers = {ans.teacher_material_item_id: ans for ans in submission.answers if ans.teacher_material_item_id is not None}
-
         results: list[QuestionResultItem] = []
         correct_count = 0
         total_questions = len(sa.student_questions) + len(sa.student_material_items)
-        now = datetime.now(timezone.utc)
 
         for sq in sa.student_questions:
             question = sq.question
             submitted = canonical_answers.get(question.id)
             answer = submitted.student_answer if submitted else ""
             if (
-                question.question_type == QuestionType.OPEN_RESPONSE
+                (question.question_type == QuestionType.OPEN_RESPONSE
+                 or sa.assignment.delivery_mode == AssignmentDeliveryMode.EXAM)
                 and sq.id in submitted_question_items
             ):
                 # A second text answer would make the graded submission ambiguous.
@@ -992,7 +1014,14 @@ class AssignmentService:
                     409, "ASSIGNMENT_ANSWER_SOURCE_CONFLICT",
                     "Submit either the confirmed step solution or a text answer.",
                 )
-            if snapshot.evaluation_mode.value == "OBJECTIVE_AUTO" and snapshot.question_type is not None:
+            if sa.assignment.delivery_mode == AssignmentDeliveryMode.EXAM and sm.id in submitted_material_items:
+                status = (
+                    EvaluationStatus.NEEDS_TEACHER_REVIEW
+                    if snapshot.evaluation_mode.value == "TEACHER_REVIEW"
+                    else EvaluationStatus.NEEDS_EVALUATION
+                )
+                evaluation = AnswerEvaluation(None, None, status)
+            elif snapshot.evaluation_mode.value == "OBJECTIVE_AUTO" and snapshot.question_type is not None:
                 evaluation = self.evaluator.evaluate_values(
                     snapshot.question_type,
                     snapshot.correct_answer,
@@ -1032,9 +1061,10 @@ class AssignmentService:
             if evaluation.score is not None and evaluation.is_correct is not None:
                 self._publish_material_evidence(sa, sm, now, "AUTO")
 
-        sa.status = StudentAssignmentStatus.SUBMITTED
-        sa.submitted_at = now
         try:
+            sa.status = StudentAssignmentStatus.SUBMITTED
+            sa.submitted_at = now
+            self.session.flush()
             self._grade_submitted_solutions(sa, results)
             overall_score = recalculate_student_assignment_score(sa, finalize=False)
             self.session.commit()
@@ -1060,6 +1090,59 @@ class AssignmentService:
             submitted_at=now,
             results=results,
         )
+
+    def _validated_exam_solutions(
+        self,
+        assigned: StudentAssignment,
+        canonical_answers: dict,
+        material_answers: dict,
+    ) -> None:
+        """Require an explicit confirmed attempt or text answer for every exam item."""
+        from app.math_solutions.models import SolutionAttempt, SolutionStep
+
+        attempts = list(self.session.scalars(
+            select(SolutionAttempt).where(
+                SolutionAttempt.student_assignment_id == assigned.id,
+                SolutionAttempt.student_id == assigned.student_id,
+            ).with_for_update()
+        ).all())
+        active_ids = set(self.session.scalars(
+            select(SolutionStep.attempt_id).where(
+                SolutionStep.attempt_id.in_([attempt.id for attempt in attempts]),
+                SolutionStep.is_deleted.is_(False),
+            ).distinct()
+        ).all()) if attempts else set()
+        by_item: dict[UUID, list[SolutionAttempt]] = {}
+        for attempt in attempts:
+            if attempt.id not in active_ids or attempt.status != "SUBMITTED":
+                continue
+            item_id = attempt.assignment_student_question_id or attempt.student_assignment_material_item_id
+            if item_id is not None:
+                by_item.setdefault(item_id, []).append(attempt)
+
+        items = [*assigned.student_questions, *assigned.student_material_items]
+        if len(items) != assigned.assignment.question_count:
+            raise ApplicationError(409, "EXAM_QUESTION_SET_INCOMPLETE", "The exam question set is incomplete.")
+        missing: list[int] = []
+        for item in items:
+            rows = by_item.get(item.id, [])
+            if len(rows) > 1:
+                raise ApplicationError(409, "EXAM_DUPLICATE_SOLUTIONS", "More than one solution exists for an exam question.")
+            canonical = isinstance(item, AssignmentStudentQuestion)
+            source_id = item.question_id if canonical else item.teacher_material_item_id
+            answer = (canonical_answers if canonical else material_answers).get(source_id)
+            text_answer = answer.student_answer.strip() if answer else ""
+            if rows and text_answer:
+                if text_answer == "(Chưa làm)":
+                    text_answer = ""
+                else:
+                    raise ApplicationError(409, "ASSIGNMENT_ANSWER_SOURCE_CONFLICT", "Submit either confirmed steps or a text answer.")
+            if not rows and not text_answer:
+                missing.append(item.order_index + 1)
+        if missing:
+            numbers = ", ".join(str(index) for index in sorted(missing))
+            raise ApplicationError(422, "EXAM_INCOMPLETE", f"Confirm an answer for every question before submitting. Missing: {numbers}.")
+
 
     def _grade_submitted_solutions(
         self,
@@ -1471,6 +1554,7 @@ class AssignmentService:
                     student_answer=sq.student_answer,
                     is_correct=sq.is_correct,
                     score=sq.score,
+                    provisional_score=attempt.total_score if attempt else None,
                     evaluation_status="EVALUATED" if sq.score is not None else "NEEDS_EVALUATION",
                     teacher_feedback=None,
                     graded_at=sq.answered_at,
@@ -1513,6 +1597,7 @@ class AssignmentService:
                     student_answer=sm.student_answer,
                     is_correct=sm.is_correct,
                     score=sm.score,
+                    provisional_score=attempt.total_score if attempt else None,
                     evaluation_status=sm.evaluation_status.value if sm.evaluation_status else None,
                     teacher_feedback=sm.teacher_feedback,
                     graded_at=sm.graded_at,
@@ -1526,6 +1611,10 @@ class AssignmentService:
 
         items.sort(key=lambda x: x.order_index)
 
+        prov_scores = [item.score if item.score is not None else item.provisional_score for item in items]
+        valid_provs = [p for p in prov_scores if p is not None]
+        overall_prov = round(sum(valid_provs) / len(items), 2) if items and len(valid_provs) > 0 else None
+
         return TeacherStudentSubmissionDetail(
             assignment_id=sa.assignment.id,
             assignment_title=sa.assignment.title,
@@ -1535,6 +1624,7 @@ class AssignmentService:
             student_name=student_name,
             status=sa.status,
             score=sa.score,
+            provisional_score=overall_prov,
             submitted_at=sa.submitted_at,
             items=items,
         )
@@ -1603,7 +1693,15 @@ class AssignmentService:
             .options(
                 selectinload(StudentAssignment.assignment),
                 selectinload(StudentAssignment.student_questions),
-                selectinload(StudentAssignment.student_material_items),
+                selectinload(StudentAssignment.student_material_items)
+                .selectinload(StudentAssignmentMaterialItem.assignment_material_item)
+                .selectinload(AssignmentMaterialItem.concept_mappings),
+                selectinload(StudentAssignment.student_material_items)
+                .selectinload(StudentAssignmentMaterialItem.assignment_material_item)
+                .selectinload(AssignmentMaterialItem.problem_type_mappings),
+                selectinload(StudentAssignment.student_material_items)
+                .selectinload(StudentAssignmentMaterialItem.assignment_material_item)
+                .selectinload(AssignmentMaterialItem.learning_outcome_mappings),
             )
             .where(
                 StudentAssignment.assignment_id == assignment_id,
@@ -1616,20 +1714,63 @@ class AssignmentService:
         self._require_teacher_in_classroom(teacher.id, sa.assignment.classroom_id)
 
         now = datetime.now(timezone.utc)
-        # Any item left un-evaluated or skipped by student is resolved to 0.0 upon teacher finalization
+        from app.math_solutions.models import SolutionAttempt
+        attempts = list(
+            self.session.scalars(
+                select(SolutionAttempt).where(
+                    SolutionAttempt.student_assignment_id == sa.id
+                )
+            ).all()
+        )
+        canonical_attempt_map = {
+            a.assignment_student_question_id: a
+            for a in attempts
+            if a.source_kind == "CANONICAL" and a.assignment_student_question_id is not None
+        }
+        material_attempt_map = {
+            a.student_assignment_material_item_id: a
+            for a in attempts
+            if a.source_kind == "TEACHER_MATERIAL" and a.student_assignment_material_item_id is not None
+        }
+
+        # Any item left un-evaluated: apply AI provisional score if available, else 0.0
         for smi in sa.student_material_items:
             if smi.score is None:
-                smi.score = 0.0
-                smi.is_correct = False
+                att = material_attempt_map.get(smi.id)
+                if att and att.total_score is not None:
+                    smi.score = att.total_score
+                    smi.is_correct = (att.total_score >= 0.8) if att.is_correct is None else att.is_correct
+                else:
+                    smi.score = 0.0
+                    smi.is_correct = False
                 smi.evaluation_status = EvaluationStatus.EVALUATED
                 smi.graded_by = teacher_user_id
                 smi.graded_at = now
                 if smi.answered_at is None:
                     smi.answered_at = now
+            elif smi.is_correct is None:
+                smi.is_correct = smi.score >= 0.8
+                smi.evaluation_status = EvaluationStatus.EVALUATED
+            existing_ev = self.session.scalar(
+                select(LearningEvidenceEvent.id).where(
+                    LearningEvidenceEvent.source_kind == LearningEvidenceSourceKind.TEACHER_MATERIAL_ITEM,
+                    LearningEvidenceEvent.source_entity_id == smi.id,
+                )
+            )
+            if existing_ev is None and smi.assignment_material_item is not None and smi.assignment_material_item.snapshotted_at is not None:
+                try:
+                    self._publish_material_evidence(sa, smi, now, "TEACHER")
+                except Exception as exc:
+                    logger.warning("Could not publish material evidence on finalize for %s: %s", smi.id, exc)
         for sq in sa.student_questions:
             if sq.score is None:
-                sq.score = 0.0
-                sq.is_correct = False
+                att = canonical_attempt_map.get(sq.id)
+                if att and att.total_score is not None:
+                    sq.score = att.total_score
+                    sq.is_correct = (att.total_score >= 0.8) if att.is_correct is None else att.is_correct
+                else:
+                    sq.score = 0.0
+                    sq.is_correct = False
                 if sq.answered_at is None:
                     sq.answered_at = now
 
@@ -1639,7 +1780,9 @@ class AssignmentService:
 
         try:
             from app.planning.study_service import StudyPlanService
-            StudyPlanService(self.session).complete_matching_tasks(student_id=sa.student_id)
+            plan_svc = StudyPlanService(self.session)
+            plan_svc.complete_matching_tasks(student_id=sa.student_id)
+            plan_svc.recalculate_study_plan(sa.student_id, as_of=now.date())
             self.session.commit()
         except Exception as exc:
             logger.warning("Could not sync study plan on finalize submission: %s", exc)

@@ -57,4 +57,6 @@ export default async function StudentAssignmentsPage() {
       <StudentBottomNav currentRoute="/student/assignments" />
     </div>
   );
+export default function StudentAssignmentsPage() {
+  redirect("/student/attempts?tab=classroom");
 }

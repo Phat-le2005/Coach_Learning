@@ -84,8 +84,18 @@ export function TeacherSubmissionReviewModal({
   // Sync edit form with current item
   useEffect(() => {
     if (currentItem) {
-      setScoreInput(currentItem.score !== null ? currentItem.score : 1.0);
-      setIsCorrectInput(currentItem.is_correct !== null ? currentItem.is_correct : true);
+      const defaultScore =
+        currentItem.score !== null
+          ? currentItem.score
+          : currentItem.provisional_score !== null && currentItem.provisional_score !== undefined
+          ? currentItem.provisional_score
+          : 1.0;
+      setScoreInput(defaultScore);
+      setIsCorrectInput(
+        currentItem.is_correct !== null
+          ? currentItem.is_correct
+          : defaultScore >= 0.8
+      );
       setFeedbackInput(currentItem.teacher_feedback || "");
     }
   }, [currentItem]);
@@ -185,11 +195,15 @@ export function TeacherSubmissionReviewModal({
                     ? "Chờ GV kiểm duyệt"
                     : submission?.status || "Đang tải"}
                 </span>
-                {submission?.score !== null && submission?.score !== undefined && (
+                {submission?.score !== null && submission?.score !== undefined ? (
                   <span className={styles.overallScoreBadge}>
                     Điểm tổng: <strong>{submission.score <= 1.0 ? Number((submission.score * 10).toFixed(1)) : submission.score}/10</strong>
                   </span>
-                )}
+                ) : submission?.provisional_score !== null && submission?.provisional_score !== undefined ? (
+                  <span className={styles.overallScoreBadge} style={{ background: "rgba(16, 185, 129, 0.12)", borderColor: "rgba(16, 185, 129, 0.4)", color: "#065f46" }}>
+                    AI đề xuất: <strong>{submission.provisional_score <= 1.0 ? Number((submission.provisional_score * 10).toFixed(1)) : submission.provisional_score}/10</strong>
+                  </span>
+                ) : null}
               </div>
               <p className={styles.modalSubtitle}>
                 {submission?.assignment_title || "Chi tiết đợt giao bài"} ·{" "}
@@ -260,7 +274,11 @@ export function TeacherSubmissionReviewModal({
                           item.is_correct
                         )}`}
                       >
-                        {item.score !== null ? `${item.score * 10}/10` : "Chưa chấm"}
+                        {item.score !== null
+                          ? `${Number((item.score * 10).toFixed(1))}/10`
+                          : item.provisional_score !== null && item.provisional_score !== undefined
+                          ? `AI: ${Number((item.provisional_score * 10).toFixed(1))}`
+                          : "Chờ GV"}
                       </span>
                     </button>
                   );
@@ -411,12 +429,17 @@ export function TeacherSubmissionReviewModal({
                     <div className={styles.aiAssessmentHeader}>
                       <span className={styles.aiBadgeTitle}>Trợ lý AI Đánh giá sơ bộ</span>
                       <span className={styles.aiConfidenceBadge}>
-                        Điểm tạm tính:{" "}
-                        <strong>
-                          {currentItem.score !== null
-                            ? `${Number((currentItem.score * 10).toFixed(1))}/10`
-                            : "Chưa tính"}
-                        </strong>
+                        {currentItem.provisional_score !== null && currentItem.provisional_score !== undefined ? (
+                          <>
+                            AI đề xuất: <strong>{Number((currentItem.provisional_score * 10).toFixed(1))}/10</strong>
+                          </>
+                        ) : currentItem.score !== null ? (
+                          <>
+                            Điểm chính thức: <strong>{Number((currentItem.score * 10).toFixed(1))}/10</strong>
+                          </>
+                        ) : (
+                          "Cần GV thẩm định tự luận"
+                        )}
                       </span>
                     </div>
 
@@ -447,6 +470,19 @@ export function TeacherSubmissionReviewModal({
 
                     {/* Quick presets */}
                     <div className={styles.quickPresetButtons}>
+                      {currentItem.provisional_score !== null && currentItem.provisional_score !== undefined && (
+                        <button
+                          type="button"
+                          className={styles.presetBtnCorrect}
+                          style={{ borderColor: "#10b981", color: "#065f46" }}
+                          onClick={() => {
+                            setScoreInput(currentItem.provisional_score!);
+                            setIsCorrectInput(currentItem.provisional_score! >= 0.8);
+                          }}
+                        >
+                          ✨ Nhận điểm AI ({Number((currentItem.provisional_score * 10).toFixed(1))}đ)
+                        </button>
+                      )}
                       <button
                         type="button"
                         className={styles.presetBtnCorrect}
@@ -455,7 +491,7 @@ export function TeacherSubmissionReviewModal({
                           setIsCorrectInput(true);
                         }}
                       >
-                        ✔ Đúng hoàn toàn (1.0đ)
+                        ✔ Đúng (1.0đ)
                       </button>
                       <button
                         type="button"

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-
+import { MathRenderer } from "@/components/ui/MathRenderer";
 import styles from "../MathWorkspace.module.css";
 import { renderOcrLatexHtml } from "../utils/ocr-math-preview";
 
@@ -14,7 +14,12 @@ export function OcrMathPreview({ latex }: OcrMathPreviewProps) {
 
   if (!latex.trim()) return <span className={styles.emptyPreviewText}>Chưa có công thức</span>;
   if (html === null) {
-    return <span className={styles.previewError}>Chưa thể hiển thị công thức này. Hãy kiểm tra LaTeX trước khi xác nhận.</span>;
+    // Graceful fallback to rich math renderer when input contains mixed prose or $ delimiters
+    return (
+      <span className={styles.renderedFormula}>
+        <MathRenderer content={latex} inline />
+      </span>
+    );
   }
   return <span className={styles.renderedFormula} dangerouslySetInnerHTML={{ __html: html }} />;
 }

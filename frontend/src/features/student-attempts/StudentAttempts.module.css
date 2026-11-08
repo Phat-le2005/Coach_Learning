@@ -1800,3 +1800,209 @@
     opacity: 0.16;
   }
 }
+
+
+/* ==========================================================================
+   CONSOLIDATED PRACTICE HUB (HEADER & SEGMENTED TABS)
+   ========================================================================== */
+.hubHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 24px 28px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(35, 166, 122, 0.16);
+  box-shadow: 0 4px 20px rgba(9, 45, 37, 0.04);
+}
+
+.hubHeaderCopy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.hubKicker {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #059669;
+}
+
+.hubTitle {
+  font-size: clamp(1.4rem, 2.4vw, 1.85rem);
+  font-weight: 800;
+  color: #092d25;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.hubSubtitle {
+  font-size: 0.9375rem;
+  color: #4b6358;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.segmentedControl {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(237, 246, 242, 0.9);
+  padding: 6px;
+  border-radius: 14px;
+  border: 1px solid rgba(35, 166, 122, 0.14);
+  width: fit-content;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.tabBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #335347;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.18s ease;
+}
+
+.tabBtn:hover {
+  color: #092d25;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.tabBtnActive {
+  background: #ffffff !important;
+  color: #059669 !important;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(9, 45, 37, 0.08);
+}
+
+.tabBadgeActive {
+  background: #059669;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 10px;
+}
+
+.tabBadgeMuted {
+  background: rgba(9, 45, 37, 0.08);
+  color: #4b6358;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 10px;
+}
+
+.tabBadgeNotice {
+  background: #fef3c7;
+  color: #b45309;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 10px;
+}
+
+.classroomBanner {
+  margin-bottom: 20px;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
+  border: 1px solid #6ee7b7;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.08);
+}
+
+.classroomBannerInfo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.classroomBannerIconWrap {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: #d1fae5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #059669;
+  flex-shrink: 0;
+}
+
+.classroomBannerTitle {
+  font-weight: 700;
+  color: #065f46;
+  font-size: 0.95rem;
+}
+
+.classroomBannerSubtitle {
+  color: #047857;
+  font-size: 0.85rem;
+  margin-top: 2px;
+}
+
+.classroomBannerBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #059669;
+  color: #ffffff;
+  padding: 9px 18px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(5, 150, 105, 0.2);
+  transition: all 0.15s ease;
+}
+
+.classroomBannerBtn:hover {
+  background: #047857;
+  transform: translateY(-1px);
+}
+
+.tabPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  animation: hubFadeIn 0.2s ease-in-out;
+}
+
+@keyframes hubFadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 640px) {
+  .hubHeader {
+    padding: 16px 18px;
+  }
+  .segmentedControl {
+    width: 100%;
+  }
+  .tabBtn {
+    flex: 1;
+    justify-content: center;
+    padding: 9px 12px;
+    font-size: 0.875rem;
+  }
+}

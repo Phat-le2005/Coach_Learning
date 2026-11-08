@@ -191,7 +191,9 @@ export function parseTokenPair(value: unknown, path = "response"): TokenPair {
 export function parseUserRead(value: unknown, path = "response"): UserRead {
   const source = record(value, path);
   return {
-    id: nonEmptyString(source.id, `${path}.id`), email: nonEmptyString(source.email, `${path}.email`),
+    id: nonEmptyString(source.id, `${path}.id`),
+
+    email: nonEmptyString(source.email, `${path}.email`),
     full_name: nonEmptyString(source.full_name, `${path}.full_name`), role: oneOf(source.role, `${path}.role`, ROLES),
     is_active: boolean(source.is_active, `${path}.is_active`), created_at: nonEmptyString(source.created_at, `${path}.created_at`),
     updated_at: nonEmptyString(source.updated_at, `${path}.updated_at`),
@@ -515,6 +517,7 @@ export interface ProblemOptionRead {
 
 export interface ProblemRead {
   id: string;
+  subject_id?: string | null;
   content: string;
   question_type: string;
   options: ProblemOptionRead[];
@@ -522,6 +525,10 @@ export interface ProblemRead {
   is_read_only: boolean;
   source_kind?: string;
   context_type?: string;
+  student_assignment_id?: string | null;
+  assignment_id?: string | null;
+  student_assignment_material_item_id?: string | null;
+  assignment_student_question_id?: string | null;
 }
 
 export const STEP_KINDS = [
@@ -630,6 +637,7 @@ export interface SolutionStepRead {
 
 export interface SolutionAttemptRead {
   id: string;
+  practice_session_id?: string | null;
   student_id?: string;
   question_id: string | null;
   status: string;
@@ -637,6 +645,11 @@ export interface SolutionAttemptRead {
   created_at: string;
   updated_at?: string;
   context_type?: string;
+  student_assignment_id?: string | null;
+  assignment_id?: string | null;
+  student_assignment_material_item_id?: string | null;
+  assignment_student_question_id?: string | null;
+  mode?: string;
   submitted_at?: string;
   steps?: SolutionStepRead[];
 }
@@ -823,6 +836,8 @@ export function parseProblemRead(value: unknown, path = "problem"): ProblemRead 
   const source = record(value, path);
   return {
     id: nonEmptyString(source.id, `${path}.id`),
+
+    subject_id: typeof source.subject_id === 'string' ? source.subject_id : null,
     content: string(source.content, `${path}.content`),
     question_type: string(source.question_type, `${path}.question_type`),
     options: array(source.options, `${path}.options`, parseProblemOptionRead),
@@ -830,6 +845,10 @@ export function parseProblemRead(value: unknown, path = "problem"): ProblemRead 
     is_read_only: typeof source.is_read_only === "boolean" ? source.is_read_only : false,
     source_kind: typeof source.source_kind === "string" ? source.source_kind : undefined,
     context_type: typeof source.context_type === "string" ? source.context_type : undefined,
+    student_assignment_id: typeof source.student_assignment_id === "string" ? source.student_assignment_id : null,
+    assignment_id: typeof source.assignment_id === "string" ? source.assignment_id : null,
+    student_assignment_material_item_id: typeof source.student_assignment_material_item_id === "string" ? source.student_assignment_material_item_id : null,
+    assignment_student_question_id: typeof source.assignment_student_question_id === "string" ? source.assignment_student_question_id : null,
   };
 }
 
@@ -842,10 +861,17 @@ export function parseSolutionAttemptRead(value: unknown, path = "attempt"): Solu
     id: nonEmptyString(source.id, `${path}.id`),
     student_id: typeof source.student_id === "string" ? source.student_id : undefined,
     question_id: typeof source.question_id === "string" ? source.question_id : null,
+    practice_session_id: typeof source.practice_session_id === 'string' ? source.practice_session_id : null,
     status: string(source.status, `${path}.status`),
     current_revision: rev,
     created_at: typeof source.created_at === "string" ? source.created_at : (typeof source.started_at === "string" ? source.started_at : ""),
     updated_at: typeof source.updated_at === "string" ? source.updated_at : undefined,
+    context_type: typeof source.context_type === "string" ? source.context_type : undefined,
+    student_assignment_id: typeof source.student_assignment_id === "string" ? source.student_assignment_id : null,
+    assignment_id: typeof source.assignment_id === "string" ? source.assignment_id : null,
+    student_assignment_material_item_id: typeof source.student_assignment_material_item_id === "string" ? source.student_assignment_material_item_id : null,
+    assignment_student_question_id: typeof source.assignment_student_question_id === "string" ? source.assignment_student_question_id : null,
+    mode: typeof source.mode === "string" ? source.mode : undefined,
     steps: source.steps === undefined ? undefined : array(source.steps, `${path}.steps`, (value, stepPath) => {
       const step = record(value, stepPath);
       const kind = string(step.step_type, `${stepPath}.step_type`);

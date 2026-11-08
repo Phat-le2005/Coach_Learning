@@ -91,15 +91,16 @@ class StudyPlanningPolicy:
                 )
             )
 
-        # 2. Active Teaching Plan: Current lesson priority
-        for pt_id in ctx.active_teaching_plan_problem_type_ids:
+        # 2. Active Teaching Plan: Current lesson priority (interleaved decay so repairs & weak gaps also get scheduled early)
+        for idx, pt_id in enumerate(ctx.active_teaching_plan_problem_type_ids[:4]):
+            decay = idx * 14.0
             candidates.append(
                 CandidateTask(
                     task_type=StudyTaskType.LEARN,
                     reason_code=StudyTaskReasonCode.CURRENT_TEACHING_PLAN,
                     problem_type_id=pt_id,
                     estimated_duration_minutes=self.DEFAULT_DURATION_MAP[StudyTaskType.LEARN],
-                    priority_score=120.0 if not is_exam_imminent else 95.0,
+                    priority_score=max(75.0, (120.0 if not is_exam_imminent else 95.0) - decay),
                 )
             )
             candidates.append(
@@ -108,7 +109,7 @@ class StudyPlanningPolicy:
                     reason_code=StudyTaskReasonCode.CURRENT_TEACHING_PLAN,
                     problem_type_id=pt_id,
                     estimated_duration_minutes=self.DEFAULT_DURATION_MAP[StudyTaskType.PRACTICE],
-                    priority_score=115.0 if not is_exam_imminent else 90.0,
+                    priority_score=max(70.0, (115.0 if not is_exam_imminent else 90.0) - decay),
                 )
             )
 
@@ -248,18 +249,34 @@ class StudyPlanningPolicy:
                     task_type = StudyTaskType.REVIEW
                     reason_code = StudyTaskReasonCode.REVIEW_DUE
                     duration = self.DEFAULT_DURATION_MAP.get(StudyTaskType.REVIEW, 15)
-                elif day_offset == 6 and horizon_days == 7 and minutes_remaining >= 25:
+                elif (
+                    day_offset == 6
+                    and horizon_days == 7
+                    and minutes_remaining >= 25
+                    and not any(existing.task_type == StudyTaskType.MINI_TEST for existing in schedule[current_date])
+                ):
                     task_type = StudyTaskType.MINI_TEST
                     reason_code = StudyTaskReasonCode.EXAM_PREPARATION
                     duration = 30
 
                 already_scheduled = any(
-                    existing.task_type == task_type
-                    and existing.problem_type_id == candidate.problem_type_id
-                    and existing.concept_id == candidate.concept_id
+                    (
+                        existing.task_type == task_type
+                        and existing.problem_type_id == candidate.problem_type_id
+                        and existing.concept_id == candidate.concept_id
+                    )
+                    or (
+                        candidate.problem_type_id is not None
+                        and existing.problem_type_id == candidate.problem_type_id
+                        and existing.task_type not in (StudyTaskType.LEARN, StudyTaskType.PRACTICE)
+                    )
+                    or (
+                        candidate.concept_id is not None
+                        and existing.concept_id == candidate.concept_id
+                    )
                     for existing in schedule[current_date]
                 )
-                if already_scheduled and len(schedule[current_date]) > 0:
+                if already_scheduled:
                     continue
 
                 if duration > minutes_remaining and len(schedule[current_date]) > 0:

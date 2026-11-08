@@ -1,4 +1,6 @@
 """Transparent greedy decoding metrics, not the official CROHME evaluator."""
+import hashlib
+import random
 import torch
 import torch.nn.functional as F
 from torch.utils.data import Dataset
@@ -16,9 +18,24 @@ CONTRACT = {
 
 
 class InkDataset(Dataset):
-    def __init__(self, rows): self.rows = rows
+    def __init__(self, rows, scale_min=1., scale_max=1., seed=0, epoch=0):
+        self.rows=rows;self.scale_min=scale_min;self.scale_max=scale_max;self.seed=seed;self.epoch=epoch
+        self.augment=(scale_min,scale_max)!=(1.,1.)
+        if not 0.5<=scale_min<=scale_max<=1.5:raise ValueError('INVALID_TRAIN_SCALE')
+        if self.augment and any(row.get('split')!='train' for row in rows):
+            raise ValueError('AUGMENTATION_TRAIN_ONLY')
     def __len__(self): return len(self.rows)
-    def __getitem__(self, i): return torch.from_numpy(input_array(self.rows[i]))[None], self.rows[i]['_tokens']
+    def __getitem__(self, i):
+        row=self.rows[i];image=torch.from_numpy(input_array(row))[None]
+        if self.augment:
+            # Separate per-image/epoch RNG leaves sampler and model RNG untouched.
+            key=f"{self.seed}:{self.epoch}:{row['id']}".encode()
+            rng=random.Random(int.from_bytes(hashlib.sha256(key).digest()[:8],'big'))
+            h,w=image.shape[-2:]
+            scale=min(rng.uniform(self.scale_min,self.scale_max),1024/w,256/h)
+            shape=(max(1,round(h*scale)),max(1,round(w*scale)))
+            image=F.interpolate(image[None],size=shape,mode='bilinear',align_corners=False)[0]
+        return image,row['_tokens']
 
 
 def collate(items):
