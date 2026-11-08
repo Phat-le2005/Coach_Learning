@@ -1,7 +1,9 @@
 "use client";
 
+import { AppFooter } from "@/components/app-shell/AppFooter";
+import { TeacherTheoryClient } from "@/features/theory-maps/TeacherTheoryClient";
+import { AlertCircle, BarChart3, BookOpen, ClipboardList, Network, RefreshCw, Users } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Users, BookOpen, ClipboardList, BarChart3, AlertCircle, RefreshCw, Network } from "lucide-react";
 import {
   teacherApi,
   TeacherApiError,
@@ -13,16 +15,15 @@ import {
   type TeacherStudent,
   type TeacherSubject,
 } from "./api";
-import { TeacherHeader } from "./components/TeacherHeader";
+import { AnalyticsTab } from "./components/AnalyticsTab";
+import type { ViewMode } from "./components/Classroom3DPanel";
+import { ClassroomExperience } from "./components/ClassroomExperience";
 import { ClassroomsTab } from "./components/ClassroomsTab";
+import { CreateClassModal } from "./components/CreateClassModal";
 import { MaterialsTab } from "./components/MaterialsTab";
 import { SubmissionsTab } from "./components/SubmissionsTab";
-import { AnalyticsTab } from "./components/AnalyticsTab";
-import { CreateClassModal } from "./components/CreateClassModal";
+import { TeacherHeader } from "./components/TeacherHeader";
 import { UploadMaterialModal } from "./components/UploadMaterialModal";
-import { TeacherTheoryClient } from "@/features/theory-maps/TeacherTheoryClient";
-import { ClassroomExperience } from "./components/ClassroomExperience";
-import type { ViewMode } from "./components/Classroom3DPanel";
 import styles from "./TeacherDashboard.module.css";
 import { teacherPdfApi } from "./pdf-api";
 
@@ -529,6 +530,8 @@ export function TeacherDashboardClient({
           </div>
         )}
       </main>
+
+      <AppFooter variant="teacher" />
 
       {/* 5. Modals */}
       <CreateClassModal

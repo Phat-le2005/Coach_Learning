@@ -884,6 +884,7 @@ export function MathWorkspace({
       if (result.is_final) {
         const refreshed = await apiClient.getMathAttempt(accessToken, attemptId).catch(() => null);
         if (refreshed) setAttempt(refreshed);
+        router.refresh();
       }
     } catch (error: unknown) {
       const code = error instanceof ApiResponseError ? error.code : "";
@@ -903,7 +904,7 @@ export function MathWorkspace({
     } finally {
       setIsReviewing(false);
     }
-  }, [isReviewing, apiClient, accessToken, attemptId]);
+  }, [isReviewing, apiClient, accessToken, attemptId, router]);
 
 
   const handleReopenAttempt = useCallback(async () => {

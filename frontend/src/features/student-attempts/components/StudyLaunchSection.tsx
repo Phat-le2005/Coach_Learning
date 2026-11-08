@@ -81,7 +81,6 @@ export function StudyLaunchSection({
             </div>
 
             <div>
-              <p className={styles.launchEyebrow}>Study Launch Panel · Trang giấy số</p>
               <h2 id="study-launch-heading" className={styles.launchTitle}>
                 Bắt đầu một bài làm mới
               </h2>
@@ -89,8 +88,8 @@ export function StudyLaunchSection({
           </div>
 
           <p className={styles.launchDescription}>
-            Hệ thống chỉ chọn câu hỏi thực đã được duyệt. Bạn viết lời giải trực tiếp trên giấy số,
-            lưu nét viết tự động và kiểm tra gợi ý nhận diện công thức trước khi xác nhận từng bước.
+            Chọn môn học để mở giấy viết. Bạn có thể viết trên máy tính hoặc kết nối điện thoại,
+            rồi xem lại bản chép trước khi xác nhận lời giải.
           </p>
 
           {subjectsLoaded ? (

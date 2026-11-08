@@ -50,8 +50,14 @@ class ParentAISummaryService:
         self.session = session
         self._clock = clock or utc_now
         self.dashboard_service = ParentDashboardService(session, clock=self._clock)
-        self.gateway = gateway or get_ai_gateway_singleton(get_settings())
+        self.gateway = gateway
         self.prompt_registry = prompt_registry or default_prompt_registry
+
+    def _get_gateway(self) -> Any:
+        if self.gateway is not None:
+            return self.gateway
+        self.gateway = get_ai_gateway_singleton(get_settings())
+        return self.gateway
 
     # --------------------------------------------------------------------------
     # 1. Context Assembly (Strictly Aggregated Data - Zero Chat / Raw Logs)
@@ -310,7 +316,8 @@ class ParentAISummaryService:
             rendered_prompt = self.prompt_registry.get_prompt("parent_summary", "v1", prompt_vars)
             messages = [AIMessage(role=AIRole.USER, content=rendered_prompt)]
 
-            response = await self.gateway.generate_structured(
+            gateway = self._get_gateway()
+            response = await gateway.generate_structured(
                 task_type=AITaskType.PARENT_SUMMARY,
                 messages=messages,
                 schema=ParentWeeklyAIOutput,

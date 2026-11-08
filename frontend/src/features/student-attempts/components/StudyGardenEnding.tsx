@@ -3,6 +3,7 @@
 import { ArrowUp, House } from "lucide-react";
 import Link from "next/link";
 
+import { AppFooter } from "@/components/app-shell/AppFooter";
 import {
   useGardenMotion,
   useGardenSectionInView,
@@ -84,6 +85,7 @@ export function StudyGardenEnding({ defaultSubjectId }: StudyGardenEndingProps) 
           Về Khu vườn học tập
         </Link>
       </div>
+      <AppFooter variant="student" compact />
     </footer>
   );
 }

@@ -33,18 +33,70 @@ function enhanceTextWithInlineMath(text: string): string {
   return s;
 }
 
-function formatPlainText(text: string): string {
+function formatParagraphs(text: string): string {
   return text
-    .replace(/\r\n?/g, "\n")
     .split(/\n{2,}/)
     .map((paragraph) =>
-      paragraph
-        .replace(/[ \t]*\n[ \t]*/g, " ")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
+      escapeHtml(paragraph.replace(/[ \t]*\n[ \t]*/g, " "))
     )
     .join("<br/><br/>");
+}
+
+function pipeCells(line: string): string[] | null {
+  let row = line.trim();
+  if (!/(?<!\\)\|/.test(row)) return null;
+  if (row.startsWith("|")) row = row.slice(1);
+  if (/(?<!\\)\|$/.test(row)) row = row.slice(0, -1);
+  return row.split(/(?<!\\)\|/).map((cell) => cell.trim().replace(/\\\|/g, "|"));
+}
+
+/** Render only pipe tables with a valid header separator; source HTML stays text. */
+export function formatPlainText(text: string): string {
+  const normalized = text.replace(/\r\n?/g, "\n");
+  const lines = normalized.split("\n");
+  const blocks: string[] = [];
+  let plain: string[] = [];
+  let foundTable = false;
+  const flushPlain = () => {
+    const value = plain.join("\n").replace(/^\n+|\n+$/g, "");
+    if (value) blocks.push(formatParagraphs(value));
+    plain = [];
+  };
+
+  for (let index = 0; index < lines.length; index++) {
+    const header = pipeCells(lines[index]);
+    const separator = index + 1 < lines.length ? pipeCells(lines[index + 1]) : null;
+    if (!header || header.length < 2 || separator?.length !== header.length
+        || !separator.every((cell) => /^:?-{3,}:?$/.test(cell))) {
+      plain.push(lines[index]);
+      continue;
+    }
+    const rows: string[][] = [];
+    let end = index + 2;
+    while (end < lines.length) {
+      const cells = pipeCells(lines[end]);
+      if (!cells || cells.length !== header.length) break;
+      rows.push(cells);
+      end++;
+    }
+    if (rows.length === 0) {
+      plain.push(lines[index]);
+      continue;
+    }
+    foundTable = true;
+    flushPlain();
+    const cellStyle = "border:1px solid currentColor;padding:0.45rem 0.65rem;text-align:left;vertical-align:top";
+    blocks.push(
+      '<div style="max-width:100%;overflow-x:auto"><table style="border-collapse:collapse;margin:0.25rem 0">'
+      + `<thead><tr>${header.map((cell) => `<th scope="col" style="${cellStyle}">${escapeHtml(cell)}</th>`).join("")}</tr></thead>`
+      + `<tbody>${rows.map((row) => `<tr>${row.map((cell) => `<td style="${cellStyle}">${escapeHtml(cell)}</td>`).join("")}</tr>`).join("")}</tbody>`
+      + "</table></div>"
+    );
+    index = end - 1;
+  }
+  if (!foundTable) return formatParagraphs(normalized);
+  flushPlain();
+  return blocks.join("<br/><br/>");
 }
 
 interface Segment {

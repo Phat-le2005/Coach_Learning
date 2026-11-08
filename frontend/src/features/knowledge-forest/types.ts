@@ -43,6 +43,7 @@ export interface KnowledgeProblemTypeNode {
   id: string;
   code: string;
   name: string;
+  availableQuestionCount?: number;
   topicId: string;
   topicName: string;
   chapterId: string;

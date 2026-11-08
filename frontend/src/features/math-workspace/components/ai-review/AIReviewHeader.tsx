@@ -91,6 +91,8 @@ export function AIReviewHeader({
             <p className={styles.headerSubtitle}>
               {confirmedStepCount} bước giải đã xác nhận · {review?.review_source === "TEACHER"
                 ? "Điểm do giáo viên ghi nhận"
+                : review?.is_final && review.review_source === "ANSWER_GROUNDED_AI"
+                ? "Điểm Gemini theo rubric được duyệt"
                 : review?.is_final
                 ? "Điểm từ quy tắc toán học và rubric được duyệt"
                 : review?.review_source === "UNANSWERED_AI"

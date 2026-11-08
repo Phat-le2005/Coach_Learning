@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { StudentShell } from "@/features/student-home/components/StudentShell";
 
 import { PageState } from "@/components/app-shell/PageState";
 import { SessionHeartbeat } from "@/components/auth/SessionHeartbeat";
@@ -229,19 +230,13 @@ export default async function StudentKnowledgePage(props: {
   return (
     <>
       <SessionHeartbeat />
-      <ForestAtmosphere />
-      <StudentTopNav
-        displayName={session.fullName}
-        email={session.email}
-        currentRoute="/student/knowledge"
-        subjectId={viewModel.subject.id}
-      />
+      <StudentShell displayName={session.fullName} email={session.email} route="/student/knowledge" subjectId={viewModel.subject.id}>
       <KnowledgeForest
         key={viewModel.subject.id}
         data={viewModel}
         initialSelectedId={requestedNodeId}
       />
-      <StudentBottomNav currentRoute="/student/knowledge" subjectId={viewModel.subject.id} />
+      </StudentShell>
     </>
   );
 }

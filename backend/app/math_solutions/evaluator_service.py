@@ -18,6 +18,8 @@ from app.math_solutions.models import (
 )
 from app.math_solutions.rubric_evaluator import SolutionRubricEvaluator
 from app.math_solutions.validator import DeterministicMathValidator
+from app.math_solutions.grading_profile import profile_data
+from app.math_solutions.numeric_reference import NUMERIC_PROFILE, NumericReferenceValidator
 
 
 class MathEvaluatorService:
@@ -45,8 +47,13 @@ class MathEvaluatorService:
         if attempt.context_type == "CLASSROOM_ASSIGNMENT":
             require_pending_assignment_item(self.session, attempt)
         rubric = context.rubric
-        validator = DeterministicMathValidator(target_function_latex=context.problem_content)
-        if not validator.supports_polynomial_target:
+        profile = profile_data(rubric)
+        numeric = profile and profile["grading_profile"] == NUMERIC_PROFILE
+        validator = (NumericReferenceValidator(profile) if numeric else
+                     DeterministicMathValidator(target_function_latex=context.problem_content,
+                                                require_complete_conclusion=bool(profile),
+                                                conclusion_task=profile["task"] if profile else "all_intervals"))
+        if not numeric and not validator.supports_polynomial_target:
             raise ApplicationError(
                 409, "GRADING_TARGET_UNSUPPORTED",
                 "The problem is outside the verified polynomial grading scope.",
@@ -61,6 +68,11 @@ class MathEvaluatorService:
         ).all()
         if not active_steps:
             raise ApplicationError(409, "EMPTY_SOLUTION", "No active solution steps are available for grading.")
+        if profile:
+            allowed = {criterion["step_type"] for criterion in profile["criteria"]}
+            kinds = [step.step_type for step in active_steps]
+            if len(kinds) != len(set(kinds)) or any(kind not in allowed for kind in kinds):
+                raise ApplicationError(409, "GRADING_REVIEW_REQUIRED", "Repeated or unsupported step kinds require review.")
 
         step_validities_for_rubric = []
         evaluations_to_save: list[StepEvaluation] = []
@@ -132,6 +144,7 @@ class MathEvaluatorService:
                 "step_type": step.step_type,
                 "validity": val_result.validity.value,
                 "raw_score": val_result.score,
+                "details": val_result.details,
             })
 
         # An unresolved step is neither correct nor incorrect. It must not
@@ -183,12 +196,12 @@ class MathEvaluatorService:
 
         if commit:
             try:
-                MathSolutionEvidenceAdapter(self.session).emit_evidence_for_decision(decision.id)
+                MathSolutionEvidenceAdapter(self.session).emit_evidence_for_decision(decision.id, rubric_matches=rubric_matches)
                 self.session.commit()
             except Exception:
                 self.session.rollback()
                 raise
         else:
             # The assignment submit transaction owns the commit and rollback.
-            MathSolutionEvidenceAdapter(self.session).emit_evidence_for_decision(decision.id)
+            MathSolutionEvidenceAdapter(self.session).emit_evidence_for_decision(decision.id, rubric_matches=rubric_matches)
         return decision

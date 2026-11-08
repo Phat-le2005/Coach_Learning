@@ -467,10 +467,24 @@ class RootCauseDiagnosticService:
     ) -> tuple[dict[UUID, EvidenceCounts], dict[UUID, EvidenceCounts]]:
         concept_counts: dict[UUID, EvidenceCounts] = {}
         pt_counts: dict[UUID, EvidenceCounts] = {}
+        from app.learning_evidence.skill_outcomes import concept_outcome
+
+        seen_attempts: set[str] = set()
         for event in events:
+            meta = event.event_metadata or {}
+            if meta.get("is_superseded") is True:
+                continue
+            attempt_id = meta.get("attempt_id")
+            if attempt_id and attempt_id in seen_attempts:
+                continue
+            if attempt_id:
+                seen_attempts.add(attempt_id)
             for link in event.concepts:
+                outcome = concept_outcome(meta, link.concept_id, score=event.score, is_correct=event.is_correct)
+                if outcome is None:
+                    continue
                 counts = concept_counts.setdefault(link.concept_id, EvidenceCounts())
-                if event.is_correct:
+                if outcome.is_correct:
                     counts.correct += 1
                 else:
                     counts.wrong += 1

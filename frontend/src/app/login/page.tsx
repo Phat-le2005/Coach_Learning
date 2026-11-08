@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import { Compass, GitBranch, Lock, ShieldCheck, Sparkles } from "lucide-react";
+import { Compass, GitBranch, ShieldCheck, Sparkles } from "lucide-react";
 
+import { AppFooter } from "@/components/app-shell/AppFooter";
 import { KnowledgeTreeIllustration } from "@/components/auth/KnowledgeTreeIllustration";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { BrandMark } from "@/features/student-home/components/BrandMark";
@@ -10,17 +11,18 @@ import { safeReturnPath } from "@/lib/auth/rbac";
 import styles from "./login.module.css";
 
 export const metadata: Metadata = {
-  title: "Đăng nhập · EduMS",
-  description: "Đăng nhập an toàn vào EduMS · Khu Rừng Tri Thức.",
+  title: "Đăng nhập & Đăng ký · EduMS",
+  description: "Đăng nhập hoặc đăng ký tài khoản học sinh vào EduMS · Khu Rừng Tri Thức.",
 };
 
 interface LoginPageProps {
-  searchParams: Promise<{ returnTo?: string; reason?: string }>;
+  searchParams: Promise<{ returnTo?: string; reason?: string; mode?: string }>;
 }
 
 export default async function LoginPage({ searchParams }: LoginPageProps) {
   await redirectAuthenticatedUser();
   const query = await searchParams;
+  const initialMode = query.mode === "register" ? "register" : "login";
 
   return (
     <main className={styles.page}>
@@ -91,25 +93,17 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           </div>
         </div>
 
-        {/* Right Column: Form Đăng Nhập Hiện Đại */}
+        {/* Right Column: Form Đăng Nhập / Đăng Ký Hiện Đại */}
         <div className={styles.card}>
-          <div className={styles.cardHeader}>
-            <div className={styles.cardBadge}>
-              <Lock size={12} aria-hidden="true" />
-              <span>Cổng truy cập an toàn</span>
-            </div>
-            <h2 className={styles.cardTitle}>Đăng nhập</h2>
-            <p className={styles.cardSubtitle}>
-              Sử dụng tài khoản được cấp để tiếp tục hành trình học tập.
-            </p>
-          </div>
-
           <LoginForm
             returnTo={safeReturnPath(query.returnTo ?? null) ?? undefined}
             expired={query.reason === "expired"}
+            initialMode={initialMode}
           />
         </div>
       </section>
+
+      <AppFooter variant="auth" compact />
     </main>
   );
 }

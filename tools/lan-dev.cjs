@@ -10,7 +10,7 @@ process.env.COACH_LAN_MODE = '1';
 process.env.COACH_LAN_FRONTEND_PORT = port;
 function hosts() {
   return Object.entries(os.networkInterfaces())
-    .filter(([name]) => !/loopback|vethernet|wsl|docker|virtual|vmware|vbox|tailscale|tunnel|vpn/i.test(name))
+    .filter(([name]) => !/^(?:lo|veth|br-|virbr|docker|tun|tap|wg)|loopback|vethernet|wsl|docker|virtual|vmware|vbox|tailscale|tunnel|vpn/i.test(name))
     .flatMap(([, rows]) => (rows || []).filter(a => a.family === 'IPv4' && !a.internal
       && /^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(a.address)).map(a => a.address)).sort();
 }

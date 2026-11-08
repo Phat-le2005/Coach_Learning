@@ -125,7 +125,12 @@ async function request<T>(url: string, parse: (value: unknown) => T, init: Reque
   const body: unknown = await response.json().catch(() => null);
   if (!response.ok) {
     const error = body && typeof body === "object" && "error" in body ? (body as { error?: { message?: string } }).error : null;
-    throw new Error(error?.message || `Yêu cầu thất bại (${response.status}).`);
+    const rawMsg = error?.message || "";
+    const message =
+      rawMsg === "An unexpected error occurred."
+        ? "Không thể tải dữ liệu kho lý thuyết lúc này (vui lòng kiểm tra kết nối hoặc cập nhật cơ sở dữ liệu máy chủ)."
+        : rawMsg || `Yêu cầu thất bại (${response.status}).`;
+    throw new Error(message);
   }
   return parse(body);
 }

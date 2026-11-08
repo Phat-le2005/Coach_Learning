@@ -224,7 +224,9 @@ export function KnowledgeDetailDrawer({ item, subjectId, onClose }: KnowledgeDet
         <div className={styles.drawerFooter} style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
           {isProblemType ? (
             <>
-              <GradientButton
+              {(data as KnowledgeProblemTypeNode).availableQuestionCount === 0 ? (
+                <p role="status">Câu hỏi luyện tập cho dạng này đang được bổ sung.</p>
+              ) : <GradientButton
                 href={`/student/practice?problem_type_id=${encodeURIComponent(data.id)}${
                   subjectId ? `&subject_id=${encodeURIComponent(subjectId)}` : ""
                 }`}
@@ -232,7 +234,7 @@ export function KnowledgeDetailDrawer({ item, subjectId, onClose }: KnowledgeDet
               >
                 <Zap size={16} aria-hidden="true" />
                 Luyện ngay dạng bài này (~5p)
-              </GradientButton>
+              </GradientButton>}
               <div style={{ display: "flex", gap: "8px", width: "100%" }}>
                 <Link
                   href={`/student/theory?topic=${encodeURIComponent((data as KnowledgeProblemTypeNode).topicName || data.name)}`}

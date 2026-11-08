@@ -3,6 +3,8 @@
 Công cụ hiểu cấu trúc code dành cho AI Coding Agent: xem [Graphify cho Codex](docs/graphify/README.md)
 và [sơ đồ Frontend–Backend–AI](docs/graphify/architecture.md). Chỉ dùng khi phát triển, không nằm trong runtime ứng dụng.
 
+Tích hợp dữ liệu OCR qua overlay đã kiểm tra và chấm từng bước: [OCR Curated PA2](backend/OCR_CURATED_PA2.md).
+
 Hệ thống quản lý giáo dục và hỗ trợ thi tuyển sinh đại học, chạy trực tiếp trên máy local. Đã triển khai foundation 01–09 cùng versioned Curriculum, knowledge graph và Question classification. Xem [Foundation Audit](backend/FOUNDATION_AUDIT.md), [Curriculum Foundation](backend/CURRICULUM_FOUNDATION.md), [Authentication](backend/AUTHENTICATION.md), [Profile](backend/PROFILE_DOMAIN.md), [Academic](backend/ACADEMIC_DOMAIN.md), [Classroom](backend/CLASSROOM_DOMAIN.md), [Data Foundation](backend/DATA_FOUNDATION.md), [Question Bank](backend/QUESTION_BANK.md), [Question Import](backend/QUESTION_IMPORT.md), [Synthetic Students](backend/SYNTHETIC_STUDENTS.md) và đặc tả hợp đồng đóng băng [API v1 Specification](backend/API_V1.md) ([OpenAPI Contract v1.0.0](backend/contracts/openapi-v1.json)).
 
 ## Kiến trúc

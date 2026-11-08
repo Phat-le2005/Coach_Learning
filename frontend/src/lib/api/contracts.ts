@@ -4,6 +4,7 @@ export const ROLES = ["STUDENT", "TEACHER", "PARENT", "ADMIN"] as const;
 export type Role = (typeof ROLES)[number];
 
 export interface LoginRequest { email: string; password: string }
+export interface RegisterRequest { email: string; password: string; full_name: string; role?: "STUDENT" }
 export interface RefreshRequest { refresh_token: string }
 export interface TokenPair { access_token: string; refresh_token: string; token_type: "bearer"; expires_in: number }
 export interface UserRead { id: string; email: string; full_name: string; role: Role; is_active: boolean; created_at: string; updated_at: string }
@@ -111,6 +112,8 @@ export interface ProblemTypeMasteryRead extends MasteryMetricRead {
   topic_id: string;
   code: string;
   name: string;
+  concept_ids?: string[];
+  available_question_count?: number;
 }
 
 export interface ConceptMasteryRead extends MasteryMetricRead {
@@ -162,6 +165,17 @@ export function validateLoginRequest(value: LoginRequest): LoginRequest {
   if (!email || !email.includes("@") || email.length > 254) throw new Error("Email không hợp lệ.");
   if (!value.password || value.password.length > 128) throw new Error("Mật khẩu không hợp lệ.");
   return { email, password: value.password };
+}
+
+export function validateRegisterRequest(value: RegisterRequest): Required<RegisterRequest> {
+  const email = value.email.trim().toLowerCase();
+  const fullName = value.full_name.trim();
+  if (!fullName || fullName.length > 200) throw new Error("Họ và tên không hợp lệ.");
+  if (!email || !email.includes("@") || email.length > 254) throw new Error("Email không hợp lệ.");
+  if (!value.password || value.password.length < 12 || value.password.length > 128) {
+    throw new Error("Mật khẩu phải có từ 12 đến 128 ký tự.");
+  }
+  return { email, password: value.password, full_name: fullName, role: "STUDENT" };
 }
 
 export function parseTokenPair(value: unknown, path = "response"): TokenPair {
@@ -384,6 +398,8 @@ export function parseProblemTypeMastery(value: unknown, path = "problem_type"): 
     topic_id: nonEmptyString(source.topic_id, `${path}.topic_id`),
     code: nonEmptyString(source.code, `${path}.code`),
     name: nonEmptyString(source.name, `${path}.name`),
+    concept_ids: optional(source.concept_ids, `${path}.concept_ids`, (v, p) => array(v, p, nonEmptyString)),
+    available_question_count: optional(source.available_question_count, `${path}.available_question_count`, integer),
   };
 }
 
@@ -690,7 +706,7 @@ export function parseAIReviewRead(value: unknown, path = "ai_review"): AIReviewR
     ? null : number(source.final_score, `${path}.final_score`);
   if ((isFinal && (finalScore === null || finalScore < 0 || finalScore > 1)) ||
       (!isFinal && finalScore !== null) ||
-      (isFinal && reviewSource !== "DETERMINISTIC" && reviewSource !== "TEACHER") ||
+      (isFinal && reviewSource !== "DETERMINISTIC" && reviewSource !== "TEACHER" && reviewSource !== "ANSWER_GROUNDED_AI") ||
       (!isFinal && (reviewSource === "DETERMINISTIC" || reviewSource === "TEACHER"))) {
     throw new ApiContractError("Review source and final score conflict", path);
   }

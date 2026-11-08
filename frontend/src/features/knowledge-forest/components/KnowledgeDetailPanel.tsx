@@ -398,7 +398,7 @@ export function KnowledgeDetailPanel({
                       </span>
                     </div>
 
-                    {concept.isWeakPrerequisite && (
+                    {concept.isWeakPrerequisite && node.availableQuestionCount !== 0 && (
                       <Link
                         href={buildPracticeHref(concept.id)}
                         style={{
@@ -577,7 +577,9 @@ export function KnowledgeDetailPanel({
 
       {/* Action Footer */}
       <div className={styles.detailFooter}>
-        <Link href={buildPracticeHref()} className={styles.practiceBtn}>
+        {node.availableQuestionCount === 0 ? (
+          <p role="status">Dạng bài đã có trên cây; câu hỏi luyện tập đang được bổ sung.</p>
+        ) : <Link href={buildPracticeHref()} className={styles.practiceBtn}>
           <Zap size={16} />
           <span>
             {scopeState === "FOG_OF_WAR"
@@ -586,7 +588,7 @@ export function KnowledgeDetailPanel({
               ? "Luyện bài hệ thống khắc phục lỗi sai"
               : "Giải bài tập hệ thống dạng này"}
           </span>
-        </Link>
+        </Link>}
         {onExploreRelations && (
           <button
             className={styles.exploreRelationsBtn}

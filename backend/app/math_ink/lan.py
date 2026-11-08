@@ -33,10 +33,22 @@ def host_addresses():
                 raise OSError("Invalid network interface table")
             return {socket.inet_ntoa(buffer.raw[offset + i * stride:offset + i * stride + 4]) for i in range(count)}
         raise OSError("Network changed repeatedly during discovery")
+    candidates = {record[4][0] for record in socket.getaddrinfo(socket.gethostname(), None, socket.AF_INET)}
+    try:
+        import fcntl
+        import struct
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
+            for _, name in socket.if_nameindex():
+                try:
+                    info = fcntl.ioctl(sock.fileno(), 0x8915, struct.pack("256s", name[:15].encode()))
+                    candidates.add(socket.inet_ntoa(info[20:24]))
+                except OSError:
+                    continue
+    except (ImportError, OSError):
+        pass
     addresses = set()
-    for record in socket.getaddrinfo(socket.gethostname(), None, socket.AF_INET):
+    for address in candidates:
         # A hostname resolving to a foreign address must never authorize that origin.
-        address = record[4][0]
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as probe:
                 probe.bind((address, 0))

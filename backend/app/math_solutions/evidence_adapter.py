@@ -40,6 +40,10 @@ from app.practice.models import EvaluationStatus
 from app.questions.models import Question
 from app.review.models import ReviewResult, ReviewSchedule
 from app.review.service import ReviewScheduleService
+from app.concepts.models import Concept
+from app.math_solutions.models import SolutionRubric
+from app.math_solutions.grading_profile import profile_data, verify_reference
+from app.learning_evidence.skill_outcomes import KEY, build_outcomes
 
 logger = logging.getLogger(__name__)
 
@@ -53,7 +57,8 @@ class MathSolutionEvidenceAdapter:
         self.publisher = LearningEvidencePublisher()
         self.review_service = ReviewScheduleService(session)
 
-    def emit_evidence_for_decision(self, decision_id: UUID) -> LearningEvidenceEvent:
+    def emit_evidence_for_decision(self, decision_id: UUID, *, rubric_matches: list | None = None,
+                                   evaluation_metadata: dict | None = None) -> LearningEvidenceEvent:
         decision = self.session.get(EvaluationDecision, decision_id)
         if decision is None:
             raise ApplicationError(404, "DECISION_NOT_FOUND", "Evaluation decision not found.")
@@ -164,6 +169,21 @@ class MathSolutionEvidenceAdapter:
         if attempt.submitted_at and attempt.started_at:
             response_time = max(1.0, (attempt.submitted_at - attempt.started_at).total_seconds())
 
+        skill_metadata = {}
+        rubric = self.session.get(SolutionRubric, decision.rubric_id) if decision.rubric_id else None
+        profile = profile_data(rubric) if rubric else None
+        if profile:
+            if not attempt.question_id or rubric_matches is None:
+                raise ApplicationError(409, "GRADING_SKILL_EVIDENCE_REQUIRED", "Reviewed criterion results are required for curated evidence.")
+            verify_reference(rubric, question)
+            linked_ids = {c.concept_id for c in concepts}
+            catalog = {c.code: c.id for c in self.session.scalars(select(Concept).where(Concept.id.in_(linked_ids)))}
+            actual_weights = {code: next(link.weight for link in concepts if link.concept_id == identifier)
+                              for code, identifier in catalog.items()}
+            if actual_weights != profile.get("concept_weights"):
+                raise ApplicationError(409, "GRADING_REFERENCE_CHANGED", "Review the rubric after changing concept mappings.")
+            skill_metadata = build_outcomes(profile["criteria"], rubric_matches, catalog)
+
         # 2. Publish LearningEvidenceEvent
         payload = LearningEvidencePayload(
             student_id=attempt.student_id,
@@ -183,9 +203,11 @@ class MathSolutionEvidenceAdapter:
             concepts=tuple(concepts),
             problem_types=tuple(problem_types),
             metadata={
+                **skill_metadata,
                 "confirmed_misconceptions": decision.confirmed_misconceptions,
                 "decision_source": decision.decision_source,
                 "attempt_id": str(attempt.id),
+                **(evaluation_metadata or {}),
             },
         )
 
@@ -401,6 +423,11 @@ class MathSolutionEvidenceAdapter:
 
         # 2. Append-only: Record a new LearningEvidenceEvent for the teacher override
         if subject_id and attempt:
+            previous_event = self.session.get(LearningEvidenceEvent, decision.learning_evidence_event_id) if decision.learning_evidence_event_id else None
+            # An overall teacher score does not establish which individual skill
+            # changed. Retire prior skill scores without inventing replacements.
+            skill_metadata = ({KEY: {"version": 1, "concepts": {}, "reason": "overall_teacher_override"}}
+                              if previous_event and KEY in (previous_event.event_metadata or {}) else {})
             override_event = LearningEvidenceEvent(
                 student_id=attempt.student_id,
                 subject_id=subject_id,
@@ -417,6 +444,7 @@ class MathSolutionEvidenceAdapter:
                 evaluation_status=EvaluationStatus.EVALUATED,
                 occurred_at=override.created_at,
                 event_metadata={
+                    **skill_metadata,
                     "attempt_id": str(attempt.id),
                     "decision_id": str(decision.id),
                     "override_id": str(override.id),

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { AccountMenu } from "@/components/auth/AccountMenu";
 import { SessionHeartbeat } from "@/components/auth/SessionHeartbeat";
+import { AppFooter } from "@/components/app-shell/AppFooter";
 import { BrandMark } from "@/features/student-home/components/BrandMark";
 import { readSession } from "@/lib/auth/server";
 import styles from "./account.module.css";
@@ -35,6 +36,7 @@ export default async function AccountPage() {
           <Link className={styles.back} href={`/${session.role.toLowerCase()}`}>Quay về không gian của tôi →</Link>
         </section>
       </div>
+      <AppFooter variant={session.role === "TEACHER" ? "teacher" : "student"} compact />
     </main>
   );
 }

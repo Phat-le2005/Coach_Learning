@@ -9,6 +9,7 @@ import type {
   InkSaveRead,
   MathAttemptsPageRead,
   LoginRequest,
+  RegisterRequest,
   ProblemRead,
   PracticeSessionStartRead,
   ProblemTypeMasteryRead,
@@ -37,6 +38,7 @@ import {
   parseTokenPair,
   parseUserRead,
   validateLoginRequest,
+  validateRegisterRequest,
   OCRRecognizeRequest,
   OCRRecognizeResponse,
   StepMutationRequest,
@@ -126,6 +128,7 @@ export class ApiNetworkError extends Error {
 
 export const API_PATHS = {
   login: "/auth/login",
+  register: "/auth/register",
   refresh: "/auth/refresh",
   me: "/auth/me",
   studentLearningState: "/students/me/learning-state",
@@ -229,6 +232,9 @@ export function createApiClient({ baseUrl, fetcher = fetch }: ApiClientOptions) 
   return {
     login(input: LoginRequest): Promise<TokenPair> {
       return request(API_PATHS.login, parseTokenPair, { method: "POST", body: JSON.stringify(validateLoginRequest(input)) });
+    },
+    register(input: RegisterRequest): Promise<UserRead> {
+      return request(API_PATHS.register, parseUserRead, { method: "POST", body: JSON.stringify(validateRegisterRequest(input)) });
     },
     refresh(refreshToken: string): Promise<TokenPair> {
       const body: RefreshRequest = { refresh_token: refreshToken };

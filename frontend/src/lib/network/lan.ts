@@ -11,9 +11,9 @@ export function isLanIPv4(address: string): boolean {
 
 export function lanAddresses(interfaces: Interfaces = networkInterfaces()): string[] {
   const rows = Object.entries(interfaces).flatMap(([name, addresses]) =>
-    /loopback|vethernet|wsl|docker|virtual|vmware|vbox|tailscale|tunnel|vpn/i.test(name) ? [] :
+    /^(?:lo|veth|br-|virbr|docker|tun|tap|wg)|loopback|vethernet|wsl|docker|virtual|vmware|vbox|tailscale|tunnel|vpn/i.test(name) ? [] :
       (addresses ?? []).filter(a => !a.internal && (a.family === "IPv4" || a.family === 4) && isLanIPv4(a.address))
-        .map(a => ({ address: a.address, priority: /wi-?fi|wlan/i.test(name) ? 0 : /ethernet|en\d/i.test(name) ? 1 : 2 })));
+        .map(a => ({ address: a.address, priority: /wi-?fi|wl/i.test(name) ? 0 : /ethernet|en\d|eth\d|eno\d|enp\d|ens\d/i.test(name) ? 1 : 2 })));
   return [...new Set(rows.sort((a, b) => a.priority - b.priority || a.address.localeCompare(b.address)).map(a => a.address))];
 }
 

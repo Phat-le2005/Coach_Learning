@@ -1,431 +1,123 @@
 "use client";
 
-import React, { useEffect, useState, useMemo } from "react";
-import {
-  Calendar,
-  CheckCircle2,
-  Clock,
-  Compass,
-  Flame,
-  Milestone,
-  RotateCcw,
-  Sparkles,
-  Target,
-  X,
-} from "lucide-react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import styles from "./StudyPlanRoadmapModal.module.css";
 import type { StudyPlanRead, StudyTaskRead } from "@/lib/api/contracts";
+import { homeDate, homeTaskHref, homeTaskTypeLabel } from "../home-presentation";
+import { HomeIcon } from "./HomeIcon";
+import styles from "./StudyPlanRoadmapModal.module.css";
 
 interface StudyPlanRoadmapModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  subjectId?: string;
-  onRecalculateDone?: () => void;
+  isOpen: boolean; onClose: () => void; subjectId?: string; onRecalculateDone?: () => void;
 }
+const taskReasons: Record<string, string> = {
+  PREREQUISITE_REPAIR: "Củng cố kiến thức tiên quyết", LOW_MASTERY_PREREQUISITE: "Củng cố kiến thức tiên quyết",
+  REVIEW_DUE: "Đến lịch ôn tập", SCHEDULED_REVIEW: "Đến lịch ôn tập",
+  WEAK_PROBLEM_TYPE: "Dạng bài cần luyện thêm", CURRENT_TEACHING_PLAN: "Trọng tâm học tập của lớp",
+  DIAGNOSTIC_FOLLOWUP: "Luyện thêm sau chẩn đoán", EXAM_PREPARATION: "Ôn tập theo mục tiêu",
+};
 
-export function StudyPlanRoadmapModal({
-  isOpen,
-  onClose,
-  subjectId,
-  onRecalculateDone,
-}: StudyPlanRoadmapModalProps) {
+export function StudyPlanRoadmapModal({ isOpen, onClose, subjectId, onRecalculateDone }: StudyPlanRoadmapModalProps) {
   const [loading, setLoading] = useState(true);
   const [plan, setPlan] = useState<StudyPlanRead | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [activeDateIndex, setActiveDateIndex] = useState(0);
   const [isRecalculating, setIsRecalculating] = useState(false);
+  const dialog = useRef<HTMLDialogElement>(null);
+  const request = useRef<AbortController | null>(null);
+  const titleId = useId();
 
-  const fetchPlan = async () => {
-    setLoading(true);
-    setError(null);
+  const fetchPlan = useCallback(async () => {
+    request.current?.abort();
+    const controller = new AbortController();
+    request.current = controller;
+    setLoading(true); setError(null);
     try {
-      const res = await fetch("/api/student/study-plan", {
-        headers: { Accept: "application/json" },
-        cache: "no-store",
-      });
-      if (!res.ok) {
-        throw new Error("Không thể tải thông tin lộ trình.");
-      }
+      const res = await fetch("/api/student/study-plan", { headers: { Accept: "application/json" }, cache: "no-store", signal: controller.signal });
+      if (!res.ok) throw new Error("Không thể tải lộ trình. Bạn có thể thử lại.");
       const data = await res.json();
-      if (data.hasPlan && data.plan) {
-        setPlan(data.plan);
-      } else {
-        setPlan(null);
-      }
-    } catch (err: any) {
-      setError(err.message || "Không thể kết nối đến máy chủ.");
-    } finally {
-      setLoading(false);
-    }
-  };
+      if (!controller.signal.aborted) { setPlan(data.hasPlan && data.plan ? data.plan : null); setActiveDateIndex(0); }
+    } catch (reason) {
+      if (!controller.signal.aborted) setError(reason instanceof Error ? reason.message : "Không thể kết nối máy chủ.");
+    } finally { if (!controller.signal.aborted) setLoading(false); }
+  }, []);
 
   useEffect(() => {
-    if (isOpen) {
-      fetchPlan();
-    }
-  }, [isOpen]);
+    const element = dialog.current;
+    if (!isOpen) { element?.close(); request.current?.abort(); return; }
+    const previousFocus = document.activeElement as HTMLElement | null;
+    const overflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    element?.showModal();
+    void fetchPlan();
+    return () => {
+      request.current?.abort(); element?.close();
+      document.body.style.overflow = overflow;
+      previousFocus?.focus();
+    };
+  }, [isOpen, fetchPlan]);
 
-  const handleRecalculate = async () => {
-    setIsRecalculating(true);
+  async function recalculate() {
+    if (isRecalculating) return;
+    setIsRecalculating(true); setError(null);
     try {
-      const res = await fetch("/api/student/study-plan", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "recalculate", horizon_days: 7 }),
-      });
-      if (!res.ok) {
-        throw new Error("Không thể tính lại lộ trình.");
-      }
-      await fetchPlan();
-      if (onRecalculateDone) {
-        onRecalculateDone();
-      }
-    } catch (err: any) {
-      setError(err.message || "Lỗi khi tái tính nhịp học.");
-    } finally {
-      setIsRecalculating(false);
-    }
-  };
+      const res = await fetch("/api/student/study-plan", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "recalculate", horizon_days: 7 }) });
+      if (!res.ok) throw new Error("Chưa cập nhật được kế hoạch. Bạn có thể thử lại.");
+      await fetchPlan(); onRecalculateDone?.();
+    } catch (reason) { setError(reason instanceof Error ? reason.message : "Không thể cập nhật kế hoạch."); }
+    finally { setIsRecalculating(false); }
+  }
 
-  // Group tasks by planned_date
   const days = useMemo(() => {
-    if (!plan || !plan.tasks || plan.tasks.length === 0) return [];
-
-    const grouped: { [dateStr: string]: StudyTaskRead[] } = {};
-    for (const task of plan.tasks) {
+    const groups = new Map<string, StudyTaskRead[]>();
+    for (const task of plan?.tasks ?? []) {
       if (task.status === "SKIPPED") continue;
-      const dateKey = task.planned_date;
-      if (!grouped[dateKey]) {
-        grouped[dateKey] = [];
-      }
-      grouped[dateKey].push(task);
+      groups.set(task.planned_date, [...(groups.get(task.planned_date) ?? []), task]);
     }
-
-    const sortedDates = Object.keys(grouped).sort();
-    return sortedDates.map((dateStr, idx) => {
-      const tasks = grouped[dateStr];
-      const totalMinutes = tasks.reduce((sum, t) => sum + (t.estimated_duration_minutes || 0), 0);
-      const completedCount = tasks.filter((t) => t.status === "COMPLETED").length;
-      return {
-        dateStr,
-        isToday: idx === 0,
-        dayNumber: idx + 1,
-        tasks,
-        totalMinutes,
-        completedCount,
-        totalCount: tasks.length,
-      };
-    });
+    return [...groups.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([date, tasks]) => ({
+      date, tasks: [...tasks].sort((a, b) => a.order_index - b.order_index),
+      minutes: tasks.reduce((sum, task) => sum + task.estimated_duration_minutes, 0),
+      done: tasks.filter(task => task.status === "COMPLETED").length,
+    }));
   }, [plan]);
+  const day = days[activeDateIndex] ?? days[0];
+  const countdown = plan?.days_to_exam;
+  const countdownText = typeof countdown !== "number" || !Number.isFinite(countdown)
+    ? "Chưa có mốc mục tiêu" : countdown > 0 ? `Còn ${countdown} ngày` : countdown === 0 ? "Đến mốc mục tiêu hôm nay" : "Đã qua mốc mục tiêu";
 
-  if (!isOpen) return null;
-
-  const currentDay = days[activeDateIndex] || days[0];
-
-  return (
-    <div className={styles.backdrop} role="dialog" aria-modal="true" onClick={onClose}>
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        {/* Header */}
-        <div className={styles.header}>
-          <div className={styles.headerTitleWrap}>
-            <div className={styles.headerIcon}>
-              <Compass size={24} />
-            </div>
-            <div>
-              <h2>Lộ trình học tập thích ứng 7 ngày</h2>
-              <p>Phân bổ nhịp nhàng giữa bài tập bù đắp lỗ hổng và chu kỳ lặp lại ngắt quãng</p>
-            </div>
-          </div>
-          <button
-            type="button"
-            className={styles.closeButton}
-            onClick={onClose}
-            aria-label="Đóng"
-          >
-            <X size={20} />
-          </button>
-        </div>
-
-        {/* KPI Strip */}
-        {plan && (
-          <div className={styles.kpiStrip}>
-            <div className={styles.kpiCard}>
-              <div className={styles.kpiIcon} style={{ background: "rgba(35, 166, 122, 0.15)", color: "#14533f" }}>
-                <Target size={18} />
-              </div>
-              <div className={styles.kpiText}>
-                <span className={styles.kpiLabel}>Kỳ thi mục tiêu</span>
-                <span className={styles.kpiValue}>TN THPT & ĐH 2026</span>
-              </div>
-            </div>
-
-            <div className={styles.kpiCard}>
-              <div className={styles.kpiIcon} style={{ background: "rgba(245, 158, 11, 0.15)", color: "#b45309" }}>
-                <Flame size={18} />
-              </div>
-              <div className={styles.kpiText}>
-                <span className={styles.kpiLabel}>Đếm ngược thi</span>
-                <span className={styles.kpiValue}>
-                  {plan.days_to_exam ? `${plan.days_to_exam} ngày` : "230 ngày"}
-                </span>
-              </div>
-            </div>
-
-            <div className={styles.kpiCard}>
-              <div className={styles.kpiIcon} style={{ background: "rgba(59, 130, 246, 0.15)", color: "#1d4ed8" }}>
-                <Clock size={18} />
-              </div>
-              <div className={styles.kpiText}>
-                <span className={styles.kpiLabel}>Thời lượng học</span>
-                <span className={styles.kpiValue}>{plan.available_daily_minutes} phút/ngày</span>
-              </div>
-            </div>
-
-            <div className={styles.kpiCard}>
-              <div className={styles.kpiIcon} style={{ background: "rgba(16, 185, 129, 0.15)", color: "#047857" }}>
-                <Milestone size={18} />
-              </div>
-              <div className={styles.kpiText}>
-                <span className={styles.kpiLabel}>Tiến độ 7 ngày</span>
-                <span className={styles.kpiValue}>
-                  {plan.completed_tasks}/{plan.total_tasks} bài ({plan.total_tasks > 0 ? Math.round((plan.completed_tasks / plan.total_tasks) * 100) : 0}%)
-                </span>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Day Tabs */}
-        {days.length > 0 && (
-          <div className={styles.dayTabsWrap}>
-            {days.map((day, idx) => {
-              const isSelected = idx === activeDateIndex;
-              const dateObj = new Date(day.dateStr);
-              const formattedDate = !isNaN(dateObj.getTime())
-                ? `${dateObj.getDate()}/${dateObj.getMonth() + 1}`
-                : day.dateStr;
-
-              return (
-                <button
-                  key={day.dateStr}
-                  type="button"
-                  className={`${styles.dayTab} ${isSelected ? styles.dayTabActive : ""}`}
-                  onClick={() => setActiveDateIndex(idx)}
-                >
-                  <span className={styles.dayTabTitle}>
-                    {day.isToday ? "Hôm nay" : `Ngày ${day.dayNumber}`}
-                  </span>
-                  <span className={styles.dayTabSub}>{formattedDate}</span>
-                  {day.isToday ? (
-                    <span className={styles.dayBadgeToday}>Hiện tại</span>
-                  ) : (
-                    <span className={styles.dayTabSub}>
-                      {day.completedCount}/{day.totalCount} bài
-                    </span>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-        )}
-
-        {/* Body content */}
-        <div className={styles.body}>
-          {loading ? (
-            <div style={{ textAlign: "center", padding: "40px" }}>
-              <div style={{ color: "#23a67a", fontWeight: 700 }}>🌱 Đang mở lộ trình học tập...</div>
-            </div>
-          ) : error ? (
-            <div style={{ textAlign: "center", padding: "30px", color: "#b91c1c" }}>
-              <p>{error}</p>
-              <button
-                type="button"
-                onClick={fetchPlan}
-                className={styles.recalcButton}
-                style={{ marginTop: "12px" }}
-              >
-                Thử lại
-              </button>
-            </div>
-          ) : !plan || days.length === 0 ? (
-            <div className={styles.emptyDayState}>
-              <Sparkles size={36} color="#23a67a" style={{ margin: "0 auto 12px" }} />
-              <h3>Chưa có dữ liệu lộ trình học tập</h3>
-              <p>Hãy gieo mục tiêu học tập để hệ thống tự động sinh lộ trình 7 ngày thích ứng.</p>
-            </div>
-          ) : (
-            <div>
-              <div className={styles.daySectionHeading}>
-                <span className={styles.daySectionTitle}>
-                  {currentDay?.isToday
-                    ? `🎯 Nhiệm vụ học tập Hôm nay (${currentDay?.dateStr})`
-                    : `📅 Kế hoạch Ngày ${currentDay?.dayNumber} (${currentDay?.dateStr})`}
-                </span>
-                <span className={styles.daySectionMinutes}>
-                  ⏱️ Tổng: {currentDay?.totalMinutes || 0} phút ước tính
-                </span>
-              </div>
-
-              <div className={styles.taskList}>
-                {currentDay?.tasks.map((task) => {
-                  const isDone = task.status === "COMPLETED";
-
-                  let typeLabel = "✍️ Luyện dạng toán";
-                  let typeClass = styles.typePractice;
-                  if (task.task_type === "REPAIR" || task.task_type === "REMEDIAL_PRACTICE") {
-                    typeLabel = "🛠️ Vá lỗ hổng";
-                    typeClass = styles.typeRemedial;
-                  } else if (task.task_type === "REVIEW" || task.task_type === "SPACED_REVIEW") {
-                    typeLabel = "🔄 Ôn ngắt quãng";
-                    typeClass = styles.typeReview;
-                  } else if (task.task_type === "LEARN" || task.task_type === "CONCEPT_ACQUISITION") {
-                    typeLabel = "📖 Bài trọng tâm";
-                    typeClass = styles.typeConcept;
-                  } else if (task.task_type === "MINI_TEST") {
-                    typeLabel = "🏆 Kiểm tra ngắn";
-                    typeClass = styles.typeRemedial;
-                  } else if (task.task_type === "EXAM") {
-                    typeLabel = "📝 Luyện đề";
-                    typeClass = styles.typeReview;
-                  }
-
-                  let reasonNote = "";
-                  if (task.reason_code === "PREREQUISITE_REPAIR" || task.reason_code === "LOW_MASTERY_PREREQUISITE") {
-                    reasonNote = "Phát hiện lỗ hổng ở bước tiên quyết, cần củng cố ngay";
-                  } else if (task.reason_code === "REVIEW_DUE" || task.reason_code === "SCHEDULED_REVIEW") {
-                    reasonNote = "Chu kỳ củng cố trí nhớ dài hạn (Spaced Repetition)";
-                  } else if (task.reason_code === "WEAK_PROBLEM_TYPE") {
-                    reasonNote = "Dạng bài chưa đạt ngưỡng vững 50%, cần tăng độ thuần thục";
-                  } else if (task.reason_code === "CURRENT_TEACHING_PLAN") {
-                    reasonNote = "Nội dung trọng tâm theo phân phối chương trình của lớp";
-                  } else if (task.reason_code === "DIAGNOSTIC_FOLLOWUP") {
-                    reasonNote = "Luyện tập bổ trợ sau chẩn đoán lỗi sai ở bài làm gần nhất";
-                  } else if (task.reason_code === "EXAM_PREPARATION") {
-                    reasonNote = "Ôn tập tổng hợp chuẩn bị cho kỳ thi THPT & Đại học 2026";
-                  }
-
-                  const title =
-                    task.problem_type_name ||
-                    task.concept_name ||
-                    task.topic_name ||
-                    "Bài tập rèn luyện năng lực";
-
-                  const effectiveSubjectId = task.subject_id || subjectId;
-                  const practiceUrl = task.problem_type_id
-                    ? `/student/practice?problem_type_id=${task.problem_type_id}${effectiveSubjectId ? `&subject_id=${effectiveSubjectId}` : ""}`
-                    : task.concept_id
-                    ? `/student/practice?concept_id=${task.concept_id}${effectiveSubjectId ? `&subject_id=${effectiveSubjectId}` : ""}`
-                    : `/student/practice${effectiveSubjectId ? `?subject_id=${effectiveSubjectId}` : ""}`;
-
-                  return (
-                    <div
-                      key={task.id}
-                      className={`${styles.taskCard} ${isDone ? styles.taskCardCompleted : ""}`}
-                    >
-                      <div className={styles.taskLeft}>
-                        <div
-                          className={styles.taskCheckIcon}
-                          style={{
-                            background: isDone ? "rgba(35, 166, 122, 0.2)" : "rgba(9, 45, 37, 0.08)",
-                            color: isDone ? "#14533f" : "#6b7280",
-                          }}
-                        >
-                          {isDone ? <CheckCircle2 size={18} /> : <Clock size={16} />}
-                        </div>
-                        <div className={styles.taskInfo}>
-                          <div className={styles.taskPillsRow}>
-                            <span className={`${styles.taskTypeBadge} ${typeClass}`}>
-                              {typeLabel}
-                            </span>
-                            <span className={styles.durationBadge}>
-                              {task.estimated_duration_minutes} phút
-                            </span>
-                            {(task.priority >= 110 || task.priority === 1) && (
-                              <span
-                                style={{
-                                  fontSize: "0.68rem",
-                                  fontWeight: 700,
-                                  color: "#b45309",
-                                  background: "#fef3c7",
-                                  padding: "2px 6px",
-                                  borderRadius: "4px",
-                                }}
-                              >
-                                Ưu tiên cao
-                              </span>
-                            )}
-                          </div>
-                          <h4 className={styles.taskTitle}>{title}</h4>
-                          {(task.chapter_name || task.topic_name) && (
-                            <span className={styles.taskBreadcrumb}>
-                              {task.chapter_name ? `${task.chapter_name} › ` : ""}
-                              {task.topic_name || ""}
-                            </span>
-                          )}
-                          {reasonNote && (
-                            <span className={styles.taskReasonNote}>💡 {reasonNote}</span>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className={styles.taskActionWrap} style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
-                        {isDone ? (
-                          <span className={styles.completedBadge}>
-                            <CheckCircle2 size={14} />
-                            Đã xong
-                          </span>
-                        ) : (
-                          <>
-                            {(task.task_type === "LEARN" || task.task_type === "CONCEPT_ACQUISITION") && (
-                              <Link
-                                href="/student/theory"
-                                className={styles.practiceButton}
-                                style={{
-                                  background: "#eff6ff",
-                                  color: "#1d4ed8",
-                                  border: "1px solid #bfdbfe",
-                                }}
-                                onClick={onClose}
-                              >
-                                📖 Lý thuyết
-                              </Link>
-                            )}
-                            <Link
-                              href={practiceUrl}
-                              className={styles.practiceButton}
-                              onClick={onClose}
-                            >
-                              ✍️ Luyện ngay
-                            </Link>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Footer */}
-        <div className={styles.footer}>
-          <button
-            type="button"
-            className={styles.recalcButton}
-            onClick={handleRecalculate}
-            disabled={isRecalculating}
-            title="Tái cân bằng nhịp học và phân bổ lại bài tập theo kết quả làm bài gần nhất"
-          >
-            <RotateCcw size={14} />
-            {isRecalculating ? "Đang tính lại lộ trình..." : "Tái tính nhịp học 7 ngày"}
-          </button>
-          <button type="button" className={styles.closeFooterButton} onClick={onClose}>
-            Đóng
-          </button>
-        </div>
-      </div>
+  return <dialog ref={dialog} className={styles.modal} aria-labelledby={titleId}
+    onKeyDown={event => {
+      if (event.key !== "Tab") return;
+      const controls = [...event.currentTarget.querySelectorAll<HTMLElement>('button:not(:disabled),a[href],input:not(:disabled),[tabindex="0"]')].filter(el => el.getClientRects().length > 0);
+      const first = controls[0], last = controls[controls.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+    }}
+    onCancel={event => { event.preventDefault(); if (!isRecalculating) onClose(); }}
+    onClick={event => { if (event.target === dialog.current && !isRecalculating) onClose(); }}>
+    <header className={styles.header}><div><h2 id={titleId}>Kế hoạch học 7 ngày</h2><p>Xem nhiệm vụ và thời gian học theo từng ngày.</p></div>
+      <button type="button" className={styles.iconButton} aria-label="Đóng lộ trình" disabled={isRecalculating} onClick={onClose}><HomeIcon name="x" /></button></header>
+    <div className={styles.body}>
+      {loading ? <p role="status">Đang tải kế hoạch học…</p> : error ? <div role="alert"><p>{error}</p><button type="button" className={styles.secondary} onClick={() => void fetchPlan()}>Thử lại</button></div> : !plan ? <p>Chưa có kế hoạch học. Bạn có thể đặt mục tiêu để bắt đầu.</p> : <>
+        <dl className={styles.summary}>
+          <div><dt>Mốc mục tiêu</dt><dd>{homeDate(plan.target_date) ?? "Chưa đặt ngày"}<small>{countdownText}</small></dd></div>
+          <div><dt>Thời gian mỗi ngày</dt><dd>{plan.available_daily_minutes} phút</dd></div>
+          <div><dt>Tiến độ kế hoạch</dt><dd>{plan.completed_tasks}/{plan.total_tasks} nhiệm vụ</dd></div>
+        </dl>
+        {days.length > 0 ? <>
+          <div className={styles.days} role="group" aria-label="Chọn ngày trong kế hoạch">{days.map((item, index) => <button type="button" key={item.date} aria-pressed={index === activeDateIndex} onClick={() => setActiveDateIndex(index)}>{homeDate(item.date) ?? item.date}<small>{item.done}/{item.tasks.length} hoàn tất</small></button>)}</div>
+          <div className={styles.dayHeading}><h3>Nhiệm vụ ngày {homeDate(day.date)}</h3><span>{day.minutes} phút dự kiến</span></div>
+          <ul className={styles.tasks}>{day.tasks.map(task => <li key={task.id}>
+            <HomeIcon name={task.status === "COMPLETED" ? "check-circle" : "clock"} />
+            <div className={styles.taskCopy}><h4>{task.problem_type_name || task.concept_name || task.topic_name || "Nhiệm vụ học tập"}</h4><p>{homeTaskTypeLabel(task.task_type)} · {task.estimated_duration_minutes} phút{task.priority >= 110 || task.priority === 1 ? " · Ưu tiên cao" : ""}</p>{(task.chapter_name || task.topic_name) && <p>{[task.chapter_name, task.topic_name].filter(Boolean).join(" · ")}</p>}{task.reason_code && <p>{taskReasons[task.reason_code] ?? "Ưu tiên học tập"}</p>}</div>
+            {task.status === "COMPLETED" ? <span className={styles.completed}>Đã hoàn thành</span> : <>
+              {(task.task_type === "LEARN" || task.task_type === "CONCEPT_ACQUISITION") && <Link className={styles.taskLink} href="/student/theory" onClick={onClose}>Lý thuyết<HomeIcon name="book-open" size={16} /></Link>}
+              <Link className={styles.taskLink} prefetch={false} href={homeTaskHref({ id: task.id, title: "", taskType: task.task_type, status: task.status, isCompleted: false, estimatedMinutes: task.estimated_duration_minutes, problemTypeId: task.problem_type_id, conceptId: task.concept_id }, task.subject_id ?? subjectId ?? "")} onClick={onClose}>Mở nhiệm vụ<HomeIcon name="arrow-up-right" size={16} /></Link>
+            </>}
+          </li>)}</ul>
+        </> : <p>Chưa có nhiệm vụ trong kế hoạch này.</p>}
+      </>}
     </div>
-  );
+    <footer className={styles.footer}><button type="button" className={styles.secondary} disabled={isRecalculating || loading} onClick={() => void recalculate()}>{isRecalculating ? "Đang cập nhật…" : "Cập nhật kế hoạch 7 ngày"}</button><button type="button" className={styles.primary} disabled={isRecalculating} onClick={onClose}>Đóng</button></footer>
+  </dialog>;
 }

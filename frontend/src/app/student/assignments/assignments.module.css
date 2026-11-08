@@ -1,6 +1,13 @@
-.canvas {
+.pageShell {
   min-height: 100vh;
+  padding-top: 14px;
   background: linear-gradient(180deg, #F0FDF4 0%, #F8FAFC 35%, #F1F5F9 100%);
+  display: flex;
+  flex-direction: column;
+}
+
+.canvas {
+  flex: 1;
   color: #1E293B;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   display: flex;
@@ -8,10 +15,10 @@
 }
 
 .mainContainer {
-  max-width: 1100px;
+  max-width: 1120px;
   margin: 0 auto;
   width: 100%;
-  padding: 2rem 1.5rem 5rem;
+  padding: 1.5rem 1.5rem 2.5rem;
 }
 
 .headerBanner {

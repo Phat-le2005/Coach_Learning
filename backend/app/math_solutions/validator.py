@@ -8,6 +8,8 @@ from typing import Any
 import sympy
 from sympy import Eq, Integer, Rational, simplify, solve, symbols
 
+from app.math_solutions.cubic_monotonicity import CubicModel, math_text
+
 
 _MAX_EXPRESSION_LENGTH = 512
 _MAX_AST_NODES = 128
@@ -31,6 +33,7 @@ class ValidationResult:
     error_code: str | None = None
     error_description: str | None = None
     evidence_quote: str | None = None
+    details: dict | None = None
 
 
 def clean_latex_to_python(latex_str: str) -> str:
@@ -142,12 +145,15 @@ class DeterministicMathValidator:
     Evaluates step correctness into 4 states: VALID, INVALID, UNDETERMINED, NEEDS_REVIEW.
     """
 
-    def __init__(self, target_function_latex: str | None = None) -> None:
+    def __init__(self, target_function_latex: str | None = None, *, require_complete_conclusion: bool = False,
+                 conclusion_task: str = "all_intervals") -> None:
         self.target_function_latex = target_function_latex
         self.x = symbols("x")
         self._target_expr = None
         self._target_derivative = None
         self._target_roots: set[float] | None = None
+        self.require_complete_conclusion = require_complete_conclusion
+        self.conclusion_task = conclusion_task
 
         if target_function_latex:
             try:
@@ -173,7 +179,13 @@ class DeterministicMathValidator:
         explanation_text: str | None = None,
         artifact_payload: dict[str, Any] | None = None,
     ) -> ValidationResult:
-        if step_type in ("DERIVATIVE_CALCULATION", "CUSTOM") and content_latex and ("y'" in content_latex or "f'(x)" in content_latex):
+        if step_type == "VARIATION_TABLE":
+            model = CubicModel.from_expression(self._target_expr, self.x)
+            validity, code = model.check_table(artifact_payload) if model and isinstance(artifact_payload, dict) else ("NEEDS_REVIEW", None)
+            return ValidationResult(MathValidity(validity), 1.0 if validity == "VALID" else 0.0 if validity == "INVALID" else None,
+                                    1.0 if validity != "NEEDS_REVIEW" else 0.0, validity == "INVALID", code,
+                                    "Bảng biến thiên chưa khớp điểm tới hạn, dấu đạo hàm hoặc giá trị hàm số." if validity == "INVALID" else None)
+        if step_type in ("DERIVATIVE_CALCULATION", "CUSTOM") and content_latex and ("y'" in content_latex or "f'(x)" in content_latex or self.require_complete_conclusion):
             return self._validate_derivative(content_latex)
 
         if step_type == "ROOT_FINDING" or (content_latex and ("x =" in content_latex or "x_1 =" in content_latex) and step_type != "CONCLUSION"):
@@ -230,7 +242,8 @@ class DeterministicMathValidator:
             )
 
         try:
-            cleaned = clean_latex_to_python(content_latex)
+            cleaned = (re.sub(r"^(?:y'|f'\(x\))\s*=\s*", "", math_text(content_latex))
+                       if self.require_complete_conclusion else clean_latex_to_python(content_latex))
             student_d = _safe_parse_expression(cleaned, self.x)
             is_zero = simplify(student_d - self._target_derivative) == 0
 
@@ -260,6 +273,12 @@ class DeterministicMathValidator:
             )
 
     def _validate_roots(self, content_latex: str) -> ValidationResult:
+        if self.require_complete_conclusion:
+            model = CubicModel.from_expression(self._target_expr, self.x)
+            validity, code = model.check_roots(content_latex or "") if model else ("NEEDS_REVIEW", None)
+            return ValidationResult(MathValidity(validity), 1.0 if validity == "VALID" else 0.0 if validity == "INVALID" else None,
+                                    1.0 if validity != "NEEDS_REVIEW" else 0.0, validity == "INVALID", code,
+                                    "Các nghiệm chưa khớp phương trình đạo hàm bằng không." if validity == "INVALID" else None)
         if self._target_roots is None:
             return ValidationResult(
                 validity=MathValidity.UNDETERMINED,
@@ -389,7 +408,21 @@ class DeterministicMathValidator:
     def _validate_conclusion(
         self, content_latex: str | None, explanation_text: str | None = None
     ) -> ValidationResult:
-        """Conservatively verify a single inner-interval monotonicity claim."""
+        """Check all stated cubic intervals; retain review for unknown statements."""
+        model = CubicModel.from_expression(self._target_expr, self.x)
+        if model and (self.require_complete_conclusion or not explanation_text):
+            if self.conclusion_task != "all_intervals":
+                validity, code = model.check_numeric_conclusion(content_latex or "", explanation_text or "", self.conclusion_task)
+                return ValidationResult(MathValidity(validity), 1.0 if validity == "VALID" else 0.0 if validity == "INVALID" else None,
+                                        0.98 if validity != "NEEDS_REVIEW" else 0.0, validity == "INVALID", code,
+                                        "Giá trị kết luận chưa đúng với hai mốc của khoảng đồng biến." if validity == "INVALID" else None)
+            validity, code = model.check_conclusion(
+                " ".join(part for part in (content_latex, explanation_text) if part),
+                complete=self.require_complete_conclusion,
+            )
+            return ValidationResult(MathValidity(validity), 1.0 if validity == "VALID" else 0.0 if validity == "INVALID" else None,
+                                    0.98 if validity != "NEEDS_REVIEW" else 0.0, validity == "INVALID", code,
+                                    "Chiều biến thiên trên một khoảng chưa khớp dấu đạo hàm." if validity == "INVALID" else None)
         needs_review = ValidationResult(
             validity=MathValidity.NEEDS_REVIEW,
             score=None,

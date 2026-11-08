@@ -5,6 +5,7 @@ import { AUTH_COOKIES } from "@/lib/auth/constants";
 import { errorResponse } from "@/lib/auth/route-utils";
 import { getSessionSecret } from "@/lib/auth/server";
 import { verifySession } from "@/lib/auth/session-codec";
+import { studyGoalPayload } from "@/features/student-home/study-goal";
 
 export async function GET(request: NextRequest) {
   const session = await verifySession(
@@ -65,30 +66,16 @@ export async function POST(request: NextRequest) {
   } catch {
     body = {};
   }
+  if (!body || typeof body !== "object" || Array.isArray(body)) return errorResponse(400, "INVALID_REQUEST", "Dữ liệu kế hoạch không hợp lệ.");
 
   const action = body.action || "recalculate";
 
   try {
     if (action === "create_goal") {
       // 1. Create AcademicGoal
-      const goalPayload = {
-        target_exam: body.target_exam || "Kỳ thi Tốt nghiệp THPT & Tuyển sinh ĐH 2026",
-        exam_date: body.exam_date || "2026-06-25",
-        available_daily_minutes: body.available_daily_minutes || 30,
-        status: "ACTIVE",
-        target_university: body.target_university || null,
-        target_major: body.target_major || null,
-        subject_goals: body.subject_id
-          ? [
-              {
-                subject_id: body.subject_id,
-                target_score: body.target_score || 8.0,
-                current_score: body.current_score || null,
-                priority: 1,
-              },
-            ]
-          : [],
-      };
+      let goalPayload;
+      try { goalPayload = studyGoalPayload(body); }
+      catch (error) { return errorResponse(400, "INVALID_GOAL_DATE", error instanceof Error ? error.message : "Mốc hoàn thành không hợp lệ."); }
 
       const goalRes = await fetch(`${backendUrl}/students/me/goals`, {
         method: "POST",
@@ -100,7 +87,10 @@ export async function POST(request: NextRequest) {
         body: JSON.stringify(goalPayload),
       });
 
-      if (!goalRes.ok && goalRes.status !== 409) {
+      if (goalRes.status === 409) {
+        return errorResponse(409, "ACTIVE_GOAL_EXISTS", "Bạn đã có mục tiêu đang hoạt động. Mục tiêu hiện có chưa được thay đổi; bạn có thể dùng mục tiêu đó để cập nhật kế hoạch.");
+      }
+      if (!goalRes.ok) {
         const errJson = await goalRes.json().catch(() => ({}));
         return errorResponse(
           goalRes.status,
@@ -120,11 +110,14 @@ export async function POST(request: NextRequest) {
         body: JSON.stringify({ horizon_days: 7 }),
       });
 
-      const planData = recalcRes.ok ? await recalcRes.json().catch(() => null) : null;
+      if (!recalcRes.ok) {
+        return errorResponse(recalcRes.status, "PLAN_CREATION_FAILED", "Mục tiêu đã được ghi nhận nhưng chưa tạo được lộ trình. Bạn có thể thử lại.");
+      }
+      const planData = await recalcRes.json();
       return NextResponse.json(
         {
           success: true,
-          message: "Đã gieo mục tiêu và sinh lộ trình 7 ngày thành công!",
+          message: "Đã tạo mục tiêu và lộ trình học 7 ngày.",
           plan: planData,
         },
         { status: 200 }

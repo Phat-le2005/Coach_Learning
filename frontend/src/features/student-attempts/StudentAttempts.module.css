@@ -2006,3 +2006,29 @@
     font-size: 0.875rem;
   }
 }
+
+/* One workspace for starting, resuming and finding a saved attempt. */
+.main { width:100%; gap:24px; }
+.hubHeader { background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:28px; box-shadow:none; gap:24px; }
+.hubTitle { font-size:32px; font-weight:600; color:var(--ink); letter-spacing:-.6px; }
+.hubSubtitle { color:var(--muted); font-size:14px; max-width:68ch; line-height:1.8; }
+.segmentedControl { background:var(--soft); border:0; border-radius:12px; gap:6px; padding:6px; flex-wrap:wrap; }
+.tabBtn { min-height:46px; border-radius:9px; font-size:13px; font-weight:500; color:var(--muted); }
+.tabBtnActive { background:var(--surface); color:var(--ink); box-shadow:0 2px 6px #16372b0c; }
+.tabBadgeMuted,.tabBadgeNotice { color:var(--ink); background:var(--soft); }
+.launchCard,.continuePrimaryCard,.librarySection,.attemptCard,.emptyLibraryState { background:var(--surface); border:1px solid var(--line); border-radius:16px; box-shadow:none; color:var(--ink); }
+.launchCard { padding:28px; }
+.continuePrimaryCard { padding:24px; }
+.continueSecondaryCard { background:var(--surface); border-color:var(--line); box-shadow:none; }
+.launchTitle,.continueCardTitle,.sectionTitle,.attemptTitle,.emptyTitle { color:var(--ink); font-weight:600; }
+.launchDescription,.sectionSubtitle,.continueMetaItem,.emptyDescription { color:var(--muted); line-height:1.8; }
+.sectionEyebrow { color:var(--muted); font-size:12px; letter-spacing:0; text-transform:none; }
+.launchIllustrationWrap { max-width:240px; }
+.continueResumeBtn,.openAttemptBtnPrimary,.classroomBannerBtn { background:var(--brand); color:var(--surface); box-shadow:none; border-radius:10px; min-height:44px; }
+.classroomBanner { background:var(--soft); color:var(--ink); border-color:var(--line); border-radius:14px; }
+.classroomBannerTitle { color:var(--ink); }
+.classroomBannerSubtitle { color:var(--muted); }
+.searchInput,.sortSelect { background:var(--surface); color:var(--ink); border-color:var(--line); min-height:44px; }
+.filterPill,.viewToggleBtn,.pageLink { min-height:44px; background:var(--surface); color:var(--muted); border-color:var(--line); }
+.filterPillActive,.pageLinkActive { background:var(--brand); color:var(--surface); }
+@media(max-width:760px) { .hubHeader,.launchCard { padding:22px; } .hubTitle { font-size:26px; } .hubSubtitle { font-size:13px; } .segmentedControl { display:flex; flex-direction:column; align-items:stretch; width:100%; } .tabBtn { width:100%; justify-content:flex-start; font-size:14px; } .launchIllustrationWrap { display:none; } .launchCard { display:block; } .continuePrimaryCard { padding:20px; flex-wrap:wrap; } .continueResumeBtn { width:100%; justify-content:center; } }

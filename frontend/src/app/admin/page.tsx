@@ -1,8 +1,29 @@
-import { DashboardShell } from "@/components/app-shell/DashboardShell";
-import { PageState } from "@/components/app-shell/PageState";
+import type { Metadata } from "next";
 import { requirePageRole } from "@/lib/auth/page-session";
+import { AdminDashboardClient, type AdminTabKey } from "@/features/admin/AdminDashboardClient";
 
-export default async function AdminPage() {
+export const metadata: Metadata = {
+  title: "Quản trị Hệ thống · EduMS",
+  description: "Trung tâm quản trị chương trình học, ngân hàng câu hỏi, giám sát vận hành AI và danh mục tuyển sinh.",
+};
+
+interface AdminPageProps {
+  searchParams?: Promise<{ tab?: string }>;
+}
+
+export default async function AdminPage({ searchParams }: AdminPageProps) {
   const session = await requirePageRole("ADMIN", "/admin");
-  return <DashboardShell session={session} title="Quản trị EduMS" description="Quyền ADMIN chỉ được xác lập từ phiên đã ký và backend."><PageState kind="empty" title="Admin shell đã sẵn sàng" description="Không có credential đặc quyền hoặc dữ liệu quản trị được nhúng trong frontend." /></DashboardShell>;
+  const params = searchParams ? await searchParams : undefined;
+  const validTabs: AdminTabKey[] = ["curriculum", "question-supply", "ai-governance", "admission"];
+  const initialTab: AdminTabKey = validTabs.includes(params?.tab as AdminTabKey)
+    ? (params?.tab as AdminTabKey)
+    : "curriculum";
+
+  return (
+    <AdminDashboardClient
+      adminName={session.fullName || session.email}
+      adminEmail={session.email}
+      initialTab={initialTab}
+    />
+  );
 }
