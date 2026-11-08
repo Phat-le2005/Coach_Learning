@@ -260,3 +260,14 @@ def test_unanswered_feedback_rejects_source_with_solution_only(monkeypatch):
         asyncio.run(UnansweredAIService(session, gateway).review_attempt(attempt.id))
     assert error.value.code == "GRADING_ANSWER_AVAILABLE"
     assert gateway.calls == 0
+
+
+def test_quote_evidence_matches_unicode_and_vietnamese_decimals():
+    from app.math_solutions.answer_grounded_ai import _is_valid_evidence_quote
+    source = "Theo yêu cầu làm tròn, $x\\approx6{,}67$ cm với $x\\le10$."
+    # Model returns unicode approx and standard comma
+    quote1 = "x≈6,67 cm"
+    assert _is_valid_evidence_quote(quote1, source) is True
+    # Model returns unicode inequality
+    quote2 = "x≤10"
+    assert _is_valid_evidence_quote(quote2, source) is True
