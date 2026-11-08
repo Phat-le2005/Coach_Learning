@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { UploadCloud, Search, FileText, Calendar, Filter, Sparkles, AlertCircle, Eye, Send, Trash2 } from "lucide-react";
+import { UploadCloud, Search, FileText, Calendar, Filter, Sparkles, AlertCircle, Eye, Send, Trash2, Download, FilePenLine } from "lucide-react";
 import { teacherApi, type TeacherAssignment, type TeacherClassroom, type TeacherMaterial, type TeacherSubject } from "../api";
 import { MaterialPreviewModal } from "./MaterialPreviewModal";
 import { AssignMaterialModal } from "./AssignMaterialModal";
@@ -129,7 +129,7 @@ export function MaterialsTab({
 
   return (
     <div className={styles.tabContentWrap}>
-      <div className={styles.sectionCard}>
+      <div className={`${styles.sectionCard} ${styles.materialsSection}`}>
         {/* Header */}
         <div className={styles.sectionCardHeader}>
           <div>
@@ -167,12 +167,13 @@ export function MaterialsTab({
 
         {/* Toolbar & Filters */}
         <div className={styles.materialsToolbar}>
-          <div className={styles.searchInputWrap}>
+          <div className={`${styles.searchInputWrap} ${styles.materialSearch}`}>
             <Search size={16} className={styles.searchIcon} aria-hidden="true" />
             <input
               type="text"
               className={styles.searchInput}
               placeholder="Tìm kiếm tài liệu theo tiêu đề hoặc tên tệp..."
+              aria-label="Tìm kiếm học liệu"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -247,7 +248,7 @@ export function MaterialsTab({
                   <div className={styles.materialCardHeader}>
                     <span className={isPdf ? styles.badgeFormatPdf : styles.badgeFormatTxt}>
                       <FileText size={13} aria-hidden="true" />
-                      {isReviewed ? "Bài tập đã duyệt" : isPdf ? "PDF" : "TXT"}
+                      {isReviewed ? "Bài tập" : isPdf ? "PDF" : "TXT"}
                     </span>
                     <div className={styles.materialStatusActions}><span className={styles.materialStatusPill}>
                       {({ READY: "Đã duyệt", NEEDS_REVIEW: "Cần duyệt", PARSED: "Đã tách câu", UPLOADED: "Đã tải lên", MAPPING_PENDING: "Chờ phân loại", FAILED: "Xử lý lỗi" } as Record<string, string>)[item.status] ?? item.status}
@@ -287,8 +288,6 @@ export function MaterialsTab({
                   </div>
 
                   <div className={styles.materialCardActions}>
-                    {isReviewed && <a className={styles.btnSecondarySmall} href={`/api/teacher/materials/${item.id}/document`}>Tải bản đã duyệt</a>}
-                    {item.pdf_import_id && <button className={styles.btnSecondarySmall} onClick={() => onOpenPdfImport?.(item.pdf_import_id!)}>Xem nguồn / Chỉnh sửa</button>}
                     <button
                       type="button"
                       className={styles.btnSecondarySmall}
@@ -303,6 +302,13 @@ export function MaterialsTab({
                     >
                       <Send size={13} /> Giao cho lớp
                     </button>
+                    {isReviewed && <a className={styles.materialUtilityAction} href={`/api/teacher/materials/${item.id}/document`} aria-label="Tải bản đã duyệt">
+                      <Download size={14} aria-hidden="true" /> Tải bản duyệt
+                    </a>}
+                    {item.pdf_import_id && <button type="button" className={styles.materialUtilityAction} aria-label="Xem nguồn / Chỉnh sửa"
+                      onClick={() => onOpenPdfImport?.(item.pdf_import_id!)}>
+                      <FilePenLine size={14} aria-hidden="true" /> Nguồn / chỉnh sửa
+                    </button>}
                   </div>
                 </article>
               );

@@ -1087,11 +1087,13 @@
 
 .materialGridModern {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
   gap: 1.1rem;
 }
 
 .materialCardModern {
+  min-width: 0;
+  container: material-card / inline-size;
   background: #ffffff;
   border: 1px solid rgba(40, 105, 85, 0.16);
   border-radius: 16px;
@@ -1154,11 +1156,8 @@
   font-weight: 750;
   color: var(--verdant-950, #102e26);
   line-height: 1.35;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
+  min-height: 2.7em;
+  overflow-wrap: anywhere;
 }
 
 .materialFileName {
@@ -1194,11 +1193,14 @@
 
 .materialCardFooter {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
+  gap: 8px;
   border-top: 1px solid rgba(40, 105, 85, 0.1);
   padding-top: 9px;
-  margin-top: 4px;
+  margin-top: 0;
+  padding-bottom: 6px;
   font-size: 0.74rem;
   color: var(--text-tertiary, #647b70);
 }
@@ -2342,17 +2344,43 @@
 .deleteMaterialButton { display: inline-flex; align-items: center; justify-content: center; gap: 5px; min-height: 44px; padding: 6px 8px; color: #a12727; border: 1px solid #ebcccc; border-radius: 8px; background: transparent; font: inherit; font-size: 12px; cursor: pointer; }
 .deleteMaterialButton:hover { background: #fff1f1; }
 .deleteMaterialButton:focus-visible, .btnDeleteMaterial:focus-visible { outline: 2px solid #a12727; outline-offset: 2px; }
-.deleteDialog { width: min(480px, calc(100vw - 32px)); max-height: calc(100dvh - 48px); padding: 0; border: 1px solid var(--border-soft, #dbe4de); border-radius: 16px; background: var(--surface-elevated, #fbfaf4); color: var(--text-primary, #173329); box-shadow: 0 20px 60px #17332933; }
+.deleteDialog { width: min(480px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); margin: auto; padding: 0; overflow-y: auto; overscroll-behavior: contain; border: 1px solid var(--border-soft, #dbe4de); border-radius: 20px; background: var(--surface-elevated, #fbfaf4); color: var(--text-primary, #173329); box-shadow: 0 20px 60px #17332933; }
 .deleteDialog::backdrop { background: #17332966; }
+.deleteDialogHeader { display: flex; align-items: center; gap: 14px; padding: 24px 24px 18px; border-bottom: 1px solid var(--border-soft, #dbe4de); }
+.deleteDialogIcon { display: grid; place-items: center; flex: 0 0 44px; width: 44px; height: 44px; border-radius: 12px; color: #a12727; background: #fcebe8; }
+.deleteDialogBody { display: grid; gap: 16px; padding: 20px 24px; line-height: 1.65; overflow-wrap: anywhere; }
+.deleteDialogBody p { margin: 0; }
+.deleteDialogHint { padding: 12px 14px; border-radius: 10px; background: #edf3ee; color: var(--text-secondary, #52675d); font-size: .84rem; }
+.deleteDialogActions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 10px; padding: 16px 24px 20px; border-top: 1px solid var(--border-soft, #dbe4de); }
+.deleteDialogActions > button { min-height: 44px; white-space: nowrap; }
 .btnDeleteMaterial { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 10px 16px; border: 0; border-radius: 8px; color: white; background: #a12727; font: inherit; font-weight: 600; cursor: pointer; }
 .btnDeleteMaterial:disabled { opacity: .6; cursor: wait; }
 .materialCardActions {
-  display: flex;
-  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
-  padding: 0.85rem 1.15rem;
-  background: rgba(245, 243, 233, 0.5);
+  margin-top: auto;
+  padding-top: 16px;
   border-top: 1px solid rgba(29, 75, 61, 0.08);
+}
+.materialCardActions > :is(button, a) { justify-content: center; min-width: 0; min-height: 44px; padding: 9px 10px; white-space: nowrap; text-align: center; text-decoration: none; }
+.materialCardActions svg { flex-shrink: 0; }
+.materialUtilityAction { display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: 0; border-radius: 8px; background: transparent; color: var(--text-secondary, #52675d); font: inherit; font-size: .78rem; font-weight: 600; cursor: pointer; }
+.materialUtilityAction:hover { color: var(--verdant-900, #173f34); background: #f0f5f1; }
+.materialCardActions > .materialUtilityAction { padding-inline: 0; }
+.materialCardActions > :focus-visible { outline: 2px solid #286955; outline-offset: 2px; }
+.materialsSection { min-width: 0; container: materials / inline-size; padding: clamp(16px, 2vw, 28px); }
+.materialSearch { flex: 1 1 320px; min-width: 0; max-width: 640px; }
+.materialsToolbar .subjectFilterWrap { min-height: 42px; min-width: 200px; }
+.materialCardHeader > span, .materialStatusPill { white-space: nowrap; }
+@container material-card (max-width: 260px) {
+  .materialCardActions { grid-template-columns: minmax(0, 1fr); }
+}
+@container materials (max-width: 600px) {
+  .materialsToolbar { flex-direction: column; align-items: stretch; }
+  .materialSearch { flex-basis: auto; max-width: none; }
+  .materialsToolbar .subjectFilterWrap { min-width: 0; }
+  .materialsToolbar .filterSelect { flex: 1; min-width: 0; }
 }
 
 .btnPrimarySmall {
