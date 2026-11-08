@@ -359,7 +359,7 @@ export function TeacherTheoryClient({
 
         <div className={isSidebarCollapsed ? styles.columnsCollapsed : styles.columns}>
           {!isSidebarCollapsed && (
-            <aside className={styles.panel}>
+            <aside className={`${styles.panel} ${styles.documentSidebar}`} aria-label="Danh sách tài liệu lý thuyết">
               <div className={styles.sidebarHeaderRow}>
                 <div className={styles.sidebarTitleGroup}>
                   <h2 className={styles.sidebarTitle}>Tài liệu lớp</h2>
@@ -425,6 +425,7 @@ export function TeacherTheoryClient({
                       <button
                         className={styles.listButtonInner}
                         type="button"
+                        aria-current={map?.id === item.id ? "true" : undefined}
                         onClick={() => {
                           if (dirty && !window.confirm("Bỏ các chỉnh sửa chưa lưu?")) return;
                           setError("");
@@ -468,7 +469,7 @@ export function TeacherTheoryClient({
                           void handleDeleteDocument(item);
                         }}
                       >
-                        🗑️
+                        <Trash2 size={16} aria-hidden="true" />
                       </button>
                     </div>
                   ))
@@ -498,7 +499,7 @@ export function TeacherTheoryClient({
             ) : (
               <>
                 <div className={styles.documentHeaderBar}>
-                  <div>
+                  <div className={styles.documentHeaderInfo}>
                     <h2>{map.title}</h2>
                     <div className={styles.badges}>
                       {map.status === "PUBLISHED" ? (
