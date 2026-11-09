@@ -6,6 +6,7 @@ import { getHomeRoutes, homeDate, homeTaskHref, homeTaskTypeLabel } from "../hom
 import type { StudentHomeViewModel } from "../types";
 import ui from "../HomeContent.module.css";
 import { HomeIcon } from "./HomeIcon";
+import { PostAssessmentReminder } from "./PostAssessmentReminder";
 
 export function HomeToday({ data, onOpenPlan, onDetails, onRecalculate, recalculating, feedback }: {
   data: StudentHomeViewModel;
@@ -45,6 +46,7 @@ export function HomeToday({ data, onOpenPlan, onDetails, onRecalculate, recalcul
 
     <section className={`${ui.learningSection} ${ui.scheduleSection}`} aria-labelledby="home-schedule-title">
       <div className={ui.sectionHeading}><h2 id="home-schedule-title">Lịch học & việc cần làm</h2><span>Một nơi cho bài làm, lịch ôn và kế hoạch của bạn.</span></div>
+      <PostAssessmentReminder />
       <div className={ui.scheduleLayout}>
         <div className={ui.workColumn}>
           <section className={ui.workSection} aria-labelledby="home-tasks-title">

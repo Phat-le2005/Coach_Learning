@@ -313,7 +313,7 @@ export function AIReviewWorkspace({
         problem={problem}
         review={aiReview}
         onClose={onClose}
-        onNextProblem={onNextProblem}
+        onNextProblem={problem?.context_type === "CLASSROOM_ASSIGNMENT" ? onNextProblem : undefined}
         nextProblemLabel={nextProblemLabel}
         isNextLoading={isNextLoading}
       />
@@ -510,10 +510,9 @@ export function AIReviewWorkspace({
 
         {/* Right Column: Student Solution Viewer */}
         <div
-          className={`${
+          className={`${styles.viewerColumn} ${
             mobileTab !== "paper" ? styles.viewerColumnHiddenMobile : ""
           }`}
-          style={{ display: "flex", flexDirection: "column", minHeight: 0 }}
         >
           <AIReviewPaperViewer
             attemptId={attemptId}

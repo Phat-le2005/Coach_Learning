@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from collections.abc import Callable
 from uuid import UUID
 
 from sqlalchemy import select
@@ -55,6 +56,7 @@ class QuestionRecommendationService:
         reason_code_override: PriorityReasonCode | None = None,
         isolation_boost: bool = False,
         allowed_question_types: set[QuestionType] | frozenset[QuestionType] | None = None,
+        question_filter: Callable[[Question], bool] | None = None,
     ) -> QuestionRecommendationRead | None:
         if self.session.get(StudentProfile, student_id) is None:
             raise ApplicationError(404, "STUDENT_NOT_FOUND", "Student profile was not found.")
@@ -136,6 +138,8 @@ class QuestionRecommendationService:
         if recent_question_ids:
             statement = statement.where(~Question.id.in_(recent_question_ids))
         questions = list(self.session.scalars(statement))
+        if question_filter is not None:
+            questions = [question for question in questions if question_filter(question)]
         if not questions:
             return None
 

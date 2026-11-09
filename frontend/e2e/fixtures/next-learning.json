@@ -1,0 +1,22 @@
+{
+  "attempt_id": "00000000-0000-4000-8000-000000000101",
+  "decision_id": "00000000-0000-4000-8000-000000000201",
+  "status": "REINFORCE",
+  "score": 0.5,
+  "evidence_recorded": true,
+  "headline": "Củng cố một chút, tiến bộ thêm một bước",
+  "explanation": "Bài đã có điểm, nhưng một số yêu cầu vẫn chưa đạt đủ. Ưu tiên củng cố trước khi tăng độ khó.",
+  "criterion_gaps": [{"title": "Hoàn thiện bảng xét dấu và kết luận", "achieved": 0, "maximum": 0.5, "step_index": 2}],
+  "target": {
+    "id": "00000000-0000-4000-8000-000000000202",
+    "kind": "CONCEPT",
+    "name": "Dấu của đạo hàm và tính đơn điệu",
+    "reason": "Tiêu chí đã chấm của bài vừa làm cho thấy phần kiến thức này cần củng cố.",
+    "mastery_score": 0.35,
+    "mastery_state": "WEAK",
+    "evidence_count": 3,
+    "next_review_at": "2026-11-11T01:00:00Z"
+  },
+  "question": {"id": "00000000-0000-4000-8000-000000000203", "content": "Cho hàm số $y=x^3-6x$. Tính đạo hàm, lập bảng xét dấu của $y'$ và xác định các khoảng đồng biến, nghịch biến.", "difficulty": 0.4},
+  "supply_message": null
+}

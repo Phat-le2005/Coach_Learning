@@ -8,6 +8,7 @@ from app.core.errors import ErrorResponse, register_exception_handlers
 from app.math_solutions.ai_review_router import router as ai_review_router
 from app.math_paper.router import router as paper_router
 from app.math_canvas.router import router as math_canvas_router
+from app.math_solutions.next_learning_router import router as next_learning_router
 
 
 def create_v3_app(settings: Settings) -> FastAPI:
@@ -44,4 +45,5 @@ def create_v3_app(settings: Settings) -> FastAPI:
     application.include_router(ai_review_router)
     application.include_router(paper_router)
     application.include_router(math_canvas_router)
+    application.include_router(next_learning_router)
     return application

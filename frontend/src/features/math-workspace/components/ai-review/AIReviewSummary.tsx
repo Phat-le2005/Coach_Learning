@@ -7,8 +7,6 @@ import {
   Filter,
   RotateCcw,
   X,
-  ArrowRight,
-  LoaderCircle,
 } from "lucide-react";
 import type {
   AIReviewFilterMode,
@@ -16,6 +14,7 @@ import type {
 } from "../../utils/ai-review-controller";
 import type { AIReviewRead } from "@/lib/api/contracts";
 import styles from "./AIReview.module.css";
+import { NextLearningCard } from "./NextLearningCard";
 
 interface AIReviewSummaryProps {
   review: AIReviewRead;
@@ -44,8 +43,9 @@ export function AIReviewSummary({
 }: AIReviewSummaryProps) {
   const summaryRef = useRef<HTMLElement | null>(null);
   const hasIssues = stats.issueStepIndices.length > 0;
-  const ratio =
+  const ratio = review.is_final ? (review.final_score ?? 0) :
     stats.totalSteps > 0 ? stats.validCount / stats.totalSteps : 0;
+  const needsReinforcement = hasIssues || (review.is_final && ratio < .85);
   const radius = 26;
   const circumference = 2 * Math.PI * radius;
   const dashOffset = circumference * (1 - ratio);
@@ -93,7 +93,7 @@ export function AIReviewSummary({
               cy="34"
               r={radius}
               fill="none"
-              stroke={hasIssues ? "#d97706" : "#159966"}
+              stroke={needsReinforcement ? "#d97706" : "#159966"}
               strokeWidth="6.5"
               strokeLinecap="round"
               strokeDasharray={circumference}
@@ -105,7 +105,7 @@ export function AIReviewSummary({
             />
           </svg>
           <span className={styles.accuracyRingLabel}>
-            {review.review_source === "UNANSWERED_AI" ? "—" : `${stats.validCount}/${stats.totalSteps}`}
+            {review.is_final ? `${Math.round(ratio * 100)}%` : review.review_source === "UNANSWERED_AI" ? "—" : `${stats.validCount}/${stats.totalSteps}`}
           </span>
         </div>
 
@@ -193,156 +193,16 @@ export function AIReviewSummary({
         ? review.review_source === "TEACHER"
           ? "Điểm này do giáo viên ghi nhận. Nhận xét theo từng bước chỉ hiện nếu đã được lưu."
           : review.review_source === "ANSWER_GROUNDED_AI"
-          ? "Điểm và năng lực được cập nhật từ kết quả Gemini theo rubric đã duyệt."
+          ? "Điểm đã được lưu theo rubric được duyệt. Mức năng lực và đề xuất học được đọc riêng từ hồ sơ học tập."
           : "Điểm này được tính từ rubric đã duyệt và các bước được quy tắc toán học kiểm chứng."
         : review.review_source === "UNANSWERED_AI"
           ? "AI chỉ gợi ý điều cần kiểm tra. Giáo viên cần bổ sung hoặc duyệt đáp án trước khi có điểm chính thức."
           : stats.disclaimer}</p>
 
-      {/* LOOP CLOSURE: Khép vòng học tập sang Cây Tri Thức & Lộ Trình */}
-      <div
-        style={{
-          margin: "14px 0",
-          padding: "14px 16px",
-          borderRadius: "14px",
-          background: hasIssues
-            ? "linear-gradient(135deg, rgba(234, 179, 8, 0.12), rgba(245, 158, 11, 0.06))"
-            : "linear-gradient(135deg, rgba(35, 166, 122, 0.15), rgba(16, 185, 129, 0.08))",
-          border: hasIssues
-            ? "1px solid rgba(245, 158, 11, 0.35)"
-            : "1px solid rgba(35, 166, 122, 0.35)",
-          display: "flex",
-          flexDirection: "column",
-          gap: "8px",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <span style={{ fontSize: "0.86rem", fontWeight: 700, color: hasIssues ? "#b45309" : "#14533f" }}>
-            {!review.is_final ? "Đã nhận góp ý cho bài làm" : hasIssues
-              ? "⚡ Cần củng cố thêm công thức trước khi sang câu mới?"
-              : "🌱 Đã hoàn thành chặng luyện tập có kiểm chứng AI!"}
-          </span>
-          <span
-            style={{
-              fontSize: "0.75rem",
-              fontWeight: 650,
-              padding: "2px 8px",
-              borderRadius: "999px",
-              background: hasIssues ? "rgba(245, 158, 11, 0.2)" : "rgba(35, 166, 122, 0.2)",
-              color: hasIssues ? "#b45309" : "#14533f",
-            }}
-          >
-            {!review.is_final ? "Góp ý tham khảo" : hasIssues ? "Cần gỡ lỗi" : "Đã ghi nhận độ vững"}
-          </span>
-        </div>
-
-        <p style={{ margin: 0, fontSize: "0.78rem", color: "#374151", lineHeight: 1.45 }}>
-          {hasIssues
-            ? "Bạn có thể xem lại sơ đồ tư duy & khung cắt công thức PDF để hiểu rõ lý do biến đổi, hoặc bấm nút xem lại các bước sai bên dưới."
-            : "Kết quả bài làm đã được đồng bộ vào bảng đo lường năng lực của bạn. Hãy quay lại xem nhánh cây vừa sáng hoặc tiếp tục chặng hôm nay."}
-        </p>
-
-        <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginTop: "6px", alignItems: "center" }}>
-          {onNextProblem && (
-            <button
-              type="button"
-              onClick={onNextProblem}
-              disabled={isNextLoading}
-              className={styles.summaryNextBtn}
-            >
-              {isNextLoading ? (
-                <>
-                  <LoaderCircle className={styles.spin} size={15} />
-                  <span>Đang mở bài tiếp theo...</span>
-                </>
-              ) : (
-                <>
-                  <ArrowRight size={15} />
-                  <span>{nextProblemLabel || "Luyện tập bài tiếp theo →"}</span>
-                </>
-              )}
-            </button>
-          )}
-
-          <a
-            href="/student/knowledge"
-            style={{
-              padding: "7px 12px",
-              borderRadius: "8px",
-              background: "#23a67a",
-              color: "#ffffff",
-              fontSize: "0.8rem",
-              fontWeight: 650,
-              textDecoration: "none",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "5px",
-              boxShadow: "0 2px 6px rgba(35, 166, 122, 0.3)",
-            }}
-          >
-            ✦ Xem trên Cây Tri Thức 3D
-          </a>
-
-          <a
-            href="/student/theory"
-            style={{
-              padding: "7px 12px",
-              borderRadius: "8px",
-              background: "rgba(255, 255, 255, 0.85)",
-              border: "1px solid rgba(16, 46, 38, 0.15)",
-              color: "#14533f",
-              fontSize: "0.8rem",
-              fontWeight: 650,
-              textDecoration: "none",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "5px",
-            }}
-          >
-            📖 Mở Sơ đồ tư duy PDF
-          </a>
-
-          <a
-            href="/student"
-            style={{
-              padding: "7px 12px",
-              borderRadius: "8px",
-              background: "transparent",
-              color: "#4b5563",
-              fontSize: "0.8rem",
-              fontWeight: 600,
-              textDecoration: "none",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "5px",
-            }}
-          >
-            Về trang chủ →
-          </a>
-        </div>
-      </div>
+      <NextLearningCard review={review} onJumpToStep={onJumpToStep}
+        onNextProblem={onNextProblem} nextProblemLabel={nextProblemLabel} isNextLoading={isNextLoading} />
 
       <div className={styles.summaryActions}>
-        {onNextProblem && (
-          <button
-            type="button"
-            onClick={onNextProblem}
-            disabled={isNextLoading}
-            className={styles.summaryNextBtn}
-          >
-            {isNextLoading ? (
-              <>
-                <LoaderCircle className={styles.spin} size={14} />
-                <span>Đang tải...</span>
-              </>
-            ) : (
-              <>
-                <ArrowRight size={15} />
-                <span>{nextProblemLabel || "Luyện tập bài tiếp theo →"}</span>
-              </>
-            )}
-          </button>
-        )}
         {hasIssues && (
           <button
             type="button"
