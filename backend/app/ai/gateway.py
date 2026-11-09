@@ -124,6 +124,8 @@ class AIGateway:
         max_retries = self.settings.ai_max_retries if max_retries is None else max_retries
         if not 0 <= max_retries <= 5:
             raise ValueError("max_retries must be between 0 and 5")
+        if self.provider.manages_failover:
+            max_retries = 0  # One manager owns all attempts and the request deadline.
         backoff_base_s = 0.1
 
         start_time = time.perf_counter()
@@ -237,8 +239,17 @@ class AIGateway:
         effective_tier = self.resolve_tier(task_type, tier)
         effective_model = self.resolve_model(effective_tier)
         norm_messages = self._normalize_messages(messages, check_injection=check_injection)
+        execution = None
 
         async def _call() -> AIResponse:
+            nonlocal execution
+            if self.provider.manages_failover:
+                execution = await self.provider.generate_for_task(
+                    task_type=task_type, messages=norm_messages, model=effective_model,
+                    temperature=temperature, max_tokens=max_tokens,
+                    timeout=timeout or self.settings.ai_timeout_seconds,
+                )
+                return execution.data
             return await self.provider.generate(
                 messages=norm_messages,
                 model=effective_model,
@@ -257,7 +268,8 @@ class AIGateway:
                 timeout=timeout,
             )
             resp.tier = effective_tier
-            resp.model = effective_model
+            if execution is None:
+                resp.model = effective_model
             resp.latency_ms = latency_ms
 
             if usage_service is not None:
@@ -265,12 +277,12 @@ class AIGateway:
                     usage_service.record_log(
                         task=task_type,
                         provider=self.settings.ai_provider,
-                        model=effective_model,
+                        model=resp.model,
                         latency_ms=latency_ms,
                         prompt_name=prompt_name,
                         prompt_version=prompt_version,
-                        input_tokens=getattr(resp, "tokens_used", None),
-                        output_tokens=None,
+                        input_tokens=execution.input_tokens if execution else getattr(resp, "tokens_used", None),
+                        output_tokens=execution.output_tokens if execution else None,
                         success=True,
                         user_id=user_id,
                     )
@@ -318,15 +330,17 @@ class AIGateway:
         effective_tier = self.resolve_tier(task_type, tier)
         effective_model = self.resolve_model(effective_tier)
         norm_messages = self._normalize_messages(messages, check_injection=check_injection)
+        execution = None
 
         async def _call() -> T:
-            raw_data = await self.provider.generate_structured(
-                messages=norm_messages,
-                schema=schema,
-                model=effective_model,
-                temperature=temperature,
-                timeout=timeout or self.settings.ai_timeout_seconds,
-            )
+            nonlocal execution
+            kwargs = dict(messages=norm_messages, schema=schema, model=effective_model,
+                          temperature=temperature, timeout=timeout or self.settings.ai_timeout_seconds)
+            if self.provider.manages_failover:
+                execution = await self.provider.generate_structured_for_task(task_type=task_type, **kwargs)
+                raw_data = execution.data
+            else:
+                raw_data = await self.provider.generate_structured(**kwargs)
             if isinstance(raw_data, schema):
                 return raw_data
             return self.validator.validate_structured(
@@ -352,12 +366,12 @@ class AIGateway:
                     usage_service.record_log(
                         task=task_type,
                         provider=self.settings.ai_provider,
-                        model=effective_model,
+                        model=execution.model if execution else effective_model,
                         latency_ms=latency_ms,
                         prompt_name=prompt_name,
                         prompt_version=prompt_version,
-                        input_tokens=None,
-                        output_tokens=None,
+                        input_tokens=execution.input_tokens if execution else None,
+                        output_tokens=execution.output_tokens if execution else None,
                         success=True,
                         user_id=user_id,
                     )
@@ -367,7 +381,7 @@ class AIGateway:
             return AIStructuredResponse[T](
                 data=parsed_data,
                 raw_content=parsed_data.model_dump_json(),
-                model=effective_model,
+                model=execution.model if execution else effective_model,
                 tier=effective_tier,
                 latency_ms=latency_ms,
             )

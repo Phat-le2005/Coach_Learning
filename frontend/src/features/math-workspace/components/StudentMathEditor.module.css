@@ -1,0 +1,318 @@
+.editor {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* 1. HERO FORMULA FIELD */
+.fieldWrap {
+  position: relative;
+  border: 2px solid #bce0ce;
+  border-radius: 12px;
+  background: #ffffff;
+  padding: 10px 14px;
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  cursor: text;
+}
+
+.fieldWrap:focus-within {
+  border-color: #1f7a55;
+  box-shadow: 0 0 0 3px rgba(31, 122, 85, 0.14);
+}
+
+.editor[data-disabled="true"] .fieldWrap {
+  background: #f4f6f5;
+  border-color: #dbe4df;
+  cursor: default;
+}
+
+.fieldHost {
+  width: 100%;
+}
+
+.fieldHost :global(math-field) {
+  display: block;
+  width: 100%;
+  font-size: 1.45rem;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #11251b;
+  --caret-color: #1f7a55;
+  --selection-background-color: rgba(31, 122, 85, 0.18);
+  --contains-highlight-background-color: rgba(31, 122, 85, 0.08);
+  --placeholder-color: #8da497;
+}
+
+.fieldHost :global(math-field)::part(virtual-keyboard-toggle),
+.fieldHost :global(math-field)::part(menu-toggle) {
+  display: none;
+}
+
+.loading,
+.notice {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #556c60;
+}
+
+.notice {
+  color: #8a5000;
+  background: #fff8e8;
+  border: 1px solid #f3d79f;
+  border-radius: 9px;
+  padding: 8px 12px;
+}
+
+/* 2. COMPACT TOOLBAR */
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.navGroup,
+.editGroup {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.toolbar button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  height: 28px;
+  min-width: 28px;
+  padding: 0 8px;
+  border: 1px solid #d7e4dc;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #27473b;
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.1s ease;
+}
+
+.toolbar button:hover:not(:disabled) {
+  background: #edf6f1;
+  border-color: #aed1bf;
+  color: #1f7a55;
+}
+
+.toolbar button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btnNext {
+  color: #1f7a55 !important;
+  border-color: #b8dcce !important;
+  background: #f3f9f5 !important;
+}
+
+/* 3. CORE 20 GRADE-12 MATH SYMBOLS */
+.symbolGrid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 4px;
+}
+
+@media (max-width: 768px) {
+  .symbolGrid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+.symbolBtn {
+  height: 38px;
+  min-width: 32px;
+  padding: 2px;
+  border: 1px solid #dbe6df;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #132a20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.12s ease, border-color 0.12s ease, transform 0.08s ease;
+}
+
+.symbolBtn :global(.math-renderer),
+.symbolBtn :global(.katex) {
+  font-size: 1.05rem;
+  line-height: 1;
+  color: #132a20;
+}
+
+.symbolBtn:hover:not(:disabled) {
+  background: #eef7f2;
+  border-color: #1f7a55;
+  color: #1f7a55;
+  transform: translateY(-1px);
+}
+
+.symbolBtn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.symbolBtn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  background: #f6f8f7;
+}
+
+/* 4. OPTIONAL ADVANCED SYMBOLS */
+.moreWrap {
+  margin-top: 2px;
+}
+
+.moreToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 6px;
+  border: none;
+  background: transparent;
+  color: #27624c;
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: color 0.12s ease, background-color 0.12s ease;
+}
+
+.moreToggle:hover:not(:disabled) {
+  background: #edf5f0;
+  color: #16533c;
+}
+
+.advancedDrawer {
+  margin-top: 6px;
+  padding: 10px;
+  border: 1px solid #dce8e0;
+  border-radius: 11px;
+  background: #f7faf8;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.advancedHead {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.groups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.groups button {
+  padding: 3px 8px;
+  border: 1px solid #d7e4dc;
+  border-radius: 999px;
+  background: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #3b5b4e;
+  cursor: pointer;
+}
+
+.groups button[aria-pressed="true"] {
+  background: #1f7a55;
+  border-color: #1f7a55;
+  color: #ffffff;
+}
+
+.search {
+  flex: 1 1 140px;
+  max-width: 200px;
+  height: 26px;
+  padding: 0 8px;
+  border: 1px solid #d7e4dc;
+  border-radius: 7px;
+  font-size: 0.75rem;
+  background: #ffffff;
+}
+
+.advancedSymbols {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(78px, 1fr));
+  gap: 5px;
+  max-height: 160px;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.advancedSymbolBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: 48px;
+  padding: 4px 2px;
+  border: 1px solid #dbe6df;
+  border-radius: 8px;
+  background: #ffffff;
+  cursor: pointer;
+  color: #132a20;
+}
+
+.advancedSymbolBtn:hover:not(:disabled) {
+  background: #edf6f1;
+  border-color: #1f7a55;
+}
+
+.symbolSubLabel {
+  font-size: 0.62rem;
+  color: #63796f;
+  text-align: center;
+  line-height: 1.1;
+}
+
+.emptyNotice {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: 0.75rem;
+  color: #63796f;
+}
+
+/* 5. RAW LATEX ACCORDION */
+.latex {
+  margin-top: 4px;
+}
+
+.latex summary {
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #6e8478;
+}
+
+.latex summary:hover {
+  color: #27473b;
+}
+
+.latex textarea {
+  width: 100%;
+  margin-top: 4px;
+  padding: 6px 8px;
+  border: 1px solid #d7e4dc;
+  border-radius: 8px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.78rem;
+  resize: vertical;
+}

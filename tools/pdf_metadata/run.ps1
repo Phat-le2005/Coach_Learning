@@ -50,14 +50,23 @@ $env:TMP = $env:TEMP
 $env:PIP_CACHE_DIR = Join-Path $Runtime 'pip-cache'
 $pythonPath = Join-Path $Runtime '.venv\Scripts\python.exe'
 if (-not (Test-Path -LiteralPath $pythonPath)) {
-    if (-not $Install -and -not $InstallOcr) { throw 'Environment missing. Run with -Install first.' }
-    & py -3.13 -m venv (Join-Path $Runtime '.venv')
+    if (-not $Install -and -not $InstallOcr -and $Action -ne 'local-setup') { throw 'Environment missing. Run with -Install first.' }
+    $pyLauncher = if (Get-Command py -ErrorAction SilentlyContinue) {
+        $pyList = @(py --list)
+        if ($pyList -match '3\.13') { @('py', '-3.13') }
+        elseif ($pyList -match '3\.12') { @('py', '-3.12') }
+        else { @('py', '-3') }
+    } else {
+        @('python')
+    }
+    & $pyLauncher[0] $pyLauncher[1..($pyLauncher.Length-1)] -m venv (Join-Path $Runtime '.venv')
     if ($LASTEXITCODE) { throw 'Could not create the isolated environment.' }
 }
-if ($Install -or $InstallOcr) {
+if ($Install -or $InstallOcr -or ($Action -eq 'local-setup' -and -not (Test-Path -LiteralPath (Join-Path $Runtime 'pip-cache\.native-installed')))) {
     $requirements = if ($InstallOcr) { 'requirements-paddle.txt' } else { 'requirements-native.txt' }
     & $pythonPath -m pip install -r (Join-Path $PSScriptRoot $requirements)
     if ($LASTEXITCODE) { throw 'Dependency installation failed.' }
+    New-Item -ItemType File -Force -Path (Join-Path $Runtime 'pip-cache\.native-installed') | Out-Null
 }
 Push-Location -LiteralPath $PSScriptRoot
 try {

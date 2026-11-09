@@ -2,7 +2,7 @@
 from uuid import uuid4
 import pytest
 import json
-from unittest.mock import MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 from app.core.config import Settings
 from app.core.exceptions import ApplicationError
 from app.math_ink.schemas import InkPoint, InkStroke
@@ -86,6 +86,8 @@ def test_busy_primary_uses_configured_gemini_fallback_with_same_step_schema():
     strokes,_=examples()
     class Busy(RuntimeError): code=503
     client=MagicMock()
+    client.aio.__aenter__.return_value = client
+    client.models.generate_content = AsyncMock()
     client.models.generate_content.side_effect=[Busy("Busy"),MagicMock(text=json.dumps({"latex":"x=1","steps":[proposal("Tìm nghiệm","x=1","ROOT_FINDING",[0,0,1000,1000])]}))]
     with patch("app.math_ocr.gemini_adapter._get_genai_client",return_value=client):
         response=adapter.recognize(strokes)
@@ -99,7 +101,9 @@ def test_quota_error_stops_without_multiplying_requests_across_models():
     settings=Settings(_env_file=None,database_name="test",database_user="test",ai_api_key="fixture-key")
     adapter=GeminiMathOCRAdapter(settings=settings)
     class Quota(RuntimeError): code=429
-    client=MagicMock();client.models.generate_content.side_effect=Quota("Quota")
+    client=MagicMock()
+    client.aio.__aenter__.return_value = client
+    client.models.generate_content = AsyncMock(side_effect=Quota("Quota"))
     with patch("app.math_ocr.gemini_adapter._get_genai_client",return_value=client):
         with pytest.raises(ApplicationError) as error:
             adapter.recognize(examples()[0])

@@ -39,6 +39,43 @@ Boundaries are heuristic, coordinates belong to crops in the input PDF, and
 source IDs/hashes refer to that PDF, not the PDFs used in an author's export.
 No reference JSON, expected answer or other source PDF is read.
 
+Inside a printed solution, a short `Đáp án` inset is exported separately from
+the explanatory steps that follow, including across consecutive crops/pages.
+Native text and detected paragraph bounds from the **same PDF** protect question
+paragraphs from an arbitrary horizontal cut; native mathematics never replaces
+the image transcription. Oversize/unresolved boundaries retain source images and
+require review. When a reliable visible prose tail aligns, an invented suffix
+outside the crop is removed and flagged; raw model responses remain in the audit.
+This is not a general mathematical correctness check.
+
+### Timing and resource logs
+
+Each job prints `[perf]` lines to the terminal (or its private `worker.log` in the
+teacher upload flow). The same output folder contains:
+
+- `pipeline-performance.json`: full wrapper wall time, layout, model start/ready,
+  OCR/export and model stop times; pages/minute, page/question counts and cache hits.
+- `layout-performance.json` and `ocr-performance.json`: stage times, model request
+  latency, token counts, seconds/page and throughput. Execution mode distinguishes
+  fresh inference from cache/no-inference runs.
+- `*-performance.events.jsonl`: per-stage/request events and sampled resources;
+  `performance-runs/` retains summaries for individual runs, including resumes.
+
+CPU and RAM are sampled for the job's process tree and identified local model
+server; RAM is the sum of process RSS and may include shared pages. CPU core
+percent can exceed 100%; machine-capacity percent divides by logical CPU count.
+RAM/VRAM fields ending in `_mb` use MiB (1024² bytes). Summaries keep running
+totals/peaks in bounded memory; detailed samples are streamed to the event file.
+GPU utilization/VRAM/power are device-wide samples from `nvidia-smi` when available,
+and may include other applications. Unavailable measurements are null, not zero.
+Resource sampling is job-scoped and stops at completion/failure.
+
+`output_tokens_per_request_second` includes image/prompt processing and request
+latency; it is **not** the model decoder's tokens/second. Wrapper wall time also
+includes model startup/shutdown. Compare fresh runs with fresh runs, and cache
+resumes separately; a fast cache replay does not establish faster model inference.
+These logs contain counters/resources, not question text, prompts or API keys.
+
 Visible raster rules separate grids into rows/cells before prose transcription.
 Unknown/borderless layouts use bounded image bands. Truncated, invalid or
 repeated model output is rejected and split again, up to `-MaxSplitDepth 2` and

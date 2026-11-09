@@ -2,6 +2,12 @@ import { expect, test } from "@playwright/test";
 import fs from "node:fs";
 import path from "node:path";
 
+/** The LaTeX source now lives behind the student's collapsed "Mã công thức" toggle. */
+async function openLatexEditor(scope: import("@playwright/test").Locator) {
+  const toggle = scope.getByTestId("ocr-v2-latex-toggle");
+  if (await toggle.count() && !(await toggle.evaluate((el) => (el as HTMLDetailsElement).open))) await toggle.locator("summary").click();
+}
+
 const manifest = process.env.LIVE_QA_SESSION_FILE;
 test.skip(!manifest, "Requires an explicitly supplied local QA account.");
 test.use({ trace: "off", video: "off", screenshot: "only-on-failure" });
@@ -151,6 +157,7 @@ test("review labels preserve canonical values, corrections and explicit save gua
   const modal=page.getByTestId('ocr-v2-main-review');
   await expect(modal).toBeVisible();await expect(modal).toHaveAttribute('aria-busy','false',{timeout:60000});
   await modal.getByTestId('ocr-v2-kind').selectOption('TEXT');
+  await openLatexEditor(modal);
   await modal.getByTestId('ocr-v2-content').fill('Nội dung kiểm thử giao diện');
   await modal.getByTestId('ocr-v2-approve').click();
   await modal.locator('summary').filter({hasText:'Lưu thành bước giải'}).click();
@@ -163,6 +170,7 @@ test("review labels preserve canonical values, corrections and explicit save gua
   if(artifacts)await page.screenshot({path:path.join(artifacts,'review-real-pipeline-desktop.png')});
   await modal.getByRole('button',{name:'Đóng',exact:true}).click();await expect(modal).toHaveCount(0);await page.reload();
   await page.getByRole('button',{name:'Trích xuất trang',exact:true}).click();await expect(modal).toHaveAttribute('aria-busy','false');
+  await openLatexEditor(modal);
   await expect(modal.getByTestId('ocr-v2-content')).toHaveValue('Nội dung kiểm thử giao diện');
   await expect(modal.getByTestId('ocr-v2-kind')).toHaveValue('TEXT');
   await expect(modal.getByTestId('ocr-v2-prepare-save')).toBeDisabled();

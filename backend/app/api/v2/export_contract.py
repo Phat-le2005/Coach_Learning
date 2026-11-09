@@ -28,7 +28,9 @@ def get_v2_contract_settings() -> Settings:
 
 
 def get_v2_deterministic_schema() -> dict[str, Any]:
-    return create_v2_app(get_v2_contract_settings()).openapi()
+    schema = create_v2_app(get_v2_contract_settings()).openapi()
+    serialized = json.dumps(schema).replace('"Unprocessable Entity"', '"Unprocessable Content"')
+    return json.loads(serialized)
 
 
 def export_v2_contract() -> None:

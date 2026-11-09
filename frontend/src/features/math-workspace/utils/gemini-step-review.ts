@@ -13,7 +13,7 @@ export function buildGeminiStepReview(source: OcrSource, attemptId: string, resp
       || ids.some(id => !pen.some(stroke => stroke.id === id)))) throw Error("Ranh giới bước chưa khớp toàn bộ nét gốc. Hãy nhận diện lại.");
   const scopes: ScopeProposal[] = proposed.length ? proposed.map((step, index) => ({
     id: `gemini-step-${index + 1}`, regionIds: [`gemini-region-${index + 1}`],
-    rawLabel: step.content_kind === "MATH" ? "formula" : "text", rawScore: null, kind: step.content_kind,
+    rawLabel: step.content_kind === "MATH" ? "formula" : "text", rawScore: null, kind: "MATH",
     strokeIds: [...step.source_stroke_ids], candidateStrokeIds: [...step.source_stroke_ids], coverage: {},
     flags: ["GEMINI_LOGICAL_STEP_PROPOSAL_NOT_CONFIRMED"], method: "GEMINI_LOGICAL_STEP_IMAGE_BOUNDARY",
   })) : pen.length ? [{ id: "gemini-1", regionIds: ["gemini-region-1"], rawLabel: "formula", rawScore: null,
@@ -26,7 +26,7 @@ export function buildGeminiStepReview(source: OcrSource, attemptId: string, resp
     const text = step ? step.content_kind === "TEXT" ? step.explanation_text || step.latex : step.latex : response?.latex;
     if (text?.trim()) ir = applyOcrToContentUnit(ir, id, text);
     stepHints[id] = { title: step?.title ?? "Bản chép chưa tách bước", stepKind: step?.suggested_step_type ?? response?.suggested_step_type ?? "CUSTOM",
-      explanationText: step?.content_kind === "MATH" ? step.explanation_text ?? "" : "" };
+      explanationText: step?.explanation_text ?? "" };
   }
   ir.contentUnits = ir.contentUnits.map(unit => ({ ...unit, readingOrder: scopes.findIndex(scope => unit.id === `unit-${scope.id}`) }));
   return { schemaVersion: "ocr-core-review/1", ir: validateSolutionTranscriptionIR(ir, pen), scopes,

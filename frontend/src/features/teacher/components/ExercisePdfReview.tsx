@@ -88,6 +88,18 @@ export function ExercisePdfReview({ jobId, onClose, onSubmitted, onOpenRevision 
   const payload = { title: title.trim(), decisions: Object.values(decisions), save_mode: saveMode };
   const selected = Object.values(decisions).filter((d) => d.accepted).length;
   const unclassifiedSelected = Object.values(decisions).filter((d) => d.accepted && !d.difficulty_level).length;
+  const canConfirmAll = Object.values(decisions).some((d) => d.content.trim() && (!d.accepted || !d.source_checked));
+
+  function confirmAll() {
+    if (busy || job?.status !== "NEEDS_REVIEW") return;
+    const confirmable = Object.values(decisions).filter((d) => d.content.trim()).length;
+    setDecisions((current) => Object.fromEntries(Object.entries(current).map(([id, decision]) => [id,
+      decision.content.trim() ? { ...decision, accepted: true, source_checked: true } : decision,
+    ])));
+    setDirty(true);
+    const empty = job.questions.length - confirmable;
+    setNotice(`Đã xác nhận đối chiếu nguồn và duyệt giữ ${confirmable} câu trong toàn bộ tài liệu.${empty ? ` ${empty} câu chưa có nội dung được để lại.` : ""}`);
+  }
 
   async function perform(action: "save" | "submit" | "retry" | "close" | "revise" | "delete") {
     if (busy) return;
@@ -191,7 +203,13 @@ export function ExercisePdfReview({ jobId, onClose, onSubmitted, onOpenRevision 
           </label>
         </fieldset>}
         <p className={reviewStyles.summary}><strong>{selected}</strong> câu giữ lại · {job.questions.length - selected} câu để lại</p>
-        <p className={styles.sectionSubheading}>Đối chiếu nội dung, đáp án và hình minh họa với {isImage ? "ảnh" : "PDF"} gốc, sau đó tích chọn từng câu đạt yêu cầu. Các câu chưa chọn sẽ không được đưa vào tài liệu.</p>
+        <p className={styles.sectionSubheading}>Đối chiếu nội dung, đáp án và hình minh họa với {isImage ? "ảnh" : "PDF"} gốc, sau đó chọn câu đạt yêu cầu hoặc dùng “Xác nhận tất cả”. Các câu chưa chọn sẽ không được đưa vào tài liệu.</p>
+        {editable && <div className={reviewStyles.bulkApproval}>
+          <button type="button" className={styles.btnSecondary} disabled={busy || !canConfirmAll} onClick={confirmAll}>
+            <CheckCircle2 size={16} aria-hidden="true" /> Xác nhận tất cả
+          </button>
+          <p className={reviewStyles.editHint}>Xác nhận đã đối chiếu nguồn và duyệt giữ toàn bộ câu có nội dung, kể cả các trang khác và câu đang ẩn bởi bộ lọc.</p>
+        </div>}
         {!!job.progress.failed_regions && <p role="status" className={styles.formAlert}>Có {job.progress.failed_regions} vùng OCR chưa hoàn tất. Hãy kiểm tra {isImage ? "ảnh" : "PDF"} gốc trước khi giữ lại câu liên quan.</p>}
         <div className={reviewStyles.filters}><label className={reviewStyles.filter}>Hiển thị
           <select className={styles.formSelect} value={filter} onChange={(e) => { setFilter(e.target.value); setPage(0); }}>

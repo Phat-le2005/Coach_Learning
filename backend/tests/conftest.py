@@ -5,6 +5,7 @@ from sqlite3 import Connection
 from uuid import uuid4
 
 import pytest
+import httpx
 from fastapi.testclient import TestClient
 from fastapi import FastAPI
 from sqlalchemy import Engine, create_engine, event
@@ -17,6 +18,29 @@ from app.core.config import Settings, get_settings
 from app.application import create_app
 from app.database.session import get_db
 from tests.migrations import upgrade_test_schema
+
+
+@pytest.fixture(autouse=True)
+def block_live_gemini(monkeypatch):
+    """Backend tests cannot accidentally spend Gemini quota, including SDK calls."""
+    sync_send, async_send = httpx.Client.send, httpx.AsyncClient.send
+
+    def check(client, request):
+        host = request.url.host
+        if host and (host == 'googleapis.com' or host.endswith('.googleapis.com')):
+            if not isinstance(client._transport_for_url(request.url), httpx.MockTransport):
+                pytest.fail('Live Google API request blocked: use httpx.MockTransport or a fake SDK client.')
+
+    def send(client, request, *args, **kwargs):
+        check(client, request)
+        return sync_send(client, request, *args, **kwargs)
+
+    async def asend(client, request, *args, **kwargs):
+        check(client, request)
+        return await async_send(client, request, *args, **kwargs)
+
+    monkeypatch.setattr(httpx.Client, 'send', send)
+    monkeypatch.setattr(httpx.AsyncClient, 'send', asend)
 
 
 @pytest.fixture(autouse=True)
