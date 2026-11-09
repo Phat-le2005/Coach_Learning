@@ -9,7 +9,7 @@ const baseURL = "http://127.0.0.1:3106";
 const output = path.resolve(__dirname, "..", ".tmp", "teacher-pdf-ui");
 
 export default defineConfig({
-  testDir: "./e2e", testMatch: "teacher-pdf-review.spec.ts", workers: 1, timeout: 90_000,
+  testDir: "./e2e", testMatch: ["teacher-pdf-review.spec.ts", "teacher-material-library.spec.ts"], workers: 1, timeout: 90_000,
   expect: { timeout: 25_000 }, outputDir: path.join(output, "results"),
   reporter: [["list"], ["json", { outputFile: path.join(output, "report.json") }]],
   use: { baseURL, channel: process.platform === "win32" ? "msedge" : undefined, headless: true,

@@ -173,6 +173,7 @@ export function ExercisePdfReview({ jobId, onClose, onSubmitted, onOpenRevision 
     {job?.status === "FAILED" && <div className={reviewStyles.state}>
       <h4>Chưa hoàn tất OCR</h4><p>{job.error}</p>
       <button className={styles.btnPrimary} disabled={busy} onClick={() => void perform("retry")}><RefreshCw size={16} aria-hidden="true" /> Thử lại OCR</button>
+      <button type="button" className={reviewStyles.discardButton} disabled={busy} onClick={() => { setError(""); setConfirmation("delete"); }}><Trash2 size={16} aria-hidden="true" /> Xóa bản nháp</button>
     </div>}
     {job?.status === "SUBMITTED" && <div className={reviewStyles.state}>
       <CheckCircle2 size={32} aria-hidden="true" /><h4>Tài liệu đã được lưu vào kho học liệu</h4>

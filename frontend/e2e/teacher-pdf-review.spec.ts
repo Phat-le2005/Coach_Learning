@@ -12,6 +12,8 @@ test.skip(!process.env.PDF_REVIEW_E2E_SECRET, "Use playwright.pdf-review.config.
 
 for (const sourceKind of ["PDF", "IMAGE"] as const) {
 test(`${sourceKind}: upload, review, revise and delete selected material`, async ({ page, context, baseURL }, testInfo) => {
+  // This full journey includes three navigations and cold compilation of the 3D room.
+  test.setTimeout(180_000);
   if (baseURL !== "http://127.0.0.1:3106") throw new Error("Requires isolated PDF UI server");
   const signed = await signSession({ v: 1, userId: "pdf-ui-qa", email: "teacher@example.test", fullName: "Giáo viên kiểm thử", role: "TEACHER", expiresAt: Date.now() + 600_000 }, process.env.PDF_REVIEW_E2E_SECRET!);
   await context.addCookies([{ name: AUTH_COOKIES.session, value: signed, url: baseURL, httpOnly: true, sameSite: "Lax" }]);
@@ -50,7 +52,7 @@ test(`${sourceKind}: upload, review, revise and delete selected material`, async
     await route.fulfill({ json: body });
   });
   await page.goto("/teacher?tab=materials");
-  await page.getByRole("button", { name: /Chế độ 2D/ }).click();
+  await page.getByRole("button", { name: "Danh sách", exact: true }).click();
   await page.getByRole("button", { name: "Tải lên tài liệu mới", exact: true }).click();
   await page.locator('input[type="file"]').setInputFiles(sourceKind === "IMAGE" ? {
     name: "exercise.png", mimeType: "image/png", buffer: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+XfS8AAAAASUVORK5CYII=", "base64"),
@@ -90,7 +92,7 @@ test(`${sourceKind}: upload, review, revise and delete selected material`, async
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   await page.screenshot({ path: testInfo.outputPath("review-mobile.png"), fullPage: true });
   await page.getByRole("button", { name: "Lưu 1 câu vào kho" }).click();
-  const listMode = page.getByRole("button", { name: /Chế độ 2D/ });
+  const listMode = page.getByRole("button", { name: "Danh sách", exact: true });
   await listMode.click();
   await expect(page.getByRole("heading", { name: material.title, exact: true })).toBeVisible();
   expect(submitted!.decisions.filter((d) => d.accepted).map((d) => d.question_id)).toEqual(["q1"]);
@@ -127,7 +129,7 @@ test(`${sourceKind}: upload, review, revise and delete selected material`, async
   await expect(page.getByRole("heading", { name: material.title, exact: true })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Tải lên tài liệu mới", exact: true })).toBeFocused();
   await page.reload();
-  await page.getByRole("button", { name: /Chế độ 2D/ }).click();
+  await page.getByRole("button", { name: "Danh sách", exact: true }).click();
   await expect(page.getByRole("heading", { name: material.title, exact: true })).toHaveCount(0);
   expect(errors).toEqual([]);
 });

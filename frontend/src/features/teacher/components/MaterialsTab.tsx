@@ -62,6 +62,12 @@ export function MaterialsTab({
 
   useEffect(() => { setPage(0); }, [selectedClass?.id, searchQuery, selectedSubjectFilter]);
 
+  // Wait until React has removed the modal; focusing an inert background button
+  // inside the async delete handler can be ignored by the native dialog.
+  useEffect(() => {
+    if (deleteNotice && !deleteTarget) uploadButton.current?.focus();
+  }, [deleteNotice, deleteTarget]);
+
   async function deleteMaterial() {
     if (!deleteTarget || deleteBusy) return;
     setDeleteBusy(true); setDeleteError("");
@@ -72,7 +78,6 @@ export function MaterialsTab({
       if (selectedAssignMaterial?.id === deleteTarget.id) setSelectedAssignMaterial(null);
       setDeleteNotice(`Đã xóa ${deleteTarget.title} khỏi kho học liệu.`);
       setDeleteTarget(null);
-      requestAnimationFrame(() => uploadButton.current?.focus());
     } catch (error) {
       setDeleteError(error instanceof Error ? error.message : "Không thể xóa tài liệu. Vui lòng thử lại.");
     } finally { setDeleteBusy(false); }
