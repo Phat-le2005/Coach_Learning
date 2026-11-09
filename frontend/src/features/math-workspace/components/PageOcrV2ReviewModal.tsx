@@ -45,7 +45,13 @@ export function PageOcrV2ReviewModal(props: Props) {
   const dialogRef=useRef<HTMLDivElement>(null);
   const editorRef = useRef<HTMLElement>(null);
   useEffect(()=>{const previous=document.activeElement instanceof HTMLElement?document.activeElement:null;const overflow=document.body.style.overflow;document.body.style.overflow="hidden";dialogRef.current?.querySelector<HTMLButtonElement>('button')?.focus();return()=>{document.body.style.overflow=overflow;previous?.focus();};},[]);
-  useEffect(() => { if (editorRef.current) editorRef.current.scrollTop = 0; }, [selected]);
+  useEffect(() => {
+    const el = editorRef.current;
+    if (el) {
+      el.scrollTop = 0;
+      requestAnimationFrame(() => { if (el) el.scrollTop = 0; });
+    }
+  }, [selected]);
   latest.current = review; sourceGuard.current = props.isSourceCurrent;
   const stale = !props.isSourceCurrent();
   const unit = review?.ir.contentUnits.find(u => u.id === selected), rows = review ? getOrderedReviewUnits(review.ir.contentUnits) : [];
@@ -286,7 +292,7 @@ export function PageOcrV2ReviewModal(props: Props) {
             </div>
             {unit.role === "ATOMIC" ? <>
               {unit.kind === "MATH" ? <div className={styles.transcriptionField}>
-                <span>Công thức của em <small className={styles.transcriptionFieldHint}>Bấm vào công thức để sửa trực tiếp, hoặc mở “Bộ công thức” để chèn ký hiệu</small></span>
+                <span>Công thức của em <small className={styles.transcriptionFieldHint}>Bấm vào công thức để sửa số/biến, hoặc dùng các phím ký hiệu bên dưới</small></span>
                 <StudentMathEditor key={unit.id} value={unit.approvedContent ?? unit.rawRecognition ?? ""} disabled={locked}
                   onChange={latex => change(r => ({ ...r, ir: editContentUnit(r.ir, unit.id, { content: latex }) }))} />
               </div> : <label className={styles.transcriptionField}>Nội dung có thể chỉnh sửa

@@ -1,17 +1,21 @@
 .editor {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
+/* 1. HERO FORMULA FIELD */
 .fieldWrap {
   position: relative;
-  border: 1.5px solid #cfe0d6;
-  border-radius: 14px;
-  background: #fff;
-  padding: 14px 16px;
-  min-height: 84px;
+  border: 2px solid #bce0ce;
+  border-radius: 12px;
+  background: #ffffff;
+  padding: 10px 14px;
+  min-height: 64px;
+  display: flex;
+  align-items: center;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  cursor: text;
 }
 
 .fieldWrap:focus-within {
@@ -20,7 +24,13 @@
 }
 
 .editor[data-disabled="true"] .fieldWrap {
-  background: #f5f7f6;
+  background: #f4f6f5;
+  border-color: #dbe4df;
+  cursor: default;
+}
+
+.fieldHost {
+  width: 100%;
 }
 
 .fieldHost :global(math-field) {
@@ -30,11 +40,11 @@
   border: none;
   outline: none;
   background: transparent;
-  color: #13281f;
+  color: #11251b;
   --caret-color: #1f7a55;
   --selection-background-color: rgba(31, 122, 85, 0.18);
   --contains-highlight-background-color: rgba(31, 122, 85, 0.08);
-  --placeholder-color: #1f7a55;
+  --placeholder-color: #8da497;
 }
 
 .fieldHost :global(math-field)::part(virtual-keyboard-toggle),
@@ -45,109 +55,160 @@
 .loading,
 .notice {
   margin: 0;
-  font-size: 0.85rem;
-  color: #5b6f66;
+  font-size: 0.82rem;
+  color: #556c60;
 }
 
 .notice {
-  color: #9a5b00;
-  background: #fff7e6;
-  border: 1px solid #f3d9a4;
-  border-radius: 10px;
-  padding: 10px 12px;
+  color: #8a5000;
+  background: #fff8e8;
+  border: 1px solid #f3d79f;
+  border-radius: 9px;
+  padding: 8px 12px;
 }
 
+/* 2. COMPACT TOOLBAR */
 .toolbar {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
+  justify-content: space-between;
   gap: 6px;
+}
+
+.navGroup,
+.editGroup {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .toolbar button {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 4px;
-  height: 32px;
-  min-width: 32px;
-  padding: 0 9px;
-  border: 1px solid #d9e5de;
-  border-radius: 9px;
-  background: #fff;
-  color: #24443a;
-  font-size: 0.8rem;
+  height: 28px;
+  min-width: 28px;
+  padding: 0 8px;
+  border: 1px solid #d7e4dc;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #27473b;
+  font-size: 0.76rem;
   font-weight: 600;
   cursor: pointer;
+  transition: all 0.1s ease;
 }
 
 .toolbar button:hover:not(:disabled) {
-  background: #eef6f1;
-  border-color: #b9d4c5;
+  background: #edf6f1;
+  border-color: #aed1bf;
+  color: #1f7a55;
 }
 
 .toolbar button:disabled {
-  opacity: 0.45;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
-.spacer {
-  flex: 1;
+.btnNext {
+  color: #1f7a55 !important;
+  border-color: #b8dcce !important;
+  background: #f3f9f5 !important;
 }
 
-.toolbar .paletteToggle {
-  background: #1f7a55;
+/* 3. CORE 20 GRADE-12 MATH SYMBOLS */
+.symbolGrid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 4px;
+}
+
+@media (max-width: 768px) {
+  .symbolGrid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+.symbolBtn {
+  height: 38px;
+  min-width: 32px;
+  padding: 2px;
+  border: 1px solid #dbe6df;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #132a20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.12s ease, border-color 0.12s ease, transform 0.08s ease;
+}
+
+.symbolBtn :global(.math-renderer),
+.symbolBtn :global(.katex) {
+  font-size: 1.05rem;
+  line-height: 1;
+  color: #132a20;
+}
+
+.symbolBtn:hover:not(:disabled) {
+  background: #eef7f2;
   border-color: #1f7a55;
-  color: #fff;
+  color: #1f7a55;
+  transform: translateY(-1px);
 }
 
-.toolbar .paletteToggle:hover:not(:disabled) {
-  background: #19664a;
-  border-color: #19664a;
+.symbolBtn:active:not(:disabled) {
+  transform: translateY(0);
 }
 
-.palette {
+.symbolBtn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  background: #f6f8f7;
+}
+
+/* 4. OPTIONAL ADVANCED SYMBOLS */
+.moreWrap {
+  margin-top: 2px;
+}
+
+.moreToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 6px;
+  border: none;
+  background: transparent;
+  color: #27624c;
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: color 0.12s ease, background-color 0.12s ease;
+}
+
+.moreToggle:hover:not(:disabled) {
+  background: #edf5f0;
+  color: #16533c;
+}
+
+.advancedDrawer {
+  margin-top: 6px;
+  padding: 10px;
+  border: 1px solid #dce8e0;
+  border-radius: 11px;
+  background: #f7faf8;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 12px;
-  border: 1px solid #dfe9e3;
-  border-radius: 14px;
-  background: #f7fbf9;
-  animation: open 0.16s ease-out;
+  gap: 8px;
 }
 
-@keyframes open {
-  from { opacity: 0; transform: translateY(-4px); }
-  to { opacity: 1; transform: none; }
-}
-
-.numberKeys {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(34px, 1fr));
-  gap: 5px;
-}
-
-.numberKeys button {
-  height: 34px;
-  border: 1px solid #d9e5de;
-  border-radius: 8px;
-  background: #fff;
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: #13281f;
-  cursor: pointer;
-}
-
-.numberKeys button:hover:not(:disabled),
-.symbols button:hover:not(:disabled) {
-  background: #e7f3ec;
-  border-color: #9cc8b0;
-}
-
-.paletteHead {
+.advancedHead {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
   align-items: center;
   justify-content: space-between;
 }
@@ -155,95 +216,103 @@
 .groups {
   display: flex;
   flex-wrap: wrap;
-  gap: 5px;
+  gap: 4px;
 }
 
 .groups button {
-  padding: 5px 10px;
-  border: 1px solid #d9e5de;
+  padding: 3px 8px;
+  border: 1px solid #d7e4dc;
   border-radius: 999px;
-  background: #fff;
-  font-size: 0.76rem;
+  background: #ffffff;
+  font-size: 0.72rem;
   font-weight: 600;
-  color: #3a5a4e;
+  color: #3b5b4e;
   cursor: pointer;
 }
 
 .groups button[aria-pressed="true"] {
   background: #1f7a55;
   border-color: #1f7a55;
-  color: #fff;
+  color: #ffffff;
 }
 
 .search {
-  flex: 1 1 180px;
-  max-width: 260px;
-  height: 32px;
-  padding: 0 10px;
-  border: 1px solid #d9e5de;
-  border-radius: 9px;
-  font-size: 0.8rem;
-  background: #fff;
+  flex: 1 1 140px;
+  max-width: 200px;
+  height: 26px;
+  padding: 0 8px;
+  border: 1px solid #d7e4dc;
+  border-radius: 7px;
+  font-size: 0.75rem;
+  background: #ffffff;
 }
 
-.symbols {
+.advancedSymbols {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
-  gap: 6px;
-  max-height: 210px;
+  grid-template-columns: repeat(auto-fill, minmax(78px, 1fr));
+  gap: 5px;
+  max-height: 160px;
   overflow-y: auto;
   padding-right: 2px;
 }
 
-.symbols button {
+.advancedSymbolBtn {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 3px;
-  min-height: 60px;
-  padding: 6px 4px;
-  border: 1px solid #d9e5de;
-  border-radius: 10px;
-  background: #fff;
+  gap: 2px;
+  min-height: 48px;
+  padding: 4px 2px;
+  border: 1px solid #dbe6df;
+  border-radius: 8px;
+  background: #ffffff;
   cursor: pointer;
-  color: #13281f;
+  color: #132a20;
 }
 
-.symbols button span {
-  font-size: 0.66rem;
-  color: #5b6f66;
+.advancedSymbolBtn:hover:not(:disabled) {
+  background: #edf6f1;
+  border-color: #1f7a55;
+}
+
+.symbolSubLabel {
+  font-size: 0.62rem;
+  color: #63796f;
   text-align: center;
-  line-height: 1.2;
+  line-height: 1.1;
 }
 
-.symbols button:disabled,
-.numberKeys button:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
-}
-
-.symbols p {
+.emptyNotice {
   grid-column: 1 / -1;
   margin: 0;
-  font-size: 0.8rem;
-  color: #5b6f66;
+  font-size: 0.75rem;
+  color: #63796f;
+}
+
+/* 5. RAW LATEX ACCORDION */
+.latex {
+  margin-top: 4px;
 }
 
 .latex summary {
   cursor: pointer;
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   font-weight: 600;
-  color: #5b6f66;
+  color: #6e8478;
+}
+
+.latex summary:hover {
+  color: #27473b;
 }
 
 .latex textarea {
   width: 100%;
-  margin-top: 6px;
-  padding: 8px 10px;
-  border: 1px solid #d9e5de;
-  border-radius: 10px;
+  margin-top: 4px;
+  padding: 6px 8px;
+  border: 1px solid #d7e4dc;
+  border-radius: 8px;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   resize: vertical;
 }
