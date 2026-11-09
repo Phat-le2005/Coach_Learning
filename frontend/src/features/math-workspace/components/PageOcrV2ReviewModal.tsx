@@ -43,7 +43,9 @@ export function PageOcrV2ReviewModal(props: Props) {
   const key = useRef(""), runId = useRef(0), live = useRef(true), latest = useRef(review), sourceGuard = useRef(props.isSourceCurrent), saveQueue = useRef<Promise<void>>(Promise.resolve());
   const path = useRef<{x:number;y:number;pressure:number}[]>([]), [polygon, setPolygon] = useState<typeof path.current>([]);
   const dialogRef=useRef<HTMLDivElement>(null);
+  const editorRef = useRef<HTMLElement>(null);
   useEffect(()=>{const previous=document.activeElement instanceof HTMLElement?document.activeElement:null;const overflow=document.body.style.overflow;document.body.style.overflow="hidden";dialogRef.current?.querySelector<HTMLButtonElement>('button')?.focus();return()=>{document.body.style.overflow=overflow;previous?.focus();};},[]);
+  useEffect(() => { if (editorRef.current) editorRef.current.scrollTop = 0; }, [selected]);
   latest.current = review; sourceGuard.current = props.isSourceCurrent;
   const stale = !props.isSourceCurrent();
   const unit = review?.ir.contentUnits.find(u => u.id === selected), rows = review ? getOrderedReviewUnits(review.ir.contentUnits) : [];
@@ -274,7 +276,7 @@ export function PageOcrV2ReviewModal(props: Props) {
             <ScanLine size={16} aria-hidden="true" /> Nhận diện lại bằng Gemini
           </button>
         </section>
-        <section className={styles.transcriptionEditor} aria-label="Chỉnh sửa bản chép">
+        <section ref={editorRef} className={styles.transcriptionEditor} aria-label="Chỉnh sửa bản chép">
           {unit && review ? <>
             <div className={styles.transcriptionCardHeading}><h3>{isSaved ? "Bản chép đã lưu" : "Bản chép của em"}</h3>
               {unit.role === "ATOMIC" && <select className={styles.transcriptionKind} aria-label="Loại nội dung" data-testid="ocr-v2-kind" value={unit.kind} disabled={locked}
@@ -285,7 +287,7 @@ export function PageOcrV2ReviewModal(props: Props) {
             {unit.role === "ATOMIC" ? <>
               {unit.kind === "MATH" ? <div className={styles.transcriptionField}>
                 <span>Công thức của em <small className={styles.transcriptionFieldHint}>Bấm vào công thức để sửa trực tiếp, hoặc mở “Bộ công thức” để chèn ký hiệu</small></span>
-                <StudentMathEditor value={unit.approvedContent ?? unit.rawRecognition ?? ""} disabled={locked}
+                <StudentMathEditor key={unit.id} value={unit.approvedContent ?? unit.rawRecognition ?? ""} disabled={locked}
                   onChange={latex => change(r => ({ ...r, ir: editContentUnit(r.ir, unit.id, { content: latex }) }))} />
               </div> : <label className={styles.transcriptionField}>Nội dung có thể chỉnh sửa
                 <textarea className={styles.transcriptionTextarea} rows={5} spellCheck={false} data-testid="ocr-v2-content"
