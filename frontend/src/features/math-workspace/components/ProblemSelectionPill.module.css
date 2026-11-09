@@ -1,0 +1,122 @@
+.floatingPill {
+  position: fixed;
+  z-index: 9999;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 4px 6px;
+  background: #ffffff;
+  border: 1.5px solid #bce0ce;
+  border-radius: 999px;
+  box-shadow: 0 10px 28px rgba(22, 60, 44, 0.16), 0 2px 6px rgba(0, 0, 0, 0.05);
+  animation: pillPop 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+/* Arrow indicator pointing toward selection */
+.floatingPill::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  background: #ffffff;
+}
+
+.floatingPill.above::after {
+  bottom: -5px;
+  transform: translateX(-50%) rotate(45deg);
+  border-right: 1.5px solid #bce0ce;
+  border-bottom: 1.5px solid #bce0ce;
+}
+
+.floatingPill.nearTop::after {
+  top: -5px;
+  transform: translateX(-50%) rotate(45deg);
+  border-left: 1.5px solid #bce0ce;
+  border-top: 1.5px solid #bce0ce;
+}
+
+@keyframes pillPop {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.92);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+}
+
+.divider {
+  width: 1px;
+  height: 16px;
+  background: #e2ece6;
+  margin: 0 2px;
+}
+
+.actionBtn,
+.actionBtnPrimary {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 30px;
+  padding: 0 10px;
+  border: none;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.12s ease;
+  white-space: nowrap;
+}
+
+.actionBtnPrimary {
+  background: #e8f5ee;
+  color: #165a3d;
+  border: 1px solid #a3d4be;
+}
+
+.actionBtnPrimary:hover {
+  background: #daf0e4;
+  border-color: #1f7a55;
+  color: #134630;
+  transform: translateY(-1px);
+}
+
+.icon3d {
+  color: #1f7a55;
+}
+
+.actionBtn {
+  background: transparent;
+  color: #2e4d40;
+}
+
+.actionBtn:hover {
+  background: #f1f7f4;
+  color: #1a332a;
+}
+
+.iconCopied {
+  color: #16a34a;
+}
+
+.textCopied {
+  color: #16a34a;
+  font-weight: 700;
+}
+
+.btnHint {
+  color: #92400e;
+}
+
+.btnHint:hover {
+  background: #fef3c7;
+  color: #78350f;
+}
+
+.iconHint {
+  color: #d97706;
+}

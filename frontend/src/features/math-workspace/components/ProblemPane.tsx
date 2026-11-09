@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { ProblemSelectionPill } from "./ProblemSelectionPill";
 import Link from "next/link";
 import { BookOpen, PanelLeftClose, PanelLeft, Trash2, Sparkles, PenLine } from "lucide-react";
 import type { ProblemRead, SolutionAttemptRead } from "../types";
@@ -68,6 +69,67 @@ export function ProblemPane({
   const [confirmStepId, setConfirmStepId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [selectedPill, setSelectedPill] = useState<{
+    rect: { top: number; bottom: number; left: number; right: number; width: number };
+    formula: string;
+  } | null>(null);
+  const problemContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleSelection() {
+      const sel = window.getSelection();
+      if (!sel || sel.isCollapsed || !sel.rangeCount) {
+        setSelectedPill(null);
+        return;
+      }
+      const range = sel.getRangeAt(0);
+      const container = problemContainerRef.current;
+      if (!container || !container.contains(range.commonAncestorContainer)) {
+        return;
+      }
+
+      let formula = sel.toString().trim();
+      const parentEl = range.commonAncestorContainer instanceof Element
+        ? range.commonAncestorContainer
+        : range.commonAncestorContainer.parentElement;
+      const katexEl = parentEl?.closest(".katex");
+      if (katexEl) {
+        const tex = katexEl.querySelector('annotation[encoding="application/x-tex"]')?.textContent;
+        if (tex && tex.trim()) {
+          formula = tex.trim();
+        }
+      }
+
+      formula = formula.replace(/^\$+|\$+$/g, "").trim();
+
+      if (!formula || formula.length < 1 || formula.length > 500) {
+        setSelectedPill(null);
+        return;
+      }
+
+      const rect = range.getBoundingClientRect();
+      if (rect.width === 0 && rect.height === 0) {
+        setSelectedPill(null);
+        return;
+      }
+
+      setSelectedPill({
+        rect: {
+          top: rect.top,
+          bottom: rect.bottom,
+          left: rect.left,
+          right: rect.right,
+          width: rect.width,
+        },
+        formula,
+      });
+    }
+
+    document.addEventListener("selectionchange", handleSelection);
+    return () => {
+      document.removeEventListener("selectionchange", handleSelection);
+    };
+  }, []);
   const needsSourceReview = problem ? problemNeedsSourceReview(problem.content, problem.options) : false;
   const submission = getSolutionSubmissionState(problem, attempt, needsSourceReview);
   const canDelete = submission.canEdit;
@@ -139,7 +201,7 @@ export function ProblemPane({
         </button>
       </div>
 
-      <div className={styles.problemContentScroll}>
+      <div ref={problemContainerRef} className={styles.problemContentScroll} onScroll={() => setSelectedPill(null)}>
         {problem ? (
           <>
             {problem.is_read_only && attempt?.status !== "SUBMITTED" && attempt?.status !== "EVALUATED" ? (
@@ -419,6 +481,15 @@ export function ProblemPane({
           {gradingError ? <p role="alert" className={styles.aiReviewError}>{gradingError}</p> : null}
         </div>
       ) : null}
+      {selectedPill && (
+        <ProblemSelectionPill
+          rect={selectedPill.rect}
+          formula={selectedPill.formula}
+          onVisualize={onVisualizeFormula}
+          onOpenHint={onOpenReviewWorkspace || onAIReview}
+          onClose={() => setSelectedPill(null)}
+        />
+      )}
     </aside>
   );
 }
