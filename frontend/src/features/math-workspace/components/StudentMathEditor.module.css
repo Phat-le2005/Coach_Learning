@@ -1,0 +1,249 @@
+.editor {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.fieldWrap {
+  position: relative;
+  border: 1.5px solid #cfe0d6;
+  border-radius: 14px;
+  background: #fff;
+  padding: 14px 16px;
+  min-height: 84px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.fieldWrap:focus-within {
+  border-color: #1f7a55;
+  box-shadow: 0 0 0 3px rgba(31, 122, 85, 0.14);
+}
+
+.editor[data-disabled="true"] .fieldWrap {
+  background: #f5f7f6;
+}
+
+.fieldHost :global(math-field) {
+  display: block;
+  width: 100%;
+  font-size: 1.45rem;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #13281f;
+  --caret-color: #1f7a55;
+  --selection-background-color: rgba(31, 122, 85, 0.18);
+  --contains-highlight-background-color: rgba(31, 122, 85, 0.08);
+  --placeholder-color: #1f7a55;
+}
+
+.fieldHost :global(math-field)::part(virtual-keyboard-toggle),
+.fieldHost :global(math-field)::part(menu-toggle) {
+  display: none;
+}
+
+.loading,
+.notice {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #5b6f66;
+}
+
+.notice {
+  color: #9a5b00;
+  background: #fff7e6;
+  border: 1px solid #f3d9a4;
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.toolbar button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 32px;
+  min-width: 32px;
+  padding: 0 9px;
+  border: 1px solid #d9e5de;
+  border-radius: 9px;
+  background: #fff;
+  color: #24443a;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.toolbar button:hover:not(:disabled) {
+  background: #eef6f1;
+  border-color: #b9d4c5;
+}
+
+.toolbar button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.toolbar .paletteToggle {
+  background: #1f7a55;
+  border-color: #1f7a55;
+  color: #fff;
+}
+
+.toolbar .paletteToggle:hover:not(:disabled) {
+  background: #19664a;
+  border-color: #19664a;
+}
+
+.palette {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid #dfe9e3;
+  border-radius: 14px;
+  background: #f7fbf9;
+  animation: open 0.16s ease-out;
+}
+
+@keyframes open {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: none; }
+}
+
+.numberKeys {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(34px, 1fr));
+  gap: 5px;
+}
+
+.numberKeys button {
+  height: 34px;
+  border: 1px solid #d9e5de;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #13281f;
+  cursor: pointer;
+}
+
+.numberKeys button:hover:not(:disabled),
+.symbols button:hover:not(:disabled) {
+  background: #e7f3ec;
+  border-color: #9cc8b0;
+}
+
+.paletteHead {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.groups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.groups button {
+  padding: 5px 10px;
+  border: 1px solid #d9e5de;
+  border-radius: 999px;
+  background: #fff;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #3a5a4e;
+  cursor: pointer;
+}
+
+.groups button[aria-pressed="true"] {
+  background: #1f7a55;
+  border-color: #1f7a55;
+  color: #fff;
+}
+
+.search {
+  flex: 1 1 180px;
+  max-width: 260px;
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid #d9e5de;
+  border-radius: 9px;
+  font-size: 0.8rem;
+  background: #fff;
+}
+
+.symbols {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+  gap: 6px;
+  max-height: 210px;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.symbols button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-height: 60px;
+  padding: 6px 4px;
+  border: 1px solid #d9e5de;
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+  color: #13281f;
+}
+
+.symbols button span {
+  font-size: 0.66rem;
+  color: #5b6f66;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.symbols button:disabled,
+.numberKeys button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.symbols p {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: 0.8rem;
+  color: #5b6f66;
+}
+
+.latex summary {
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #5b6f66;
+}
+
+.latex textarea {
+  width: 100%;
+  margin-top: 6px;
+  padding: 8px 10px;
+  border: 1px solid #d9e5de;
+  border-radius: 10px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.82rem;
+  resize: vertical;
+}

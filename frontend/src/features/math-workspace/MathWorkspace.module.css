@@ -3123,3 +3123,20 @@
   gap: 0.5rem;
   margin-top: 1.25rem;
 }
+
+
+.transcriptionFieldHint {
+  display: block;
+  margin-top: 2px;
+  font-weight: 400;
+  font-size: 0.74rem;
+  color: #6b7f76;
+}
+
+.transcriptionPreviewToggle summary {
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #3a5a4e;
+  margin-bottom: 8px;
+}

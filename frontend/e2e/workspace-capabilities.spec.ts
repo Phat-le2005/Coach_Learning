@@ -1,6 +1,12 @@
 import { test, expect } from "@playwright/test";
 import fs from "node:fs";
 
+/** The LaTeX source now lives behind the student's collapsed "Mã công thức" toggle. */
+async function openLatexEditor(scope: import("@playwright/test").Locator) {
+  const toggle = scope.getByTestId("ocr-v2-latex-toggle");
+  if (await toggle.count() && !(await toggle.evaluate((el) => (el as HTMLDetailsElement).open))) await toggle.locator("summary").click();
+}
+
 test.use({ trace: "off", video: "off", screenshot: "only-on-failure" });
 const manifest = process.env.WORKSPACE_QA_SESSION_FILE;
 test.skip(!manifest, "Requires a separate, empty attempt in the isolated live-ink QA database");
@@ -101,16 +107,19 @@ test("touch tools and paired ink reach real OCR and review on the configured ori
     expect(initial.evidence[0].result.tokenIds.length).toBeGreaterThan(0);
     expect(initial.evidence[0].result.decoderMs).toBeGreaterThan(0);
     expect(modelAssets).toContain("/ocr/comer/v0_1/encoder_int8.onnx");
+    await openLatexEditor(review);
     await review.getByTestId("ocr-v2-content").fill("x=5");
     await review.getByTestId("ocr-v2-approve").click();
     await expect(review.getByRole("status")).toContainText("Đã lưu bản chép trên thiết bị");
     await review.getByRole("button", { name: "Nhận diện lại bằng CoMER" }).click();
     await expect(review).toHaveAttribute("aria-busy", "false", { timeout: 90000 });
+    await openLatexEditor(review);
     await expect(review.getByTestId("ocr-v2-content")).toHaveValue("x=5");
     await review.getByRole("button", { name: "Đóng", exact: true }).click();
     await a.reload();
     await a.getByRole("button", { name: "Trích xuất trang", exact: true }).click();
     await expect(review).toHaveAttribute("aria-busy", "false");
+    await openLatexEditor(review);
     await expect(review.getByTestId("ocr-v2-content")).toHaveValue("x=5");
     await expect(review.getByTestId("ocr-v2-unit")).toContainText("APPROVED");
     const restored = await downloadEvidence("paired-ink-review-restored.json");

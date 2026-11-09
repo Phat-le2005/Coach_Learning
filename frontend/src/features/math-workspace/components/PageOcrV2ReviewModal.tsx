@@ -6,6 +6,7 @@ import { STEP_KINDS } from "@/lib/api/contracts";
 import type { PageOcrReviewModalProps } from "./PageOcrReviewModal";
 import { OcrInkPreview } from "./OcrInkPreview";
 import { OcrMathPreview } from "./OcrMathPreview";
+import { StudentMathEditor } from "./StudentMathEditor";
 import { recognizeCoreUnit, applyRecognition, declareStepBoundary, sourceIdentity, type CoreReview } from "../utils/ocr-v2-core";
 import type { HandwrittenMathEvidence } from "../utils/handwritten-ocr";
 import { buildScopeIR, groupIrUnits, ungroupIrUnit, reassignScope, lassoIds, type OcrSource, type RouteKind } from "../utils/ocr-v2-geometry";
@@ -282,19 +283,28 @@ export function PageOcrV2ReviewModal(props: Props) {
               </select>}
             </div>
             {unit.role === "ATOMIC" ? <>
-              <label className={styles.transcriptionField}>Nội dung có thể chỉnh sửa
-                <textarea className={styles.transcriptionTextarea} rows={6} spellCheck={false} data-testid="ocr-v2-content"
+              {unit.kind === "MATH" ? <div className={styles.transcriptionField}>
+                <span>Công thức của em <small className={styles.transcriptionFieldHint}>Bấm vào công thức để sửa trực tiếp, hoặc mở “Bộ công thức” để chèn ký hiệu</small></span>
+                <StudentMathEditor value={unit.approvedContent ?? unit.rawRecognition ?? ""} disabled={locked}
+                  onChange={latex => change(r => ({ ...r, ir: editContentUnit(r.ir, unit.id, { content: latex }) }))} />
+              </div> : <label className={styles.transcriptionField}>Nội dung có thể chỉnh sửa
+                <textarea className={styles.transcriptionTextarea} rows={5} spellCheck={false} data-testid="ocr-v2-content"
                   placeholder="Nhập hoặc sửa nội dung theo nét viết gốc…" value={unit.approvedContent ?? unit.rawRecognition ?? ""} disabled={locked}
                   onChange={e => change(r => ({ ...r, ir: editContentUnit(r.ir, unit.id, { content: e.target.value }) }))} />
-              </label>
+              </label>}
               {unit.kind === "MATH" && review.stepHints?.[unit.id]?.explanationText && <label className={styles.transcriptionField}>Lời văn đi kèm
                 <textarea className={styles.transcriptionTextarea} rows={2} value={review.stepHints[unit.id].explanationText} disabled={locked}
                   onChange={e => change(r => ({ ...r, stepHints: { ...r.stepHints, [unit.id]: { ...r.stepHints![unit.id], explanationText: e.target.value } } }))} />
               </label>}
-              <div className={styles.transcriptionPreviewHeading}><span>Xem trước {unit.kind === "MATH" ? "công thức" : "nội dung"}</span><small>Cập nhật khi em sửa</small></div>
-              <div className={styles.transcriptionPreview} data-testid="ocr-v2-math-preview">
-                {unit.kind === "MATH" ? <OcrMathPreview latex={unit.approvedContent ?? unit.rawRecognition ?? ""} /> : <p>{unit.approvedContent ?? unit.rawRecognition ?? "Chưa có nội dung"}</p>}
-              </div>
+              {unit.kind === "MATH" ? <details className={styles.transcriptionPreviewToggle}>
+                <summary>Xem bản trình bày khi nộp bài</summary>
+                <div className={styles.transcriptionPreview} data-testid="ocr-v2-math-preview">
+                  <OcrMathPreview latex={unit.approvedContent ?? unit.rawRecognition ?? ""} />
+                </div>
+              </details> : <>
+                <div className={styles.transcriptionPreviewHeading}><span>Xem trước nội dung</span><small>Cập nhật khi em sửa</small></div>
+                <div className={styles.transcriptionPreview} data-testid="ocr-v2-math-preview"><p>{unit.approvedContent ?? unit.rawRecognition ?? "Chưa có nội dung"}</p></div>
+              </>}
             </> : <p className={styles.transcriptionHint}>Đây là nhóm nội dung. Mở tùy chọn nâng cao để đối chiếu các phần con hoặc tháo nhóm trước khi lưu từng bước.</p>}
             <details className={styles.transcriptionAdvanced}>
               <summary>Thứ tự & phân chia nâng cao</summary>

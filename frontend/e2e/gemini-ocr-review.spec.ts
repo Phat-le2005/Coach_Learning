@@ -4,6 +4,12 @@ import { AUTH_COOKIES } from "../src/lib/auth/constants";
 import type { SolutionAttemptRead } from "../src/lib/api/contracts";
 import fixture from "./fixtures/gemini-review.json";
 
+/** The LaTeX source now lives behind the student's collapsed "Mã công thức" toggle. */
+async function openLatexEditor(scope: import("@playwright/test").Locator) {
+  const toggle = scope.getByTestId("ocr-v2-latex-toggle");
+  if (await toggle.count() && !(await toggle.evaluate((el) => (el as HTMLDetailsElement).open))) await toggle.locator("summary").click();
+}
+
 test.skip(!process.env.GEMINI_REVIEW_E2E_SECRET, "Use playwright.gemini-review.config.ts; no live database.");
 const raw = String.raw`y' = 2x
 y' = 0 \Leftrightarrow 3x^2 - 3 = 0
@@ -80,12 +86,14 @@ async function open(page: Page, context: BrowserContext, baseURL: string, failOc
 test("corrected OCR is saved and submitted without a second OCR overwriting it", async ({ page, context, baseURL }, testInfo) => {
   const { state, review } = await open(page, context, baseURL!);
   const corrected = raw.replace("y' = 2x", "y' = 3x^2 - 3");
+  await openLatexEditor(review);
   await review.getByTestId("ocr-v2-content").fill(corrected);
   const preview = review.getByTestId("ocr-v2-math-preview");
   await expect(preview.locator(".katex-display")).toBeVisible();
   await review.getByTestId("ocr-v2-step-kind").selectOption("CUSTOM");
   await review.getByTestId("ocr-v2-boundary").check();
   await expect(review.getByTestId("ocr-v2-prepare-save")).toBeEnabled();
+  await openLatexEditor(review);
   await review.getByTestId("ocr-v2-content").fill(corrected + " ");
   await expect(review.getByTestId("ocr-v2-boundary")).not.toBeChecked();
   await expect(review.getByTestId("ocr-v2-prepare-save")).toBeDisabled();
@@ -112,6 +120,7 @@ test("corrected OCR is saved and submitted without a second OCR overwriting it",
 test("Gemini failure leaves a manually editable draft and never downloads a fallback model", async ({ page, context, baseURL }) => {
   const { state, review } = await open(page, context, baseURL!, true);
   await expect(review.getByRole("alert")).toContainText("Gemini đang bận");
+  await openLatexEditor(review);
   await review.getByTestId("ocr-v2-content").fill("y'=3x^2-3");
   await review.getByTestId("ocr-v2-step-kind").selectOption("CUSTOM");
   await review.getByTestId("ocr-v2-boundary").check();
@@ -124,12 +133,14 @@ test("Gemini failure leaves a manually editable draft and never downloads a fall
 test("mobile keeps save controls visible and restores corrections after closing", async ({ page, context, baseURL }, testInfo) => {
   await page.setViewportSize({ width: 390, height: 844 });
   const { state, review } = await open(page, context, baseURL!);
+  await openLatexEditor(review);
   await expect(review.getByTestId("ocr-v2-content")).toBeVisible();
   const panels = review.getByRole("group", { name: "Chế độ đối chiếu" });
   await panels.getByRole("button", { name: "Nét gốc", exact: true }).click();
   await expect(review.getByRole("img", { name: "Nét viết tay đã gửi để nhận diện" })).toBeVisible();
   await panels.getByRole("button", { name: "Bản chép", exact: true }).click();
   const corrected = "y'=3x^2-3\nx=1 \\lor x=-1";
+  await openLatexEditor(review);
   await review.getByTestId("ocr-v2-content").fill(corrected);
   await review.getByTestId("ocr-v2-step-kind").selectOption("CUSTOM");
   await review.getByTestId("ocr-v2-boundary").check();
@@ -142,6 +153,7 @@ test("mobile keeps save controls visible and restores corrections after closing"
   await review.getByRole("button", { name: "Đóng", exact: true }).click();
   await page.getByRole("button", { name: "Trích xuất trang", exact: true }).click();
   await expect(review).toHaveAttribute("aria-busy", "false");
+  await openLatexEditor(review);
   await expect(review.getByTestId("ocr-v2-content")).toHaveValue(corrected);
   expect(state.ocrCalls).toBe(1);
   expect(state.attempt.steps).toEqual([]);
@@ -149,12 +161,14 @@ test("mobile keeps save controls visible and restores corrections after closing"
 
 test("interrupted saving resumes the exact confirmed content and action", async ({ page, context, baseURL }) => {
   const { state, review } = await open(page, context, baseURL!);
+  await openLatexEditor(review);
   await review.getByTestId("ocr-v2-content").fill("y'=3x^2-3");
   await review.getByTestId("ocr-v2-step-kind").selectOption("CUSTOM");
   await review.getByTestId("ocr-v2-boundary").check();
   state.rejectNextStep = true;
   await review.getByTestId("ocr-v2-prepare-save").click();
   await expect(review.getByRole("button", { name: "Thử lưu lại", exact: true })).toBeEnabled();
+  await openLatexEditor(review);
   await expect(review.getByTestId("ocr-v2-content")).toBeDisabled();
   await review.getByRole("button", { name: "Thử lưu lại", exact: true }).click();
   await expect(review.getByText("Đã lưu 1 bước giải vào bài làm", { exact: true })).toBeVisible();
@@ -166,10 +180,12 @@ test("interrupted saving resumes the exact confirmed content and action", async 
 test("recognition retry preserves a manual correction and asks for fresh confirmation", async ({ page, context, baseURL }) => {
   const { state, review } = await open(page, context, baseURL!);
   const content = "y'=3x^2-3";
+  await openLatexEditor(review);
   await review.getByTestId("ocr-v2-content").fill(content);
   await review.getByTestId("ocr-v2-boundary").check();
   await review.getByRole("button", { name: "Nhận diện lại bằng Gemini", exact: true }).click();
   await expect(review).toHaveAttribute("aria-busy", "false");
+  await openLatexEditor(review);
   await expect(review.getByTestId("ocr-v2-content")).toHaveValue(content);
   await expect(review.getByTestId("ocr-v2-boundary")).not.toBeChecked();
   expect(state.ocrCalls).toBe(2);
@@ -182,9 +198,11 @@ test("page is predicted as three steps and only confirmed steps reach Gemini gra
   await expect(review.getByTestId("ocr-step-count")).toContainText("3 bước");
   await expect(review.getByTestId("ocr-v2-step-kind")).toHaveValue("DERIVATIVE_CALCULATION");
   expect(state.gradeCalls).toBe(0);expect(state.stepRequests).toEqual([]);
+  await openLatexEditor(review);
   await review.getByTestId("ocr-v2-content").fill("y'=3x^2-3");
   await review.getByTestId("ocr-v2-unit").nth(1).click();
   await expect(review.getByTestId("ocr-v2-step-kind")).toHaveValue("ROOT_FINDING");
+  await openLatexEditor(review);
   await expect(review.getByTestId("ocr-v2-content")).toHaveValue(/x=1.*x=-1/);
   await review.getByTestId("ocr-v2-unit").nth(2).click();
   await expect(review.getByTestId("ocr-v2-step-kind")).toHaveValue("VARIATION_TABLE");
