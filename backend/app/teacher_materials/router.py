@@ -74,6 +74,12 @@ def save_pdf_review(job_id: UUID, data: PdfReviewSubmit, user: Teacher, service:
     return service.save_review(user.id, job_id, data)
 
 
+@router.delete("/pdf-imports/{job_id}", status_code=204)
+def discard_pdf_import(job_id: UUID, user: Teacher, service: PdfService):
+    service.discard(user.id, job_id)
+    return Response(status_code=204)
+
+
 @router.post("/pdf-imports/{job_id}/submit", response_model=TeacherMaterialRead)
 def submit_pdf_import(job_id: UUID, data: PdfReviewSubmit, user: Teacher, service: PdfService):
     return service.submit(user.id, job_id, data)

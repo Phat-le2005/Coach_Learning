@@ -13,7 +13,8 @@ export interface PdfReviewDecision {
   explanation: string;
   difficulty_level: MaterialDifficultyLevel | null;
 }
-export interface PdfReviewSubmit { title: string; decisions: PdfReviewDecision[]; }
+export type PdfSaveMode = "NEW" | "REPLACE";
+export interface PdfReviewSubmit { title: string; decisions: PdfReviewDecision[]; save_mode?: PdfSaveMode; }
 export interface PdfImportQuestion {
   visuals?: QuestionVisual[];
   question_id: string;
@@ -42,6 +43,7 @@ export interface TeacherPdfImport {
   error: string | null;
   material_id: string | null;
   revision_of?: string | null;
+  revision_title?: string | null;
   progress: { processed_pages?: number; selected_pages?: number; failed_regions?: number; review_regions?: number; questions?: number };
   questions: PdfImportQuestion[];
   review: PdfReviewSubmit | null;
@@ -73,8 +75,10 @@ export function parsePdfImport(value: unknown, path = "pdfImport"): TeacherPdfIm
     error: row.error == null ? null : string(row.error, `${path}.error`),
     material_id: row.material_id == null ? null : string(row.material_id, `${path}.material_id`),
     revision_of: row.revision_of == null ? null : string(row.revision_of, `${path}.revision_of`),
+    revision_title: row.revision_title == null ? null : string(row.revision_title, `${path}.revision_title`),
     progress: Object.fromEntries(Object.entries(progress).map(([key, val]) => [key, integer(val, `${path}.progress.${key}`)])),
-    review: review ? { title: string(review.title, `${path}.review.title`), decisions: array(review.decisions, `${path}.review.decisions`, parseDecision) } : null,
+    review: review ? { title: string(review.title, `${path}.review.title`), decisions: array(review.decisions, `${path}.review.decisions`, parseDecision),
+      ...(review.save_mode === undefined ? {} : { save_mode: oneOf(review.save_mode, `${path}.review.save_mode`, ["NEW", "REPLACE"] as const) }) } : null,
     questions: array(row.questions, `${path}.questions`, (value, p) => {
       const q = record(value, p);
       return {
@@ -99,6 +103,7 @@ const jsonMutation = async (method: string, data?: PdfReviewSubmit): Promise<Req
 export const teacherPdfApi = {
   list: (classroomId: string) => teacherRequest(`${base}?classroom_id=${encodeURIComponent(classroomId)}`, (v) => array(v, "imports", parsePdfImport)),
   get: (id: string) => teacherRequest(`${base}/${encodeURIComponent(id)}`, parsePdfImport),
+  discard: (id: string) => teacherRequest(`${base}/${encodeURIComponent(id)}`, () => undefined, { method: "DELETE" }),
   upload: async (classroomId: string, subjectId: string, title: string, file: File) => {
     const body = new FormData();
     body.set("classroom_id", classroomId); body.set("subject_id", subjectId); body.set("title", title); body.set("file", file);

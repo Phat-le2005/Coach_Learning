@@ -5,6 +5,8 @@ import { X, Send, Calendar, Clock, CheckCircle2, AlertCircle, Sparkles, BookOpen
 import { teacherApi, type TeacherAssignment, type TeacherClassroom, type TeacherMaterial, type TeacherMaterialItem } from "../api";
 import styles from "../TeacherDashboard.module.css";
 import { MATERIAL_DIFFICULTY_LABELS } from "../material-difficulty";
+import { MaterialDialog } from "./MaterialDialog";
+import { QuestionContent } from "@/components/ui/QuestionContent";
 
 export interface AssignMaterialModalProps {
   isOpen: boolean;
@@ -122,8 +124,7 @@ export function AssignMaterialModal({
   };
 
   return (
-    <div className={styles.modalOverlay} role="dialog" aria-modal="true" aria-labelledby="assign-material-title">
-      <div className={styles.modalContentWide}>
+    <MaterialDialog titleId="assign-material-title" busy={isSubmitting} onClose={onClose}>
         {/* Header */}
         <div className={styles.modalHeader}>
           <div className={styles.modalTitleGroup}>
@@ -208,7 +209,7 @@ export function AssignMaterialModal({
                   </div>
                 </div>
                 <p className={styles.modeCardDesc}>
-                  Học sinh làm từng câu (Câu 1 ➔ Câu 10). Bấm kiểm tra để AI chấm từng bước ngay lập tức, hiển thị giải thích sửa lỗi và cập nhật trực tiếp Cây tri thức &amp; Lộ trình.
+                  Học sinh làm lần lượt các câu đã chọn. Bấm kiểm tra để nhận phản hồi từng bước, xem giải thích và tiếp tục luyện tập.
                 </p>
               </label>
 
@@ -304,7 +305,7 @@ export function AssignMaterialModal({
                       <div className={styles.itemCheckInfo}>
                         <span className={styles.itemNumberBadge}>Câu {idx + 1}</span>
                         {item.difficulty_level && <span className={styles.tagPillMuted}>{MATERIAL_DIFFICULTY_LABELS[item.difficulty_level]}</span>}
-                        <p className={styles.itemSnippet}>{cleanSnippet.slice(0, 140)}...</p>
+                        <div className={styles.itemSnippet}><QuestionContent content={cleanSnippet} visuals={item.visuals} gallery={false} /></div>
                       </div>
                     </label>
                   );
@@ -340,7 +341,6 @@ export function AssignMaterialModal({
             </button>
           </div>
         </form>
-      </div>
-    </div>
+    </MaterialDialog>
   );
 }

@@ -1,14 +1,15 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, CheckCircle2, ExternalLink, FileCheck2, Pencil, RefreshCw, Save, Send } from "lucide-react";
+import { ArrowLeft, CheckCircle2, ExternalLink, FileCheck2, Pencil, RefreshCw, Save, Send, Trash2, Copy, Replace } from "lucide-react";
 import { QuestionContent } from "@/components/ui/QuestionContent";
 import type { TeacherMaterial } from "../api";
-import { teacherPdfApi, type PdfReviewDecision, type TeacherPdfImport } from "../pdf-api";
+import { teacherPdfApi, type PdfReviewDecision, type TeacherPdfImport, type PdfSaveMode } from "../pdf-api";
 import styles from "../TeacherDashboard.module.css";
 import reviewStyles from "./ExercisePdfReview.module.css";
 import { MATERIAL_DIFFICULTY_LABELS, MATERIAL_DIFFICULTY_LEVELS } from "../material-difficulty";
 import { VisualMathEditor } from "./VisualMathEditor";
+import { MaterialDialog } from "./MaterialDialog";
 
 export const PDF_IMPORT_STATUS: Record<TeacherPdfImport["status"], string> = {
   QUEUED: "Đang chờ OCR", PROCESSING: "Đang xử lý OCR", NEEDS_REVIEW: "Chờ giáo viên duyệt", FAILED: "Cần thử lại", SUBMITTED: "Đã lưu vào kho",
@@ -23,10 +24,12 @@ function warningLabel(warning: string): string {
 }
 
 export function ExercisePdfReview({ jobId, onClose, onSubmitted, onOpenRevision }: {
-  jobId: string; onClose: () => void; onSubmitted: (material: TeacherMaterial) => void; onOpenRevision: (jobId: string) => void;
+  jobId: string; onClose: () => void; onSubmitted: (material: TeacherMaterial, replacedId?: string) => void; onOpenRevision: (jobId: string) => void;
 }) {
   const [job, setJob] = useState<TeacherPdfImport | null>(null);
   const [title, setTitle] = useState("");
+  const [saveMode, setSaveMode] = useState<PdfSaveMode>("NEW");
+  const [confirmation, setConfirmation] = useState<"delete" | "replace" | null>(null);
   const [decisions, setDecisions] = useState<Record<string, PdfReviewDecision>>({});
   const [filter, setFilter] = useState("all");
   const [difficultyFilter, setDifficultyFilter] = useState("all");
@@ -52,6 +55,7 @@ export function ExercisePdfReview({ jobId, onClose, onSubmitted, onOpenRevision 
         if (!initialized && ["NEEDS_REVIEW", "SUBMITTED"].includes(next.status)) {
           initialized = true;
           setTitle(next.review?.title ?? next.title);
+          setSaveMode(next.review?.save_mode ?? "NEW");
           const saved = new Map(next.review?.decisions.map((d) => [d.question_id, d]) ?? []);
           setDecisions(Object.fromEntries(next.questions.map((q) => [q.question_id, saved.get(q.question_id) ?? {
             question_id: q.question_id, accepted: false, source_checked: false, content: q.content, answer: q.answer, explanation: q.explanation,
@@ -81,7 +85,7 @@ export function ExercisePdfReview({ jobId, onClose, onSubmitted, onOpenRevision 
     setDecisions((current) => ({ ...current, [id]: { ...current[id], ...changes } }));
     setDirty(true); setNotice("");
   }
-  const payload = { title: title.trim(), decisions: Object.values(decisions) };
+  const payload = { title: title.trim(), decisions: Object.values(decisions), save_mode: saveMode };
   const selected = Object.values(decisions).filter((d) => d.accepted).length;
   const unclassifiedSelected = Object.values(decisions).filter((d) => d.accepted && !d.difficulty_level).length;
   const canConfirmAll = Object.values(decisions).some((d) => d.content.trim() && (!d.accepted || !d.source_checked));
@@ -97,12 +101,15 @@ export function ExercisePdfReview({ jobId, onClose, onSubmitted, onOpenRevision 
     setNotice(`Đã xác nhận đối chiếu nguồn và duyệt giữ ${confirmable} câu trong toàn bộ tài liệu.${empty ? ` ${empty} câu chưa có nội dung được để lại.` : ""}`);
   }
 
-  async function perform(action: "save" | "submit" | "retry" | "close" | "revise") {
+  async function perform(action: "save" | "submit" | "retry" | "close" | "revise" | "delete") {
     if (busy) return;
     if (action === "close" && (!dirty || job?.status !== "NEEDS_REVIEW")) { onClose(); return; }
     setBusy(true); setError(""); setNotice("");
     try {
-      if (action === "retry") {
+      if (action === "delete") {
+        await teacherPdfApi.discard(jobId);
+        setDirty(false); setConfirmation(null); onClose();
+      } else if (action === "retry") {
         await teacherPdfApi.retry(jobId);
         setRetryCount((count) => count + 1);
       } else if (action === "revise") {
@@ -110,7 +117,8 @@ export function ExercisePdfReview({ jobId, onClose, onSubmitted, onOpenRevision 
         onOpenRevision(revision.id);
       } else if (action === "submit") {
         const material = await teacherPdfApi.submit(jobId, payload);
-        setDirty(false); onSubmitted(material);
+        setDirty(false); setConfirmation(null);
+        onSubmitted(material, saveMode === "REPLACE" ? job?.revision_of ?? undefined : undefined);
       } else {
         await teacherPdfApi.save(jobId, payload);
         setDirty(false); setNotice("Đã lưu bản nháp duyệt.");
@@ -144,7 +152,7 @@ export function ExercisePdfReview({ jobId, onClose, onSubmitted, onOpenRevision 
     <div className={reviewStyles.intro}>
       <h3 id="pdf-review-title" className={styles.sectionHeading}>{isImage ? "Duyệt bài tập từ ảnh" : "Duyệt bài tập từ PDF"}</h3>
       <p className={styles.sectionSubheading}>{job?.original_file_name ?? "Đang tải bản nháp…"}</p>
-      {job?.revision_of && <p className={reviewStyles.editHint}>Bản chỉnh sửa sẽ được lưu thành tài liệu mới. Các bài đã giao từ bản cũ được giữ nguyên.</p>}
+      {job?.revision_of && <p className={reviewStyles.editHint}>Bạn đang chỉnh sửa bản sao của tài liệu gốc. Chọn lưu thành tài liệu mới hoặc thay thế bản trong kho; các bài đã giao giữ nguyên nội dung.</p>}
       <ol className={reviewStyles.steps} aria-label="Các bước nhập PDF">
         <li>{isImage ? "Tải ảnh" : "Tải PDF"}</li><li aria-current={processing ? "step" : undefined}>Xử lý OCR</li><li aria-current={editable ? "step" : undefined}>Duyệt câu hỏi</li><li aria-current={job?.status === "SUBMITTED" ? "step" : undefined}>Lưu vào kho</li>
       </ol>
@@ -177,6 +185,23 @@ export function ExercisePdfReview({ jobId, onClose, onSubmitted, onOpenRevision 
         <label className={styles.formGroup} htmlFor="pdf-reviewed-title"><span className={styles.formLabel}>Tên tài liệu sau khi duyệt</span>
           <input id="pdf-reviewed-title" className={styles.formInput} value={title} maxLength={255} disabled={busy || !editable} onChange={(e) => { setTitle(e.target.value); setDirty(true); }} />
         </label>
+        {editable && job.revision_of && <fieldset className={reviewStyles.saveModes} disabled={busy}>
+          <legend>Cách lưu bản chỉnh sửa</legend>
+          <label className={saveMode === "NEW" ? reviewStyles.saveModeSelected : ""}>
+            <input type="radio" name="revision-save-mode" value="NEW" checked={saveMode === "NEW"} onChange={() => {
+              setSaveMode("NEW"); setDirty(true);
+              if (title === job.revision_title) setTitle(job.title);
+            }} />
+            <span><strong><Copy size={16} aria-hidden="true" /> Lưu thành tài liệu mới</strong><small>Giữ tài liệu gốc và tạo thêm một bản trong kho.</small></span>
+          </label>
+          <label className={saveMode === "REPLACE" ? reviewStyles.saveModeSelected : ""}>
+            <input type="radio" name="revision-save-mode" value="REPLACE" checked={saveMode === "REPLACE"} onChange={() => {
+              setSaveMode("REPLACE"); setDirty(true);
+              if (title === job.title && job.revision_title) setTitle(job.revision_title);
+            }} />
+            <span><strong><Replace size={16} aria-hidden="true" /> Lưu đè tài liệu gốc</strong><small>Thay bản trong kho; nội dung các bài đã giao được giữ nguyên.</small></span>
+          </label>
+        </fieldset>}
         <p className={reviewStyles.summary}><strong>{selected}</strong> câu giữ lại · {job.questions.length - selected} câu để lại</p>
         <p className={styles.sectionSubheading}>Đối chiếu nội dung, đáp án và hình minh họa với {isImage ? "ảnh" : "PDF"} gốc, sau đó chọn câu đạt yêu cầu hoặc dùng “Xác nhận tất cả”. Các câu chưa chọn sẽ không được đưa vào tài liệu.</p>
         {editable && <div className={reviewStyles.bulkApproval}>
@@ -186,7 +211,7 @@ export function ExercisePdfReview({ jobId, onClose, onSubmitted, onOpenRevision 
           <p className={reviewStyles.editHint}>Xác nhận đã đối chiếu nguồn và duyệt giữ toàn bộ câu có nội dung, kể cả các trang khác và câu đang ẩn bởi bộ lọc.</p>
         </div>}
         {!!job.progress.failed_regions && <p role="status" className={styles.formAlert}>Có {job.progress.failed_regions} vùng OCR chưa hoàn tất. Hãy kiểm tra {isImage ? "ảnh" : "PDF"} gốc trước khi giữ lại câu liên quan.</p>}
-        <label className={reviewStyles.filter}>Hiển thị
+        <div className={reviewStyles.filters}><label className={reviewStyles.filter}>Hiển thị
           <select className={styles.formSelect} value={filter} onChange={(e) => { setFilter(e.target.value); setPage(0); }}>
             <option value="all">Tất cả ({job.questions.length})</option>
             <option value="suggested">Không có cảnh báo OCR ({job.questions.filter((q) => q.suggested).length})</option>
@@ -202,6 +227,7 @@ export function ExercisePdfReview({ jobId, onClose, onSubmitted, onOpenRevision 
             {MATERIAL_DIFFICULTY_LEVELS.map((level) => <option key={level} value={level}>{MATERIAL_DIFFICULTY_LABELS[level]}</option>)}
           </select>
         </label>
+        </div>
       </div>
       {!job.questions.length && <div className={reviewStyles.state}>
         <h4>Chưa tách được câu hỏi từ {isImage ? "ảnh" : "PDF"}</h4><p>{isImage ? "Kiểm tra độ rõ của ảnh hoặc thử lại OCR." : "Kiểm tra nhãn Câu/Bài trong PDF gốc hoặc thử lại OCR."} Chưa thể lưu một tài liệu trống.</p>
@@ -287,10 +313,33 @@ export function ExercisePdfReview({ jobId, onClose, onSubmitted, onOpenRevision 
         <p><FileCheck2 size={18} aria-hidden="true" /> {selected}/{job.questions.length} câu đã duyệt{dirty ? " · Chưa lưu thay đổi" : ""}</p>
         {unclassifiedSelected > 0 && <p role="status">Còn {unclassifiedSelected} câu được duyệt chưa chọn mức độ.</p>}
         <div>
+          <button type="button" className={reviewStyles.discardButton} disabled={busy} onClick={() => { setError(""); setConfirmation("delete"); }}><Trash2 size={16} aria-hidden="true" /> Xóa bản nháp</button>
           <button className={styles.btnSecondary} disabled={busy || !title.trim()} onClick={() => void perform("save")}><Save size={16} aria-hidden="true" /> Lưu nháp</button>
-          <button className={styles.btnPrimary} disabled={busy || !selected || !!unclassifiedSelected || !title.trim()} onClick={() => void perform("submit")}><Send size={16} aria-hidden="true" /> {busy ? "Đang lưu…" : `Lưu ${selected} câu vào kho`}</button>
+          <button className={styles.btnPrimary} disabled={busy || !selected || !!unclassifiedSelected || !title.trim()} onClick={() => {
+            if (job.revision_of && saveMode === "REPLACE") { setError(""); setConfirmation("replace"); }
+            else void perform("submit");
+          }}><Send size={16} aria-hidden="true" /> {busy ? "Đang lưu…" : job.revision_of ? saveMode === "REPLACE" ? "Lưu đè tài liệu gốc" : "Lưu thành tài liệu mới" : `Lưu ${selected} câu vào kho`}</button>
         </div>
       </div>}
     </>}
+    {confirmation && <MaterialDialog compact titleId="review-confirm-title" descriptionId="review-confirm-description" busy={busy} onClose={() => { setConfirmation(null); setError(""); }}>
+      <div className={styles.modalHeader}>
+        <h2 id="review-confirm-title" className={styles.modalTitle}>{confirmation === "delete" ? "Xóa bản nháp này?" : "Lưu đè tài liệu gốc?"}</h2>
+      </div>
+      <div className={styles.modalBodyScrollable}>
+        <p id="review-confirm-description">{confirmation === "delete"
+          ? "Bản nháp và các chỉnh sửa trong lần này sẽ được bỏ. Bạn không thể mở lại bản nháp đã xóa."
+          : "Bản đã sửa sẽ thay thế tài liệu đang hiển thị trong kho. Những lần giao bài tiếp theo sẽ dùng nội dung mới."}</p>
+        <p className={styles.deleteDialogHint}>{confirmation === "delete"
+          ? "Tài liệu gốc trong kho và các bài đã giao cho học sinh không bị xóa."
+          : "Các bài đã giao và bài làm của học sinh vẫn dùng nội dung cũ, không bị thay đổi."}</p>
+        {error && <p className={styles.formAlert} role="alert">{error}</p>}
+      </div>
+      <div className={styles.modalFooter}>
+        <button type="button" autoFocus className={styles.btnSecondary} disabled={busy} onClick={() => { setConfirmation(null); setError(""); }}>Giữ lại, quay về</button>
+        <button type="button" className={confirmation === "delete" ? styles.btnDeleteMaterial : styles.btnPrimary} disabled={busy}
+          onClick={() => void perform(confirmation === "delete" ? "delete" : "submit")}>{busy ? "Đang xử lý…" : confirmation === "delete" ? "Xóa bản nháp" : "Xác nhận lưu đè"}</button>
+      </div>
+    </MaterialDialog>}
   </section>;
 }

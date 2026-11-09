@@ -6,6 +6,7 @@ import { QuestionContent } from "@/components/ui/QuestionContent";
 import { teacherApi, type TeacherMaterial, type TeacherMaterialItem } from "../api";
 import styles from "../TeacherDashboard.module.css";
 import { MATERIAL_DIFFICULTY_LABELS } from "../material-difficulty";
+import { MaterialDialog } from "./MaterialDialog";
 
 export interface MaterialPreviewModalProps {
   isOpen: boolean;
@@ -55,8 +56,7 @@ export function MaterialPreviewModal({
   if (!isOpen || !material) return null;
 
   return (
-    <div className={styles.modalOverlay} role="dialog" aria-modal="true" aria-labelledby="preview-material-title">
-      <div className={styles.modalContentWide}>
+    <MaterialDialog titleId="preview-material-title" onClose={onClose}>
         {/* Header */}
         <div className={styles.modalHeader}>
           <div className={styles.modalTitleGroup}>
@@ -183,7 +183,6 @@ export function MaterialPreviewModal({
             Giao bài tập này cho lớp ({items.length} câu)
           </button>
         </div>
-      </div>
-    </div>
+    </MaterialDialog>
   );
 }

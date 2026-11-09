@@ -1,12 +1,108 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { teacherBackendPath } from "../src/features/teacher/route-path.js";
-import { TeacherApiError, parseAnalytics, parseClassroom, parseMaterial, teacherApi } from "../src/features/teacher/api.js";
+import { TeacherApiError, parseAnalytics, parseClassroom, parseMaterial, teacherApi, teacherRequest } from "../src/features/teacher/api.js";
 import { ApiContractError } from "../src/lib/api/validation.js";
 import { parsePdfImport } from "../src/features/teacher/pdf-api.js";
 import { MATERIAL_DIFFICULTY_LEVELS, parseMaterialDifficulty } from "../src/features/teacher/material-difficulty.js";
+import { materialColumns, materialPage, materialPageNumbers } from "../src/features/teacher/material-pagination.js";
 
 const id = "00000000-0000-4000-8000-000000000001";
+
+test("material pages always have at most two rows and retain every document across pages", () => {
+  const documents = Array.from({ length: 27 }, (_, index) => `material-${index}`);
+  for (const width of [360, 650, 1050, 1600]) {
+    const columns = materialColumns(width);
+    const all = [];
+    for (let page = 0; page < materialPage(documents, 0, columns).pageCount; page++) {
+      const result = materialPage(documents, page, columns);
+      assert.ok(result.items.length <= columns * 2);
+      all.push(...result.items);
+    }
+    assert.deepEqual(all, documents);
+  }
+});
+
+test("material pagination clamps after deletion and handles empty filtered results", () => {
+  const result = materialPage(["one", "two", "three"], 12, 1);
+  assert.equal(result.page, 1);
+  assert.deepEqual(result.items, ["three"]);
+  const afterDelete = materialPage(["one", "two"], result.page, 1);
+  assert.equal(afterDelete.page, 0);
+  assert.deepEqual(materialPage([], 5, 4).items, []);
+  assert.deepEqual(materialPageNumbers(4, 10), [0, "gap", 3, 4, 5, "gap", 9]);
+});
+
+test("OCR review save preserves edits and renews CSRF after refreshing an expired session", async () => {
+  const original = globalThis.fetch;
+  const body = JSON.stringify({ title: "Edited PDF", decisions: [{ question_id: "q1", content: "Corrected integral", answer: "C" }] });
+  let csrf = "";
+  let csrfReads = 0;
+  let saves = 0;
+  let refreshes = 0;
+  globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
+    const path = String(input);
+    if (path === "/auth/csrf") return Response.json({ csrf_token: (csrf = `csrf-${++csrfReads}`) });
+    if (path === "/auth/me") return Response.json({ error: { code: "SESSION_EXPIRED" } }, { status: 401 });
+    assert.equal(new Headers(init?.headers).get("X-CSRF-Token"), csrf);
+    if (path === "/auth/refresh") {
+      refreshes += 1;
+      return Response.json({ user: { role: "TEACHER" } });
+    }
+    assert.equal(path, `/api/teacher/materials/pdf-imports/${id}/review`);
+    assert.equal(init?.method, "PUT");
+    assert.equal(init?.body, body);
+    return ++saves === 1
+      ? Response.json({ error: { code: "SESSION_EXPIRED" } }, { status: 401 })
+      : Response.json({ saved: true });
+  }) as typeof fetch;
+  try {
+    const result = await teacherRequest(`materials/pdf-imports/${id}/review`, value => value, {
+      method: "PUT", headers: { "Content-Type": "application/json", "X-CSRF-Token": "old-csrf" }, body,
+    });
+    assert.deepEqual(result, { saved: true });
+    assert.equal(saves, 2);
+    assert.equal(refreshes, 1);
+  } finally { globalThis.fetch = original; }
+});
+
+test("teacher mutations recover once from CSRF rejection and never retry other 403 errors", async () => {
+  const original = globalThis.fetch;
+  try {
+    for (const [code, recover] of [["CSRF_TOKEN_INVALID", true], ["CSRF_ORIGIN_REJECTED", false], ["FORBIDDEN", false]] as const) {
+      let mutations = 0;
+      let csrfReads = 0;
+      const body = JSON.stringify({ title: "Unsaved review", decisions: [] });
+      globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
+        if (String(input) === "/auth/csrf") return Response.json({ csrf_token: `csrf-${++csrfReads}` });
+        assert.equal(init?.body, body);
+        assert.equal(new Headers(init?.headers).get("X-CSRF-Token"), `csrf-${csrfReads}`);
+        return ++mutations === 1
+          ? Response.json({ error: { code, message: "Rejected" } }, { status: 403 })
+          : Response.json({ saved: true });
+      }) as typeof fetch;
+      const save = () => teacherRequest("materials/pdf-imports/id/review", value => value, { method: "PUT", body });
+      if (recover) assert.deepEqual(await save(), { saved: true });
+      else await assert.rejects(save, error => error instanceof TeacherApiError && error.code === code);
+      assert.equal(mutations, recover ? 2 : 1);
+    }
+  } finally { globalThis.fetch = original; }
+});
+
+test("repeated CSRF rejection stops after one retry", async () => {
+  const original = globalThis.fetch;
+  let mutations = 0;
+  globalThis.fetch = (async (input: RequestInfo | URL) => {
+    if (String(input) === "/auth/csrf") return Response.json({ csrf_token: "csrf-test" });
+    mutations += 1;
+    return Response.json({ error: { code: "CSRF_TOKEN_INVALID", message: "Rejected" } }, { status: 403 });
+  }) as typeof fetch;
+  try {
+    await assert.rejects(() => teacherRequest("materials/pdf-imports/id/submit", value => value, { method: "POST", body: "{}" }),
+      error => error instanceof TeacherApiError && error.code === "CSRF_TOKEN_INVALID");
+    assert.equal(mutations, 2);
+  } finally { globalThis.fetch = original; }
+});
 
 test("PDF import proxy restricts job, review, source and asset routes", () => {
   const base = `/teacher-materials/pdf-imports/${id}`;
@@ -17,6 +113,8 @@ test("PDF import proxy restricts job, review, source and asset routes", () => {
   assert.equal(teacherBackendPath(["materials", "pdf-imports", id, "revise"], "POST", ""), `${base}/revise`);
   assert.equal(teacherBackendPath(["materials", "pdf-imports", id, "revise"], "GET", ""), null);
   assert.equal(teacherBackendPath(["materials", "pdf-imports", id, "review"], "PUT", ""), `${base}/review`);
+  assert.equal(teacherBackendPath(["materials", "pdf-imports", id], "DELETE", ""), base);
+  assert.equal(teacherBackendPath(["materials", "pdf-imports", id], "DELETE", "?all=true"), null);
   assert.equal(teacherBackendPath(["materials", "pdf-imports", id, "source"], "GET", ""), `${base}/source`);
   assert.equal(teacherBackendPath(["materials", "pdf-imports", id, "assets", "1"], "GET", ""), `${base}/assets/1`);
   assert.equal(teacherBackendPath(["materials", id, "document"], "GET", ""), `/teacher-materials/${id}/document`);
@@ -41,6 +139,12 @@ test("PDF import contract preserves warnings and human decisions", () => {
   assert.equal(parsed.questions[0].suggested, false);
   assert.deepEqual(parsed.questions[0].warnings, ["INCOMPLETE"]);
   assert.equal(parsed.review, null);
+  const replacement = parsePdfImport({ ...value, revision_of: id, revision_title: "Original", review: {
+    title: "Edited", decisions: [], save_mode: "REPLACE",
+  } });
+  assert.equal(replacement.review?.save_mode, "REPLACE");
+  assert.equal(replacement.revision_title, "Original");
+  assert.throws(() => parsePdfImport({ ...value, review: { title: "Edited", decisions: [], save_mode: "UNKNOWN" } }), ApiContractError);
   assert.equal(parsed.source_kind, "PDF");
   const image = parsePdfImport({ ...value, source_kind: "IMAGE", source_mime_type: "image/png", original_file_name: "question.png" });
   assert.equal(image.source_kind, "IMAGE");

@@ -22,6 +22,7 @@ export function teacherBackendPath(parts: string[], method: string, search: stri
       if (UUID.test(action ?? "") && !search) {
         const base = `/teacher-materials/pdf-imports/${action}`;
         if (parts.length === 3 && method === "GET") return base;
+        if (parts.length === 3 && method === "DELETE") return base;
         if (parts.length === 4 && parts[3] === "source" && method === "GET") return `${base}/source`;
         if (parts.length === 4 && parts[3] === "review" && method === "PUT") return `${base}/review`;
         if (parts.length === 4 && ["retry", "submit", "revise"].includes(parts[3]) && method === "POST") return `${base}/${parts[3]}`;

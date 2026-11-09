@@ -1091,6 +1091,58 @@
   gap: 1.1rem;
 }
 
+/* Library pagination and top-layer material dialogs. */
+.materialPagination { display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; padding:20px 0 2px; margin-top:20px; border-top:1px solid #dce7e0; }
+.materialPageSummary { margin:0; color:#60746b; font-size:13px; }
+.materialPageSummary strong { color:#234c3e; font-weight:700; }
+.materialPageControls { display:flex; align-items:center; justify-content:center; gap:6px; flex-wrap:wrap; }
+.materialPageNumber, .materialPageArrow { display:inline-flex; align-items:center; justify-content:center; gap:6px; min-width:40px; min-height:40px; padding:8px 12px; border:1px solid #dce7e0; border-radius:11px; background:#fff; color:#31584a; font:inherit; font-size:13px; font-weight:650; cursor:pointer; transition:background .15s, border-color .15s; }
+.materialPageNumber:hover, .materialPageArrow:hover { background:#ecf5ef; border-color:#8bb59e; }
+.materialPageNumber[aria-current="page"] { background:#205b47; border-color:#205b47; color:#fff; box-shadow:0 3px 8px #205b4720; }
+.materialPageArrow:disabled { opacity:.4; cursor:default; background:#f7f9f7; border-color:#e4ebe6; }
+.materialPageGap { width:20px; text-align:center; color:#7a9085; }
+.materialPageControls button:focus-visible { outline:2px solid #246449; outline-offset:3px; }
+.materialDialog { position:fixed; inset:0; margin:auto; padding:0; width:min(960px,calc(100vw - 48px)); max-width:calc(100vw - 32px); max-height:calc(100dvh - 48px); border:1px solid #d8e5dc; border-radius:22px; background:#fff; color:#193d30; box-shadow:0 28px 100px #112e2840; overflow:hidden; box-sizing:border-box; }
+.materialDialog[open] { display:flex; flex-direction:column; }
+.materialDialog::backdrop { background:#123c3059; backdrop-filter:blur(4px); }
+.materialDialogCompact { width:min(540px,calc(100vw - 40px)); }
+.materialDialog > .modalHeader { flex-shrink:0; padding:22px 28px; margin:0; border-bottom:1px solid #e3ebe6; }
+.materialDialog .modalTitleGroup { min-width:0; align-items:flex-start; }
+.materialDialog .modalTitleGroup > div:last-child { min-width:0; }
+.materialDialog .modalTitle { font-size:clamp(18px,2vw,22px); line-height:1.4; overflow-wrap:anywhere; }
+.materialDialog .modalSubtitle { line-height:1.6; margin-top:4px; overflow-wrap:anywhere; }
+.materialDialog .modalCloseBtn { width:40px; height:40px; flex-shrink:0; border:1px solid #e1e9e3; }
+.materialDialog .modalBodyScrollable { min-height:0; overflow-y:auto; overscroll-behavior:contain; scrollbar-gutter:stable; padding:24px 28px; }
+.materialDialog .modalFormWrapper { min-height:0; }
+.materialDialog .modalFooter { flex-shrink:0; display:flex; align-items:center; justify-content:flex-end; flex-wrap:wrap; gap:10px; padding:16px 28px; margin:0; border-top:1px solid #e3ebe6; background:#fafcfb; }
+.materialDialog button:focus-visible { outline:2px solid #246449; outline-offset:3px; }
+.materialDialog .inputWithIcon { position:relative; }
+.materialDialog .fieldIcon { position:absolute; left:14px; top:50%; transform:translateY(-50%); pointer-events:none; }
+.materialDialog .inputWithIcon .formInput { padding-left:40px; }
+.materialDialog .previewQuestionCard { min-width:0; padding:22px; gap:12px; }
+.materialDialog .itemCheckRow { align-items:flex-start; gap:12px; padding:14px; }
+.materialDialog .itemCheckInfo { display:flex; flex-wrap:wrap; align-items:center; gap:8px; min-width:0; }
+.materialDialog .itemCheckInfo > span { white-space:nowrap; flex-shrink:0; }
+.materialDialog .itemSnippet { flex-basis:100%; min-width:0; margin:0; white-space:normal; max-height:5.1em; overflow:hidden; line-height:1.7; }
+.materialDialog .itemSnippet p { margin:0; }
+.materialDialog .checkboxInput { margin-top:4px; flex-shrink:0; }
+.materialDialog .deliveryModeCard { min-width:0; }
+.materialDialog .deliveryModeCard:focus-within { outline:2px solid #246449; outline-offset:3px; }
+@media(max-width:640px) {
+  .materialPagination { justify-content:center; gap:14px; }
+  .materialPageSummary { text-align:center; width:100%; }
+  .materialPageNumber, .materialPageArrow { min-width:36px; min-height:40px; padding:8px 10px; }
+  .materialPageArrow span { display:none; }
+  .materialDialog { width:calc(100vw - 20px); max-width:calc(100vw - 20px); max-height:calc(100dvh - 24px); border-radius:16px; }
+  .materialDialog > .modalHeader { padding:16px; gap:12px; }
+  .materialDialog .modalIconWrap { display:none; }
+  .materialDialog .modalBodyScrollable, .materialDialog .modalFormWrapper .modalBodyScrollable { padding:18px 16px; }
+  .materialDialog .modalFooter { padding:12px 16px; }
+  .materialDialog .modalFooter button { flex:1; justify-content:center; }
+  .materialDialog .deliveryModeGrid { grid-template-columns:minmax(0,1fr); }
+  .materialDialog .previewQuestionCard { padding:16px; }
+}
+
 .materialCardModern {
   min-width: 0;
   container: material-card / inline-size;
@@ -2567,8 +2619,10 @@
 }
 
 .itemsChecklistWrap {
-  max-height: 200px;
+  max-height: clamp(260px, 36dvh, 360px);
   overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scrollbar-gutter: stable;
   border: 1px solid rgba(29, 75, 61, 0.12);
   border-radius: 10px;
   background: #fafaf7;

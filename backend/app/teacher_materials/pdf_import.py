@@ -183,6 +183,8 @@ class TeacherPdfImportService:
         if not job:
             raise ApplicationError(404, "PDF_IMPORT_NOT_FOUND", "Không tìm thấy bản nháp PDF.")
         self.materials._authorize(user_id, UUID(job["classroom_id"]))
+        if job.get("deleted_at"):
+            raise ApplicationError(404, "PDF_IMPORT_NOT_FOUND", "Không tìm thấy bản nháp PDF.")
         if job["uploaded_by"] != str(user_id) and (owner_only or job["status"] != "SUBMITTED"):
             raise ApplicationError(403, "PDF_IMPORT_ACCESS_DENIED", "Chỉ giáo viên tải PDF được duyệt bản nháp này.")
         if job.get("material_id"):
@@ -241,7 +243,7 @@ class TeacherPdfImportService:
         jobs = []
         for path in self.root.glob("*/job.json"):
             job = read_json(path)
-            if job and job["classroom_id"] == str(classroom_id) and job["uploaded_by"] == str(user_id):
+            if job and not job.get("deleted_at") and job["classroom_id"] == str(classroom_id) and job["uploaded_by"] == str(user_id):
                 if job.get("material_id"):
                     material = self.materials.session.get(TeacherMaterial, UUID(job["material_id"]))
                     if material is None or material.status == TeacherMaterialStatus.ARCHIVED:
@@ -330,7 +332,12 @@ class TeacherPdfImportService:
         questions = self._questions(directory)[0] if include_questions and job["status"] in {"NEEDS_REVIEW", "SUBMITTED"} else []
         if include_questions and job["status"] in {"NEEDS_REVIEW", "SUBMITTED"}:
             progress["questions"] = len(questions)
-        return PdfImportRead(**{k: job[k] for k in PdfImportRead.model_fields if k in job},
+        attributes = {k: job[k] for k in PdfImportRead.model_fields if k in job}
+        if job.get("revision_of") and not attributes.get("revision_title"):
+            original = self.materials.session.get(TeacherMaterial, UUID(job["revision_of"]))
+            if original is not None and str(original.classroom_id) == job["classroom_id"]:
+                attributes["revision_title"] = original.title
+        return PdfImportRead(**attributes,
                              questions=questions, progress=progress,
                              review=read_json(directory / "review.draft.json") if include_questions else None)
 
@@ -338,6 +345,8 @@ class TeacherPdfImportService:
         directory, job = self._job(user_id, job_id, owner_only=True)
         with file_lock(directory / "job.lock"):
             job = read_json(directory / "job.json")
+            if job.get("deleted_at"):
+                raise ApplicationError(404, "PDF_IMPORT_NOT_FOUND", "Bản nháp đã được xóa.")
             if job["status"] == "SUBMITTED":
                 raise ApplicationError(409, "PDF_ALREADY_SUBMITTED", "Tài liệu này đã được lưu vào kho.")
             if job.get("revision_of"):
@@ -352,9 +361,11 @@ class TeacherPdfImportService:
         directory, _ = self._job(user_id, job_id, owner_only=True)
         with file_lock(directory / "job.lock"):
             job = read_json(directory / "job.json")
+            if job.get("deleted_at"):
+                raise ApplicationError(404, "PDF_IMPORT_NOT_FOUND", "Bản nháp đã được xóa.")
             if job["status"] != "SUBMITTED" or not job.get("material_id"):
                 raise ApplicationError(409, "PDF_NOT_SUBMITTED", "Tài liệu chưa lưu có thể chỉnh trực tiếp trên bản nháp hiện tại.")
-            self.materials.get(user_id, UUID(job["material_id"]))
+            original = self.materials.get(user_id, UUID(job["material_id"]))
             for pending in self.list(user_id, UUID(job["classroom_id"])):
                 pending_job = read_json(self._directory(pending.id) / "job.json", {})
                 if pending.status == "NEEDS_REVIEW" and pending_job.get("revision_of") == job["material_id"]:
@@ -377,11 +388,26 @@ class TeacherPdfImportService:
                 (revision_directory / job["source_image_name"]).write_bytes((directory / job["source_image_name"]).read_bytes())
             revision = {**job, "id": str(revision_id), "title": title, "status": "NEEDS_REVIEW",
                         "material_id": None, "error": None, "revision_of": job["material_id"],
+                        "revision_title": original.title, "revision_source_sha256": original.sha256,
                         "source_job_id": job.get("source_job_id") or job["id"],
                         "created_at": datetime.now(timezone.utc).isoformat()}
             write_json(revision_directory / "job.json", revision)
             write_json(revision_directory / "review.draft.json", PdfReviewSubmit(title=title, decisions=decisions).model_dump())
         return self.get(user_id, revision_id)
+
+    def discard(self, user_id: UUID, job_id: UUID) -> None:
+        directory, _ = self._job(user_id, job_id, owner_only=True)
+        with file_lock(directory / "job.lock"):
+            job = read_json(directory / "job.json")
+            if job["status"] not in {"NEEDS_REVIEW", "FAILED"} or job.get("material_id"):
+                raise ApplicationError(409, "PDF_DRAFT_NOT_DELETABLE", "Chỉ có thể xóa bản nháp chờ duyệt hoặc xử lý lỗi. Tài liệu đã lưu và tác vụ OCR đang chạy được giữ nguyên.")
+            persisted = self.materials.session.scalar(select(TeacherMaterial.id).where(
+                TeacherMaterial.storage_key == f"{job['classroom_id']}/{job_id}/reviewed.json"))
+            if persisted is not None:
+                raise ApplicationError(409, "PDF_ALREADY_SUBMITTED", "Bản nháp đã được lưu vào kho. Hãy mở lại kho học liệu.")
+            # Retain private source assets: another revision may reference this OCR.
+            job["deleted_at"] = datetime.now(timezone.utc).isoformat()
+            write_json(directory / "job.json", job)
 
     def _validate_review(self, directory: Path, data: PdfReviewSubmit) -> dict[str, PdfImportQuestion]:
         questions = {q.question_id: q for q in self._questions(directory)[0]}
@@ -399,6 +425,8 @@ class TeacherPdfImportService:
         directory, _ = self._job(user_id, job_id, owner_only=True)
         with file_lock(directory / "job.lock"):
             job = read_json(directory / "job.json")
+            if job.get("deleted_at"):
+                raise ApplicationError(404, "PDF_IMPORT_NOT_FOUND", "Bản nháp đã được xóa.")
             if job["status"] != "NEEDS_REVIEW":
                 raise ApplicationError(409, "PDF_NOT_REVIEWABLE", "PDF chưa sẵn sàng để duyệt.")
             self._validate_review(directory, data)
@@ -409,6 +437,8 @@ class TeacherPdfImportService:
         directory, _ = self._job(user_id, job_id, owner_only=True)
         with file_lock(directory / "job.lock"):
             job = read_json(directory / "job.json")
+            if job.get("deleted_at"):
+                raise ApplicationError(404, "PDF_IMPORT_NOT_FOUND", "Bản nháp đã được xóa.")
             if job.get("material_id"):
                 return self.materials.get(user_id, UUID(job["material_id"]))
             if job["status"] != "NEEDS_REVIEW":
@@ -429,6 +459,17 @@ class TeacherPdfImportService:
                     raise ApplicationError(409, "MATERIAL_DUPLICATE", "PDF này đã có trong kho học liệu.")
                 material = existing  # Recover a crash after DB commit, before job.json.
             else:
+                replaced = None
+                if data.save_mode == "REPLACE":
+                    if not job.get("revision_of"):
+                        raise ApplicationError(422, "PDF_REPLACEMENT_REQUIRES_REVISION", "Chỉ bản chỉnh sửa từ tài liệu đã lưu mới có thể lưu đè.")
+                    replaced = self.materials.session.scalar(select(TeacherMaterial).where(
+                        TeacherMaterial.id == UUID(job["revision_of"])).with_for_update().execution_options(populate_existing=True))
+                    if (replaced is None or replaced.status == TeacherMaterialStatus.ARCHIVED
+                            or str(replaced.classroom_id) != job["classroom_id"]
+                            or str(replaced.subject_id) != job["subject_id"]
+                            or (job.get("revision_source_sha256") and replaced.sha256 != job["revision_source_sha256"])):
+                        raise ApplicationError(409, "PDF_REVISION_CONFLICT", "Tài liệu gốc đã thay đổi hoặc bị xóa. Hãy tải lại kho học liệu trước khi chỉnh sửa tiếp.")
                 source = (directory / "source.pdf").read_bytes()
                 if sha256(source).hexdigest() != job["sha256"]:
                     raise ApplicationError(409, "PDF_SOURCE_CHANGED", "Tệp PDF gốc đã thay đổi. Hãy tải lại tệp.")
@@ -484,6 +525,12 @@ class TeacherPdfImportService:
                                               difficulty_source="TEACHER",
                                               visual_assets=question.visual_assets),
                         ))
+                    if replaced is not None:
+                        # Replace the library version atomically; retain source rows,
+                        # visual assets and immutable snapshots of existing assignments.
+                        replaced.status = TeacherMaterialStatus.ARCHIVED
+                        for item in replaced.items:
+                            item.extraction_status = MaterialItemExtractionStatus.ARCHIVED
                     self.materials.session.commit()
                 except Exception as exc:
                     self.materials.session.rollback()
@@ -491,7 +538,7 @@ class TeacherPdfImportService:
                     if isinstance(exc, IntegrityError):
                         raise ApplicationError(409, "MATERIAL_DUPLICATE", "PDF này đã có trong kho học liệu.") from exc
                     raise
-            job.update(status="SUBMITTED", material_id=str(material.id), title=material.title)
+            job.update(status="SUBMITTED", material_id=str(material.id), title=material.title, save_mode=data.save_mode)
             write_json(directory / "review.draft.json", data.model_dump())
             write_json(directory / "job.json", job)
         return self.materials.get(user_id, material.id)
