@@ -113,15 +113,18 @@ def visual_regions(image, detections, dpi):
     return merged, text
 
 
-def plan_visual_regions(image, detections, dpi):
+def plan_visual_regions(image, detections, dpi, *, question_bands=()):
     visuals, text = visual_regions(image, detections, dpi)
     free = [(0, 0, image.width, image.height)]
     for visual in visuals:
         free = [piece for box in free for piece in subtract(box, visual['bbox'])]
     nodes = [dict(v, kind='VISUAL') for v in visuals]
     maximum = max(100, int(180 * dpi / 72))
+    boundary_margin = max(2, round(2 * dpi / 72))
+    protected = list(question_bands) + [d['coordinate'] for d in text
+        if d.get('label') in {'text', 'paragraph_title', 'display_formula'}]
 
-    def add_text(box, allow_columns=True):
+    def add_text(box, allow_columns=True, boundary_review=False):
         left, top, right, bottom = map(int, box)
         if right <= left or bottom <= top:
             return
@@ -192,12 +195,21 @@ def plan_visual_regions(image, detections, dpi):
                     cursor = max(cursor, y1)
                 return
         if bottom - top > maximum:
-            halves = split_box(image, box)
+            halves = split_box(image, box, protected=protected)
+            forced = not protected
+            if not halves and bottom - top > 2 * maximum:
+                # A giant paragraph still has a bounded model input. Mark the
+                # forced boundary instead of pretending it is a complete sentence.
+                halves = split_box(image, box)
+                forced = True
             if halves:
                 for half in halves:
-                    add_text(half, allow_columns)
+                    add_text(half, allow_columns, boundary_review or forced)
                 return
-        nodes.append({'kind': 'TEXT', 'bbox': list(box)})
+        cut = any(min(right, b[2]) > max(left, b[0]) and
+                  (b[1]+boundary_margin < top < b[3]-boundary_margin or
+                   b[1]+boundary_margin < bottom < b[3]-boundary_margin) for b in protected)
+        nodes.append({'kind': 'TEXT', 'bbox': list(box), 'boundary_review_required': cut or boundary_review})
 
     for box in free:
         add_text(box)
@@ -209,7 +221,7 @@ def runs(values):
     return list(zip(np.flatnonzero(edges == 1).tolist(), np.flatnonzero(edges == -1).tolist()))
 
 
-def split_box(image, box, *, cell=False):
+def split_box(image, box, *, cell=False, protected=None):
     """Prefer an empty gutter; never invent overlap or omit pixels at the cut."""
     left, top, right, bottom = box
     vertical = cell and right - left > 3 * (bottom - top)
@@ -218,9 +230,14 @@ def split_box(image, box, *, cell=False):
     size = len(density)
     if size < 40:
         return []
-    lo, hi = max(1, int(size * .3)), min(size - 1, int(size * .7))
+    lo, hi = max(1, int(size * (.15 if protected is not None else .3))), min(size - 1, int(size * (.85 if protected is not None else .7)))
     gaps = [(a, b) for a, b in runs(density[lo:hi] < .015) if b - a >= 3]
-    cut = min(((a + b) // 2 + lo for a, b in gaps), key=lambda x: abs(x - size / 2), default=size // 2)
+    cuts = [(a+b)//2+lo for a,b in gaps]
+    if protected is not None and not vertical:
+        cuts = [c for c in cuts if not any(min(right,b[2]) > max(left,b[0]) and b[1] < top+c < b[3] for b in protected)]
+        if not cuts:
+            return []
+    cut = min(cuts, key=lambda x: abs(x - size / 2), default=size // 2)
     if vertical:
         return [(left, top, left + cut, bottom), (left + cut, top, right, bottom)]
     return [(left, top, right, top + cut), (left, top + cut, right, bottom)]
