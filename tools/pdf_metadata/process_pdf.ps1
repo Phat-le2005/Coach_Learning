@@ -36,8 +36,16 @@ $env:PYTHONDONTWRITEBYTECODE='1'
 $env:PYTHONPATH=$PSScriptRoot
 $python=Join-Path $runtime '.venv\Scripts\python.exe'
 if (-not (Test-Path -LiteralPath $python)) {
-    & py -3.13 -m venv (Join-Path $runtime '.venv')
-    if ($LASTEXITCODE) { throw 'Python 3.13 is required for the local Windows environment.' }
+    $pyLauncher = if (Get-Command py -ErrorAction SilentlyContinue) {
+        $pyList = @(py --list)
+        if ($pyList -match '3\.13') { @('py', '-3.13') }
+        elseif ($pyList -match '3\.12') { @('py', '-3.12') }
+        else { @('py', '-3') }
+    } else {
+        @('python')
+    }
+    & $pyLauncher[0] $pyLauncher[1..($pyLauncher.Length-1)] -m venv (Join-Path $runtime '.venv')
+    if ($LASTEXITCODE) { throw 'Python 3.12 or 3.13 is required for the local Windows environment.' }
 }
 $dependencyState=@'
 try:

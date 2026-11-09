@@ -6,7 +6,7 @@ from sqlalchemy import select, func, or_
 from sqlalchemy.orm import Session
 
 from app.classes.access import TeacherStudentAccessService
-from app.concepts.models import Concept
+from app.concepts.models import Concept, ConceptRelation
 from app.core.exceptions import ApplicationError
 from app.curriculum.models import Chapter, ProblemType, ProblemTypeConcept, Topic
 from app.questions.models import Question, QuestionProblemType, QuestionStatus, QuestionType
@@ -124,7 +124,31 @@ class MasteryQueryService:
             topics_by_chapter[topic.chapter_id].append(topic)
         for problem_type in problem_types:
             problems_by_topic[problem_type.topic_id].append(problem_type)
+        active_concept_ids = {cid for item in supply.values() for cid in item["concept_ids"]}
+        has_inactive_problem_types = bool(
+            self.session.scalar(
+                select(ProblemType.id)
+                .where(ProblemType.is_active.is_(False))
+                .limit(1)
+            )
+        )
+        if has_inactive_problem_types and active_concept_ids:
+            related_concept_ids = set(
+                self.session.scalars(
+                    select(ConceptRelation.source_concept_id)
+                )
+            ) | set(
+                self.session.scalars(
+                    select(ConceptRelation.target_concept_id)
+                )
+            )
+            tree_concept_ids = active_concept_ids | related_concept_ids
+        else:
+            tree_concept_ids = None
+
         for concept in concepts:
+            if tree_concept_ids is not None and concept.id not in tree_concept_ids:
+                continue
             concepts_by_subject[concept.subject_id].append(concept)
 
         subject_reads: list[SubjectMasteryRead] = []
@@ -145,6 +169,8 @@ class MasteryQueryService:
                                 problem_type, self.aggregation.snapshot(row)
                             ).model_copy(update=supply[problem_type.id])
                         )
+                    if not problem_reads:
+                        continue
                     chapter_problem_rows.extend(topic_rows)
                     subject_problem_rows.extend(topic_rows)
                     topic_reads.append(
@@ -157,6 +183,8 @@ class MasteryQueryService:
                             **self._metric(self.aggregation.aggregate(topic_rows)),
                         )
                     )
+                if not topic_reads:
+                    continue
                 chapter_reads.append(
                     ChapterMasteryRead(
                         chapter_id=chapter.id,

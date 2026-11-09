@@ -122,9 +122,9 @@ def test_teacher_material_rejects_wrong_assignment_or_student_item():
     assert_blocked(session, attempt, "GRADING_SOURCE_MISMATCH")
 
 
-def test_teacher_review_mode_and_unapproved_rubric_block_automatic_score():
+def test_objective_mode_and_unapproved_rubric_block_automatic_score():
     session, attempt, snapshot, _, rubric = material_case()
-    snapshot.evaluation_mode = MaterialEvaluationMode.TEACHER_REVIEW
+    snapshot.evaluation_mode = MaterialEvaluationMode.OBJECTIVE_AUTO
     assert_blocked(session, attempt, "GRADING_SOURCE_MISMATCH")
     snapshot.evaluation_mode = MaterialEvaluationMode.OPEN_RESPONSE
     rubric.status = "DRAFT"

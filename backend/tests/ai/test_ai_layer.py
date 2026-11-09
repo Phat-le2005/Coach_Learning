@@ -249,9 +249,25 @@ def test_timeout_protection_and_mapping(ai_settings: Settings):
     asyncio.run(_test())
 
 
+def test_retry_on_service_unavailable(ai_settings: Settings):
+    async def _test():
+        provider = MockAIProvider(service_unavailable_failures=1, default_text="Success after 503 retry")
+        gateway = AIGateway(provider=provider, settings=ai_settings)
+
+        response = await gateway.generate(
+            task_type=AITaskType.TEACHER_COPILOT,
+            messages="Soạn kế hoạch dạy học",
+        )
+
+        assert response.content == "Success after 503 retry"
+        assert provider.call_count == 2
+
+    asyncio.run(_test())
+
+
 def test_service_unavailable_mapping(ai_settings: Settings):
     async def _test():
-        provider = MockAIProvider(service_unavailable_failures=1)
+        provider = MockAIProvider(service_unavailable_failures=5)
         gateway = AIGateway(provider=provider, settings=ai_settings)
 
         with pytest.raises(AIServiceUnavailableError) as exc_info:

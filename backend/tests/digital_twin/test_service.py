@@ -239,7 +239,7 @@ def test_snapshot_uses_bounded_batch_queries(
     finally:
         event.remove(engine, "before_cursor_execute", count_query)
 
-    # Profile, seven mastery batches, prerequisites, global problem/concept
-    # mappings, three recent-attempt batches, and two behavior aggregates.
+    # Profile, mastery batches (including question supply batches), prerequisites,
+    # global problem/concept mappings, three recent-attempt batches, and two behavior aggregates.
     # The count does not grow per row.
-    assert statements <= 17
+    assert statements <= 20
