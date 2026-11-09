@@ -347,8 +347,8 @@ export function TeacherDashboardClient({
         onOpenUpload={() => setIsUploadOpen(true)}
         pdfImportId={pdfImportId}
         onOpenPdfImport={openPdfImport}
-        onMaterialSubmitted={(created) => {
-          setMaterials((current) => [created, ...current.filter((m) => m.id !== created.id)]);
+        onMaterialSubmitted={(created, replacedId) => {
+          setMaterials((current) => [created, ...current.filter((m) => m.id !== created.id && m.id !== replacedId)]);
           openPdfImport("");
         }}
         onMaterialDeleted={(id) => setMaterials((current) => current.filter((material) => material.id !== id))}

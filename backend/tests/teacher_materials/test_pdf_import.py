@@ -72,6 +72,110 @@ def review(**changes):
     return PdfReviewSubmit(title="Bài tập đã duyệt", decisions=[PdfReviewDecision(**decision)])
 
 
+def test_discard_revision_preserves_source_and_can_start_again(env):
+    ready(env)
+    original = env.service.submit(env.d.teacher.id, env.draft.id, review())
+    original_blob = env.d.service.storage.read(original.storage_key)
+    revision = env.service.revise(env.d.teacher.id, env.draft.id)
+    # Drafts created before the save-mode selector still resolve their source title.
+    metadata_path = env.service._directory(revision.id) / "job.json"
+    metadata = read_json(metadata_path)
+    metadata.pop("revision_title")
+    write_json(metadata_path, metadata)
+    assert env.service.get(env.d.teacher.id, revision.id).revision_title == original.title
+    env.service.save_review(env.d.teacher.id, revision.id, review(content="Abandoned edits"))
+    env.service.discard(env.d.teacher.id, revision.id)
+    assert revision.id not in [d.id for d in env.service.list(env.d.teacher.id, env.d.classroom.id)]
+    for action in (lambda: env.service.get(env.d.teacher.id, revision.id),
+                   lambda: env.service.submit(env.d.teacher.id, revision.id, review())):
+        with pytest.raises(ApplicationError) as exc:
+            action()
+        assert exc.value.status_code == 404
+    assert env.d.service.get(env.d.teacher.id, original.id).status == TeacherMaterialStatus.READY
+    assert env.d.service.storage.read(original.storage_key) == original_blob
+    fresh = env.service.revise(env.d.teacher.id, env.draft.id)
+    assert fresh.id != revision.id and fresh.revision_of == original.id
+
+
+def test_discard_enforces_owner_and_does_not_delete_active_or_submitted_jobs(env):
+    with pytest.raises(ApplicationError) as exc:
+        env.service.discard(env.d.outsider.id, env.draft.id)
+    assert exc.value.status_code == 403
+    with pytest.raises(ApplicationError) as exc:
+        env.service.discard(env.d.teacher.id, env.draft.id)
+    assert exc.value.status_code == 409
+    ready(env)
+    env.service.submit(env.d.teacher.id, env.draft.id, review())
+    with pytest.raises(ApplicationError) as exc:
+        env.service.discard(env.d.teacher.id, env.draft.id)
+    assert exc.value.status_code == 409
+
+
+def test_replace_library_version_preserves_published_assignment_and_is_idempotent(env):
+    from tests.teacher_materials.test_assignment_snapshot_grading import _assignment
+    ready(env)
+    original = env.service.submit(env.d.teacher.id, env.draft.id, review())
+    old_item = original.items[0]
+    old_blob = env.d.service.storage.read(original.storage_key)
+    env.d.service.prepare_for_assignment(env.d.teacher.id, original.id)
+    assignments, assignment_id = _assignment(env.d, env.session, old_item.id)
+    before = assignments.get_student_assignment(env.d.student.id, assignment_id).questions[0].model_dump()
+    revision = env.service.revise(env.d.teacher.id, env.draft.id)
+    edited = review(content="Replacement question", answer="New answer", difficulty_level="VAN_DUNG_CAO").model_copy(update={"save_mode": "REPLACE"})
+    replaced = env.service.submit(env.d.teacher.id, revision.id, edited)
+    assert replaced.id != original.id and replaced.items[0].content == "Replacement question"
+    assert [m.id for m in env.d.service.list(env.d.teacher.id, env.d.classroom.id)] == [replaced.id]
+    assert original.status == TeacherMaterialStatus.ARCHIVED
+    assert old_item.content != replaced.items[0].content
+    assert env.d.service.storage.read(original.storage_key) == old_blob
+    after = assignments.get_student_assignment(env.d.student.id, assignment_id).questions[0].model_dump()
+    assert after == before
+    assert env.service.submit(env.d.teacher.id, revision.id, edited).id == replaced.id
+
+
+def test_replace_requires_live_original_and_does_not_create_extra_material(env):
+    ready(env)
+    replacement = review().model_copy(update={"save_mode": "REPLACE"})
+    with pytest.raises(ApplicationError) as exc:
+        env.service.submit(env.d.teacher.id, env.draft.id, replacement)
+    assert exc.value.code == "PDF_REPLACEMENT_REQUIRES_REVISION"
+    original = env.service.submit(env.d.teacher.id, env.draft.id, review())
+    revision = env.service.revise(env.d.teacher.id, env.draft.id)
+    env.d.service.archive(env.d.teacher.id, original.id)
+    with pytest.raises(ApplicationError) as exc:
+        env.service.submit(env.d.teacher.id, revision.id, replacement)
+    assert exc.value.code == "PDF_REVISION_CONFLICT"
+    assert len(list(env.session.scalars(select(TeacherMaterial)))) == 1
+
+
+def test_replace_rolls_back_original_archive_when_commit_fails(env, monkeypatch):
+    ready(env)
+    original = env.service.submit(env.d.teacher.id, env.draft.id, review())
+    revision = env.service.revise(env.d.teacher.id, env.draft.id)
+    def fail_commit():
+        raise RuntimeError("simulated DB failure")
+    monkeypatch.setattr(env.session, "commit", fail_commit)
+    with pytest.raises(RuntimeError, match="simulated DB failure"):
+        env.service.submit(env.d.teacher.id, revision.id, review(content="Changed").model_copy(update={"save_mode": "REPLACE"}))
+    assert env.d.service.get(env.d.teacher.id, original.id).status == TeacherMaterialStatus.READY
+    assert len(list(env.session.scalars(select(TeacherMaterial)))) == 1
+    assert env.service.get(env.d.teacher.id, revision.id).status == "NEEDS_REVIEW"
+
+
+def test_http_discard_only_removes_the_authorized_draft(env, db_app, db_client):
+    from app.auth.dependencies import get_current_user
+    from app.teacher_materials.router import get_pdf_service
+    ready(env)
+    db_app.dependency_overrides[get_pdf_service] = lambda: env.service
+    db_app.dependency_overrides[get_current_user] = lambda: env.d.outsider
+    url = f"/teacher-materials/pdf-imports/{env.draft.id}"
+    assert db_client.delete(url).status_code == 403
+    db_app.dependency_overrides[get_current_user] = lambda: env.d.teacher
+    assert db_client.delete(url).status_code == 204
+    assert db_client.get(url).status_code == 404
+    assert db_client.get(url + "/source").status_code == 404
+
+
 def test_upload_and_ocr_never_publish_without_teacher_review(env):
     assert env.draft.status == "QUEUED"
     assert env.session.scalar(select(TeacherMaterial)) is None

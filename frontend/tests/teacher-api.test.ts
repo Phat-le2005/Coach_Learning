@@ -5,8 +5,33 @@ import { TeacherApiError, parseAnalytics, parseClassroom, parseMaterial, teacher
 import { ApiContractError } from "../src/lib/api/validation.js";
 import { parsePdfImport } from "../src/features/teacher/pdf-api.js";
 import { MATERIAL_DIFFICULTY_LEVELS, parseMaterialDifficulty } from "../src/features/teacher/material-difficulty.js";
+import { materialColumns, materialPage, materialPageNumbers } from "../src/features/teacher/material-pagination.js";
 
 const id = "00000000-0000-4000-8000-000000000001";
+
+test("material pages always have at most two rows and retain every document across pages", () => {
+  const documents = Array.from({ length: 27 }, (_, index) => `material-${index}`);
+  for (const width of [360, 650, 1050, 1600]) {
+    const columns = materialColumns(width);
+    const all = [];
+    for (let page = 0; page < materialPage(documents, 0, columns).pageCount; page++) {
+      const result = materialPage(documents, page, columns);
+      assert.ok(result.items.length <= columns * 2);
+      all.push(...result.items);
+    }
+    assert.deepEqual(all, documents);
+  }
+});
+
+test("material pagination clamps after deletion and handles empty filtered results", () => {
+  const result = materialPage(["one", "two", "three"], 12, 1);
+  assert.equal(result.page, 1);
+  assert.deepEqual(result.items, ["three"]);
+  const afterDelete = materialPage(["one", "two"], result.page, 1);
+  assert.equal(afterDelete.page, 0);
+  assert.deepEqual(materialPage([], 5, 4).items, []);
+  assert.deepEqual(materialPageNumbers(4, 10), [0, "gap", 3, 4, 5, "gap", 9]);
+});
 
 test("OCR review save preserves edits and renews CSRF after refreshing an expired session", async () => {
   const original = globalThis.fetch;
@@ -88,6 +113,8 @@ test("PDF import proxy restricts job, review, source and asset routes", () => {
   assert.equal(teacherBackendPath(["materials", "pdf-imports", id, "revise"], "POST", ""), `${base}/revise`);
   assert.equal(teacherBackendPath(["materials", "pdf-imports", id, "revise"], "GET", ""), null);
   assert.equal(teacherBackendPath(["materials", "pdf-imports", id, "review"], "PUT", ""), `${base}/review`);
+  assert.equal(teacherBackendPath(["materials", "pdf-imports", id], "DELETE", ""), base);
+  assert.equal(teacherBackendPath(["materials", "pdf-imports", id], "DELETE", "?all=true"), null);
   assert.equal(teacherBackendPath(["materials", "pdf-imports", id, "source"], "GET", ""), `${base}/source`);
   assert.equal(teacherBackendPath(["materials", "pdf-imports", id, "assets", "1"], "GET", ""), `${base}/assets/1`);
   assert.equal(teacherBackendPath(["materials", id, "document"], "GET", ""), `/teacher-materials/${id}/document`);
@@ -112,6 +139,12 @@ test("PDF import contract preserves warnings and human decisions", () => {
   assert.equal(parsed.questions[0].suggested, false);
   assert.deepEqual(parsed.questions[0].warnings, ["INCOMPLETE"]);
   assert.equal(parsed.review, null);
+  const replacement = parsePdfImport({ ...value, revision_of: id, revision_title: "Original", review: {
+    title: "Edited", decisions: [], save_mode: "REPLACE",
+  } });
+  assert.equal(replacement.review?.save_mode, "REPLACE");
+  assert.equal(replacement.revision_title, "Original");
+  assert.throws(() => parsePdfImport({ ...value, review: { title: "Edited", decisions: [], save_mode: "UNKNOWN" } }), ApiContractError);
   assert.equal(parsed.source_kind, "PDF");
   const image = parsePdfImport({ ...value, source_kind: "IMAGE", source_mime_type: "image/png", original_file_name: "question.png" });
   assert.equal(image.source_kind, "IMAGE");

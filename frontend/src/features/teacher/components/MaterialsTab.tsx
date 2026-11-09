@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { UploadCloud, Search, FileText, Calendar, Filter, Sparkles, AlertCircle, Eye, Send, Trash2, Download, FilePenLine } from "lucide-react";
+import { UploadCloud, Search, FileText, Calendar, Filter, Sparkles, AlertCircle, Eye, Send, Trash2, Download, FilePenLine, ChevronLeft, ChevronRight } from "lucide-react";
 import { teacherApi, type TeacherAssignment, type TeacherClassroom, type TeacherMaterial, type TeacherSubject } from "../api";
 import { MaterialPreviewModal } from "./MaterialPreviewModal";
 import { AssignMaterialModal } from "./AssignMaterialModal";
@@ -10,6 +10,7 @@ import { teacherPdfApi, type TeacherPdfImport } from "../pdf-api";
 import { ExercisePdfReview, PDF_IMPORT_STATUS } from "./ExercisePdfReview";
 import reviewStyles from "./ExercisePdfReview.module.css";
 import { DeleteMaterialDialog } from "./DeleteMaterialDialog";
+import { materialColumns, materialPage, materialPageNumbers } from "../material-pagination";
 
 export interface MaterialsTabProps {
   selectedClass?: TeacherClassroom;
@@ -20,7 +21,7 @@ export interface MaterialsTabProps {
   onAssignmentCreated?: (assignment: TeacherAssignment) => void;
   pdfImportId?: string;
   onOpenPdfImport?: (id: string) => void;
-  onMaterialSubmitted?: (material: TeacherMaterial) => void;
+  onMaterialSubmitted?: (material: TeacherMaterial, replacedId?: string) => void;
   onMaterialDeleted?: (materialId: string) => void;
 }
 
@@ -46,8 +47,20 @@ export function MaterialsTab({
   const [deleteBusy, setDeleteBusy] = useState(false);
   const [deleteError, setDeleteError] = useState("");
   const [deleteNotice, setDeleteNotice] = useState("");
+  const [page, setPage] = useState(0);
+  const [columns, setColumns] = useState(4);
+  const section = useRef<HTMLDivElement>(null);
   const uploadButton = useRef<HTMLButtonElement>(null);
   const deleteTrigger = useRef<HTMLButtonElement | null>(null);
+
+  useEffect(() => {
+    if (!section.current) return;
+    const observer = new ResizeObserver(entries => setColumns(materialColumns(entries[0].contentRect.width)));
+    observer.observe(section.current);
+    return () => observer.disconnect();
+  }, [pdfImportId, selectedClass?.id]);
+
+  useEffect(() => { setPage(0); }, [selectedClass?.id, searchQuery, selectedSubjectFilter]);
 
   async function deleteMaterial() {
     if (!deleteTarget || deleteBusy) return;
@@ -108,9 +121,10 @@ export function MaterialsTab({
       return matchQuery && matchSubject;
     });
   }, [materials, searchQuery, selectedSubjectFilter]);
+  const pagination = materialPage(filteredMaterials, page, columns);
 
   if (pdfImportId) {
-    return <ExercisePdfReview key={pdfImportId} jobId={pdfImportId} onClose={() => onOpenPdfImport?.("")} onSubmitted={(material) => onMaterialSubmitted?.(material)} onOpenRevision={(id) => onOpenPdfImport?.(id)} />;
+    return <ExercisePdfReview key={pdfImportId} jobId={pdfImportId} onClose={() => onOpenPdfImport?.("")} onSubmitted={(material, replacedId) => onMaterialSubmitted?.(material, replacedId)} onOpenRevision={(id) => onOpenPdfImport?.(id)} />;
   }
 
   if (!selectedClass) {
@@ -129,7 +143,7 @@ export function MaterialsTab({
 
   return (
     <div className={styles.tabContentWrap}>
-      <div className={`${styles.sectionCard} ${styles.materialsSection}`}>
+      <div ref={section} className={`${styles.sectionCard} ${styles.materialsSection}`}>
         {/* Header */}
         <div className={styles.sectionCardHeader}>
           <div>
@@ -237,8 +251,8 @@ export function MaterialsTab({
             )}
           </div>
         ) : (
-          <div className={styles.materialGridModern}>
-            {filteredMaterials.map((item) => {
+          <div className={styles.materialGridModern} style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}>
+            {pagination.items.map((item) => {
               const isPdf = item.original_file_name.endsWith(".pdf") || item.mime_type.includes("pdf");
               const isReviewed = item.mime_type === "application/json";
               const subject = subjects.find((s) => s.id === item.subject_id);
@@ -311,6 +325,19 @@ export function MaterialsTab({
             })}
           </div>
         )}
+        {!isLoading && filteredMaterials.length > 0 && <nav className={styles.materialPagination} aria-label="Phân trang tài liệu">
+          <p className={styles.materialPageSummary} aria-live="polite">Hiển thị <strong>{pagination.start + 1}–{pagination.end}</strong> trong <strong>{filteredMaterials.length}</strong> tài liệu</p>
+          <div className={styles.materialPageControls}>
+            <button type="button" className={styles.materialPageArrow} aria-label="Trang tài liệu trước" disabled={pagination.page === 0}
+              onClick={() => setPage(pagination.page - 1)}><ChevronLeft size={17} aria-hidden="true" /><span>Trước</span></button>
+            {materialPageNumbers(pagination.page, pagination.pageCount).map((number, index) => number === "gap"
+              ? <span key={`gap-${index}`} className={styles.materialPageGap} aria-hidden="true">…</span>
+              : <button key={number} type="button" className={styles.materialPageNumber} aria-current={number === pagination.page ? "page" : undefined}
+                aria-label={`Trang tài liệu ${number + 1}`} onClick={() => setPage(number)}>{number + 1}</button>)}
+            <button type="button" className={styles.materialPageArrow} aria-label="Trang tài liệu sau" disabled={pagination.page + 1 === pagination.pageCount}
+              onClick={() => setPage(pagination.page + 1)}><span>Sau</span><ChevronRight size={17} aria-hidden="true" /></button>
+          </div>
+        </nav>}
       </div>
 
       {/* Modals */}
