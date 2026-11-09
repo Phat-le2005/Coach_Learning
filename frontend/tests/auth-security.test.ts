@@ -2,8 +2,18 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { authCookiePolicy } from "../src/lib/auth/cookie-policy";
-import { constantTimeEqual, generateCsrfToken, isTrustedMutationOrigin, isTrustedFrontendMutation } from "../src/lib/auth/security";
+import { constantTimeEqual, generateCsrfToken, getOrCreateCsrfToken, isTrustedMutationOrigin, isTrustedFrontendMutation } from "../src/lib/auth/security";
 import { signSession, verifySession, type SessionPayload } from "../src/lib/auth/session-codec";
+
+test("CSRF reads preserve an existing token and replace missing or malformed cookies", () => {
+  const token = generateCsrfToken();
+  assert.equal(getOrCreateCsrfToken(token), token);
+  for (const cookie of [undefined, "", "stale", "a".repeat(63), "z".repeat(64)]) {
+    const replacement = getOrCreateCsrfToken(cookie);
+    assert.match(replacement, /^[a-f0-9]{64}$/);
+    assert.notEqual(replacement, cookie);
+  }
+});
 
 const secret = "a-secure-test-secret-that-is-over-32-characters";
 const payload: SessionPayload = { v: 1, userId: "user-1", email: "student@example.com", fullName: "Nguyễn Minh", role: "STUDENT", expiresAt: Date.now() + 60_000 };

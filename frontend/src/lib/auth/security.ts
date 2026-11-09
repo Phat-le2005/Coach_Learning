@@ -4,6 +4,11 @@ export function generateCsrfToken(): string {
   return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 
+/** Keep a valid double-submit token stable across tabs and session refreshes. */
+export function getOrCreateCsrfToken(existing?: string): string {
+  return existing && /^[a-f0-9]{64}$/.test(existing) ? existing : generateCsrfToken();
+}
+
 export function constantTimeEqual(left: string | null | undefined, right: string | null | undefined): boolean {
   if (!left || !right || left.length !== right.length) return false;
   let result = 0;
