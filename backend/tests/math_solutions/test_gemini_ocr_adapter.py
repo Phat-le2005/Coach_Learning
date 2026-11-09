@@ -1,6 +1,6 @@
 """Tests for GeminiMathOCRAdapter adopting math-ocr-pipeline architecture."""
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 from uuid import uuid4
 import pytest
 
@@ -81,6 +81,8 @@ def test_gemini_recognize_with_mocked_client():
     adapter = GeminiMathOCRAdapter(api_key="test-fake-key", model_name="gemini-3.8-flash")
 
     mock_client = MagicMock()
+    mock_client.aio.__aenter__.return_value = mock_client
+    mock_client.models.generate_content = AsyncMock()
     mock_resp = MagicMock()
     mock_resp.text = '{"latex": "\\\\int x dx = \\\\frac{x^2}{2} + C", "suggested_step_type": "EXPLANATION", "confidence": 0.97, "detected_symbols": ["\\\\int", "x", "dx"]}'
     mock_client.models.generate_content.return_value = mock_resp

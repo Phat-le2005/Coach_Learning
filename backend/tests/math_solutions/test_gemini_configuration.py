@@ -1,6 +1,6 @@
 """One server-side Gemini credential drives OCR and answer-grounded grading."""
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 from uuid import uuid4
 
 import pytest
@@ -60,12 +60,15 @@ def test_configured_model_is_tried_first_and_provider_errors_are_private(monkeyp
     settings = configured(monkeypatch, gemini_api_key="private-fixture-key")
     adapter = get_ocr_adapter(settings)
     client = MagicMock()
-    client.models.generate_content.side_effect = RuntimeError("403 api_key private-fixture-key")
+    client.aio.__aenter__.return_value = client
+    client.models.generate_content = AsyncMock()
+    class InvalidKey(RuntimeError):
+        code = 401
+    client.models.generate_content.side_effect = InvalidKey("private-fixture-key")
     stroke = InkStroke(
         id=uuid4(), tool="PEN", color="#000000", width=2,
         points=[InkPoint(x=0.1, y=0.1), InkPoint(x=0.2, y=0.2)],
     )
-    monkeypatch.setattr("app.math_ocr.gemini_adapter._LAST_WORKING_MODEL", "different-model")
     with patch("app.math_ocr.gemini_adapter._get_genai_client", return_value=client):
         with pytest.raises(ApplicationError) as error:
             adapter.recognize([stroke])

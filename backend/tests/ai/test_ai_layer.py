@@ -251,7 +251,7 @@ def test_timeout_protection_and_mapping(ai_settings: Settings):
 
 def test_service_unavailable_mapping(ai_settings: Settings):
     async def _test():
-        provider = MockAIProvider(service_unavailable_failures=1)
+        provider = MockAIProvider(service_unavailable_failures=3)
         gateway = AIGateway(provider=provider, settings=ai_settings)
 
         with pytest.raises(AIServiceUnavailableError) as exc_info:

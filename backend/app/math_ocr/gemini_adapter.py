@@ -5,21 +5,27 @@ Adopts the ultra-fast pipeline techniques from backend/math-ocr-pipeline:
 2. Digital Ink Stroke Telemetry fusion (line clusters, horizontal bars, dots).
 3. Logical step proposals with independently reviewable source ink.
 4. Validated JSON schemas and bounded provider fallback.
-5. Persistent genai.Client caching for HTTP/2 & TLS keep-alive.
+5. A shared failover deadline, including cancellation of a stalled SDK call.
 """
 
 from __future__ import annotations
 
 import io
+import asyncio
 import json
 import logging
 import re
 from typing import Any
 
+import httpx
 from pydantic import BaseModel, Field
 
 from app.core.config import Settings, get_settings
 from app.ai.gemini_provider import _sanitize_schema_for_gemini
+from app.ai.gemini_failover import (
+    AttemptFailure, GeminiFailoverManager, Payload, PoolUnavailable,
+    get_gemini_manager, sdk_failure,
+)
 from app.core.exceptions import ApplicationError
 from app.math_ink.schemas import InkStroke
 from app.math_ocr.adapter import MathOCRAdapter, MockMathOCRAdapter
@@ -29,32 +35,15 @@ from app.math_solutions.schemas import StepKind
 
 logger = logging.getLogger(__name__)
 
-# Cache genai.Client by API key to reuse TLS / HTTP/2 connection
-_CLIENT_CACHE: dict[str, Any] = {}
-_MODEL_STRATEGY_CACHE: dict[str, str] = {}
-_LAST_WORKING_MODEL: str | None = None
+def _get_genai_client(api_key: str, *, http_client: httpx.AsyncClient) -> Any:
+    from google import genai
+    from google.genai import types
 
-
-def _get_genai_client(api_key: str) -> Any:
-    client = _CLIENT_CACHE.get(api_key)
-    if client is None:
-        try:
-            from google import genai
-            from google.genai import types
-
-            # Retry/fallback is owned below, so SDK retries must not multiply a
-            # busy-model request into minutes before reaching another model.
-            client = genai.Client(api_key=api_key, http_options=types.HttpOptions(
-                timeout=30000, retry_options=types.HttpRetryOptions(attempts=1)))
-            _CLIENT_CACHE[api_key] = client
-        except Exception as exc:
-            logger.error("Failed to initialize google.genai Client (%s)", type(exc).__name__)
-            raise ApplicationError(
-                503,
-                "OCR_INITIALIZATION_FAILED",
-                "Không thể kết nối dịch vụ Gemini OCR. Hãy kiểm tra cấu hình máy chủ.",
-            ) from None
-    return client
+    # Async clients belong to one recognize() event loop and are closed after
+    # each attempt. Never reuse an async HTTP pool across worker-thread loops.
+    return genai.Client(api_key=api_key, http_options=types.HttpOptions(
+        timeout=8000, retry_options=types.HttpRetryOptions(attempts=1),
+        httpx_async_client=http_client))
 
 
 class GeminiOCRJsonOutput(BaseModel):
@@ -121,12 +110,16 @@ class GeminiMathOCRAdapter(MathOCRAdapter):
         model_name: str | None = None,
         fast_mode: bool = True,
         settings: Settings | None = None,
+        manager: GeminiFailoverManager | None = None,
+        transport: httpx.AsyncBaseTransport | None = None,
     ) -> None:
         settings = settings or get_settings()
         self.settings = settings
         self.api_key = api_key if api_key is not None else (
             (settings.ai_api_key.get_secret_value() if settings.ai_api_key else "")
         )
+        self.manager = manager or (GeminiFailoverManager.single_key(api_key)
+                                  if api_key is not None else get_gemini_manager(settings))
         self.model_name = (
             model_name
             or getattr(settings, "gemini_ocr_model", None)
@@ -134,6 +127,7 @@ class GeminiMathOCRAdapter(MathOCRAdapter):
             or "gemini-3.8-flash"
         )
         self.fast_mode = fast_mode
+        self._transport = transport
         self._mock_fallback = MockMathOCRAdapter()
 
     def recognize(
@@ -144,7 +138,7 @@ class GeminiMathOCRAdapter(MathOCRAdapter):
         settings = self.settings
 
         # In test environment without an API key, use deterministic mock
-        if (settings.app_env == "test" or not self.api_key) and not self.api_key:
+        if not self.manager.credentials:
             if settings.app_env == "test":
                 return self._mock_fallback.recognize(strokes, hint_topic=hint_topic)
             raise ApplicationError(
@@ -152,8 +146,6 @@ class GeminiMathOCRAdapter(MathOCRAdapter):
                 "OCR_NOT_CONFIGURED",
                 "Chưa cấu hình GEMINI_API_KEY cho hệ thống nhận diện chữ viết tay toán học.",
             )
-
-        client = _get_genai_client(self.api_key)
 
         # 1. Rasterize & Optimize to 1-Tile WebP / PNG
         image_bytes, mime_type, telemetry = self._rasterize_and_optimize(strokes)
@@ -188,61 +180,55 @@ class GeminiMathOCRAdapter(MathOCRAdapter):
             "response_json_schema": _sanitize_schema_for_gemini(GeminiOCRJsonOutput.model_json_schema()),
         }
 
-        gen_config = types.GenerateContentConfig(**cfg_kwargs)
+        async def send(choice, budget):
+            config = types.GenerateContentConfig(**cfg_kwargs, http_options=types.HttpOptions(
+                timeout=max(1, int(budget * 1000)), retry_options=types.HttpRetryOptions(attempts=1)))
+            try:
+                # Own the async transport: SDK versions can otherwise select
+                # httpx2/aiohttp, with different errors and implicit retries.
+                async with httpx.AsyncClient(timeout=budget, transport=self._transport) as http_client:
+                    client = _get_genai_client(choice.credential.secret.get_secret_value(), http_client=http_client)
+                    try:
+                        async with client.aio as aio:
+                            response = await aio.models.generate_content(model=choice.model, contents=prompt_parts, config=config)
+                    finally:
+                        client.close()
+            except Exception as error:
+                raise sdk_failure(error) from None
+            feedback = getattr(response, 'prompt_feedback', None)
+            block_reason = getattr(feedback, 'block_reason', None)
+            if isinstance(block_reason, str) and block_reason.split('.')[-1] not in {'', 'BLOCK_REASON_UNSPECIFIED'}:
+                raise AttemptFailure('RESTRICTED', scope='fatal')
+            candidates = getattr(response, 'candidates', None)
+            if isinstance(candidates, list) and candidates:
+                finish = str(getattr(candidates[0], 'finish_reason', '') or '').split('.')[-1]
+                if finish in {'SAFETY', 'PROHIBITED_CONTENT', 'BLOCKLIST', 'RECITATION'}:
+                    raise AttemptFailure('RESTRICTED', scope='fatal')
+                if finish and finish != 'STOP':
+                    raise AttemptFailure('OUTPUT_INVALID')
+            try:
+                parsed = json.loads(response.text or '')
+                # Keep step mapping's reviewable segmentation-warning behavior.
+                GeminiOCRJsonOutput.model_validate({**parsed, 'steps': []})
+                output = self._to_response(parsed, strokes, crop_box=telemetry['crop_box'])
+            except (ValueError, TypeError, KeyError):
+                raise AttemptFailure('OUTPUT_INVALID') from None
+            return Payload(output, getattr(response, 'model_version', None))
 
-        # Respect the configured model first; fallbacks remain Gemini providers.
-        global _LAST_WORKING_MODEL
-        model_candidates = [
-            self.model_name,
-            self.settings.ai_model_fast,
-            _LAST_WORKING_MODEL,
-            "gemini-3.5-flash",
-            "gemini-3.8-flash",
-            "gemini-3.5-flash-lite",
-        ]
-        # Keep unique non-empty models preserving order
-        seen = set()
-        model_queue = [m for m in model_candidates if m and not (m in seen or seen.add(m))]
-
-        last_error = None
-        for candidate_model in model_queue:
-            configs_to_try = [gen_config]
-
-            for current_cfg in configs_to_try:
-                try:
-                    response = client.models.generate_content(
-                        model=candidate_model,
-                        contents=prompt_parts,
-                        config=current_cfg,
-                    )
-                    text = response.text or ""
-                    parsed = json.loads(text)
-                    _LAST_WORKING_MODEL = candidate_model
-                    return self._to_response(parsed, strokes, crop_box=telemetry["crop_box"])
-                except Exception as exc:
-                    last_error = exc
-                    err_str = str(exc).lower()
-                    logger.warning(
-                        "Gemini OCR model %s failed (%s), attempting next fallback...",
-                        candidate_model,
-                        type(exc).__name__,
-                    )
-                    if any(k in err_str for k in ("401", "403", "api_key", "unauthorized")):
-                        raise ApplicationError(
-                            503,
-                            "OCR_API_KEY_INVALID",
-                            "Gemini key chưa hợp lệ hoặc chưa được cấp quyền. Hãy kiểm tra cấu hình máy chủ.",
-                        ) from None
-                    if getattr(exc, "code", None) == 429:
-                        raise ApplicationError(503, "OCR_RATE_LIMITED", "Gemini tạm hết lượt nhận diện. Hãy đợi một lúc rồi thử lại; bản chép được giữ nguyên.") from None
-                    break
-
-        logger.error("All Gemini OCR models failed (%s)", type(last_error).__name__)
-        raise ApplicationError(
-            503,
-            "OCR_RECOGNITION_FAILED",
-            "Gemini chưa nhận diện được nét viết. Em có thể sửa bản chép thủ công hoặc thử lại.",
-        ) from None
+        try:
+            # FastAPI invokes this synchronous adapter in its existing worker
+            # thread. The inner async deadline also bounds SDK read/connect phases.
+            return asyncio.run(self.manager.run_async('OCR_INK', self.model_name, send,
+                timeout=settings.gemini_ocr_total_timeout_seconds,
+                legacy=[settings.ai_model_fast, 'gemini-3.5-flash', 'gemini-3.5-flash-lite'])).data
+        except PoolUnavailable as error:
+            if error.last_kind in {'AUTH', 'PERMISSION'}:
+                code, message = 'OCR_API_KEY_INVALID', 'Gemini key chưa hợp lệ hoặc chưa được cấp quyền.'
+            elif error.last_kind in {'QUOTA', 'DAILY_QUOTA'}:
+                code, message = 'OCR_RATE_LIMITED', 'Gemini tạm hết lượt nhận diện. Hãy thử lại sau; bản chép được giữ nguyên.'
+            else:
+                code, message = 'OCR_RECOGNITION_FAILED', 'Gemini chưa nhận diện được nét viết. Em có thể sửa bản chép thủ công hoặc thử lại.'
+            raise ApplicationError(503, code, message) from None
 
     def recognize_with_alternatives(
         self,
