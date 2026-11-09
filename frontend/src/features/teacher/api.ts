@@ -90,14 +90,22 @@ export function parseAnalytics(value: unknown, path = "analytics"): TeacherAnaly
 }
 
 async function request<T>(path: string, parse: (value: unknown) => T, init: RequestInit = {}): Promise<T> {
+  const mutation = !["GET", "HEAD", "OPTIONS"].includes((init.method ?? "GET").toUpperCase());
   async function send(): Promise<Response> {
-    try { return await fetch(`/api/teacher/${path}`, { ...init, credentials: "same-origin", cache: "no-store" }); }
+    const headers = new Headers(init.headers);
+    if (mutation) headers.set("X-CSRF-Token", await getCsrfToken());
+    try { return await fetch(`/api/teacher/${path}`, { ...init, headers, credentials: "same-origin", cache: "no-store" }); }
     catch { throw new TeacherApiError("Không thể kết nối đến máy chủ. Hãy kiểm tra backend.", 503, "NETWORK_ERROR"); }
   }
   let response = await send();
   if (response.status === 401) {
     try { await refreshBrowserSession(); response = await send(); }
     catch { throw new TeacherApiError("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.", 401, "SESSION_EXPIRED"); }
+  }
+  // The BFF rejects this before forwarding the mutation, so retrying once is safe.
+  if (mutation && response.status === 403) {
+    const error = await response.clone().json().catch(() => null);
+    if (error?.error?.code === "CSRF_TOKEN_INVALID") response = await send();
   }
   const body: unknown = await response.json().catch(() => null);
   if (!response.ok) {

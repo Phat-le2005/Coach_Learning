@@ -1,7 +1,6 @@
 """Gemini REST provider. Keys stay server-side; provider failures never synthesize grades."""
 
 from collections.abc import AsyncIterator
-import json
 import re
 from typing import TypeVar
 
@@ -9,11 +8,26 @@ import httpx
 from pydantic import BaseModel
 
 from app.ai.exceptions import (
-    AIConfigurationError, AIOutputValidationError, AIRateLimitError,
-    AIServiceUnavailableError, AITimeoutError,
+    AIConfigurationError,
+    AIOutputValidationError,
+    AIRateLimitError,
+    AIServiceUnavailableError,
+    AITimeoutError,
 )
 from app.ai.provider import AIProvider
 from app.ai.types import AIMessage, AIResponse, AIRoutingTier
+from app.ai.gemini_failover import (
+    AttemptFailure,
+    Execution,
+    GeminiFailoverManager,
+    Payload,
+    PoolUnavailable,
+    classify_failure,
+    generation_parameters,
+    get_gemini_manager,
+)
+from app.core.config import Settings
+from dataclasses import replace
 
 T = TypeVar("T", bound=BaseModel)
 _MODEL_ID = re.compile(r"^[a-zA-Z0-9._-]+$")
@@ -23,6 +37,7 @@ import copy
 import logging
 
 logger = logging.getLogger(__name__)
+
 
 def _sanitize_schema_for_gemini(raw_schema: dict) -> dict:
     """Sanitize OpenAPI/Pydantic schema for Gemini REST API requirements."""
@@ -42,13 +57,27 @@ def _sanitize_schema_for_gemini(raw_schema: dict) -> dict:
                 res[k] = {name: resolve(child) for name, child in v.items()}
                 continue
             if k in (
-                "$defs", "definitions", "title", "description", "default",
-                "additionalProperties", "minLength", "maxLength", "pattern",
-                "minItems", "maxItems", "minimum", "maximum",
+                "$defs",
+                "definitions",
+                "title",
+                "description",
+                "default",
+                "additionalProperties",
+                "minLength",
+                "maxLength",
+                "pattern",
+                "minItems",
+                "maxItems",
+                "minimum",
+                "maximum",
             ):
                 continue
             if k == "anyOf":
-                non_null = [item for item in v if isinstance(item, dict) and item.get("type") != "null"]
+                non_null = [
+                    item
+                    for item in v
+                    if isinstance(item, dict) and item.get("type") != "null"
+                ]
                 has_null = len(non_null) < len(v)
                 if len(non_null) == 1:
                     child = resolve(non_null[0])
@@ -78,113 +107,280 @@ def _sanitize_schema_for_gemini(raw_schema: dict) -> dict:
     return cleaned
 
 
-
 class GeminiProvider(AIProvider):
     """Use generateContent with JSON mode and strict local schema validation."""
 
-    def __init__(self, api_key: str, *, transport: httpx.AsyncBaseTransport | None = None) -> None:
-        if not api_key.strip():
+    manages_failover = True
+
+    def __init__(
+        self,
+        api_key: str = "",
+        *,
+        transport: httpx.AsyncBaseTransport | None = None,
+        settings: Settings | None = None,
+        manager: GeminiFailoverManager | None = None,
+    ) -> None:
+        try:
+            self.manager = manager or (
+                get_gemini_manager(settings)
+                if settings is not None
+                else GeminiFailoverManager.single_key(api_key)
+            )
+        except PoolUnavailable:
+            raise AIConfigurationError(
+                "Gemini key pool configuration is invalid."
+            ) from None
+        if not self.manager.credentials:
             raise AIConfigurationError("Gemini API key is not configured.")
-        self._api_key = api_key
         self._transport = transport
 
+    @property
+    def _api_key(self):
+        """Legacy read access; scheduling always uses the shared pool."""
+        return self.manager.credentials[0].secret.get_secret_value()
+
     async def _request(
-        self, messages: list[AIMessage], model: str, *, temperature: float,
-        timeout: float, json_mode: bool = False, response_schema: dict | None = None,
-    ) -> str:
+        self,
+        messages: list[AIMessage],
+        model: str,
+        *,
+        temperature: float,
+        timeout: float,
+        json_mode: bool = False,
+        response_schema: dict | None = None,
+        task: str = "DEFAULT",
+        parse=None,
+        max_tokens: int | None = None,
+    ) -> Execution:
         if not _MODEL_ID.fullmatch(model):
             raise AIConfigurationError("Invalid Gemini model identifier.")
         system_text = "\n".join(m.content for m in messages if str(m.role) == "system")
         contents = [
-            {"role": "model" if str(m.role) == "assistant" else "user", "parts": [{"text": m.content}]}
-            for m in messages if str(m.role) != "system"
+            {
+                "role": "model" if str(m.role) == "assistant" else "user",
+                "parts": [{"text": m.content}],
+            }
+            for m in messages
+            if str(m.role) != "system"
         ]
         if not contents:
             raise AIConfigurationError("Gemini request has no user content.")
-        body: dict[str, object] = {
+        base: dict[str, object] = {
             "contents": contents,
-            "generationConfig": {"temperature": temperature},
         }
         if system_text:
-            body["systemInstruction"] = {"parts": [{"text": system_text}]}
-        if json_mode:
-            body["generationConfig"] = {"temperature": temperature, "responseMimeType": "application/json"}
-        if response_schema is not None:
-            body["generationConfig"]["responseJsonSchema"] = _sanitize_schema_for_gemini(response_schema)
-        
-        models_to_try = [model]
-        if model != "gemini-3.1-flash-lite":
-            models_to_try.append("gemini-3.1-flash-lite")
+            base["systemInstruction"] = {"parts": [{"text": system_text}]}
 
-        response = None
-        for current_model in models_to_try:
+        async def send(choice, budget):
+            config = generation_parameters(choice.model, temperature=temperature)
+            if json_mode:
+                config["responseMimeType"] = "application/json"
+            if response_schema is not None:
+                config["responseJsonSchema"] = _sanitize_schema_for_gemini(
+                    response_schema
+                )
+            if max_tokens is not None:
+                config["maxOutputTokens"] = max_tokens
+            body = {**base, "generationConfig": config}
             try:
-                async with httpx.AsyncClient(timeout=timeout, transport=self._transport) as client:
+                async with httpx.AsyncClient(
+                    timeout=budget, transport=self._transport
+                ) as client:
                     response = await client.post(
-                        f"{_ENDPOINT}/{current_model}:generateContent",
-                        headers={"x-goog-api-key": self._api_key, "Content-Type": "application/json"},
+                        f"{_ENDPOINT}/{choice.model}:generateContent",
+                        headers={
+                            "x-goog-api-key": choice.credential.secret.get_secret_value(),
+                            "Content-Type": "application/json",
+                        },
                         json=body,
                     )
-            except httpx.TimeoutException as exc:
-                if current_model == models_to_try[-1]:
-                    raise AITimeoutError("Gemini request timed out.") from exc
-                continue
-            except httpx.RequestError as exc:
-                if current_model == models_to_try[-1]:
-                    raise AIServiceUnavailableError("Gemini could not be reached.") from exc
-                continue
-
-            if response.status_code == 200:
-                break
-            if response.status_code in (503, 404, 400) and current_model != models_to_try[-1]:
-                logger.warning(
-                    "Gemini request for model %s returned %d (%s); falling back to %s",
-                    current_model, response.status_code, response.text[:120], models_to_try[-1]
+            except httpx.TimeoutException:
+                raise AttemptFailure("TIMEOUT") from None
+            except httpx.RequestError:
+                raise AttemptFailure("NETWORK") from None
+            try:
+                payload = response.json()
+            except ValueError:
+                payload = {}
+            if response.status_code != 200:
+                raise classify_failure(
+                    response.status_code, payload, response.headers.get("Retry-After")
                 )
-                continue
+            try:
+                candidate = payload["candidates"][0]
+                finish = candidate.get("finishReason", "STOP")
+                if finish in {
+                    "SAFETY",
+                    "PROHIBITED_CONTENT",
+                    "BLOCKLIST",
+                    "RECITATION",
+                }:
+                    raise AttemptFailure("RESTRICTED", scope="fatal")
+                if finish != "STOP":
+                    raise ValueError()
+                parts = candidate["content"]["parts"]
+                raw = "".join(
+                    part["text"]
+                    for part in parts
+                    if "text" in part and not part.get("thought")
+                ).strip()
+                if not raw:
+                    raise ValueError()
+                data = parse(raw) if parse else raw
+            except AttemptFailure:
+                raise
+            except (ValueError, KeyError, IndexError, TypeError, AttributeError):
+                feedback = (
+                    payload.get("promptFeedback", {})
+                    if isinstance(payload, dict)
+                    else {}
+                )
+                if isinstance(feedback, dict) and feedback.get("blockReason"):
+                    raise AttemptFailure("RESTRICTED", scope="fatal") from None
+                raise AttemptFailure("OUTPUT_INVALID") from None
+            usage = payload.get("usageMetadata", {})
+            if not isinstance(usage, dict):
+                usage = {}
 
-        if response.status_code == 429:
-            raise AIRateLimitError("Gemini quota is exhausted; try again later.")
-        if response.status_code == 404:
-            raise AIConfigurationError("Configured Gemini model is unavailable for this API key.")
-        if response.status_code in (401, 403):
-            raise AIConfigurationError("Gemini API key lacks access to the configured model.")
-        if response.status_code != 200:
-            raise AIServiceUnavailableError("Gemini request failed; no grade was recorded.")
+            def count(name):
+                value = usage.get(name)
+                return value if isinstance(value, int) and value >= 0 else None
+
+            output = count("candidatesTokenCount")
+            thoughts = count("thoughtsTokenCount")
+            return Payload(
+                data,
+                payload.get("modelVersion"),
+                count("promptTokenCount"),
+                (output or 0) + (thoughts or 0)
+                if output is not None or thoughts is not None
+                else None,
+                count("totalTokenCount"),
+            )
+
         try:
-            payload = response.json()
-            parts = payload["candidates"][0]["content"]["parts"]
-            result = "".join(part["text"] for part in parts if "text" in part and not part.get("thought")).strip()
-        except (ValueError, KeyError, IndexError, TypeError) as exc:
-            raise AIOutputValidationError("Gemini response contains no usable answer.") from exc
-        if not result:
-            raise AIOutputValidationError("Gemini response is empty.")
-        return result
+            return await self.manager.run_async(
+                task, model, send, timeout=timeout, legacy=["gemini-3.1-flash-lite"]
+            )
+        except PoolUnavailable as error:
+            if error.reason == "INVALID_REQUEST":
+                raise AIOutputValidationError(
+                    "Gemini rejected the request parameters."
+                ) from None
+            if error.reason == "RESTRICTED":
+                raise AIOutputValidationError(
+                    "Gemini could not process this content."
+                ) from None
+            if error.last_kind in {"QUOTA", "DAILY_QUOTA"}:
+                raise AIRateLimitError() from None
+            if error.last_kind == "TIMEOUT" or error.reason == "DEADLINE":
+                raise AITimeoutError() from None
+            if error.last_kind in {"AUTH", "PERMISSION", "MODEL_UNAVAILABLE"}:
+                raise AIConfigurationError(
+                    "No configured Gemini credential/model is accessible."
+                ) from None
+            if error.last_kind == "OUTPUT_INVALID":
+                raise AIOutputValidationError() from None
+            raise AIServiceUnavailableError() from None
+
+    async def generate_for_task(
+        self,
+        task_type,
+        messages,
+        model,
+        *,
+        temperature=0.7,
+        max_tokens=None,
+        timeout=30,
+    ):
+        result = await self._request(
+            messages,
+            model,
+            temperature=temperature,
+            timeout=timeout,
+            task=str(task_type),
+            max_tokens=max_tokens,
+        )
+        return replace(
+            result,
+            data=AIResponse(
+                content=result.data,
+                model=result.model,
+                tier=AIRoutingTier.FAST,
+                tokens_used=result.total_tokens,
+            ),
+        )
+
+    async def generate_structured_for_task(
+        self, task_type, messages, schema, model, *, temperature=0.2, timeout=30
+    ):
+        return await self._request(
+            messages,
+            model,
+            temperature=temperature,
+            timeout=timeout,
+            json_mode=True,
+            response_schema=schema.model_json_schema(),
+            task=str(task_type),
+            parse=schema.model_validate_json,
+        )
 
     async def generate(
-        self, messages: list[AIMessage], model: str, *, temperature: float = 0.7,
-        max_tokens: int | None = None, timeout: float = 30.0,
+        self,
+        messages: list[AIMessage],
+        model: str,
+        *,
+        temperature: float = 0.7,
+        max_tokens: int | None = None,
+        timeout: float = 30.0,
     ) -> AIResponse:
-        content = await self._request(messages, model, temperature=temperature, timeout=timeout)
-        return AIResponse(content=content, model=model, tier=AIRoutingTier.FAST)
+        return (
+            await self.generate_for_task(
+                "DEFAULT",
+                messages,
+                model,
+                temperature=temperature,
+                max_tokens=max_tokens,
+                timeout=timeout,
+            )
+        ).data
 
     async def generate_structured(
-        self, messages: list[AIMessage], schema: type[T], model: str, *,
-        temperature: float = 0.2, timeout: float = 30.0,
+        self,
+        messages: list[AIMessage],
+        schema: type[T],
+        model: str,
+        *,
+        temperature: float = 0.2,
+        timeout: float = 30.0,
     ) -> T:
-        raw = await self._request(messages, model, temperature=temperature, timeout=timeout,
-                                  json_mode=True, response_schema=schema.model_json_schema())
-        try:
-            return schema.model_validate_json(raw)
-        except ValueError as exc:
-            raise AIOutputValidationError("Gemini output failed the required schema; no grade was recorded.") from exc
+        return (
+            await self.generate_structured_for_task(
+                "DEFAULT",
+                messages,
+                schema,
+                model,
+                temperature=temperature,
+                timeout=timeout,
+            )
+        ).data
 
     async def stream(
-        self, messages: list[AIMessage], model: str, *, temperature: float = 0.7,
+        self,
+        messages: list[AIMessage],
+        model: str,
+        *,
+        temperature: float = 0.7,
         timeout: float = 30.0,
     ) -> AsyncIterator[str]:
-        raise AIConfigurationError("Gemini streaming is not configured for this provider.")
+        raise AIConfigurationError(
+            "Gemini streaming is not configured for this provider."
+        )
         yield ""  # pragma: no cover
 
-    async def embed(self, texts: list[str], model: str, *, timeout: float = 30.0) -> list[list[float]]:
-        raise AIConfigurationError("Gemini embeddings are not configured for this provider.")
+    async def embed(
+        self, texts: list[str], model: str, *, timeout: float = 30.0
+    ) -> list[list[float]]:
+        raise AIConfigurationError(
+            "Gemini embeddings are not configured for this provider."
+        )

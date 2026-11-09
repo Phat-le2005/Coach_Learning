@@ -16,7 +16,7 @@ $localManifest = Get-Content -LiteralPath $localManifestPath -Raw -Encoding UTF8
 $localStem = if ($Port -eq 8790) {'local-qwen-server'} else {"local-qwen-server-$Port"}
 $localPidPath = Join-Path $Runtime ($localStem+'.pid')
 $localStatePath = Join-Path $Runtime ($localStem+'.state.json')
-$localSignature = (Get-FileHash -LiteralPath $localManifestPath -Algorithm SHA256).Hash
+$localSignature = Get-PdfFileSha256 -LiteralPath $localManifestPath
 $localLayers = if ($Device -eq 'GPU') {[int]$localManifest.gpu_layers} else {0}
 if ($Device -eq 'GPU' -and ($localLayers -le 0 -or $localManifest.backend -ne 'cuda')) {throw 'GPU profile requires CUDA offload.'}
 $localServerProcess = $null
@@ -80,7 +80,7 @@ if ($Action -eq 'start' -and -not $localServerProcess) {
     foreach ($localCheck in $localChecks) {
         $localResolvedPath = [IO.Path]::GetFullPath($localCheck[0])
         if (-not $localResolvedPath.StartsWith($Runtime.TrimEnd('\') + '\', [StringComparison]::OrdinalIgnoreCase)) { throw 'Model runtime path lies outside the configured directory.' }
-        if ((Get-FileHash -LiteralPath $localResolvedPath -Algorithm SHA256).Hash.ToLowerInvariant() -ne $localCheck[1]) { throw 'Local runtime checksum mismatch.' }
+        if ((Get-PdfFileSha256 -LiteralPath $localResolvedPath) -ne $localCheck[1]) { throw 'Local runtime checksum mismatch.' }
     }
     $localKeyPath = Join-Path $Runtime 'local-qwen-server.key'
     if (-not (Test-Path -LiteralPath $localKeyPath)) {

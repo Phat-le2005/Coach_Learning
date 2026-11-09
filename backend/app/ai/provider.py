@@ -14,6 +14,7 @@ class AIProvider(ABC):
     EduMS does NOT run local models. All provider implementations connect to remote APIs
     or supply deterministic mock responses during testing.
     """
+    manages_failover = False
 
     @abstractmethod
     async def generate(

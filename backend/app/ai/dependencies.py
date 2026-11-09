@@ -15,7 +15,7 @@ def create_ai_provider(settings: Settings) -> AIProvider:
     if provider_name == "mock":
         return MockAIProvider()
     if provider_name == "gemini":
-        return GeminiProvider(settings.ai_api_key.get_secret_value())
+        return GeminiProvider(settings=settings)
     raise AIConfigurationError("Unknown AI provider. Choose mock or gemini explicitly.")
 
 

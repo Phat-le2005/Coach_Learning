@@ -59,7 +59,7 @@ def layout_identity(pdf, runtime, dpi, *, model=None, source_sha=None):
                    'page_geometry': function_identity(Path(__file__).with_name('direct_pdf_ocr.py'), ['page_regions', 'pdf_box']),
                    'geometry_code': file_hash(Path(__file__).with_name('direct_pdf_regions.py')),
                    'text_layout': {name: file_hash(Path(__file__).parent / name)
-                                   for name in ['pdf_text_layout.py', 'native.py', 'paired/fast_native.py']}})
+                                   for name in ['pdf_text_layout.py', 'direct_pdf_boundaries.py', 'native.py', 'paired/fast_native.py']}})
 
 
 class Detector:
@@ -167,8 +167,9 @@ def _crop_page(image, box, width, height):
 
 
 def _build_record(crop, detections, *, output, pdf_box, box, pn, ri, dpi, source_sha,
-                  identity, raster, prediction_key, asset, image_sha, page, image_mode):
-    nodes = plan_visual_regions(crop, detections, dpi)
+                  identity, raster, prediction_key, asset, image_sha, page, image_mode, profile=None):
+    from .direct_pdf_boundaries import pixel_bands
+    nodes = plan_visual_regions(crop, detections, dpi, question_bands=pixel_bands(profile, box, crop))
     for order, node in enumerate(nodes):
         node['order'] = order
         node['bbox_pdf'] = pdf_box(node['bbox'], box, crop)
@@ -332,7 +333,8 @@ def prepare(pdf, runtime, output, *, pages='all', dpi=240, detector=None, model=
                             calls += 1
                         record = _build_record(crop, detections, output=output, pdf_box=pdf_box, box=box,
                             pn=pn, ri=ri, dpi=dpi, source_sha=source_sha, identity=identity, raster=raster,
-                            prediction_key=prediction_key, asset=asset, image_sha=image_sha, page=page, image_mode=image_mode)
+                            prediction_key=prediction_key, asset=asset, image_sha=image_sha, page=page,
+                            image_mode=image_mode, profile=profiles[pn])
                         write_json(record_path, record)
                         records.append(record)
                         if previous and previous.get('cache_version') != CACHE_VERSION:
@@ -362,12 +364,21 @@ def prepare(pdf, runtime, output, *, pages='all', dpi=240, detector=None, model=
 
 
 def main():
+    from .direct_pdf_metrics import PerformanceLog
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ['pdf', 'runtime', 'output']:
         parser.add_argument('--' + name, type=Path, required=True)
     parser.add_argument('--pages', default='all')
     parser.add_argument('--dpi', type=int, default=240)
-    prepare(**vars(parser.parse_args()))
+    args = parser.parse_args()
+    if args.output.resolve() in {args.pdf.resolve(), args.runtime.resolve()}:
+        raise ValueError('SEPARATE_OUTPUT_REQUIRED')
+    with PerformanceLog(args.output, args.runtime, name='layout') as metrics:
+        with metrics.stage('layout_prepare'):
+            result = prepare(**vars(args))
+        metrics.finish(counts={'processed_pages':len(result['selected_pages']),
+            'layout_model_calls_this_run':result['model_calls_this_run'],
+            'cache_hits_this_run':result['cache_hits_this_run']})
 
 
 if __name__ == '__main__':

@@ -20,6 +20,7 @@ class PdfReviewDecision(BaseModel):
 class PdfReviewSubmit(BaseModel):
     title: str = Field(min_length=1, max_length=255)
     decisions: list[PdfReviewDecision] = Field(max_length=10_000)
+    save_mode: Literal["NEW", "REPLACE"] = "NEW"
 
 
 class PdfImportQuestion(BaseModel):
@@ -51,6 +52,7 @@ class PdfImportRead(BaseModel):
     error: str | None = None
     material_id: UUID | None = None
     revision_of: UUID | None = None
+    revision_title: str | None = None
     progress: dict = Field(default_factory=dict)
     questions: list[PdfImportQuestion] = Field(default_factory=list)
     review: PdfReviewSubmit | None = None

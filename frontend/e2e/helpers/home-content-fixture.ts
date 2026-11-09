@@ -26,6 +26,9 @@ export async function renderHomeContent(page: Page, data: StudentHomeViewModel, 
     "../home-presentation": compile("home-presentation.ts"),
     "../copy": compile("copy.ts"),
     HomeToday: compile("components/HomeToday.tsx"),
+    "./PostAssessmentReminder": compile("components/PostAssessmentReminder.tsx"),
+    "@/features/math-workspace/utils/next-learning": compile("../math-workspace/utils/next-learning.ts"),
+    "./PostAssessmentReminder.module.css": `module.exports={__esModule:true,default:new Proxy({},{get:(_,key)=>'reminder-'+String(key)})};`,
     PriorityPath: compile("components/PriorityPath.tsx"),
     KnowledgeGarden: compile("components/KnowledgeGarden.tsx"),
     CoachCard: compile("components/CoachCard.tsx"),
@@ -34,6 +37,7 @@ export async function renderHomeContent(page: Page, data: StudentHomeViewModel, 
     "@/features/knowledge-forest/components/MathChapterIllustration": compile("../knowledge-forest/components/MathChapterIllustration.tsx"),
   };
   let styles = read(path.join(feature, "HomeRefresh.module.css")) + read(path.join(feature, "HomeContent.module.css"));
+  styles += read(path.join(feature, "components/PostAssessmentReminder.module.css")).replace(/\.([a-zA-Z][\w-]*)/g, ".reminder-$1");
   styles += read(path.join(feature, "components/StudyPlanRoadmapModal.module.css")).replace(/\.([a-zA-Z][\w-]*)/g, ".roadmap-$1");
   styles = styles.replace(/url\(['"]?\.\/assets\/([^'")]+)['"]?\)/g, (_, file: string) =>
     `url(data:font/woff2;base64,${fs.readFileSync(path.join(feature, "assets", file)).toString("base64")})`);

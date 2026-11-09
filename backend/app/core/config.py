@@ -2,7 +2,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any, Literal
 
-from pydantic import AliasChoices, AnyHttpUrl, Field, SecretStr, field_validator, model_validator
+from pydantic import AliasChoices, AnyHttpUrl, Field, PrivateAttr, SecretStr, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy import URL
 
@@ -10,6 +10,13 @@ BACKEND_DIR = Path(__file__).resolve().parents[2]
 
 
 class Settings(BaseSettings):
+    _gemini_env_file: Any = PrivateAttr(default=None)
+
+    def __init__(self, **values: Any) -> None:
+        env_file = values.get('_env_file', BACKEND_DIR / '.env')
+        super().__init__(**values)
+        self._gemini_env_file = env_file
+
     model_config = SettingsConfigDict(
         env_file=BACKEND_DIR / ".env",
         env_file_encoding="utf-8",
@@ -66,6 +73,23 @@ class Settings(BaseSettings):
     ai_api_key: SecretStr = SecretStr("")
     gemini_api_key: SecretStr = SecretStr("")
     gemini_api_keys: SecretStr = SecretStr("")
+    ai_api_keys: SecretStr = SecretStr("")
+    # SecretStr also masks JSON containing inline credentials. Prefer env references.
+    gemini_key_pool: SecretStr = SecretStr("")
+    gemini_model_priority: str = ""
+    gemini_grading_models: str = ""
+    gemini_failover_max_attempts: int = Field(default=18, ge=1, le=100)
+    gemini_attempt_timeout_seconds: float = Field(default=8, ge=.1, le=60)
+    gemini_tutor_attempt_timeout_seconds: float = Field(default=6, ge=.1, le=30)
+    gemini_ocr_attempt_timeout_seconds: float = Field(default=8, ge=.1, le=30)
+    gemini_review_attempt_timeout_seconds: float = Field(default=25, ge=.1, le=90)
+    gemini_ocr_total_timeout_seconds: float = Field(default=24, ge=1, le=90)
+    gemini_max_inflight_per_project_model: int = Field(default=4, ge=1, le=100)
+    gemini_cooldown_seconds: float = Field(default=15, ge=.1, le=300)
+    gemini_quota_cooldown_seconds: float = Field(default=60, ge=1, le=86400)
+    gemini_auth_cooldown_seconds: float = Field(default=600, ge=1, le=86400)
+    gemini_capabilities_file: Path | None = None
+    gemini_require_verified_models: bool = False
     ai_model_fast: str = Field(default="gemini-3.6-flash", min_length=1)
     ai_model_standard: str = Field(default="gemini-3.6-flash", min_length=1)
     ai_model_reasoning: str = Field(default="gemini-3.6-flash", min_length=1)
@@ -96,7 +120,7 @@ class Settings(BaseSettings):
         if not self.ai_api_key.get_secret_value().strip():
             value = self.gemini_api_key.get_secret_value().strip()
             if not value:
-                value = next((key.strip() for key in self.gemini_api_keys.get_secret_value().split(",") if key.strip()), "")
+                value = next((key.strip() for key in (self.ai_api_keys.get_secret_value() or self.gemini_api_keys.get_secret_value()).split(",") if key.strip()), "")
             self.ai_api_key = SecretStr(value)
         return self
 

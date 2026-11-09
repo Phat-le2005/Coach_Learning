@@ -409,6 +409,7 @@
   display: flex;
   flex-direction: column;
   min-height: 0;
+  min-width: 0;
   border-right: 1px solid #d2e5da;
   background: linear-gradient(180deg, #f9fcfa 0%, #eff7f3 100%);
   overflow: hidden;
@@ -1651,7 +1652,7 @@
   }
 
   .splitBody {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .timelineColumnHiddenMobile {
@@ -1668,7 +1669,20 @@
 
   .headerBar {
     padding: 0.65rem 0.9rem;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.65rem;
   }
+
+  .headerBrand { width: 100%; }
+  .headerTitle { font-size: 0.94rem; }
+  .statusPill { font-size: 0.65rem; }
+  .headerActions { flex-wrap: wrap; justify-content: flex-end; }
+  .timelineScrollArea { padding: 0.7rem 0.65rem 1.5rem; }
+  .timelineControlsWrap { padding: 0.6rem 0.8rem; }
+  .summaryPanel { min-width: 0; padding: 0.85rem; gap: 0.65rem; }
+  .summaryHeroRow { padding: 0.6rem; gap: 0.6rem; }
+  .summaryHeader { flex-wrap: wrap; gap: 0.4rem; }
 
   .headerSubtitle {
     display: none;
