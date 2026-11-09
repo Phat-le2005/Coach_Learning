@@ -15,29 +15,63 @@ from .pdf_text_layout import heading
 QUESTION = re.compile(r'^(?:Câu|Bài|Ví\s+dụ|Question|Example)\s*\d+[a-z]?(?=[\s.:)\-]|$)', re.I)
 ANSWER = re.compile(r'^(?:Đáp\s*(?:án|số)|Answer)\s*[:.]?\s*(.*)$', re.I)
 SOLUTION = re.compile(r'^(?:Lời\s+giải|Hướng\s+dẫn|Giải|Solution)\s*[:.]\s*(.+)$', re.I)
+ANSWER_KEY = re.compile(r'^(?:[a-d][).:]\s*)?(?:đúng|sai|true|false|[ĐSABCD])(?:\s*[,;.]?\s*)$', re.I)
 
 
 def bare_line(line):
     return re.sub(r'^[#>\s]+', '', line).strip().strip('*_').strip()
 
 
+class PrintedParts:
+    """Keep printed role context across crops/pages, including a short answer inset."""
+    def __init__(self):
+        self.role = None
+        self.solution_open = False
+        self.answer_in_solution = False
+        self.answer_has_value = False
+
+    def feed(self, markdown):
+        lines, explicit = [], False
+
+        def flush():
+            nonlocal lines, explicit
+            text = '\n'.join(lines).strip()
+            result = [(self.role, text, explicit)] if text else []
+            lines, explicit = [], False
+            return result
+
+        for line in markdown.splitlines():
+            plain = bare_line(line)
+            section = hint(plain)
+            role = ('heading' if heading(plain) else
+                    'question' if QUESTION.match(plain) else
+                    'solution' if (section and section['kind'] == 'SOLUTION') or SOLUTION.match(plain) else
+                    'answer' if ANSWER.match(plain) else None)
+            if role:
+                yield from flush()
+                if role in {'heading', 'question'}:
+                    self.solution_open = False
+                elif role == 'solution':
+                    self.solution_open = True
+                self.role, explicit = role, True
+                self.answer_in_solution = role == 'answer' and self.solution_open
+                self.answer_has_value = bool(ANSWER.match(plain)[1].strip()) if role == 'answer' else False
+            elif self.answer_in_solution and self.answer_has_value:
+                # A printed answer is an inset inside the solution. Resume the
+                # solution at a paragraph break, or before explanatory prose.
+                # Keep bare a/b/c/d answer keys together, including across crops.
+                if not plain or not ANSWER_KEY.fullmatch(plain):
+                    yield from flush()
+                    self.role, self.answer_in_solution = 'solution', False
+            elif self.answer_in_solution and plain:
+                self.answer_has_value = True
+            lines.append(line)
+        yield from flush()
+
+
 def pieces(markdown):
-    """Split only printed labels; do not infer answers or generate solution steps."""
-    current, lines = None, []
-    for line in markdown.splitlines():
-        plain = bare_line(line)
-        section = hint(plain)
-        role = ('heading' if heading(plain) else
-                'question' if QUESTION.match(plain) else
-                'solution' if (section and section['kind'] == 'SOLUTION') or SOLUTION.match(plain) else
-                'answer' if ANSWER.match(plain) else None)
-        if role:
-            if lines:
-                yield current, '\n'.join(lines).strip()
-            current, lines = role, []
-        lines.append(line)
-    if lines:
-        yield current, '\n'.join(lines).strip()
+    """Split printed labels; no solving or reconstruction of missing source text."""
+    yield from ((role, text) for role, text, _ in PrintedParts().feed(markdown))
 
 
 def empty_part():
@@ -53,12 +87,14 @@ def export_content(output, pages, source):
             assets = {n['visual_asset']['id']: dict(n['visual_asset']) for r in layout['regions']
                       for n in r['nodes'] if n.get('visual_asset')}
     current, role = None, None
+    splitter = PrintedParts()
     context = {}
     previous_page = None
     for page in pages:
         native_used = set()
         if previous_page is not None and page['page_number'] != previous_page + 1:
             current, role = None, None
+            splitter = PrintedParts()
             context = {}
         previous_page = page['page_number']
         for region in page['regions']:
@@ -66,13 +102,13 @@ def export_content(output, pages, source):
                 if block.get('visual_asset'):
                     assets[block['asset_id']] = dict(block['visual_asset'])
                 if block['kind'] in {'TABLE', 'VISUAL'}:
-                    parts = [(None, block['markdown'])]
+                    parts = [(splitter.role, block['markdown'], False)]
                 else:
-                    parts = pieces(block['markdown'])
-                for label, text in parts:
+                    parts = splitter.feed(block['markdown'])
+                for label, text, explicit in parts:
                     if not text:
                         continue
-                    if label == 'heading':
+                    if label == 'heading' and explicit:
                         found = heading(bare_line(text.splitlines()[0]))
                         if found:
                             found.update(page_number=page['page_number'], bbox=block['bbox'],
@@ -90,7 +126,7 @@ def export_content(output, pages, source):
                         unassigned.append({'page_number': page['page_number'], 'block': block, 'markdown': text,
                                            'reason': 'PRINTED_HEADING_CONTEXT'})
                         continue
-                    if label == 'question':
+                    if label == 'question' and explicit:
                         match = re.search(r'(?:Câu|Bài|Ví\s+dụ|Question|Example)\s*(\d+)', bare_line(text), re.I)
                         source_number = int(match[1]) if match else None
                         native_index = next((i for i, c in enumerate(page.get('question_contexts', []))

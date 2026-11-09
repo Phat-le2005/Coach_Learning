@@ -3,6 +3,7 @@
 from fastapi import Request
 from app.core.config import Settings, get_settings
 from app.core.exceptions import ApplicationError
+from app.ai.gemini_failover import get_gemini_manager, PoolUnavailable
 from app.math_ocr.adapter import MathOCRAdapter, MockMathOCRAdapter
 from app.math_ocr.gemini_adapter import GeminiMathOCRAdapter
 from app.math_ocr.mathpix_adapter import MathpixStrokesAdapter
@@ -15,16 +16,15 @@ def get_ocr_adapter(settings: Settings | None = None) -> MathOCRAdapter:
     provider = settings.math_ocr_provider
 
     if provider == "gemini":
-        has_api_key = bool(
-            settings.ai_api_key.get_secret_value()
-            if settings.ai_api_key
-            else False
-        )
-        if not has_api_key and settings.app_env == "test":
+        try:
+            manager = get_gemini_manager(settings)
+        except PoolUnavailable:
+            raise ApplicationError(503, 'OCR_NOT_CONFIGURED', 'Gemini key pool configuration is invalid.') from None
+        if not manager.credentials and settings.app_env == "test":
             return MockMathOCRAdapter()
         return GeminiMathOCRAdapter(
             settings=settings,
-            api_key=settings.ai_api_key.get_secret_value(),
+            manager=manager,
             model_name=getattr(settings, "gemini_ocr_model", "gemini-3.8-flash"),
             fast_mode=getattr(settings, "gemini_ocr_fast_mode", True),
         )

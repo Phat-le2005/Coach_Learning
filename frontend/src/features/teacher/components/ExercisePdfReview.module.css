@@ -8,6 +8,8 @@
 .state summary, .editor summary, .warnings summary { cursor: pointer; padding: 12px 0; font-weight: 600; }
 .summary { font-size: 16px; color: var(--text-primary, #243c2d); }
 .summary strong { font-size: 24px; }
+.bulkApproval { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+.bulkApproval .editHint { flex: 1 1 240px; margin: 0; }
 .filter { display: flex; align-items: center; gap: 12px; margin-top: 20px; font-size: 14px; }
 .filter select { width: auto; max-width: 100%; }
 .questions { display: grid; gap: 20px; padding: 0 24px 24px; }
