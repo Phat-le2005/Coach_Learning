@@ -1,0 +1,20 @@
+const fs=require('fs'),path=require('path');const{chromium,expect}=require('../toolchain/node_modules/@playwright/test');
+const R=__dirname,p=JSON.parse(fs.readFileSync(path.join(R,'private.json'),'utf8')),BASE='http://127.0.0.1:3150';
+(async()=>{const b=await chromium.launch({channel:'msedge'});const report={};try{
+ const c=await b.newContext({viewport:{width:1920,height:1080}}),a=await c.newPage();
+ await a.goto(BASE+'/login');await a.locator('input[name=email]').fill(p.student.email);await a.locator('input[name=password]').fill(p.password);await a.locator('button[type=submit]').click();await a.waitForURL(u=>!u.pathname.startsWith('/login'),{timeout:60000});
+ await a.goto(BASE+'/student/attempts/'+p.attempt_id);await a.getByRole('button',{name:'Trích xuất trang (OCR)',exact:true}).waitFor({timeout:60000});
+ let started=Date.now();const pending=a.waitForResponse(r=>r.url().includes('/ocr/recognize')&&r.request().method()==='POST',{timeout:120000});await a.getByRole('button',{name:'Trích xuất trang (OCR)',exact:true}).click();const r=await pending,data=await r.json();
+ report.ocr={http:r.status(),seconds:(Date.now()-started)/1000};fs.writeFileSync(path.join(R,'actual-ocr-ui.json'),JSON.stringify(data,null,2));
+ if(!r.ok())throw Error('OCR HTTP '+r.status());
+ const review=a.getByTestId('ocr-v2-main-review');await expect(review).toHaveAttribute('aria-busy','false');
+ await expect(review.getByTestId('ocr-v2-unit')).toHaveCount(2);
+ if(!data.latex.replace(/\s/g,'').includes('+3'))throw Error('Expected handwritten sign not preserved; manual source review needed');
+ for(let i=0;i<2;i++)await review.getByTestId('ocr-v2-unit').nth(i).click();
+ await review.getByTestId('ocr-v2-boundary').check();await expect(review.getByTestId('ocr-v2-prepare-save')).toBeEnabled();await a.screenshot({path:path.join(R,'scene-ocr-confirmed.png')});
+ await review.getByTestId('ocr-v2-prepare-save').click();await expect(review.getByText('Đã lưu 2 bước giải vào bài làm',{exact:true})).toBeVisible({timeout:30000});report.saveConfirmedSteps='PASS';
+ await review.getByRole('button',{name:'Đóng & tiếp tục',exact:true}).click();
+ started=Date.now();const grading=a.waitForResponse(r=>r.url().includes('/ai-review')&&r.request().method()==='POST',{timeout:150000});await a.locator('aside').getByRole('button',{name:'Nộp bài & kiểm tra',exact:true}).click();const gr=await grading,grade=await gr.json();
+ fs.writeFileSync(path.join(R,'actual-grade.json'),JSON.stringify(grade,null,2));report.grading={http:gr.status(),seconds:(Date.now()-started)/1000,isFinal:grade.is_final,steps:grade.step_grades?.length};
+ await a.screenshot({path:path.join(R,'scene-feedback.png')});await c.storageState({path:path.join(R,'student-session.private.json')});await c.close();
+ }catch(e){report.failure=e.message.slice(0,700);process.exitCode=1;}finally{await b.close();fs.writeFileSync(path.join(R,'solution-report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report));}})();

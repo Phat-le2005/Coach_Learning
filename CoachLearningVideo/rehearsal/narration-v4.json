@@ -1,0 +1,80 @@
+{
+  "voice": "Charon",
+  "model": "gemini-2.5-flash-preview-tts",
+  "totalSeconds": 180,
+  "direction": "Bạn là người thuyết minh NAM trưởng thành, khoảng 30 tuổi. Đọc hoàn toàn bằng giọng miền Nam Việt Nam, Sài Gòn tự nhiên, trầm vừa, ấm, rõ và gần gũi như đang giới thiệu sản phẩm cho người ngồi cạnh. Giữ cùng một chất giọng xuyên suốt. Nhịp nói thong thả vừa phải, khoảng 3 tiếng mỗi giây; không đọc kiểu bản tin, không quảng cáo hào hứng. Ngắt nhẹ giữa các vế, dừng rõ ở dấu chấm. Chỉ nhấn những từ mang ý nghĩa, không nhấn mọi câu. Coach Learning đọc gần như Câu-ch Lơ-ning. Math View đọc gần như Mát Viu. Chỉ đọc nguyên văn nội dung, không thêm lời giới thiệu hoặc đọc chỉ dẫn.",
+  "scenes": [
+    {
+      "id": "01-hook",
+      "start": 0,
+      "duration": 8,
+      "lead": 0.2,
+      "delivery": "Mở gần gũi, gợi suy nghĩ. Nhấn nhẹ 'sai chỗ nào', hạ giọng cuối câu.",
+      "text": "Làm toán, biết đáp án thôi chưa đủ. Mình còn cần biết sai chỗ nào, và nên học tiếp ra sao.",
+      "cue": "Dòng đạo hàm sai → trang chủ; giữ hình sau câu hỏi ngầm."
+    },
+    {
+      "id": "02-plan",
+      "start": 8,
+      "duration": 25,
+      "lead": 0.5,
+      "delivery": "Giọng dẫn chuyện. Nhấn 'tám điểm' và 'ba mươi phút'. Dừng ngắn trước khi nói về vũ trụ tri thức.",
+      "text": "Với Coach Learning, Minh Anh bắt đầu từ mục tiêu tám điểm, cùng ba mươi phút học mỗi ngày. Em xem kế hoạch, rồi chọn nội dung cần tập trung. Vũ trụ tri thức giúp nhìn các mảng kiến thức theo từng nhánh. Từ đây, mình mở chủ đề đạo hàm và đi thẳng vào phần cần ôn.",
+      "cue": "Toàn cảnh → hover mục tiêu → kế hoạch → cây kiến thức → nhánh đạo hàm."
+    },
+    {
+      "id": "03-theory",
+      "start": 33,
+      "duration": 16,
+      "lead": 0.4,
+      "delivery": "Rõ ràng, nhịp nhẹ. Mỗi hình thức tra cứu một ý; không đọc như liệt kê nút bấm.",
+      "text": "Trước khi làm bài, Minh Anh mở lại phần lý thuyết. Sơ đồ giúp tìm nhanh ý chính; sổ tay giữ công thức và ví dụ. Khi cần kiểm tra, em xem ngay tài liệu nguồn.",
+      "cue": "Sơ đồ → một nhánh → sổ tay → nguồn. Chừa khoảng yên để đọc công thức."
+    },
+    {
+      "id": "04-mathview",
+      "start": 49,
+      "duration": 26,
+      "lead": 0.5,
+      "delivery": "Tò mò vừa phải. Dừng sau 'điều chỉnh tham số' để hình thay đổi rồi mới giải thích. Không tỏ ra kinh ngạc quá mức.",
+      "text": "Còn với những nội dung cần nhìn trực quan, mình mở Math View. Từ công thức mặt cong, học sinh có thể xoay hình và điều chỉnh tham số. Hình thay đổi ngay trước mắt, giúp các em khám phá mối liên hệ giữa công thức và hình dạng. Chọn được góc nhìn phù hợp, mình lưu hình vào bài học để xem lại.",
+      "cue": "Mở công cụ → công thức mặt cong → đổi tham số → xoay nhẹ → dừng → lưu hình."
+    },
+    {
+      "id": "05-handwriting",
+      "start": 75,
+      "duration": 50,
+      "lead": 0.5,
+      "delivery": "Đây là cảnh trọng tâm: bình tĩnh, hướng sự chú ý theo từng bước. Nhấn 'giữ nguyên' và 'đã viết'. Dừng sau câu mô tả đồng bộ và trước câu cuối. Không đọc các ghi chú kỹ thuật trên hình.",
+      "text": "Đến phần làm bài, Minh Anh viết trực tiếp lên trang giấy số. Kết nối thêm một màn hình làm bảng viết, từng nét được đồng bộ sang màn hình chính. Ở bước đạo hàm, mình cố ý viết sai một dấu. Sau khi nhận diện chữ viết, hệ thống tách nội dung thành các bước. Học sinh đối chiếu bản chép với nét gốc, kiểm tra công thức và thứ tự. Nếu nhận diện chưa đúng, mình sửa lại trước khi lưu. Dấu cộng ở đây vẫn được giữ nguyên, vì đó là điều học sinh đã viết. Nhận diện xong chưa có nghĩa là bài giải đúng. Mình xác nhận hai bước, rồi nộp để nhận góp ý.",
+      "cue": "Ghép nối → nét đồng bộ → hai dòng viết → OCR → đối chiếu +3 → xác nhận/lưu → nộp. Nhãn hai trình duyệt mô phỏng hai thiết bị; nhãn rút ngắn chờ OCR."
+    },
+    {
+      "id": "06-feedback",
+      "start": 125,
+      "duration": 23,
+      "lead": 0.6,
+      "delivery": "Chậm hơn ở câu giải thích toán. Nhấn đối chiếu 'trừ ba' và 'cộng ba', nghỉ ngắn giữa hai vế. Giọng hỗ trợ, không phán xét học sinh. Nói rõ trạng thái tham khảo.",
+      "text": "Bước ghi lại đề bài phù hợp, còn bước đạo hàm cần xem lại. Hệ thống chỉ rõ: đạo hàm của trừ ba x phải là trừ ba, trong khi Minh Anh viết cộng ba. Góp ý gắn với đúng bước làm, giúp em biết cần sửa chỗ nào. Đây là nhận xét tham khảo, chưa phải điểm chính thức.",
+      "cue": "Bước 1 → bước 2 → giữ lời giải thích dấu → nhãn chưa có điểm chính thức."
+    },
+    {
+      "id": "07-teacher",
+      "start": 148,
+      "duration": 26,
+      "lead": 0.5,
+      "delivery": "Chuyển sang giọng kể khép vòng, rõ vai trò giáo viên. Nhấn 'cùng bài nộp' và 'xem, duyệt'. Không đọc điểm AI gợi ý thành điểm chính thức.",
+      "text": "Hoàn tất những câu còn lại, Minh Anh nộp toàn bộ bài được giao. Ở phía giáo viên, cô Thu Hà quản lý lớp, học liệu và bài tập trong cùng một không gian. Cô mở danh sách lớp, theo dõi tình trạng làm bài, rồi xem, duyệt cùng bài nộp của Minh Anh. Từ việc học đến phản hồi của thầy cô, cả quá trình được nối lại rõ ràng.",
+      "cue": "Nộp toàn bộ → lớp 12A1 → học liệu/lý thuyết đã có → bài giao → 1 bài nộp → Minh Anh chờ GV duyệt."
+    },
+    {
+      "id": "08-close",
+      "start": 174,
+      "duration": 6,
+      "lead": 0.1,
+      "delivery": "Chốt gọn, ấm, chắc; không lên giọng khẩu hiệu. Nhấn 'định hướng' và 'phản hồi'.",
+      "text": "Coach Learning. H?c c? ??nh h??ng, l?m b?i c? ph?n h?i.",
+      "cue": "Ba hình kế hoạch/bài viết/giáo viên → tên sản phẩm; giữ cuối ít nhất nửa giây nếu đủ."
+    }
+  ]
+}

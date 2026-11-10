@@ -1,0 +1,72 @@
+{
+  "brand": "Math Mate",
+  "base": "user-selected narration-v4-180s.mp3 unpaced structure",
+  "timelineSeconds": 180,
+  "speed": 1,
+  "records": [
+    {
+      "id": "01-hook",
+      "changedBrand": false,
+      "seconds": 6.6375,
+      "tail": 1.163,
+      "source": "C:\\CoachLearningVideo\\rehearsal\\voice-v4\\01-hook-trim.wav",
+      "sha256": "24bac6424901685f55991ca00eff7575b14854850bd53ea6c83fbb77c43ae0cc"
+    },
+    {
+      "id": "02-plan",
+      "changedBrand": true,
+      "seconds": 19.0444,
+      "tail": 5.456,
+      "source": "C:\\CoachLearningVideo\\rehearsal\\voice-mathmate\\02-plan.wav",
+      "sha256": "3f0451179267846306d6e5841aa846b288482bc361935b74356a64d8ab3b82af"
+    },
+    {
+      "id": "03-theory",
+      "changedBrand": false,
+      "seconds": 10.4688,
+      "tail": 5.131,
+      "source": "C:\\CoachLearningVideo\\rehearsal\\voice-v4\\03-theory-trim.wav",
+      "sha256": "3c8f1989d02c915c140adb1de4ec1e6a21d271539c4461875ef2327a1f49bdd9"
+    },
+    {
+      "id": "04-mathview",
+      "changedBrand": false,
+      "seconds": 17.8328,
+      "tail": 7.667,
+      "source": "C:\\CoachLearningVideo\\rehearsal\\voice-v4\\04-mathview-trim.wav",
+      "sha256": "a23e74fef00099b28fa231e3e256d047cb688be70a1c70d8259753be821821a8"
+    },
+    {
+      "id": "05-handwriting",
+      "changedBrand": false,
+      "seconds": 34.0944,
+      "tail": 15.406,
+      "source": "C:\\CoachLearningVideo\\rehearsal\\voice-v4\\05-handwriting-trim.wav",
+      "sha256": "07aee8ba1375a6b84f8545ad14bc1861eaaecbfe788c1414092faf5d6abd6c77"
+    },
+    {
+      "id": "06-feedback",
+      "changedBrand": false,
+      "seconds": 19.5943,
+      "tail": 2.806,
+      "source": "C:\\CoachLearningVideo\\rehearsal\\voice-v4\\06-feedback-trim.wav",
+      "sha256": "7c47ea65a52ef5dcdb97e85e9a0db3d60b04f4c8ae08f4ce1ef4e72b69a5610a"
+    },
+    {
+      "id": "07-teacher",
+      "changedBrand": false,
+      "seconds": 20.2008,
+      "tail": 5.299,
+      "source": "C:\\CoachLearningVideo\\rehearsal\\voice-v4\\07-teacher-trim.wav",
+      "sha256": "ea503e60820c14fceac822ecdf0dbbab797f0355a22c48aedd04986349ec3468"
+    },
+    {
+      "id": "08-close",
+      "changedBrand": true,
+      "seconds": 4.4084,
+      "tail": 1.492,
+      "source": "C:\\CoachLearningVideo\\rehearsal\\voice-mathmate\\08-close.wav",
+      "sha256": "0f61e7be163416754498a70002d720b46791fc857f8a17bfd2d383c223d0a9e4"
+    }
+  ]
+}

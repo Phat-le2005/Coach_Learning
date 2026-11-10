@@ -1,0 +1,39 @@
+{
+  "segments": [
+    {
+      "name": "login",
+      "start": 2.681,
+      "duration": 2.514
+    },
+    {
+      "name": "classroom",
+      "start": 12.338,
+      "duration": 19.005
+    },
+    {
+      "name": "material",
+      "start": 36.088,
+      "duration": 3.008
+    },
+    {
+      "name": "configure",
+      "start": 39.26,
+      "duration": 13.002
+    },
+    {
+      "name": "confirm",
+      "start": 52.263,
+      "duration": 1.501
+    },
+    {
+      "name": "published",
+      "start": 54.793,
+      "duration": 4
+    }
+  ],
+  "assignmentTitle": "Đạo hàm — luyện tập có hướng dẫn",
+  "assignmentId": "5b75ecff-91a7-41f8-b1ca-06f6a731d59e",
+  "dueAt": "2026-11-15T13:00:00Z",
+  "status": "PASS",
+  "raw": "C:\\CoachLearningVideo\\production\\scene00-v2\\raw\\page@77a0e4ca1759034d6fc9f2a8a57b7f26.webm"
+}

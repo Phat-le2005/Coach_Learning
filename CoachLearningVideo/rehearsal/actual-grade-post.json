@@ -1,0 +1,25 @@
+{
+  "attempt_id": "c10de43d-fe69-4cba-be1d-3ce445ddcd6a",
+  "step_grades": [
+    {
+      "step_index": 1,
+      "verdict": "VALID",
+      "score": null,
+      "confidence": 1.0,
+      "feedback": "Ghi lại đúng đề bài hàm số cần tính đạo hàm.",
+      "error_nature": null
+    },
+    {
+      "step_index": 2,
+      "verdict": "INVALID",
+      "score": null,
+      "confidence": 1.0,
+      "feedback": "Tính sai dấu ở số hạng thứ hai. Đạo hàm của -3x phải là -3 chứ không phải +3. Kết quả đúng phải là y' = 3x^2 - 3.",
+      "error_nature": "ARITHMETIC_SLIP"
+    }
+  ],
+  "needs_teacher_review": false,
+  "is_final": false,
+  "review_source": "ANSWER_GROUNDED_AI",
+  "final_score": null
+}

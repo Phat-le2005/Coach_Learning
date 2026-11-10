@@ -1,0 +1,30 @@
+# Reproducible dependencies, local credentials and private capture state.
+node_modules/
+.venv/
+venv/
+.next*/
+__pycache__/
+.pytest_cache/
+.env
+.env.*
+*.private.*
+private.json
+*.log
+*.pid
+*.key
+*.pem
+*.tsbuildinfo
+raw/
+raw-*/
+capture-frontend/
+rehearsal/storage/
+rehearsal/teacher-qa-report.json
+
+# This archive intentionally versions published demo media and render inputs.
+!**/out/
+!**/out/**
+!*.mp4
+!*.webm
+!*.png
+!*.jpg
+!*.jpeg

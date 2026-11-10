@@ -1,0 +1,16 @@
+{
+  "Charon": {
+    "http": 200,
+    "requestedGender": "male",
+    "requestedAccent": "Southern Vietnamese",
+    "accentHumanVerified": false,
+    "seconds": 14.410958333333333
+  },
+  "Orus": {
+    "http": 200,
+    "requestedGender": "male",
+    "requestedAccent": "Southern Vietnamese",
+    "accentHumanVerified": false,
+    "seconds": 15.930958333333333
+  }
+}

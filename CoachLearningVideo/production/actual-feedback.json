@@ -1,0 +1,25 @@
+{
+  "attempt_id": "4efd78f2-cb35-4011-bbad-f27a641592f2",
+  "step_grades": [
+    {
+      "step_index": 1,
+      "verdict": "VALID",
+      "score": null,
+      "confidence": 1,
+      "feedback": "Ghi lại chính xác hàm số từ đề bài.",
+      "error_nature": null
+    },
+    {
+      "step_index": 2,
+      "verdict": "INVALID",
+      "score": null,
+      "confidence": 1,
+      "feedback": "Tính nhầm dấu khi lấy đạo hàm của -3x (kết quả đúng là -3, không phải +3).",
+      "error_nature": "ARITHMETIC_SLIP"
+    }
+  ],
+  "needs_teacher_review": false,
+  "is_final": false,
+  "review_source": "ANSWER_GROUNDED_AI",
+  "final_score": null
+}

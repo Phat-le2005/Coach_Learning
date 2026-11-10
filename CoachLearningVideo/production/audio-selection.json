@@ -1,0 +1,11 @@
+{
+  "selectedBase": "narration-v4-180s.mp3, unpaced version chosen by user",
+  "userAmendment": "Replace spoken Coach Learning with Math Mate; correct closing Vietnamese spelling",
+  "source": "C:\\CoachLearningVideo\\rehearsal\\voice-mathmate\\mathmate-narration-180s.mp3",
+  "productionFile": "C:\\CoachLearningVideo\\production\\public\\audio\\narration.mp3",
+  "sha256": "8b5177619b3732ab2c460da8e22adec4d3e106d69f0603d34be2fd1783b02665",
+  "preservedClips": 6,
+  "replacedClips": 2,
+  "speechSpeed": 1,
+  "timelineSeconds": 180
+}

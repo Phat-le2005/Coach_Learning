@@ -1,0 +1,24 @@
+{
+  "patch": "C:\\CoachLearningVideo\\production\\out\\theory-patch.mp4",
+  "durationSeconds": 16,
+  "originalGlobalFrameRange": [
+    990,
+    1469
+  ],
+  "sourceIntervalsSeconds": [
+    [
+      0,
+      3
+    ],
+    [
+      12,
+      20.5
+    ]
+  ],
+  "sourceDurationSeconds": 11.5,
+  "authenticLastFrameHoldSeconds": 4.5,
+  "loadingFramesIncluded": false,
+  "originalSourceBackup": "C:\\CoachLearningVideo\\production\\revision\\theory\\original-theory.mp4",
+  "visualQa": "C:\\CoachLearningVideo\\production\\revision\\theory\\patch-six-seconds.png",
+  "apiCalls": 0
+}

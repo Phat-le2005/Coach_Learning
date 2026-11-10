@@ -1,0 +1,24 @@
+[
+  {
+    "id": "intro",
+    "text": "Có lời giải chưa chắc đã hiểu bài. Học sinh dễ lệ thuộc đáp án, thầy cô khó theo sát từng bước. Math Mate đồng hành để các em tự giải và hiểu cách làm.",
+    "target": 12,
+    "delivery": "Đọc mở đầu hơi nhanh, khoảng ba phẩy bốn tiếng mỗi giây, rõ ràng. Nhấn hiểu bài, tự giải. Không kéo dài chữ.",
+    "seconds": 10.423625,
+    "wav": "C:\\CoachLearningVideo\\production\\revision\\audio\\intro.wav",
+    "mp3": "C:\\CoachLearningVideo\\production\\revision\\audio\\intro.mp3",
+    "voice": "Charon",
+    "speechSpeed": 1
+  },
+  {
+    "id": "teacher00",
+    "text": "Với giáo viên, cô Thu Hà quản lý lớp và học liệu trong cùng một không gian. Cô chọn bài luyện tập, đặt hạn nộp, rồi giao cho học sinh. Minh Anh nhận được bài mới cùng thời gian hoàn thành. Thầy cô tiếp tục theo dõi quá trình làm bài ngay tại đây.",
+    "target": 21,
+    "delivery": "Nhịp vừa phải, gần gũi. Nhấn chọn bài, đặt hạn nộp, giao cho học sinh. Ngắt rõ mỗi câu.",
+    "seconds": 16.130958333333332,
+    "wav": "C:\\CoachLearningVideo\\production\\revision\\audio\\teacher00.wav",
+    "mp3": "C:\\CoachLearningVideo\\production\\revision\\audio\\teacher00.mp3",
+    "voice": "Charon",
+    "speechSpeed": 1
+  }
+]

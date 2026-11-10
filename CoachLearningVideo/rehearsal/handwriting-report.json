@@ -1,0 +1,20 @@
+{
+  "pairing": "PASS",
+  "handwriting": {
+    "status": "PASS",
+    "strokes": 23,
+    "expectedLines": [
+      "y=x^3-3x",
+      "y'=3x^2+3"
+    ],
+    "input": "browser pointer replay"
+  },
+  "ocr": {
+    "http": 503,
+    "seconds": 3.237
+  },
+  "review": {
+    "units": 1,
+    "text": "GEMINI OCR · TRANG 1\nKiểm tra bản chép\n\nĐối chiếu nét gốc, sửa nội dung rồi lưu vào bài làm.\n\nNhận diện\nĐối chiếu & sửa\nLưu bước giải\nĐã lưu bản chép trên thiết bị\nApiResponseError: Gemini chưa nhận diện được nét viết. Em có thể sửa bản chép thủ công hoặc thử lại.\nNét viết gốc\nTrang 1\n\nGiữ nguyên nét viết để đối chiếu từng ký hiệu.\n\nBước 1 · Bản chép chưa tách bước\nBước tự do · 23 nét\nCần đối chiếu\nKết quả Gemini ban đầu\nNhận diện lại bằng Gemini\nBản chép của em\nCông thức toán\nLời văn\nChưa phân loại\nCông thức của em\nBấm vào công thức để sửa số/biến, hoặc dùng các phím ký hiệu bên dưới\n\nĐang mở ô công thức…\n\nÔ tiếp\nXóa\n𝑦\n′\ny\n′\n𝑥\n2\nx\n2\n𝑥\n𝑛\nx\nn\n𝑎\n𝑏\nb\na\n\t​\n\n𝑥\nx\n\t​\n\n𝑥\n𝑛\nn\nx\n\t​\n\n⇔\n⇔\n⇒\n⇒\n[\n𝑎\n\n\n𝑏\n[\na\nb\n\t​\n\n{\n𝑎\n\n\n𝑏\n{\na\nb\n\t​\n\n≠\n\n=\n≤\n≤\n≥\n≥\n±\n±\n∈\n∈\n∞\n∞\n𝑅\nR\nlim\n⁡\nlim\n∫\n∫\n𝜋\nπ\nThêm ký hiệu nâng cao (Lượng giác, Véc-tơ, Hy Lạp…)\nMã LaTeX (dành cho em đã quen)\nXem bản trình bày khi nộp bài\nThứ tự & phân chia nâng cao\nEm đã đối chiếu nội dung, cách chia và thứ tự các bước giải.\nLoại bước đang chọn\nChọn loại bước…\nGiả thiết / điều kiện\nTính đạo hàm\nTìm nghiệm\nBảng xét dấu\nBảng biến thiên\nKết luận\nDiễn giải\nBước tự do\nXuất bản chép\nXác nhận & lưu bước"
+  }
+}

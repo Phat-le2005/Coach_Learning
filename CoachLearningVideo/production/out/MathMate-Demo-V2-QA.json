@@ -1,0 +1,20 @@
+{
+  "file": "C:\\CoachLearningVideo\\production\\out\\MathMate-Demo-V2-1080p.mp4",
+  "durationSeconds": 203.0,
+  "resolution": "1920x1080",
+  "fps": "30/1",
+  "videoCodec": "h264",
+  "audioCodec": "aac",
+  "fullDecode": "PASS",
+  "captionCount": 44,
+  "sourcePreserved": "C:\\CoachLearningVideo\\production\\out\\MathMate-Demo-1080p.mp4",
+  "newIntroSeconds": 11,
+  "newTeacherSceneSeconds": 20,
+  "teacherDueAt": "2026-11-15T20:00:00+07:00",
+  "teacherPublishedViaRealUI": true,
+  "studentReceivedRealAssignment": true,
+  "theoryLoadingRemoved": true,
+  "remainingOldFootageAndNarrationPreserved": true,
+  "bytes": 27893191,
+  "sha256": "5c79fa6d0d2f5240fe988069d7d2ff1decd7c0cb88759280e40d59ed525720d7"
+}

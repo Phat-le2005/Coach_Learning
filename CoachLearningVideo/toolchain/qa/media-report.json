@@ -1,0 +1,15 @@
+{
+  "codec": "h264",
+  "width": 1920,
+  "height": 1080,
+  "fps": "30/1",
+  "pixelFormat": "yuv420p",
+  "seconds": 1.433333,
+  "acceleratedSeconds": 0.733333,
+  "subtitleBurn": "PASS",
+  "voiceMp3": "PASS",
+  "muxCodecs": [
+    "h264",
+    "aac"
+  ]
+}

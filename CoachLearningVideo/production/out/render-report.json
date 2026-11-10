@@ -1,0 +1,48 @@
+{
+  "status": "RENDERED",
+  "file": "C:\\CoachLearningVideo\\production\\out\\MathMate-Demo-1080p.mp4",
+  "sha256": "8e57fe530e7ee30dd538efadadeda906d3f7ee0a6fc86476f4a4729274ac4a08",
+  "technicalProbe": {
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "codec_name": "h264",
+        "codec_type": "video",
+        "width": 1920,
+        "height": 1080,
+        "pix_fmt": "yuvj420p",
+        "avg_frame_rate": "30/1",
+        "duration": "180.000000",
+        "side_data_list": [
+          {}
+        ]
+      },
+      {
+        "codec_name": "aac",
+        "codec_type": "audio",
+        "sample_rate": "48000",
+        "channels": 2,
+        "avg_frame_rate": "0/0",
+        "duration": "180.011000"
+      }
+    ],
+    "format": {
+      "duration": "180.011000",
+      "size": "38162912"
+    }
+  },
+  "composition": "CoachLearningDemo",
+  "editorialBrand": "MathMate",
+  "frames": 5400,
+  "fps": 30,
+  "narrationSource": "public/audio/narration.mp3",
+  "narrationSha256": "8b5177619b3732ab2c460da8e22adec4d3e106d69f0603d34be2fd1783b02665",
+  "captions": 38,
+  "mediaQaStills": [
+    "out/frame-2460.png",
+    "out/frame-4080.png"
+  ],
+  "stillVisualReview": "PASS",
+  "fullDecodeVerification": "Parent handles verify-final.py; not duplicated here"
+}

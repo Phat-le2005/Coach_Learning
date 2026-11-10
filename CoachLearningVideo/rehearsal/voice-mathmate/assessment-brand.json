@@ -1,0 +1,24 @@
+{
+  "kind": "automated audio assessment, not human review",
+  "http": 200,
+  "assessment": [
+    {
+      "id": "02-plan",
+      "literal_transcript": "Với Math Mate, Minh Anh bắt đầu từ mục tiêu tám điểm, cùng ba mươi phút học mỗi ngày. Em xem kế hoạch rồi chọn nội dung cần tập trung. Vũ trụ tri thức giúp nhìn các mảng kiến thức theo từng nhánh. Từ đây, mình mở chủ đề đạo hàm và đi thẳng vào phần cần ôn.",
+      "content_matches_intended": true,
+      "perceived_gender": "male",
+      "perceived_accent": "southern",
+      "brand_pronunciation": "Math Mate pronounced clearly and correctly as intended.",
+      "issues": []
+    },
+    {
+      "id": "08-close",
+      "literal_transcript": "Math Mate. Học có định hướng, làm bài có phản hồi.",
+      "content_matches_intended": true,
+      "perceived_gender": "male",
+      "perceived_accent": "southern",
+      "brand_pronunciation": "Math Mate pronounced clearly and correctly as intended.",
+      "issues": []
+    }
+  ]
+}

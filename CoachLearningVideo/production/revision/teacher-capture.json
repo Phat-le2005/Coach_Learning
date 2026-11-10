@@ -1,0 +1,28 @@
+{
+  "segments": [
+    {
+      "name": "overview",
+      "start": 26.517,
+      "duration": 4.01
+    },
+    {
+      "name": "configure",
+      "start": 31.832,
+      "duration": 8
+    },
+    {
+      "name": "published",
+      "start": 43.725,
+      "duration": 5.004
+    }
+  ],
+  "assignmentId": "24c50f85-995c-405e-bdfd-d83be8af3fe3",
+  "dueAt": "2026-11-15T13:00:00Z",
+  "teacherRaw": "C:\\CoachLearningVideo\\production\\revision\\raw\\page@612748871a4a00a576eefd73953031cc.webm",
+  "studentSegment": {
+    "start": 8.659,
+    "duration": 4.5
+  },
+  "status": "PASS",
+  "lastRaw": "C:\\CoachLearningVideo\\production\\revision\\raw\\page@6db3a66a889dde96ee17b3a581deed8c.webm"
+}

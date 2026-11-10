@@ -1,0 +1,8 @@
+{
+  "ocr": {
+    "http": 200,
+    "seconds": 8.976
+  },
+  "saveConfirmedSteps": "PASS",
+  "failure": "page.waitForResponse: Timeout 150000ms exceeded while waiting for event \"response\""
+}

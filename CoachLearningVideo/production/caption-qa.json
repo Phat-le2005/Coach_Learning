@@ -1,0 +1,185 @@
+{
+  "captionCount": 38,
+  "nonOverlapping": true,
+  "maxCharacters": 72,
+  "maxEndMs": 178373,
+  "timingMethod": "Manual sentence matching to actual waveform silence; proportional text units within split long sentences; unpaced actual start+lead",
+  "scenes": [
+    {
+      "id": "01-hook",
+      "audioSeconds": 6.6375,
+      "sentenceAnchors": [
+        [
+          0.128,
+          2.566
+        ],
+        [
+          3.092,
+          6.408
+        ]
+      ]
+    },
+    {
+      "id": "02-plan",
+      "audioSeconds": 19.0444,
+      "sentenceAnchors": [
+        [
+          0.127,
+          5.74
+        ],
+        [
+          6.413,
+          9.535
+        ],
+        [
+          10.222,
+          13.798
+        ],
+        [
+          14.484,
+          18.922
+        ]
+      ]
+    },
+    {
+      "id": "03-theory",
+      "audioSeconds": 10.4688,
+      "sentenceAnchors": [
+        [
+          0.121,
+          2.672
+        ],
+        [
+          3.224,
+          7.057
+        ],
+        [
+          7.812,
+          10.332
+        ]
+      ]
+    },
+    {
+      "id": "04-mathview",
+      "audioSeconds": 17.8328,
+      "sentenceAnchors": [
+        [
+          0.123,
+          3.248
+        ],
+        [
+          3.896,
+          7.754
+        ],
+        [
+          8.771,
+          13.39
+        ],
+        [
+          14.188,
+          17.679
+        ]
+      ]
+    },
+    {
+      "id": "05-handwriting",
+      "audioSeconds": 34.0944,
+      "sentenceAnchors": [
+        [
+          0.121,
+          3.181
+        ],
+        [
+          3.728,
+          8.025
+        ],
+        [
+          8.751,
+          11.587
+        ],
+        [
+          12.142,
+          15.495
+        ],
+        [
+          15.971,
+          19.9
+        ],
+        [
+          20.332,
+          23.415
+        ],
+        [
+          24.101,
+          27.944
+        ],
+        [
+          28.609,
+          30.736
+        ],
+        [
+          30.92,
+          33.958
+        ]
+      ]
+    },
+    {
+      "id": "06-feedback",
+      "audioSeconds": 19.5943,
+      "sentenceAnchors": [
+        [
+          0.269,
+          4.008
+        ],
+        [
+          4.595,
+          11.509
+        ],
+        [
+          12.263,
+          15.881
+        ],
+        [
+          16.625,
+          19.456
+        ]
+      ]
+    },
+    {
+      "id": "07-teacher",
+      "audioSeconds": 20.2008,
+      "sentenceAnchors": [
+        [
+          0.131,
+          3.65
+        ],
+        [
+          4.51,
+          9.294
+        ],
+        [
+          9.998,
+          15.149
+        ],
+        [
+          15.99,
+          20.069
+        ]
+      ]
+    },
+    {
+      "id": "08-close",
+      "audioSeconds": 4.4084,
+      "sentenceAnchors": [
+        [
+          0.126375,
+          0.855042
+        ],
+        [
+          1.404292,
+          4.272792
+        ]
+      ]
+    }
+  ]
+}

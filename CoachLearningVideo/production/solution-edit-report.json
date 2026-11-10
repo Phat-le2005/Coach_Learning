@@ -1,0 +1,22 @@
+{
+  "source": "actual browser capture of fresh primary attempt",
+  "ocrWaitCut": true,
+  "cutOnlyWait": true,
+  "recordings": [
+    {
+      "id": "handwriting",
+      "file": "C:\\CoachLearningVideo\\production\\public\\footage\\handwriting.mp4",
+      "status": "PASS"
+    },
+    {
+      "id": "mobile",
+      "file": "C:\\CoachLearningVideo\\production\\public\\footage\\mobile.mp4",
+      "status": "PASS"
+    },
+    {
+      "id": "ocr",
+      "file": "C:\\CoachLearningVideo\\production\\public\\footage\\ocr.mp4",
+      "status": "PASS"
+    }
+  ]
+}

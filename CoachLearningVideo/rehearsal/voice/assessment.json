@@ -1,0 +1,26 @@
+{
+  "http": 200,
+  "assessmentKind": "automated model assessment, not human confirmation",
+  "assessment": {
+    "samples": [
+      {
+        "name": "Charon",
+        "perceived_gender": "male",
+        "perceived_accent": "southern",
+        "clarity_1_to_5": 5,
+        "naturalness_1_to_5": 5,
+        "brief_vietnamese_evidence": "Phát âm truyền cảm, đúng giọng miền Nam/Sài Gòn với âm điệu nhẹ nhàng, tự nhiên ('bước giải', 'tìm ra', 'phản hồi')."
+      },
+      {
+        "name": "Orus",
+        "perceived_gender": "male",
+        "perceived_accent": "northern",
+        "clarity_1_to_5": 5,
+        "naturalness_1_to_5": 4.5,
+        "brief_vietnamese_evidence": "Giọng đọc rõ ràng nhưng là giọng miền Bắc (các vần 'r', 'gi' phát âm kiểu âm 'z' chuẩn giọng Hà Nội)."
+      }
+    ],
+    "recommended_sample": "Charon",
+    "uncertainty": "Thấp. Mẫu Charon thể hiện rõ giọng miền Nam ấm áp phù hợp với yêu cầu, trong khi Orus là giọng miền Bắc."
+  }
+}

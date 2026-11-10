@@ -1,0 +1,14 @@
+{
+  "id": "03-theory",
+  "start": 33,
+  "slot": 16,
+  "lead": 0.4,
+  "textUnits": 36,
+  "hash": "9c97943bc57491dc5aca7aa6d0aa23c999564b56d0b8f32218a9d49cd358d1f5",
+  "http": 200,
+  "seconds": 10.770958333333333,
+  "trimmedSeconds": 10.468833333333333,
+  "peak": 0.902435302734375,
+  "tailSeconds": 5.131,
+  "fits": true
+}

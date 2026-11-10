@@ -1,0 +1,16 @@
+[Script Info]
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Default,Arial,34,&H00FFFFFF,&H00FFFFFF,&H00192B21,&H00192B21,-1,0,0,0,100,100,0,0,3,12,0,2,100,100,80,1
+Style: Chapter,Arial,22,&H00FFFFFF,&H00FFFFFF,&H00233E2B,&H00233E2B,-1,0,0,0,100,100,0,0,3,10,0,1,38,40,25,1
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:00.10,0:00:02.59,Default,,0,0,0,,Với giáo viên, cô Thu Hà quản lý
+Dialogue: 0,0:00:02.59,0:00:05.08,Default,,0,0,0,,lớp và học liệu trong cùng một không gian.
+Dialogue: 0,0:00:05.08,0:00:08.90,Default,,0,0,0,,Cô chọn bài luyện tập, đặt hạn nộp, rồi giao cho học sinh.
+Dialogue: 0,0:00:08.90,0:00:12.12,Default,,0,0,0,,Minh Anh nhận được bài mới cùng thời gian hoàn thành.
+Dialogue: 0,0:00:12.12,0:00:15.93,Default,,0,0,0,,Thầy cô tiếp tục theo dõi quá trình làm bài ngay tại đây.
+Dialogue: 0,0:00:00.00,0:00:20.00,Chapter,,0,0,0,,00  /  GIAO BÀI & THEO DÕI LỚP

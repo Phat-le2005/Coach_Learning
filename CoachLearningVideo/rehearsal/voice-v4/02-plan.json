@@ -1,0 +1,14 @@
+{
+  "id": "02-plan",
+  "start": 8,
+  "slot": 25,
+  "lead": 0.5,
+  "textUnits": 58,
+  "hash": "ed8e206f6f8f48043915a46070d4ed4717be51d91320fe7a388acee7739f4509",
+  "http": 200,
+  "seconds": 18.930958333333333,
+  "trimmedSeconds": 18.812791666666666,
+  "peak": 0.8946533203125,
+  "tailSeconds": 5.687,
+  "fits": true
+}

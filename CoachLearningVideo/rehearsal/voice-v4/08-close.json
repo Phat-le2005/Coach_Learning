@@ -1,0 +1,14 @@
+{
+  "id": "08-close",
+  "start": 174,
+  "slot": 6,
+  "lead": 0.1,
+  "textUnits": 11,
+  "hash": "e739dffe2e6ac210bf1019edff57f25c83ce53af1e1583b3ff8e926a8c067ebe",
+  "http": 200,
+  "seconds": 4.730958333333334,
+  "trimmedSeconds": 4.566291666666666,
+  "peak": 0.906005859375,
+  "tailSeconds": 1.334,
+  "fits": true
+}

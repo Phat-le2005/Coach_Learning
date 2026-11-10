@@ -1,0 +1,6 @@
+{
+  "segments": [],
+  "status": "FAIL",
+  "error": "locator.waitFor: Timeout 60000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.react-flow__node').first() to be visible\u001b[22m\n",
+  "raw": "C:\\CoachLearningVideo\\production\\raw-theory-ready\\page@73a6114132b6491c7f7b18e5f2d6ec31.webm"
+}

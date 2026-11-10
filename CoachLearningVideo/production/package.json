@@ -1,0 +1,7 @@
+{
+  "name": "coach-learning-demo",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {"studio": "remotion studio src/index.tsx --port 3350", "still": "node render.cjs still", "render": "node render.cjs render"},
+  "dependencies": {"@remotion/bundler":"4.0.541","@remotion/media":"4.0.541","@remotion/renderer":"4.0.541","@remotion/cli":"4.0.541","react":"19.3.0","react-dom":"19.3.0","remotion":"4.0.541"}
+}

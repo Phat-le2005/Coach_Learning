@@ -1,0 +1,98 @@
+[
+  {
+    "id": "plan",
+    "from": 8,
+    "duration": 10,
+    "file": "footage/plan.mp4",
+    "sourceDuration": 14.766667,
+    "trim": 0,
+    "rate": 1,
+    "zoom": 1.015,
+    "focus": "50% 36%",
+    "label": "01  /  MỤC TIÊU & KẾ HOẠCH"
+  },
+  {
+    "id": "knowledge",
+    "from": 18,
+    "duration": 15,
+    "file": "footage/knowledge.mp4",
+    "sourceDuration": 18.733333,
+    "trim": 0,
+    "rate": 1,
+    "zoom": 1.015,
+    "focus": "50% 45%",
+    "label": "01  /  VŨ TRỤ TRI THỨC"
+  },
+  {
+    "id": "theory",
+    "from": 33,
+    "duration": 16,
+    "file": "footage/theory.mp4",
+    "sourceDuration": 11.5,
+    "trim": 0,
+    "rate": 1,
+    "zoom": 1.02,
+    "focus": "52% 43%",
+    "label": "02  /  LÝ THUYẾT & NGUỒN"
+  },
+  {
+    "id": "mathview",
+    "from": 49,
+    "duration": 26,
+    "file": "footage/mathview.mp4",
+    "sourceDuration": 25,
+    "trim": 0,
+    "rate": 1,
+    "zoom": 1.015,
+    "focus": "67% 45%",
+    "label": "03  /  KHÁM PHÁ TRỰC QUAN"
+  },
+  {
+    "id": "handwriting",
+    "from": 75,
+    "duration": 13,
+    "file": "footage/handwriting.mp4",
+    "sourceDuration": 15,
+    "trim": 0,
+    "rate": 1.1538461538461537,
+    "zoom": 1,
+    "focus": "50% 40%",
+    "label": "04  /  VIẾT TAY & ĐỒNG BỘ"
+  },
+  {
+    "id": "ocr",
+    "from": 88,
+    "duration": 37,
+    "file": "footage/ocr.mp4",
+    "sourceDuration": 28,
+    "trim": 0,
+    "rate": 1,
+    "zoom": 1.015,
+    "focus": "50% 36%",
+    "label": "04  /  ĐỐI CHIẾU & XÁC NHẬN"
+  },
+  {
+    "id": "feedback",
+    "from": 125,
+    "duration": 23,
+    "file": "footage/feedback.mp4",
+    "sourceDuration": 23,
+    "trim": 0,
+    "rate": 1,
+    "zoom": 1.025,
+    "focus": "25% 45%",
+    "label": "05  /  HIỂU LỖI TRONG TỪNG BƯỚC"
+  },
+  {
+    "id": "teacher",
+    "from": 148,
+    "duration": 26,
+    "file": "footage/teacher.mp4",
+    "sourceDuration": 28,
+    "trim": 0,
+    "rate": 1,
+    "zoom": 1.015,
+    "focus": "55% 50%",
+    "label": "06  /  KHÉP VÒNG CÙNG GIÁO VIÊN"
+  }
+]

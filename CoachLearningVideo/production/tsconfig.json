@@ -1,0 +1,1 @@
+{"compilerOptions":{"target":"ES2022","lib":["dom","es2022"],"jsx":"react-jsx","esModuleInterop":true,"resolveJsonModule":true,"moduleResolution":"bundler","module":"ESNext","skipLibCheck":true,"strict":true,"noEmit":true},"include":["src"]}

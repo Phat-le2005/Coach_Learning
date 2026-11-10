@@ -1,0 +1,22 @@
+{
+  "teacher": {
+    "status": "PASS",
+    "path": "C:\\CoachLearningVideo\\production\\public\\footage\\teacher.mp4",
+    "seconds": 28.002,
+    "rawPrivate": "C:\\CoachLearningVideo\\production\\raw-math-teacher\\page@01cd3d71617adedb8ff6ed9d8eaffa3e.webm",
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "assignmentTitle": "Đạo hàm — luyện tập từng bước",
+    "verified": "New assignment one submission; Minh Anh pending teacher review; real confirmed +3 handwriting and -3 teacher reference shown; no final teacher grade confirmed"
+  },
+  "mathview": {
+    "status": "PASS",
+    "path": "C:\\CoachLearningVideo\\production\\public\\footage\\mathview.mp4",
+    "seconds": 25,
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "verified": "Actual 3D green surface, parameter a=1.2, orbit, saved snapshot success visible"
+  }
+}

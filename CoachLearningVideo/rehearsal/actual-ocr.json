@@ -1,0 +1,6 @@
+{
+  "error": {
+    "code": "OCR_RECOGNITION_FAILED",
+    "message": "Gemini chưa nhận diện được nét viết. Em có thể sửa bản chép thủ công hoặc thử lại."
+  }
+}

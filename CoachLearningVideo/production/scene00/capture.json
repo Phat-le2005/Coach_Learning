@@ -1,0 +1,39 @@
+{
+  "segments": [
+    {
+      "name": "login",
+      "start": 2.344,
+      "duration": 2.502
+    },
+    {
+      "name": "classroom",
+      "start": 10.037,
+      "duration": 10.007
+    },
+    {
+      "name": "material",
+      "start": 24.777,
+      "duration": 3.001
+    },
+    {
+      "name": "configure",
+      "start": 27.973,
+      "duration": 11.004
+    },
+    {
+      "name": "confirm",
+      "start": 38.979,
+      "duration": 1.501
+    },
+    {
+      "name": "published",
+      "start": 42.007,
+      "duration": 4.003
+    }
+  ],
+  "assignmentTitle": "Đạo hàm — luyện tập tuần 12, hạn 15/11",
+  "assignmentId": "92322520-a4cd-4baa-a91b-acdd51e5e289",
+  "dueAt": "2026-11-15T13:00:00Z",
+  "status": "PASS",
+  "raw": "C:\\CoachLearningVideo\\production\\scene00\\raw\\page@ce2dee5877e76cb8945088a65eb338db.webm"
+}

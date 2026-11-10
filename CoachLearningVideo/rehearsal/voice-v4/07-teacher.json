@@ -1,0 +1,14 @@
+{
+  "id": "07-teacher",
+  "start": 148,
+  "slot": 26,
+  "lead": 0.5,
+  "textUnits": 71,
+  "hash": "4eb9be309f081f3087d0e4fef438dcd5e8a944ffdff9118dca48db5bb2170817",
+  "http": 200,
+  "seconds": 20.570958333333333,
+  "trimmedSeconds": 20.200833333333332,
+  "peak": 0.888427734375,
+  "tailSeconds": 5.299,
+  "fits": true
+}
