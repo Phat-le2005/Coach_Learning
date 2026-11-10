@@ -1,0 +1,114 @@
+{
+  "providedFileKeys": 6,
+  "uniqueIncludingExisting": 6,
+  "testedModels": [
+    "gemini-3.6-flash",
+    "gemini-3.8-flash",
+    "gemini-3.5-flash"
+  ],
+  "keys": [
+    {
+      "alias": "key_01",
+      "quotaGroup": "unknown",
+      "models": {
+        "gemini-3.6-flash": {
+          "metadataHttp": 200
+        },
+        "gemini-3.8-flash": {
+          "metadataHttp": 200
+        },
+        "gemini-3.5-flash": {
+          "metadataHttp": 200
+        }
+      },
+      "generationHttp": 200,
+      "jsonProbe": true
+    },
+    {
+      "alias": "key_02",
+      "quotaGroup": "unknown",
+      "models": {
+        "gemini-3.6-flash": {
+          "metadataHttp": 200
+        },
+        "gemini-3.8-flash": {
+          "metadataHttp": 200
+        },
+        "gemini-3.5-flash": {
+          "metadataHttp": 200
+        }
+      },
+      "generationHttp": 200,
+      "jsonProbe": true
+    },
+    {
+      "alias": "key_03",
+      "quotaGroup": "unknown",
+      "models": {
+        "gemini-3.6-flash": {
+          "metadataHttp": 200
+        },
+        "gemini-3.8-flash": {
+          "metadataHttp": 200
+        },
+        "gemini-3.5-flash": {
+          "metadataHttp": 200
+        }
+      },
+      "generationHttp": 200,
+      "jsonProbe": true
+    },
+    {
+      "alias": "key_04",
+      "quotaGroup": "unknown",
+      "models": {
+        "gemini-3.6-flash": {
+          "metadataHttp": 200
+        },
+        "gemini-3.8-flash": {
+          "metadataHttp": 200
+        },
+        "gemini-3.5-flash": {
+          "metadataHttp": 200
+        }
+      },
+      "generationHttp": 200,
+      "jsonProbe": true
+    },
+    {
+      "alias": "key_05",
+      "quotaGroup": "unknown",
+      "models": {
+        "gemini-3.6-flash": {
+          "metadataHttp": 200
+        },
+        "gemini-3.8-flash": {
+          "metadataHttp": 200
+        },
+        "gemini-3.5-flash": {
+          "metadataHttp": 200
+        }
+      },
+      "generationHttp": 200,
+      "jsonProbe": true
+    },
+    {
+      "alias": "key_06",
+      "quotaGroup": "unknown",
+      "models": {
+        "gemini-3.6-flash": {
+          "metadataHttp": 200
+        },
+        "gemini-3.8-flash": {
+          "metadataHttp": 200
+        },
+        "gemini-3.5-flash": {
+          "metadataHttp": 200
+        }
+      },
+      "generationHttp": 200,
+      "jsonProbe": true
+    }
+  ],
+  "enabled": 6
+}

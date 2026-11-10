@@ -1,0 +1,31 @@
+{
+  "stage": "preparation and rehearsal, not final production",
+  "keys": {
+    "enabled": 6,
+    "generationProbe": "PASS",
+    "parserValidation": "PASS",
+    "quotaGroup": "unknown"
+  },
+  "handwritingSync": "PASS",
+  "ocr": {
+    "status": "PASS",
+    "seconds": 8.976,
+    "confirmedSteps": 2
+  },
+  "feedbackUi": "PASS",
+  "feedback": {
+    "stepVerdicts": [
+      "VALID",
+      "INVALID"
+    ],
+    "isFinal": false,
+    "finalScore": null
+  },
+  "teacherUi": "PASS",
+  "teacherWholeAssignment": "SUBMITTED; teacher UI shows 1 submitted, 0 graded",
+  "narration": "NARRATION-V3.md",
+  "voiceCandidate": "voice/charon.mp3",
+  "voiceHumanReviewed": false,
+  "officialVideoProduced": false,
+  "knownLimitation": "Sidebar review availability differs from working header review action"
+}

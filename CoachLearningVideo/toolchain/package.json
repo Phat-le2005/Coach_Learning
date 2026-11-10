@@ -1,0 +1,22 @@
+{
+  "name": "coach-learning-video-toolchain",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Isolated tools for Coach Learning demo capture and rendering",
+  "dependencies": {
+    "@playwright/test": "1.64.1",
+    "@remotion/bundler": "4.0.541",
+    "@remotion/captions": "4.0.541",
+    "@remotion/cli": "4.0.541",
+    "@remotion/fonts": "4.0.541",
+    "@remotion/media": "4.0.541",
+    "@remotion/renderer": "4.0.541",
+    "@remotion/transitions": "4.0.541",
+    "@types/node": "22.19.0",
+    "@types/react": "19.2.7",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "remotion": "4.0.541",
+    "typescript": "5.9.3"
+  }
+}

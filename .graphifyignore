@@ -34,6 +34,8 @@ service-account*.json
 /output/
 /reports/
 /presentation/
+# Archived video production is independent of the application architecture.
+/CoachLearningVideo/
 node_modules/
 .next/
 .venv/

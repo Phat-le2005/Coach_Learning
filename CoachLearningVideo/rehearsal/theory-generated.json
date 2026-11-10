@@ -1,0 +1,178 @@
+{
+  "id": "c7f473a0-85fb-4042-af1d-fa83a40a58fb",
+  "classroom_id": "955239e0-749f-5393-b0d6-93a88a7a3e8c",
+  "subject_id": "68000fe5-5b47-5ce2-92b8-b15164c83b74",
+  "title": "Đạo hàm và cực trị — công thức cần nhớ",
+  "file_name": "dao-ham-va-cuc-tri.pdf",
+  "sha256": "1f1cae500aff4e5507afe481be56238d1cdbf7dc970cf4a4cec328389723c141",
+  "page_count": 3,
+  "status": "DRAFT",
+  "revision": 2,
+  "source_available": false,
+  "nodes": [
+    {
+      "id": "n0",
+      "parent_id": null,
+      "kind": "ROOT",
+      "title": "Đạo hàm và cực trị — công thức cần nhớ",
+      "body": "Hệ thống toàn bộ kiến thức lý thuyết và công thức trọng tâm: Đạo hàm và cực trị — công thức cần nhớ",
+      "latex": null,
+      "learning_steps": [],
+      "source_page": 1,
+      "source_quote": "( ) ' ''± = ±u v u v  ( ). ' '. . '= +u v u v u v",
+      "reviewed": false,
+      "block_id": null,
+      "bounding_box": null,
+      "origin": "SOURCE_EXTRACTION"
+    },
+    {
+      "id": "n1",
+      "parent_id": "n0",
+      "kind": "SECTION",
+      "title": "ỨNG DỤNG ĐẠO HÀM ĐỂ KHẢO SÁT VÀ VẼ ĐỒ THỊ HÀM SỐ",
+      "body": "",
+      "latex": null,
+      "learning_steps": [],
+      "source_page": 1,
+      "source_quote": "ỨNG DỤNG ĐẠO HÀM ĐỂ KHẢO SÁT",
+      "reviewed": false,
+      "block_id": "p1-b0",
+      "bounding_box": {
+        "top": 50.0,
+        "bottom": 780.0
+      },
+      "origin": "SOURCE_EXTRACTION"
+    },
+    {
+      "id": "n2",
+      "parent_id": "n1",
+      "kind": "SECTION",
+      "title": "I. BẢNG ĐẠO HÀM",
+      "body": "Xem nội dung kiến thức chi tiết tại trang 1 của tài liệu PDF gốc.",
+      "latex": null,
+      "learning_steps": [],
+      "source_page": 1,
+      "source_quote": "BẢNG ĐẠO HÀMI",
+      "reviewed": false,
+      "block_id": "p1-b0",
+      "bounding_box": {
+        "top": 176.55,
+        "bottom": 780.0
+      },
+      "origin": "SOURCE_EXTRACTION"
+    },
+    {
+      "id": "n3",
+      "parent_id": "n1",
+      "kind": "SECTION",
+      "title": "II. TÍNH ĐƠN ĐIỆU CỦA HÀM SỐ",
+      "body": "",
+      "latex": null,
+      "learning_steps": [],
+      "source_page": 2,
+      "source_quote": "1. Tính đơn điệu của hàm số",
+      "reviewed": false,
+      "block_id": "p2-b0",
+      "bounding_box": {
+        "top": 282.65,
+        "bottom": 780.0
+      },
+      "origin": "SOURCE_EXTRACTION"
+    },
+    {
+      "id": "n4",
+      "parent_id": "n3",
+      "kind": "SECTION",
+      "title": "1. Tính đơn điệu của hàm số",
+      "body": "",
+      "latex": null,
+      "learning_steps": [],
+      "source_page": 2,
+      "source_quote": "1. Tính đơn điệu của hàm số",
+      "reviewed": false,
+      "block_id": "p2-b0",
+      "bounding_box": {
+        "top": 333.24,
+        "bottom": 419.53
+      },
+      "origin": "SOURCE_EXTRACTION"
+    },
+    {
+      "id": "n5",
+      "parent_id": "n4",
+      "kind": "NOTE",
+      "title": "⚠️ Chú ý: Tính đơn điệu của hàm số",
+      "body": "Xem nội dung kiến thức chi tiết tại trang 2 của tài liệu PDF gốc.",
+      "latex": null,
+      "learning_steps": [],
+      "source_page": 2,
+      "source_quote": "Chú ý:",
+      "reviewed": false,
+      "block_id": "p2-b1",
+      "bounding_box": {
+        "top": 421.53,
+        "bottom": 780.0
+      },
+      "origin": "SOURCE_EXTRACTION"
+    },
+    {
+      "id": "n6",
+      "parent_id": "n3",
+      "kind": "SECTION",
+      "title": "2. Điểm cực trị, giá trị cực trị của hàm số",
+      "body": "",
+      "latex": null,
+      "learning_steps": [],
+      "source_page": 3,
+      "source_quote": "2. Điểm cực trị, giá trị cực trị của hàm số",
+      "reviewed": false,
+      "block_id": "p3-b0",
+      "bounding_box": {
+        "top": 72.02,
+        "bottom": 780.0
+      },
+      "origin": "SOURCE_EXTRACTION"
+    },
+    {
+      "id": "n7",
+      "parent_id": "n6",
+      "kind": "CONCEPT",
+      "title": "Định nghĩa: khoảng và x0 ⊂ K, x1 ⊂ K.",
+      "body": "Xem nội dung kiến thức chi tiết tại trang 3 của tài liệu PDF gốc.",
+      "latex": null,
+      "learning_steps": [],
+      "source_page": 3,
+      "source_quote": "→ Định nghĩa",
+      "reviewed": false,
+      "block_id": "p3-b0",
+      "bounding_box": {
+        "top": 112.6,
+        "bottom": 247.12
+      },
+      "origin": "SOURCE_EXTRACTION"
+    },
+    {
+      "id": "n8",
+      "parent_id": "n6",
+      "kind": "NOTE",
+      "title": "⚠️ Chú ý:: Nếu x0 là một điểm cực trị của",
+      "body": "Xem nội dung kiến thức chi tiết tại trang 3 của tài liệu PDF gốc.",
+      "latex": null,
+      "learning_steps": [],
+      "source_page": 3,
+      "source_quote": "Nếu x0 là một điểm cực trị của",
+      "reviewed": false,
+      "block_id": "p3-b1",
+      "bounding_box": {
+        "top": 249.12,
+        "bottom": 780.0
+      },
+      "origin": "SOURCE_EXTRACTION"
+    }
+  ],
+  "ai_model": "gemini_enriched",
+  "extraction_warning_pages": [
+    2
+  ],
+  "source_outline": []
+}

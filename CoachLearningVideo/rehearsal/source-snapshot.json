@@ -1,0 +1,8 @@
+{
+  "revision": "911cd6a7cbafc2e7a13bf60241b44402ff2cd622",
+  "kind": "capture runtime snapshot, not Git worktree",
+  "source": "D:\\SGU\\DuAn\\Coach_Learning\\frontend",
+  "path": "D:\\SGU\\DuAn\\Coach_Learning\\.tmp\\video-capture-frontend",
+  "engine": "webpack dev",
+  "reason": "Private capture environment, own .env, same drive as dependencies"
+}

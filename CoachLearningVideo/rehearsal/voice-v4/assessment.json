@@ -1,0 +1,246 @@
+{
+  "assessmentKind": "automated audio model assessment; not human listening approval",
+  "http": 200,
+  "assessment": {
+    "perceived_gender": "male",
+    "perceived_accent": "southern",
+    "speaker_consistency": "consistent",
+    "clarity_1_to_5": 5,
+    "naturalness_1_to_5": 5,
+    "issues": [],
+    "clips": [
+      {
+        "id": "01-hook",
+        "content_matches": true,
+        "omitted_or_added_words": "none",
+        "mispronunciations": "none",
+        "natural_pauses": true,
+        "sentences": [
+          {
+            "text": "Làm toán, biết đáp án thôi chưa đủ.",
+            "start": 0.0,
+            "end": 2.8
+          },
+          {
+            "text": "Mình còn cần biết sai chỗ nào, và nên học tiếp ra sao.",
+            "start": 2.8,
+            "end": 6.2
+          }
+        ]
+      },
+      {
+        "id": "02-plan",
+        "content_matches": true,
+        "omitted_or_added_words": "none",
+        "mispronunciations": "none",
+        "natural_pauses": true,
+        "sentences": [
+          {
+            "text": "Với Coach Learning, Minh Anh bắt đầu từ mục tiêu tám điểm, cùng ba mươi phút học mỗi ngày.",
+            "start": 0.0,
+            "end": 6.7
+          },
+          {
+            "text": "Em xem kế hoạch, rồi chọn nội dung cần tập trung.",
+            "start": 6.7,
+            "end": 10.4
+          },
+          {
+            "text": "Vũ trụ tri thức giúp nhìn các mảng kiến thức theo từng nhánh.",
+            "start": 10.4,
+            "end": 15.0
+          },
+          {
+            "text": "Từ đây, mình mở chủ đề đạo hàm và đi thẳng vào phần cần ôn.",
+            "start": 15.0,
+            "end": 20.2
+          }
+        ]
+      },
+      {
+        "id": "03-theory",
+        "content_matches": true,
+        "omitted_or_added_words": "none",
+        "mispronunciations": "none",
+        "natural_pauses": true,
+        "sentences": [
+          {
+            "text": "Trước khi làm bài, Minh Anh mở lại phần lý thuyết.",
+            "start": 0.0,
+            "end": 3.7
+          },
+          {
+            "text": "Sơ đồ giúp tìm nhanh ý chính; sổ tay giữ công thức và ví dụ.",
+            "start": 3.7,
+            "end": 8.6
+          },
+          {
+            "text": "Khi cần kiểm tra, em xem ngay tài liệu nguồn.",
+            "start": 8.6,
+            "end": 12.0
+          }
+        ]
+      },
+      {
+        "id": "04-mathview",
+        "content_matches": true,
+        "omitted_or_added_words": "none",
+        "mispronunciations": "none",
+        "natural_pauses": true,
+        "sentences": [
+          {
+            "text": "Còn với những nội dung cần nhìn trực quan, mình mở Math View.",
+            "start": 0.0,
+            "end": 4.5
+          },
+          {
+            "text": "Từ công thức mặt cong, học sinh có thể xoay hình và điều chỉnh tham số.",
+            "start": 4.5,
+            "end": 10.1
+          },
+          {
+            "text": "Hình thay đổi ngay trước mắt, giúp các em khám phá mối liên hệ giữa công thức và hình dạng.",
+            "start": 10.1,
+            "end": 15.7
+          },
+          {
+            "text": "Chọn được góc nhìn phù hợp, mình lưu hình vào bài học để xem lại.",
+            "start": 15.7,
+            "end": 20.0
+          }
+        ]
+      },
+      {
+        "id": "05-handwriting",
+        "content_matches": true,
+        "omitted_or_added_words": "none",
+        "mispronunciations": "none",
+        "natural_pauses": true,
+        "sentences": [
+          {
+            "text": "Đến phần làm bài, Minh Anh viết trực tiếp lên trang giấy số.",
+            "start": 0.0,
+            "end": 4.4
+          },
+          {
+            "text": "Kết nối thêm một màn hình làm bảng viết, từng nét được đồng bộ sang màn hình chính.",
+            "start": 4.4,
+            "end": 9.9
+          },
+          {
+            "text": "Ở bước đạo hàm, mình cố ý viết sai một dấu.",
+            "start": 9.9,
+            "end": 13.7
+          },
+          {
+            "text": "Sau khi nhận diện chữ viết, hệ thống tách nội dung thành các bước.",
+            "start": 13.7,
+            "end": 18.2
+          },
+          {
+            "text": "Học sinh đối chiếu bản chép với nét gốc, kiểm tra công thức và thứ tự.",
+            "start": 18.2,
+            "end": 23.2
+          },
+          {
+            "text": "Nếu nhận diện chưa đúng, mình sửa lại trước khi lưu.",
+            "start": 23.2,
+            "end": 27.2
+          },
+          {
+            "text": "Dấu cộng ở đây vẫn được giữ nguyên, vì đó là điều học sinh đã viết.",
+            "start": 27.2,
+            "end": 32.7
+          },
+          {
+            "text": "Nhận diện xong chưa có nghĩa là bài giải đúng.",
+            "start": 32.7,
+            "end": 36.3
+          },
+          {
+            "text": "Mình xác nhận hai bước, rồi nộp để nhận góp ý.",
+            "start": 36.3,
+            "end": 40.5
+          }
+        ]
+      },
+      {
+        "id": "06-feedback",
+        "content_matches": true,
+        "omitted_or_added_words": "none",
+        "mispronunciations": "none",
+        "natural_pauses": true,
+        "sentences": [
+          {
+            "text": "Bước ghi lại đề bài phù hợp, còn bước đạo hàm cần xem lại.",
+            "start": 0.0,
+            "end": 4.4
+          },
+          {
+            "text": "Hệ thống chỉ rõ: đạo hàm của trừ ba x phải là trừ ba, trong khi Minh Anh viết cộng ba.",
+            "start": 4.4,
+            "end": 13.3
+          },
+          {
+            "text": "Góp ý gắn với đúng bước làm, giúp em biết cần sửa chỗ nào.",
+            "start": 13.3,
+            "end": 18.2
+          },
+          {
+            "text": "Đây là nhận xét tham khảo, chưa phải điểm chính thức.",
+            "start": 18.2,
+            "end": 22.3
+          }
+        ]
+      },
+      {
+        "id": "07-teacher",
+        "content_matches": true,
+        "omitted_or_added_words": "none",
+        "mispronunciations": "none",
+        "natural_pauses": true,
+        "sentences": [
+          {
+            "text": "Hoàn tất những câu còn lại, Minh Anh nộp toàn bộ bài được giao.",
+            "start": 0.0,
+            "end": 4.5
+          },
+          {
+            "text": "Ở phía giáo viên, cô Thu Hà quản lý lớp, học liệu và bài tập trong cùng một không gian.",
+            "start": 4.5,
+            "end": 11.2
+          },
+          {
+            "text": "Cô mở danh sách lớp, theo dõi tình trạng làm bài, rồi xem, duyệt cùng bài nộp của Minh Anh.",
+            "start": 11.2,
+            "end": 18.3
+          },
+          {
+            "text": "Từ việc học đến phản hồi của thầy cô, cả quá trình được nối lại rõ ràng.",
+            "start": 18.3,
+            "end": 23.8
+          }
+        ]
+      },
+      {
+        "id": "08-close",
+        "content_matches": true,
+        "omitted_or_added_words": "none",
+        "mispronunciations": "none",
+        "natural_pauses": true,
+        "sentences": [
+          {
+            "text": "Coach Learning.",
+            "start": 0.0,
+            "end": 1.7
+          },
+          {
+            "text": "Học có định hướng, làm bài có phản hồi.",
+            "start": 1.7,
+            "end": 4.8
+          }
+        ]
+      }
+    ]
+  }
+}

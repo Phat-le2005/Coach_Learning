@@ -1,0 +1,63 @@
+{
+  "latex": "y = x^3 - 3x \\\\ y' = 3x^2 + 3",
+  "confidence": 0.98,
+  "suggested_step_type": "DERIVATIVE_CALCULATION",
+  "explanation_text": null,
+  "detected_symbols": [
+    "y",
+    "=",
+    "x^3",
+    "-",
+    "3x",
+    "y'",
+    "3x^2",
+    "+"
+  ],
+  "alternative_latex": [
+    "Y = X^3 - 3X \\\\ Y' = 3X^2 + 3"
+  ],
+  "steps": [
+    {
+      "title": "Hàm số đã cho",
+      "content_kind": "MATH",
+      "latex": "y = x^3 - 3x",
+      "explanation_text": null,
+      "suggested_step_type": "ASSUMPTION",
+      "source_stroke_ids": [
+        "94b62026-4a04-4310-837e-2d6bc2d8ce84",
+        "3ba4d733-4743-4774-9079-2716aa396cf7",
+        "5998a803-ea6d-4cfd-b965-2c70a268c7f4",
+        "1722c74d-56e6-4c19-ac91-e14b7ecd9cfc",
+        "4b80c119-b124-4d63-8332-dc380d6912e0",
+        "381862ad-64c8-4ce5-8e0c-8ed6b5ce898f",
+        "4f46761b-d6dc-43f3-b421-f64d9338bd4a",
+        "418ab6b3-7de4-4e99-8082-b867832f5476",
+        "c93ae58c-bf36-4195-8a78-2a264c9ce0ea",
+        "319e56a9-2f3d-44bf-8211-e67dd4650b45",
+        "c8623a0a-99dc-4412-87cd-2df68009bf6f"
+      ]
+    },
+    {
+      "title": "Tính đạo hàm",
+      "content_kind": "MATH",
+      "latex": "y' = 3x^2 + 3",
+      "explanation_text": null,
+      "suggested_step_type": "DERIVATIVE_CALCULATION",
+      "source_stroke_ids": [
+        "0ba2ec17-a165-42b0-98ef-acf3d343d411",
+        "8f59e1fd-0c12-4d17-b1bf-b8e0edb56521",
+        "086cfe1b-b807-43f1-b213-00eba37848f5",
+        "75cf7af9-f406-4871-af94-0b1c1d28330c",
+        "0cb9d9a7-96d2-4842-9c40-d4bdd93d7b90",
+        "9ca8d5b7-be69-4565-b9ae-56d2a1e5c819",
+        "b85040cf-a259-4bd0-add1-862e8954fbe6",
+        "50e756df-dff0-47eb-b5ff-0bce104e6b01",
+        "ece412f5-8f8d-453c-8f1b-16629081ef55",
+        "8a5f0280-b419-48cd-b426-ee6c2e986c11",
+        "17b6bced-b424-4e52-8c57-246bdd14af53",
+        "11681364-eb6c-4a5d-860d-412096dd8df4"
+      ]
+    }
+  ],
+  "segmentation_warning": null
+}

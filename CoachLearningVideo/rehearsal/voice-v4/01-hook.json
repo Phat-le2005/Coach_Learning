@@ -1,0 +1,14 @@
+{
+  "id": "01-hook",
+  "start": 0,
+  "slot": 8,
+  "lead": 0.2,
+  "textUnits": 21,
+  "hash": "176caff59c3ea53730dcb6f4675394774b5e6b3c297ceb2edf255652a39a1492",
+  "http": 200,
+  "seconds": 6.810958333333334,
+  "trimmedSeconds": 6.637458333333333,
+  "peak": 0.833038330078125,
+  "tailSeconds": 1.163,
+  "fits": true
+}

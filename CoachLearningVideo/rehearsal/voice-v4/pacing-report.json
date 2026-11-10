@@ -1,0 +1,134 @@
+{
+  "durationSeconds": 180,
+  "speechSpeed": 1,
+  "cutSpeech": false,
+  "scenes": [
+    {
+      "id": "01-hook",
+      "audioSeconds": 6.637,
+      "insertedPausesSeconds": 0,
+      "endHoldSeconds": 1.163,
+      "pauses": []
+    },
+    {
+      "id": "02-plan",
+      "audioSeconds": 18.813,
+      "insertedPausesSeconds": 3.0,
+      "endHoldSeconds": 2.687,
+      "pauses": [
+        {
+          "timelineStart": 14.883,
+          "seconds": 1.5,
+          "purpose": "Giữ mục tiêu"
+        },
+        {
+          "timelineStart": 20.06,
+          "seconds": 1.5,
+          "purpose": "Chuyển từ kế hoạch sang cây kiến thức"
+        }
+      ]
+    },
+    {
+      "id": "03-theory",
+      "audioSeconds": 10.469,
+      "insertedPausesSeconds": 1.8,
+      "endHoldSeconds": 3.331,
+      "pauses": [
+        {
+          "timelineStart": 40.834,
+          "seconds": 1.8,
+          "purpose": "Đọc công thức trước khi mở nguồn"
+        }
+      ]
+    },
+    {
+      "id": "04-mathview",
+      "audioSeconds": 17.833,
+      "insertedPausesSeconds": 4.8,
+      "endHoldSeconds": 2.867,
+      "pauses": [
+        {
+          "timelineStart": 53.072,
+          "seconds": 0.8,
+          "purpose": "Math View xuất hiện"
+        },
+        {
+          "timelineStart": 58.563,
+          "seconds": 2.5,
+          "purpose": "Đổi tham số và quan sát"
+        },
+        {
+          "timelineStart": 66.589,
+          "seconds": 1.5,
+          "purpose": "Giữ hình trước khi lưu"
+        }
+      ]
+    },
+    {
+      "id": "05-handwriting",
+      "audioSeconds": 34.094,
+      "insertedPausesSeconds": 12.5,
+      "endHoldSeconds": 2.906,
+      "pauses": [
+        {
+          "timelineStart": 83.776,
+          "seconds": 4,
+          "purpose": "Nét viết đồng bộ"
+        },
+        {
+          "timelineStart": 91.364,
+          "seconds": 4,
+          "purpose": "Giữ bước viết sai dấu"
+        },
+        {
+          "timelineStart": 99.233,
+          "seconds": 3,
+          "purpose": "Kết quả nhận diện xuất hiện"
+        },
+        {
+          "timelineStart": 114.626,
+          "seconds": 1.5,
+          "purpose": "Đối chiếu dấu cộng đã viết"
+        }
+      ]
+    },
+    {
+      "id": "06-feedback",
+      "audioSeconds": 19.594,
+      "insertedPausesSeconds": 0.8,
+      "endHoldSeconds": 2.006,
+      "pauses": [
+        {
+          "timelineStart": 137.486,
+          "seconds": 0.8,
+          "purpose": "Giữ giải thích trừ ba/cộng ba"
+        }
+      ]
+    },
+    {
+      "id": "07-teacher",
+      "audioSeconds": 20.201,
+      "insertedPausesSeconds": 3.0,
+      "endHoldSeconds": 2.299,
+      "pauses": [
+        {
+          "timelineStart": 152.58,
+          "seconds": 1.5,
+          "purpose": "Nộp toàn bộ bài"
+        },
+        {
+          "timelineStart": 165.569,
+          "seconds": 1.5,
+          "purpose": "Giữ bài nộp của Minh Anh"
+        }
+      ]
+    },
+    {
+      "id": "08-close",
+      "audioSeconds": 4.566,
+      "insertedPausesSeconds": 0,
+      "endHoldSeconds": 1.334,
+      "pauses": []
+    }
+  ]
+}

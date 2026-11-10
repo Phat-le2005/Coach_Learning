@@ -1,0 +1,20 @@
+{
+  "plan": {
+    "status": "PASS",
+    "start": 13.288,
+    "duration": 15.458,
+    "file": "C:\\CoachLearningVideo\\production\\public\\footage\\plan.mp4"
+  },
+  "knowledge": {
+    "status": "PASS",
+    "start": 11.366,
+    "duration": 18.741,
+    "file": "C:\\CoachLearningVideo\\production\\public\\footage\\knowledge.mp4"
+  },
+  "theory": {
+    "status": "PASS",
+    "start": 18.073,
+    "duration": 20.494,
+    "file": "C:\\CoachLearningVideo\\production\\public\\footage\\theory.mp4"
+  }
+}

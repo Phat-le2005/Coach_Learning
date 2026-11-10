@@ -1,0 +1,175 @@
+1
+00:00:00,100 --> 00:00:02,414
+Có lời giải chưa chắc đã hiểu bài.
+
+2
+00:00:02,414 --> 00:00:06,463
+Học sinh dễ lệ thuộc đáp án, thầy cô khó theo sát từng bước.
+
+3
+00:00:06,463 --> 00:00:10,224
+Math Mate đồng hành để các em tự giải và hiểu cách làm.
+
+4
+00:00:11,100 --> 00:00:13,592
+Với giáo viên, cô Thu Hà quản lý
+
+5
+00:00:13,592 --> 00:00:16,084
+lớp và học liệu trong cùng một không gian.
+
+6
+00:00:16,084 --> 00:00:19,895
+Cô chọn bài luyện tập, đặt hạn nộp, rồi giao cho học sinh.
+
+7
+00:00:19,895 --> 00:00:23,120
+Minh Anh nhận được bài mới cùng thời gian hoàn thành.
+
+8
+00:00:23,120 --> 00:00:26,931
+Thầy cô tiếp tục theo dõi quá trình làm bài ngay tại đây.
+
+9
+00:00:31,627 --> 00:00:34,434
+Với MathMate, Minh Anh bắt đầu từ mục tiêu
+
+10
+00:00:34,434 --> 00:00:37,240
+tám điểm, cùng ba mươi phút học mỗi ngày.
+
+11
+00:00:37,913 --> 00:00:41,035
+Em xem kế hoạch, rồi chọn nội dung cần tập trung.
+
+12
+00:00:41,722 --> 00:00:45,298
+Vũ trụ tri thức giúp nhìn các mảng kiến thức theo từng nhánh.
+
+13
+00:00:45,984 --> 00:00:50,422
+Từ đây, mình mở chủ đề đạo hàm và đi thẳng vào phần cần ôn.
+
+14
+00:00:56,521 --> 00:00:59,072
+Trước khi làm bài, Minh Anh mở lại phần lý thuyết.
+
+15
+00:00:59,624 --> 00:01:03,457
+Sơ đồ giúp tìm nhanh ý chính; sổ tay giữ công thức và ví dụ.
+
+16
+00:01:04,212 --> 00:01:06,732
+Khi cần kiểm tra, em xem ngay tài liệu nguồn.
+
+17
+00:01:12,623 --> 00:01:15,748
+Còn với những nội dung cần nhìn trực quan, mình mở Math View.
+
+18
+00:01:16,396 --> 00:01:20,254
+Từ công thức mặt cong, học sinh có thể xoay hình và điều chỉnh tham số.
+
+19
+00:01:21,271 --> 00:01:23,580
+Hình thay đổi ngay trước mắt, giúp các em khám
+
+20
+00:01:23,580 --> 00:01:25,890
+phá mối liên hệ giữa công thức và hình dạng.
+
+21
+00:01:26,688 --> 00:01:30,179
+Chọn được góc nhìn phù hợp, mình lưu hình vào bài học để xem lại.
+
+22
+00:01:38,621 --> 00:01:41,681
+Đến phần làm bài, Minh Anh viết trực tiếp lên trang giấy số.
+
+23
+00:01:42,228 --> 00:01:44,376
+Kết nối thêm một màn hình làm bảng viết,
+
+24
+00:01:44,376 --> 00:01:46,525
+từng nét được đồng bộ sang màn hình chính.
+
+25
+00:01:47,251 --> 00:01:50,087
+Ở bước đạo hàm, mình cố ý viết sai một dấu.
+
+26
+00:01:50,642 --> 00:01:53,995
+Sau khi nhận diện chữ viết, hệ thống tách nội dung thành các bước.
+
+27
+00:01:54,471 --> 00:01:58,400
+Học sinh đối chiếu bản chép với nét gốc, kiểm tra công thức và thứ tự.
+
+28
+00:01:58,832 --> 00:02:01,915
+Nếu nhận diện chưa đúng, mình sửa lại trước khi lưu.
+
+29
+00:02:02,601 --> 00:02:06,444
+Dấu cộng ở đây vẫn được giữ nguyên, vì đó là điều học sinh đã viết.
+
+30
+00:02:07,109 --> 00:02:09,236
+Nhận diện xong chưa có nghĩa là bài giải đúng.
+
+31
+00:02:09,420 --> 00:02:12,458
+Mình xác nhận hai bước, rồi nộp để nhận góp ý.
+
+32
+00:02:28,869 --> 00:02:32,608
+Bước ghi lại đề bài phù hợp, còn bước đạo hàm cần xem lại.
+
+33
+00:02:33,195 --> 00:02:36,817
+Hệ thống chỉ rõ: đạo hàm của trừ ba x phải
+
+34
+00:02:36,817 --> 00:02:40,109
+là trừ ba, trong khi Minh Anh viết cộng ba.
+
+35
+00:02:40,863 --> 00:02:44,481
+Góp ý gắn với đúng bước làm, giúp em biết cần sửa chỗ nào.
+
+36
+00:02:45,225 --> 00:02:48,056
+Đây là nhận xét tham khảo, chưa phải điểm chính thức.
+
+37
+00:02:51,631 --> 00:02:55,150
+Hoàn tất những câu còn lại, Minh Anh nộp toàn bộ bài được giao.
+
+38
+00:02:56,010 --> 00:02:58,402
+Ở phía giáo viên, cô Thu Hà quản lý lớp,
+
+39
+00:02:58,402 --> 00:03:00,794
+học liệu và bài tập trong cùng một không gian.
+
+40
+00:03:01,498 --> 00:03:04,331
+Cô mở danh sách lớp, theo dõi tình trạng làm bài,
+
+41
+00:03:04,331 --> 00:03:06,649
+rồi xem, duyệt cùng bài nộp của Minh Anh.
+
+42
+00:03:07,490 --> 00:03:11,569
+Từ việc học đến phản hồi của thầy cô, cả quá trình được nối lại rõ ràng.
+
+43
+00:03:17,226 --> 00:03:17,955
+MathMate.
+
+44
+00:03:18,504 --> 00:03:21,373
+Học có định hướng, làm bài có phản hồi.

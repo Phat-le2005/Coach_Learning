@@ -1,0 +1,11 @@
+{
+  "studentLogin": "PASS",
+  "teacherLogin": "PASS",
+  "theoryUpload": "PASS",
+  "theoryGeneration": {
+    "status": "PASS",
+    "seconds": 0.53,
+    "nodes": 9
+  },
+  "pdfUpload": "PASS"
+}

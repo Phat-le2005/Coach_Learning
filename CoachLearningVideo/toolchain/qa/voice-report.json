@@ -1,0 +1,10 @@
+{
+  "model": "gemini-2.5-flash-preview-tts",
+  "voice": "Aoede",
+  "purpose": "Technical preparation sample, not final narration",
+  "accentValidated": false,
+  "http": 200,
+  "mime": "audio/L16;codec=pcm;rate=24000",
+  "seconds": 5.090958333333333,
+  "audio": "voice-probe.wav"
+}

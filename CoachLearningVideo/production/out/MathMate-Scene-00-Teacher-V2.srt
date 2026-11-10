@@ -1,0 +1,39 @@
+1
+00:00:00,100 --> 00:00:03,547
+Khi học toán, có lời giải chưa chắc là đã hiểu bài.
+
+2
+00:00:03,547 --> 00:00:06,994
+Học sinh dễ làm theo đáp án mà bỏ qua cách suy
+
+3
+00:00:06,994 --> 00:00:10,442
+luận, còn giáo viên khó theo sát từng bước của cả lớp.
+
+4
+00:00:10,442 --> 00:00:13,027
+Ngay cả AI cũng có thể lập luận sai.
+
+5
+00:00:13,027 --> 00:00:15,900
+Math Mate hướng tới việc gợi mở và phản hồi
+
+6
+00:00:15,900 --> 00:00:18,772
+theo từng bước, giúp học sinh tự tìm cách giải.
+
+7
+00:00:18,772 --> 00:00:22,219
+Sau khi đăng nhập, cô Thu Hà quản lý lớp, học sinh,
+
+8
+00:00:22,219 --> 00:00:25,667
+học liệu, lý thuyết và báo cáo trong cùng một không gian.
+
+9
+00:00:25,667 --> 00:00:30,263
+Cô chọn phiếu luyện tập, đặt hạn nộp và giao những câu phù hợp cho lớp.
+
+10
+00:00:30,263 --> 00:00:35,434
+Từ đây, thầy cô tiếp tục theo dõi tiến độ và xem lại bài làm của học sinh.

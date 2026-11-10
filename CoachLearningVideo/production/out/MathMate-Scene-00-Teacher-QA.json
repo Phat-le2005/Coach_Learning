@@ -1,0 +1,53 @@
+{
+  "file": "C:\\CoachLearningVideo\\production\\out\\MathMate-Scene-00-Teacher.mp4",
+  "durationSeconds": 23.25,
+  "width": 1920,
+  "height": 1080,
+  "fps": "30/1",
+  "audioCodec": "aac",
+  "fullDecode": "PASS",
+  "fixedViewport": true,
+  "postproductionZoom": false,
+  "startFromVisibleLogin": true,
+  "firstLandingPage": "Teacher classroom / Phòng 1 Lớp học chính",
+  "assignmentPublishedThroughUi": true,
+  "dueAt": "2026-11-15T13:00:00Z",
+  "singleContinuousNarration": true,
+  "addedAudioSilence": false,
+  "sourceCaptureSegments": [
+    [
+      "login",
+      2
+    ],
+    [
+      "classroom",
+      8
+    ],
+    [
+      "material",
+      2
+    ],
+    [
+      "configure",
+      7
+    ],
+    [
+      "confirm",
+      1
+    ],
+    [
+      "published",
+      3.2503749999999982
+    ]
+  ],
+  "sha256": "2cfa3239dbb77b120b130d088a61542ef227836e4acf50a91eb3d7b70e0ae74d",
+  "naturalSilenceGapsSeconds": [
+    0.465,
+    0.295,
+    0.694,
+    0.297,
+    0.511,
+    0.263
+  ],
+  "longestNaturalSilenceSeconds": 0.694
+}

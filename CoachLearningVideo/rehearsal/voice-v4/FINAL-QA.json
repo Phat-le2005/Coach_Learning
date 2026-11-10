@@ -1,0 +1,33 @@
+{
+  "version": "V4",
+  "textUnits": 441,
+  "scenes": 8,
+  "actualVoiceClips": 8,
+  "allClipsFit": true,
+  "wavTimelineSeconds": 180,
+  "mp3Probe": {
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "codec_name": "mp3",
+        "sample_rate": "48000",
+        "channels": 1
+      }
+    ],
+    "format": {
+      "duration": "180.024000"
+    }
+  },
+  "speechSpeed": 1,
+  "insertedPausesSeconds": 25.9,
+  "automatedAudioAssessment": {
+    "perceived_gender": "male",
+    "perceived_accent": "southern",
+    "speaker_consistency": "consistent",
+    "issues": []
+  },
+  "humanListeningApproval": false,
+  "masterStatus": "full narration timing draft, awaiting integration with footage",
+  "officialVideoProduced": false
+}

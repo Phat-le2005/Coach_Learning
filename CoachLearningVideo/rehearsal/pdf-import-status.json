@@ -1,0 +1,74 @@
+{
+  "id": "e96dafce-6143-4980-93b2-ec6d8d58531c",
+  "classroom_id": "955239e0-749f-5393-b0d6-93a88a7a3e8c",
+  "subject_id": "68000fe5-5b47-5ce2-92b8-b15164c83b74",
+  "title": "Ôn tập nguyên hàm — bài tập từ tài liệu",
+  "original_file_name": "on-tap-nguyen-ham.pdf",
+  "source_kind": "PDF",
+  "source_mime_type": "application/pdf",
+  "status": "NEEDS_REVIEW",
+  "created_at": "2026-11-09T06:10:31.274453Z",
+  "error": null,
+  "material_id": null,
+  "revision_of": null,
+  "revision_title": null,
+  "progress": {
+    "processed_pages": 1,
+    "selected_pages": 1,
+    "failed_regions": 0,
+    "review_regions": 1,
+    "questions": 2
+  },
+  "questions": [
+    {
+      "question_id": "53def6bac68c82fbe88ef63b:p0001:r001:q0001",
+      "number": 1,
+      "source_number": 151,
+      "content": "Câu 151. Một chất điểm thực hiện chuyển động thẳng trên trục Ox, với vận tốc cho bởi công thức $v(t) = 3t^2 + 4t$ (m/s) với $t$ là thời gian. Biết rằng tại thời điểm bắt đầu của chuyển động, chất điểm đang ở vị trí có toạ độ $x = 0,5$. Tọa độ của chất điểm sau 2 giây chuyển động là bao nhiêu mét?\n\nTrả lời: ……………………",
+      "answer": "Đáp án: 16,5",
+      "explanation": "Lời giải\n\nPhương trình toạ độ của chất điểm là nguyên hàm của phương trình vận tốc nên ta có:\n\n$ x(t) = \\int v(t)\\,dt = \\int (3t^2 + 4t)\\,dt = t^3 + 2t^2 + C $\n\nTại thời điểm bắt đầu của chuyển động, chất điểm đang ở vị trí có toạ độ $ x = 0,5 $ nên khi $ t = 0 $ có\n\n$ C = \\frac{1}{2} \\Rightarrow x(t) = t^3 + 2t^2 + \\frac{1}{2}. $\n\nToạ độ của chất điểm sau 2 giây chuyển động là $ x(2) = 2^3 + 2.2^2 + \\frac{1}{2} = 16,5 (m). $",
+      "difficulty_level": null,
+      "pages": [
+        1
+      ],
+      "warnings": [
+        "REVIEW_REQUIRED"
+      ],
+      "suggested": false,
+      "source_assets": [
+        0,
+        1
+      ],
+      "visual_assets": [],
+      "visuals": []
+    },
+    {
+      "question_id": "53def6bac68c82fbe88ef63b:p0001:r001:q0002",
+      "number": 2,
+      "source_number": 152,
+      "content": "Câu 152. Một vật chuyển động với gia tốc phụ thuộc vào thời gian theo công thức $ a(t) = \\cos x\\left( t + \\frac{\\pi}{2} \\right) \\left( m / s^2 \\right) $. Biết tại thời điểm $ t = 0 $ thì vận tốc và quãng đường đi được của vật đều bằng 0. Tính quãng đường (làm tròn kết quả đến phần chục của mét) đi được của vật đó trong $ \\frac{\\pi}{2} $ giây đầu tiên.\n\nTrả lời: ……………",
+      "answer": "Đáp án: 0,57",
+      "explanation": "Lời giải\n\n$a(t) = \\cos x\\left(t + \\frac{\\pi}{2}\\right) = \\sin t$\n\nTa có vận tốc của vật tại thời điểm $ t $ là: $ v(t) = \\int a(t) dt = \\int \\sin t dt = -\\cos t + C \\\\ \\\\Rightarrow v(t) = -\\cos t + C \\\\ Ta \\text{có} $ v(0) = 0 \\Leftrightarrow C = 1 \\Rightarrow v(t) = -\\cos t + 1 $. \\\\ \\\\Rightarrow s(t) = \\int (-\\cos t + 1) dt = -\\sin t + t + C_1 \\text{ và } s(0) = 0 \\Leftrightarrow C_1 = 0 . \\\\ \\\\Rightarrow s(t) = -\\sin t + t . \\\\ \\\\Rightarrow s\\left(\\frac{\\pi}{2}\\right) = -\\sin \\frac{\\pi}{2} + \\frac{\\pi}{2} \\approx 0,57 (m)$",
+      "difficulty_level": null,
+      "pages": [
+        1
+      ],
+      "warnings": [
+        "REVIEW_REQUIRED",
+        "SOURCE_CROP_CONTINUATION_REVIEW_REQUIRED",
+        "UNBALANCED_MATH_DELIMITERS",
+        "LITERAL_TEXT_IN_MATH_WRAPPED",
+        "MISSING_CLOSING_MATH_DELIMITER_ADDED"
+      ],
+      "suggested": false,
+      "source_assets": [
+        2,
+        3,
+        4
+      ],
+      "visual_assets": [],
+      "visuals": []
+    }
+  ],
+  "review": null
+}

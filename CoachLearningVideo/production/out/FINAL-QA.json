@@ -1,0 +1,63 @@
+{
+  "checks": {
+    "durationAbout180Seconds": true,
+    "resolution1080p": true,
+    "fps30": true,
+    "videoH264": true,
+    "audioAAC": true,
+    "captionsPresent": true,
+    "captionTimesValid": true,
+    "captionsNonOverlapping": true,
+    "fullVideoDecode": true
+  },
+  "pass": true,
+  "file": "C:\\CoachLearningVideo\\production\\out\\MathMate-Demo-1080p.mp4",
+  "durationSeconds": 180.011,
+  "bytes": 38162912,
+  "sha256": "8e57fe530e7ee30dd538efadadeda906d3f7ee0a6fc86476f4a4729274ac4a08",
+  "video": {
+    "codec": "h264",
+    "width": 1920,
+    "height": 1080,
+    "fps": "30/1"
+  },
+  "audio": {
+    "codec": "aac",
+    "sampleRate": "48000",
+    "channels": 2
+  },
+  "captionCount": 38,
+  "visualReviewFrames": [
+    2,
+    12,
+    23,
+    39,
+    60,
+    82,
+    94,
+    112,
+    136,
+    154,
+    167,
+    177
+  ],
+  "contentEvidence": {
+    "brand": "MathMate",
+    "actualUiRecordings": true,
+    "handwriting": "two browsers, pointer replay, synchronized real persisted strokes",
+    "ocr": "real Gemini result, wait shortened",
+    "feedback": "real answer-grounded provisional AI feedback; no official score",
+    "teacher": "same new assignment, actual submitted work awaiting teacher review"
+  },
+  "audioSelection": {
+    "selectedBase": "narration-v4-180s.mp3, unpaced version chosen by user",
+    "userAmendment": "Replace spoken Coach Learning with Math Mate; correct closing Vietnamese spelling",
+    "source": "C:\\CoachLearningVideo\\rehearsal\\voice-mathmate\\mathmate-narration-180s.mp3",
+    "productionFile": "C:\\CoachLearningVideo\\production\\public\\audio\\narration.mp3",
+    "sha256": "8b5177619b3732ab2c460da8e22adec4d3e106d69f0603d34be2fd1783b02665",
+    "preservedClips": 6,
+    "replacedClips": 2,
+    "speechSpeed": 1,
+    "timelineSeconds": 180
+  }
+}

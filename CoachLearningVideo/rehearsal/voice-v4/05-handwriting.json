@@ -1,0 +1,14 @@
+{
+  "id": "05-handwriting",
+  "start": 75,
+  "slot": 50,
+  "lead": 0.5,
+  "textUnits": 120,
+  "hash": "67828418697c3ad5d6ec99f19b55118aeb017e707d0e48094184b2228972af8b",
+  "http": 200,
+  "seconds": 36.49095833333333,
+  "trimmedSeconds": 34.094375,
+  "peak": 0.914794921875,
+  "tailSeconds": 15.406,
+  "fits": true
+}

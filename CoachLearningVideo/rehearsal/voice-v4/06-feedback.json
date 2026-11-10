@@ -1,0 +1,14 @@
+{
+  "id": "06-feedback",
+  "start": 125,
+  "slot": 23,
+  "lead": 0.6,
+  "textUnits": 60,
+  "hash": "3a0968374ef39fe86b7517de59fc89392ee7671a2940ec92a3ee2b87f3beed39",
+  "http": 200,
+  "seconds": 19.730958333333334,
+  "trimmedSeconds": 19.594333333333335,
+  "peak": 0.862945556640625,
+  "tailSeconds": 2.806,
+  "fits": true
+}

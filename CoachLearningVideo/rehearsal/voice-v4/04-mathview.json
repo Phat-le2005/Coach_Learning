@@ -1,0 +1,14 @@
+{
+  "id": "04-mathview",
+  "start": 49,
+  "slot": 26,
+  "lead": 0.5,
+  "textUnits": 64,
+  "hash": "7b6ae22911c92cd07543dadcd45c09c543e94b1e8348e8ce976ba58fb5eefab1",
+  "http": 200,
+  "seconds": 18.170958333333335,
+  "trimmedSeconds": 17.832833333333333,
+  "peak": 0.879730224609375,
+  "tailSeconds": 7.667,
+  "fits": true
+}
